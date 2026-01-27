@@ -1,0 +1,14 @@
+{
+  "name": "claude-validator-marketplace",
+  "description": "Official marketplace for the Claude Validator plugin",
+  "plugins": [
+    {
+      "name": "claude-validator",
+      "description": "Comprehensive validation toolkit for Claude Code projects",
+      "source": {
+        "type": "local",
+        "path": "./"
+      }
+    }
+  ]
+}
