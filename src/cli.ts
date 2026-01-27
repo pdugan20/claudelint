@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { ClaudeMdValidator } from './validators/claude-md';
 import { SkillsValidator } from './validators/skills';
+import { SettingsValidator } from './validators/settings';
 import { Reporter } from './utils/reporting';
 
 const program = new Command();
@@ -79,9 +80,21 @@ program
   .description('Validate settings.json files')
   .option('--path <path>', 'Custom path to settings.json')
   .option('-v, --verbose', 'Verbose output')
-  .action((options) => {
-    console.log('validate-settings command - coming soon!');
-    console.log('Options:', options);
+  .option('--warnings-as-errors', 'Treat warnings as errors')
+  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
+    const validator = new SettingsValidator(options);
+    const reporter = new Reporter({
+      verbose: options.verbose,
+      warningsAsErrors: options.warningsAsErrors,
+    });
+
+    reporter.section('Validating settings.json files...');
+
+    const result = await validator.validate();
+
+    reporter.report(result, 'Settings');
+
+    process.exit(reporter.getExitCode(result));
   });
 
 program.parse();
