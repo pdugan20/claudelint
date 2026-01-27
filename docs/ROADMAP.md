@@ -30,15 +30,17 @@ Centralized tracker for project phases and tasks. Mark items as complete as we g
 - [x] Design validation result schema
 - [x] Write initial utility tests
 
-### 1.3 CLAUDE.md Validator
+### 1.3 CLAUDE.md Validator ✅ COMPLETE
 
-- [ ] Implement size limit checking (35KB warning, 40KB error)
-- [ ] Validate markdown formatting
-- [ ] Check import syntax (`@path/to/file`)
-- [ ] Validate recursive import depth (max 5)
-- [ ] Check YAML frontmatter in rules files
-- [ ] Validate `paths` glob patterns in frontmatter
-- [ ] Write tests for CLAUDE.md validator
+- [x] Implement size limit checking (35KB warning, 40KB error)
+- [x] Validate markdown formatting
+- [x] Check import syntax (`@path/to/file`)
+- [x] Validate recursive import depth (max 5)
+- [x] Check YAML frontmatter in rules files
+- [x] Validate `paths` glob patterns in frontmatter
+- [x] Write tests for CLAUDE.md validator
+- [x] Integrate into CLI (check-claude-md command)
+- [x] Test on real project files
 
 ### 1.4 Skills Validator
 

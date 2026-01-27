@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { ClaudeMdValidator } from './validators/claude-md';
+import { SkillsValidator } from './validators/skills';
 import { Reporter } from './utils/reporting';
 
 const program = new Command();
@@ -51,10 +52,29 @@ program
   .option('--path <path>', 'Custom path to skills directory')
   .option('--skill <name>', 'Validate specific skill')
   .option('-v, --verbose', 'Verbose output')
-  .action((options) => {
-    console.log('validate-skills command - coming soon!');
-    console.log('Options:', options);
-  });
+  .option('--warnings-as-errors', 'Treat warnings as errors')
+  .action(
+    async (options: {
+      path?: string;
+      skill?: string;
+      verbose?: boolean;
+      warningsAsErrors?: boolean;
+    }) => {
+      const validator = new SkillsValidator(options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
+
+      reporter.section('Validating Claude skills...');
+
+      const result = await validator.validate();
+
+      reporter.report(result, 'Skills');
+
+      process.exit(reporter.getExitCode(result));
+    }
+  );
 
 program
   .command('validate-settings')
