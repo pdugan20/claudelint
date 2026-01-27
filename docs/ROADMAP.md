@@ -107,25 +107,37 @@ All core validators implemented and tested:
 - [x] Detect hardcoded secrets in environment variables
 - [x] Integrate into CLI (validate-settings command)
 
-### 2.2 Hooks Validator
+### 2.2 Hooks Validator ✅ COMPLETE
 
-- [ ] Validate hooks.json schema
-- [ ] Check event names (PreToolUse, PostToolUse, etc.)
-- [ ] Validate hook types (command, prompt, agent)
-- [ ] Check script files exist and are executable
-- [ ] Validate matcher patterns
-- [ ] Check variable expansion syntax
-- [ ] Validate JSON output schema for advanced hooks
-- [ ] Write tests for hooks validator
+- [x] Validate hooks.json schema
+- [x] Check event names (PreToolUse, PostToolUse, etc.)
+- [x] Validate hook types (command, prompt, agent)
+- [x] Check script files exist and are executable
+- [x] Validate matcher patterns (regex validation)
+- [x] Check variable expansion syntax
+- [x] Validate JSON output schema for advanced hooks
+- [x] Write tests for hooks validator
+- [x] Integrate into CLI (validate-hooks command)
 
-### 2.3 CLI Additions
+### 2.3 CLI Integration ✅ COMPLETE
 
-- [ ] Implement `validate-settings` command
-- [ ] Implement `validate-hooks` command
-- [ ] Update `check-all` to include new validators
+- [x] Implement `validate-settings` command
+- [x] Implement `validate-hooks` command
+- [x] Update `check-all` to include new validators (CLAUDE.md, Skills, Settings, Hooks)
+- [x] Add overall summary with totals
+- [x] Proper exit codes for all commands
 - [ ] Add examples to documentation
+- [ ] Update README with new commands
 
-**Phase 2 Completion Target**: Week 2
+**Phase 2 Completion**: ✅ COMPLETE (2026-01-26)
+
+All Phase 2 validators implemented and tested:
+
+- Settings validator with Zod schemas and comprehensive validation
+- Hooks validator with event, type, and matcher validation
+- CLI integration with check-all command
+- 67 passing tests with high coverage
+- All validators operational and integrated
 
 ---
 
