@@ -1,22 +1,13 @@
 import { SettingsValidator } from '../../src/validators/settings';
-import { writeFile, mkdir, rm } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
-import { tmpdir } from 'os';
+import { setupTestDir } from '../helpers/test-utils';
 
 describe('SettingsValidator', () => {
-  let testDir: string;
-
-  beforeEach(async () => {
-    testDir = join(tmpdir(), `claude-validator-settings-test-${Date.now()}`);
-    await mkdir(testDir, { recursive: true });
-  });
-
-  afterEach(async () => {
-    await rm(testDir, { recursive: true, force: true });
-  });
+  const { getTestDir } = setupTestDir();
 
   async function createSettingsFile(settings: unknown, filename = 'settings.json') {
-    const claudeDir = join(testDir, '.claude');
+    const claudeDir = join(getTestDir(), '.claude');
     await mkdir(claudeDir, { recursive: true });
 
     const filePath = join(claudeDir, filename);
@@ -38,7 +29,7 @@ describe('SettingsValidator', () => {
     });
 
     it('should error for invalid JSON syntax', async () => {
-      const claudeDir = join(testDir, '.claude');
+      const claudeDir = join(getTestDir(), '.claude');
       await mkdir(claudeDir, { recursive: true });
       const filePath = join(claudeDir, 'settings.json');
       await writeFile(filePath, '{ invalid json }');
@@ -144,7 +135,7 @@ describe('SettingsValidator', () => {
             command: 'npm run lint',
             matcher: {
               tool: 'Write',
-              pattern: '*.ts',
+              pattern: '.*\\.ts$',
             },
           },
         ],
@@ -332,7 +323,7 @@ describe('SettingsValidator', () => {
 
       // Change to test directory temporarily
       const originalCwd = process.cwd();
-      process.chdir(testDir);
+      process.chdir(getTestDir());
 
       try {
         const validator = new SettingsValidator();

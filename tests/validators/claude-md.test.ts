@@ -1,25 +1,14 @@
 import { ClaudeMdValidator } from '../../src/validators/claude-md';
-import { writeFile, mkdir, rm } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
-import { tmpdir } from 'os';
+import { setupTestDir } from '../helpers/test-utils';
 
 describe('ClaudeMdValidator', () => {
-  let testDir: string;
-
-  beforeEach(async () => {
-    // Create temporary test directory
-    testDir = join(tmpdir(), `claude-validator-test-${Date.now()}`);
-    await mkdir(testDir, { recursive: true });
-  });
-
-  afterEach(async () => {
-    // Clean up test directory
-    await rm(testDir, { recursive: true, force: true });
-  });
+  const { getTestDir } = setupTestDir();
 
   describe('File size validation', () => {
     it('should pass for files under size limit', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
+      const filePath = join(getTestDir(), 'CLAUDE.md');
       await writeFile(filePath, '# Small File\n\nContent here.');
 
       const validator = new ClaudeMdValidator({ path: filePath });
@@ -30,7 +19,7 @@ describe('ClaudeMdValidator', () => {
     });
 
     it('should warn for files approaching size limit', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
+      const filePath = join(getTestDir(), 'CLAUDE.md');
       const largeContent = '# Large File\n\n' + 'x'.repeat(36000);
       await writeFile(filePath, largeContent);
 
@@ -43,7 +32,7 @@ describe('ClaudeMdValidator', () => {
     });
 
     it('should error for files exceeding size limit', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
+      const filePath = join(getTestDir(), 'CLAUDE.md');
       const hugeContent = '# Huge File\n\n' + 'x'.repeat(45000);
       await writeFile(filePath, hugeContent);
 
@@ -56,31 +45,9 @@ describe('ClaudeMdValidator', () => {
     });
   });
 
-  describe('Markdown structure validation', () => {
-    it('should warn if file does not start with H1', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
-      await writeFile(filePath, 'Some text\n\n## Not H1');
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.warnings.some((w) => w.message.includes('top-level heading'))).toBe(true);
-    });
-
-    it('should pass for files starting with H1', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
-      await writeFile(filePath, '# Title\n\nContent here.');
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-  });
-
   describe('Frontmatter validation', () => {
     it('should validate frontmatter in rules files', async () => {
-      const rulesDir = join(testDir, '.claude', 'rules');
+      const rulesDir = join(getTestDir(), '.claude', 'rules');
       await mkdir(rulesDir, { recursive: true });
 
       const filePath = join(rulesDir, 'typescript.md');
@@ -104,7 +71,7 @@ Content here.`
     });
 
     it('should error for invalid paths field type', async () => {
-      const rulesDir = join(testDir, '.claude', 'rules');
+      const rulesDir = join(getTestDir(), '.claude', 'rules');
       await mkdir(rulesDir, { recursive: true });
 
       const filePath = join(rulesDir, 'typescript.md');
@@ -127,7 +94,7 @@ paths: "src/**/*.ts"
 
   describe('Import validation', () => {
     it('should error for non-existent imports', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
+      const filePath = join(getTestDir(), 'CLAUDE.md');
       await writeFile(
         filePath,
         '# Main\n\nImport: @missing-file.md\n\nContent here.'
@@ -141,8 +108,8 @@ paths: "src/**/*.ts"
     });
 
     it('should validate existing imports', async () => {
-      const filePath = join(testDir, 'CLAUDE.md');
-      const importedFile = join(testDir, 'imported.md');
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      const importedFile = join(getTestDir(), 'imported.md');
 
       await writeFile(importedFile, '# Imported Content');
       await writeFile(
@@ -154,6 +121,36 @@ paths: "src/**/*.ts"
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
+    });
+  });
+
+  describe('Content organization checks', () => {
+    it('should warn when CLAUDE.md has too many sections', async () => {
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      // Create content with 25 sections (headings) - 1 H1 + 25 H2 = 26 total
+      const sections = Array.from({ length: 25 }, (_, i) => `## Section ${i + 1}\n\nContent here.`);
+      await writeFile(filePath, '# Main Title\n\n' + sections.join('\n\n'));
+
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.length).toBeGreaterThan(0);
+      expect(result.warnings.some((w) => w.message.includes('sections'))).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('.claude/rules/'))).toBe(true);
+    });
+
+    it('should not warn when CLAUDE.md has reasonable number of sections', async () => {
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      // Create content with 10 sections (headings)
+      const sections = Array.from({ length: 10 }, (_, i) => `## Section ${i + 1}\n\nContent here.`);
+      await writeFile(filePath, '# Main Title\n\n' + sections.join('\n\n'));
+
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.length).toBe(0);
     });
   });
 });

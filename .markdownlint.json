@@ -10,6 +10,10 @@
   "MD024": {
     "siblings_only": true
   },
+  "MD051": false,
+  "MD060": {
+    "style": "aligned"
+  },
   "line-length": false,
   "no-inline-html": false,
   "first-line-h1": true,

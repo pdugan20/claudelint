@@ -1,0 +1,41 @@
+# .claudelintignore example
+# Similar to .gitignore, patterns to exclude from linting
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+out/
+*.min.js
+
+# Cache directories
+.cache/
+.temp/
+tmp/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Generated files
+**/*.generated.ts
+**/*.generated.js
+
+# Test fixtures
+fixtures/
+__fixtures__/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,35 @@
+{
+  "name": "markdownlint-config-claude",
+  "version": "1.0.0",
+  "description": "Markdownlint configuration for Claude Code projects (CLAUDE.md, SKILL.md, etc.)",
+  "main": "index.json",
+  "keywords": [
+    "markdownlint",
+    "markdownlint-config",
+    "claude",
+    "claude-code",
+    "config",
+    "linter"
+  ],
+  "author": {
+    "name": "Pat Dugan",
+    "url": "https://github.com/pdugan20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pdugan20/claudelint.git",
+    "directory": "packages/markdownlint-config-claude"
+  },
+  "bugs": {
+    "url": "https://github.com/pdugan20/claudelint/issues"
+  },
+  "homepage": "https://github.com/pdugan20/claudelint/tree/main/packages/markdownlint-config-claude#readme",
+  "peerDependencies": {
+    "markdownlint": ">=0.32.0"
+  },
+  "files": [
+    "index.json",
+    "README.md"
+  ]
+}

@@ -1,10 +1,10 @@
 # Validators
 
-Comprehensive documentation for all validators in the Claude Validator toolkit.
+Comprehensive documentation for all validators in the claudelint toolkit.
 
 ## Overview
 
-Claude Validator includes validators for all major Claude Code components:
+claudelint includes validators for all major Claude Code components:
 
 1. CLAUDE.md files (memory system)
 2. Skills (agent workflows)
@@ -17,18 +17,30 @@ Claude Validator includes validators for all major Claude Code components:
 9. LSP Servers
 10. Output Styles
 
+**See also:** [Complete Rule Reference](./rules/index.md) - Individual documentation pages for all 27 validation rules
+
+## Scope Note
+
+claudelint focuses **exclusively on Claude-specific validation**. For generic markdown formatting (H1 headings, blank lines, code fence languages), use [markdownlint](https://github.com/DavidAnson/markdownlint). For code formatting, use [prettier](https://prettier.io).
+
+See [README.md](../README.md#philosophy-complementary-tools) for the full complementary tools approach.
+
 ## CLAUDE.md Validator
 
-### What It Validates
+### What It Validates (Claude-specific only)
 
-- **File size** - Performance limits (35KB warning, 40KB error)
-- **Markdown formatting** - Compliance with markdownlint rules
-- **Import syntax** - `@path/to/file` references
-- **Recursive imports** - Maximum depth of 5
-- **YAML frontmatter** - In `.claude/rules/*.md` files
-- **Glob patterns** - `paths` field in frontmatter
+- **File size limits** - Based on Claude context window constraints (35KB warning, 40KB error)
+- **`@import` syntax** - Claude-specific import statement validation
+- **Import file existence** - Referenced files actually exist
+- **Recursive import depth** - Maximum depth of 5 to prevent circular imports
+- **YAML frontmatter schema** - In `.claude/rules/*.md` files
+- **Glob patterns** - `paths` field validation in rule frontmatter
+
+**Note:** Generic markdown formatting (H1 headings, blank lines, code fence languages) is handled by markdownlint, not claudelint.
 
 ### Rules
+
+**See:** [CLAUDE.md Rules](./rules/index.md#claudemd-rules) | [size-error](./rules/claude-md/size-error.md) | [size-warning](./rules/claude-md/size-warning.md) | [import-missing](./rules/claude-md/import-missing.md) | [import-circular](./rules/claude-md/import-circular.md)
 
 #### Size Limits
 
@@ -77,13 +89,13 @@ invalid_field: true   # Unknown field
 
 ```bash
 # Validate CLAUDE.md files
-claude-validator check-claude-md
+claudelint check-claude-md
 
 # Specify custom path
-claude-validator check-claude-md --path .claude/CLAUDE.md
+claudelint check-claude-md --path .claude/CLAUDE.md
 
 # Verbose output
-claude-validator check-claude-md --verbose
+claudelint check-claude-md --verbose
 ```
 
 ### Exit Codes
@@ -96,14 +108,15 @@ claude-validator check-claude-md --verbose
 
 ## Skills Validator
 
-### What It Validates
+### What It Validates (Claude-specific only)
 
-- **Directory structure** - `SKILL.md` exists
-- **Frontmatter schema** - All required and optional fields
-- **Field types** - Correct data types
-- **File references** - Referenced files exist
-- **Markdown formatting** - Proper markdown syntax
-- **String substitutions** - Valid `$ARGUMENTS`, `$0`, etc.
+- **Directory structure** - `SKILL.md` exists in skill directories
+- **Frontmatter schema** - Claude skill-specific fields (name, description, allowed-tools, etc.)
+- **Field types** - Correct data types for skill configuration
+- **Skill file references** - Referenced files in skill directory exist
+- **String substitutions** - Claude-specific substitution syntax (`$ARGUMENTS`, `$0`, `${VAR}`)
+
+**Note:** Generic markdown formatting is handled by markdownlint, not claudelint.
 
 ### Frontmatter Fields
 
@@ -124,6 +137,8 @@ claude-validator check-claude-md --verbose
 - `hooks` - Lifecycle hooks
 
 ### Rules
+
+**See:** [Skills Rules](./rules/index.md#skills-rules) - Complete documentation for all 11 skill validation rules (includes fixable rules for shebang, changelog, and version)
 
 #### Skill Naming
 
@@ -174,16 +189,16 @@ Then `template.md` must exist in the skill directory.
 
 ```bash
 # Validate all skills
-claude-validator validate-skills
+claudelint validate-skills
 
 # Validate specific path
-claude-validator validate-skills --path .claude/skills
+claudelint validate-skills --path .claude/skills
 
 # Validate single skill
-claude-validator validate-skills --skill my-skill
+claudelint validate-skills --skill my-skill
 
 # Verbose output
-claude-validator validate-skills --verbose
+claudelint validate-skills --verbose
 ```
 
 ---
@@ -220,6 +235,8 @@ interface Settings {
 ```
 
 ### Rules
+
+**See:** [Settings Rules](./rules/index.md#settings-rules) | [settings-invalid-schema](./rules/settings/settings-invalid-schema.md) | [settings-invalid-permission](./rules/settings/settings-invalid-permission.md) | [settings-invalid-env-var](./rules/settings/settings-invalid-env-var.md)
 
 #### Permission Rules
 
@@ -276,10 +293,10 @@ Invalid:
 
 ```bash
 # Validate settings
-claude-validator validate-settings
+claudelint validate-settings
 
 # Validate specific file
-claude-validator validate-settings --path .claude/settings.json
+claudelint validate-settings --path .claude/settings.json
 ```
 
 ---
@@ -314,6 +331,8 @@ Valid events:
 - `SessionEnd` - Session ends
 
 ### Rules
+
+**See:** [Hooks Rules](./rules/index.md#hooks-rules) | [hooks-invalid-event](./rules/hooks/hooks-invalid-event.md) | [hooks-missing-script](./rules/hooks/hooks-missing-script.md) | [hooks-invalid-config](./rules/hooks/hooks-invalid-config.md)
 
 #### Hook Configuration
 
@@ -353,10 +372,10 @@ Invalid:
 
 ```bash
 # Validate hooks
-claude-validator validate-hooks
+claudelint validate-hooks
 
 # Validate specific file
-claude-validator validate-hooks --path .claude/hooks/hooks.json
+claudelint validate-hooks --path .claude/hooks/hooks.json
 ```
 
 ---
@@ -373,6 +392,8 @@ claude-validator validate-hooks --path .claude/hooks/hooks.json
 - **Variable patterns** - `${VAR}` and `${VAR:-default}`
 
 ### Rules
+
+**See:** [MCP Rules](./rules/index.md#mcp-rules) | [mcp-invalid-server](./rules/mcp/mcp-invalid-server.md) | [mcp-invalid-transport](./rules/mcp/mcp-invalid-transport.md) | [mcp-invalid-env-var](./rules/mcp/mcp-invalid-env-var.md)
 
 #### Server Configuration
 
@@ -410,10 +431,10 @@ Invalid:
 
 ```bash
 # Validate MCP servers
-claude-validator validate-mcp
+claudelint validate-mcp
 
 # Validate specific file
-claude-validator validate-mcp --path .mcp.json
+claudelint validate-mcp --path .mcp.json
 ```
 
 ---
@@ -430,6 +451,8 @@ claude-validator validate-mcp --path .mcp.json
 - **Marketplace schema** - marketplace.json structure
 
 ### Rules
+
+**See:** [Plugin Rules](./rules/index.md#plugin-rules) | [plugin-invalid-manifest](./rules/plugin/plugin-invalid-manifest.md) | [plugin-invalid-version](./rules/plugin/plugin-invalid-version.md) | [plugin-missing-file](./rules/plugin/plugin-missing-file.md)
 
 #### Directory Structure
 
@@ -482,10 +505,10 @@ Invalid:
 
 ```bash
 # Validate plugin
-claude-validator validate-plugin
+claudelint validate-plugin
 
 # Validate from specific directory
-claude-validator validate-plugin --path ./my-plugin
+claudelint validate-plugin --path ./my-plugin
 ```
 
 ---
@@ -515,10 +538,10 @@ claude-validator validate-plugin --path ./my-plugin
 
 ```bash
 # Validate agents
-claude-validator validate-agents
+claudelint validate-agents
 
 # Validate specific path
-claude-validator validate-agents --path .claude/agents
+claudelint validate-agents --path .claude/agents
 ```
 
 ---
@@ -535,10 +558,10 @@ claude-validator validate-agents --path .claude/agents
 
 ```bash
 # Validate commands
-claude-validator validate-commands
+claudelint validate-commands
 
 # Validate specific path
-claude-validator validate-commands --path .claude/commands
+claudelint validate-commands --path .claude/commands
 ```
 
 ---

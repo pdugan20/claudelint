@@ -1,0 +1,35 @@
+{
+  "name": "prettier-config-claude",
+  "version": "1.0.0",
+  "description": "Prettier configuration for Claude Code projects (markdown, JSON, YAML)",
+  "main": "index.json",
+  "keywords": [
+    "prettier",
+    "prettier-config",
+    "claude",
+    "claude-code",
+    "config",
+    "formatter"
+  ],
+  "author": {
+    "name": "Pat Dugan",
+    "url": "https://github.com/pdugan20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pdugan20/claudelint.git",
+    "directory": "packages/prettier-config-claude"
+  },
+  "bugs": {
+    "url": "https://github.com/pdugan20/claudelint/issues"
+  },
+  "homepage": "https://github.com/pdugan20/claudelint/tree/main/packages/prettier-config-claude#readme",
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  },
+  "files": [
+    "index.json",
+    "README.md"
+  ]
+}

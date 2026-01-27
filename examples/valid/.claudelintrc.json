@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "size-warning": "warn",
+    "size-error": "error",
+    "import-missing": "error"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "coverage/"
+  ],
+  "output": {
+    "format": "stylish",
+    "verbose": false,
+    "color": true
+  }
+}

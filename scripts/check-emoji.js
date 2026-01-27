@@ -3,6 +3,8 @@
 /**
  * Check for emojis in source files and documentation
  * Uses emoji-regex for proper Unicode emoji detection
+ *
+ * STRICT MODE: No emojis allowed anywhere except in markdown headings
  */
 
 const fs = require('fs');
@@ -21,7 +23,7 @@ function checkFile(filePath, isDoc = false) {
   const regex = emojiRegex();
 
   lines.forEach((line, index) => {
-    // For docs, allow emojis in headings
+    // For docs, allow emojis ONLY in headings
     if (isDoc && line.trim().startsWith('#')) {
       return;
     }
@@ -29,9 +31,7 @@ function checkFile(filePath, isDoc = false) {
     const matches = line.match(regex);
     if (matches && matches.length > 0) {
       foundEmojis = true;
-      console.error(
-        `${filePath}:${index + 1}: Found emoji(s): ${matches.join(', ')}`
-      );
+      console.error(`${filePath}:${index + 1}: Found emoji(s): ${matches.join(', ')}`);
     }
   });
 }
@@ -64,8 +64,8 @@ if (fs.existsSync('src')) {
   walkDirectory('src', false);
 }
 
-// Check documentation
-console.log('Checking documentation for emojis (except in headings)...');
+// Check documentation (strict mode - only allow in headings)
+console.log('Checking documentation (strict mode - only headings allowed)...');
 if (fs.existsSync('docs')) {
   walkDirectory('docs', true);
 }
@@ -74,9 +74,10 @@ if (fs.existsSync('README.md')) {
 }
 
 if (foundEmojis) {
-  console.error('\n❌ Emojis found in files. Please remove them.');
+  console.error('\nEmojis found in files. Please remove them.');
+  console.error('Only emojis in markdown headings (lines starting with #) are allowed.');
   process.exit(1);
 } else {
-  console.log('✅ No emojis found.');
+  console.log('No inappropriate emojis found.');
   process.exit(0);
 }

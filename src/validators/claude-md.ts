@@ -6,21 +6,64 @@ import {
   fileExists,
   resolvePath,
 } from '../utils/file-system';
+import { extractFrontmatter, extractImportsWithLineNumbers } from '../utils/markdown';
 import {
-  extractFrontmatter,
-  extractImports,
-  startsWithH1,
-  validateMarkdownStructure,
-} from '../utils/markdown';
+  CLAUDE_MD_SIZE_WARNING_THRESHOLD,
+  CLAUDE_MD_SIZE_ERROR_THRESHOLD,
+  CLAUDE_MD_MAX_IMPORT_DEPTH,
+} from './constants';
 import { dirname } from 'path';
-
-const SIZE_WARNING_THRESHOLD = 35_000; // 35KB - warn when approaching limit
-const SIZE_ERROR_THRESHOLD = 40_000; // 40KB - hard limit for performance
+import { RuleRegistry } from '../utils/rule-registry';
 
 interface ClaudeRuleFrontmatter {
   paths?: string | string[];
   [key: string]: unknown;
 }
+
+// Register CLAUDE.md rules
+RuleRegistry.register({
+  id: 'size-error',
+  name: 'File Size Error',
+  description: 'CLAUDE.md exceeds maximum file size limit (40KB)',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'size-warning',
+  name: 'File Size Warning',
+  description: 'CLAUDE.md approaching file size limit (35KB)',
+  category: 'CLAUDE.md',
+  severity: 'warning',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'import-missing',
+  name: 'Missing Import',
+  description: '@import directive points to non-existent file',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'import-circular',
+  name: 'Circular Import',
+  description: 'Circular @import dependencies detected',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
 
 interface ClaudeMdValidatorOptions {
   path?: string;
@@ -66,52 +109,88 @@ export class ClaudeMdValidator extends BaseValidator {
   }
 
   private async validateFile(filePath: string): Promise<void> {
-    // Check file size
-    await this.checkFileSize(filePath);
-
-    // Read content
+    // Read content first
     const content = await readFileContent(filePath);
 
-    // Check markdown structure
-    this.checkMarkdownStructure(filePath, content);
+    // Parse disable comments
+    this.parseDisableComments(filePath, content);
+
+    // Check file size
+    await this.checkFileSize(filePath);
 
     // Check for frontmatter (only in .claude/rules/*.md files)
     if (filePath.includes('.claude/rules/')) {
       this.checkFrontmatter(filePath, content);
     }
 
+    // Content organization checks (for main CLAUDE.md files)
+    if (filePath.endsWith('CLAUDE.md') && !filePath.includes('.claude/rules/')) {
+      this.checkContentOrganization(filePath, content);
+    }
+
     // Check imports and validate recursively
     await this.checkImports(filePath, content);
+
+    // Report unused disable directives if configured
+    if (this.options.config?.reportUnusedDisableDirectives) {
+      this.reportUnusedDisables(filePath);
+    }
   }
 
   private async checkFileSize(filePath: string): Promise<void> {
     const size = await getFileSize(filePath);
 
-    if (size >= SIZE_ERROR_THRESHOLD) {
+    if (size >= CLAUDE_MD_SIZE_ERROR_THRESHOLD) {
       this.reportError(
-        `File exceeds ${SIZE_ERROR_THRESHOLD / 1000}KB limit (${size} bytes). ` +
-          `This will cause performance issues in Claude Code.`,
-        filePath
+        `File exceeds ${CLAUDE_MD_SIZE_ERROR_THRESHOLD / 1000}KB limit (${size} bytes)`,
+        filePath,
+        undefined,
+        'size-error',
+        {
+          explanation:
+            'Claude Code has a context window limit. Large files cause performance issues, ' +
+            "slow context loading, and may exceed the model's context window.",
+          howToFix:
+            '1. Create separate files in .claude/rules/ directory\n' +
+            '2. Move topic-specific content to: .claude/rules/git.md, .claude/rules/api.md, etc.\n' +
+            '3. Import them in CLAUDE.md with: Import: @.claude/rules/git.md',
+          fix: `Split content into smaller files in .claude/rules/ and use @imports`,
+        }
       );
-    } else if (size >= SIZE_WARNING_THRESHOLD) {
+    } else if (size >= CLAUDE_MD_SIZE_WARNING_THRESHOLD) {
       this.reportWarning(
-        `File approaching size limit (${size} bytes). ` +
-          `Consider splitting into multiple files or moving content to .claude/rules/`,
-        filePath
+        `File approaching size limit (${size} bytes)`,
+        filePath,
+        undefined,
+        'size-warning',
+        {
+          explanation:
+            'Large CLAUDE.md files slow down context loading and make the file harder to maintain.',
+          howToFix:
+            '1. Identify logical sections (e.g., Git rules, API guidelines, Testing practices)\n' +
+            '2. Create .claude/rules/ directory: mkdir -p .claude/rules\n' +
+            '3. Move sections to separate files: .claude/rules/git.md\n' +
+            '4. Import in CLAUDE.md: Import: @.claude/rules/git.md',
+          fix: 'Consider organizing content into .claude/rules/ directory with @imports',
+        }
       );
     }
   }
 
-  private checkMarkdownStructure(filePath: string, content: string): void {
-    // Check for H1 heading at start
-    if (!startsWithH1(content)) {
-      this.reportWarning('File should start with a top-level heading (# Title)', filePath, 1);
-    }
+  private checkContentOrganization(filePath: string, content: string): void {
+    // Count sections (markdown headings)
+    const headingRegex = /^#{1,6}\s+.+$/gm;
+    const headings = content.match(headingRegex) || [];
+    const sectionCount = headings.length;
 
-    // Validate other markdown issues
-    const issues = validateMarkdownStructure(content);
-    for (const issue of issues) {
-      this.reportWarning(`${issue.rule}: ${issue.message}`, filePath, issue.line);
+    // Warn if too many sections
+    if (sectionCount > 20) {
+      this.reportWarning(
+        `CLAUDE.md has ${sectionCount} sections (>${20} is hard to navigate). ` +
+          `Consider organizing content into separate files in .claude/rules/ directory. ` +
+          `For example: .claude/rules/git.md, .claude/rules/api.md, .claude/rules/testing.md`,
+        filePath
+      );
     }
   }
 
@@ -170,33 +249,52 @@ export class ClaudeMdValidator extends BaseValidator {
   }
 
   private async checkImports(filePath: string, content: string, depth = 0): Promise<void> {
-    const MAX_IMPORT_DEPTH = 5;
-
-    if (depth > MAX_IMPORT_DEPTH) {
+    if (depth > CLAUDE_MD_MAX_IMPORT_DEPTH) {
       this.reportError(
-        `Import depth exceeds maximum of ${MAX_IMPORT_DEPTH}. Possible circular import.`,
+        `Import depth exceeds maximum of ${CLAUDE_MD_MAX_IMPORT_DEPTH}. Possible circular import.`,
         filePath
       );
       return;
     }
 
-    const imports = extractImports(content);
+    const imports = extractImportsWithLineNumbers(content);
 
-    for (const importPath of imports) {
+    for (const importInfo of imports) {
       // Resolve import path relative to current file
       const baseDir = dirname(filePath);
-      const resolvedPath = resolvePath(baseDir, importPath);
+      const resolvedPath = resolvePath(baseDir, importInfo.path);
 
       // Check for circular imports
       if (this.processedImports.has(resolvedPath)) {
-        this.reportWarning(`Circular import detected: ${importPath}`, filePath);
+        this.reportWarning(
+          `Circular import detected: ${importInfo.path}`,
+          filePath,
+          importInfo.line,
+          'import-circular'
+        );
         continue;
       }
 
       // Check if imported file exists
       const exists = await fileExists(resolvedPath);
       if (!exists) {
-        this.reportError(`Imported file not found: ${importPath}`, filePath);
+        this.reportError(
+          `Imported file not found: ${importInfo.path}`,
+          filePath,
+          importInfo.line,
+          'import-missing',
+          {
+            explanation:
+              'Claude Code cannot load the imported file. This will cause the context to be incomplete ' +
+              'and may result in unexpected behavior.',
+            howToFix:
+              `1. Check if the file path is correct: ${resolvedPath}\n` +
+              `2. Create the missing file if needed\n` +
+              `3. Fix the import path in ${filePath}\n` +
+              `4. Import paths are relative to the current file's directory`,
+            fix: `Create the file at ${resolvedPath} or fix the import path`,
+          }
+        );
         continue;
       }
 
@@ -209,7 +307,8 @@ export class ClaudeMdValidator extends BaseValidator {
       } catch (error) {
         this.reportError(
           `Failed to read imported file: ${error instanceof Error ? error.message : String(error)}`,
-          filePath
+          filePath,
+          importInfo.line
         );
       }
     }

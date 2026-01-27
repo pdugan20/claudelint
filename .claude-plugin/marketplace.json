@@ -1,10 +1,11 @@
 {
-  "name": "claude-validator-marketplace",
-  "description": "Official marketplace for the Claude Validator plugin",
+  "name": "claudelint-marketplace",
+  "description": "Official marketplace for the claudelint plugin",
+  "version": "0.1.0",
   "plugins": [
     {
-      "name": "claude-validator",
-      "description": "Comprehensive validation toolkit for Claude Code projects",
+      "name": "claudelint",
+      "description": "A comprehensive linter for Claude Code projects",
       "source": {
         "type": "local",
         "path": "./"

@@ -1,22 +1,13 @@
 import { HooksValidator } from '../../src/validators/hooks';
-import { writeFile, mkdir, rm, chmod } from 'fs/promises';
+import { writeFile, mkdir, chmod, rm } from 'fs/promises';
 import { join } from 'path';
-import { tmpdir } from 'os';
+import { setupTestDir } from '../helpers/test-utils';
 
 describe('HooksValidator', () => {
-  let testDir: string;
-
-  beforeEach(async () => {
-    testDir = join(tmpdir(), `claude-validator-hooks-test-${Date.now()}`);
-    await mkdir(testDir, { recursive: true });
-  });
-
-  afterEach(async () => {
-    await rm(testDir, { recursive: true, force: true });
-  });
+  const { getTestDir } = setupTestDir();
 
   async function createHooksFile(hooks: unknown) {
-    const hooksDir = join(testDir, '.claude', 'hooks');
+    const hooksDir = join(getTestDir(), '.claude', 'hooks');
     await mkdir(hooksDir, { recursive: true });
 
     const filePath = join(hooksDir, 'hooks.json');
@@ -46,7 +37,7 @@ describe('HooksValidator', () => {
     });
 
     it('should error for invalid JSON syntax', async () => {
-      const hooksDir = join(testDir, '.claude', 'hooks');
+      const hooksDir = join(getTestDir(), '.claude', 'hooks');
       await mkdir(hooksDir, { recursive: true });
       const filePath = join(hooksDir, 'hooks.json');
       await writeFile(filePath, '{ invalid json }');
@@ -59,7 +50,7 @@ describe('HooksValidator', () => {
     });
 
     it('should error when hooks array is missing', async () => {
-      const hooksDir = join(testDir, '.claude', 'hooks');
+      const hooksDir = join(getTestDir(), '.claude', 'hooks');
       await mkdir(hooksDir, { recursive: true });
       const filePath = join(hooksDir, 'hooks.json');
       await writeFile(filePath, JSON.stringify({ foo: 'bar' }));
@@ -323,7 +314,7 @@ describe('HooksValidator', () => {
 
     it('should pass when referenced script exists', async () => {
       // Create hook script
-      const hooksDir = join(testDir, '.claude', 'hooks');
+      const hooksDir = join(getTestDir(), '.claude', 'hooks');
       const scriptsDir = join(hooksDir, 'scripts');
       await mkdir(scriptsDir, { recursive: true });
       const scriptPath = join(scriptsDir, 'test-script.sh');
@@ -379,7 +370,7 @@ describe('HooksValidator', () => {
   describe('No hooks found', () => {
     it('should warn when no hooks files exist', async () => {
       const originalCwd = process.cwd();
-      process.chdir(testDir);
+      process.chdir(getTestDir());
 
       try {
         const validator = new HooksValidator();

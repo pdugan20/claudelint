@@ -1,17 +1,25 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
 import { join, resolve } from 'path';
+import { loadIgnorePatterns } from './ignore';
 
 /**
  * Find files matching a glob pattern
  */
 export async function findFiles(pattern: string, cwd: string = process.cwd()): Promise<string[]> {
+  // Load ignore patterns from .claudelintignore
+  const customIgnores = loadIgnorePatterns(cwd);
+
+  // Combine with default ignores
+  const defaultIgnores = ['node_modules/**', '.git/**', 'dist/**', 'coverage/**'];
+  const allIgnores = [...defaultIgnores, ...customIgnores];
+
   const files = await glob(pattern, {
     cwd,
     absolute: true,
     nodir: true,
     dot: true,
-    ignore: ['node_modules/**', '.git/**', 'dist/**', 'coverage/**'],
+    ignore: allIgnores,
   });
 
   return files;
@@ -109,5 +117,11 @@ export async function findMcpFiles(basePath: string = process.cwd()): Promise<st
  * Find plugin manifest files
  */
 export async function findPluginManifests(basePath: string = process.cwd()): Promise<string[]> {
-  return findFiles('.claude-plugin/plugin.json', basePath);
+  // Check for plugin.json at repository root (preferred)
+  const rootPlugin = await findFiles('plugin.json', basePath);
+
+  // Also check legacy location for backwards compatibility
+  const legacyPlugin = await findFiles('.claude-plugin/plugin.json', basePath);
+
+  return [...rootPlugin, ...legacyPlugin];
 }

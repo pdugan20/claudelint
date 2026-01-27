@@ -1,0 +1,13 @@
+# ShellCheck configuration for Claude Code projects
+# See https://www.shellcheck.net/wiki/ for documentation
+
+# Disable warnings that are too strict for skill scripts
+# SC2034: Variable appears unused - common in sourced scripts
+# SC1090: Can't follow non-constant source - normal for dynamic sourcing
+disable=SC2034,SC1090
+
+# Set shell dialect
+shell=bash
+
+# Enable all optional checks
+enable=all

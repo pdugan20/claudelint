@@ -2,21 +2,109 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
-  lint-and-test:
+  lint:
+    name: Lint (ESLint)
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  format:
+    name: Format Check (Prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Prettier
+        run: npm run format:check
+
+  markdown:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Markdownlint
+        run: npm run lint:md
+
+  emoji-check:
+    name: Emoji Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for emojis
+        run: npm run check:emojis
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-
+        node-version: [18, 20, 22]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -27,28 +115,96 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check for emojis
-        run: npm run check:emojis
-
-      - name: Lint TypeScript
-        run: npm run lint
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Lint markdown
-        run: npx markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules
-
       - name: Build
         run: npm run build
 
       - name: Run tests
         run: npm test -- --coverage
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        if: matrix.node-version == '20.x'
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 20
+        uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/lcov.info
+          file: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
+          fail_ci_if_error: false
+
+  dogfood:
+    name: Validate Own Configuration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run claudelint on itself
+        run: npm run validate
+
+      - name: Check CLAUDE.md
+        run: node bin/claudelint check-claude-md
+
+      - name: Validate skills
+        run: node bin/claudelint validate-skills
+
+      - name: Validate settings
+        run: node bin/claudelint validate-settings
+
+      - name: Validate hooks
+        run: node bin/claudelint validate-hooks
+
+      - name: Validate MCP
+        run: node bin/claudelint validate-mcp
+
+      - name: Validate plugin
+        run: node bin/claudelint validate-plugin
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run integration tests
+        run: npm test -- --testPathPattern=integration
+
+  complete-validation:
+    name: Complete Validation
+    runs-on: ubuntu-latest
+    needs: [lint, format, markdown, emoji-check, build, test, dogfood, integration]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run complete validation
+        run: npm run validate:all

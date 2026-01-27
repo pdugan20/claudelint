@@ -1,4 +1,4 @@
-import { extractFrontmatter, startsWithH1, countLines } from '../../src/utils/markdown';
+import { extractFrontmatter, countLines } from '../../src/utils/markdown';
 
 describe('Markdown utilities', () => {
   describe('extractFrontmatter', () => {
@@ -28,19 +28,6 @@ description: A test skill
       expect(result.hasFrontmatter).toBe(false);
       expect(result.frontmatter).toBeNull();
       expect(result.content).toBe(content);
-    });
-  });
-
-  describe('startsWithH1', () => {
-    it('should return true for content starting with H1', () => {
-      expect(startsWithH1('# Heading')).toBe(true);
-      expect(startsWithH1('# Heading\n\nContent')).toBe(true);
-    });
-
-    it('should return false for content not starting with H1', () => {
-      expect(startsWithH1('## Heading')).toBe(false);
-      expect(startsWithH1('Content\n# Heading')).toBe(false);
-      expect(startsWithH1('')).toBe(false);
     });
   });
 

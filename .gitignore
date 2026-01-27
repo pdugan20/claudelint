@@ -28,3 +28,6 @@ coverage/
 # Temporary files
 *.tmp
 temp/
+
+# Cache
+.claudelint-cache/

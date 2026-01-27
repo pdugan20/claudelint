@@ -1,11 +1,11 @@
 {
-  "name": "@pdugan20/claude-validator",
+  "name": "@pdugan20/claudelint",
   "version": "0.1.0",
-  "description": "Validation toolkit for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, and more",
+  "description": "A comprehensive linter for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "claude-validator": "./bin/claude-validator"
+    "claudelint": "./bin/claudelint"
   },
   "scripts": {
     "build": "tsc",
@@ -18,10 +18,24 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
     "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
+    "docs:generate": "ts-node scripts/generate-rule-docs.ts",
     "check:emojis": "node scripts/check-emoji.js",
+    "validate": "node bin/claudelint check-all",
     "validate:all": "npm run lint && npm run format:check && npm run lint:md && npm run check:emojis && npm run build && npm test",
+    "setup:hooks": "bash scripts/setup-hooks.sh",
+    "postinstall": "bash scripts/setup-hooks.sh || true",
+    "prepare": "husky install || true",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "markdownlint --fix"
+    ]
   },
   "keywords": [
     "claude",
@@ -35,12 +49,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pdugan20/claude-validator.git"
+    "url": "https://github.com/pdugan20/claudelint.git"
   },
   "bugs": {
-    "url": "https://github.com/pdugan20/claude-validator/issues"
+    "url": "https://github.com/pdugan20/claudelint/issues"
   },
-  "homepage": "https://github.com/pdugan20/claude-validator#readme",
+  "homepage": "https://github.com/pdugan20/claudelint#readme",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -53,13 +67,20 @@
     "LICENSE"
   ],
   "dependencies": {
+    "@types/inquirer": "^9.0.7",
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
+    "diff": "^5.2.2",
     "glob": "^10.3.10",
+    "inquirer": "^9.2.12",
     "js-yaml": "^4.1.0",
+    "ora": "^6.3.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@types/diff": "^7.0.2",
     "@types/jest": "^29.5.11",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.10.6",
@@ -68,10 +89,13 @@
     "emoji-regex": "^10.6.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "markdownlint-cli": "^0.39.0",
+    "lint-staged": "^16.2.7",
+    "markdownlint-cli": "^0.47.0",
     "prettier": "^3.1.1",
     "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

@@ -1,0 +1,54 @@
+{
+  "name": "my-claude-project",
+  "version": "1.0.0",
+  "description": "Example showing claudelint with complementary tools (all 3 tiers)",
+  "scripts": {
+    "// --- Project-wide linting ---": "",
+    "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore CLAUDE.md --ignore .claude",
+    "lint:md:fix": "markdownlint '**/*.md' --ignore node_modules --ignore CLAUDE.md --ignore .claude --fix",
+    "format": "prettier --write '**/*.{md,json,yaml}'",
+    "format:check": "prettier --check '**/*.{md,json,yaml}'",
+
+    "// --- Claude-specific linting (Tier 1: Critical) ---": "",
+    "lint:md:claude": "markdownlint --config node_modules/markdownlint-config-claude 'CLAUDE.md' '.claude/**/*.md'",
+    "lint:shell:claude": "shellcheck .claude/**/*.sh .claude/hooks/*",
+    "format:claude:check": "prettier --check 'CLAUDE.md' '.claude/**/*.{md,json,yaml}'",
+    "format:claude:fix": "prettier --write 'CLAUDE.md' '.claude/**/*.{md,json,yaml}'",
+
+    "// --- Tier 2: Recommended ---": "",
+    "format:shell": "shfmt -w .claude/**/*.sh .claude/hooks/*",
+    "format:shell:check": "shfmt -d .claude/**/*.sh .claude/hooks/*",
+    "lint:json:claude": "eslint --config eslint.config.js '.claude/**/*.json' '.mcp.json'",
+    "lint:yaml:claude": "eslint --config eslint.config.js '.claude/**/*.{yaml,yml}'",
+
+    "// --- Tier 3: Optional ---": "",
+    "lint:prose:claude": "vale .claude/**/*.md CLAUDE.md",
+    "format:python:claude": "black .claude/skills/**/*.py",
+    "lint:python:claude": "ruff check .claude/skills/**/*.py",
+
+    "// --- Composite commands ---": "",
+    "validate:claude": "npm run lint:md:claude && npm run lint:shell:claude && npm run format:claude:check && claudelint check-all",
+    "validate:claude:verbose": "claudelint check-all --verbose",
+    "validate:all": "npm run lint:md && npm run format:check && npm run validate:claude",
+    "format:all": "npm run format && npm run format:claude:fix && npm run format:shell",
+    "precommit": "npm run validate:all"
+  },
+  "devDependencies": {
+    "// Tier 1: Critical": "",
+    "@pdugan20/claudelint": "^0.1.0",
+    "markdownlint-config-claude": "^1.0.0",
+    "markdownlint-cli": "^0.39.0",
+    "prettier-config-claude": "^1.0.0",
+    "prettier": "^3.1.0",
+    "shellcheck": "^0.9.0",
+
+    "// Tier 2: Recommended": "",
+    "eslint-config-claude": "^1.0.0",
+    "shfmt": "^3.8.0",
+
+    "// Tier 3: Optional": "",
+    "vale": "^3.0.0",
+    "black": "^24.0.0",
+    "ruff": "^0.1.0"
+  }
+}
