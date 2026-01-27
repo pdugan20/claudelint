@@ -60,7 +60,7 @@ export class Reporter {
    */
   private reportWarning(warning: ValidationWarning): void {
     const location = this.formatLocation(warning.file, warning.line);
-    console.log(chalk.yellow(`⚠ Warning: ${warning.message}`));
+    console.log(chalk.yellow(`! Warning: ${warning.message}`));
     if (location) {
       console.log(chalk.gray(`  at: ${location}`));
     }

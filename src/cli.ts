@@ -28,23 +28,21 @@ program
   .option('--path <path>', 'Custom path to CLAUDE.md')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action(
-    async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-      const validator = new ClaudeMdValidator(options);
-      const reporter = new Reporter({
-        verbose: options.verbose,
-        warningsAsErrors: options.warningsAsErrors,
-      });
+  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
+    const validator = new ClaudeMdValidator(options);
+    const reporter = new Reporter({
+      verbose: options.verbose,
+      warningsAsErrors: options.warningsAsErrors,
+    });
 
-      reporter.section('Validating CLAUDE.md files...');
+    reporter.section('Validating CLAUDE.md files...');
 
-      const result = await validator.validate();
+    const result = await validator.validate();
 
-      reporter.report(result, 'CLAUDE.md');
+    reporter.report(result, 'CLAUDE.md');
 
-      process.exit(reporter.getExitCode(result));
-    }
-  );
+    process.exit(reporter.getExitCode(result));
+  });
 
 program
   .command('validate-skills')

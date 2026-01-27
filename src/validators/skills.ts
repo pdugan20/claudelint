@@ -160,10 +160,7 @@ export class SkillsValidator extends BaseValidator {
     } else {
       // Validate name format
       if (!/^[a-z0-9-]+$/.test(frontmatter.name)) {
-        this.reportError(
-          'Skill name must be lowercase with hyphens only (a-z, 0-9, -)',
-          filePath
-        );
+        this.reportError('Skill name must be lowercase with hyphens only (a-z, 0-9, -)', filePath);
       }
 
       if (frontmatter.name.length > 64) {

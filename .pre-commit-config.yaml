@@ -1,0 +1,62 @@
+repos:
+  # Fast checks - run on every commit
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: ['--config', '.markdownlint.json', '--fix']
+
+  # TypeScript linting
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        entry: npm run lint
+        language: system
+        types: [typescript]
+        pass_filenames: false
+
+      - id: prettier
+        name: Prettier
+        entry: npm run format:check
+        language: system
+        types: [typescript]
+        pass_filenames: false
+
+      # No emojis (using proper emoji detection)
+      - id: no-emojis
+        name: Check for emojis
+        entry: node scripts/check-emoji.js
+        language: system
+        pass_filenames: false
+
+      # Build check
+      - id: typescript-build
+        name: TypeScript build check
+        entry: npm run build
+        language: system
+        types: [typescript]
+        pass_filenames: false
+        stages: [push]
+
+      # Tests on push
+      - id: jest-tests
+        name: Run tests
+        entry: npm test
+        language: system
+        pass_filenames: false
+        stages: [push]

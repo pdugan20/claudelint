@@ -4,12 +4,12 @@
   "description": "Comprehensive validation toolkit for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, and more.",
   "author": {
     "name": "Pat Dugan",
-    "url": "https://github.com/patdugan"
+    "url": "https://github.com/pdugan20"
   },
-  "homepage": "https://github.com/patdugan/claude-validator",
+  "homepage": "https://github.com/pdugan20/claude-validator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/patdugan/claude-validator.git"
+    "url": "https://github.com/pdugan20/claude-validator.git"
   },
   "license": "MIT",
   "keywords": [

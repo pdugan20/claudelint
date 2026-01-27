@@ -566,10 +566,10 @@ All validators use consistent exit codes:
 ### Default Output
 
 ```text
-✓ CLAUDE.md size check passed
-✗ Error: CLAUDE.md exceeds 40KB limit (45123 bytes)
++ CLAUDE.md size check passed
+x Error: CLAUDE.md exceeds 40KB limit (45123 bytes)
   at: CLAUDE.md
-⚠ Warning: CLAUDE.md approaching size limit (36000 bytes)
+! Warning: CLAUDE.md approaching size limit (36000 bytes)
   at: CLAUDE.md
 
 2 errors, 1 warning
@@ -584,16 +584,16 @@ Validating CLAUDE.md files...
   Found: .claude/rules/typescript.md
 
 Checking CLAUDE.md...
-  ✓ Size: 25431 bytes (OK)
-  ✓ Markdown formatting
-  ✓ No import statements
-  ✓ No frontmatter (not required for root CLAUDE.md)
+  + Size: 25431 bytes (OK)
+  + Markdown formatting
+  + No import statements
+  + No frontmatter (not required for root CLAUDE.md)
 
 Checking .claude/rules/typescript.md...
-  ✓ Size: 3421 bytes (OK)
-  ✓ Markdown formatting
-  ✓ Valid frontmatter
-  ✓ Paths glob patterns valid
+  + Size: 3421 bytes (OK)
+  + Markdown formatting
+  + Valid frontmatter
+  + Paths glob patterns valid
 
 All checks passed!
 ```

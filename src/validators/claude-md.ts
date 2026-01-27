@@ -105,11 +105,7 @@ export class ClaudeMdValidator extends BaseValidator {
   private checkMarkdownStructure(filePath: string, content: string): void {
     // Check for H1 heading at start
     if (!startsWithH1(content)) {
-      this.reportWarning(
-        'File should start with a top-level heading (# Title)',
-        filePath,
-        1
-      );
+      this.reportWarning('File should start with a top-level heading (# Title)', filePath, 1);
     }
 
     // Validate other markdown issues
@@ -143,10 +139,7 @@ export class ClaudeMdValidator extends BaseValidator {
       const unknownFields = Object.keys(frontmatter).filter((key) => !knownFields.includes(key));
 
       if (unknownFields.length > 0) {
-        this.reportWarning(
-          `Unknown frontmatter fields: ${unknownFields.join(', ')}`,
-          filePath
-        );
+        this.reportWarning(`Unknown frontmatter fields: ${unknownFields.join(', ')}`, filePath);
       }
     } catch (error) {
       this.reportError(

@@ -55,12 +55,7 @@ export function resolvePath(basePath: string, relativePath: string): string {
  * Find CLAUDE.md files in standard locations
  */
 export async function findClaudeMdFiles(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = [
-    'CLAUDE.md',
-    '.claude/CLAUDE.md',
-    '.claude/rules/**/*.md',
-    'CLAUDE.local.md',
-  ];
+  const patterns = ['CLAUDE.md', '.claude/CLAUDE.md', '.claude/rules/**/*.md', 'CLAUDE.local.md'];
 
   const allFiles: string[] = [];
 

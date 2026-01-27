@@ -17,17 +17,17 @@ Comprehensive validation toolkit for Claude Code projects. Validates CLAUDE.md f
 
 ```bash
 # Global installation
-npm install -g @patdugan/claude-validator
+npm install -g @pdugan20/claude-validator
 
 # Project installation
-npm install --save-dev @patdugan/claude-validator
+npm install --save-dev @pdugan20/claude-validator
 ```
 
 ### As Claude Code Plugin
 
 ```bash
 # Add marketplace
-/plugin marketplace add patdugan/claude-validator
+/plugin marketplace add pdugan20/claude-validator
 
 # Install plugin
 /plugin install claude-validator
@@ -92,8 +92,7 @@ claude-validator validate-skills --path .claude/skills
 ```json
 {
   "scripts": {
-    "validate:claude": "claude-validator check-all",
-    "validate:claude:fix": "claude-validator check-all --auto-fix"
+    "validate:claude": "claude-validator check-all"
   }
 }
 ```

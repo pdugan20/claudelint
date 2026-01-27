@@ -14,7 +14,7 @@ Guide for contributing to Claude Validator.
 
 ```bash
 # Clone repository
-git clone https://github.com/patdugan/claude-validator.git
+git clone https://github.com/pdugan20/claude-validator.git
 cd claude-validator
 
 # Install dependencies
@@ -353,13 +353,13 @@ Follow semantic versioning:
 npm link
 
 # In another project
-npm link @patdugan/claude-validator
+npm link @pdugan20/claude-validator
 
 # Test CLI
 claude-validator check-all
 
 # Test as plugin
-/plugin marketplace add /path/to/claude-validator
+/plugin marketplace add pdugan20/claude-validator
 /plugin install claude-validator
 /validate
 ```
