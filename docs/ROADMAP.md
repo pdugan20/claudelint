@@ -93,17 +93,19 @@ All core validators implemented and tested:
 
 **Goal**: Validate settings.json and hooks configuration
 
-### 2.1 Settings Validator
+### 2.1 Settings Validator ✅ COMPLETE
 
-- [ ] Create JSON schema for settings.json
-- [ ] Validate using Zod schemas
-- [ ] Check permission rules syntax
-- [ ] Validate tool names against known tools list
-- [ ] Check model names (sonnet, opus, haiku, inherit)
-- [ ] Validate file paths in apiKeyHelper, hooks, etc.
-- [ ] Check environment variable names
-- [ ] Validate plugin references
-- [ ] Write tests for settings validator
+- [x] Create JSON schema for settings.json
+- [x] Validate using Zod schemas
+- [x] Check permission rules syntax
+- [x] Validate tool names against known tools list
+- [x] Check model names (sonnet, opus, haiku, inherit)
+- [x] Validate file paths in apiKeyHelper, hooks, etc.
+- [x] Check environment variable names
+- [x] Validate plugin references
+- [x] Write tests for settings validator
+- [x] Detect hardcoded secrets in environment variables
+- [x] Integrate into CLI (validate-settings command)
 
 ### 2.2 Hooks Validator
 

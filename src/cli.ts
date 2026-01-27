@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { ClaudeMdValidator } from './validators/claude-md';
 import { SkillsValidator } from './validators/skills';
 import { SettingsValidator } from './validators/settings';
+import { HooksValidator } from './validators/hooks';
 import { Reporter } from './utils/reporting';
 
 const program = new Command();
@@ -18,9 +19,62 @@ program
   .description('Run all validators')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action((options) => {
-    console.log('check-all command - coming soon!');
-    console.log('Options:', options);
+  .action(async (options: { verbose?: boolean; warningsAsErrors?: boolean }) => {
+    const reporter = new Reporter({
+      verbose: options.verbose,
+      warningsAsErrors: options.warningsAsErrors,
+    });
+
+    let totalErrors = 0;
+    let totalWarnings = 0;
+
+    // Run CLAUDE.md validator
+    reporter.section('Validating CLAUDE.md files...');
+    const claudeMdValidator = new ClaudeMdValidator(options);
+    const claudeMdResult = await claudeMdValidator.validate();
+    reporter.report(claudeMdResult, 'CLAUDE.md');
+    totalErrors += claudeMdResult.errors.length;
+    totalWarnings += claudeMdResult.warnings.length;
+
+    // Run Skills validator
+    reporter.section('Validating skills...');
+    const skillsValidator = new SkillsValidator(options);
+    const skillsResult = await skillsValidator.validate();
+    reporter.report(skillsResult, 'Skills');
+    totalErrors += skillsResult.errors.length;
+    totalWarnings += skillsResult.warnings.length;
+
+    // Run Settings validator
+    reporter.section('Validating settings...');
+    const settingsValidator = new SettingsValidator(options);
+    const settingsResult = await settingsValidator.validate();
+    reporter.report(settingsResult, 'Settings');
+    totalErrors += settingsResult.errors.length;
+    totalWarnings += settingsResult.warnings.length;
+
+    // Run Hooks validator
+    reporter.section('Validating hooks...');
+    const hooksValidator = new HooksValidator(options);
+    const hooksResult = await hooksValidator.validate();
+    reporter.report(hooksResult, 'Hooks');
+    totalErrors += hooksResult.errors.length;
+    totalWarnings += hooksResult.warnings.length;
+
+    // Overall summary
+    console.log('\n=== Overall Summary ===');
+    console.log(`Total errors: ${totalErrors}`);
+    console.log(`Total warnings: ${totalWarnings}`);
+
+    // Exit with appropriate code
+    if (totalErrors > 0) {
+      process.exit(2);
+    } else if (totalWarnings > 0 && options.warningsAsErrors) {
+      process.exit(1);
+    } else if (totalWarnings > 0) {
+      process.exit(1);
+    } else {
+      process.exit(0);
+    }
   });
 
 program
@@ -93,6 +147,28 @@ program
     const result = await validator.validate();
 
     reporter.report(result, 'Settings');
+
+    process.exit(reporter.getExitCode(result));
+  });
+
+program
+  .command('validate-hooks')
+  .description('Validate hooks.json files')
+  .option('--path <path>', 'Custom path to hooks.json')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--warnings-as-errors', 'Treat warnings as errors')
+  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
+    const validator = new HooksValidator(options);
+    const reporter = new Reporter({
+      verbose: options.verbose,
+      warningsAsErrors: options.warningsAsErrors,
+    });
+
+    reporter.section('Validating hooks.json files...');
+
+    const result = await validator.validate();
+
+    reporter.report(result, 'Hooks');
 
     process.exit(reporter.getExitCode(result));
   });
