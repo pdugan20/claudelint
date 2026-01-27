@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { ClaudeMdValidator } from './validators/claude-md';
+import { Reporter } from './utils/reporting';
 
 const program = new Command();
 
@@ -24,10 +26,24 @@ program
   .description('Validate CLAUDE.md files')
   .option('--path <path>', 'Custom path to CLAUDE.md')
   .option('-v, --verbose', 'Verbose output')
-  .action((options) => {
-    console.log('check-claude-md command - coming soon!');
-    console.log('Options:', options);
-  });
+  .option('--warnings-as-errors', 'Treat warnings as errors')
+  .action(
+    async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
+      const validator = new ClaudeMdValidator(options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
+
+      reporter.section('Validating CLAUDE.md files...');
+
+      const result = await validator.validate();
+
+      reporter.report(result, 'CLAUDE.md');
+
+      process.exit(reporter.getExitCode(result));
+    }
+  );
 
 program
   .command('validate-skills')
