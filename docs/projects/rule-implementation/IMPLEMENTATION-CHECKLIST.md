@@ -174,21 +174,21 @@ npm run check:rule-ids
 
 **Goal**: Demonstrate config integration works with real rules
 
-- [ ] Add options support to `size-error` rule
-  - [ ] Define `SizeErrorOptions` interface
-  - [ ] Create Zod schema for options
-  - [ ] Register schema in RuleRegistry
-  - [ ] Update validator to use `getRuleOptions()`
-  - [ ] Update validator to call `setCurrentFile()`
-  - [ ] Add integration test with custom maxSize
-  - [ ] Add integration test with rule disabled
+- [x] Add options support to `size-error` rule
+  - [x] Define `SizeErrorOptions` interface
+  - [x] Create Zod schema for options
+  - [x] Register schema in RuleRegistry
+  - [x] Update validator to use `getRuleOptions()`
+  - [x] Update validator to call `setCurrentFile()`
+  - [x] Add integration test with custom maxSize
+  - [x] Add integration test with rule disabled
 
-- [ ] Add options support to `size-warning` rule
-  - [ ] Define `SizeWarningOptions` interface
-  - [ ] Create Zod schema for options
-  - [ ] Register schema in RuleRegistry
-  - [ ] Update validator to use `getRuleOptions()`
-  - [ ] Add integration test with custom maxSize
+- [x] Add options support to `size-warning` rule
+  - [x] Define `SizeWarningOptions` interface
+  - [x] Create Zod schema for options
+  - [x] Register schema in RuleRegistry
+  - [x] Update validator to use `getRuleOptions()`
+  - [x] Add integration test with custom maxSize
 
 - [ ] Add options support to `import-circular` rule
   - [ ] Define `ImportCircularOptions` interface

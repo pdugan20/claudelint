@@ -4,6 +4,7 @@
  */
 
 import { RuleRegistry } from '../utils/rule-registry';
+import { z } from 'zod';
 
 /**
  * CLAUDE.md Validator Rules
@@ -11,23 +12,35 @@ import { RuleRegistry } from '../utils/rule-registry';
 RuleRegistry.register({
   id: 'size-error',
   name: 'File Size Error',
-  description: 'CLAUDE.md exceeds maximum file size limit (40KB)',
+  description: 'CLAUDE.md exceeds maximum file size limit',
   category: 'CLAUDE.md',
   severity: 'error',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
+  schema: z.object({
+    maxSize: z.number().positive().int().optional(),
+  }),
+  defaultOptions: {
+    maxSize: 40000, // 40KB
+  },
 });
 
 RuleRegistry.register({
   id: 'size-warning',
   name: 'File Size Warning',
-  description: 'CLAUDE.md approaching file size limit (35KB)',
+  description: 'CLAUDE.md approaching file size limit',
   category: 'CLAUDE.md',
   severity: 'warning',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
+  schema: z.object({
+    maxSize: z.number().positive().int().optional(),
+  }),
+  defaultOptions: {
+    maxSize: 35000, // 35KB
+  },
 });
 
 RuleRegistry.register({

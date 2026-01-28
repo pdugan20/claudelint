@@ -32,6 +32,22 @@ export interface ClaudeMdValidatorOptions extends BaseValidatorOptions {
 }
 
 /**
+ * Options for size-error rule
+ */
+export interface SizeErrorOptions {
+  /** Maximum file size in bytes before reporting error (default: 40000) */
+  maxSize?: number;
+}
+
+/**
+ * Options for size-warning rule
+ */
+export interface SizeWarningOptions {
+  /** Maximum file size in bytes before reporting warning (default: 35000) */
+  maxSize?: number;
+}
+
+/**
  * Validates CLAUDE.md files for size, format, and structure
  */
 export class ClaudeMdValidator extends BaseValidator {
@@ -70,6 +86,9 @@ export class ClaudeMdValidator extends BaseValidator {
   }
 
   private async validateFile(filePath: string): Promise<void> {
+    // Set current file for config resolution
+    this.setCurrentFile(filePath);
+
     // Read content first
     const content = await readFileContent(filePath);
 
@@ -104,9 +123,16 @@ export class ClaudeMdValidator extends BaseValidator {
   private async checkFileSize(filePath: string): Promise<void> {
     const size = await getFileSize(filePath);
 
-    if (size >= CLAUDE_MD_SIZE_ERROR_THRESHOLD) {
+    // Get configured thresholds or use defaults
+    const errorOptions = this.getRuleOptions<SizeErrorOptions>('size-error');
+    const warningOptions = this.getRuleOptions<SizeWarningOptions>('size-warning');
+
+    const errorThreshold = errorOptions?.maxSize ?? CLAUDE_MD_SIZE_ERROR_THRESHOLD;
+    const warningThreshold = warningOptions?.maxSize ?? CLAUDE_MD_SIZE_WARNING_THRESHOLD;
+
+    if (size >= errorThreshold) {
       this.reportError(
-        `File exceeds ${CLAUDE_MD_SIZE_ERROR_THRESHOLD / 1000}KB limit (${size} bytes)`,
+        `File exceeds ${errorThreshold / 1000}KB limit (${size} bytes)`,
         filePath,
         undefined,
         'size-error',
@@ -121,7 +147,7 @@ export class ClaudeMdValidator extends BaseValidator {
           fix: `Split content into smaller files in .claude/rules/ and use @imports`,
         }
       );
-    } else if (size >= CLAUDE_MD_SIZE_WARNING_THRESHOLD) {
+    } else if (size >= warningThreshold) {
       this.reportWarning(
         `File approaching size limit (${size} bytes)`,
         filePath,
