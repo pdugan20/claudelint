@@ -111,7 +111,7 @@ npm run check:rule-ids
 
 **Problem**: Rules don't respect .claudelintrc.json - users can't disable rules, override severity, or configure options.
 
-**Design**: See `docs/projects/config-integration-proposal.md` for full architecture.
+**Design**: See `CONFIG-INTEGRATION-PROPOSAL.md` for full architecture.
 
 #### Phase 1: Core Infrastructure (Day 1-2, ~5-6 hours)
 

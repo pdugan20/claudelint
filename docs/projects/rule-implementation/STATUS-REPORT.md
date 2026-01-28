@@ -57,7 +57,7 @@ Implement config integration (3-4 days):
 3. Rule options support with Zod schemas
 4. Integration testing
 
-**See**: `docs/projects/config-integration-proposal.md` for complete design
+**See**: `CONFIG-INTEGRATION-PROPOSAL.md` for complete design
 **Tracker**: IMPLEMENTATION-CHECKLIST task #4
 
 ---
