@@ -1,30 +1,19 @@
-# Missing Examples
+# Rule: skill-missing-examples
 
-Skills should include usage examples in SKILL.md.
+**Severity**: Warning
+**Fixable**: No
+**Validator**: Skills
+**Category**: Completeness
+
+Enforces that Claude Code skills include usage examples in SKILL.md to demonstrate invocation patterns and expected behavior.
 
 ## Rule Details
 
-This rule enforces that Claude Code skills include usage examples in their SKILL.md file. Examples help users understand how to invoke and use the skill, what arguments it accepts, and what output to expect.
+This rule triggers when SKILL.md lacks both code blocks (fenced with backticks) and a section titled "Example", "Examples", or "Usage". Examples are critical because they teach by showing (clearer than prose), reduce support burden (users self-serve), prevent misuse (show correct patterns), and speed adoption (copy-paste and adapt).
 
-Without examples:
+Without examples, users don't know how to invoke the skill, what arguments are accepted, or what output to expect. This hurts usability and adoption. The rule checks for either dedicated example sections or inline code blocks demonstrating usage.
 
-- Users don't know how to invoke the skill
-- It's unclear what arguments are accepted
-- The expected behavior is ambiguous
-- Adoption and usability suffer
-- Debugging becomes more difficult
-
-This rule triggers when SKILL.md lacks both:
-
-1. Code blocks (fenced with backticks)
-2. A section titled "Example", "Examples", or "Usage"
-
-**Category**: Skills
-**Severity**: warning
-**Fixable**: No
-**Since**: v1.0.0
-
-### Violation Example
+### Incorrect
 
 SKILL.md without examples:
 
@@ -48,10 +37,11 @@ This skill handles deployment to production servers.
 
 - Valid API credentials
 - Network access to production
-```text
-### Correct Examples
+```
 
-SKILL.md with Example section:
+### Correct
+
+SKILL.md with Examples section:
 
 ```markdown
 ---
@@ -63,60 +53,28 @@ description: Deploys the application to production
 
 This skill handles deployment to production servers.
 
-## Example
+## Examples
 
 To deploy to production:
 
 ```bash
 /deploy production
-```text
+```
+
 To deploy with a specific version:
 
 ```bash
 /deploy production --version 1.2.3
-```text
+```
+
 To rollback to previous version:
 
 ```bash
 /deploy rollback
-```text
-```text
-SKILL.md with Usage section and code blocks:
+```
 
-```markdown
----
-name: test-runner
-description: Runs project test suite
----
+```
 
-# Test Runner Skill
-
-Executes the test suite with various options.
-
-## Usage
-
-Run all tests:
-
-```bash
-/test-runner
-```text
-Run specific test file:
-
-```bash
-/test-runner tests/auth.test.ts
-```text
-Run with coverage:
-
-```bash
-/test-runner --coverage
-```text
-## Options
-
-- `--coverage`: Generate coverage report
-- `--watch`: Watch mode for development
-- `--bail`: Stop on first failure
-
-```text
 SKILL.md with inline code examples:
 
 ```markdown
@@ -134,23 +92,17 @@ Basic usage: `/git-commit "Add user authentication"`
 With type: `/git-commit "feat: Add user authentication"`
 
 With scope: `/git-commit "feat(auth): Add user authentication"`
-```text
-## Why Examples Matter
-
-Examples are critical because they:
-
-1. **Teach by showing**: Code examples are clearer than prose
-2. **Reduce support burden**: Users can self-serve
-3. **Prevent misuse**: Show correct usage patterns
-4. **Speed adoption**: Users can copy-paste and adapt
-5. **Document edge cases**: Show how to handle special situations
-6. **Aid debugging**: Provide known-good invocations for comparison
+```
 
 ## How To Fix
 
-Add examples to your SKILL.md file using one of these approaches:
+1. **Add Examples section**: Create a section titled "Examples" with fenced code blocks showing common use cases (basic invocation, common arguments, advanced usage)
+2. **Add Usage section**: Create a section titled "Usage" with command syntax and option descriptions
+3. **Add inline examples**: Include code snippets inline within the description showing invocation patterns
+4. **Show expected output**: Include what users should see after running commands (success messages, error cases)
+5. **Document arguments**: Explain what each argument or flag does with examples
 
-### Option 1: Add an Examples section
+**Examples Section Template:**
 
 ```markdown
 ## Examples
@@ -159,161 +111,51 @@ Basic usage:
 
 ```bash
 /your-skill argument
-```text
+```
+
 With options:
 
 ```bash
 /your-skill --flag value
-```text
-```text
-### Option 2: Add a Usage section
+```
+
+```
+
+**Usage Section Template:**
 
 ```markdown
 ## Usage
 
 ```bash
-# Short description
 /your-skill [options] <arguments>
-```text
-Available options:
+```
+
+Options:
 
 - `--verbose`: Enable detailed output
 - `--dry-run`: Preview without executing
 
-```text
-### Option 3: Add inline code examples
-
-```markdown
-## Description
-
-Invoke the skill with `/your-skill <target>` to process the target.
-
-For example: `/your-skill production` or `/your-skill staging --verbose`
-```text
-## Good Example Practices
-
-### Show common use cases
-
-```markdown
-## Examples
-
-Deploy to staging:
-```bash
-/deploy staging
-```text
-Deploy to production with confirmation:
-
-```bash
-/deploy production --confirm
-```text
-Rollback last deployment:
-
-```bash
-/deploy rollback
-```text
-```text
-### Include expected output
-
-```markdown
-## Example
-
-```bash
-$ /test-runner tests/
-
-Running test suite...
-✓ auth.test.ts (12 tests)
-✓ api.test.ts (8 tests)
-✓ utils.test.ts (15 tests)
-
-Total: 35 tests passed
-```text
-```text
-### Show error cases
-
-```markdown
-## Examples
-
-Success case:
-```bash
-$ /deploy production
-✓ Deployment successful
-```text
-Error case:
-
-```bash
-$ /deploy production
-✗ Error: Missing API credentials
-  Set DEPLOY_TOKEN environment variable
-```text
-```text
-### Explain arguments
-
-```markdown
-## Usage
-
-```bash
-/backup <source> <destination> [--compress]
-```text
-Arguments:
-
-- `source`: Directory to backup
-- `destination`: Backup location
-- `--compress`: Optional compression flag
-
 Example:
 
 ```bash
-/backup /var/www /backups --compress
-```text
-```text
-## What to Include in Examples
+/your-skill production --verbose
+```
 
-At minimum, include:
+```
 
-1. **Basic invocation**: Simplest way to use the skill
-2. **Common arguments**: Most frequently used options
-3. **Expected output**: What users should see
-
-Optionally include:
-
-4. **Advanced usage**: Complex scenarios
-5. **Error examples**: How failures look
-6. **Troubleshooting**: Common issues and solutions
+**Minimum Requirements:**
+- Basic invocation (simplest way to use)
+- Common arguments (most used options)
+- Expected output (what users should see)
 
 ## Options
 
-This rule does not have any configuration options.
+This rule does not have configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if:
+Consider disabling if your skill is self-explanatory with no arguments, examples exist in separate README.md (though SKILL.md is preferred), or your skill is internal and well-understood by the team. However, examples benefit all skills, even simple ones.
 
-- Your skill is self-explanatory and requires no arguments
-- Examples exist in separate README.md (though SKILL.md is preferred)
-- Your skill is internal and well-understood by the team
-
-However, examples benefit all skills, even simple ones.
-
-## Configuration
-
-To disable this rule:
-
-```json
-{
-  "rules": {
-    "skill-missing-examples": "off"
-  }
-}
-```text
-To escalate to an error:
-
-```json
-{
-  "rules": {
-    "skill-missing-examples": "error"
-  }
-}
-```text
 ## Related Rules
 
 - [skill-missing-changelog](./skill-missing-changelog.md) - Skills should track changes
@@ -322,8 +164,8 @@ To escalate to an error:
 
 ## Resources
 
-- [Writing Great Documentation](https://documentation.divio.com/)
-- [README Best Practices](https://github.com/matiassingers/awesome-readme)
+- [Implementation](../../../src/validators/skills.ts)
+- [Tests](../../../tests/validators/skills.test.ts)
 
 ## Version
 

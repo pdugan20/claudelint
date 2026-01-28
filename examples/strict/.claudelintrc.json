@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "size-error": "error",
+    "size-warning": "error",
+    "import-missing": "error",
+    "import-circular": "error",
+    "skill-missing-shebang": "error",
+    "skill-missing-comments": "error",
+    "skill-missing-changelog": "error",
+    "skill-missing-version": "error",
+    "skill-dangerous-command": "error",
+    "skill-eval-usage": "error",
+    "skill-path-traversal": "error",
+    "settings-invalid-schema": "error",
+    "settings-invalid-permission": "error",
+    "hooks-invalid-event": "error",
+    "hooks-invalid-config": "error",
+    "mcp-invalid-server": "error",
+    "plugin-invalid-manifest": "error"
+  },
+  "reportUnusedDisableDirectives": true,
+  "maxWarnings": 0,
+  "ignore": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "**/coverage/**"
+  ]
+}

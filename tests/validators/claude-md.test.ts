@@ -88,7 +88,8 @@ paths: "src/**/*.ts"
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('must be an array'))).toBe(true);
+      // Zod reports "Expected array, received string"
+      expect(result.errors.some((e) => e.message.includes('Expected array'))).toBe(true);
     });
   });
 
@@ -121,6 +122,76 @@ paths: "src/**/*.ts"
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
+    });
+
+    it('should error when import is inside code block', async () => {
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      await writeFile(
+        filePath,
+        `# Main
+
+Some content here.
+
+\`\`\`markdown
+Import: @example.md
+\`\`\`
+
+More content.`
+      );
+
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.message.includes('inside code block'))).toBe(true);
+    });
+
+    it('should pass when import is outside code block', async () => {
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      const importedFile = join(getTestDir(), 'imported.md');
+
+      await writeFile(importedFile, '# Imported Content');
+      await writeFile(
+        filePath,
+        `# Main
+
+Import: @imported.md
+
+Some content here.
+
+\`\`\`markdown
+Example of import syntax (not actual import)
+\`\`\``
+      );
+
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should warn for case-sensitive filename collisions', async () => {
+      const filePath = join(getTestDir(), 'CLAUDE.md');
+      const import1 = join(getTestDir(), 'File.md');
+      const import2 = join(getTestDir(), 'file.md');
+
+      await writeFile(import1, '# File 1');
+      await writeFile(import2, '# File 2');
+      await writeFile(
+        filePath,
+        `# Main
+
+Import: @File.md
+
+Import: @file.md`
+      );
+
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('Case-sensitive'))).toBe(true);
+      expect(result.warnings.some((w) => w.ruleId === 'filename-case-sensitive')).toBe(true);
     });
   });
 

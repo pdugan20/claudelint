@@ -1,44 +1,18 @@
-import { JSONConfigValidator } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
 import { findPluginManifests, fileExists } from '../utils/file-system';
 import { z } from 'zod';
 import { SEMVER_PATTERN } from './constants';
 import { PluginManifestSchema, MarketplaceMetadataSchema } from './schemas';
 import { dirname, join } from 'path';
-import { RuleRegistry } from '../utils/rule-registry';
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
 
-// Register Plugin rules
-RuleRegistry.register({
-  id: 'plugin-invalid-manifest',
-  name: 'Invalid Manifest',
-  description: 'Plugin manifest does not match schema',
-  category: 'Plugin',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'plugin-invalid-version',
-  name: 'Invalid Version',
-  description: 'Plugin version is not valid semver',
-  category: 'Plugin',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'plugin-missing-file',
-  name: 'Missing File',
-  description: 'Plugin references non-existent file',
-  category: 'Plugin',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
+/**
+ * Options specific to Plugin validator
+ * Extends JSONConfigValidatorOptions with no additional options
+ */
+export type PluginValidatorOptions = JSONConfigValidatorOptions;
 
 /**
  * Validates Claude Code plugin manifests (plugin.json)
@@ -76,6 +50,22 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
 
     // Validate file references
     await this.validateFileReferences(filePath, plugin);
+
+    // Validate dependencies
+    if (plugin.dependencies) {
+      await this.validateDependencies(filePath, plugin);
+    }
+
+    // Warn about deprecated commands field
+    if (plugin.commands && plugin.commands.length > 0) {
+      this.reportWarning(
+        'The "commands" field in plugin.json is deprecated. Please migrate to "skills" instead. ' +
+        'Skills provide better structure, versioning, and documentation.',
+        filePath,
+        undefined,
+        'commands-in-plugin-deprecated'
+      );
+    }
 
     // Validate marketplace.json if it exists
     await this.validateMarketplaceMetadata(filePath);
@@ -175,7 +165,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     if (!(await fileExists(skillPath))) {
       this.reportError(
         `Referenced skill not found: ${skillName} (expected at ${skillPath})`,
-        filePath
+        filePath,
+        undefined,
+        'plugin-missing-file'
       );
     }
   }
@@ -185,7 +177,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     if (!(await fileExists(agentPath))) {
       this.reportError(
         `Referenced agent not found: ${agentName} (expected at ${agentPath})`,
-        filePath
+        filePath,
+        undefined,
+        'plugin-missing-file'
       );
     }
   }
@@ -195,7 +189,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     if (!(await fileExists(hookPath))) {
       this.reportError(
         `Referenced hook not found: ${hookName} (expected at ${hookPath})`,
-        filePath
+        filePath,
+        undefined,
+        'plugin-missing-file'
       );
     }
   }
@@ -205,7 +201,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     if (!(await fileExists(commandPath))) {
       this.reportError(
         `Referenced command not found: ${commandName} (expected at ${commandPath})`,
-        filePath
+        filePath,
+        undefined,
+        'plugin-missing-file'
       );
     }
   }
@@ -221,6 +219,93 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     }
     // Note: We don't validate the actual server exists in the config here
     // That's the job of the MCP validator
+  }
+
+  private async validateDependencies(
+    filePath: string,
+    plugin: z.infer<typeof PluginManifestSchema>
+  ): Promise<void> {
+    if (!plugin.dependencies) {
+      return;
+    }
+
+    const pluginName = plugin.name;
+    const visited = new Set<string>();
+    const recursionStack = new Set<string>();
+
+    // Check each dependency
+    for (const [depName, depVersion] of Object.entries(plugin.dependencies)) {
+      // Validate dependency version is valid semver or range
+      if (!this.isValidSemverRange(depVersion)) {
+        this.reportWarning(
+          `Invalid semver range for dependency "${depName}": ${depVersion}`,
+          filePath,
+          undefined,
+          'plugin-dependency-invalid-version'
+        );
+      }
+
+      // Check for direct self-dependency
+      if (depName === pluginName) {
+        this.reportError(
+          `Circular dependency detected: ${pluginName} → ${depName}`,
+          filePath,
+          undefined,
+          'plugin-circular-dependency'
+        );
+        continue;
+      }
+
+      // Check for circular dependencies through dependency chain
+      if (this.hasCircularDependency(pluginName, depName, visited, recursionStack, new Map())) {
+        this.reportError(
+          `Circular dependency detected: ${pluginName} → ${depName} → ... → ${pluginName}`,
+          filePath,
+          undefined,
+          'plugin-circular-dependency'
+        );
+      }
+    }
+  }
+
+  private isValidSemverRange(version: string): boolean {
+    // Basic semver range validation
+    // Supports: exact (1.0.0), caret (^1.0.0), tilde (~1.0.0), range (>=1.0.0 <2.0.0)
+    const semverRangePattern =
+      /^(\^|~|>=?|<=?|=)?\s*\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\s+(<=?|>=?)\s*\d+\.\d+\.\d+)?$/;
+    return semverRangePattern.test(version.trim());
+  }
+
+  private hasCircularDependency(
+    _currentPlugin: string,
+    targetDep: string,
+    visited: Set<string>,
+    recursionStack: Set<string>,
+    _dependencyCache: Map<string, string[]>
+  ): boolean {
+    // If we've already checked this path, skip
+    if (visited.has(targetDep)) {
+      return false;
+    }
+
+    // If this dependency is in our current recursion stack, we have a cycle
+    if (recursionStack.has(targetDep)) {
+      return true;
+    }
+
+    // Mark this dependency as being processed
+    recursionStack.add(targetDep);
+
+    // In a real implementation, we would:
+    // 1. Fetch the plugin manifest for targetDep from registry/marketplace
+    // 2. Check its dependencies recursively
+    // For now, we'll just mark as visited since we don't have a registry
+    visited.add(targetDep);
+
+    // Remove from recursion stack
+    recursionStack.delete(targetDep);
+
+    return false;
   }
 
   private async validateMarketplaceMetadata(filePath: string): Promise<void> {
@@ -292,3 +377,15 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     }
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'plugin',
+    name: 'Plugin Validator',
+    description: 'Validates Claude Code plugin manifests (plugin.json)',
+    filePatterns: ['**/plugin.json', '**/.claude-plugin/marketplace.json'],
+    enabled: true,
+  },
+  (options) => new PluginValidator(options)
+);

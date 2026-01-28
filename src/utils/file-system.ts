@@ -53,6 +53,18 @@ export async function fileExists(filePath: string): Promise<boolean> {
 }
 
 /**
+ * Check if a directory exists
+ */
+export async function directoryExists(dirPath: string): Promise<boolean> {
+  try {
+    const stats = await stat(dirPath);
+    return stats.isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Resolve path relative to base directory
  */
 export function resolvePath(basePath: string, relativePath: string): string {
@@ -81,6 +93,29 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
 export async function findSkillDirectories(basePath: string = process.cwd()): Promise<string[]> {
   const skillFiles = await findFiles('.claude/skills/*/SKILL.md', basePath);
   return skillFiles.map((file) => file.replace('/SKILL.md', ''));
+}
+
+/**
+ * Find agent directories
+ */
+export async function findAgentDirectories(basePath: string = process.cwd()): Promise<string[]> {
+  const agentFiles = await findFiles('.claude/agents/*/AGENT.md', basePath);
+  return agentFiles.map((file) => file.replace('/AGENT.md', ''));
+}
+
+/**
+ * Find output style directories
+ */
+export async function findOutputStyleDirectories(basePath: string = process.cwd()): Promise<string[]> {
+  const outputStyleFiles = await findFiles('.claude/output_styles/*/OUTPUT_STYLE.md', basePath);
+  return outputStyleFiles.map((file) => file.replace('/OUTPUT_STYLE.md', ''));
+}
+
+/**
+ * Find LSP configuration files
+ */
+export async function findLspFiles(basePath: string = process.cwd()): Promise<string[]> {
+  return findFiles('.claude/lsp.json', basePath);
 }
 
 /**

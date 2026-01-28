@@ -1,44 +1,21 @@
-import { JSONConfigValidator } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
 import { findHooksFiles, fileExists } from '../utils/file-system';
 import { z } from 'zod';
 import { dirname, join, resolve } from 'path';
 import { HookSchema, HooksConfigSchema, MatcherSchema } from './schemas';
-import { RuleRegistry } from '../utils/rule-registry';
-import { validateHook as validateHookHelper } from '../utils/validation-helpers';
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
+import {
+  validateHook as validateHookHelper,
+  hasVariableExpansion,
+} from '../utils/validation-helpers';
 
-// Register Hooks rules
-RuleRegistry.register({
-  id: 'hooks-invalid-event',
-  name: 'Invalid Event',
-  description: 'Hook event name is not recognized',
-  category: 'Hooks',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'hooks-missing-script',
-  name: 'Missing Script',
-  description: 'Hook references non-existent script file',
-  category: 'Hooks',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'hooks-invalid-config',
-  name: 'Invalid Configuration',
-  description: 'Hook configuration is malformed',
-  category: 'Hooks',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
+/**
+ * Options specific to Hooks validator
+ * Extends JSONConfigValidatorOptions with no additional options
+ */
+export type HooksValidatorOptions = JSONConfigValidatorOptions;
 
 /**
  * Validates Claude Code hooks.json files
@@ -106,7 +83,7 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
     }
 
     // Skip validation for commands with variables
-    if (command.includes('${') || command.includes('$')) {
+    if (hasVariableExpansion(command)) {
       return;
     }
 
@@ -129,3 +106,15 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
     // So we skip validation for those
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'hooks',
+    name: 'Hooks Validator',
+    description: 'Validates Claude Code hooks.json files',
+    filePatterns: ['**/.claude/hooks.json'],
+    enabled: true,
+  },
+  (options) => new HooksValidator(options)
+);

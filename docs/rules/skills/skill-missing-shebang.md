@@ -1,24 +1,19 @@
-# Missing Shebang
+# Rule: skill-missing-shebang
 
-Shell scripts must start with a shebang line.
+**Severity**: Warning
+**Fixable**: Yes
+**Validator**: Skills
+**Category**: Security
+
+Enforces that all shell scripts (.sh files) in Claude Code skills begin with a shebang line specifying the interpreter.
 
 ## Rule Details
 
-This rule enforces that all shell scripts (`.sh` files) in Claude Code skills begin with a shebang line. The shebang tells the operating system which interpreter to use when executing the script.
+This rule triggers when shell scripts lack a shebang line. The shebang tells the operating system which interpreter to use when executing the script. Without it, scripts may fail to execute when called directly, run with the wrong shell interpreter, produce unexpected results across different systems, and cause confusion about which shell syntax is valid.
 
-Without a shebang, the script may:
+The shebang is critical for direct execution (allows `./script.sh` instead of `bash script.sh`), correct interpreter selection (ensures script runs with intended shell), portability (uses system's preferred bash location), and IDE support (helps IDEs provide correct syntax highlighting). This rule is auto-fixable and will add `#!/usr/bin/env bash` to scripts missing shebangs.
 
-- Fail to execute when called directly
-- Run with the wrong shell interpreter
-- Produce unexpected results across different systems
-- Cause confusion about which shell syntax is valid
-
-**Category**: Skills
-**Severity**: warning
-**Fixable**: Yes (auto-fix available with `--fix`)
-**Since**: v1.0.0
-
-### Violation Example
+### Incorrect
 
 Shell script without shebang:
 
@@ -30,7 +25,7 @@ echo "Deploying application..."
 ./build.sh
 ```
 
-### Correct Examples
+### Correct
 
 Script with shebang:
 
@@ -47,81 +42,32 @@ Alternative shebangs:
 ```bash
 #!/bin/bash
 # Direct path (less portable)
-```
 
-```bash
 #!/usr/bin/env sh
-# POSIX shell (more portable)
+# POSIX shell (most portable but fewer features)
 ```
 
 ## How To Fix
 
-### Option 1: Auto-fix with claudelint
+1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically add `#!/usr/bin/env bash` to all shell scripts
+2. **Manual fix**: Add the shebang as the very first line of your script
+3. **Choose the right shebang**: Use `#!/usr/bin/env bash` (recommended - finds bash in PATH, portable), `#!/bin/bash` (direct path, less portable), or `#!/usr/bin/env sh` (POSIX shell, most portable but fewer features)
 
-```bash
-claudelint check-all --fix
-```
-
-This will automatically add `#!/usr/bin/env bash` to the beginning of all shell scripts.
-
-### Option 2: Manual fix
-
-Add the shebang as the very first line of your script:
+**Recommended Shebang:**
 
 ```bash
 #!/usr/bin/env bash
 ```
 
-### Choosing the right shebang
-
-- `#!/usr/bin/env bash` - Recommended, finds bash in PATH (portable)
-- `#!/bin/bash` - Direct path, less portable across systems
-- `#!/usr/bin/env sh` - POSIX shell, most portable but fewer features
-
-## Why It Matters
-
-The shebang line is critical for:
-
-1. **Direct execution**: Allows `./script.sh` instead of `bash script.sh`
-2. **Correct interpreter**: Ensures the script runs with the intended shell
-3. **Portability**: Uses the system's preferred bash location
-4. **IDE support**: Helps IDEs provide correct syntax highlighting
+This uses `env` to find bash in the system's PATH, making scripts work across different Unix-like systems where bash might be installed in different locations.
 
 ## Options
 
-This rule does not have any configuration options.
+This rule does not have configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if:
-
-- Your scripts are always executed explicitly with `bash script.sh`
-- You're working with included scripts that aren't directly executable
-- You have a specific project requirement to avoid shebangs
-
-However, it's generally best practice to include shebangs in all shell scripts.
-
-## Configuration
-
-To disable this rule:
-
-```json
-{
-  "rules": {
-    "skill-missing-shebang": "off"
-  }
-}
-```
-
-To escalate to an error:
-
-```json
-{
-  "rules": {
-    "skill-missing-shebang": "error"
-  }
-}
-```
+Consider disabling if your scripts are always executed explicitly with `bash script.sh`, you're working with included scripts that aren't directly executable, or you have a specific project requirement to avoid shebangs. However, it's generally best practice to include shebangs in all shell scripts.
 
 ## Related Rules
 
@@ -130,8 +76,9 @@ To escalate to an error:
 
 ## Resources
 
-- [Shebang (Unix)](https://en.wikipedia.org/wiki/Shebang_(Unix))
-- [Bash Best Practices](https://google.github.io/styleguide/shellguide.html)
+- [Implementation](../../../src/validators/skills.ts)
+- [Tests](../../../tests/validators/skills.test.ts)
+- [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
 
 ## Version
 

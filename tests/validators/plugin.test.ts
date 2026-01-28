@@ -118,7 +118,7 @@ describe('PluginValidator', () => {
         const result = await validator.validate();
 
         expect(result.valid).toBe(false);
-        expect(result.errors.some((e) => e.message.includes('Invalid semantic version'))).toBe(true);
+        expect(result.errors.some((e) => e.message.includes('valid semantic version'))).toBe(true);
       }
     });
   });
@@ -182,6 +182,143 @@ describe('PluginValidator', () => {
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
+    });
+  });
+
+  describe('Dependency validation', () => {
+    it('should pass for valid dependency with exact version', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'other-plugin': '1.0.0',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should pass for valid dependency with caret range', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'other-plugin': '^1.0.0',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should pass for valid dependency with tilde range', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'other-plugin': '~1.0.0',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should pass for valid dependency with range', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'other-plugin': '>=1.0.0 <2.0.0',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should warn for invalid semver range', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'other-plugin': 'latest',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('Invalid semver range'))).toBe(true);
+    });
+
+    it('should detect circular dependency (direct)', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        dependencies: {
+          'test-plugin': '1.0.0',
+        },
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.message.includes('Circular dependency detected'))).toBe(true);
+    });
+  });
+
+  describe('Deprecated commands field', () => {
+    it('should warn when plugin.json contains commands field', async () => {
+      // Create command file so validation doesn't error
+      const commandsDir = join(getTestDir(), '.claude', 'commands');
+      await mkdir(commandsDir, { recursive: true });
+      await writeFile(join(commandsDir, 'test-command.md'), '# Test Command\n\nA test command.');
+
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+        commands: ['test-command'],
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.ruleId === 'commands-in-plugin-deprecated')).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('deprecated'))).toBe(true);
+    });
+
+    it('should pass when no commands field present', async () => {
+      const filePath = await createPluginManifest({
+        name: 'test-plugin',
+        version: '1.0.0',
+        description: 'A test plugin',
+      });
+
+      const validator = new PluginValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.ruleId === 'commands-in-plugin-deprecated')).toBe(false);
     });
   });
 

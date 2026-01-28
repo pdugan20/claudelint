@@ -1,0 +1,194 @@
+/**
+ * Tests for agent frontmatter schema
+ */
+
+import {
+  AgentFrontmatterSchema,
+  AgentFrontmatterWithRefinements,
+} from '../../src/schemas/agent-frontmatter.schema';
+
+describe('AgentFrontmatterSchema', () => {
+  describe('name validation', () => {
+    it('should accept valid lowercase-hyphen names', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something useful',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject uppercase in name', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'My-Agent',
+        description: 'This agent does something',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject XML tags in name', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-<tag>-agent',
+        description: 'This agent does something',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject names over 64 characters', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'a'.repeat(65),
+        description: 'This agent does something',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('description validation', () => {
+    it('should accept valid third-person descriptions', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent helps with testing',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject descriptions under 10 characters', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'Short',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject first-person descriptions', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'I help with testing things',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject second-person descriptions', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'Helps you test things',
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('optional fields', () => {
+    it('should accept valid model', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        model: 'haiku',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid model', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        model: 'invalid',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept valid tools', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        tools: ['Bash', 'Read', 'Write'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept any string for tools (validation happens in validator)', () => {
+      // Note: tools uses z.array(z.string()) to allow custom validation
+      // with warnings instead of schema errors. The Agents validator validates
+      // tool names and issues warnings for unknown tools.
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        tools: ['InvalidTool'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept valid events', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        events: ['PreToolUse', 'PostToolUse'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept any string for events (validation happens in validator)', () => {
+      // Note: events uses z.array(z.string()) to allow custom validation
+      // with warnings instead of schema errors. The Agents validator validates
+      // event names and issues warnings for unknown events.
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        events: ['InvalidEvent'],
+      });
+      expect(result.success).toBe(true);
+    });
+  });
+});
+
+describe('AgentFrontmatterWithRefinements', () => {
+  it('should reject both tools and disallowed-tools', () => {
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'my-agent',
+      description: 'This agent does something',
+      tools: ['Bash'],
+      'disallowed-tools': ['Read'],
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toContain('both');
+    }
+  });
+
+  it('should accept tools alone', () => {
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'my-agent',
+      description: 'This agent does something',
+      tools: ['Bash', 'Read'],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept disallowed-tools alone', () => {
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'my-agent',
+      description: 'This agent does something',
+      'disallowed-tools': ['Bash'],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject events array with more than 3 items', () => {
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'my-agent',
+      description: 'This agent does something',
+      events: ['PreToolUse', 'PostToolUse', 'SessionStart', 'SessionEnd'],
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toContain('3');
+    }
+  });
+
+  it('should accept events array with 3 items', () => {
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'my-agent',
+      description: 'This agent does something',
+      events: ['PreToolUse', 'PostToolUse', 'SessionStart'],
+    });
+    expect(result.success).toBe(true);
+  });
+});

@@ -29,15 +29,86 @@ claudelint check-all
 ```text
 ## Features
 
+### Validators
+
 - **CLAUDE.md Validation** - Size limits, import syntax, frontmatter schema
-- **Skills Validation** - Frontmatter, structure, referenced files
+- **Skills Validation** - Frontmatter, structure, referenced files, security checks
 - **Settings Validation** - JSON schema, permission rules, tool names
 - **Hooks Validation** - Event names, script existence, configuration
 - **MCP Server Validation** - Server names, commands, environment variables
 - **Plugin Validation** - Manifest schema, directory structure, cross-references
-- **Progress Indicators** - Real-time validation feedback with timing (auto-detects CI)
-- **Rule Registry** - 27 validation rules with metadata (`claudelint list-rules`)
-- **Config Validation** - Validates configuration against known rules
+
+### Performance & UX
+
+- ⚡ **Parallel Validation** - Concurrent execution for ~3.5x speedup
+- 🚀 **Smart Caching** - mtime-based cache for ~2.4x speedup on warm cache
+- 📊 **Progress Indicators** - Real-time feedback with timing (auto-detects CI)
+- ⚙️ **Interactive Setup** - `claudelint init` wizard for easy configuration
+- 🎨 **Multiple Formats** - Stylish (default), JSON, and compact output
+
+### Rules & Configuration
+
+- 🎯 **27 Validation Rules** - Comprehensive checks across 6 categories
+- 📚 **Per-rule Documentation** - Detailed docs for each rule
+- 🎭 **Inline Disable Comments** - Fine-grained control with `<!-- claudelint-disable -->`
+- 🔧 **Auto-fix** - Automatically fix common issues (`--fix` flag)
+- ⚙️ **Rule Registry** - Browse rules with `claudelint list-rules`
+
+### Developer Tools
+
+- 🐛 **Config Debugging** - `print-config`, `resolve-config`, `validate-config` commands
+- 🔌 **Plugin System** - Extensible with custom validators
+- 🎚️ **Strict Mode** - `--strict` flag for zero-tolerance validation
+- ⚖️ **Warning Limits** - `--max-warnings` to prevent accumulation
+
+## Performance
+
+claudelint is optimized for speed without sacrificing thoroughness:
+
+### Benchmarks
+
+```bash
+# First run (cold cache)
+time claudelint check-all
+# ~204ms total
+
+# Subsequent runs (warm cache)
+time claudelint check-all
+# ~84ms total (~2.4x faster)
+```
+
+### Optimization Techniques
+
+- **Parallel Validation** (~3.5x speedup)
+  - All validators run concurrently using `Promise.all`
+  - Independent validation = no blocking
+  - Typical speedup: 63ms sequential → 18ms parallel
+
+- **Smart Caching** (~2.4x speedup on warm cache)
+  - mtime-based invalidation (changes detected automatically)
+  - Version-aware (cache cleared on upgrade)
+  - Cache location: `.claudelint-cache/` (configurable)
+
+- **Fast Execution**
+  - Typical project: <200ms total
+  - Large projects (100+ files): <500ms
+  - CI environments: Parallel + no cache overhead
+
+### Cache Management
+
+```bash
+# Cache is automatic (enabled by default)
+claudelint check-all
+
+# Clear cache if needed (after upgrade, config changes)
+claudelint cache-clear
+
+# Disable cache temporarily
+claudelint check-all --no-cache
+
+# Custom cache location
+claudelint check-all --cache-location /tmp/cache
+```
 
 ## Philosophy: Complementary Tools
 

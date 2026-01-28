@@ -1,0 +1,19 @@
+{
+  "name": "claudelint-plugin-example",
+  "version": "1.0.0",
+  "description": "Example custom validator plugin for claudelint",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "claudelint",
+    "claudelint-plugin",
+    "validator"
+  ],
+  "peerDependencies": {
+    "@pdugan20/claudelint": ">=0.1.0"
+  },
+  "devDependencies": {
+    "@pdugan20/claudelint": "^0.1.0",
+    "typescript": "^5.3.3"
+  }
+}

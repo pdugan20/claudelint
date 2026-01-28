@@ -1,29 +1,173 @@
 # claudelint Examples
 
-This directory contains example configurations and files for testing and learning.
+Copy-pastable configurations for common use cases.
 
-## Directory Structure
+## Quick Start Examples
 
-- `valid/` - Examples of correct, well-formed configurations
-- `invalid/` - Examples of problematic configurations (for testing)
+### Basic Configuration
 
-## Valid Examples
+**Location:** [`basic/`](./basic/)
 
-- `CLAUDE.md` - Proper CLAUDE.md structure
-- `.claudelintrc.json` - Configuration file example
+Minimal, permissive configuration for getting started or migrating existing projects.
 
-## Usage
-
-Run claudelint on these examples:
+- Only critical rules enabled
+- Most issues are warnings
+- Good for gradual adoption
 
 ```bash
-# Validate examples
-claudelint check-all --path examples/valid
-
-# See validation errors
-claudelint check-all --path examples/invalid
+# Copy to your project
+cp examples/basic/.claudelintrc.json .
+cp examples/basic/.claudelintignore .
+claudelint check-all
 ```
 
-## Testing
+### Strict Configuration
 
-These fixtures are used in integration tests to verify validator behavior.
+**Location:** [`strict/`](./strict/)
+
+Zero-tolerance configuration for maximum code quality.
+
+- All major rules enabled as errors
+- Zero warnings allowed (`maxWarnings: 0`)
+- Unused disable directive detection
+- Best for new projects
+
+```bash
+# Copy to your project
+cp examples/strict/.claudelintrc.json .
+claudelint check-all --strict
+```
+
+### Integration Examples
+
+**Location:** [`integration/`](./integration/)
+
+Complete setup with complementary tools (markdownlint, prettier, shellcheck).
+
+- Pre-commit hooks
+- CI/CD configurations
+- npm scripts
+- All tool tiers
+
+```bash
+# Copy all integration configs
+cp examples/integration/.markdownlint.json .
+cp examples/integration/.prettierrc.json .
+cp examples/integration/.pre-commit-config.yaml .
+```
+
+## Examples Overview
+
+| Example | Best For | Strictness | Rules | Warnings Allowed |
+|---------|----------|------------|-------|------------------|
+| [basic/](./basic/) | Migration, learning | Low | 6 | ✓ Unlimited |
+| [strict/](./strict/) | New projects, CI/CD | High | 17 | ✗ Zero |
+| [integration/](./integration/) | Complete setup | Medium | All tools | ✓ Per tool |
+
+## Custom Validator Plugin
+
+**Location:** [`custom-validator-plugin/`](./custom-validator-plugin/)
+
+Example of building a custom validator plugin.
+
+- Plugin structure
+- Validator implementation
+- Registration API
+- Testing setup
+
+See the [Plugin Development Guide](../docs/plugin-development.md) for details.
+
+## Test Fixtures
+
+**Note:** `valid/` and `invalid/` directories contain test fixtures used by the test suite, not user-facing examples.
+
+## Which Example Should I Use?
+
+### Starting a New Project?
+
+Use **[strict/](./strict/)** configuration.
+
+- Start with high standards
+- Catch issues early
+- Clean codebase from day one
+
+### Migrating Existing Project?
+
+Use **[basic/](./basic/)** configuration.
+
+- Fix critical issues first
+- Gradually enable more rules
+- Migrate to strict over time
+
+### Need Tool Integration?
+
+Use **[integration/](./integration/)** setup.
+
+- Complete validation stack
+- Pre-commit hooks
+- CI/CD examples
+
+## Usage Patterns
+
+### Development Workflow
+
+```bash
+# 1. Initialize with basic config
+cp examples/basic/.claudelintrc.json .
+claudelint init --yes
+
+# 2. Run validation
+claudelint check-all
+
+# 3. Auto-fix issues
+claudelint check-all --fix
+
+# 4. Fix remaining issues manually
+
+# 5. Gradually tighten rules
+# Edit .claudelintrc.json to enable more rules
+```
+
+### CI/CD Workflow
+
+```bash
+# Use strict mode in CI
+claudelint check-all --strict --format json
+```
+
+### Pre-commit Workflow
+
+```bash
+# Install pre-commit
+pip install pre-commit
+cp examples/integration/.pre-commit-config.yaml .
+pre-commit install
+
+# Runs automatically on git commit
+git commit -m "Update Claude files"
+```
+
+## Customization
+
+All examples can be customized:
+
+```json
+{
+  "rules": {
+    "size-warning": "off",           // Disable rule
+    "import-missing": "warn",         // Downgrade to warning
+    "skill-missing-shebang": "error"  // Upgrade to error
+  },
+  "maxWarnings": 10,                  // Allow up to 10 warnings
+  "reportUnusedDisableDirectives": true  // Check unused disables
+}
+```
+
+See [Configuration Guide](../docs/configuration.md) for all options.
+
+## More Information
+
+- [CLI Reference](../docs/cli-reference.md) - All commands and flags
+- [Configuration Guide](../docs/configuration.md) - Detailed config options
+- [Rules Catalog](../docs/rules/) - All 27 validation rules
+- [Auto-fix Guide](../docs/auto-fix.md) - Using auto-fix safely

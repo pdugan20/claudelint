@@ -1,49 +1,26 @@
-import { JSONConfigValidator } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
 import { findMcpFiles } from '../utils/file-system';
 import { z } from 'zod';
-import { VALID_MCP_TRANSPORT_TYPES, VAR_EXPANSION_PATTERN, SIMPLE_VAR_PATTERN } from './constants';
+import { VAR_EXPANSION_PATTERN, SIMPLE_VAR_PATTERN } from './constants';
+import { VALID_MCP_TRANSPORT_TYPES } from '../schemas/constants';
 import {
   MCPConfigSchema,
   MCPServerSchema,
   MCPStdioTransportSchema,
   MCPSSETransportSchema,
+  MCPHTTPTransportSchema,
+  MCPWebSocketTransportSchema,
 } from './schemas';
-import { RuleRegistry } from '../utils/rule-registry';
-import { validateEnvironmentVariables } from '../utils/validation-helpers';
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
+import { validateEnvironmentVariables, formatError } from '../utils/validation-helpers';
 
-// Register MCP rules
-RuleRegistry.register({
-  id: 'mcp-invalid-server',
-  name: 'Invalid Server',
-  description: 'MCP server configuration is invalid',
-  category: 'MCP',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'mcp-invalid-transport',
-  name: 'Invalid Transport',
-  description: 'MCP transport configuration is invalid',
-  category: 'MCP',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'mcp-invalid-env-var',
-  name: 'Invalid Environment Variable',
-  description: 'Environment variable usage or expansion is invalid',
-  category: 'MCP',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
+/**
+ * Options specific to MCP validator
+ * Extends JSONConfigValidatorOptions with no additional options
+ */
+export type MCPValidatorOptions = JSONConfigValidatorOptions;
 
 /**
  * Validates MCP (Model Context Protocol) server configuration files
@@ -103,10 +80,14 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
 
   private validateTransport(
     filePath: string,
-    transport: z.infer<typeof MCPStdioTransportSchema | typeof MCPSSETransportSchema>
+    transport:
+      | z.infer<typeof MCPStdioTransportSchema>
+      | z.infer<typeof MCPSSETransportSchema>
+      | z.infer<typeof MCPHTTPTransportSchema>
+      | z.infer<typeof MCPWebSocketTransportSchema>
   ): void {
     // Validate transport type
-    if (!VALID_MCP_TRANSPORT_TYPES.includes(transport.type)) {
+    if (!VALID_MCP_TRANSPORT_TYPES.includes(transport.type as any)) {
       this.reportError(
         `Invalid MCP transport type: ${transport.type}. Must be one of: ${VALID_MCP_TRANSPORT_TYPES.join(', ')}`,
         filePath
@@ -117,6 +98,10 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
       this.validateStdioTransport(filePath, transport);
     } else if (transport.type === 'sse') {
       this.validateSSETransport(filePath, transport);
+    } else if (transport.type === 'http') {
+      this.validateHTTPTransport(filePath, transport);
+    } else if (transport.type === 'websocket') {
+      this.validateWebSocketTransport(filePath, transport);
     }
 
     // Validate environment variables if present
@@ -150,6 +135,12 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
     filePath: string,
     transport: z.infer<typeof MCPSSETransportSchema>
   ): void {
+    // SSE transport is deprecated
+    this.reportWarning(
+      'SSE transport is deprecated. Consider using HTTP or WebSocket transport instead.',
+      filePath
+    );
+
     // Validate URL is not empty
     if (!transport.url || transport.url.trim().length === 0) {
       this.reportError('MCP SSE transport URL cannot be empty', filePath);
@@ -164,7 +155,66 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
       }
     } catch (error) {
       this.reportError(
-        `Invalid URL in SSE transport: ${error instanceof Error ? error.message : String(error)}`,
+        `Invalid URL in SSE transport: ${formatError(error)}`,
+        filePath
+      );
+    }
+
+    // Check for variable expansion in URL
+    this.validateVariableExpansion(filePath, transport.url, 'URL');
+  }
+
+  private validateHTTPTransport(
+    filePath: string,
+    transport: z.infer<typeof MCPHTTPTransportSchema>
+  ): void {
+    // Validate URL is not empty
+    if (!transport.url || transport.url.trim().length === 0) {
+      this.reportError('MCP HTTP transport URL cannot be empty', filePath);
+      return;
+    }
+
+    // Basic URL validation
+    try {
+      if (!this.containsVariableExpansion(transport.url)) {
+        new URL(transport.url);
+      }
+    } catch (error) {
+      this.reportError(
+        `Invalid URL in HTTP transport: ${formatError(error)}`,
+        filePath
+      );
+    }
+
+    // Check for variable expansion in URL
+    this.validateVariableExpansion(filePath, transport.url, 'URL');
+  }
+
+  private validateWebSocketTransport(
+    filePath: string,
+    transport: z.infer<typeof MCPWebSocketTransportSchema>
+  ): void {
+    // Validate URL is not empty
+    if (!transport.url || transport.url.trim().length === 0) {
+      this.reportError('MCP WebSocket transport URL cannot be empty', filePath);
+      return;
+    }
+
+    // Basic URL validation
+    try {
+      if (!this.containsVariableExpansion(transport.url)) {
+        const url = new URL(transport.url);
+        // WebSocket URLs should use ws:// or wss://
+        if (url.protocol !== 'ws:' && url.protocol !== 'wss:') {
+          this.reportWarning(
+            `WebSocket URL should use ws:// or wss:// protocol, found ${url.protocol}`,
+            filePath
+          );
+        }
+      }
+    } catch (error) {
+      this.reportError(
+        `Invalid URL in WebSocket transport: ${formatError(error)}`,
         filePath
       );
     }
@@ -223,3 +273,15 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
     return VAR_EXPANSION_PATTERN.test(value) || SIMPLE_VAR_PATTERN.test(value);
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'mcp',
+    name: 'MCP Validator',
+    description: 'Validates MCP (Model Context Protocol) server configuration files',
+    filePatterns: ['**/.claude/mcp.json'],
+    enabled: true,
+  },
+  (options) => new MCPValidator(options)
+);

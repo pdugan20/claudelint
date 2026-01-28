@@ -1,24 +1,19 @@
-# Missing Version
+# Rule: skill-missing-version
 
-Skill frontmatter should include a version field.
+**Severity**: Warning
+**Fixable**: Yes
+**Validator**: Skills
+**Category**: Completeness
+
+Enforces that Claude Code skills include a `version` field in SKILL.md frontmatter using semantic versioning.
 
 ## Rule Details
 
-This rule enforces that Claude Code skills include a `version` field in their SKILL.md frontmatter. Version numbers help users and Claude track skill updates, ensure compatibility, and understand when breaking changes occur.
+This rule triggers when SKILL.md frontmatter lacks a `version` field. Version numbers help users and Claude track skill updates, ensure compatibility, understand when breaking changes occur, and enable proper dependency management. Without versions, users can't tell which version they're using, compatibility issues are harder to diagnose, and change management becomes difficult.
 
-Without a version field:
+The rule checks for a `version` field in the YAML frontmatter at the top of SKILL.md. The version should follow semantic versioning (SemVer) format: `MAJOR.MINOR.PATCH`. This rule is auto-fixable and will add `version: "1.0.0"` if missing.
 
-- Users can't tell which version of the skill they're using
-- It's unclear if the skill has been updated
-- Compatibility issues are harder to diagnose
-- Change management becomes difficult
-
-**Category**: Skills
-**Severity**: warning
-**Fixable**: Yes (auto-fix available with `--fix`)
-**Since**: v1.0.0
-
-### Violation Example
+### Incorrect
 
 SKILL.md frontmatter without version:
 
@@ -30,7 +25,7 @@ user-invocable: true
 ---
 ```
 
-### Correct Example
+### Correct
 
 SKILL.md frontmatter with version:
 
@@ -45,108 +40,36 @@ user-invocable: true
 
 ## How To Fix
 
-### Option 1: Auto-fix with claudelint
+1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically add `version: "1.0.0"` to the frontmatter
+2. **Manual fix**: Add a version field to your SKILL.md frontmatter following semantic versioning
+3. **Start with 1.0.0**: Use this for initial stable release
+4. **Increment appropriately**: PATCH for bug fixes (1.0.0 → 1.0.1), MINOR for new features (1.0.1 → 1.1.0), MAJOR for breaking changes (1.1.0 → 2.0.0)
+5. **Update CHANGELOG.md**: Document version changes in CHANGELOG.md
+
+**Semantic Versioning Format:**
+
+- `MAJOR`: Incompatible API changes (2.0.0)
+- `MINOR`: New functionality, backwards compatible (1.1.0)
+- `PATCH`: Bug fixes, backwards compatible (1.0.1)
+
+**Example Workflow:**
 
 ```bash
-claudelint check-all --fix
-```
-
-This will automatically add `version: "1.0.0"` to the frontmatter.
-
-### Option 2: Manual fix
-
-Add a version field to your SKILL.md frontmatter:
-
-```yaml
----
-name: your-skill
-description: Your skill description
-version: "1.0.0"
----
-```
-
-## Semantic Versioning
-
-Follow [Semantic Versioning](https://semver.org/) (SemVer) format: `MAJOR.MINOR.PATCH`
-
-- **MAJOR**: Incompatible API changes (2.0.0)
-- **MINOR**: New functionality, backwards compatible (1.1.0)
-- **PATCH**: Bug fixes, backwards compatible (1.0.1)
-
-Examples:
-
-```yaml
-version: "1.0.0"   # Initial release
-version: "1.1.0"   # Added new features
-version: "1.1.1"   # Fixed bugs
-version: "2.0.0"   # Breaking changes
-```
-
-## Version Management Workflow
-
-1. **Start with 1.0.0** for initial release
-2. **Increment PATCH** for bug fixes: `1.0.0` → `1.0.1`
-3. **Increment MINOR** for new features: `1.0.1` → `1.1.0`
-4. **Increment MAJOR** for breaking changes: `1.1.0` → `2.0.0`
-5. **Update CHANGELOG.md** with each version change
-
-Example workflow:
-
-```bash
-# After fixing a bug
-# 1. Update version in SKILL.md: 1.0.0 → 1.0.1
+# After fixing a bug, update version: 1.0.0 → 1.0.1
+# 1. Edit SKILL.md frontmatter
 # 2. Document in CHANGELOG.md
 # 3. Commit changes
-git add .claude/skills/deploy/SKILL.md
-git add .claude/skills/deploy/CHANGELOG.md
+git add .claude/skills/deploy/SKILL.md .claude/skills/deploy/CHANGELOG.md
 git commit -m "fix(deploy): handle network timeouts - v1.0.1"
 ```
 
-## Why It Matters
-
-Version numbers are essential for:
-
-1. **Dependency Management**: Know which version you're using
-2. **Compatibility**: Ensure skill works with your setup
-3. **Update Decisions**: Understand if update has breaking changes
-4. **Bug Tracking**: Report issues with specific versions
-5. **Professional Standards**: Shows mature software practices
-
 ## Options
 
-This rule does not have any configuration options.
+This rule does not have configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if:
-
-- Your skill is experimental and version tracking isn't needed yet
-- You use a different versioning system
-- Your organization has alternative version management requirements
-
-However, version fields are a best practice even for experimental skills.
-
-## Configuration
-
-To disable this rule:
-
-```json
-{
-  "rules": {
-    "skill-missing-version": "off"
-  }
-}
-```
-
-To escalate to an error:
-
-```json
-{
-  "rules": {
-    "skill-missing-version": "error"
-  }
-}
-```
+Consider disabling if your skill is experimental and version tracking isn't needed yet, you use a different versioning system, or your organization has alternative version management. However, version fields are a best practice even for experimental skills.
 
 ## Related Rules
 
@@ -154,8 +77,9 @@ To escalate to an error:
 
 ## Resources
 
+- [Implementation](../../../src/validators/skills.ts)
+- [Tests](../../../tests/validators/skills.test.ts)
 - [Semantic Versioning](https://semver.org/)
-- [Keep a Changelog](https://keepachangelog.com/)
 
 ## Version
 

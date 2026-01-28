@@ -2,9 +2,11 @@
  * Shared validation helper functions for validators
  */
 
-import { ENV_VAR_NAME_PATTERN, VALID_HOOK_EVENTS, VALID_HOOK_TYPES } from '../validators/constants';
+import { ENV_VAR_NAME_PATTERN } from '../validators/constants';
+import { VALID_HOOK_EVENTS, VALID_HOOK_TYPES } from '../schemas/constants';
 import { z } from 'zod';
 import { HookSchema } from '../validators/schemas';
+import { RuleId } from '../rules/rule-ids';
 
 /**
  * Validation issue returned by helper functions
@@ -12,7 +14,29 @@ import { HookSchema } from '../validators/schemas';
 export interface ValidationIssue {
   message: string;
   severity: 'error' | 'warning';
-  ruleId?: string;
+  ruleId?: RuleId;
+}
+
+/**
+ * Formats an error object into a string message
+ * Handles Error instances, strings, and other types consistently
+ *
+ * @param error - The error to format
+ * @returns Formatted error message
+ */
+export function formatError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Checks if a path contains variable expansion syntax
+ * Variable expansion includes ${VAR} or $VAR patterns
+ *
+ * @param path - The path to check
+ * @returns True if the path contains variable expansion
+ */
+export function hasVariableExpansion(path: string): boolean {
+  return path.includes('${') || path.includes('$');
 }
 
 /**
@@ -77,7 +101,7 @@ export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[
   const issues: ValidationIssue[] = [];
 
   // Validate event name
-  if (!VALID_HOOK_EVENTS.includes(hook.event)) {
+  if (!VALID_HOOK_EVENTS.includes(hook.event as any)) {
     issues.push({
       message: `Unknown hook event: ${hook.event}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
       severity: 'warning',
@@ -85,7 +109,7 @@ export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[
   }
 
   // Validate hook type
-  if (!VALID_HOOK_TYPES.includes(hook.type)) {
+  if (!VALID_HOOK_TYPES.includes(hook.type as any)) {
     issues.push({
       message: `Invalid hook type: ${hook.type}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
       severity: 'error',

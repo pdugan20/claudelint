@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult } from './base';
+import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
 import {
   findSkillDirectories,
   readFileContent,
@@ -6,138 +6,27 @@ import {
   resolvePath,
 } from '../utils/file-system';
 import { extractFrontmatter } from '../utils/markdown';
+import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
 import {
-  VALID_MODELS,
-  VALID_CONTEXTS,
-  SKILL_NAME_MAX_LENGTH,
-  SKILL_NAME_PATTERN,
+  SKILL_MAX_ROOT_FILES,
+  SKILL_MAX_DIRECTORY_DEPTH,
+  SKILL_MAX_SCRIPT_FILES,
+  SKILL_MIN_COMMENT_LINES,
+  SKILL_MIN_NAMING_CONSISTENCY,
+  MARKDOWN_LINK_REGEX,
+  SHELL_EVAL_REGEX,
+  PYTHON_EVAL_EXEC_REGEX,
+  PATH_TRAVERSAL_REGEX,
+  DANGEROUS_COMMANDS,
 } from './constants';
+import { SCRIPT_EXTENSIONS } from '../schemas/constants';
 import { basename, dirname, join } from 'path';
 import { readdir } from 'fs/promises';
 import { Dirent } from 'fs';
-import { RuleRegistry } from '../utils/rule-registry';
-
-// Register Skills rules
-RuleRegistry.register({
-  id: 'skill-missing-shebang',
-  name: 'Missing Shebang',
-  description: 'Shell script missing shebang line',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: true,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-missing-comments',
-  name: 'Missing Comments',
-  description: 'File lacks explanatory comments',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-dangerous-command',
-  name: 'Dangerous Command',
-  description: 'Dangerous shell command detected (rm -rf, dd, mkfs)',
-  category: 'Skills',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-eval-usage',
-  name: 'Eval Usage',
-  description: 'Use of eval/exec detected',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-path-traversal',
-  name: 'Path Traversal',
-  description: 'Potential path traversal vulnerability',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-missing-changelog',
-  name: 'Missing CHANGELOG',
-  description: 'Skill missing CHANGELOG.md',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: true,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-missing-examples',
-  name: 'Missing Examples',
-  description: 'Skill missing usage examples',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-missing-version',
-  name: 'Missing Version',
-  description: 'Skill missing version field',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: true,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-too-many-files',
-  name: 'Too Many Files',
-  description: 'Too many loose files in skill directory',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-deep-nesting',
-  name: 'Deep Nesting',
-  description: 'Excessive directory nesting in skill',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'skill-naming-inconsistent',
-  name: 'Inconsistent Naming',
-  description: 'Inconsistent naming conventions',
-  category: 'Skills',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
 
 interface SkillFrontmatter {
   name: string;
@@ -155,15 +44,21 @@ interface SkillFrontmatter {
 }
 
 /**
+ * Options specific to Skills validator
+ */
+export interface SkillsValidatorOptions extends BaseValidatorOptions {
+  /** Validate only a specific skill by name */
+  skill?: string;
+}
+
+/**
  * Validates Claude Code skills for structure and frontmatter
  */
 export class SkillsValidator extends BaseValidator {
   private basePath: string;
   private specificSkill?: string;
 
-  constructor(
-    options: { path?: string; skill?: string; verbose?: boolean; warningsAsErrors?: boolean } = {}
-  ) {
+  constructor(options: SkillsValidatorOptions = {}) {
     super(options);
     this.basePath = options.path || process.cwd();
     this.specificSkill = options.skill;
@@ -218,6 +113,9 @@ export class SkillsValidator extends BaseValidator {
     // Validate string substitutions
     this.validateStringSubstitutions(skillMdPath, content);
 
+    // Analyze body content
+    this.analyzeBodyContent(skillMdPath, content);
+
     // Check directory organization
     await this.checkDirectoryOrganization(skillDir);
 
@@ -241,137 +139,56 @@ export class SkillsValidator extends BaseValidator {
     content: string,
     skillName: string
   ): Promise<void> {
-    try {
-      const { frontmatter, hasFrontmatter } = extractFrontmatter<SkillFrontmatter>(content);
+    // Use schema-based validation
+    const { data: frontmatter, result } = await validateFrontmatterWithSchema(
+      content,
+      SkillFrontmatterWithRefinements,
+      filePath,
+      'skill'
+    );
 
-      if (!hasFrontmatter) {
-        this.reportError('Missing frontmatter in SKILL.md', filePath);
-        return;
-      }
+    // Merge schema validation results
+    this.errors.push(...result.errors);
+    this.warnings.push(...result.warnings);
 
-      if (!frontmatter) {
-        this.reportError('Invalid frontmatter YAML syntax', filePath);
-        return;
-      }
+    // If no frontmatter parsed, schema validation already reported the error
+    if (!frontmatter) {
+      return;
+    }
 
-      // Check required fields
-      this.validateRequiredFields(filePath, frontmatter);
-
-      // Check optional fields
-      await this.validateOptionalFields(filePath, frontmatter, skillName);
-
-      // Check name matches directory
-      if (frontmatter.name !== skillName) {
-        this.reportError(
-          `Skill name "${frontmatter.name}" does not match directory name "${skillName}"`,
-          filePath
-        );
-      }
-    } catch (error) {
+    // Custom validation: Check name matches directory
+    if (frontmatter.name !== skillName) {
       this.reportError(
-        `Failed to parse frontmatter: ${error instanceof Error ? error.message : String(error)}`,
+        `Skill name "${frontmatter.name}" does not match directory name "${skillName}"`,
         filePath
       );
     }
+
+    // Custom validation: Check referenced files exist
+    await this.validateReferencedFiles(filePath, frontmatter);
   }
 
-  private validateRequiredFields(filePath: string, frontmatter: SkillFrontmatter): void {
-    // name is required
-    if (!frontmatter.name) {
-      this.reportError('Missing required field: name', filePath);
-    } else {
-      // Validate name format
-      if (!SKILL_NAME_PATTERN.test(frontmatter.name)) {
-        this.reportError('Skill name must be lowercase with hyphens only (a-z, 0-9, -)', filePath);
-      }
-
-      if (frontmatter.name.length > SKILL_NAME_MAX_LENGTH) {
-        this.reportError(
-          `Skill name must be ${SKILL_NAME_MAX_LENGTH} characters or less`,
-          filePath
-        );
-      }
-    }
-
-    // description is required
-    if (!frontmatter.description) {
-      this.reportError('Missing required field: description', filePath);
-    } else if (typeof frontmatter.description !== 'string') {
-      this.reportError('description must be a string', filePath);
-    } else if (frontmatter.description.length < 10) {
-      this.reportWarning('description should be at least 10 characters', filePath);
-    }
-  }
-
-  private async validateOptionalFields(
+  private async validateReferencedFiles(
     filePath: string,
-    frontmatter: SkillFrontmatter,
-    skillName: string
+    frontmatter: SkillFrontmatter
   ): Promise<void> {
-    // allowed-tools validation
+    // Custom validation: Check allowed-tools are valid tool names
     if (frontmatter['allowed-tools']) {
-      if (!Array.isArray(frontmatter['allowed-tools'])) {
-        this.reportError('allowed-tools must be an array', filePath);
-      } else {
-        for (const tool of frontmatter['allowed-tools']) {
-          if (typeof tool !== 'string') {
-            this.reportError(`Invalid tool name (must be string): ${String(tool)}`, filePath);
-          } else {
-            this.validateToolName(tool, filePath);
-          }
-        }
+      for (const tool of frontmatter['allowed-tools']) {
+        this.validateToolName(tool, filePath);
       }
     }
 
-    // model validation
-    if (frontmatter.model) {
-      if (!VALID_MODELS.includes(frontmatter.model)) {
-        this.reportError(
-          `Invalid model: ${frontmatter.model}. Must be one of: ${VALID_MODELS.join(', ')}`,
-          filePath
-        );
-      }
-    }
-
-    // context validation
-    if (frontmatter.context) {
-      if (!VALID_CONTEXTS.includes(frontmatter.context)) {
-        this.reportError(
-          `Invalid context: ${frontmatter.context}. Must be one of: ${VALID_CONTEXTS.join(', ')}`,
-          filePath
-        );
-      }
-    }
-
-    // disable-model-invocation validation
-    if (
-      frontmatter['disable-model-invocation'] !== undefined &&
-      typeof frontmatter['disable-model-invocation'] !== 'boolean'
-    ) {
-      this.reportError('disable-model-invocation must be a boolean', filePath);
-    }
-
-    // user-invocable validation
-    if (
-      frontmatter['user-invocable'] !== undefined &&
-      typeof frontmatter['user-invocable'] !== 'boolean'
-    ) {
-      this.reportError('user-invocable must be a boolean', filePath);
-    }
-
-    // Validate referenced files exist
-    await this.validateReferencedFiles(filePath, skillName);
-  }
-
-  private async validateReferencedFiles(filePath: string, _skillName: string): Promise<void> {
+    // Validate referenced files in markdown links exist
     const skillDir = dirname(filePath);
     const content = await readFileContent(filePath);
 
     // Extract markdown links: [text](./file.md)
-    const linkRegex = /\[([^\]]+)\]\(\.\/([^)]+)\)/g;
+    // Reset lastIndex since MARKDOWN_LINK_REGEX is a global regex
+    MARKDOWN_LINK_REGEX.lastIndex = 0;
     let match;
 
-    while ((match = linkRegex.exec(content)) !== null) {
+    while ((match = MARKDOWN_LINK_REGEX.exec(content)) !== null) {
       const [, , referencedPath] = match;
       const fullPath = resolvePath(skillDir, referencedPath);
 
@@ -412,10 +229,10 @@ export class SkillsValidator extends BaseValidator {
         return !knownFiles.includes(name);
       });
 
-      // Warn if more than 10 loose files
-      if (rootFiles.length > 10) {
+      // Warn if more than max allowed loose files
+      if (rootFiles.length > SKILL_MAX_ROOT_FILES) {
         this.reportWarning(
-          `Skill directory has ${rootFiles.length} files at root level (>10 is hard to maintain). ` +
+          `Skill directory has ${rootFiles.length} files at root level (>${SKILL_MAX_ROOT_FILES} is hard to maintain). ` +
             `Consider organizing scripts into subdirectories like: bin/, lib/, tests/`,
           skillDir
         );
@@ -423,9 +240,9 @@ export class SkillsValidator extends BaseValidator {
 
       // Check for excessive nesting in subdirectories
       const maxDepth = await this.getMaxDirectoryDepth(skillDir);
-      if (maxDepth > 4) {
+      if (maxDepth > SKILL_MAX_DIRECTORY_DEPTH) {
         this.reportWarning(
-          `Skill directory has ${maxDepth} levels of nesting (>4 is hard to navigate). ` +
+          `Skill directory has ${maxDepth} levels of nesting (>${SKILL_MAX_DIRECTORY_DEPTH} is hard to navigate). ` +
             `Consider flattening the directory structure.`,
           skillDir
         );
@@ -524,11 +341,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       const entries = await readdir(skillDir, { withFileTypes: true });
       const scriptFiles = entries.filter(
         (entry) =>
-          entry.isFile() &&
-          (entry.name.endsWith('.sh') || entry.name.endsWith('.py') || entry.name.endsWith('.js'))
+          entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
       );
 
-      if (scriptFiles.length > 3) {
+      if (scriptFiles.length > SKILL_MAX_SCRIPT_FILES) {
         const readmePath = join(skillDir, 'README.md');
         const readmeExists = await fileExists(readmePath);
         if (!readmeExists) {
@@ -540,7 +356,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         }
       }
     } catch (error) {
-      // Directory read error - ignore
+      // Intentionally ignore directory read errors here
+      // This is an optional documentation check - if we can't read the directory,
+      // we skip this check rather than failing validation
     }
 
     // Check for version field in frontmatter
@@ -616,8 +434,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
         const commentLines = nonEmptyLines.filter((line) => line.trim().startsWith('#'));
 
-        // If script has more than 10 lines but no comments (except shebang), warn
-        if (nonEmptyLines.length > 10 && commentLines.length <= 1) {
+        // If script has more than threshold lines but no comments (except shebang), warn
+        if (nonEmptyLines.length > SKILL_MIN_COMMENT_LINES && commentLines.length <= 1) {
           this.reportWarning(
             `Shell script "${script.name}" has ${nonEmptyLines.length} lines but no explanatory comments. ` +
               'Add comments to explain what the script does.',
@@ -631,7 +449,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       // Check naming conventions
       this.checkNamingConventions(skillDir, entries);
     } catch (error) {
-      // Directory read error - ignore
+      // Intentionally ignore directory/file read errors here
+      // Best practices checks are optional - if we can't read files,
+      // we skip these checks rather than failing validation
     }
   }
 
@@ -648,7 +468,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     const totalNamed = kebabCase.length + snakeCase.length + camelCase.length;
 
     // Warn if multiple naming conventions are mixed
-    if (totalNamed >= 3) {
+    if (totalNamed >= SKILL_MIN_NAMING_CONSISTENCY) {
       const conventions = [];
       if (kebabCase.length > 0) conventions.push(`kebab-case (${kebabCase.length})`);
       if (snakeCase.length > 0) conventions.push(`snake_case (${snakeCase.length})`);
@@ -664,13 +484,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
   }
 
+  private analyzeBodyContent(filePath: string, content: string): void {
+    // Extract body content (everything after frontmatter)
+    const parts = content.split('---');
+    if (parts.length < 3) {
+      return; // No body content or invalid frontmatter
+    }
+
+    const body = parts.slice(2).join('---');
+    const lines = body.split('\n');
+
+    // Check for time-sensitive content
+    const timeSensitivePatterns = [
+      /\btoday\b/i,
+      /\byesterday\b/i,
+      /\btomorrow\b/i,
+      /\bthis (week|month|year)\b/i,
+      /\blast (week|month|year)\b/i,
+      /\bnext (week|month|year)\b/i,
+      /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+20\d{2}\b/i,
+      /\b20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])\b/, // ISO date format
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      for (const pattern of timeSensitivePatterns) {
+        if (pattern.test(line)) {
+          this.reportWarning(
+            `Time-sensitive content detected: "${line.trim()}". ` +
+              'Avoid using specific dates or time references that become outdated. ' +
+              'Use relative terms like "recent versions" or update the content regularly.',
+            filePath,
+            i + 1,
+            'skill-time-sensitive-content'
+          );
+          break; // Only warn once per line
+        }
+      }
+    }
+
+    // Check if body is too long (>500 lines)
+    if (lines.length > 500) {
+      this.reportWarning(
+        `SKILL.md body is very long (${lines.length} lines, >500 is hard to maintain). ` +
+          'Consider splitting into multiple files or adding a table of contents.',
+        filePath,
+        undefined,
+        'skill-body-too-long'
+      );
+    }
+
+    // Check if large skill (>100 lines) lacks table of contents
+    if (lines.length > 100) {
+      const hasTOC = /^#{1,6}\s*(table of contents|toc|contents)/i.test(body);
+      if (!hasTOC) {
+        this.reportWarning(
+          `SKILL.md is large (${lines.length} lines) but lacks a table of contents. ` +
+            'Add a TOC section to help users navigate the document.',
+          filePath,
+          undefined,
+          'skill-large-reference-no-toc'
+        );
+      }
+    }
+  }
+
   private async checkSecurityAndSafety(skillDir: string): Promise<void> {
     try {
       const entries = await readdir(skillDir, { withFileTypes: true });
       const scriptFiles = entries.filter(
         (entry) =>
-          entry.isFile() &&
-          (entry.name.endsWith('.sh') || entry.name.endsWith('.py') || entry.name.endsWith('.js'))
+          entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
       );
 
       for (const script of scriptFiles) {
@@ -678,21 +562,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const content = await readFileContent(scriptPath);
 
         // Check for dangerous shell commands
-        const dangerousCommands = [
-          {
-            pattern: /rm\s+-rf\s+\/(?!\s*\$|[a-zA-Z])/,
-            message: 'rm -rf / (deletes entire filesystem)',
-          },
-          { pattern: /:\(\)\{.*\|.*&\s*\}/, message: 'fork bomb pattern' },
-          {
-            pattern: /dd\s+if=.*of=\/dev\/[sh]d[a-z]/,
-            message: 'dd writing to raw disk (data loss risk)',
-          },
-          { pattern: /mkfs\.[a-z]+\s+\/dev/, message: 'mkfs (formats disk, data loss risk)' },
-          { pattern: />\s*\/dev\/[sh]d[a-z]/, message: 'writing to raw disk device' },
-        ];
-
-        for (const { pattern, message } of dangerousCommands) {
+        for (const { pattern, message } of DANGEROUS_COMMANDS) {
           if (pattern.test(content)) {
             this.reportError(
               `Dangerous command detected in "${script.name}": ${message}. ` +
@@ -704,7 +574,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
         // Check for eval/exec usage
         if (script.name.endsWith('.sh')) {
-          if (/\beval\s+/.test(content)) {
+          if (SHELL_EVAL_REGEX.test(content)) {
             this.reportWarning(
               `Shell script "${script.name}" uses "eval" command. ` +
                 'Avoid eval as it can execute arbitrary code and poses security risks.',
@@ -712,7 +582,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             );
           }
         } else if (script.name.endsWith('.py')) {
-          if (/\beval\s*\(/.test(content) || /\bexec\s*\(/.test(content)) {
+          if (PYTHON_EVAL_EXEC_REGEX.test(content)) {
             this.reportWarning(
               `Python script "${script.name}" uses eval() or exec(). ` +
                 'These functions can execute arbitrary code and pose security risks.',
@@ -722,8 +592,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         }
 
         // Check for path traversal in file operations
-        const pathTraversalPattern = /\.\.[/\\]/;
-        if (pathTraversalPattern.test(content)) {
+        if (PATH_TRAVERSAL_REGEX.test(content)) {
           this.reportWarning(
             `Potential path traversal detected in "${script.name}" (../ or ..\\). ` +
               'Ensure file paths are properly validated to prevent directory traversal attacks.',
@@ -736,3 +605,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'skills',
+    name: 'Skills Validator',
+    description: 'Validates Claude Code skill directories and SKILL.md files',
+    filePatterns: ['**/.claude/skills/*/SKILL.md'],
+    enabled: true,
+  },
+  (options) => new SkillsValidator(options)
+);

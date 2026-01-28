@@ -3,9 +3,17 @@
  * Handles common pattern of finding, parsing, and validating JSON against Zod schemas
  */
 
-import { BaseValidator, ValidationResult } from './base';
+import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
 import { fileExists } from '../utils/file-system';
 import { z } from 'zod';
+import { ValidationContext } from '../composition/types';
+import { readJSON, zodSchema } from '../composition/json-validators';
+
+/**
+ * Options for JSON configuration validators
+ * Same as BaseValidatorOptions with no additional options
+ */
+export type JSONConfigValidatorOptions = BaseValidatorOptions;
 
 /**
  * Abstract base class for JSON configuration validators
@@ -17,7 +25,7 @@ import { z } from 'zod';
 export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValidator {
   protected basePath: string;
 
-  constructor(options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean } = {}) {
+  constructor(options: JSONConfigValidatorOptions = {}) {
     super(options);
     this.basePath = options.path || process.cwd();
   }
@@ -57,35 +65,50 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
 
   /**
    * Validate a single JSON configuration file
-   * Reads, parses, validates against schema, then runs custom validation
+   * Uses composition framework to read, parse, and validate against schema
    */
   private async validateFile(filePath: string): Promise<void> {
-    // Read and parse JSON
-    const config = await this.readAndParseJSON(filePath);
-    if (!config) {
+    // Create validation context
+    const context: ValidationContext = {
+      filePath,
+      options: this.options,
+      state: new Map(),
+    };
+
+    // Step 1: Read and parse JSON
+    const readValidator = readJSON<z.infer<T>>();
+    const readResult = await readValidator(filePath, context);
+
+    // Report read errors
+    for (const error of readResult.errors) {
+      this.reportError(error.message, error.file, error.line, error.ruleId);
+    }
+    for (const warning of readResult.warnings) {
+      this.reportWarning(warning.message, warning.file, warning.line, warning.ruleId);
+    }
+
+    if (!readResult.valid) {
       return;
     }
 
-    // Validate against schema
-    try {
-      const schema = this.getSchema();
-      const result = schema.safeParse(config);
+    // Step 2: Validate against schema
+    const schemaValidator = zodSchema(this.getSchema());
+    const schemaResult = await schemaValidator(null, context);
 
-      if (!result.success) {
-        for (const issue of result.error.issues) {
-          this.reportError(`${issue.path.join('.')}: ${issue.message}`, filePath);
-        }
-        return;
+    // Report schema validation errors
+    for (const error of schemaResult.errors) {
+      this.reportError(error.message, error.file, error.line, error.ruleId);
+    }
+    for (const warning of schemaResult.warnings) {
+      this.reportWarning(warning.message, warning.file, warning.line, warning.ruleId);
+    }
+
+    // If validation passed, run custom validation
+    if (schemaResult.valid) {
+      const config = context.state?.get('validatedData') as z.infer<T>;
+      if (config) {
+        await this.validateConfig(filePath, config);
       }
-
-      // Run additional custom validation
-      // Type assertion is safe here because we've validated with safeParse above
-      await this.validateConfig(filePath, result.data as z.infer<T>);
-    } catch (error) {
-      this.reportError(
-        `Validation failed: ${error instanceof Error ? error.message : String(error)}`,
-        filePath
-      );
     }
   }
 

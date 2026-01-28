@@ -6,9 +6,11 @@
  * and future extensibility.
  */
 
+import { RuleId } from '../rules/rule-ids';
+
 export interface RuleMetadata {
   /** Unique rule identifier (e.g., 'size-error', 'skill-missing-shebang') */
-  id: string;
+  id: RuleId;
 
   /** Human-readable rule name */
   name: string;
@@ -39,7 +41,7 @@ export interface RuleMetadata {
 }
 
 export class RuleRegistry {
-  private static rules = new Map<string, RuleMetadata>();
+  private static rules = new Map<RuleId, RuleMetadata>();
 
   /**
    * Register a new rule in the registry
@@ -53,9 +55,10 @@ export class RuleRegistry {
 
   /**
    * Get metadata for a specific rule
+   * Accepts string to allow validation of external rule IDs
    */
   static get(ruleId: string): RuleMetadata | undefined {
-    return this.rules.get(ruleId);
+    return this.rules.get(ruleId as RuleId);
   }
 
   /**
@@ -74,9 +77,10 @@ export class RuleRegistry {
 
   /**
    * Check if a rule exists in the registry
+   * Accepts string to allow validation of external rule IDs
    */
   static exists(ruleId: string): boolean {
-    return this.rules.has(ruleId);
+    return this.rules.has(ruleId as RuleId);
   }
 
   /**
@@ -96,7 +100,7 @@ export class RuleRegistry {
   /**
    * Get all rule IDs
    */
-  static getAllIds(): string[] {
+  static getAllIds(): RuleId[] {
     return Array.from(this.rules.keys());
   }
 }

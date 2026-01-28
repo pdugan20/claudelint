@@ -147,28 +147,31 @@ claudelint/
 
 ## Adding a New Validator
 
-1. Create validator file in `src/validators/`:
+Creating a new validator requires following established patterns for architecture, error handling, testing, and type safety.
 
-   ```typescript
-   import { BaseValidator, ValidationResult } from './base';
+**See the comprehensive [Validator Development Guide](docs/validator-development-guide.md) for:**
 
-   export class MyValidator extends BaseValidator {
-     async validate(): Promise<ValidationResult> {
-       // Implementation
-       return this.getResult();
-     }
-   }
-   ```
+- Architecture overview and component relationships
+- Step-by-step guide for creating validators
+- Error handling standards and patterns
+- Testing guidelines with fixture builders and custom matchers
+- Type safety requirements for rule IDs and schemas
+- Performance considerations and optimization
+- Common patterns and utility functions
+- Plugin development for third-party validators
 
-2. Add tests in `tests/validators/my-validator.test.ts`
+**Quick checklist:**
 
-3. Export from `src/validators/index.ts`
-
-4. Add CLI command in `src/cli.ts`
-
-5. Update documentation in `docs/validators.md`
-
-6. Add integration tests in `tests/integration/`
+1. ✓ Create validator class extending `BaseValidator` in `src/validators/`
+2. ✓ Define and register validation rules with `RuleRegistry`
+3. ✓ Update `RuleId` union type for type safety
+4. ✓ Implement validation logic using composition framework
+5. ✓ Add CLI command in `src/cli.ts`
+6. ✓ Write unit tests using fixture builders and custom matchers
+7. ✓ Add integration tests for CLI behavior
+8. ✓ Create fixture builder in `tests/helpers/fixtures.ts`
+9. ✓ Document rules in `docs/rules/`
+10. ✓ Update `docs/validators.md`
 
 ## Submitting Pull Requests
 
@@ -220,6 +223,14 @@ Include:
 - Update docs/ for detailed documentation
 - Add JSDoc comments for API changes
 - Include code examples where helpful
+
+### Key Documentation
+
+- **[Validator Development Guide](docs/validator-development-guide.md)** - Comprehensive guide for creating validators
+- **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
+- **[Validator Reference](docs/validators.md)** - Complete validator documentation
+- **[Rule Reference](docs/rules/index.md)** - Individual documentation for all rules
+- **[Test Helpers README](tests/helpers/README.md)** - Guide to fixture builders and custom matchers
 
 ## Release Process
 

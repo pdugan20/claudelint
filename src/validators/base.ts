@@ -1,15 +1,17 @@
 // Base validator class that all validators extend
 
 import { readFileContent } from '../utils/file-system';
-import { VALID_TOOLS } from './constants';
+import { VALID_TOOLS, VALID_HOOK_EVENTS } from '../schemas/constants';
 import { ClaudeLintConfig } from '../utils/config';
+import { formatError } from '../utils/validation-helpers';
+import { RuleId } from '../rules/rule-ids';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue
  */
 export interface AutoFix {
   /** Unique identifier for the rule that provides this fix */
-  ruleId: string;
+  ruleId: RuleId;
   /** Human-readable description of what the fix does */
   description: string;
   /** The file path to fix */
@@ -31,7 +33,7 @@ export interface ValidationError {
   /** Severity level (always 'error' for this interface) */
   severity: 'error';
   /** Unique identifier for the rule that triggered this error */
-  ruleId?: string;
+  ruleId?: RuleId;
   /** Quick fix suggestion text */
   fix?: string;
   /** Detailed explanation of why this issue matters */
@@ -55,7 +57,7 @@ export interface ValidationWarning {
   /** Severity level (always 'warning' for this interface) */
   severity: 'warning';
   /** Unique identifier for the rule that triggered this warning */
-  ruleId?: string;
+  ruleId?: RuleId;
   /** Quick fix suggestion text */
   fix?: string;
   /** Detailed explanation of why this issue matters */
@@ -79,9 +81,9 @@ export interface ValidationResult {
 }
 
 /**
- * Configuration options for validators
+ * Base configuration options shared by all validators
  */
-export interface ValidatorOptions {
+export interface BaseValidatorOptions {
   /** Custom path to validate (overrides default discovery) */
   path?: string;
   /** Enable verbose output with additional details */
@@ -92,8 +94,14 @@ export interface ValidatorOptions {
   config?: ClaudeLintConfig;
 }
 
+/**
+ * Legacy alias for backwards compatibility
+ * @deprecated Use BaseValidatorOptions or specific validator options instead
+ */
+export type ValidatorOptions = BaseValidatorOptions;
+
 interface DisabledRule {
-  ruleId: string;
+  ruleId: RuleId | 'all' | string; // Allow string for invalid rule IDs from comments
   startLine?: number;
   endLine?: number;
   used?: boolean;
@@ -114,7 +122,7 @@ interface DisabledRule {
  * ```
  */
 export abstract class BaseValidator {
-  protected options: ValidatorOptions;
+  protected options: BaseValidatorOptions;
   protected errors: ValidationError[] = [];
   protected warnings: ValidationWarning[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
@@ -123,7 +131,7 @@ export abstract class BaseValidator {
    * Creates a new validator instance
    * @param options - Validation options
    */
-  constructor(options: ValidatorOptions = {}) {
+  constructor(options: BaseValidatorOptions = {}) {
     this.options = options;
   }
 
@@ -137,7 +145,7 @@ export abstract class BaseValidator {
     message: string,
     file?: string,
     line?: number,
-    ruleId?: string,
+    ruleId?: RuleId,
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
     if (this.isRuleDisabled(file, line, ruleId)) {
@@ -160,7 +168,7 @@ export abstract class BaseValidator {
     message: string,
     file?: string,
     line?: number,
-    ruleId?: string,
+    ruleId?: RuleId,
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
     if (this.isRuleDisabled(file, line, ruleId)) {
@@ -179,7 +187,7 @@ export abstract class BaseValidator {
     });
   }
 
-  protected isRuleDisabled(file?: string, line?: number, ruleId?: string): boolean {
+  protected isRuleDisabled(file?: string, line?: number, ruleId?: RuleId): boolean {
     if (!file || !ruleId) {
       return false;
     }
@@ -311,7 +319,7 @@ export abstract class BaseValidator {
           `Unused disable directive for ${ruleIdDisplay}`,
           filePath,
           rule.commentLine,
-          'unused-disable',
+          undefined, // unused-disable is a meta-rule, not a validation rule
           {
             explanation: `This ${directive} comment doesn't suppress any violations`,
             howToFix: 'Remove the unused disable comment',
@@ -341,7 +349,7 @@ export abstract class BaseValidator {
       content = await readFileContent(filePath);
     } catch (error) {
       this.reportError(
-        `Failed to read file: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to read file: ${formatError(error)}`,
         filePath
       );
       return null;
@@ -351,7 +359,7 @@ export abstract class BaseValidator {
       return JSON.parse(content) as T;
     } catch (error) {
       this.reportError(
-        `Invalid JSON syntax: ${error instanceof Error ? error.message : String(error)}`,
+        `Invalid JSON syntax: ${formatError(error)}`,
         filePath
       );
       return null;
@@ -368,8 +376,22 @@ export abstract class BaseValidator {
       return true;
     }
 
-    if (!VALID_TOOLS.includes(toolName)) {
+    if (!VALID_TOOLS.includes(toolName as any)) {
       this.reportWarning(`Unknown ${context}: ${toolName}`, filePath);
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Validate an event name against the list of valid hook events
+   * Reports a warning if the event is unknown
+   * Returns true if valid
+   */
+  protected validateEventName(eventName: string, filePath: string, context = 'event'): boolean {
+    if (!VALID_HOOK_EVENTS.includes(eventName as any)) {
+      this.reportWarning(`Unknown ${context}: ${eventName}`, filePath);
       return false;
     }
 

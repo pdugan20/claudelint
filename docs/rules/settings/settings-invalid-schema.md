@@ -1,75 +1,44 @@
-# Invalid Schema
+# Rule: settings-invalid-schema
 
-Settings file does not match the expected JSON schema.
+**Severity**: Error
+**Fixable**: No
+**Validator**: Settings
+**Category**: Schema Validation
+
+Validates that settings.json conforms to Claude Code's expected JSON schema with correct field types, required properties, and valid values.
 
 ## Rule Details
 
-This rule enforces that `settings.json` files conform to Claude Code's expected schema. Settings files must be valid JSON with correct field types, required properties, and valid values.
+Settings files must be valid JSON conforming to the Claude Code schema. This includes correct data types (string vs array vs object), valid enum values for fields like `model` and `action`, no unknown fields, and proper nested structure for permissions, hooks, and other configuration objects.
 
-Schema validation catches:
+This rule catches invalid JSON syntax (comments, trailing commas, single quotes), wrong data types, invalid enum values, unknown fields, missing required fields, and incorrect nested structure. Invalid schema causes settings to be ignored and fallback to defaults.
 
-- Invalid JSON syntax
-- Wrong data types (string vs number, etc.)
-- Unknown fields
-- Missing required fields
-- Invalid enum values
-- Incorrect nested structure
-
-**Category**: Settings
-**Severity**: error
-**Fixable**: No
-**Since**: v1.0.0
-
-### Violation Examples
+### Incorrect
 
 Invalid JSON syntax:
 
 ```json
 {
-  "model": "sonnet",  # Comments not allowed in JSON
+  "model": "sonnet",  # Comments not allowed
   "permissions": [
     {
       "tool": "Bash"
-      "action": "allow"   Missing comma
+      "action": "allow"
     }
   ]
 }
 ```
 
-Wrong data type:
+Wrong data types:
 
 ```json
 {
-  "model": ["sonnet"],   Should be string, not array
-  "permissions": "allow-all"   Should be array, not string
+  "model": ["sonnet"],
+  "permissions": "allow-all"
 }
 ```
 
-Invalid enum value:
-
-```json
-{
-  "model": "gpt-4",   Invalid value, must be: sonnet, opus, haiku, or inherit
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "grant"   Invalid, must be: allow, deny, or ask
-    }
-  ]
-}
-```
-
-Unknown fields:
-
-```json
-{
-  "model": "sonnet",
-  "debugMode": true,   Unknown field
-  "maxTokens": 1000   Unknown field
-}
-```
-
-### Correct Examples
+### Correct
 
 Valid settings.json:
 
@@ -98,263 +67,72 @@ Minimal valid settings:
 }
 ```
 
-Complete valid settings:
+## How To Fix
 
-```json
-{
-  "model": "sonnet",
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow",
-      "pattern": "npm *"
-    },
-    {
-      "tool": "Write",
-      "action": "ask",
-      "pattern": "src/**/*.ts"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "development",
-    "DEBUG": "true"
-  },
-  "apiKeyHelper": "./scripts/get-api-key.sh",
-  "hooks": [
-    {
-      "event": "beforeToolUse",
-      "type": "command",
-      "command": "echo 'Running tool'"
-    }
-  ],
-  "statusLine": "custom",
-  "outputStyle": "./styles/output.css",
-  "sandbox": {
-    "enabled": true
-  },
-  "enabledPlugins": {
-    "my-plugin": true
-  }
-}
-```
+1. **Validate JSON syntax**: Use `jq empty settings.json` or `python -m json.tool settings.json` to check
+2. **Fix data types**: Ensure `model` is string, `permissions` is array, `env` is object, etc.
+3. **Use valid enum values**: Model must be `sonnet`/`opus`/`haiku`/`inherit`, action must be `allow`/`deny`/`ask`
+4. **Remove unknown fields**: Delete unrecognized fields not in the schema
+5. **Fix common JSON errors**: Remove comments, trailing commas, use double quotes, avoid `undefined`
 
-## Valid Schema Structure
-
-### Top-Level Fields
+**Valid Top-Level Fields:**
 
 - `model`: `"sonnet" | "opus" | "haiku" | "inherit"`
 - `permissions`: Array of permission rules
 - `env`: Object with environment variables
 - `apiKeyHelper`: String path to helper script
 - `hooks`: Array of hook definitions
-- `attribution`: Attribution settings
-- `statusLine`: String or status line config
-- `outputStyle`: String path to CSS file
-- `sandbox`: Sandbox configuration
-- `enabledPlugins`: Object mapping plugin names to enabled state
-- `extraKnownMarketplaces`: Marketplace configurations
-- `strictKnownMarketplaces`: Boolean
+- `attribution`, `statusLine`, `outputStyle`, `sandbox`, `enabledPlugins`, etc.
 
-### Permission Rule Schema
+**Permission Rule Structure:**
 
 ```typescript
 {
-  tool: string,         // Required: tool name
-  action: "allow" | "deny" | "ask",  // Required
-  pattern?: string,     // Optional: glob pattern
-  prompt?: string       // Optional: custom prompt
+  tool: string,
+  action: "allow" | "deny" | "ask",
+  pattern?: string,
+  prompt?: string
 }
 ```
 
-### Hook Schema
+**Hook Structure:**
 
 ```typescript
 {
-  event: string,        // Required: hook event name
-  type: "command" | "prompt" | "agent",  // Required
-  command?: string,     // Required if type is "command"
-  prompt?: string,      // Required if type is "prompt"
-  agent?: string,       // Required if type is "agent"
-  matcher?: {           // Optional: conditional execution
-    tool?: string,
-    pattern?: string
-  }
+  event: string,
+  type: "command" | "prompt" | "agent",
+  command?: string,  // if type is "command"
+  prompt?: string,   // if type is "prompt"
+  agent?: string,    // if type is "agent"
+  matcher?: { tool?: string, pattern?: string }
 }
 ```
 
-## How To Fix
+**Common JSON Errors:**
 
-### Option 1: Validate JSON syntax
-
-Use a JSON validator:
-
-```bash
-# Use jq to validate
-jq empty settings.json
-
-# Or use Python
-python -m json.tool settings.json
-```
-
-### Option 2: Check field types
-
-```json
-# Before - wrong types
-{
-  "model": ["sonnet"],  // Wrong: array
-  "permissions": "allow"  // Wrong: string
-}
-
-# After - correct types
-{
-  "model": "sonnet",  // Correct: string
-  "permissions": []  // Correct: array
-}
-```
-
-### Option 3: Fix enum values
-
-```json
-# Before - invalid values
-{
-  "model": "gpt-4",  // Invalid
-  "permissions": [{
-    "action": "grant"  // Invalid
-  }]
-}
-
-# After - valid values
-{
-  "model": "sonnet",  // Valid: sonnet, opus, haiku, inherit
-  "permissions": [{
-    "action": "allow"  // Valid: allow, deny, ask
-  }]
-}
-```
-
-### Option 4: Remove unknown fields
-
-```json
-# Before - has unknown fields
-{
-  "model": "sonnet",
-  "debug": true,  // Unknown
-  "timeout": 5000  // Unknown
-}
-
-# After - only valid fields
-{
-  "model": "sonnet"
-}
-```
-
-## Common Schema Errors
-
-### 1. Comments in JSON
-
-```json
- Invalid:
-{
-  // This is a comment
-  "model": "sonnet"
-}
-
- Valid:
-{
-  "model": "sonnet"
-}
-```
-
-### 2. Trailing commas
-
-```json
- Invalid:
-{
-  "model": "sonnet",
-  "env": {},
-}
-
- Valid:
-{
-  "model": "sonnet",
-  "env": {}
-}
-```
-
-### 3. Single quotes
-
-```json
- Invalid:
-{
-  'model': 'sonnet'
-}
-
- Valid:
-{
-  "model": "sonnet"
-}
-```
-
-### 4. Undefined values
-
-```json
- Invalid:
-{
-  "model": undefined
-}
-
- Valid:
-{
-  "model": "sonnet"
-}
-```
+- ❌ `// comments` → Remove comments
+- ❌ `"field": value,}` → Remove trailing commas
+- ❌ `'field': 'value'` → Use double quotes
+- ❌ `undefined` → Use `null` or remove field
 
 ## Options
 
-This rule does not have any configuration options. Schema validation is always enabled.
+This rule does not have configuration options. Schema validation is always enabled.
 
 ## When Not To Use It
 
-You should **never** disable this rule. Invalid JSON will cause Claude Code to fail loading settings, resulting in:
-
-- Settings being ignored
-- Fallback to defaults
-- Unexpected behavior
-- Configuration errors
-
-Always fix schema violations rather than disabling this rule.
-
-## Configuration
-
-This rule should not be disabled, but if absolutely necessary:
-
-```json
-{
-  "rules": {
-    "settings-invalid-schema": "off"
-  }
-}
-```
-
-To change to a warning (not recommended):
-
-```json
-{
-  "rules": {
-    "settings-invalid-schema": "warning"
-  }
-}
-```
+Never disable this rule. Invalid JSON causes Claude Code to fail loading settings, resulting in settings being ignored, fallback to defaults, unexpected behavior, and configuration errors. Always fix schema violations rather than disabling validation.
 
 ## Related Rules
 
-- [settings-invalid-permission](./settings-invalid-permission.md) - Invalid permission rules
-- [settings-invalid-env-var](./settings-invalid-env-var.md) - Invalid environment variables
+- [settings-invalid-permission](./settings-invalid-permission.md) - Permission rule validation
+- [settings-invalid-env-var](./settings-invalid-env-var.md) - Environment variable validation
 
 ## Resources
 
-- [Claude Code Settings Documentation](https://github.com/anthropics/claude-code)
-- [JSON Schema](https://json-schema.org/)
+- [Implementation](../../../src/validators/settings.ts)
+- [Tests](../../../tests/validators/settings.test.ts)
+- [Settings Documentation](https://github.com/anthropics/claude-code)
 - [JSON Validator](https://jsonlint.com/)
 
 ## Version

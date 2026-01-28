@@ -1,48 +1,43 @@
-# Missing CHANGELOG
+# Rule: skill-missing-changelog
 
-Skills should include a CHANGELOG.md file to track changes over time.
+**Severity**: Warning
+**Fixable**: Yes
+**Validator**: Skills
+**Category**: Completeness
+
+Enforces that Claude Code skills include a CHANGELOG.md file to track changes over time using the Keep a Changelog format.
 
 ## Rule Details
 
-This rule enforces that Claude Code skills include a `CHANGELOG.md` file in the skill directory. A changelog helps users and developers understand what changed between versions, making it easier to track the evolution of the skill, debug issues, and decide whether to update.
+This rule triggers when a skill directory lacks a `CHANGELOG.md` file. Changelogs help users understand what changed between versions, track when bugs were introduced or fixed, decide whether to update, and maintain project history. Without a changelog, users don't know what changed in updates, debugging version-specific issues becomes difficult, and contributors can't see the history of changes.
 
-Without a changelog:
+The rule checks for the presence of `CHANGELOG.md` in the skill directory (case-insensitive). This rule is auto-fixable and will create a CHANGELOG.md with a standard template based on Keep a Changelog format including Unreleased section and initial version entry.
 
-- Users don't know what changed in updates
-- It's harder to track when bugs were introduced
-- Contributors can't see the history of changes
-- Debugging version-specific issues becomes difficult
+### Incorrect
 
-**Category**: Skills
-**Severity**: warning
-**Fixable**: Yes (auto-fix available with `--fix`)
-**Since**: v1.0.0
-
-### Violation Example
-
-Skill directory structure missing CHANGELOG.md:
+Skill directory missing CHANGELOG.md:
 
 ```text
 .claude/skills/deploy/
-├── SKILL.md          
-├── deploy.sh         
-└── README.md         
+├── SKILL.md
+├── deploy.sh
+└── README.md
 # Missing CHANGELOG.md ❌
 ```
 
-### Correct Example
+### Correct
 
-Skill directory with proper documentation:
+Skill directory with CHANGELOG.md:
 
 ```text
 .claude/skills/deploy/
-├── SKILL.md          
-├── CHANGELOG.md       Present
-├── deploy.sh         
-└── README.md         
+├── SKILL.md
+├── CHANGELOG.md       ✓ Present
+├── deploy.sh
+└── README.md
 ```
 
-Sample `CHANGELOG.md` content:
+Sample CHANGELOG.md content:
 
 ```markdown
 # Changelog
@@ -67,116 +62,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## How To Fix
 
-### Option 1: Auto-fix with claudelint
+1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically create CHANGELOG.md with standard template
+2. **Manual creation**: Create `CHANGELOG.md` in your skill directory with Keep a Changelog format
+3. **Follow format**: Use sections: Added, Changed, Deprecated, Removed, Fixed, Security
+4. **Use semantic versioning**: Version headers like `## [1.2.0] - 2026-02-15`
+5. **Update regularly**: Document changes with each version increment
 
-```bash
-claudelint check-all --fix
-```
-
-This will automatically create a CHANGELOG.md file with a standard template based on [Keep a Changelog](https://keepachangelog.com/).
-
-### Option 2: Manual creation
-
-Create a `CHANGELOG.md` file in your skill directory:
-
-```bash
-cd .claude/skills/your-skill
-touch CHANGELOG.md
-```
-
-Add initial content:
+**Template Structure:**
 
 ```markdown
 # Changelog
 
-All notable changes to your-skill will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
 
 ### Added
-- Initial skill implementation
+- New features not yet released
 
-## [1.0.0] - 2026-01-27
-
-### Added
-- Initial release
-```
-
-## Changelog Best Practices
-
-Follow [Keep a Changelog](https://keepachangelog.com/) format:
-
-- **Guiding Principles**: Changelogs are for humans, not machines
-- **Format**: Use markdown with semantic versioning
-- **Sections**: Added, Changed, Deprecated, Removed, Fixed, Security
-- **Dates**: Use ISO 8601 format (YYYY-MM-DD)
-- **Versions**: Link to version tags when possible
-
-Example entry:
-
-```markdown
-## [1.2.0] - 2026-02-15
+## [1.0.0] - YYYY-MM-DD
 
 ### Added
-- New --verbose flag for detailed output
-- Support for custom deployment targets
+- Initial release features
 
 ### Fixed
-- Fixed race condition in parallel deployments
-- Corrected error handling for network timeouts
+- Bug fixes
 
 ### Security
-- Updated dependencies to patch CVE-2026-1234
+- Security updates
 ```
 
-## Why It Matters
+**Best Practices:**
 
-A changelog is essential for:
-
-1. **User Communication**: Users need to know what changed
-2. **Debugging**: Track when issues were introduced or fixed
-3. **Version Management**: Understand breaking changes before updating
-4. **Project History**: Maintain institutional knowledge
-5. **Professional Standards**: Shows maturity and care for users
+- Changelogs are for humans, not machines
+- Use markdown with semantic versioning
+- Use ISO 8601 dates (YYYY-MM-DD)
+- Group changes by type (Added, Changed, Fixed, etc.)
+- Link to version tags when possible
 
 ## Options
 
-This rule does not have any configuration options.
+This rule does not have configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if:
-
-- Your skill is in very early development (pre-alpha)
-- You use a different change tracking system (e.g., GitHub Releases only)
-- Your skill is a simple wrapper with no expected changes
-
-However, even simple skills benefit from changelogs as they evolve.
-
-## Configuration
-
-To disable this rule:
-
-```json
-{
-  "rules": {
-    "skill-missing-changelog": "off"
-  }
-}
-```
-
-To escalate to an error:
-
-```json
-{
-  "rules": {
-    "skill-missing-changelog": "error"
-  }
-}
-```
+Consider disabling if your skill is in very early development (pre-alpha), you use a different change tracking system (GitHub Releases only), or your skill is a simple wrapper with no expected changes. However, even simple skills benefit from changelogs as they evolve.
 
 ## Related Rules
 
@@ -185,9 +113,9 @@ To escalate to an error:
 
 ## Resources
 
+- [Implementation](../../../src/validators/skills.ts)
+- [Tests](../../../tests/validators/skills.test.ts)
 - [Keep a Changelog](https://keepachangelog.com/)
-- [Semantic Versioning](https://semver.org/)
-- [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
 
 ## Version
 

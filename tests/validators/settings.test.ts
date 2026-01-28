@@ -123,6 +123,75 @@ describe('SettingsValidator', () => {
 
       expect(result.valid).toBe(false);
     });
+
+    it('should parse Tool(pattern) syntax correctly', async () => {
+      const filePath = await createSettingsFile({
+        permissions: [
+          {
+            tool: 'Read(*.md)',
+            action: 'allow',
+          },
+        ],
+      });
+
+      const validator = new SettingsValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+    });
+
+    it('should error when both inline pattern and separate pattern field are used', async () => {
+      const filePath = await createSettingsFile({
+        permissions: [
+          {
+            tool: 'Read(*.md)',
+            action: 'allow',
+            pattern: '*.txt',
+          },
+        ],
+      });
+
+      const validator = new SettingsValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.message.includes('both inline pattern'))).toBe(true);
+      expect(result.errors.some((e) => e.ruleId === 'settings-permission-invalid-rule')).toBe(true);
+    });
+
+    it('should warn for empty inline pattern', async () => {
+      const filePath = await createSettingsFile({
+        permissions: [
+          {
+            tool: 'Read()',
+            action: 'allow',
+          },
+        ],
+      });
+
+      const validator = new SettingsValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('Empty inline pattern'))).toBe(true);
+    });
+
+    it('should validate tool name from Tool(pattern) syntax', async () => {
+      const filePath = await createSettingsFile({
+        permissions: [
+          {
+            tool: 'InvalidTool(*.md)',
+            action: 'allow',
+          },
+        ],
+      });
+
+      const validator = new SettingsValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.warnings.some((w) => w.message.includes('Unknown tool'))).toBe(true);
+    });
   });
 
   describe('Hooks validation', () => {

@@ -1,0 +1,37 @@
+/**
+ * Cross-reference validation utilities
+ * For validating references between files (skills, tools, etc.)
+ */
+import { ValidationIssue } from '../validation-helpers';
+import { VALID_TOOLS } from '../../schemas/constants';
+
+/**
+ * Validate tool name exists in registry
+ * Used by: skill-frontmatter-allowed-tools-invalid, agent-tools-invalid-tool
+ */
+export function validateToolName(toolName: string): ValidationIssue | null {
+  if (!VALID_TOOLS.includes(toolName as any)) {
+    return {
+      message: `Unknown tool: ${toolName}. Valid tools: ${VALID_TOOLS.join(', ')}`,
+      severity: 'error',
+    };
+  }
+  return null;
+}
+
+/**
+ * Validate multiple tool names
+ * Returns array of validation issues for all invalid tools
+ */
+export function validateToolNames(toolNames: string[]): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+
+  for (const toolName of toolNames) {
+    const issue = validateToolName(toolName);
+    if (issue) {
+      issues.push(issue);
+    }
+  }
+
+  return issues;
+}

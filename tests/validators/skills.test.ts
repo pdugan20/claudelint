@@ -56,9 +56,7 @@ ${content}`;
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('Missing required field: name'))).toBe(
-        true
-      );
+      expect(result.errors.some((e) => e.message.includes('Required'))).toBe(true);
     });
 
     it('should error when description is missing', async () => {
@@ -70,9 +68,7 @@ ${content}`;
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('Missing required field: description'))).toBe(
-        true
-      );
+      expect(result.errors.some((e) => e.message.includes('Required'))).toBe(true);
     });
   });
 
@@ -87,7 +83,11 @@ ${content}`;
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('lowercase with hyphens'))).toBe(true);
+      expect(
+        result.errors.some((e) =>
+          e.message.includes('Must contain only lowercase letters, numbers, and hyphens')
+        )
+      ).toBe(true);
     });
 
     it('should error when name does not match directory', async () => {
@@ -145,7 +145,7 @@ ${content}`;
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('must be an array'))).toBe(true);
+      expect(result.errors.some((e) => e.message.includes('Expected array'))).toBe(true);
     });
 
     it('should warn for unknown tools', async () => {
@@ -189,7 +189,10 @@ ${content}`;
       const result = await validator.validate();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('Invalid model'))).toBe(true);
+      // Zod enum error typically includes "Invalid enum value" or lists valid options
+      expect(
+        result.errors.some((e) => e.message.includes('enum') || e.message.includes('gpt-4'))
+      ).toBe(true);
     });
   });
 

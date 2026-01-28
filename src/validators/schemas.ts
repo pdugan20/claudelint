@@ -3,6 +3,8 @@
  */
 
 import { z } from 'zod';
+import { ModelNames, HookTypes, PermissionActions } from '../schemas/constants';
+import { semver } from '../schemas/refinements';
 
 /**
  * Matcher schema for hooks
@@ -14,11 +16,14 @@ export const MatcherSchema = z.object({
 
 /**
  * Hook schema (used in both settings and hooks validators)
+ * Note: event uses z.string() instead of HookEvents enum to provide
+ * custom validation with warnings for unknown events
+ * Note: command/prompt/agent mutual exclusivity is validated in validation-helpers.ts
  */
 export const HookSchema = z.object({
   event: z.string(),
   matcher: MatcherSchema.optional(),
-  type: z.enum(['command', 'prompt', 'agent']),
+  type: HookTypes,
   command: z.string().optional(),
   prompt: z.string().optional(),
   agent: z.string().optional(),
@@ -33,10 +38,12 @@ export const HookSchema = z.object({
 
 /**
  * Permission rule schema for settings
+ * Note: tool uses z.string() instead of ToolNames enum to allow wildcards
+ * and provide custom validation with warnings for unknown tools
  */
 export const PermissionRuleSchema = z.object({
   tool: z.string(),
-  action: z.enum(['allow', 'ask', 'deny']),
+  action: PermissionActions,
   pattern: z.string().optional(),
 });
 
@@ -81,7 +88,7 @@ export const MarketplaceConfigSchema = z.object({
 export const SettingsSchema = z.object({
   permissions: z.array(PermissionRuleSchema).optional(),
   env: z.record(z.string()).optional(),
-  model: z.enum(['sonnet', 'opus', 'haiku', 'inherit']).optional(),
+  model: ModelNames.optional(),
   apiKeyHelper: z.string().optional(),
   hooks: z.array(HookSchema).optional(),
   attribution: AttributionSchema.optional(),
@@ -120,11 +127,35 @@ export const MCPSSETransportSchema = z.object({
 });
 
 /**
+ * MCP HTTP transport schema
+ */
+export const MCPHTTPTransportSchema = z.object({
+  type: z.literal('http'),
+  url: z.string(),
+  headers: z.record(z.string()).optional(),
+  env: z.record(z.string()).optional(),
+});
+
+/**
+ * MCP WebSocket transport schema
+ */
+export const MCPWebSocketTransportSchema = z.object({
+  type: z.literal('websocket'),
+  url: z.string(),
+  env: z.record(z.string()).optional(),
+});
+
+/**
  * MCP server schema
  */
 export const MCPServerSchema = z.object({
   name: z.string(),
-  transport: z.union([MCPStdioTransportSchema, MCPSSETransportSchema]),
+  transport: z.union([
+    MCPStdioTransportSchema,
+    MCPSSETransportSchema,
+    MCPHTTPTransportSchema,
+    MCPWebSocketTransportSchema,
+  ]),
 });
 
 /**
@@ -139,7 +170,7 @@ export const MCPConfigSchema = z.object({
  */
 export const PluginManifestSchema = z.object({
   name: z.string(),
-  version: z.string(),
+  version: semver(),
   description: z.string(),
   author: z.string().optional(),
   repository: z.string().optional(),
@@ -158,7 +189,7 @@ export const PluginManifestSchema = z.object({
 export const MarketplaceMetadataSchema = z.object({
   name: z.string(),
   description: z.string(),
-  version: z.string(),
+  version: semver(),
   author: z.string().optional(),
   tags: z.array(z.string()).optional(),
   category: z.string().optional(),

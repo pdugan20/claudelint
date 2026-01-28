@@ -1,23 +1,19 @@
-# Invalid Permission
+# Rule: settings-invalid-permission
 
-Permission rule has invalid action or pattern.
+**Severity**: Error
+**Fixable**: No
+**Validator**: Settings
+**Category**: Security
+
+Validates that permission rules in settings have valid actions (allow/ask/deny), valid tool names, and non-empty patterns.
 
 ## Rule Details
 
-This rule enforces that permission rules in `settings.json` have valid actions and patterns. Permission rules control which tools Claude Code can use and under what conditions.
+Permission rules control which tools Claude Code can use and under what conditions. Each permission rule must have a valid tool name from the available tools, a valid action (`allow`, `ask`, or `deny`), and if a pattern is specified, it must be non-empty.
 
-A valid permission rule must have:
+This rule detects invalid actions (e.g., "grant", "permit"), invalid tool names (e.g., "ShellCommand"), and empty pattern strings. Permissions control access to file operations, shell commands, web access, and other tools. Invalid permission rules fall back to default permissions and may create security vulnerabilities.
 
-- A valid `tool` name (e.g., "Bash", "Write", "Read")
-- A valid `action`: "allow", "ask", or "deny"
-- A non-empty `pattern` (if specified)
-
-**Category**: Settings
-**Severity**: error
-**Fixable**: No
-**Since**: v1.0.0
-
-### Violation Examples
+### Incorrect
 
 Invalid action:
 
@@ -26,24 +22,7 @@ Invalid action:
   "permissions": [
     {
       "tool": "Bash",
-      "action": "grant"   Invalid action (must be: allow, ask, deny)
-    }
-  ]
-}
-```
-
-Multiple invalid actions:
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Write",
-      "action": "permit"   Invalid
-    },
-    {
-      "tool": "Read",
-      "action": "approve"   Invalid
+      "action": "grant"
     }
   ]
 }
@@ -57,26 +36,13 @@ Empty pattern:
     {
       "tool": "Bash",
       "action": "allow",
-      "pattern": ""   Empty pattern
+      "pattern": ""
     }
   ]
 }
 ```
 
-Invalid tool name:
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "InvalidTool",   Unknown tool
-      "action": "allow"
-    }
-  ]
-}
-```
-
-### Correct Examples
+### Correct
 
 Valid permission rules:
 
@@ -101,7 +67,7 @@ Valid permission rules:
 }
 ```
 
-Allow all bash commands:
+With deny rules:
 
 ```json
 {
@@ -109,324 +75,46 @@ Allow all bash commands:
     {
       "tool": "Bash",
       "action": "allow"
-    }
-  ]
-}
-```
-
-Ask for confirmation before writes:
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Write",
-      "action": "ask",
-      "pattern": "**/*.ts"
-    }
-  ]
-}
-```
-
-Deny dangerous operations:
-
-```json
-{
-  "permissions": [
+    },
     {
       "tool": "Bash",
       "action": "deny",
       "pattern": "rm -rf *"
     }
   ]
-}
-```
-
-## Valid Actions
-
-### `"allow"`
-
-Automatically allow the tool to be used:
-
-```json
-{
-  "tool": "Read",
-  "action": "allow",
-  "pattern": "src/**/*.ts"
-}
-```
-
-- Tool executes without prompting user
-- Use for safe, non-destructive operations
-- Be careful with broad patterns
-
-### `"ask"`
-
-Prompt user before using the tool:
-
-```json
-{
-  "tool": "Write",
-  "action": "ask",
-  "pattern": "**/*.ts"
-}
-```
-
-- User sees confirmation dialog
-- User can approve or deny each use
-- Recommended for potentially destructive operations
-
-### `"deny"`
-
-Block the tool from being used:
-
-```json
-{
-  "tool": "Bash",
-  "action": "deny",
-  "pattern": "rm -rf /"
-}
-```
-
-- Tool usage is prevented
-- Use for dangerous or unwanted operations
-- More specific denies override broader allows
-
-## Valid Tools
-
-Common tool names:
-
-- `Bash` - Execute shell commands
-- `Read` - Read files
-- `Write` - Write files
-- `Edit` - Edit files
-- `Glob` - Find files by pattern
-- `Grep` - Search file contents
-- `WebFetch` - Fetch web content
-- `WebSearch` - Search the web
-- `Task` - Launch sub-agents
-
-## Pattern Syntax
-
-Patterns use glob syntax:
-
-```json
-{
-  "pattern": "npm *"           // Match npm followed by anything
-}
-```
-
-```json
-{
-  "pattern": "src/**/*.ts"     // Match all .ts files in src/
-}
-```
-
-```json
-{
-  "pattern": "*.{js,ts}"       // Match .js or .ts files
-}
-```
-
-```json
-{
-  "pattern": "**test**.js"     // Match files with "test" in name
 }
 ```
 
 ## How To Fix
 
-### Option 1: Fix invalid actions
+1. **Use valid actions**: Must be `"allow"`, `"ask"`, or `"deny"` (not "grant", "permit", "approve")
+2. **Remove empty patterns**: Delete empty pattern strings or provide a value, omit pattern field to match all uses
+3. **Use valid tool names**: Common tools are `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep`, `WebFetch`, `WebSearch`, `Task`
+4. **Use glob patterns**: Patterns support `*` (any), `**` (any path), `{a,b}` (alternatives)
+5. **Ensure non-empty values**: All specified fields must have non-empty string values
 
-```json
-# Before - invalid action
-{
-  "tool": "Bash",
-  "action": "grant"  // Invalid
-}
+**Valid Actions:**
 
-# After - valid action
-{
-  "tool": "Bash",
-  "action": "allow"  // Valid: allow, ask, or deny
-}
-```
+- `allow`: Execute without prompting (use for safe operations)
+- `ask`: Prompt user for confirmation (recommended for destructive operations)
+- `deny`: Block the tool (use for dangerous operations)
 
-### Option 2: Remove empty patterns
+**Pattern Examples:**
 
-```json
-# Before - empty pattern
-{
-  "tool": "Bash",
-  "action": "allow",
-  "pattern": ""  // Empty
-}
+- `npm *`: Match npm followed by anything
+- `src/**/*.ts`: Match all .ts files in src/
+- `*.{js,ts}`: Match .js or .ts files
+- No pattern: Matches all uses of the tool
 
-# After - remove pattern or add value
-{
-  "tool": "Bash",
-  "action": "allow"
-  // No pattern means all uses
-}
-```
-
-Or:
-
-```json
-{
-  "tool": "Bash",
-  "action": "allow",
-  "pattern": "npm *"  // Specific pattern
-}
-```
-
-### Option 3: Fix tool names
-
-```json
-# Before - invalid tool
-{
-  "tool": "ShellCommand",  // Wrong
-  "action": "allow"
-}
-
-# After - correct tool name
-{
-  "tool": "Bash",  // Correct
-  "action": "allow"
-}
-```
-
-## Permission Priority
-
-When multiple rules match, more specific rules take precedence:
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow"  // Default: allow all
-    },
-    {
-      "tool": "Bash",
-      "action": "deny",
-      "pattern": "rm -rf *"  // Specific: deny dangerous commands
-    }
-  ]
-}
-```
-
-Result: Most Bash commands allowed, but `rm -rf` is denied.
-
-## Common Patterns
-
-### Safe development workflow
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Read",
-      "action": "allow"
-    },
-    {
-      "tool": "Write",
-      "action": "ask",
-      "pattern": "src/**/*"
-    },
-    {
-      "tool": "Bash",
-      "action": "allow",
-      "pattern": "npm *"
-    },
-    {
-      "tool": "Bash",
-      "action": "deny",
-      "pattern": "rm -rf *"
-    }
-  ]
-}
-```
-
-### Production safety
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Read",
-      "action": "allow"
-    },
-    {
-      "tool": "Write",
-      "action": "ask"
-    },
-    {
-      "tool": "Bash",
-      "action": "ask"
-    }
-  ]
-}
-```
-
-### Maximum security
-
-```json
-{
-  "permissions": [
-    {
-      "tool": "Read",
-      "action": "allow",
-      "pattern": "src/**/*"
-    },
-    {
-      "tool": "Write",
-      "action": "deny"
-    },
-    {
-      "tool": "Bash",
-      "action": "deny"
-    }
-  ]
-}
-```
+**Permission Priority:** More specific patterns take precedence over general ones. A specific deny overrides a general allow.
 
 ## Options
 
-This rule does not have any configuration options.
+This rule does not have configuration options.
 
 ## When Not To Use It
 
-You should **never** disable this rule. Invalid permissions will cause:
-
-- Settings to be ignored
-- Fallback to default permissions
-- Unexpected behavior
-- Security vulnerabilities
-
-Always fix invalid permission rules rather than disabling this rule.
-
-## Configuration
-
-This rule should not be disabled, but if absolutely necessary:
-
-```json
-{
-  "rules": {
-    "settings-invalid-permission": "off"
-  }
-}
-```
-
-To change to a warning (not recommended):
-
-```json
-{
-  "rules": {
-    "settings-invalid-permission": "warning"
-  }
-}
-```
+Never disable this rule. Invalid permissions cause settings to be ignored, fallback to default permissions, unexpected behavior, and security vulnerabilities. Always fix invalid permission rules rather than disabling validation.
 
 ## Related Rules
 
@@ -435,7 +123,9 @@ To change to a warning (not recommended):
 
 ## Resources
 
-- [Claude Code Permissions Documentation](https://github.com/anthropics/claude-code)
+- [Implementation](../../../src/validators/settings.ts)
+- [Tests](../../../tests/validators/settings.test.ts)
+- [Permissions Documentation](https://github.com/anthropics/claude-code)
 - [Glob Pattern Syntax](https://github.com/isaacs/node-glob#glob-primer)
 
 ## Version

@@ -1,47 +1,22 @@
-import { JSONConfigValidator } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
 import { findSettingsFiles, fileExists } from '../utils/file-system';
 import { z } from 'zod';
-import { VALID_PERMISSION_ACTIONS } from './constants';
+import { VALID_PERMISSION_ACTIONS } from '../schemas/constants';
 import { SettingsSchema, PermissionRuleSchema, HookSchema } from './schemas';
-import { RuleRegistry } from '../utils/rule-registry';
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
 import {
   validateEnvironmentVariables,
   validateHook as validateHookHelper,
+  hasVariableExpansion,
 } from '../utils/validation-helpers';
 
-// Register Settings rules
-RuleRegistry.register({
-  id: 'settings-invalid-schema',
-  name: 'Invalid Schema',
-  description: 'Settings file does not match JSON schema',
-  category: 'Settings',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'settings-invalid-permission',
-  name: 'Invalid Permission',
-  description: 'Permission rule has invalid action or pattern',
-  category: 'Settings',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'settings-invalid-env-var',
-  name: 'Invalid Environment Variable',
-  description: 'Environment variable name or value is invalid',
-  category: 'Settings',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
+/**
+ * Options specific to Settings validator
+ * Extends JSONConfigValidatorOptions with no additional options
+ */
+export type SettingsValidatorOptions = JSONConfigValidatorOptions;
 
 /**
  * Validates Claude Code settings.json files
@@ -97,11 +72,42 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     filePath: string,
     rule: z.infer<typeof PermissionRuleSchema>
   ): void {
+    // Parse Tool(pattern) syntax if present
+    const toolPatternMatch = rule.tool.match(/^([^(]+)\(([^)]*)\)$/);
+    let toolName = rule.tool;
+    let inlinePattern: string | null = null;
+
+    if (toolPatternMatch) {
+      toolName = toolPatternMatch[1].trim();
+      inlinePattern = toolPatternMatch[2].trim();
+
+      // Check if both inline pattern and separate pattern field are specified
+      if (inlinePattern && rule.pattern) {
+        this.reportError(
+          `Permission rule has both inline pattern "${inlinePattern}" in tool field and separate pattern field "${rule.pattern}". ` +
+          `Use only one format: either "tool": "${toolName}(${inlinePattern})" OR "tool": "${toolName}", "pattern": "${rule.pattern}"`,
+          filePath,
+          undefined,
+          'settings-permission-invalid-rule'
+        );
+      }
+
+      // Validate inline pattern
+      if (inlinePattern !== null && inlinePattern.length === 0) {
+        this.reportWarning(
+          `Empty inline pattern in Tool(pattern) syntax: ${rule.tool}`,
+          filePath,
+          undefined,
+          'settings-permission-invalid-rule'
+        );
+      }
+    }
+
     // Validate tool name
-    this.validateToolName(rule.tool, filePath, 'tool in permission rule');
+    this.validateToolName(toolName, filePath, 'tool in permission rule');
 
     // Validate action
-    if (!VALID_PERMISSION_ACTIONS.includes(rule.action)) {
+    if (!VALID_PERMISSION_ACTIONS.includes(rule.action as any)) {
       this.reportError(
         `Invalid permission action: ${rule.action}. Must be one of: ${VALID_PERMISSION_ACTIONS.join(', ')}`,
         filePath
@@ -136,7 +142,7 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
 
   private async validateFilePath(filePath: string, path: string, fieldName: string): Promise<void> {
     // Skip validation for paths with variables
-    if (path.includes('${') || path.includes('$')) {
+    if (hasVariableExpansion(path)) {
       return;
     }
 
@@ -157,3 +163,15 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     }
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'settings',
+    name: 'Settings Validator',
+    description: 'Validates Claude Code settings.json files',
+    filePatterns: ['**/.claude/settings.json'],
+    enabled: true,
+  },
+  (options) => new SettingsValidator(options)
+);

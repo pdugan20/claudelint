@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult } from './base';
+import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
 import {
   findClaudeMdFiles,
   readFileContent,
@@ -6,69 +6,29 @@ import {
   fileExists,
   resolvePath,
 } from '../utils/file-system';
-import { extractFrontmatter, extractImportsWithLineNumbers } from '../utils/markdown';
+import { lstat, readlink } from 'fs/promises';
+import { basename } from 'path';
+import { extractImportsWithLineNumbers } from '../utils/markdown';
+import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
+import { formatError } from '../utils/validation-helpers';
 import {
   CLAUDE_MD_SIZE_WARNING_THRESHOLD,
   CLAUDE_MD_SIZE_ERROR_THRESHOLD,
   CLAUDE_MD_MAX_IMPORT_DEPTH,
+  CLAUDE_MD_MAX_SECTIONS,
 } from './constants';
 import { dirname } from 'path';
-import { RuleRegistry } from '../utils/rule-registry';
+// Import rules to ensure they're registered
+import '../rules';
+import { ValidatorRegistry } from '../utils/validator-factory';
 
-interface ClaudeRuleFrontmatter {
-  paths?: string | string[];
-  [key: string]: unknown;
-}
-
-// Register CLAUDE.md rules
-RuleRegistry.register({
-  id: 'size-error',
-  name: 'File Size Error',
-  description: 'CLAUDE.md exceeds maximum file size limit (40KB)',
-  category: 'CLAUDE.md',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'size-warning',
-  name: 'File Size Warning',
-  description: 'CLAUDE.md approaching file size limit (35KB)',
-  category: 'CLAUDE.md',
-  severity: 'warning',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'import-missing',
-  name: 'Missing Import',
-  description: '@import directive points to non-existent file',
-  category: 'CLAUDE.md',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-RuleRegistry.register({
-  id: 'import-circular',
-  name: 'Circular Import',
-  description: 'Circular @import dependencies detected',
-  category: 'CLAUDE.md',
-  severity: 'error',
-  fixable: false,
-  deprecated: false,
-  since: '1.0.0',
-});
-
-interface ClaudeMdValidatorOptions {
-  path?: string;
-  verbose?: boolean;
-  warningsAsErrors?: boolean;
+/**
+ * Options specific to CLAUDE.md validator
+ * Extends BaseValidatorOptions with no additional options
+ */
+export interface ClaudeMdValidatorOptions extends BaseValidatorOptions {
+  // No additional options specific to CLAUDE.md validator
 }
 
 /**
@@ -77,6 +37,7 @@ interface ClaudeMdValidatorOptions {
 export class ClaudeMdValidator extends BaseValidator {
   private basePath: string;
   private processedImports = new Set<string>();
+  private caseInsensitivePathMap = new Map<string, string>(); // normalized path -> actual path
 
   constructor(options: ClaudeMdValidatorOptions = {}) {
     super(options);
@@ -120,13 +81,16 @@ export class ClaudeMdValidator extends BaseValidator {
 
     // Check for frontmatter (only in .claude/rules/*.md files)
     if (filePath.includes('.claude/rules/')) {
-      this.checkFrontmatter(filePath, content);
+      await this.checkFrontmatter(filePath, content);
     }
 
     // Content organization checks (for main CLAUDE.md files)
     if (filePath.endsWith('CLAUDE.md') && !filePath.includes('.claude/rules/')) {
       this.checkContentOrganization(filePath, content);
     }
+
+    // Check for imports in code blocks (they won't be processed)
+    this.checkImportsInCodeBlocks(filePath, content);
 
     // Check imports and validate recursively
     await this.checkImports(filePath, content);
@@ -184,9 +148,9 @@ export class ClaudeMdValidator extends BaseValidator {
     const sectionCount = headings.length;
 
     // Warn if too many sections
-    if (sectionCount > 20) {
+    if (sectionCount > CLAUDE_MD_MAX_SECTIONS) {
       this.reportWarning(
-        `CLAUDE.md has ${sectionCount} sections (>${20} is hard to navigate). ` +
+        `CLAUDE.md has ${sectionCount} sections (>${CLAUDE_MD_MAX_SECTIONS} is hard to navigate). ` +
           `Consider organizing content into separate files in .claude/rules/ directory. ` +
           `For example: .claude/rules/git.md, .claude/rules/api.md, .claude/rules/testing.md`,
         filePath
@@ -194,57 +158,155 @@ export class ClaudeMdValidator extends BaseValidator {
     }
   }
 
-  private checkFrontmatter(filePath: string, content: string): void {
-    try {
-      const { frontmatter, hasFrontmatter } = extractFrontmatter<ClaudeRuleFrontmatter>(content);
+  private async checkFrontmatter(filePath: string, content: string): Promise<void> {
+    // Use schema-based validation
+    const { data: frontmatter, result } = await validateFrontmatterWithSchema(
+      content,
+      ClaudeMdFrontmatterSchema,
+      filePath,
+      'claude-md'
+    );
 
-      if (!hasFrontmatter) {
-        // Frontmatter is optional for rules files
-        return;
+    // Merge schema validation results
+    this.errors.push(...result.errors);
+    this.warnings.push(...result.warnings);
+
+    // If no frontmatter, that's okay - it's optional for rules files
+    if (!frontmatter) {
+      return;
+    }
+
+    // Additional validation: Check for glob pattern validity
+    if (frontmatter.paths) {
+      for (const pattern of frontmatter.paths) {
+        this.validateGlobPattern(filePath, pattern);
       }
+    }
+  }
 
-      if (!frontmatter) {
-        this.reportError('Invalid frontmatter YAML syntax', filePath);
-        return;
-      }
+  private validateGlobPattern(filePath: string, pattern: string): void {
+    // Warn about common mistakes in glob patterns
+    if (pattern.includes('\\')) {
+      this.reportWarning(
+        `Path pattern uses backslashes: ${pattern}. Use forward slashes even on Windows.`,
+        filePath
+      );
+    }
 
-      // Validate paths field if present
-      if (frontmatter.paths) {
-        this.validatePathsField(filePath, frontmatter.paths);
-      }
-
-      // Check for unknown fields
-      const knownFields = ['paths'];
-      const unknownFields = Object.keys(frontmatter).filter((key) => !knownFields.includes(key));
-
-      if (unknownFields.length > 0) {
-        this.reportWarning(`Unknown frontmatter fields: ${unknownFields.join(', ')}`, filePath);
-      }
-    } catch (error) {
-      this.reportError(
-        `Failed to parse frontmatter: ${error instanceof Error ? error.message : String(error)}`,
+    // Warn if pattern looks like it might be too broad
+    if (pattern === '**' || pattern === '*') {
+      this.reportWarning(
+        `Path pattern is very broad: ${pattern}. Consider being more specific.`,
         filePath
       );
     }
   }
 
-  private validatePathsField(filePath: string, paths: string | string[]): void {
-    if (typeof paths === 'string') {
-      this.reportError('paths field must be an array, not a string', filePath);
-      return;
+  private checkImportsInCodeBlocks(filePath: string, content: string): void {
+    // Find all fenced code blocks (``` or ~~~)
+    const fencedBlockRegex = /^```[\s\S]*?^```|^~~~[\s\S]*?^~~~/gm;
+    const codeBlocks: Array<{ start: number; end: number }> = [];
+
+    let match;
+    while ((match = fencedBlockRegex.exec(content)) !== null) {
+      codeBlocks.push({
+        start: match.index,
+        end: match.index + match[0].length,
+      });
     }
 
-    if (!Array.isArray(paths)) {
-      this.reportError('paths field must be an array', filePath);
-      return;
-    }
+    // Check if any imports fall within code blocks
+    const imports = extractImportsWithLineNumbers(content);
 
-    // Basic validation of glob patterns
-    for (const pattern of paths) {
-      if (typeof pattern !== 'string') {
-        this.reportError(`Invalid path pattern (must be string): ${String(pattern)}`, filePath);
+    for (const importInfo of imports) {
+      // Calculate the character position of this import
+      const lines = content.split('\n');
+      let charPos = 0;
+      for (let i = 0; i < importInfo.line - 1; i++) {
+        charPos += lines[i].length + 1; // +1 for newline
       }
-      // Could add more sophisticated glob validation here
+
+      // Check if this import is inside any code block
+      for (const block of codeBlocks) {
+        if (charPos >= block.start && charPos <= block.end) {
+          this.reportError(
+            `Import statement found inside code block: ${importInfo.path}. ` +
+              `Imports in code blocks are not processed by Claude Code. ` +
+              `Move the import outside of the code block.`,
+            filePath,
+            importInfo.line,
+            'import-in-code-block'
+          );
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Check if a path is involved in a circular symlink chain
+   */
+  private async checkSymlinkCycle(filePath: string, _originPath: string): Promise<boolean> {
+    try {
+      const stats = await lstat(filePath);
+
+      if (!stats.isSymbolicLink()) {
+        return false;
+      }
+
+      const visited = new Set<string>();
+      let currentPath = filePath;
+      visited.add(currentPath);
+
+      // Follow symlink chain
+      while (true) {
+        const linkStats = await lstat(currentPath);
+
+        if (!linkStats.isSymbolicLink()) {
+          break;
+        }
+
+        const targetPath = await readlink(currentPath);
+        const resolvedTarget = resolvePath(dirname(currentPath), targetPath);
+
+        // Check if we've created a cycle
+        if (visited.has(resolvedTarget)) {
+          return true;
+        }
+
+        visited.add(resolvedTarget);
+        currentPath = resolvedTarget;
+
+        // Safety limit to prevent infinite loops
+        if (visited.size > 100) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      // If we can't read the symlink, it might be broken but not circular
+      return false;
+    }
+  }
+
+  /**
+   * Check for case-sensitive filename collisions
+   */
+  private checkCaseSensitivity(filePath: string, originPath: string): void {
+    const normalized = filePath.toLowerCase();
+    const existingPath = this.caseInsensitivePathMap.get(normalized);
+
+    if (existingPath && existingPath !== filePath) {
+      this.reportWarning(
+        `Case-sensitive filename collision detected: "${basename(filePath)}" and "${basename(existingPath)}" differ only in case. ` +
+        `This may cause issues on case-insensitive filesystems (macOS, Windows).`,
+        originPath,
+        undefined,
+        'filename-case-sensitive'
+      );
+    } else {
+      this.caseInsensitivePathMap.set(normalized, filePath);
     }
   }
 
@@ -263,6 +325,21 @@ export class ClaudeMdValidator extends BaseValidator {
       // Resolve import path relative to current file
       const baseDir = dirname(filePath);
       const resolvedPath = resolvePath(baseDir, importInfo.path);
+
+      // Check for case-sensitive filename collisions
+      this.checkCaseSensitivity(resolvedPath, filePath);
+
+      // Check for circular symlinks
+      const hasSymlinkCycle = await this.checkSymlinkCycle(resolvedPath, filePath);
+      if (hasSymlinkCycle) {
+        this.reportError(
+          `Circular symlink detected: ${importInfo.path}`,
+          filePath,
+          importInfo.line,
+          'rules-circular-symlink'
+        );
+        continue;
+      }
 
       // Check for circular imports
       if (this.processedImports.has(resolvedPath)) {
@@ -306,7 +383,7 @@ export class ClaudeMdValidator extends BaseValidator {
         await this.checkImports(resolvedPath, importedContent, depth + 1);
       } catch (error) {
         this.reportError(
-          `Failed to read imported file: ${error instanceof Error ? error.message : String(error)}`,
+          `Failed to read imported file: ${formatError(error)}`,
           filePath,
           importInfo.line
         );
@@ -314,3 +391,15 @@ export class ClaudeMdValidator extends BaseValidator {
     }
   }
 }
+
+// Register validator with factory
+ValidatorRegistry.register(
+  {
+    id: 'claude-md',
+    name: 'CLAUDE.md Validator',
+    description: 'Validates CLAUDE.md files for size, format, and structure',
+    filePatterns: ['**/CLAUDE.md', '**/.claude/rules/*.md'],
+    enabled: true,
+  },
+  (options) => new ClaudeMdValidator(options)
+);

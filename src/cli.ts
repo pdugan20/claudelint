@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { ClaudeMdValidator } from './validators/claude-md';
-import { SkillsValidator } from './validators/skills';
-import { SettingsValidator } from './validators/settings';
-import { HooksValidator } from './validators/hooks';
-import { MCPValidator } from './validators/mcp';
-import { PluginValidator } from './validators/plugin';
+// Import validators to ensure self-registration
+import './validators';
+import { ValidatorRegistry } from './utils/validator-factory';
 import { Reporter } from './utils/reporting';
 import { execSync } from 'child_process';
 import { findConfigFile, loadConfig, mergeConfig, validateConfig } from './utils/config';
@@ -15,6 +12,7 @@ import { ConfigDebugger } from './cli/config-debug';
 import { Fixer } from './utils/fixer';
 import { ValidationCache } from './utils/cache';
 import { RuleRegistry, RuleMetadata } from './utils/rule-registry';
+import { PluginLoader } from './utils/plugin-loader';
 
 const program = new Command();
 
@@ -165,6 +163,25 @@ program
           console.error(''); // Empty line after warnings
         }
 
+        // Load plugins
+        const pluginLoader = new PluginLoader({
+          searchNodeModules: true,
+          pluginPrefix: 'claudelint-plugin-',
+        });
+
+        const pluginResults = await pluginLoader.loadPlugins(process.cwd());
+        const failedPlugins = pluginResults.filter((r) => !r.success);
+
+        if (options.verbose && pluginResults.length > 0) {
+          console.log(`Loaded ${pluginResults.filter((r) => r.success).length} plugin(s)`);
+          if (failedPlugins.length > 0) {
+            console.warn(`Failed to load ${failedPlugins.length} plugin(s):`);
+            for (const failure of failedPlugins) {
+              console.warn(`  - ${failure.name}: ${failure.error}`);
+            }
+          }
+        }
+
         // Merge CLI options with config
         const mergedConfig = mergeConfig(config, {
           output: {
@@ -203,35 +220,19 @@ program
           config: mergedConfig,
         };
 
+        // Get all enabled validator metadata from registry
+        const enabledValidators = ValidatorRegistry.getAllMetadata().filter((m) => m.enabled);
+
         // Run all validators in parallel
-        const results = await Promise.all([
-          reporter.runValidator(
-            'CLAUDE.md',
-            () => new ClaudeMdValidator(validatorOptions).validate(),
-            cache
-          ),
-          reporter.runValidator(
-            'Skills',
-            () => new SkillsValidator(validatorOptions).validate(),
-            cache
-          ),
-          reporter.runValidator(
-            'Settings',
-            () => new SettingsValidator(validatorOptions).validate(),
-            cache
-          ),
-          reporter.runValidator(
-            'Hooks',
-            () => new HooksValidator(validatorOptions).validate(),
-            cache
-          ),
-          reporter.runValidator('MCP', () => new MCPValidator(validatorOptions).validate(), cache),
-          reporter.runValidator(
-            'Plugin',
-            () => new PluginValidator(validatorOptions).validate(),
-            cache
-          ),
-        ]);
+        const results = await Promise.all(
+          enabledValidators.map((metadata) =>
+            reporter.runValidator(
+              metadata.name,
+              () => ValidatorRegistry.create(metadata.id, validatorOptions).validate(),
+              cache
+            )
+          )
+        );
 
         // Report all results with timing
         reporter.reportParallelResults(results);
@@ -331,11 +332,8 @@ program
         } else if (totalErrors > 0 || (totalWarnings > 0 && options.warningsAsErrors)) {
           // Errors or warnings-as-errors
           process.exit(1);
-        } else if (totalWarnings > 0) {
-          // Warnings present
-          process.exit(1);
         } else {
-          // Success
+          // Success (warnings are OK unless --warnings-as-errors or --strict)
           process.exit(0);
         }
       } catch (error: unknown) {
@@ -364,7 +362,7 @@ program
       warningsAsErrors?: boolean;
       explain?: boolean;
     }) => {
-      const validator = new ClaudeMdValidator(options);
+      const validator = ValidatorRegistry.create('claude-md', options);
       const reporter = new Reporter({
         verbose: options.verbose,
         warningsAsErrors: options.warningsAsErrors,
@@ -395,7 +393,7 @@ program
       verbose?: boolean;
       warningsAsErrors?: boolean;
     }) => {
-      const validator = new SkillsValidator(options);
+      const validator = ValidatorRegistry.create('skills', options);
       const reporter = new Reporter({
         verbose: options.verbose,
         warningsAsErrors: options.warningsAsErrors,
@@ -418,7 +416,7 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = new SettingsValidator(options);
+    const validator = ValidatorRegistry.create('settings', options);
     const reporter = new Reporter({
       verbose: options.verbose,
       warningsAsErrors: options.warningsAsErrors,
@@ -440,7 +438,7 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = new HooksValidator(options);
+    const validator = ValidatorRegistry.create('hooks', options);
     const reporter = new Reporter({
       verbose: options.verbose,
       warningsAsErrors: options.warningsAsErrors,
@@ -462,7 +460,7 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = new MCPValidator(options);
+    const validator = ValidatorRegistry.create('mcp', options);
     const reporter = new Reporter({
       verbose: options.verbose,
       warningsAsErrors: options.warningsAsErrors,
@@ -484,7 +482,7 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = new PluginValidator(options);
+    const validator = ValidatorRegistry.create('plugin', options);
     const reporter = new Reporter({
       verbose: options.verbose,
       warningsAsErrors: options.warningsAsErrors,

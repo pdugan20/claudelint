@@ -1,27 +1,19 @@
-# Dangerous Command
+# Rule: skill-dangerous-command
 
-Detects dangerous shell commands that could cause data loss or system damage.
+**Severity**: Error
+**Fixable**: No
+**Validator**: Skills
+**Category**: Security
+
+Detects dangerous shell commands that could cause catastrophic data loss, system damage, or denial of service.
 
 ## Rule Details
 
-This rule detects potentially destructive shell commands in skill scripts. These commands can cause catastrophic data loss, system damage, or denial of service if executed accidentally or maliciously.
+This rule detects potentially destructive commands that should never appear in Claude Code skills: `rm -rf /` (deletes entire filesystem), `:(){ :|:& };:` (fork bomb crashes system), `dd if=... of=/dev/sda` (writes to raw disk causing data loss), `mkfs /dev/...` (formats disk destroying data), `> /dev/sda` (writes to raw disk device).
 
-Dangerous commands detected:
+These commands destroy operating systems, delete all user data, make systems unbootable, consume all resources crashing systems, bypass filesystem protections, and corrupt partition tables. Effects are often irreversible and can affect other users on shared systems.
 
-- `rm -rf /` - Deletes entire filesystem
-- `:(){ :|:& };:` - Fork bomb (crashes system)
-- `dd if=... of=/dev/sda` - Writes to raw disk (data loss)
-- `mkfs /dev/...` - Formats disk (data loss)
-- `> /dev/sda` - Writes to raw disk device
-
-These commands should **never** appear in Claude Code skills, as they pose severe security and safety risks.
-
-**Category**: Skills
-**Severity**: error
-**Fixable**: No
-**Since**: v1.0.0
-
-### Violation Examples
+### Incorrect
 
 Dangerous rm command:
 
@@ -41,45 +33,9 @@ Dangerous dd command:
 dd if=/dev/zero of=/dev/sda bs=1M
 ```
 
-Dangerous mkfs command:
+### Correct
 
-```bash
-#!/usr/bin/env bash
-
-# DANGEROUS: This formats the disk, destroying all data
-mkfs.ext4 /dev/sda1
-```
-
-Fork bomb:
-
-```bash
-#!/usr/bin/env bash
-
-# DANGEROUS: This creates infinite processes, crashing the system
-:(){ :|:& };:
-```
-
-Writing to raw disk:
-
-```bash
-#!/usr/bin/env bash
-
-# DANGEROUS: This writes directly to disk, corrupting data
-echo "data" > /dev/sda
-```
-
-### Correct Examples
-
-Safe file deletion with specific path:
-
-```bash
-#!/usr/bin/env bash
-
-# Safe: Deletes only files in a specific directory
-rm -rf "$PROJECT_DIR/build"
-```
-
-Safe cleanup with validation:
+Safe deletion with validation:
 
 ```bash
 #!/usr/bin/env bash
@@ -93,7 +49,7 @@ else
 fi
 ```
 
-Safe disk operations using proper tools:
+Safe operations using proper tools:
 
 ```bash
 #!/usr/bin/env bash
@@ -102,123 +58,24 @@ Safe disk operations using proper tools:
 rsync -av /source/ /backup/
 ```
 
-## Why These Commands Are Dangerous
-
-### `rm -rf /`
-
-Recursively deletes everything on the filesystem:
-
-- Destroys operating system
-- Deletes all user data
-- Makes system unbootable
-- Often irreversible
-
-### Fork Bomb `:(){ :|:& };:`
-
-Creates exponentially growing processes:
-
-- Consumes all system resources
-- Crashes the system
-- Requires hard reboot
-- Can affect other users on shared systems
-
-### `dd` to raw disk
-
-Writes data directly to disk device:
-
-- Bypasses filesystem protections
-- Destroys partition tables
-- Corrupts all data on disk
-- Cannot be undone
-
-### `mkfs`
-
-Formats disk or partition:
-
-- Destroys all existing data
-- Cannot be undone
-- Affects entire partition
-- Risk of wrong device specification
-
 ## How To Fix
 
-### Option 1: Remove the dangerous command
-
-If the command isn't necessary, remove it entirely:
-
-```bash
-# Before
-rm -rf /
-
-# After
-# (removed)
-```
-
-### Option 2: Make the command safe
-
-Add proper validation and specificity:
-
-```bash
-# Before
-rm -rf $BUILD_DIR
-
-# After: Validate path and use safer pattern
-if [[ -z "$BUILD_DIR" ]]; then
-  echo "Error: BUILD_DIR not set"
-  exit 1
-fi
-
-if [[ ! "$BUILD_DIR" =~ ^/home/.*build$ ]]; then
-  echo "Error: Invalid build directory"
-  exit 1
-fi
-
-rm -rf "${BUILD_DIR:?}"  # :? ensures variable is set
-```
-
-### Option 3: Use safer alternatives
-
-Replace dangerous commands with safer tools:
-
-```bash
-# Instead of dd for backup
-# Use: rsync, tar, or dedicated backup tools
-
-# Instead of mkfs
-# Use: dedicated disk management tools with confirmations
-
-# Instead of rm -rf
-# Use: trash-cli, safe-rm, or move to trash first
-```
-
-## Security Best Practices
-
-1. **Never use absolute paths with rm -rf**: Always use relative paths or validated variables
-2. **Always validate input**: Check paths before destructive operations
+1. **Remove the command**: If unnecessary, delete it entirely
+2. **Add validation**: Check paths before destructive operations, use pattern matching to validate variables
 3. **Use parameter expansion safeguards**: `${VAR:?error}` fails if VAR is unset
-4. **Prefer safer tools**: Use high-level tools instead of low-level commands
-5. **Add confirmation prompts**: For destructive operations, ask for confirmation
+4. **Use safer alternatives**: Replace `dd` with `rsync`/`tar`, `mkfs` with GUI tools, `rm -rf` with `trash-cli`
+5. **Add confirmation prompts**: For destructive operations, require explicit confirmation
 6. **Test in sandbox**: Test destructive scripts in containers or VMs first
 
-Example with safeguards:
+**Validation Example:**
 
 ```bash
-#!/usr/bin/env bash
-
-set -euo pipefail  # Exit on error, undefined variable, pipe failure
-
-# Validate directory is set and non-empty
+# Validate variable is set and non-empty
 : "${BUILD_DIR:?BUILD_DIR must be set}"
 
 # Validate directory matches expected pattern
 if [[ ! "$BUILD_DIR" =~ ^/tmp/build-[0-9]+$ ]]; then
-  echo "Error: BUILD_DIR doesn't match expected pattern" >&2
-  exit 1
-fi
-
-# Validate directory exists
-if [[ ! -d "$BUILD_DIR" ]]; then
-  echo "Error: BUILD_DIR doesn't exist: $BUILD_DIR" >&2
+  echo "Error: Invalid directory pattern"
   exit 1
 fi
 
@@ -226,54 +83,32 @@ fi
 rm -rf "${BUILD_DIR:?}"
 ```
 
+**Best Practices:**
+
+- Never use absolute paths with `rm -rf`
+- Always validate input before destructive operations
+- Prefer high-level tools over low-level commands
+- Use `set -euo pipefail` for safer scripts
+
 ## Options
 
-This rule does not have any configuration options. Dangerous commands should never be used.
+This rule does not have configuration options. Dangerous commands should never be used.
 
 ## When Not To Use It
 
-You should **almost never** disable this rule. The commands detected are dangerous by design.
-
-Only disable if:
-
-- You're writing a system administration tool that requires these commands
-- You have extensive safeguards and testing in place
-- You fully understand the risks and consequences
-
-Even then, consider whether the command truly needs to be in a Claude Code skill.
-
-## Configuration
-
-To disable this rule (not recommended):
-
-```json
-{
-  "rules": {
-    "skill-dangerous-command": "off"
-  }
-}
-```
-
-To change to a warning (not recommended):
-
-```json
-{
-  "rules": {
-    "skill-dangerous-command": "warning"
-  }
-}
-```
+Almost never disable this rule. Only consider disabling if writing system administration tools requiring these commands, with extensive safeguards and testing, and full understanding of risks. Even then, question whether the command belongs in a Claude Code skill.
 
 ## Related Rules
 
-- [skill-eval-usage](./skill-eval-usage.md) - Detects eval/exec security risks
-- [skill-path-traversal](./skill-path-traversal.md) - Detects path traversal vulnerabilities
+- [skill-eval-usage](./skill-eval-usage.md) - Eval/exec security risk detection
+- [skill-path-traversal](./skill-path-traversal.md) - Path traversal vulnerability detection
 
 ## Resources
 
+- [Implementation](../../../src/validators/skills.ts)
+- [Tests](../../../tests/validators/skills.test.ts)
 - [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
 - [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls)
-- [Safe Bash Scripting](https://sipb.mit.edu/doc/safe-shell/)
 
 ## Version
 
