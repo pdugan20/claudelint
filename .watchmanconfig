@@ -1,0 +1,10 @@
+{
+  "ignore_dirs": [
+    "node_modules",
+    ".git",
+    "dist",
+    "build",
+    "tests/__temp__",
+    ".claudelint-cache"
+  ]
+}

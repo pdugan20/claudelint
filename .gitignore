@@ -19,6 +19,7 @@ Thumbs.db
 # Testing
 coverage/
 *.log
+tests/__temp__/
 
 # Local settings
 .claude/settings.local.json

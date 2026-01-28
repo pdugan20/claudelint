@@ -146,29 +146,29 @@ npm run check:rule-ids
   - [x] Update `reportError()` to check `isRuleEnabledInConfig()`
   - [x] Update `reportWarning()` to check `isRuleEnabledInConfig()`
 
-- [ ] Unit Tests for ConfigResolver
-  - [ ] Test base rule resolution
-  - [ ] Test file-specific overrides
-  - [ ] Test override priority (base → overrides)
-  - [ ] Test glob pattern matching
-  - [ ] Test option parsing
-  - [ ] Test schema validation (with valid/invalid options)
-  - [ ] Test config caching
+- [x] Unit Tests for ConfigResolver
+  - [x] Test base rule resolution
+  - [x] Test file-specific overrides
+  - [x] Test override priority (base → overrides)
+  - [x] Test glob pattern matching
+  - [x] Test option parsing
+  - [x] Test schema validation (with valid/invalid options)
+  - [x] Test config caching
 
-- [ ] Unit Tests for BaseValidator
-  - [ ] Test `isRuleEnabled()` with no config (returns true)
-  - [ ] Test `isRuleEnabled()` with "off" rule (returns false)
-  - [ ] Test `isRuleEnabled()` with enabled rule (returns true)
-  - [ ] Test `getRuleOptions()` with no config (returns defaults)
-  - [ ] Test `getRuleOptions()` with custom options
-  - [ ] Test `reportError()` skips disabled rules
-  - [ ] Test `reportWarning()` skips disabled rules
+- [x] Unit Tests for BaseValidator
+  - [x] Test `isRuleEnabled()` with no config (returns true)
+  - [x] Test `isRuleEnabled()` with "off" rule (returns false)
+  - [x] Test `isRuleEnabled()` with enabled rule (returns true)
+  - [x] Test `getRuleOptions()` with no config (returns defaults)
+  - [x] Test `getRuleOptions()` with custom options
+  - [x] Test `reportError()` skips disabled rules
+  - [x] Test `reportWarning()` skips disabled rules
 
 **Validation Checkpoint:**
-- [ ] All new unit tests pass
-- [ ] All existing tests still pass
-- [ ] ESLint clean
-- [ ] TypeScript compiles with no errors
+- [x] All new unit tests pass
+- [x] All existing tests still pass
+- [x] ESLint clean
+- [x] TypeScript compiles with no errors
 
 #### Phase 2: Proof of Concept Rules (Day 2-3, ~4-5 hours)
 
