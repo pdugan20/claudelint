@@ -11,14 +11,14 @@ This is the single source of truth for outstanding rule implementation work.
 - **Complete**: 22 rules (10%)
 - **Partial (Ghost Rules)**: 19 of 20 fixed (1 needs implementation)
 - **Not Started**: 177 rules (81%)
-- **Config Integration**: 100% COMPLETE ✓
+- **Config Integration**: 100% COMPLETE
 - **Test Status**: 688/690 passing (99.7%)
 
 ---
 
 ## Immediate Priorities (BLOCKERS)
 
-### 0. Configuration Integration (3-4 days) COMPLETE ✓
+### 0. Configuration Integration (3-4 days) COMPLETE
 
 **Status**: COMPLETE - Rules fully respect .claudelintrc.json configuration
 **Implementation**: ESLint pattern with severity override support
@@ -306,7 +306,7 @@ Core functionality tested and working. Additional polish tasks deferred.
 
 **Completion Criteria:**
 - [x] Rules respect "off" setting (can disable any rule)
-- [x] Severity overrides work (can change error ↔ warn)
+- [x] Severity overrides work (can change error to warn and vice versa)
 - [x] File-specific overrides apply correctly
 - [x] At least 3 rules support configurable options (size-error, size-warning, import-circular)
 - [x] All existing tests pass (688/690 - 99.7%, 2 skipped as expected)
