@@ -6,6 +6,7 @@
  * and future extensibility.
  */
 
+import { z } from 'zod';
 import { RuleId } from '../rules/rule-ids';
 
 export interface RuleMetadata {
@@ -38,6 +39,39 @@ export interface RuleMetadata {
 
   /** URL to rule documentation (optional) */
   docUrl?: string;
+
+  /**
+   * Zod schema for validating rule options
+   *
+   * If provided, options will be validated against this schema
+   * before being passed to the rule. Validation errors will be
+   * reported at config load time.
+   *
+   * @example
+   * ```typescript
+   * schema: z.object({
+   *   maxSize: z.number().positive().optional(),
+   *   reportZeroSize: z.boolean().optional()
+   * })
+   * ```
+   */
+  schema?: z.ZodType<any>;
+
+  /**
+   * Default options for this rule
+   *
+   * Used when rule is enabled but no options are configured.
+   * Should match the schema if one is provided.
+   *
+   * @example
+   * ```typescript
+   * defaultOptions: {
+   *   maxSize: 50000,
+   *   reportZeroSize: false
+   * }
+   * ```
+   */
+  defaultOptions?: Record<string, unknown>;
 }
 
 export class RuleRegistry {

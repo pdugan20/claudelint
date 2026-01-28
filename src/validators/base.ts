@@ -5,6 +5,8 @@ import { VALID_TOOLS, VALID_HOOK_EVENTS } from '../schemas/constants';
 import { ClaudeLintConfig } from '../utils/config';
 import { formatError } from '../utils/validation-helpers';
 import { RuleId } from '../rules/rule-ids';
+import { ConfigResolver } from '../utils/config-resolver';
+import { RuleRegistry } from '../utils/rule-registry';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue
@@ -127,12 +129,23 @@ export abstract class BaseValidator {
   protected warnings: ValidationWarning[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
 
+  /** Config resolver for accessing rule configuration */
+  protected configResolver?: ConfigResolver;
+
+  /** Current file being validated (for config resolution) */
+  protected currentFile?: string;
+
   /**
    * Creates a new validator instance
    * @param options - Validation options
    */
   constructor(options: BaseValidatorOptions = {}) {
     this.options = options;
+
+    // Initialize config resolver if config is provided
+    if (options.config) {
+      this.configResolver = new ConfigResolver(options.config);
+    }
   }
 
   /**
@@ -148,9 +161,16 @@ export abstract class BaseValidator {
     ruleId?: RuleId,
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
-    if (this.isRuleDisabled(file, line, ruleId)) {
+    // Check inline disable comments
+    if (this.isRuleDisabledByComment(file, line, ruleId)) {
       return;
     }
+
+    // Check if rule is enabled in config
+    if (ruleId && !this.isRuleEnabledInConfig(ruleId)) {
+      return;
+    }
+
     this.errors.push({
       message,
       file,
@@ -171,9 +191,16 @@ export abstract class BaseValidator {
     ruleId?: RuleId,
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
-    if (this.isRuleDisabled(file, line, ruleId)) {
+    // Check inline disable comments
+    if (this.isRuleDisabledByComment(file, line, ruleId)) {
       return;
     }
+
+    // Check if rule is enabled in config
+    if (ruleId && !this.isRuleEnabledInConfig(ruleId)) {
+      return;
+    }
+
     this.warnings.push({
       message,
       file,
@@ -187,7 +214,18 @@ export abstract class BaseValidator {
     });
   }
 
+  /**
+   * Check if rule is disabled by inline comment
+   * @deprecated Internal method renamed to isRuleDisabledByComment for clarity
+   */
   protected isRuleDisabled(file?: string, line?: number, ruleId?: RuleId): boolean {
+    return this.isRuleDisabledByComment(file, line, ruleId);
+  }
+
+  /**
+   * Check if rule is disabled by inline comment (claudelint-disable)
+   */
+  protected isRuleDisabledByComment(file?: string, line?: number, ruleId?: RuleId): boolean {
     if (!file || !ruleId) {
       return false;
     }
@@ -217,6 +255,86 @@ export abstract class BaseValidator {
       }
     }
     return false;
+  }
+
+  /**
+   * Set current file context for config resolution
+   *
+   * Must be called before accessing rule options or checking if rules are enabled.
+   * Typically called at the start of validating each file.
+   *
+   * @param filePath - Path to the file being validated
+   *
+   * @example
+   * ```typescript
+   * for (const file of files) {
+   *   this.setCurrentFile(file);
+   *   const options = this.getRuleOptions('my-rule');
+   *   // ...validate file
+   * }
+   * ```
+   */
+  protected setCurrentFile(filePath: string): void {
+    this.currentFile = filePath;
+  }
+
+  /**
+   * Check if a rule is enabled in the configuration
+   *
+   * A rule is enabled if:
+   * - No config is provided (all rules enabled by default)
+   * - Rule is not configured (defaults to enabled)
+   * - Rule is configured with severity "warn" or "error"
+   *
+   * A rule is disabled if configured with severity "off".
+   *
+   * @param ruleId - The rule ID to check
+   * @returns true if rule is enabled, false if disabled
+   *
+   * @example
+   * ```typescript
+   * if (this.isRuleEnabledInConfig('size-error')) {
+   *   // Perform validation
+   * }
+   * ```
+   */
+  protected isRuleEnabledInConfig(ruleId: RuleId): boolean {
+    // If no config resolver, rule is enabled (default behavior)
+    if (!this.configResolver || !this.currentFile) {
+      return true;
+    }
+
+    return this.configResolver.isRuleEnabled(ruleId, this.currentFile);
+  }
+
+  /**
+   * Get options for a specific rule
+   *
+   * Returns configured options or default options from rule registry.
+   * Options are type-safe when using the generic parameter.
+   *
+   * @param ruleId - The rule ID
+   * @returns Typed options object or undefined
+   *
+   * @example
+   * ```typescript
+   * interface SizeErrorOptions {
+   *   maxSize?: number;
+   * }
+   *
+   * const options = this.getRuleOptions<SizeErrorOptions>('size-error');
+   * const maxSize = options?.maxSize ?? 50000;
+   * ```
+   */
+  protected getRuleOptions<T = Record<string, unknown>>(ruleId: RuleId): T | undefined {
+    if (!this.configResolver || !this.currentFile) {
+      // Return default options from registry
+      const rule = RuleRegistry.get(ruleId);
+      return rule?.defaultOptions as T | undefined;
+    }
+
+    const options = this.configResolver.getRuleOptions(ruleId, this.currentFile);
+    return options[0] as T | undefined;
   }
 
   protected parseDisableComments(filePath: string, content: string): void {

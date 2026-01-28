@@ -117,34 +117,34 @@ npm run check:rule-ids
 
 **Goal**: Build config resolution and validator integration layer
 
-- [ ] Create `src/utils/rule-context.ts`
-  - [ ] Define `RuleContext` interface
-  - [ ] Define `ResolvedRuleConfig` interface
-  - [ ] Add JSDoc comments
+- [x] Create `src/utils/rule-context.ts`
+  - [x] Define `RuleContext` interface
+  - [x] Define `ResolvedRuleConfig` interface
+  - [x] Add JSDoc comments
 
-- [ ] Create `src/utils/config-resolver.ts`
-  - [ ] Implement `ConfigResolver` class
-  - [ ] Add `resolveForFile()` method (apply overrides)
-  - [ ] Add `isRuleEnabled()` method
-  - [ ] Add `getRuleOptions()` method
-  - [ ] Add `normalizeRuleConfig()` private method
-  - [ ] Add config caching for performance
-  - [ ] Install `minimatch` dependency for glob matching
+- [x] Create `src/utils/config-resolver.ts`
+  - [x] Implement `ConfigResolver` class
+  - [x] Add `resolveForFile()` method (apply overrides)
+  - [x] Add `isRuleEnabled()` method
+  - [x] Add `getRuleOptions()` method
+  - [x] Add `normalizeRuleConfig()` private method
+  - [x] Add config caching for performance
+  - [x] Install `minimatch` dependency for glob matching
 
-- [ ] Enhance `src/utils/rule-registry.ts`
-  - [ ] Add `schema?: z.ZodType<any>` to RuleMetadata
-  - [ ] Add `defaultOptions?: Record<string, unknown>` to RuleMetadata
-  - [ ] Update JSDoc comments
+- [x] Enhance `src/utils/rule-registry.ts`
+  - [x] Add `schema?: z.ZodType<any>` to RuleMetadata
+  - [x] Add `defaultOptions?: Record<string, unknown>` to RuleMetadata
+  - [x] Update JSDoc comments
 
-- [ ] Enhance `src/validators/base.ts`
-  - [ ] Add `protected configResolver?: ConfigResolver` field
-  - [ ] Add `protected currentFile?: string` field
-  - [ ] Initialize configResolver in constructor if config provided
-  - [ ] Add `protected isRuleEnabled(ruleId: RuleId): boolean` method
-  - [ ] Add `protected getRuleOptions<T>(ruleId: RuleId): T | undefined` method
-  - [ ] Add `protected setCurrentFile(filePath: string): void` method
-  - [ ] Update `reportError()` to check `isRuleEnabled()`
-  - [ ] Update `reportWarning()` to check `isRuleEnabled()`
+- [x] Enhance `src/validators/base.ts`
+  - [x] Add `protected configResolver?: ConfigResolver` field
+  - [x] Add `protected currentFile?: string` field
+  - [x] Initialize configResolver in constructor if config provided
+  - [x] Add `protected isRuleEnabledInConfig(ruleId: RuleId): boolean` method
+  - [x] Add `protected getRuleOptions<T>(ruleId: RuleId): T | undefined` method
+  - [x] Add `protected setCurrentFile(filePath: string): void` method
+  - [x] Update `reportError()` to check `isRuleEnabledInConfig()`
+  - [x] Update `reportWarning()` to check `isRuleEnabledInConfig()`
 
 - [ ] Unit Tests for ConfigResolver
   - [ ] Test base rule resolution
