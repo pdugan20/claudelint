@@ -14,7 +14,11 @@ export type ClaudeMdRuleId =
   | 'import-in-code-block'
   | 'frontmatter-invalid-paths'
   | 'rules-circular-symlink'
-  | 'filename-case-sensitive';
+  | 'filename-case-sensitive'
+  | 'content-too-many-sections'
+  | 'glob-pattern-backslash'
+  | 'glob-pattern-too-broad'
+  | 'file-not-found';
 
 /**
  * Skills validator rule IDs
@@ -47,7 +51,8 @@ export type SettingsRuleId =
   | 'settings-invalid-schema'
   | 'settings-invalid-permission'
   | 'settings-invalid-env-var'
-  | 'settings-permission-invalid-rule';
+  | 'settings-permission-invalid-rule'
+  | 'settings-permission-empty-pattern';
 
 /**
  * Hooks validator rule IDs
@@ -106,6 +111,10 @@ export const ALL_RULE_IDS = [
   'frontmatter-invalid-paths',
   'rules-circular-symlink',
   'filename-case-sensitive',
+  'content-too-many-sections',
+  'glob-pattern-backslash',
+  'glob-pattern-too-broad',
+  'file-not-found',
   // Skills rules
   'skill-missing-shebang',
   'skill-missing-comments',
@@ -129,6 +138,7 @@ export const ALL_RULE_IDS = [
   'settings-invalid-permission',
   'settings-invalid-env-var',
   'settings-permission-invalid-rule',
+  'settings-permission-empty-pattern',
   // Hooks rules
   'hooks-invalid-event',
   'hooks-missing-script',

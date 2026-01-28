@@ -52,6 +52,12 @@ export class Reporter {
     if (this.options.color === undefined) {
       this.options.color = process.stdout.isTTY && !process.env.NO_COLOR;
     }
+    // Set chalk color level
+    if (this.options.color) {
+      chalk.level = 1; // Force basic color support
+    } else {
+      chalk.level = 0; // Disable colors
+    }
     // Initialize progress indicator
     this.progressIndicator = new ProgressIndicator({
       enabled: this.options.format !== 'json',

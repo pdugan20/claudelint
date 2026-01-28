@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, unlinkSync } from 'fs';
+import { tmpdir } from 'os';
 
 describe('Plugin Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
@@ -171,22 +172,29 @@ describe('Plugin Integration Tests', () => {
     });
 
     it('should support --format json', () => {
+      // Write output to a temp file to avoid buffer size limits
+      const tempFile = join(tmpdir(), 'claudelint-test-output.json');
+
       try {
-        const result = execSync(`${claudelintBin} check-all --format json`, {
+        // Run command and redirect output to file
+        execSync(`${claudelintBin} check-all --format json > "${tempFile}" 2>&1 || true`, {
           cwd: projectRoot,
           encoding: 'utf-8',
-          stdio: 'pipe',
-        }).toString();
+        });
 
-        expect(() => {
-          JSON.parse(result);
-        }).not.toThrow();
-      } catch (error: any) {
-        // Even with errors, JSON output should be parseable
-        const output = error.stdout || error.stderr || '';
+        // Read the full output from file
+        const output = readFileSync(tempFile, 'utf-8');
+
         expect(() => {
           JSON.parse(output);
         }).not.toThrow();
+      } finally {
+        // Clean up temp file
+        try {
+          unlinkSync(tempFile);
+        } catch (e) {
+          // Ignore cleanup errors
+        }
       }
     });
 

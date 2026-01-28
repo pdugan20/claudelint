@@ -20,10 +20,10 @@ export interface RuleMetadata {
   description: string;
 
   /** Category this rule belongs to */
-  category: 'CLAUDE.md' | 'Skills' | 'Settings' | 'Hooks' | 'MCP' | 'Plugin';
+  category: 'CLAUDE.md' | 'Skills' | 'Settings' | 'Hooks' | 'MCP' | 'Plugin' | 'Commands';
 
   /** Default severity level */
-  severity: 'error' | 'warning';
+  severity: 'off' | 'warn' | 'error';
 
   /** Whether the rule supports auto-fixing */
   fixable: boolean;

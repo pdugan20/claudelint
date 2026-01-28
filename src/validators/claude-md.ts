@@ -192,7 +192,9 @@ export class ClaudeMdValidator extends BaseValidator {
         `CLAUDE.md has ${sectionCount} sections (>${CLAUDE_MD_MAX_SECTIONS} is hard to navigate). ` +
           `Consider organizing content into separate files in .claude/rules/ directory. ` +
           `For example: .claude/rules/git.md, .claude/rules/api.md, .claude/rules/testing.md`,
-        filePath
+        filePath,
+        undefined,
+        'content-too-many-sections'
       );
     }
   }
@@ -206,9 +208,8 @@ export class ClaudeMdValidator extends BaseValidator {
       'claude-md'
     );
 
-    // Merge schema validation results
-    this.errors.push(...result.errors);
-    this.warnings.push(...result.warnings);
+    // Merge schema validation results (not configurable)
+    this.mergeSchemaValidationResult(result);
 
     // If no frontmatter, that's okay - it's optional for rules files
     if (!frontmatter) {
@@ -228,7 +229,9 @@ export class ClaudeMdValidator extends BaseValidator {
     if (pattern.includes('\\')) {
       this.reportWarning(
         `Path pattern uses backslashes: ${pattern}. Use forward slashes even on Windows.`,
-        filePath
+        filePath,
+        undefined,
+        'glob-pattern-backslash'
       );
     }
 
@@ -236,7 +239,9 @@ export class ClaudeMdValidator extends BaseValidator {
     if (pattern === '**' || pattern === '*') {
       this.reportWarning(
         `Path pattern is very broad: ${pattern}. Consider being more specific.`,
-        filePath
+        filePath,
+        undefined,
+        'glob-pattern-too-broad'
       );
     }
   }

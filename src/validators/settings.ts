@@ -98,7 +98,7 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
           `Empty inline pattern in Tool(pattern) syntax: ${rule.tool}`,
           filePath,
           undefined,
-          'settings-permission-invalid-rule'
+          'settings-permission-empty-pattern'
         );
       }
     }

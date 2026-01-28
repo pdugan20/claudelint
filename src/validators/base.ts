@@ -23,6 +23,30 @@ export interface AutoFix {
 }
 
 /**
+ * Represents a validation issue before severity is applied
+ */
+export interface ValidationIssue {
+  /** Issue message describing the problem */
+  message: string;
+  /** File path where the issue occurred */
+  file?: string;
+  /** Line number where the issue occurred */
+  line?: number;
+  /** Unique identifier for the rule that triggered this issue (required for config support) */
+  ruleId?: RuleId;
+  /** Default severity (only used when ruleId is undefined, for backward compatibility) */
+  defaultSeverity?: 'error' | 'warning';
+  /** Quick fix suggestion text */
+  fix?: string;
+  /** Detailed explanation of why this issue matters */
+  explanation?: string;
+  /** Step-by-step instructions on how to fix the issue */
+  howToFix?: string;
+  /** Automatic fix that can be applied */
+  autoFix?: AutoFix;
+}
+
+/**
  * Represents a validation error with location and fix information
  */
 export interface ValidationError {
@@ -117,7 +141,7 @@ interface DisabledRule {
  * ```typescript
  * class MyValidator extends BaseValidator {
  *   async validate(): Promise<ValidationResult> {
- *     this.reportError('Error message', 'file.md', 10, 'rule-id');
+ *     this.report('Error message', 'file.md', 10, 'rule-id');
  *     return this.getResult();
  *   }
  * }
@@ -125,8 +149,7 @@ interface DisabledRule {
  */
 export abstract class BaseValidator {
   protected options: BaseValidatorOptions;
-  protected errors: ValidationError[] = [];
-  protected warnings: ValidationWarning[] = [];
+  protected issues: ValidationIssue[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
 
   /** Config resolver for accessing rule configuration */
@@ -154,7 +177,77 @@ export abstract class BaseValidator {
    */
   abstract validate(): Promise<ValidationResult>;
 
-  protected reportError(
+  /**
+   * Merge schema validation results into this validator
+   *
+   * Converts pre-classified errors/warnings from schema validation into issues.
+   * Severity will be determined by config in getResult().
+   *
+   * @param result - Validation result from schema validation
+   *
+   * @example
+   * ```typescript
+   * const result = await validateFrontmatterWithSchema(content, schema, filePath, 'claude-md');
+   * this.mergeSchemaValidationResult(result);
+   * ```
+   */
+  protected mergeSchemaValidationResult(result: ValidationResult): void {
+    // Convert errors to issues
+    for (const error of result.errors) {
+      if (error.ruleId) {
+        this.issues.push({
+          message: error.message,
+          file: error.file,
+          line: error.line,
+          ruleId: error.ruleId,
+          fix: error.fix,
+          explanation: error.explanation,
+          howToFix: error.howToFix,
+          autoFix: error.autoFix,
+        });
+      }
+    }
+
+    // Convert warnings to issues
+    for (const warning of result.warnings) {
+      if (warning.ruleId) {
+        this.issues.push({
+          message: warning.message,
+          file: warning.file,
+          line: warning.line,
+          ruleId: warning.ruleId,
+          fix: warning.fix,
+          explanation: warning.explanation,
+          howToFix: warning.howToFix,
+          autoFix: warning.autoFix,
+        });
+      }
+    }
+  }
+
+  /**
+   * Report a validation issue
+   *
+   * Severity is determined by configuration, not hardcoded.
+   *
+   * @param message - Issue message describing the problem
+   * @param file - File path where the issue occurred
+   * @param line - Line number where the issue occurred
+   * @param ruleId - Unique identifier for the rule
+   * @param options - Additional issue information (fix, explanation, etc.)
+   *
+   * @example
+   * ```typescript
+   * this.report(
+   *   'File exceeds size limit',
+   *   filePath,
+   *   undefined,
+   *   'size-error',
+   *   { fix: 'Split into smaller files' }
+   * );
+   * ```
+   */
+  protected report(
     message: string,
     file?: string,
     line?: number,
@@ -162,20 +255,22 @@ export abstract class BaseValidator {
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
     // Check inline disable comments
-    if (this.isRuleDisabledByComment(file, line, ruleId)) {
+    if (ruleId && this.isRuleDisabledByComment(file, line, ruleId)) {
       return;
     }
 
-    // Check if rule is enabled in config
-    if (ruleId && !this.isRuleEnabledInConfig(ruleId)) {
-      return;
+    // Check if rule is enabled in config for this specific file
+    if (ruleId && this.configResolver && file) {
+      if (!this.configResolver.isRuleEnabled(ruleId, file)) {
+        return;
+      }
     }
 
-    this.errors.push({
+    // Store issue without severity - will be determined from config in getResult()
+    this.issues.push({
       message,
       file,
       line,
-      severity: 'error',
       ruleId,
       fix: options?.fix,
       explanation: options?.explanation,
@@ -184,6 +279,38 @@ export abstract class BaseValidator {
     });
   }
 
+  /**
+   * Report an error (backward compatibility wrapper)
+   * @deprecated Use report() instead - severity should come from config
+   */
+  protected reportError(
+    message: string,
+    file?: string,
+    line?: number,
+    ruleId?: RuleId,
+    options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
+  ): void {
+    // For backward compatibility: if no ruleId, mark as error by default
+    if (!ruleId) {
+      this.issues.push({
+        message,
+        file,
+        line,
+        defaultSeverity: 'error',
+        fix: options?.fix,
+        explanation: options?.explanation,
+        howToFix: options?.howToFix,
+        autoFix: options?.autoFix,
+      });
+    } else {
+      this.report(message, file, line, ruleId, options);
+    }
+  }
+
+  /**
+   * Report a warning (backward compatibility wrapper)
+   * @deprecated Use report() instead - severity should come from config
+   */
   protected reportWarning(
     message: string,
     file?: string,
@@ -191,27 +318,21 @@ export abstract class BaseValidator {
     ruleId?: RuleId,
     options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
   ): void {
-    // Check inline disable comments
-    if (this.isRuleDisabledByComment(file, line, ruleId)) {
-      return;
+    // For backward compatibility: if no ruleId, mark as warning by default
+    if (!ruleId) {
+      this.issues.push({
+        message,
+        file,
+        line,
+        defaultSeverity: 'warning',
+        fix: options?.fix,
+        explanation: options?.explanation,
+        howToFix: options?.howToFix,
+        autoFix: options?.autoFix,
+      });
+    } else {
+      this.report(message, file, line, ruleId, options);
     }
-
-    // Check if rule is enabled in config
-    if (ruleId && !this.isRuleEnabledInConfig(ruleId)) {
-      return;
-    }
-
-    this.warnings.push({
-      message,
-      file,
-      line,
-      severity: 'warning',
-      ruleId,
-      fix: options?.fix,
-      explanation: options?.explanation,
-      howToFix: options?.howToFix,
-      autoFix: options?.autoFix,
-    });
   }
 
   /**
@@ -447,11 +568,70 @@ export abstract class BaseValidator {
     }
   }
 
+  /**
+   * Get configured severity for a rule
+   *
+   * @param ruleId - The rule ID to check
+   * @param filePath - The file path to resolve config for (optional, uses currentFile if not provided)
+   * @returns 'error', 'warn', or 'off'
+   */
+  protected getSeverityFromConfig(ruleId: RuleId, filePath?: string): 'off' | 'warn' | 'error' {
+    const file = filePath || this.currentFile;
+
+    if (!this.configResolver || !file) {
+      // No config - use rule's default severity from registry
+      const rule = RuleRegistry.get(ruleId);
+      return rule?.severity ?? 'error';
+    }
+
+    return this.configResolver.getRuleSeverity(ruleId, file);
+  }
+
+  /**
+   * Compile issues into final validation result
+   *
+   * Applies severity from configuration to each issue.
+   *
+   * @returns ValidationResult with errors and warnings
+   */
   protected getResult(): ValidationResult {
+    const errors: ValidationError[] = [];
+    const warnings: ValidationWarning[] = [];
+
+    // Apply config-based severity to all issues
+    for (const issue of this.issues) {
+      // Determine severity from config, or use defaultSeverity for backward compatibility
+      let severity: 'off' | 'warn' | 'error';
+      if (issue.ruleId) {
+        severity = this.getSeverityFromConfig(issue.ruleId, issue.file);
+      } else {
+        // No ruleId - use defaultSeverity for backward compatibility
+        severity = issue.defaultSeverity === 'warning' ? 'warn' : 'error';
+      }
+
+      if (severity === 'off') {
+        // Rule is disabled - skip this issue
+        continue;
+      }
+
+      // Create error or warning based on configured severity
+      if (severity === 'error') {
+        errors.push({
+          ...issue,
+          severity: 'error',
+        });
+      } else if (severity === 'warn') {
+        warnings.push({
+          ...issue,
+          severity: 'warning',
+        });
+      }
+    }
+
     return {
-      valid: this.errors.length === 0,
-      errors: this.errors,
-      warnings: this.warnings,
+      valid: errors.length === 0,
+      errors,
+      warnings,
     };
   }
 

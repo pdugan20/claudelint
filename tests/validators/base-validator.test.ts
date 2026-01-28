@@ -75,7 +75,7 @@ describe('BaseValidator config integration', () => {
       name: 'Size Warning',
       description: 'Test rule with options',
       category: 'CLAUDE.md',
-      severity: 'warning',
+      severity: 'warn',
       fixable: false,
       deprecated: false,
       since: '1.0.0',
@@ -451,17 +451,17 @@ describe('BaseValidator config integration', () => {
     it('should work before setCurrentFile is called', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': 'off',
+          'size-error': 'error',
         },
       };
 
       const validator = new TestValidator({ config });
 
-      // Don't call setCurrentFile - should still work with default behavior
+      // Don't call setCurrentFile - should still work with file parameter
       validator.testReportError('Error', 'test.md', 1, 'size-error');
 
       const result = validator.getResult();
-      // Without currentFile, config checks return true (default enabled)
+      // Config is checked based on file parameter, not currentFile
       expect(result.errors.length).toBe(1);
     });
   });

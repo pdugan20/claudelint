@@ -28,7 +28,7 @@ describe('ConfigResolver', () => {
       name: 'Size Warning',
       description: 'Test rule with options',
       category: 'CLAUDE.md',
-      severity: 'warning',
+      severity: 'warn',
       fixable: false,
       deprecated: false,
       since: '1.0.0',

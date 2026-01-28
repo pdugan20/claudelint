@@ -100,9 +100,8 @@ export class OutputStylesValidator extends BaseValidator {
       'output-style'
     );
 
-    // Merge schema validation results
-    this.errors.push(...result.errors);
-    this.warnings.push(...result.warnings);
+    // Merge schema validation results (not configurable)
+    this.mergeSchemaValidationResult(result);
 
     // If no frontmatter parsed, schema validation already reported the error
     if (!frontmatter) {

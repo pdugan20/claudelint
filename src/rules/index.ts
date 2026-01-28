@@ -31,7 +31,7 @@ RuleRegistry.register({
   name: 'File Size Warning',
   description: 'CLAUDE.md approaching file size limit',
   category: 'CLAUDE.md',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -59,7 +59,7 @@ RuleRegistry.register({
   name: 'Circular Import',
   description: 'Circular @import dependencies detected',
   category: 'CLAUDE.md',
-  severity: 'error',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -75,6 +75,83 @@ RuleRegistry.register({
   },
 });
 
+RuleRegistry.register({
+  id: 'content-too-many-sections',
+  name: 'Too Many Sections',
+  description: 'CLAUDE.md has too many sections',
+  category: 'CLAUDE.md',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'glob-pattern-backslash',
+  name: 'Backslash in Glob Pattern',
+  description: 'Glob pattern uses backslashes instead of forward slashes',
+  category: 'CLAUDE.md',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'glob-pattern-too-broad',
+  name: 'Glob Pattern Too Broad',
+  description: 'Glob pattern is very broad (** or *)',
+  category: 'CLAUDE.md',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'filename-case-sensitive',
+  name: 'Case Sensitive Filename Collision',
+  description: 'Filenames differ only in case',
+  category: 'CLAUDE.md',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'import-in-code-block',
+  name: 'Import in Code Block',
+  description: 'Import statement found inside code block',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'file-not-found',
+  name: 'File Not Found',
+  description: 'Specified file does not exist',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'rules-circular-symlink',
+  name: 'Circular Symlink',
+  description: 'Circular symlink detected in imports',
+  category: 'CLAUDE.md',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
 /**
  * Skills Validator Rules
  */
@@ -83,7 +160,7 @@ RuleRegistry.register({
   name: 'Missing Shebang',
   description: 'Shell script missing shebang line',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: true,
   deprecated: false,
   since: '1.0.0',
@@ -94,7 +171,7 @@ RuleRegistry.register({
   name: 'Missing Comments',
   description: 'File lacks explanatory comments',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -116,7 +193,7 @@ RuleRegistry.register({
   name: 'Eval Usage',
   description: 'Use of eval/exec detected',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -127,7 +204,7 @@ RuleRegistry.register({
   name: 'Path Traversal',
   description: 'Potential path traversal vulnerability',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -138,7 +215,7 @@ RuleRegistry.register({
   name: 'Missing CHANGELOG',
   description: 'Skill missing CHANGELOG.md',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: true,
   deprecated: false,
   since: '1.0.0',
@@ -149,7 +226,7 @@ RuleRegistry.register({
   name: 'Missing Examples',
   description: 'Skill missing usage examples',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -160,7 +237,7 @@ RuleRegistry.register({
   name: 'Missing Version',
   description: 'Skill missing version field',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: true,
   deprecated: false,
   since: '1.0.0',
@@ -171,7 +248,7 @@ RuleRegistry.register({
   name: 'Too Many Files',
   description: 'Too many loose files in skill directory',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -182,7 +259,7 @@ RuleRegistry.register({
   name: 'Deep Nesting',
   description: 'Excessive directory nesting in skill',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -193,7 +270,7 @@ RuleRegistry.register({
   name: 'Inconsistent Naming',
   description: 'Inconsistent naming conventions',
   category: 'Skills',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -229,7 +306,29 @@ RuleRegistry.register({
   name: 'Invalid Environment Variable',
   description: 'Environment variable name or value is invalid',
   category: 'Settings',
-  severity: 'warning',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'settings-permission-invalid-rule',
+  name: 'Invalid Permission Rule',
+  description: 'Permission rule has conflicting pattern specifications',
+  category: 'Settings',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'settings-permission-empty-pattern',
+  name: 'Empty Permission Pattern',
+  description: 'Permission rule has empty inline pattern',
+  category: 'Settings',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -301,7 +400,7 @@ RuleRegistry.register({
   name: 'Invalid Environment Variable',
   description: 'Environment variable usage or expansion is invalid',
   category: 'MCP',
-  severity: 'warning',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',
@@ -338,6 +437,64 @@ RuleRegistry.register({
   description: 'Plugin references non-existent file',
   category: 'Plugin',
   severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'plugin-circular-dependency',
+  name: 'Circular Dependency',
+  description: 'Plugin has circular dependency',
+  category: 'Plugin',
+  severity: 'error',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'plugin-dependency-invalid-version',
+  name: 'Invalid Dependency Version',
+  description: 'Plugin dependency has invalid semver version',
+  category: 'Plugin',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+/**
+ * Commands Validator Rules
+ */
+RuleRegistry.register({
+  id: 'commands-deprecated-directory',
+  name: 'Deprecated Commands Directory',
+  description: 'Commands directory is deprecated, use Skills instead',
+  category: 'Commands',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'commands-migrate-to-skills',
+  name: 'Migrate to Skills',
+  description: 'Commands should be migrated to Skills',
+  category: 'Commands',
+  severity: 'warn',
+  fixable: false,
+  deprecated: false,
+  since: '1.0.0',
+});
+
+RuleRegistry.register({
+  id: 'commands-in-plugin-deprecated',
+  name: 'Commands in Plugin Deprecated',
+  description: 'Commands in plugin.json are deprecated',
+  category: 'Commands',
+  severity: 'warn',
   fixable: false,
   deprecated: false,
   since: '1.0.0',

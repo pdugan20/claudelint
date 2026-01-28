@@ -207,6 +207,35 @@ export class ConfigResolver {
   }
 
   /**
+   * Get severity for a rule in a specific file
+   *
+   * Returns configured severity or default from registry if not configured.
+   *
+   * @param ruleId - The rule ID
+   * @param filePath - Path to the file
+   * @returns 'off', 'warn', or 'error'
+   *
+   * @example
+   * ```typescript
+   * const severity = resolver.getRuleSeverity('size-error', 'CLAUDE.md');
+   * if (severity === 'error') {
+   *   // Report as error
+   * }
+   * ```
+   */
+  getRuleSeverity(ruleId: RuleId, filePath: string): 'off' | 'warn' | 'error' {
+    const config = this.resolveForFile(filePath).get(ruleId);
+
+    if (!config) {
+      // Use default severity from registry
+      const rule = RuleRegistry.get(ruleId);
+      return rule?.severity ?? 'error';
+    }
+
+    return config.severity;
+  }
+
+  /**
    * Get options for a rule in a specific file
    *
    * Returns configured options or defaults from registry if not configured.
