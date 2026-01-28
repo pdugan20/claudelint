@@ -166,7 +166,9 @@ export class AgentsValidator extends BaseValidator {
       if (!exists) {
         this.reportError(
           `Referenced skill not found: ${skillName}`,
-          filePath
+          filePath,
+          undefined,
+          'agent-skills-not-found'
         );
       }
     }

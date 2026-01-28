@@ -101,7 +101,7 @@ export interface BaseValidatorOptions {
 export type ValidatorOptions = BaseValidatorOptions;
 
 interface DisabledRule {
-  ruleId: RuleId | 'all' | string; // Allow string for invalid rule IDs from comments
+  ruleId: string; // Can be RuleId, 'all', or invalid rule IDs from comments
   startLine?: number;
   endLine?: number;
   used?: boolean;
@@ -376,7 +376,7 @@ export abstract class BaseValidator {
       return true;
     }
 
-    if (!VALID_TOOLS.includes(toolName as any)) {
+    if (!(VALID_TOOLS as readonly string[]).includes(toolName)) {
       this.reportWarning(`Unknown ${context}: ${toolName}`, filePath);
       return false;
     }
@@ -390,7 +390,7 @@ export abstract class BaseValidator {
    * Returns true if valid
    */
   protected validateEventName(eventName: string, filePath: string, context = 'event'): boolean {
-    if (!VALID_HOOK_EVENTS.includes(eventName as any)) {
+    if (!(VALID_HOOK_EVENTS as readonly string[]).includes(eventName)) {
       this.reportWarning(`Unknown ${context}: ${eventName}`, filePath);
       return false;
     }

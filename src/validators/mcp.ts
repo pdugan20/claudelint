@@ -61,7 +61,7 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
   ): void {
     // Check server name uniqueness
     if (this.serverNames.has(server.name)) {
-      this.reportError(`Duplicate MCP server name: ${server.name}`, filePath);
+      this.reportError(`Duplicate MCP server name: ${server.name}`, filePath, undefined, 'mcp-invalid-server');
     } else {
       this.serverNames.add(server.name);
     }
@@ -87,10 +87,12 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
       | z.infer<typeof MCPWebSocketTransportSchema>
   ): void {
     // Validate transport type
-    if (!VALID_MCP_TRANSPORT_TYPES.includes(transport.type as any)) {
+    if (!(VALID_MCP_TRANSPORT_TYPES as readonly string[]).includes(transport.type)) {
       this.reportError(
         `Invalid MCP transport type: ${transport.type}. Must be one of: ${VALID_MCP_TRANSPORT_TYPES.join(', ')}`,
-        filePath
+        filePath,
+        undefined,
+        'mcp-invalid-transport'
       );
     }
 
@@ -252,7 +254,7 @@ export class MCPValidator extends JSONConfigValidator<typeof MCPConfigSchema> {
       const varName = match[1];
       // Variable name is already validated by the regex pattern
       if (varName.length === 0) {
-        this.reportError(`Invalid variable expansion syntax in ${context}: ${match[0]}`, filePath);
+        this.reportError(`Invalid variable expansion syntax in ${context}: ${match[0]}`, filePath, undefined, 'mcp-invalid-env-var');
       }
     }
 

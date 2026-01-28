@@ -94,7 +94,7 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
 
       const exists = await fileExists(scriptPath);
       if (!exists) {
-        this.reportError(`Hook script not found: ${command}`, filePath);
+        this.reportError(`Hook script not found: ${command}`, filePath, undefined, 'hooks-missing-script');
         return;
       }
 

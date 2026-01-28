@@ -107,10 +107,12 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     this.validateToolName(toolName, filePath, 'tool in permission rule');
 
     // Validate action
-    if (!VALID_PERMISSION_ACTIONS.includes(rule.action as any)) {
+    if (!(VALID_PERMISSION_ACTIONS as readonly string[]).includes(rule.action)) {
       this.reportError(
         `Invalid permission action: ${rule.action}. Must be one of: ${VALID_PERMISSION_ACTIONS.join(', ')}`,
-        filePath
+        filePath,
+        undefined,
+        'settings-invalid-permission'
       );
     }
 
@@ -118,7 +120,7 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     if (rule.pattern) {
       // Basic pattern validation - could be enhanced
       if (rule.pattern.trim().length === 0) {
-        this.reportWarning('Empty permission pattern', filePath);
+        this.reportWarning('Empty permission pattern', filePath, undefined, 'settings-invalid-permission');
       }
     }
   }

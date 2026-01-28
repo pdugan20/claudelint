@@ -88,9 +88,10 @@ export class LSPValidator extends JSONConfigValidator<typeof LSPConfigSchema> {
 
     // Validate transport type if specified
     if ('transport' in serverConfig && serverConfig.transport) {
-      if (serverConfig.transport !== 'stdio' && serverConfig.transport !== 'socket') {
+      const transport = serverConfig.transport;
+      if (transport !== 'stdio' && transport !== 'socket') {
         this.reportError(
-          `Invalid transport type "${serverConfig.transport}" for server "${serverName}". Must be "stdio" or "socket".`,
+          `Invalid transport type "${String(transport)}" for server "${serverName}". Must be "stdio" or "socket".`,
           filePath
         );
       }

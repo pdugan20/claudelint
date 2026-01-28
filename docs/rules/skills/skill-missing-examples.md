@@ -17,7 +17,7 @@ Without examples, users don't know how to invoke the skill, what arguments are a
 
 SKILL.md without examples:
 
-```markdown
+````markdown
 ---
 name: deploy
 description: Deploys the application to production
@@ -37,13 +37,13 @@ This skill handles deployment to production servers.
 
 - Valid API credentials
 - Network access to production
-```
+````
 
 ### Correct
 
 SKILL.md with Examples section:
 
-```markdown
+````markdown
 ---
 name: deploy
 description: Deploys the application to production
@@ -72,12 +72,11 @@ To rollback to previous version:
 ```bash
 /deploy rollback
 ```
-
-```
+````
 
 SKILL.md with inline code examples:
 
-```markdown
+````markdown
 ---
 name: git-commit
 description: Creates formatted git commits
@@ -92,7 +91,7 @@ Basic usage: `/git-commit "Add user authentication"`
 With type: `/git-commit "feat: Add user authentication"`
 
 With scope: `/git-commit "feat(auth): Add user authentication"`
-```
+````
 
 ## How To Fix
 
@@ -104,7 +103,7 @@ With scope: `/git-commit "feat(auth): Add user authentication"`
 
 **Examples Section Template:**
 
-```markdown
+````markdown
 ## Examples
 
 Basic usage:
@@ -118,12 +117,11 @@ With options:
 ```bash
 /your-skill --flag value
 ```
-
-```
+````
 
 **Usage Section Template:**
 
-```markdown
+````markdown
 ## Usage
 
 ```bash
@@ -140,8 +138,7 @@ Example:
 ```bash
 /your-skill production --verbose
 ```
-
-```
+````
 
 **Minimum Requirements:**
 - Basic invocation (simplest way to use)

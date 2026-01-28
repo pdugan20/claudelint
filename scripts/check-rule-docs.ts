@@ -120,6 +120,7 @@ async function parseDocumentation(
   let codeBlocksWithoutLang = 0;
   let inMetadataSection = false;
   let insideCodeBlock = false;
+  let currentFenceLength = 0;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -173,17 +174,26 @@ async function parseDocumentation(
     }
 
     // Check for code blocks without language identifiers
-    if (line.startsWith('```')) {
-      if (insideCodeBlock) {
-        // This is a closing fence - ignore it
+    // Support both 3-backtick (```) and 4-backtick (````) fences
+    // Must properly handle nesting by tracking fence lengths
+    const fenceMatch = line.match(/^(`{3,})/);
+    if (fenceMatch) {
+      const fenceLength = fenceMatch[1].length;
+
+      if (insideCodeBlock && fenceLength >= currentFenceLength) {
+        // This is a closing fence (must be same or longer length)
         insideCodeBlock = false;
-      } else {
+        currentFenceLength = 0;
+      } else if (!insideCodeBlock) {
         // This is an opening fence - check if it has a language
-        if (line.trim() === '```') {
+        // Only count 3-backtick fences without language (4-backtick are typically for nesting)
+        if (fenceLength === 3 && line.trim() === '```') {
           codeBlocksWithoutLang++;
         }
         insideCodeBlock = true;
+        currentFenceLength = fenceLength;
       }
+      // Else: shorter fence inside a longer fence block - ignore it (it's content, not a fence)
     }
   }
 

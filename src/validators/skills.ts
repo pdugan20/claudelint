@@ -234,7 +234,9 @@ export class SkillsValidator extends BaseValidator {
         this.reportWarning(
           `Skill directory has ${rootFiles.length} files at root level (>${SKILL_MAX_ROOT_FILES} is hard to maintain). ` +
             `Consider organizing scripts into subdirectories like: bin/, lib/, tests/`,
-          skillDir
+          skillDir,
+          undefined,
+          'skill-too-many-files'
         );
       }
 
@@ -244,7 +246,9 @@ export class SkillsValidator extends BaseValidator {
         this.reportWarning(
           `Skill directory has ${maxDepth} levels of nesting (>${SKILL_MAX_DIRECTORY_DEPTH} is hard to navigate). ` +
             `Consider flattening the directory structure.`,
-          skillDir
+          skillDir,
+          undefined,
+          'skill-deep-nesting'
         );
       }
     } catch (error) {
@@ -332,7 +336,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       this.reportWarning(
         'SKILL.md lacks usage examples. ' +
           'Add code blocks or an "Example" section to help users understand how to use this skill.',
-        skillMdPath
+        skillMdPath,
+        undefined,
+        'skill-missing-examples'
       );
     }
 
@@ -567,7 +573,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             this.reportError(
               `Dangerous command detected in "${script.name}": ${message}. ` +
                 'This command could cause data loss or system damage.',
-              scriptPath
+              scriptPath,
+              undefined,
+              'skill-dangerous-command'
             );
           }
         }
@@ -578,7 +586,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             this.reportWarning(
               `Shell script "${script.name}" uses "eval" command. ` +
                 'Avoid eval as it can execute arbitrary code and poses security risks.',
-              scriptPath
+              scriptPath,
+              undefined,
+              'skill-eval-usage'
             );
           }
         } else if (script.name.endsWith('.py')) {
@@ -596,7 +606,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
           this.reportWarning(
             `Potential path traversal detected in "${script.name}" (../ or ..\\). ` +
               'Ensure file paths are properly validated to prevent directory traversal attacks.',
-            scriptPath
+            scriptPath,
+            undefined,
+            'skill-path-traversal'
           );
         }
       }

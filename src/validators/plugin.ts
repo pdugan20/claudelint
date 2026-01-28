@@ -53,7 +53,7 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
 
     // Validate dependencies
     if (plugin.dependencies) {
-      await this.validateDependencies(filePath, plugin);
+      this.validateDependencies(filePath, plugin);
     }
 
     // Warn about deprecated commands field
@@ -92,7 +92,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     if (!SEMVER_PATTERN.test(version)) {
       this.reportError(
         `Invalid semantic version: ${version}. Must follow semver format (e.g., 1.0.0, 2.1.3-beta)`,
-        filePath
+        filePath,
+        undefined,
+        'plugin-invalid-version'
       );
     }
   }
@@ -221,10 +223,10 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     // That's the job of the MCP validator
   }
 
-  private async validateDependencies(
+  private validateDependencies(
     filePath: string,
     plugin: z.infer<typeof PluginManifestSchema>
-  ): Promise<void> {
+  ): void {
     if (!plugin.dependencies) {
       return;
     }
@@ -325,7 +327,7 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     const result = MarketplaceMetadataSchema.safeParse(marketplaceData);
     if (!result.success) {
       for (const issue of result.error.issues) {
-        this.reportError(`marketplace.json: ${issue.path.join('.')}: ${issue.message}`, filePath);
+        this.reportError(`marketplace.json: ${issue.path.join('.')}: ${issue.message}`, filePath, undefined, 'plugin-invalid-manifest');
       }
       return;
     }

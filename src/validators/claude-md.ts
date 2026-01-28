@@ -259,6 +259,7 @@ export class ClaudeMdValidator extends BaseValidator {
       visited.add(currentPath);
 
       // Follow symlink chain
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const linkStats = await lstat(currentPath);
 
