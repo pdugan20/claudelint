@@ -190,29 +190,29 @@ npm run check:rule-ids
   - [x] Update validator to use `getRuleOptions()`
   - [x] Add integration test with custom maxSize
 
-- [ ] Add options support to `import-circular` rule
-  - [ ] Define `ImportCircularOptions` interface
-  - [ ] Create Zod schema (maxDepth, allowSelfReference, ignorePatterns)
-  - [ ] Register schema in RuleRegistry
-  - [ ] Update validator to use `getRuleOptions()`
-  - [ ] Add integration tests for each option
+- [x] Add options support to `import-circular` rule
+  - [x] Define `ImportCircularOptions` interface
+  - [x] Create Zod schema (maxDepth, allowSelfReference, ignorePatterns)
+  - [x] Register schema in RuleRegistry
+  - [x] Update validator to use `getRuleOptions()`
+  - [x] Add integration tests for each option
 
-- [ ] Integration Tests (End-to-End)
-  - [ ] Test rule disabled via config ("off")
-  - [ ] Test severity override (error → warn)
-  - [ ] Test severity override (warn → error)
-  - [ ] Test file-specific override
-  - [ ] Test custom options applied correctly
-  - [ ] Test invalid options rejected (schema validation)
-  - [ ] Test config-less operation (backward compatibility)
+- [x] Integration Tests (End-to-End)
+  - [x] Test rule disabled via config ("off")
+  - [ ] Test severity override (error → warn) - SKIPPED: requires architectural changes
+  - [ ] Test severity override (warn → error) - SKIPPED: requires architectural changes
+  - [x] Test file-specific override
+  - [x] Test custom options applied correctly
+  - [x] Test invalid options rejected (schema validation)
+  - [x] Test config-less operation (backward compatibility)
 
 **Validation Checkpoint:**
-- [ ] Can disable any rule via config
-- [ ] Can override severity levels
-- [ ] Can configure rule options
-- [ ] File overrides work correctly
-- [ ] All tests pass
-- [ ] No breaking changes to existing behavior
+- [x] Can disable any rule via config
+- [ ] Can override severity levels - DEFERRED: requires architectural changes (ESLint pattern)
+- [x] Can configure rule options
+- [x] File overrides work correctly
+- [x] All tests pass
+- [x] No breaking changes to existing behavior
 
 #### Phase 3: Documentation (Day 3-4, ~2-3 hours)
 

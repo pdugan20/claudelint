@@ -63,6 +63,16 @@ RuleRegistry.register({
   fixable: false,
   deprecated: false,
   since: '1.0.0',
+  schema: z.object({
+    maxDepth: z.number().int().positive().optional(),
+    allowSelfReference: z.boolean().optional(),
+    ignorePatterns: z.array(z.string()).optional(),
+  }),
+  defaultOptions: {
+    maxDepth: 5,
+    allowSelfReference: false,
+    ignorePatterns: [],
+  },
 });
 
 /**

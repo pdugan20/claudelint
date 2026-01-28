@@ -19,6 +19,7 @@ import {
   CLAUDE_MD_MAX_SECTIONS,
 } from './constants';
 import { dirname } from 'path';
+import { minimatch } from 'minimatch';
 // Import rules to ensure they're registered
 import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
@@ -45,6 +46,18 @@ export interface SizeErrorOptions {
 export interface SizeWarningOptions {
   /** Maximum file size in bytes before reporting warning (default: 35000) */
   maxSize?: number;
+}
+
+/**
+ * Options for import-circular rule
+ */
+export interface ImportCircularOptions {
+  /** Maximum import depth before reporting circular import (default: 5) */
+  maxDepth?: number;
+  /** Allow a file to import itself (default: false) */
+  allowSelfReference?: boolean;
+  /** Glob patterns for files to ignore in circular import checks (default: []) */
+  ignorePatterns?: string[];
 }
 
 /**
@@ -338,9 +351,15 @@ export class ClaudeMdValidator extends BaseValidator {
   }
 
   private async checkImports(filePath: string, content: string, depth = 0): Promise<void> {
-    if (depth > CLAUDE_MD_MAX_IMPORT_DEPTH) {
+    // Get configured options for circular import checking
+    const circularOptions = this.getRuleOptions<ImportCircularOptions>('import-circular');
+    const maxDepth = circularOptions?.maxDepth ?? CLAUDE_MD_MAX_IMPORT_DEPTH;
+    const allowSelfReference = circularOptions?.allowSelfReference ?? false;
+    const ignorePatterns = circularOptions?.ignorePatterns ?? [];
+
+    if (depth > maxDepth) {
       this.reportError(
-        `Import depth exceeds maximum of ${CLAUDE_MD_MAX_IMPORT_DEPTH}. Possible circular import.`,
+        `Import depth exceeds maximum of ${maxDepth}. Possible circular import.`,
         filePath
       );
       return;
@@ -352,6 +371,12 @@ export class ClaudeMdValidator extends BaseValidator {
       // Resolve import path relative to current file
       const baseDir = dirname(filePath);
       const resolvedPath = resolvePath(baseDir, importInfo.path);
+
+      // Check if this file should be ignored
+      const shouldIgnore = ignorePatterns.some((pattern) => minimatch(resolvedPath, pattern));
+      if (shouldIgnore) {
+        continue;
+      }
 
       // Check for case-sensitive filename collisions
       this.checkCaseSensitivity(resolvedPath, filePath);
@@ -365,6 +390,19 @@ export class ClaudeMdValidator extends BaseValidator {
           importInfo.line,
           'rules-circular-symlink'
         );
+        continue;
+      }
+
+      // Check for self-reference (file importing itself)
+      if (filePath === resolvedPath) {
+        if (!allowSelfReference) {
+          this.reportWarning(
+            `File imports itself: ${importInfo.path}`,
+            filePath,
+            importInfo.line,
+            'import-circular'
+          );
+        }
         continue;
       }
 

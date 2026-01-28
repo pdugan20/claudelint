@@ -319,4 +319,166 @@ describe('Config Integration Tests', () => {
       expect(result.errors[0].ruleId).toBe('size-error');
     });
   });
+
+  describe('import-circular rule', () => {
+    it('should use custom maxDepth option', async () => {
+      const testDir = getTestDir();
+      const mainFile = join(testDir, 'CLAUDE.md');
+      const file1 = join(testDir, 'file1.md');
+      const file2 = join(testDir, 'file2.md');
+      const file3 = join(testDir, 'file3.md');
+
+      // Create chain: main -> file1 -> file2 -> file3 (depth 3)
+      await writeFile(mainFile, '# Main\n\nImport: @file1.md');
+      await writeFile(file1, '# File 1\n\nImport: @file2.md');
+      await writeFile(file2, '# File 2\n\nImport: @file3.md');
+      await writeFile(file3, '# File 3\n\nContent');
+
+      // Configure maxDepth of 2 (should error on file3 import)
+      const config: ClaudeLintConfig = {
+        rules: {
+          'import-circular': {
+            severity: 'error',
+            options: {
+              maxDepth: 2,
+            },
+          },
+        },
+      };
+
+      const validator = new ClaudeMdValidator({ path: mainFile, config });
+      const result = await validator.validate();
+
+      // Should error when depth exceeds 2
+      const depthErrors = result.errors.filter((e) =>
+        e.message.includes('Import depth exceeds maximum')
+      );
+      expect(depthErrors.length).toBeGreaterThan(0);
+    });
+
+    it('should allow self-reference when configured', async () => {
+      const testDir = getTestDir();
+      const filePath = join(testDir, 'CLAUDE.md');
+
+      // File that imports itself
+      await writeFile(filePath, '# Main\n\nImport: @CLAUDE.md');
+
+      // Configure to allow self-reference
+      const config: ClaudeLintConfig = {
+        rules: {
+          'import-circular': {
+            severity: 'warn',
+            options: {
+              allowSelfReference: true,
+            },
+          },
+        },
+      };
+
+      const validator = new ClaudeMdValidator({ path: filePath, config });
+      const result = await validator.validate();
+
+      // Should not warn about self-reference
+      const selfRefWarnings = result.warnings.filter(
+        (w) => w.ruleId === 'import-circular' && w.message.includes('imports itself')
+      );
+      expect(selfRefWarnings.length).toBe(0);
+    });
+
+    it('should warn about self-reference by default', async () => {
+      const testDir = getTestDir();
+      const filePath = join(testDir, 'CLAUDE.md');
+
+      // File that imports itself
+      await writeFile(filePath, '# Main\n\nImport: @CLAUDE.md');
+
+      // No config - default behavior
+      const validator = new ClaudeMdValidator({ path: filePath });
+      const result = await validator.validate();
+
+      // Should warn about self-reference
+      const selfRefWarnings = result.warnings.filter(
+        (w) => w.ruleId === 'import-circular' && w.message.includes('imports itself')
+      );
+      expect(selfRefWarnings.length).toBe(1);
+    });
+
+    it('should ignore files matching ignorePatterns', async () => {
+      const testDir = getTestDir();
+      const mainFile = join(testDir, 'CLAUDE.md');
+      const testFile = join(testDir, 'test.md');
+      const regularFile = join(testDir, 'regular.md');
+
+      // Create circular import: main -> test -> main
+      await writeFile(mainFile, '# Main\n\nImport: @test.md\n\nImport: @regular.md');
+      await writeFile(testFile, '# Test\n\nImport: @CLAUDE.md');
+      await writeFile(regularFile, '# Regular\n\nImport: @CLAUDE.md');
+
+      // Configure to ignore test files
+      const config: ClaudeLintConfig = {
+        rules: {
+          'import-circular': {
+            severity: 'warn',
+            options: {
+              ignorePatterns: ['**/test.md'],
+            },
+          },
+        },
+      };
+
+      const validator = new ClaudeMdValidator({ path: mainFile, config });
+      const result = await validator.validate();
+
+      // Should warn about regular.md circular import but not test.md
+      const circularWarnings = result.warnings.filter(
+        (w) => w.ruleId === 'import-circular' && w.message.includes('Circular import')
+      );
+
+      // Should only warn about regular.md, not test.md
+      expect(circularWarnings.length).toBe(1);
+      expect(circularWarnings[0].message).toContain('regular.md');
+    });
+
+    it('should detect circular import by default', async () => {
+      const testDir = getTestDir();
+      const file1 = join(testDir, 'file1.md');
+      const file2 = join(testDir, 'file2.md');
+
+      // Create circular import: file1 -> file2 -> file1
+      await writeFile(file1, '# File 1\n\nImport: @file2.md');
+      await writeFile(file2, '# File 2\n\nImport: @file1.md');
+
+      // No config - default behavior
+      const validator = new ClaudeMdValidator({ path: file1 });
+      const result = await validator.validate();
+
+      // Should warn about circular import
+      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'import-circular');
+      expect(circularWarnings.length).toBe(1);
+    });
+
+    it('should not report circular import when rule is disabled', async () => {
+      const testDir = getTestDir();
+      const file1 = join(testDir, 'file1.md');
+      const file2 = join(testDir, 'file2.md');
+
+      // Create circular import: file1 -> file2 -> file1
+      await writeFile(file1, '# File 1\n\nImport: @file2.md');
+      await writeFile(file2, '# File 2\n\nImport: @file1.md');
+
+      // Disable import-circular rule
+      const config: ClaudeLintConfig = {
+        rules: {
+          'import-circular': 'off',
+        },
+      };
+
+      const validator = new ClaudeMdValidator({ path: file1, config });
+      const result = await validator.validate();
+
+      // Should not warn about circular import
+      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'import-circular');
+      expect(circularWarnings.length).toBe(0);
+    });
+  });
 });
