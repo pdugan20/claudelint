@@ -1,7 +1,8 @@
 # Rule Implementation Status Report
 
 **Date**: 2026-01-28 (Updated)
-**Status**: All documentation validation passing 
+**Status**: All documentation validation passing
+**Critical Issue**: Configuration integration missing (BLOCKER)
 
 ## Executive Summary
 
@@ -10,20 +11,67 @@ This report provides an accurate assessment of the rule implementation project s
 ### Current Status
 
  **Documentation Validation**: All passing (0 violations)
- **Missing Docs**: 15 implemented rules need documentation
+ **Missing Docs**: 14 implemented rules need documentation (down from 15)
  **Implementation**: 22 fully implemented rules (10% of 219 total)
- **Ghost Rules**: 20 rules with validation logic but missing rule IDs (9%)
+ **Ghost Rules**: 19 of 20 fixed (98% complete)
  **Not Started**: 177 rules (81%)
+ **BLOCKER**: Config integration not implemented
+
+## Critical Blocker: Configuration Integration
+
+**PRIORITY: HIGHEST - Must fix before continuing with rules**
+
+### The Problem
+
+claudelint has complete configuration infrastructure:
+-  `.claudelintrc.json` file loading
+-  Config validation commands (`validate-config`, `print-config`)
+-  Documentation showing config usage
+-  Example configs in repo
+
+But validators **don't use any of it**:
+-  Rules set to `"off"` still run
+-  Severity overrides are ignored
+-  Rule options are never accessed
+-  File-specific overrides don't apply
+
+### Impact
+
+Users expect this to work:
+```json
+{
+  "rules": {
+    "size-error": "off",
+    "size-warning": { "severity": "warn", "options": { "maxSize": 60000 } }
+  }
+}
+```
+
+But rules hardcode severity and always run. **This is a critical gap.**
+
+### The Fix
+
+Implement config integration (3-4 days):
+1. `ConfigResolver` - Resolves effective config per file
+2. Enhanced `BaseValidator` - Add `isRuleEnabled()`, `getRuleOptions()`
+3. Rule options support with Zod schemas
+4. Integration testing
+
+**See**: `docs/projects/config-integration-proposal.md` for complete design
+**Tracker**: IMPLEMENTATION-CHECKLIST task #4
+
+---
 
 ## Validation Status
 
 **Documentation**:  PASSING
 - 0 violations
-- 15 warnings (expected - rules needing docs)
+- 2 warnings (expected - rules needing docs)
 
-**Files Fixed**:
-- `skill-missing-examples.md` - Fixed nested code blocks
-- Validator updated to handle 4-backtick fences for nesting
+**Recent Work**:
+- Fixed 19 of 20 ghost rules
+- Documented 14 implemented rules
+- Created config integration proposal
 
 ## True Implementation Status
 

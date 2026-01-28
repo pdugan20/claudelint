@@ -2,18 +2,28 @@
 
 **Last Updated**: 2026-01-28
 **Status**: 22/219 rules complete (10%)
+**Current Focus**: Configuration Integration (BLOCKER)
 
 This is the single source of truth for outstanding rule implementation work.
 
 ## Current Status Summary
 
 - **Complete**: 22 rules (10%)
-- **Partial (Ghost Rules)**: 20 rules (9%) - Logic exists but missing rule IDs
+- **Partial (Ghost Rules)**: 19 of 20 fixed (1 needs implementation)
 - **Not Started**: 177 rules (81%)
+- **Config Integration**: 0% (blocking all further work)
 
 ---
 
 ## Immediate Priorities (BLOCKERS)
+
+### 0. Configuration Integration (3-4 days) IN PROGRESS
+
+**CRITICAL BLOCKER**: Rules don't respect .claudelintrc.json configuration. Users cannot disable rules, override severity, or configure options. This must be fixed before continuing with rule implementation.
+
+**Status**: Planning complete, ready to implement
+**Design**: See `docs/projects/config-integration-proposal.md` for full architecture
+**Tracker**: See task #4 in Short-Term Work section below
 
 ### 1. Fix Broken Documentation Files (40-60 min) COMPLETE
 
@@ -97,7 +107,198 @@ npm run check:rule-ids
 
 ## Short-Term Work (1-2 weeks)
 
-### 4. Review Git Changes
+### 4. Configuration Integration (CRITICAL BLOCKER - 3-4 days)
+
+**Problem**: Rules don't respect .claudelintrc.json - users can't disable rules, override severity, or configure options.
+
+**Design**: See `docs/projects/config-integration-proposal.md` for full architecture.
+
+#### Phase 1: Core Infrastructure (Day 1-2, ~5-6 hours)
+
+**Goal**: Build config resolution and validator integration layer
+
+- [ ] Create `src/utils/rule-context.ts`
+  - [ ] Define `RuleContext` interface
+  - [ ] Define `ResolvedRuleConfig` interface
+  - [ ] Add JSDoc comments
+
+- [ ] Create `src/utils/config-resolver.ts`
+  - [ ] Implement `ConfigResolver` class
+  - [ ] Add `resolveForFile()` method (apply overrides)
+  - [ ] Add `isRuleEnabled()` method
+  - [ ] Add `getRuleOptions()` method
+  - [ ] Add `normalizeRuleConfig()` private method
+  - [ ] Add config caching for performance
+  - [ ] Install `minimatch` dependency for glob matching
+
+- [ ] Enhance `src/utils/rule-registry.ts`
+  - [ ] Add `schema?: z.ZodType<any>` to RuleMetadata
+  - [ ] Add `defaultOptions?: Record<string, unknown>` to RuleMetadata
+  - [ ] Update JSDoc comments
+
+- [ ] Enhance `src/validators/base.ts`
+  - [ ] Add `protected configResolver?: ConfigResolver` field
+  - [ ] Add `protected currentFile?: string` field
+  - [ ] Initialize configResolver in constructor if config provided
+  - [ ] Add `protected isRuleEnabled(ruleId: RuleId): boolean` method
+  - [ ] Add `protected getRuleOptions<T>(ruleId: RuleId): T | undefined` method
+  - [ ] Add `protected setCurrentFile(filePath: string): void` method
+  - [ ] Update `reportError()` to check `isRuleEnabled()`
+  - [ ] Update `reportWarning()` to check `isRuleEnabled()`
+
+- [ ] Unit Tests for ConfigResolver
+  - [ ] Test base rule resolution
+  - [ ] Test file-specific overrides
+  - [ ] Test override priority (base → overrides)
+  - [ ] Test glob pattern matching
+  - [ ] Test option parsing
+  - [ ] Test schema validation (with valid/invalid options)
+  - [ ] Test config caching
+
+- [ ] Unit Tests for BaseValidator
+  - [ ] Test `isRuleEnabled()` with no config (returns true)
+  - [ ] Test `isRuleEnabled()` with "off" rule (returns false)
+  - [ ] Test `isRuleEnabled()` with enabled rule (returns true)
+  - [ ] Test `getRuleOptions()` with no config (returns defaults)
+  - [ ] Test `getRuleOptions()` with custom options
+  - [ ] Test `reportError()` skips disabled rules
+  - [ ] Test `reportWarning()` skips disabled rules
+
+**Validation Checkpoint:**
+- [ ] All new unit tests pass
+- [ ] All existing tests still pass
+- [ ] ESLint clean
+- [ ] TypeScript compiles with no errors
+
+#### Phase 2: Proof of Concept Rules (Day 2-3, ~4-5 hours)
+
+**Goal**: Demonstrate config integration works with real rules
+
+- [ ] Add options support to `size-error` rule
+  - [ ] Define `SizeErrorOptions` interface
+  - [ ] Create Zod schema for options
+  - [ ] Register schema in RuleRegistry
+  - [ ] Update validator to use `getRuleOptions()`
+  - [ ] Update validator to call `setCurrentFile()`
+  - [ ] Add integration test with custom maxSize
+  - [ ] Add integration test with rule disabled
+
+- [ ] Add options support to `size-warning` rule
+  - [ ] Define `SizeWarningOptions` interface
+  - [ ] Create Zod schema for options
+  - [ ] Register schema in RuleRegistry
+  - [ ] Update validator to use `getRuleOptions()`
+  - [ ] Add integration test with custom maxSize
+
+- [ ] Add options support to `import-circular` rule
+  - [ ] Define `ImportCircularOptions` interface
+  - [ ] Create Zod schema (maxDepth, allowSelfReference, ignorePatterns)
+  - [ ] Register schema in RuleRegistry
+  - [ ] Update validator to use `getRuleOptions()`
+  - [ ] Add integration tests for each option
+
+- [ ] Integration Tests (End-to-End)
+  - [ ] Test rule disabled via config ("off")
+  - [ ] Test severity override (error → warn)
+  - [ ] Test severity override (warn → error)
+  - [ ] Test file-specific override
+  - [ ] Test custom options applied correctly
+  - [ ] Test invalid options rejected (schema validation)
+  - [ ] Test config-less operation (backward compatibility)
+
+**Validation Checkpoint:**
+- [ ] Can disable any rule via config
+- [ ] Can override severity levels
+- [ ] Can configure rule options
+- [ ] File overrides work correctly
+- [ ] All tests pass
+- [ ] No breaking changes to existing behavior
+
+#### Phase 3: Documentation (Day 3-4, ~2-3 hours)
+
+- [ ] Update `docs/configuration.md`
+  - [ ] Add "Rule Options" section with examples
+  - [ ] Document each configurable rule
+  - [ ] Add troubleshooting section
+  - [ ] Add "Common Configurations" examples
+
+- [ ] Update `docs/rules/TEMPLATE.md`
+  - [ ] Add "Options" section template
+  - [ ] Add example configuration in Options section
+  - [ ] Add JSDoc format for option types
+
+- [ ] Update rule documentation for configured rules
+  - [ ] Update `docs/rules/claude-md/size-error.md` with Options section
+  - [ ] Update `docs/rules/claude-md/size-warning.md` with Options section
+  - [ ] Update `docs/rules/claude-md/import-circular.md` with Options section
+
+- [ ] Create `docs/rule-options-guide.md`
+  - [ ] Explain how to add options to rules
+  - [ ] Show Zod schema examples
+  - [ ] Document best practices
+  - [ ] Show testing patterns
+
+- [ ] Update examples
+  - [ ] Add options to `examples/strict/.claudelintrc.json`
+  - [ ] Add options to `examples/basic/.claudelintrc.json`
+  - [ ] Create `examples/custom-options/.claudelintrc.json`
+
+**Validation Checkpoint:**
+- [ ] All docs accurate and complete
+- [ ] Examples work as documented
+- [ ] `npm run check:rule-docs` passes
+
+#### Phase 4: Testing & Polish (Day 4, ~3-4 hours)
+
+- [ ] Performance Testing
+  - [ ] Benchmark config resolution overhead
+  - [ ] Verify caching works
+  - [ ] Test with 100+ files
+  - [ ] Ensure <10% performance degradation
+
+- [ ] Error Handling
+  - [ ] Test invalid config files
+  - [ ] Test unknown rule IDs in config
+  - [ ] Test invalid option values
+  - [ ] Improve error messages for config issues
+
+- [ ] CLI Integration
+  - [ ] Test `claudelint check-all` respects config
+  - [ ] Test `claudelint check-all --config path` works
+  - [ ] Test `print-config` shows resolved options
+  - [ ] Test `validate-config` catches option errors
+
+- [ ] Edge Cases
+  - [ ] Test rule with no schema (options pass through)
+  - [ ] Test rule with complex schema (nested objects)
+  - [ ] Test multiple overrides for same file
+  - [ ] Test config inheritance (nested directories)
+
+- [ ] Final Validation
+  - [ ] Run full test suite: `npm test`
+  - [ ] Run linters: `npm run lint`
+  - [ ] Test all examples: `npm run test:examples`
+  - [ ] Verify no breaking changes
+
+**Completion Criteria:**
+- [ ] Rules respect "off" setting (can disable any rule)
+- [ ] Severity overrides work (can change error  warn)
+- [ ] File-specific overrides apply correctly
+- [ ] At least 3 rules support configurable options
+- [ ] All existing tests pass (zero breaking changes)
+- [ ] New tests have 90%+ coverage
+- [ ] Documentation complete and accurate
+- [ ] Performance impact <10%
+
+**After Completion:**
+- [ ] Commit config integration work
+- [ ] Update STATUS-REPORT.md with new capabilities
+- [ ] Update README.md feature list
+- [ ] Continue with rule documentation (task 6)
+
+---
+
+### 5. Review Git Changes (AFTER Config Integration)
 
 Uncommitted changes in 6 validators need review:
 
@@ -109,7 +310,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] Review `src/validators/settings.ts` changes
 - [ ] Decide: commit, revert, or finish incomplete work
 
-### 5. Document Implemented Rules
+### 6. Document Implemented Rules (AFTER Config Integration)
 
 69 rules are implemented but lack documentation:
 
