@@ -280,12 +280,12 @@ this.errors.push(...result.errors);
 
 ## Success Metrics
 
-- ✅ **12,408 → 1,515 lines** (88% reduction)
-- ✅ **219 rules implemented** (100% coverage)
-- ✅ **Zero duplication** in fixtures, constants, or validation
-- ✅ **Auto-generated registry** always in sync
-- ✅ **100% builder usage** in tests
-- ✅ **Single source of truth** for all enums
+-  **12,408 → 1,515 lines** (88% reduction)
+-  **219 rules implemented** (100% coverage)
+-  **Zero duplication** in fixtures, constants, or validation
+-  **Auto-generated registry** always in sync
+-  **100% builder usage** in tests
+-  **Single source of truth** for all enums
 
 ---
 

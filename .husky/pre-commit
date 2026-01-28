@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Check for emojis (strict - only in headings)
+npm run check:emojis
+
 # Run validator tests (without coverage - that's for CI)
 npx jest tests/validators --passWithNoTests
 

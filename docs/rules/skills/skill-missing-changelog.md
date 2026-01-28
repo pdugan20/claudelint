@@ -22,7 +22,7 @@ Skill directory missing CHANGELOG.md:
 ├── SKILL.md
 ├── deploy.sh
 └── README.md
-# Missing CHANGELOG.md ❌
+# Missing CHANGELOG.md 
 ```
 
 ### Correct

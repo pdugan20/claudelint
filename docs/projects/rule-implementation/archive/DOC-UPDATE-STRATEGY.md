@@ -16,12 +16,12 @@
 ### Severity Breakdown
 
 **Extremely Verbose (>500 lines):**
-1. mcp-invalid-env-var.md - 644 lines ❌
-2. plugin-invalid-manifest.md - 630 lines ❌
-3. plugin-invalid-version.md - 605 lines ❌
-4. mcp-invalid-server.md - 591 lines ❌
-5. mcp-invalid-transport.md - 585 lines ❌
-6. plugin-missing-file.md - 574 lines ❌
+1. mcp-invalid-env-var.md - 644 lines 
+2. plugin-invalid-manifest.md - 630 lines 
+3. plugin-invalid-version.md - 605 lines 
+4. mcp-invalid-server.md - 591 lines 
+5. mcp-invalid-transport.md - 585 lines 
+6. plugin-missing-file.md - 574 lines 
 
 **Very Verbose (400-500 lines):**
 7. hooks-invalid-config.md - 533 lines
@@ -40,7 +40,7 @@
 
 ## Update Strategy
 
-### Phase 1: Create Automation Tools ✅
+### Phase 1: Create Automation Tools 
 
 - [x] Create `scripts/audit-rule-docs.ts` - Audit all docs
 - [x] Add `npm run audit:rule-docs` command
@@ -244,11 +244,11 @@ function updateMetadata(content: string): string {
 ## Success Metrics
 
 **Target State**:
-- ✅ 0% docs using old metadata format (currently 96%)
-- ✅ 100% docs with source code links (currently 4%)
-- ✅ 100% docs within line count targets (currently 0%)
-- ✅ 0% docs with redundant sections (currently 18%)
-- ✅ Average lines: 120-180 (currently 357)
+-  0% docs using old metadata format (currently 96%)
+-  100% docs with source code links (currently 4%)
+-  100% docs within line count targets (currently 0%)
+-  0% docs with redundant sections (currently 18%)
+-  Average lines: 120-180 (currently 357)
 
 **Quality Checks**:
 - All docs pass `npm run audit:rule-docs`

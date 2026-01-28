@@ -32,7 +32,7 @@
 
 ### 2. Enforcement Automation Scripts Implemented
 
-**✅ check-file-naming.ts** - File Naming Convention Validator
+** check-file-naming.ts** - File Naming Convention Validator
 
 - Verifies docs/*.md use lowercase-with-hyphens
 - Verifies docs/projects/*/*.md use ALL-CAPS-WITH-HYPHENS
@@ -43,7 +43,7 @@
 - Provides specific rename suggestions
 - **Result**: ✓ All files pass (after fixing violations)
 
-**✅ check-rule-ids.ts** - Rule ID Registration Validator
+** check-rule-ids.ts** - Rule ID Registration Validator
 
 - Scans validators for reportError/reportWarning calls
 - Extracts all used rule IDs
@@ -54,7 +54,7 @@
 - Skips comments and JSDoc examples
 - **Result**: ✓ No violations, 41 orphaned rules (expected during implementation)
 
-**✅ check-rule-docs.ts** - Rule Documentation Validator
+** check-rule-docs.ts** - Rule Documentation Validator
 
 - Scans docs/rules/ for all .md files
 - Verifies required sections exist (Title, Rule Details, Options, etc.)
@@ -66,7 +66,7 @@
 - Validates metadata values (severity, fixable, validator)
 - **Result**: Found 202 violations in existing docs (to be fixed)
 
-**✅ check-consistency.ts** - Code/Documentation Consistency Validator
+** check-consistency.ts** - Code/Documentation Consistency Validator
 
 - Extracts severity from reportError/reportWarning calls
 - Parses metadata from rule docs
@@ -77,7 +77,7 @@
 - Skips comments in code scanning
 - **Result**: ✓ All implemented rules are consistent
 
-**✅ check-all.ts** - Aggregate Validation Script
+** check-all.ts** - Aggregate Validation Script
 
 - Runs all enforcement checks in sequence
 - Aggregates results from each check
@@ -180,7 +180,7 @@ All enforcement scripts tested and working:
 
 - ✓ check-file-naming: All files pass
 - ✓ check-rule-ids: No violations (41 warnings expected)
-- ⚠ check-rule-docs: 202 violations (real issues to fix)
+-  check-rule-docs: 202 violations (real issues to fix)
 - ✓ check-consistency: All consistent
 - ✓ check-all: Aggregates correctly
 

@@ -20,7 +20,7 @@ Create a modern, fast documentation website for claudelint using VitePress.
 
 ## Project Documents
 
-### 📋 [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md)
+###  [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md)
 
 Phase-by-phase task tracking with checkboxes:
 
@@ -31,7 +31,7 @@ Phase-by-phase task tracking with checkboxes:
 - Phase 5: Deployment
 - Phase 6: Polish & Launch
 
-### 📝 [PLAN.md](./PLAN.md)
+###  [PLAN.md](./PLAN.md)
 
 Comprehensive implementation plan covering:
 
@@ -42,7 +42,7 @@ Comprehensive implementation plan covering:
 - Deployment strategy
 - Migration guide
 
-### 🎨 [DESIGN.md](./DESIGN.md)
+###  [DESIGN.md](./DESIGN.md)
 
 Design system and branding:
 
@@ -52,7 +52,7 @@ Design system and branding:
 - Layout patterns
 - Accessibility considerations
 
-### 🚀 [DEPLOYMENT.md](./DEPLOYMENT.md)
+###  [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 Deployment configuration and CI/CD:
 

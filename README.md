@@ -40,26 +40,26 @@ claudelint check-all
 
 ### Performance & UX
 
-- ⚡ **Parallel Validation** - Concurrent execution for ~3.5x speedup
-- 🚀 **Smart Caching** - mtime-based cache for ~2.4x speedup on warm cache
-- 📊 **Progress Indicators** - Real-time feedback with timing (auto-detects CI)
-- ⚙️ **Interactive Setup** - `claudelint init` wizard for easy configuration
-- 🎨 **Multiple Formats** - Stylish (default), JSON, and compact output
+-  **Parallel Validation** - Concurrent execution for ~3.5x speedup
+-  **Smart Caching** - mtime-based cache for ~2.4x speedup on warm cache
+-  **Progress Indicators** - Real-time feedback with timing (auto-detects CI)
+-  **Interactive Setup** - `claudelint init` wizard for easy configuration
+-  **Multiple Formats** - Stylish (default), JSON, and compact output
 
 ### Rules & Configuration
 
-- 🎯 **27 Validation Rules** - Comprehensive checks across 6 categories
-- 📚 **Per-rule Documentation** - Detailed docs for each rule
-- 🎭 **Inline Disable Comments** - Fine-grained control with `<!-- claudelint-disable -->`
-- 🔧 **Auto-fix** - Automatically fix common issues (`--fix` flag)
-- ⚙️ **Rule Registry** - Browse rules with `claudelint list-rules`
+-  **27 Validation Rules** - Comprehensive checks across 6 categories
+-  **Per-rule Documentation** - Detailed docs for each rule
+-  **Inline Disable Comments** - Fine-grained control with `<!-- claudelint-disable -->`
+-  **Auto-fix** - Automatically fix common issues (`--fix` flag)
+-  **Rule Registry** - Browse rules with `claudelint list-rules`
 
 ### Developer Tools
 
-- 🐛 **Config Debugging** - `print-config`, `resolve-config`, `validate-config` commands
-- 🔌 **Plugin System** - Extensible with custom validators
-- 🎚️ **Strict Mode** - `--strict` flag for zero-tolerance validation
-- ⚖️ **Warning Limits** - `--max-warnings` to prevent accumulation
+-  **Config Debugging** - `print-config`, `resolve-config`, `validate-config` commands
+-  **Plugin System** - Extensible with custom validators
+-  **Strict Mode** - `--strict` flag for zero-tolerance validation
+-  **Warning Limits** - `--max-warnings` to prevent accumulation
 
 ## Performance
 

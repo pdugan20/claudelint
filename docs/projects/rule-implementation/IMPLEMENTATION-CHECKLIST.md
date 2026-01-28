@@ -7,15 +7,15 @@ This is the single source of truth for outstanding rule implementation work.
 
 ## Current Status Summary
 
-- ✅ **Complete**: 22 rules (10%)
-- ⚠️ **Partial (Ghost Rules)**: 20 rules (9%) - Logic exists but missing rule IDs
-- 🔲 **Not Started**: 177 rules (81%)
+- **Complete**: 22 rules (10%)
+- **Partial (Ghost Rules)**: 20 rules (9%) - Logic exists but missing rule IDs
+- **Not Started**: 177 rules (81%)
 
 ---
 
 ## Immediate Priorities (BLOCKERS)
 
-### 1. Fix Broken Documentation Files (40-60 min) ✅ COMPLETE
+### 1. Fix Broken Documentation Files (40-60 min) COMPLETE
 
 All documentation files were already fixed (work done earlier in project):
 
@@ -26,9 +26,9 @@ All documentation files were already fixed (work done earlier in project):
 - [x] **skill-missing-shebang.md** - Previously fixed
 - [x] **size-warning.md** - Previously fixed
 
-**Validation status**: ✅ 0 violations, 15 warnings (expected - missing docs)
+**Validation status**: 0 violations, 15 warnings (expected - missing docs)
 
-### 2. Fix Validation Script (5-10 min) ✅ COMPLETE
+### 2. Fix Validation Script (5-10 min) COMPLETE
 
 Updated `scripts/check-rule-docs.ts` to handle nested code blocks:
 
@@ -36,13 +36,13 @@ Updated `scripts/check-rule-docs.ts` to handle nested code blocks:
 - [x] Script now correctly ignores 3-backtick fences inside 4-backtick blocks
 - [x] Validation passing with 0 violations
 
-### 3. Fix Ghost Rules (2-4 hours) ✅ 19/20 COMPLETE
+### 3. Fix Ghost Rules (2-4 hours) 19/20 COMPLETE
 
 These rules have validation logic but don't pass rule IDs to reportError/reportWarning.
 
 **Status**: 19 of 20 fixed! Only `frontmatter-invalid-paths` needs implementation (not just rule ID).
 
-#### Skills Validator (6 ghost rules) ✅ COMPLETE
+#### Skills Validator (6 ghost rules) COMPLETE
 
 - [x] **skill-dangerous-command** - Add rule ID to line 565-572
 - [x] **skill-eval-usage** - Add rule ID to line 576-592
@@ -51,42 +51,43 @@ These rules have validation logic but don't pass rule IDs to reportError/reportW
 - [x] **skill-deep-nesting** - Add rule ID to line 244
 - [x] **skill-missing-examples** - Add rule ID to line 331
 
-#### Settings Validator (3 ghost rules) ✅ COMPLETE
+#### Settings Validator (3 ghost rules) COMPLETE
 
 - [x] **settings-invalid-schema** - Schema validation has rule IDs (handled by parent class)
 - [x] **settings-invalid-permission** - Added rule IDs at lines 111-114, 121
 - [x] **settings-invalid-env-var** - Logic has rule IDs (handled by validation helper)
 
-#### Hooks Validator (3 ghost rules) ✅ COMPLETE
+#### Hooks Validator (3 ghost rules) COMPLETE
 
 - [x] **hooks-invalid-event** - Handled by validation helper (has rule IDs)
 - [x] **hooks-missing-script** - Added rule ID at line 97
 - [x] **hooks-invalid-config** - Schema validation has rule IDs (handled by parent class)
 
-#### MCP Validator (3 ghost rules) ✅ COMPLETE
+#### MCP Validator (3 ghost rules) COMPLETE
 
 - [x] **mcp-invalid-server** - Added rule ID at line 64
 - [x] **mcp-invalid-transport** - Added rule ID at lines 91-93
 - [x] **mcp-invalid-env-var** - Added rule ID at line 255, env vars also handled by validation helper
 
-#### Plugin Validator (2 ghost rules) ✅ COMPLETE
+#### Plugin Validator (2 ghost rules) COMPLETE
 
 - [x] **plugin-invalid-manifest** - Added rule ID at line 330
 - [x] **plugin-invalid-version** - Added rule ID at lines 92-95
 
-#### Agents Validator (1 ghost rule) ✅ COMPLETE
+#### Agents Validator (1 ghost rule) COMPLETE
 
 - [x] **agent-skills-not-found** - Added rule ID at lines 167-169
 
-#### CLAUDE.md Validator (1 ghost rule) ⚠️ NOT IMPLEMENTED
+#### CLAUDE.md Validator (1 ghost rule) NOT IMPLEMENTED
 
 - [ ] **frontmatter-invalid-paths** - Defined but validation logic not implemented (needs implementation, not just rule ID)
 
-#### Other Tasks ✅ COMPLETE
+#### Other Tasks COMPLETE
 
 - [x] **commands-in-plugin-deprecated** - Already has rule ID at PluginValidator line 66
 
 **After fixing each validator:**
+
 ```bash
 npm test -- validators/{validator}.test.ts
 npm run check:rule-ids
@@ -113,6 +114,7 @@ Uncommitted changes in 6 validators need review:
 69 rules are implemented but lack documentation:
 
 #### LSP Rules (18 missing docs)
+
 - [ ] lsp-invalid-root-field
 - [ ] lsp-missing-command
 - [ ] lsp-missing-extension-to-language
@@ -133,6 +135,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] lsp-binary-not-in-path
 
 #### Output Style Rules (10 missing docs)
+
 - [ ] output-style-missing-frontmatter
 - [ ] output-style-name-invalid-type
 - [ ] output-style-description-invalid-type
@@ -145,6 +148,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] output-style-invalid-location
 
 #### Skills Rules (13 missing docs)
+
 - [ ] skill-frontmatter-name-max-length
 - [ ] skill-frontmatter-name-invalid-chars
 - [ ] skill-frontmatter-name-reserved-words
@@ -160,6 +164,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] skill-eval-usage (after fixing ghost rule)
 
 #### Agents Rules (16 missing docs)
+
 - [ ] agent-missing-frontmatter
 - [ ] agent-missing-name
 - [ ] agent-missing-description
@@ -178,6 +183,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] agent-events-invalid-type
 
 #### Other Rules (12 missing docs)
+
 - [ ] import-invalid-home-path (CLAUDE.md)
 - [ ] frontmatter-unknown-field (CLAUDE.md)
 - [ ] settings-invalid-schema (Settings)
@@ -194,6 +200,7 @@ Uncommitted changes in 6 validators need review:
 **Template**: Use `docs/rules/TEMPLATE.md`
 
 **Process**:
+
 1. Copy template to `docs/rules/{validator}/{rule-id}.md`
 2. Fill in all sections
 3. Add 2+ incorrect and 2+ correct examples
@@ -206,10 +213,12 @@ Uncommitted changes in 6 validators need review:
 ### 6. Implement Remaining Rules by Category
 
 #### CLAUDE.md Rules (2 remaining)
+
 - [ ] import-invalid-home-path (Refinement - path validation)
 - [ ] frontmatter-unknown-field (Schema - .strict())
 
 #### Skills Rules (7 remaining)
+
 - [ ] skill-frontmatter-agent-invalid (Refinement - cross-field validation)
 - [ ] skill-invalid-substitution (Refinement - variable syntax)
 - [ ] skill-reference-too-deep (Logic - nesting depth check)
@@ -219,11 +228,12 @@ Uncommitted changes in 6 validators need review:
 - [ ] skill-path-traversal (Refinement - after fixing ghost rule)
 
 #### Settings Rules (32 remaining)
+
 - [ ] settings-invalid-root-field (Schema - .strict())
 - [ ] settings-invalid-field-type (Schema - type checking)
 - [ ] settings-permission-invalid-mode (Schema - z.enum())
 - [ ] settings-permission-invalid-tool (Logic - tool registry check)
-- [ ] settings-permission-legacy-syntax (Refinement - :* vs * check)
+- [ ] settings-permission-legacy-syntax (Refinement - :_ vs _ check)
 - [ ] settings-attribution-invalid-field (Schema - .strict())
 - [ ] settings-sandbox-invalid-field (Schema - .strict())
 - [ ] settings-sandbox-invalid-network (Schema - object schema)
@@ -252,6 +262,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] settings-managed-only-field (Logic - context-aware check)
 
 #### Hooks Rules (26 remaining)
+
 - [ ] hooks-invalid-event-name (Schema - z.enum([...12 events]))
 - [ ] hooks-invalid-hook-type (Schema - z.enum(['command', 'prompt', 'agent']))
 - [ ] hooks-missing-command (Schema - conditional required)
@@ -280,6 +291,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] hooks-sensitive-file-access (Refinement - pattern matching)
 
 #### MCP Rules (28 remaining)
+
 - [ ] mcp-invalid-root-field (Schema - .strict())
 - [ ] mcp-invalid-server-name (Schema - string validation)
 - [ ] mcp-missing-type (Schema - required field)
@@ -310,6 +322,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] mcp-tool-search-invalid-threshold (Logic - parse "auto:N")
 
 #### Plugin Rules (33 remaining)
+
 - [ ] plugin-missing-manifest (Logic - file check)
 - [ ] plugin-manifest-not-in-subdir (Logic - path check)
 - [ ] plugin-invalid-root-field (Schema - .strict())
@@ -344,6 +357,7 @@ Uncommitted changes in 6 validators need review:
 - [ ] plugin-dependency-not-found (Logic - dependency resolution)
 
 #### Agents Rules (7 remaining)
+
 - [ ] agent-invalid-frontmatter-field (Schema - .strict())
 - [ ] agent-permission-mode-invalid (Schema - z.enum())
 - [ ] agent-hooks-invalid-event (Refinement - event subset)
@@ -355,12 +369,14 @@ Uncommitted changes in 6 validators need review:
 - [ ] agent-cli-json-invalid (Logic - CLI integration)
 
 #### LSP Rules (4 remaining)
+
 - [ ] lsp-plugin-location-wrong (Logic - file location)
 - [ ] lsp-inline-conflicts-with-file (Refinement - mutual exclusivity)
 - [ ] lsp-unknown-language-id (Refinement - info suggestion)
 - [ ] lsp-socket-transport-deprecated (Refinement - warning)
 
 #### Output Style Rules (2 remaining)
+
 - [ ] output-style-invalid-frontmatter-field (Schema - .strict())
 - [ ] output-style-plugin-location-wrong (Logic - plugin directory)
 
@@ -396,26 +412,34 @@ Uncommitted changes in 6 validators need review:
 ## Implementation Strategy
 
 ### Batch by Validator
+
 Work on one validator at a time to maintain context:
+
 1. Complete all rules for one validator
 2. Write/update all tests
 3. Document all rules
 4. Move to next validator
 
 ### Prioritize by Type
+
 Within each validator:
+
 1. **Schema rules first** (easiest, fastest)
 2. **Refinement rules second** (moderate complexity)
 3. **Logic rules last** (most complex)
 
 ### Document as You Go
+
 Don't let documentation lag behind:
+
 - Create rule doc immediately after implementing
 - Easier to write examples while implementation is fresh
 - Prevents documentation debt
 
 ### Test Coverage
+
 Maintain high test coverage:
+
 - Write tests before or during implementation
 - Use builder patterns for fixtures
 - Test both valid and invalid cases
@@ -425,6 +449,7 @@ Maintain high test coverage:
 ## Progress Tracking
 
 Update this checklist as you complete tasks:
+
 - Replace `- [ ]` with `- [x]` when done
 - Update status percentages weekly
 - Celebrate milestones (25%, 50%, 75%, 100%)

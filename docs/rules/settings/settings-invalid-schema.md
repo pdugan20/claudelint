@@ -110,10 +110,10 @@ Minimal valid settings:
 
 **Common JSON Errors:**
 
-- ❌ `// comments` → Remove comments
-- ❌ `"field": value,}` → Remove trailing commas
-- ❌ `'field': 'value'` → Use double quotes
-- ❌ `undefined` → Use `null` or remove field
+-  `// comments` → Remove comments
+-  `"field": value,}` → Remove trailing commas
+-  `'field': 'value'` → Use double quotes
+-  `undefined` → Use `null` or remove field
 
 ## Options
 

@@ -287,7 +287,7 @@ Visual design and branding guidelines for claudelint documentation.
 
 ```vue
 <span class="badge badge-fixable">
-  <span class="icon">🔧</span>
+  <span class="icon"></span>
   Auto-fixable
 </span>
 ```
@@ -546,18 +546,18 @@ Pro tip: Use `claudelint init` for interactive setup.
 
 **Icons Used**:
 
-- Home: 🏠
-- Guide: 📖
+- Home: 
+- Guide: 
 - Validators: ✓
-- Rules: 📋
-- Examples: 💡
-- Error: ❌
-- Warning: ⚠️
-- Info: ℹ️
-- Success: ✅
-- Fix: 🔧
-- Fast: ⚡
-- Plugin: 🔌
+- Rules: 
+- Examples: 
+- Error: 
+- Warning: 
+- Info: 
+- Success: 
+- Fix: 
+- Fast: 
+- Plugin: 
 
 **Custom SVG Icons** (for navbar/social):
 

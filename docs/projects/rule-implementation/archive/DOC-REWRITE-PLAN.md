@@ -154,34 +154,34 @@ npm run audit:rule-docs
 ### What To Cut
 
 **Always remove**:
-- ❌ Separate "Benefits" sections
-- ❌ Separate "Why It Matters" sections
-- ❌ Multiple organization patterns (pick best 1)
-- ❌ Excessive migration steps
-- ❌ Examples beyond 2 per concept
-- ❌ Redundant explanations
-- ❌ "Good Directory Patterns" with 3+ patterns
+-  Separate "Benefits" sections
+-  Separate "Why It Matters" sections
+-  Multiple organization patterns (pick best 1)
+-  Excessive migration steps
+-  Examples beyond 2 per concept
+-  Redundant explanations
+-  "Good Directory Patterns" with 3+ patterns
 
 **Sometimes remove**:
-- ⚠️ Detailed "How To Fix" if simple (e.g., "add shebang")
-- ⚠️ Multiple configuration examples (keep 1)
-- ⚠️ Long background/context (move to Resources)
+-  Detailed "How To Fix" if simple (e.g., "add shebang")
+-  Multiple configuration examples (keep 1)
+-  Long background/context (move to Resources)
 
 ### What To Keep
 
 **Always keep**:
-- ✅ Core rule explanation (what triggers it)
-- ✅ Why the rule matters (brief, in Rule Details)
-- ✅ At least 1 incorrect example
-- ✅ At least 1 correct example
-- ✅ Actionable fix steps (if applicable)
-- ✅ Configuration options (if they exist)
+-  Core rule explanation (what triggers it)
+-  Why the rule matters (brief, in Rule Details)
+-  At least 1 incorrect example
+-  At least 1 correct example
+-  Actionable fix steps (if applicable)
+-  Configuration options (if they exist)
 
 **Rule-specific items**:
-- ✅ Security implications (for security rules)
-- ✅ Platform differences (Windows vs Unix)
-- ✅ Complex validation logic explanation
-- ✅ Unique edge cases
+-  Security implications (for security rules)
+-  Platform differences (Windows vs Unix)
+-  Complex validation logic explanation
+-  Unique edge cases
 
 ### How To Simplify Examples
 
@@ -260,7 +260,7 @@ Create a checklist file to track rewrites:
 ## Batch 3 (Medium Priority - 300-400 lines)
 - [ ] settings-invalid-env-var.md (390 → ~180)
 - [ ] settings-invalid-schema.md (365 → ~180)
-- [x] skill-deep-nesting.md (336 → 124) ✅
+- [x] skill-deep-nesting.md (336 → 124) 
 - [ ] skill-path-traversal.md (311 → ~120)
 
 ## Batch 4 (Medium Priority - 200-300 lines)
@@ -357,12 +357,12 @@ To begin rewriting docs immediately:
 ## Success Criteria
 
 **After all rewrites**:
-- ✅ All 28 docs use new format (badges at top)
-- ✅ All 28 docs within line count targets
-- ✅ All 28 docs have max 2 examples per type
-- ✅ All 28 docs have source code links
-- ✅ 0 redundant sections across all docs
-- ✅ Average line count: 120-180 (down from 357)
-- ✅ `npm run audit:rule-docs` shows 0 errors, 0 warnings
+-  All 28 docs use new format (badges at top)
+-  All 28 docs within line count targets
+-  All 28 docs have max 2 examples per type
+-  All 28 docs have source code links
+-  0 redundant sections across all docs
+-  Average line count: 120-180 (down from 357)
+-  `npm run audit:rule-docs` shows 0 errors, 0 warnings
 
 Then we can focus on enforcement to maintain quality going forward.

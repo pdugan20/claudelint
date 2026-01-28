@@ -16,7 +16,7 @@ Use pre-commit hooks + CI to block violations.
 
 ## Phase 1: Detection Scripts
 
-### 1.1 Existing: audit-rule-docs.ts ✅
+### 1.1 Existing: audit-rule-docs.ts 
 
 **Already built**: `npm run audit:rule-docs`
 
@@ -61,10 +61,10 @@ if (result.lineCount > target) {
 **Category**: Security
 
 # Wrong formats to detect:
-Severity: Error           ❌ (missing **)
-**Severity:** Error       ❌ (colon inside bold)
-**severity**: Error       ❌ (lowercase)
-- **Severity**: Error     ❌ (bullet point)
+Severity: Error            (missing **)
+**Severity:** Error        (colon inside bold)
+**severity**: Error        (lowercase)
+- **Severity**: Error      (bullet point)
 ```
 
 **Add to**: `audit-rule-docs.ts` as additional check
@@ -207,7 +207,7 @@ if [ -n "$CHANGED_RULE_DOCS" ]; then
   npm run audit:rule-docs
 
   if [ $? -ne 0 ]; then
-    echo "❌ Rule documentation validation failed"
+    echo " Rule documentation validation failed"
     echo "Run 'npm run audit:rule-docs' to see issues"
     exit 1
   fi
@@ -216,11 +216,11 @@ if [ -n "$CHANGED_RULE_DOCS" ]; then
   npm run lint:md -- $CHANGED_RULE_DOCS
 
   if [ $? -ne 0 ]; then
-    echo "❌ Markdown lint failed"
+    echo " Markdown lint failed"
     exit 1
   fi
 
-  echo "✅ Documentation validation passed"
+  echo " Documentation validation passed"
 fi
 
 # Continue with other checks
@@ -546,21 +546,21 @@ git restore docs/rules/skills/skill-missing-shebang.md
 ## Success Criteria
 
 **Detection**:
-- ✅ audit-rule-docs.ts detects all violations
-- ✅ Errors for critical issues (line count, format, prohibited sections)
-- ✅ Fast enough for pre-commit (<5 seconds for changed files)
+-  audit-rule-docs.ts detects all violations
+-  Errors for critical issues (line count, format, prohibited sections)
+-  Fast enough for pre-commit (<5 seconds for changed files)
 
 **Enforcement**:
-- ✅ Pre-commit hook blocks bad commits
-- ✅ CI blocks bad PRs
-- ✅ Can bypass locally but CI still enforces
-- ✅ Clear error messages for developers
+-  Pre-commit hook blocks bad commits
+-  CI blocks bad PRs
+-  Can bypass locally but CI still enforces
+-  Clear error messages for developers
 
 **Documentation**:
-- ✅ CONTRIBUTING.md explains standards
-- ✅ docs/rules/README.md provides quick start
-- ✅ Examples show good vs bad
-- ✅ Enforcement is transparent
+-  CONTRIBUTING.md explains standards
+-  docs/rules/README.md provides quick start
+-  Examples show good vs bad
+-  Enforcement is transparent
 
 ---
 

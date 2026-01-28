@@ -19,7 +19,7 @@ CLAUDE.md file approaching the limit:
 
 ```text
 # File size: 37KB (37,888 bytes)
-⚠ Warning: File approaching size limit
+ Warning: File approaching size limit
 
 This file is getting large and should be split soon.
 You have about 3KB before hitting the error threshold.

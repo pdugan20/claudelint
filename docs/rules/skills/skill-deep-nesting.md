@@ -25,7 +25,7 @@ Skill with excessive nesting (6 levels):
         └── deployment/     (3)
             └── strategies/ (4)
                 └── cloud/  (5)
-                    └── aws/  (6) ❌ Too deep
+                    └── aws/  (6)  Too deep
                         └── ec2.sh
 ```
 

@@ -95,12 +95,12 @@ paths, and increase cognitive overhead.
 
 ### What Was Kept
 
-1. ✅ **Clear Rule Details** - Still explains what and why
-2. ✅ **Good examples** - 2 incorrect, 2 correct (but more focused)
-3. ✅ **How To Fix** - Still actionable (but concise)
-4. ✅ **Configuration** - Still shows how to disable/configure
-5. ✅ **Related Rules** - Still cross-references
-6. ✅ **Metadata badges** - Now at top for visibility
+1.  **Clear Rule Details** - Still explains what and why
+2.  **Good examples** - 2 incorrect, 2 correct (but more focused)
+3.  **How To Fix** - Still actionable (but concise)
+4.  **Configuration** - Still shows how to disable/configure
+5.  **Related Rules** - Still cross-references
+6.  **Metadata badges** - Now at top for visibility
 
 ### What Was Improved
 
@@ -278,14 +278,14 @@ source ../lib/format.sh
 ## Quality Check
 
 Does the simplified version still:
-- ✅ Explain what the rule does? **Yes** - Clear in Rule Details
-- ✅ Explain why it matters? **Yes** - Concise rationale included
-- ✅ Show bad examples? **Yes** - 2 focused examples
-- ✅ Show good examples? **Yes** - 2 focused examples
-- ✅ Explain how to fix? **Yes** - 4 actionable steps
-- ✅ Provide configuration? **Yes** - JSON examples included
-- ✅ Link to related rules? **Yes** - 2 related rules
-- ✅ Link to resources? **Yes** - Implementation + tests + external
+-  Explain what the rule does? **Yes** - Clear in Rule Details
+-  Explain why it matters? **Yes** - Concise rationale included
+-  Show bad examples? **Yes** - 2 focused examples
+-  Show good examples? **Yes** - 2 focused examples
+-  Explain how to fix? **Yes** - 4 actionable steps
+-  Provide configuration? **Yes** - JSON examples included
+-  Link to related rules? **Yes** - 2 related rules
+-  Link to resources? **Yes** - Implementation + tests + external
 
 **Result**: All essential information preserved, but 68% shorter.
 

@@ -4,7 +4,7 @@
  * Check for emojis in source files and documentation
  * Uses emoji-regex for proper Unicode emoji detection
  *
- * STRICT MODE: No emojis allowed anywhere except in markdown headings
+ * STRICT MODE: No emojis allowed anywhere
  */
 
 const fs = require('fs');
@@ -23,11 +23,6 @@ function checkFile(filePath, isDoc = false) {
   const regex = emojiRegex();
 
   lines.forEach((line, index) => {
-    // For docs, allow emojis ONLY in headings
-    if (isDoc && line.trim().startsWith('#')) {
-      return;
-    }
-
     const matches = line.match(regex);
     if (matches && matches.length > 0) {
       foundEmojis = true;
@@ -64,8 +59,8 @@ if (fs.existsSync('src')) {
   walkDirectory('src', false);
 }
 
-// Check documentation (strict mode - only allow in headings)
-console.log('Checking documentation (strict mode - only headings allowed)...');
+// Check documentation (strict mode - no emojis allowed)
+console.log('Checking documentation (strict mode - no emojis allowed)...');
 if (fs.existsSync('docs')) {
   walkDirectory('docs', true);
 }
@@ -75,9 +70,9 @@ if (fs.existsSync('README.md')) {
 
 if (foundEmojis) {
   console.error('\nEmojis found in files. Please remove them.');
-  console.error('Only emojis in markdown headings (lines starting with #) are allowed.');
+  console.error('No emojis are allowed in source code or documentation.');
   process.exit(1);
 } else {
-  console.log('No inappropriate emojis found.');
+  console.log('No emojis found.');
   process.exit(0);
 }

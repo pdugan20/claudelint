@@ -19,7 +19,7 @@ CLAUDE.md file exceeding the limit:
 
 ```text
 # File size: 42KB (43,008 bytes)
-❌ Error: File exceeds size limit
+ Error: File exceeds size limit
 
 This file is too large and must be split immediately.
 Claude Code cannot process files over 40KB.

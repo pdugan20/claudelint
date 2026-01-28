@@ -7,7 +7,7 @@
 ```markdown
 # rule-name
 
-[Status Badges: ✅ Recommended | 🔧 Fixable | 💡 hasSuggestions]
+[Status Badges:  Recommended |  Fixable |  hasSuggestions]
 
 Brief description of rule.
 
@@ -148,7 +148,7 @@ Available since: 1.0.0
 | Field/Section | ESLint | Claudelint | Notes |
 |---------------|--------|------------|-------|
 | **Title Format** | `# rule-name` | `# Rule: rule-id` | Ours is more explicit |
-| **Status Badges** | ✅ 🔧 💡 (visual) | None | ESLint more visual |
+| **Status Badges** |    (visual) | None | ESLint more visual |
 | **Brief Description** | Below title | Below title | ✓ Same |
 | **Rule Details** | ✓ Has section | ✓ Has section | ✓ Same |
 | **Incorrect Examples** | Subsection with playground links | Inline with markdown bold | ESLint more interactive |
@@ -161,19 +161,19 @@ Available since: 1.0.0
 | **Version** | "Introduced in vX.Y.Z" | "Available since: X.Y.Z" | ✓ Similar |
 | **Category** | Via badges/tags | In Metadata table | Different approach |
 | **Severity** | Via rule config | In Metadata table | Different approach |
-| **Fixable** | Via 🔧 badge | In Metadata table | ESLint more visual |
+| **Fixable** | Via  badge | In Metadata table | ESLint more visual |
 | **Validator** | N/A | In Metadata table | Unique to us |
-| **hasSuggestions** | Via 💡 badge | N/A | ESLint-specific |
-| **Recommended** | Via ✅ badge | N/A | ESLint-specific |
+| **hasSuggestions** | Via  badge | N/A | ESLint-specific |
+| **Recommended** | Via  badge | N/A | ESLint-specific |
 
 ## Key Differences
 
 ### 1. Metadata Presentation
 
 **ESLint**: Uses visual badges at the top
-- ✅ Recommended
-- 🔧 Fixable
-- 💡 hasSuggestions
+-  Recommended
+-  Fixable
+-  hasSuggestions
 
 **Claudelint**: Uses tabular metadata at bottom
 - Category
@@ -252,14 +252,14 @@ Available since: 1.0.0
    ```markdown
    # Rule: skill-missing-shebang
 
-   🔴 Error | 🔧 Not Fixable | 📦 Skills Validator
+    Error |  Not Fixable |  Skills Validator
    ```
 
 2. **Move metadata to top as badges** (instead of bottom table):
-   - Severity → 🔴 Error / ⚠️ Warning
-   - Fixable → 🔧 Fixable / ❌ Not Fixable
-   - Validator → 📦 Icon + Validator name
-   - Category → 🏷️ Category name
+   - Severity →  Error /  Warning
+   - Fixable →  Fixable /  Not Fixable
+   - Validator →  Icon + Validator name
+   - Category →  Category name
 
 3. **Link to source code and tests**:
    ```markdown
@@ -316,7 +316,7 @@ Available since: 1.0.0
 ```markdown
 # Rule: rule-id
 
-🔴 Error | ❌ Not Fixable | 📦 Validator Name | 🏷️ Category Name
+ Error |  Not Fixable |  Validator Name |  Category Name
 
 Brief description of what this rule does.
 

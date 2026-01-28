@@ -218,7 +218,7 @@ ESLint would show 1-2 approaches max.
 ```markdown
 # Rule: rule-id
 
-🔴 Error | ❌ Not Fixable | 📦 Validator | 🏷️ Category
+ Error |  Not Fixable |  Validator |  Category
 
 Brief description (1 sentence).
 
@@ -276,16 +276,16 @@ Available since: vX.Y.Z
 
 ### What to cut:
 
-1. ❌ "Alternative shebangs" subsection (move to How To Fix)
-2. ❌ Long "Why It Matters" with 5 bullet points (condense to 2 sentences in Rule Details)
-3. ❌ Multiple examples per concept (keep 1 incorrect, 1-2 correct)
-4. ❌ Extensive "Choosing the right shebang" (brief note only)
+1.  "Alternative shebangs" subsection (move to How To Fix)
+2.  Long "Why It Matters" with 5 bullet points (condense to 2 sentences in Rule Details)
+3.  Multiple examples per concept (keep 1 incorrect, 1-2 correct)
+4.  Extensive "Choosing the right shebang" (brief note only)
 
 ### What to keep:
 
-1. ✅ "How To Fix" section (valuable)
-2. ✅ Configuration example
-3. ✅ When Not To Use It
+1.  "How To Fix" section (valuable)
+2.  Configuration example
+3.  When Not To Use It
 
 ## Example: skill-deep-nesting (Simplified)
 
@@ -294,18 +294,18 @@ Available since: vX.Y.Z
 
 ### What to cut:
 
-1. ❌ "Pattern 1, 2, 3" - Keep only 1 pattern
-2. ❌ "Depth 0-2, 3, 4, 5+" guidelines - Simplify to just "Max depth 4"
-3. ❌ Separate "Benefits of Flat Structure" section (move to Rule Details)
-4. ❌ "Restructuring Example" - One example is enough
-5. ❌ "Why Depth Matters" - Condense into Rule Details
+1.  "Pattern 1, 2, 3" - Keep only 1 pattern
+2.  "Depth 0-2, 3, 4, 5+" guidelines - Simplify to just "Max depth 4"
+3.  Separate "Benefits of Flat Structure" section (move to Rule Details)
+4.  "Restructuring Example" - One example is enough
+5.  "Why Depth Matters" - Condense into Rule Details
 
 ### What to keep:
 
-1. ✅ Basic incorrect/correct examples
-2. ✅ How To Fix with 3-4 options (this is valuable)
-3. ✅ When Not To Use It
-4. ✅ Related Rules
+1.  Basic incorrect/correct examples
+2.  How To Fix with 3-4 options (this is valuable)
+3.  When Not To Use It
+4.  Related Rules
 
 ## Summary
 

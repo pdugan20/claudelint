@@ -787,12 +787,12 @@ for (const rule of rules) {
 }
 
 if (missingTests.length > 0) {
-  console.error('❌ Rules missing tests:');
+  console.error(' Rules missing tests:');
   missingTests.forEach((msg) => console.error(`  - ${msg}`));
   process.exit(1);
 }
 
-console.log(`✅ All ${rules.length} rules have test coverage`);
+console.log(` All ${rules.length} rules have test coverage`);
 ```
 
 ---
@@ -808,10 +808,10 @@ Based on schema-first approach, rules fall into these categories:
 - Skills frontmatter (20 rules) → `SkillFrontmatterSchema`
 - Agent frontmatter (25 rules) → `AgentFrontmatterSchema`
 - Output styles frontmatter (12 rules) → `OutputStyleFrontmatterSchema`
-- Settings validation (32 rules) → `SettingsSchema` ✅ (already exists)
-- Hooks validation (26 rules) → `HooksConfigSchema` ✅ (already exists)
-- MCP validation (28 rules) → `MCPConfigSchema` ✅ (already exists)
-- Plugin validation (33 rules) → `PluginManifestSchema` ✅ (already exists)
+- Settings validation (32 rules) → `SettingsSchema`  (already exists)
+- Hooks validation (26 rules) → `HooksConfigSchema`  (already exists)
+- MCP validation (28 rules) → `MCPConfigSchema`  (already exists)
+- Plugin validation (33 rules) → `PluginManifestSchema`  (already exists)
 - LSP validation (22 rules) → `LSPConfigSchema`
 - CLAUDE.md frontmatter (6 rules) → `ClaudeMdFrontmatterSchema`
 
@@ -871,7 +871,7 @@ Based on schema-first approach, rules fall into these categories:
 
 **Tasks**:
 
-1. ✅ Install dependencies: `zod-validation-error`
+1.  Install dependencies: `zod-validation-error`
 2. Create `src/schemas/` directory structure
 3. Implement `refinements.ts` with all reusable refinements
 4. Create `schema-helpers.ts` validation utilities
@@ -988,26 +988,26 @@ Based on schema-first approach, rules fall into these categories:
 
 ### Coverage Metrics
 
-- ✅ 219/219 rules implemented (100%)
-- ✅ 219/219 rules tested (100%)
-- ✅ 219/219 rules documented (100%)
+-  219/219 rules implemented (100%)
+-  219/219 rules tested (100%)
+-  219/219 rules documented (100%)
 
 ### Quality Metrics
 
-- ✅ Zero duplicate validation logic
-- ✅ >80% of rules use shared schemas/validators
-- ✅ All tests passing with >90% code coverage
+-  Zero duplicate validation logic
+-  >80% of rules use shared schemas/validators
+-  All tests passing with >90% code coverage
 
 ### Performance Metrics
 
-- ✅ Validation time <100ms for typical project
-- ✅ Validation time <500ms for large project
+-  Validation time <100ms for typical project
+-  Validation time <500ms for large project
 
 ### Maintainability Metrics
 
-- ✅ Schema-based rules: <5 lines per rule
-- ✅ Manual rules: <20 lines per rule
-- ✅ Clear separation of concerns
+-  Schema-based rules: <5 lines per rule
+-  Manual rules: <20 lines per rule
+-  Clear separation of concerns
 
 ---
 

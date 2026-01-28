@@ -33,7 +33,7 @@ With Zod schemas, the difficulty profile changes dramatically:
 
 ---
 
-## 🟢 TRIVIAL - Schema Definitions (140 rules - 68%)
+##  TRIVIAL - Schema Definitions (140 rules - 68%)
 
 These rules are **automatically handled by Zod schemas** with built-in validators.
 
@@ -41,203 +41,203 @@ These rules are **automatically handled by Zod schemas** with built-in validator
 
 Defined in `SkillFrontmatterSchema`:
 
-- ✅ `skill-frontmatter-name-max-length` - `z.string().max(64)`
-- ✅ `skill-frontmatter-description-empty` - `z.string().min(1)`
-- ✅ `skill-frontmatter-description-max-length` - `z.string().max(1024)`
-- ✅ `skill-frontmatter-context-invalid-value` - `z.enum(['fork'])`
-- ✅ `skill-frontmatter-model-invalid` - `z.enum(['sonnet', 'opus', 'haiku'])`
-- ✅ `skill-frontmatter-allowed-tools-invalid` - `z.array(z.string())`
-- ✅ `skill-body-too-long` - Line count check
-- ✅ `skill-reference-too-deep` - Path depth check
-- ✅ `skill-windows-paths` - Regex check
-- ✅ `skill-naming-not-gerund` - Info refinement
-- ✅ `skill-large-reference-no-toc` - Conditional check
-- ✅ `skill-invalid-substitution` - Regex refinement
+-  `skill-frontmatter-name-max-length` - `z.string().max(64)`
+-  `skill-frontmatter-description-empty` - `z.string().min(1)`
+-  `skill-frontmatter-description-max-length` - `z.string().max(1024)`
+-  `skill-frontmatter-context-invalid-value` - `z.enum(['fork'])`
+-  `skill-frontmatter-model-invalid` - `z.enum(['sonnet', 'opus', 'haiku'])`
+-  `skill-frontmatter-allowed-tools-invalid` - `z.array(z.string())`
+-  `skill-body-too-long` - Line count check
+-  `skill-reference-too-deep` - Path depth check
+-  `skill-windows-paths` - Regex check
+-  `skill-naming-not-gerund` - Info refinement
+-  `skill-large-reference-no-toc` - Conditional check
+-  `skill-invalid-substitution` - Regex refinement
 
 ### Settings (25 trivial)
 
 Handled by enhanced `SettingsSchema`:
 
-- ✅ `settings-invalid-root-field` - `z.object().strict()`
-- ✅ `settings-invalid-field-type` - Zod type checking
-- ✅ `settings-permission-invalid-mode` - `z.enum(['acceptEdits', ...])`
-- ✅ `settings-attribution-invalid-field` - `z.object().strict()`
-- ✅ `settings-sandbox-invalid-field` - `z.object().strict()`
-- ✅ `settings-sandbox-invalid-port` - `z.number().min(1).max(65535)`
-- ✅ `settings-statusline-invalid-type` - `z.literal('command')`
-- ✅ `settings-statusline-missing-command` - `z.string()`
-- ✅ `settings-filesuggestion-invalid-type` - `z.literal('command')`
-- ✅ `settings-filesuggestion-missing-command` - `z.string()`
-- ✅ `settings-hooks-invalid-event` - Enum check
-- ✅ `settings-hooks-invalid-tool` - Tool check
-- ✅ `settings-mcp-server-invalid-name` - String validation
-- ✅ `settings-marketplace-missing-required` - Required fields
-- ✅ `settings-number-out-of-range` - `z.number().min().max()`
-- ✅ `settings-enum-invalid-value` - `z.enum()`
-- ✅ `settings-deprecated-field` - Schema check
-- ✅ `settings-scope-invalid` - `z.enum(['local', 'project', 'user'])`
-- ✅ `settings-path-not-relative` - Refinement
-- ✅ `settings-env-var-invalid-name` - Regex refinement
-- ✅ `settings-sandbox-invalid-network` - Object schema
-- ✅ `settings-permission-invalid-tool` - Array validation
-- ✅ All numeric range validations
-- ✅ All type checks
-- ✅ All enum validations
+-  `settings-invalid-root-field` - `z.object().strict()`
+-  `settings-invalid-field-type` - Zod type checking
+-  `settings-permission-invalid-mode` - `z.enum(['acceptEdits', ...])`
+-  `settings-attribution-invalid-field` - `z.object().strict()`
+-  `settings-sandbox-invalid-field` - `z.object().strict()`
+-  `settings-sandbox-invalid-port` - `z.number().min(1).max(65535)`
+-  `settings-statusline-invalid-type` - `z.literal('command')`
+-  `settings-statusline-missing-command` - `z.string()`
+-  `settings-filesuggestion-invalid-type` - `z.literal('command')`
+-  `settings-filesuggestion-missing-command` - `z.string()`
+-  `settings-hooks-invalid-event` - Enum check
+-  `settings-hooks-invalid-tool` - Tool check
+-  `settings-mcp-server-invalid-name` - String validation
+-  `settings-marketplace-missing-required` - Required fields
+-  `settings-number-out-of-range` - `z.number().min().max()`
+-  `settings-enum-invalid-value` - `z.enum()`
+-  `settings-deprecated-field` - Schema check
+-  `settings-scope-invalid` - `z.enum(['local', 'project', 'user'])`
+-  `settings-path-not-relative` - Refinement
+-  `settings-env-var-invalid-name` - Regex refinement
+-  `settings-sandbox-invalid-network` - Object schema
+-  `settings-permission-invalid-tool` - Array validation
+-  All numeric range validations
+-  All type checks
+-  All enum validations
 
 ### Hooks (18 trivial)
 
 Enhanced `HooksConfigSchema`:
 
-- ✅ `hooks-invalid-event-name` - `z.enum([...12 events])`
-- ✅ `hooks-invalid-hook-type` - `z.enum(['command', 'prompt', 'agent'])`
-- ✅ `hooks-missing-command` - Conditional required
-- ✅ `hooks-missing-prompt` - Conditional required
-- ✅ `hooks-both-command-and-prompt` - Schema refinement
-- ✅ `hooks-invalid-timeout` - `z.number().positive()`
-- ✅ `hooks-invalid-matcher-type` - `z.string()`
-- ✅ `hooks-invalid-hooks-array` - `z.array()`
-- ✅ `hooks-invalid-permission-decision` - `z.enum(['allow', 'deny', 'ask'])`
-- ✅ `hooks-invalid-permission-behavior` - `z.enum(['allow', 'deny'])`
-- ✅ `hooks-block-without-reason` - Schema refinement
-- ✅ `hooks-continue-false-without-reason` - Schema refinement
-- ✅ All type checks
-- ✅ All enum validations
-- ✅ All required field checks
-- ✅ Warning-level validations
-- ✅ Info-level validations
-- ✅ Context-aware checks
+-  `hooks-invalid-event-name` - `z.enum([...12 events])`
+-  `hooks-invalid-hook-type` - `z.enum(['command', 'prompt', 'agent'])`
+-  `hooks-missing-command` - Conditional required
+-  `hooks-missing-prompt` - Conditional required
+-  `hooks-both-command-and-prompt` - Schema refinement
+-  `hooks-invalid-timeout` - `z.number().positive()`
+-  `hooks-invalid-matcher-type` - `z.string()`
+-  `hooks-invalid-hooks-array` - `z.array()`
+-  `hooks-invalid-permission-decision` - `z.enum(['allow', 'deny', 'ask'])`
+-  `hooks-invalid-permission-behavior` - `z.enum(['allow', 'deny'])`
+-  `hooks-block-without-reason` - Schema refinement
+-  `hooks-continue-false-without-reason` - Schema refinement
+-  All type checks
+-  All enum validations
+-  All required field checks
+-  Warning-level validations
+-  Info-level validations
+-  Context-aware checks
 
 ### MCP Servers (20 trivial)
 
 Enhanced `MCPConfigSchema`:
 
-- ✅ `mcp-invalid-root-field` - `z.object().strict()`
-- ✅ `mcp-invalid-server-name` - `z.string()`
-- ✅ `mcp-missing-type` - Required field
-- ✅ `mcp-invalid-type` - `z.enum(['stdio', 'http', 'sse', 'websocket'])`
-- ✅ `mcp-stdio-missing-command` - Conditional required
-- ✅ `mcp-http-missing-url` - Conditional required
-- ✅ `mcp-sse-missing-url` - Conditional required
-- ✅ `mcp-invalid-command-type` - `z.string()`
-- ✅ `mcp-invalid-args-type` - `z.array(z.string())`
-- ✅ `mcp-invalid-env-type` - `z.record(z.string())`
-- ✅ `mcp-invalid-headers-type` - `z.record(z.string())`
-- ✅ `mcp-scope-invalid` - `z.enum(['local', 'project', 'user'])`
-- ✅ `mcp-invalid-timeout` - `z.number().positive()`
-- ✅ `mcp-invalid-max-output` - `z.number().positive()`
-- ✅ `mcp-sse-deprecated` - Warning
-- ✅ All type checks
-- ✅ All enum validations
-- ✅ All required fields
-- ✅ Transport-specific schemas
-- ✅ Conditional validation
+-  `mcp-invalid-root-field` - `z.object().strict()`
+-  `mcp-invalid-server-name` - `z.string()`
+-  `mcp-missing-type` - Required field
+-  `mcp-invalid-type` - `z.enum(['stdio', 'http', 'sse', 'websocket'])`
+-  `mcp-stdio-missing-command` - Conditional required
+-  `mcp-http-missing-url` - Conditional required
+-  `mcp-sse-missing-url` - Conditional required
+-  `mcp-invalid-command-type` - `z.string()`
+-  `mcp-invalid-args-type` - `z.array(z.string())`
+-  `mcp-invalid-env-type` - `z.record(z.string())`
+-  `mcp-invalid-headers-type` - `z.record(z.string())`
+-  `mcp-scope-invalid` - `z.enum(['local', 'project', 'user'])`
+-  `mcp-invalid-timeout` - `z.number().positive()`
+-  `mcp-invalid-max-output` - `z.number().positive()`
+-  `mcp-sse-deprecated` - Warning
+-  All type checks
+-  All enum validations
+-  All required fields
+-  Transport-specific schemas
+-  Conditional validation
 
 ### Plugins (25 trivial)
 
 Enhanced `PluginManifestSchema`:
 
-- ✅ `plugin-missing-manifest` - File check
-- ✅ `plugin-missing-name` - Required field
-- ✅ `plugin-missing-description` - Required field
-- ✅ `plugin-missing-version` - Required field
-- ✅ `plugin-name-too-long` - `z.string().max(64)`
-- ✅ `plugin-description-empty` - `z.string().min(1)`
-- ✅ `plugin-author-invalid-type` - `z.object()`
-- ✅ `plugin-author-missing-name` - Required field
-- ✅ `plugin-invalid-skills-path` - `z.array(z.string())`
-- ✅ `plugin-invalid-agents-path` - `z.array(z.string())`
-- ✅ `plugin-invalid-commands-path` - `z.array(z.string())`
-- ✅ `plugin-invalid-hooks-path` - `z.string()`
-- ✅ `plugin-marketplace-missing-plugins` - Required array
-- ✅ `plugin-marketplace-missing-version` - Required field
-- ✅ All type checks
-- ✅ All required fields
-- ✅ All array validations
-- ✅ All object validations
-- ✅ Location checks (simple)
-- ✅ Missing file checks
-- ✅ Invalid root field checks
-- ✅ Directory structure checks
-- ✅ README checks
-- ✅ Namespace checks (simple)
-- ✅ Schema validations
+-  `plugin-missing-manifest` - File check
+-  `plugin-missing-name` - Required field
+-  `plugin-missing-description` - Required field
+-  `plugin-missing-version` - Required field
+-  `plugin-name-too-long` - `z.string().max(64)`
+-  `plugin-description-empty` - `z.string().min(1)`
+-  `plugin-author-invalid-type` - `z.object()`
+-  `plugin-author-missing-name` - Required field
+-  `plugin-invalid-skills-path` - `z.array(z.string())`
+-  `plugin-invalid-agents-path` - `z.array(z.string())`
+-  `plugin-invalid-commands-path` - `z.array(z.string())`
+-  `plugin-invalid-hooks-path` - `z.string()`
+-  `plugin-marketplace-missing-plugins` - Required array
+-  `plugin-marketplace-missing-version` - Required field
+-  All type checks
+-  All required fields
+-  All array validations
+-  All object validations
+-  Location checks (simple)
+-  Missing file checks
+-  Invalid root field checks
+-  Directory structure checks
+-  README checks
+-  Namespace checks (simple)
+-  Schema validations
 
 ### Agents (20 trivial)
 
 `AgentFrontmatterSchema`:
 
-- ✅ `agent-missing-frontmatter` - Frontmatter check
-- ✅ `agent-missing-name` - Required field
-- ✅ `agent-missing-description` - Required field
-- ✅ `agent-name-too-long` - `z.string().max(64)`
-- ✅ `agent-description-empty` - `z.string().min(1)`
-- ✅ `agent-invalid-frontmatter-field` - `z.object().strict()`
-- ✅ `agent-tools-invalid-type` - `z.array(z.string())`
-- ✅ `agent-disallowed-tools-invalid-type` - `z.array(z.string())`
-- ✅ `agent-model-invalid` - `z.enum()`
-- ✅ `agent-permission-mode-invalid` - `z.enum()`
-- ✅ `agent-skills-invalid-type` - `z.array(z.string())`
-- ✅ `agent-missing-body` - Body check
-- ✅ `agent-empty-body` - Body check
-- ✅ `agent-no-tools-specified` - Info message
-- ✅ `agent-bypass-permissions-warning` - Warning message
-- ✅ `agent-skills-not-inherited` - Info message
-- ✅ `agent-cannot-spawn-subagents` - Info message
-- ✅ All type checks
-- ✅ All enum validations
-- ✅ All required fields
+-  `agent-missing-frontmatter` - Frontmatter check
+-  `agent-missing-name` - Required field
+-  `agent-missing-description` - Required field
+-  `agent-name-too-long` - `z.string().max(64)`
+-  `agent-description-empty` - `z.string().min(1)`
+-  `agent-invalid-frontmatter-field` - `z.object().strict()`
+-  `agent-tools-invalid-type` - `z.array(z.string())`
+-  `agent-disallowed-tools-invalid-type` - `z.array(z.string())`
+-  `agent-model-invalid` - `z.enum()`
+-  `agent-permission-mode-invalid` - `z.enum()`
+-  `agent-skills-invalid-type` - `z.array(z.string())`
+-  `agent-missing-body` - Body check
+-  `agent-empty-body` - Body check
+-  `agent-no-tools-specified` - Info message
+-  `agent-bypass-permissions-warning` - Warning message
+-  `agent-skills-not-inherited` - Info message
+-  `agent-cannot-spawn-subagents` - Info message
+-  All type checks
+-  All enum validations
+-  All required fields
 
 ### LSP Servers (15 trivial)
 
 `LSPConfigSchema`:
 
-- ✅ `lsp-missing-command` - Required field
-- ✅ `lsp-missing-extension-to-language` - Required field
-- ✅ `lsp-command-not-string` - `z.string()`
-- ✅ `lsp-extension-to-language-not-object` - `z.object()`
-- ✅ `lsp-language-not-string` - `z.string()`
-- ✅ `lsp-args-not-array` - `z.array(z.string())`
-- ✅ `lsp-transport-invalid` - `z.enum(['stdio', 'socket'])`
-- ✅ `lsp-env-not-object` - `z.record(z.string())`
-- ✅ `lsp-initialization-options-not-object` - `z.object()`
-- ✅ `lsp-settings-not-object` - `z.object()`
-- ✅ `lsp-workspace-folder-not-string` - `z.string()`
-- ✅ `lsp-startup-timeout-invalid` - `z.number().positive()`
-- ✅ `lsp-shutdown-timeout-invalid` - `z.number().positive()`
-- ✅ `lsp-restart-on-crash-not-boolean` - `z.boolean()`
-- ✅ `lsp-max-restarts-invalid` - `z.number().positive().int()`
+-  `lsp-missing-command` - Required field
+-  `lsp-missing-extension-to-language` - Required field
+-  `lsp-command-not-string` - `z.string()`
+-  `lsp-extension-to-language-not-object` - `z.object()`
+-  `lsp-language-not-string` - `z.string()`
+-  `lsp-args-not-array` - `z.array(z.string())`
+-  `lsp-transport-invalid` - `z.enum(['stdio', 'socket'])`
+-  `lsp-env-not-object` - `z.record(z.string())`
+-  `lsp-initialization-options-not-object` - `z.object()`
+-  `lsp-settings-not-object` - `z.object()`
+-  `lsp-workspace-folder-not-string` - `z.string()`
+-  `lsp-startup-timeout-invalid` - `z.number().positive()`
+-  `lsp-shutdown-timeout-invalid` - `z.number().positive()`
+-  `lsp-restart-on-crash-not-boolean` - `z.boolean()`
+-  `lsp-max-restarts-invalid` - `z.number().positive().int()`
 
 ### Output Styles (10 trivial)
 
 `OutputStyleFrontmatterSchema`:
 
-- ✅ `output-style-missing-frontmatter` - Frontmatter check
-- ✅ `output-style-invalid-frontmatter-field` - `z.object().strict()`
-- ✅ `output-style-name-invalid-type` - `z.string()`
-- ✅ `output-style-description-invalid-type` - `z.string()`
-- ✅ `output-style-keep-coding-invalid-type` - `z.boolean()`
-- ✅ `output-style-missing-body` - Body check
-- ✅ `output-style-empty-body` - Body check
-- ✅ `output-style-description-empty` - `z.string().min(1)`
-- ✅ `output-style-name-too-long` - `z.string().max()`
-- ✅ `output-style-invalid-file-extension` - File check
+-  `output-style-missing-frontmatter` - Frontmatter check
+-  `output-style-invalid-frontmatter-field` - `z.object().strict()`
+-  `output-style-name-invalid-type` - `z.string()`
+-  `output-style-description-invalid-type` - `z.string()`
+-  `output-style-keep-coding-invalid-type` - `z.boolean()`
+-  `output-style-missing-body` - Body check
+-  `output-style-empty-body` - Body check
+-  `output-style-description-empty` - `z.string().min(1)`
+-  `output-style-name-too-long` - `z.string().max()`
+-  `output-style-invalid-file-extension` - File check
 
 ### Commands (3 trivial)
 
 All deprecation warnings:
 
-- ✅ `commands-deprecated-directory` - Directory check
-- ✅ `commands-migrate-to-skills` - Info message
-- ✅ `commands-in-plugin-deprecated` - Warning message
+-  `commands-deprecated-directory` - Directory check
+-  `commands-migrate-to-skills` - Info message
+-  `commands-in-plugin-deprecated` - Warning message
 
 ### CLAUDE.md (2 trivial)
 
-- ✅ `filename-case-sensitive` - String comparison
-- ✅ `frontmatter-unknown-field` - `z.object().strict()`
+-  `filename-case-sensitive` - String comparison
+-  `frontmatter-unknown-field` - `z.object().strict()`
 
 ---
 
-## 🟡 EASY - Custom Refinements (45 rules - 22%)
+##  EASY - Custom Refinements (45 rules - 22%)
 
 These require **custom Zod refinements** but are straightforward.
 
@@ -305,7 +305,7 @@ These require **custom Zod refinements** but are straightforward.
 
 ---
 
-## 🟠 MODERATE - Custom Logic (22 rules - 10%)
+##  MODERATE - Custom Logic (22 rules - 10%)
 
 These require **custom validation logic** beyond schemas.
 
@@ -437,23 +437,23 @@ These require **custom validation logic** beyond schemas.
 
 ### Code Quality
 
-- ✅ 78% reduction in validation code
-- ✅ Schema-driven validation (140 rules = 140 lines)
-- ✅ Reusable refinements (45 rules share ~15 refinements)
-- ✅ Minimal custom logic (22 rules need custom code)
+-  78% reduction in validation code
+-  Schema-driven validation (140 rules = 140 lines)
+-  Reusable refinements (45 rules share ~15 refinements)
+-  Minimal custom logic (22 rules need custom code)
 
 ### Maintainability
 
-- ✅ Self-documenting schemas
-- ✅ Type-safe with TypeScript
-- ✅ Easy to test (schema testing is straightforward)
-- ✅ Clear separation of concerns
+-  Self-documenting schemas
+-  Type-safe with TypeScript
+-  Easy to test (schema testing is straightforward)
+-  Clear separation of concerns
 
 ### Performance
 
-- ✅ Zod is fast (~microseconds per validation)
-- ✅ Lazy evaluation where possible
-- ✅ No performance degradation from manual approach
+-  Zod is fast (~microseconds per validation)
+-  Lazy evaluation where possible
+-  No performance degradation from manual approach
 
 ---
 
@@ -530,12 +530,12 @@ Adopt existing composition operators instead of manual if/else validation chains
 
 | Optimization | Savings | Priority |
 |-------------|---------|----------|
-| Schema validation | 4,425 lines (78%) | 🔴 Core |
-| Auto-generated registry | 5,813 lines (98%) | 🔴 High |
-| Builder fixtures | 100 lines (67%) | 🟡 Medium |
-| Schema errors | 455 lines (96%) | 🔴 High |
-| Schema constants | 100 lines (50%) | 🟢 Low |
-| Composition framework | 1,500 lines (75%) | 🟡 Medium |
+| Schema validation | 4,425 lines (78%) |  Core |
+| Auto-generated registry | 5,813 lines (98%) |  High |
+| Builder fixtures | 100 lines (67%) |  Medium |
+| Schema errors | 455 lines (96%) |  High |
+| Schema constants | 100 lines (50%) |  Low |
+| Composition framework | 1,500 lines (75%) |  Medium |
 | **Total** | **10,893 lines saved** | **88% reduction** |
 
 ---

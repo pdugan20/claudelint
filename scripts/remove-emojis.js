@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Remove all emojis from markdown files (except in headings)
+ * Remove all emojis from markdown files
  */
 
 const fs = require('fs');
@@ -20,11 +20,6 @@ function removeEmojisFromFile(filePath) {
   let modified = false;
 
   const newLines = lines.map((line) => {
-    // Skip headings
-    if (line.trim().startsWith('#')) {
-      return line;
-    }
-
     // Remove emojis from this line
     const newLine = line.replace(regex, '');
     if (newLine !== line) {

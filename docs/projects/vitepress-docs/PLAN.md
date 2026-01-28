@@ -152,7 +152,7 @@ export default defineConfig({
     // Footer
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present Pat Dugan'
+      copyright: 'Copyright  2024-present Pat Dugan'
     },
 
     // Search
@@ -200,22 +200,22 @@ hero:
       link: https://github.com/pdugan20/claudelint
 
 features:
-  - icon: ⚡
+  - icon: 
     title: Fast & Cached
     details: Parallel validation with smart caching for 2.4x speedup
-  - icon: 📋
+  - icon: 
     title: 27 Validation Rules
     details: Comprehensive checks across 6 validator categories
-  - icon: 🎯
+  - icon: 
     title: Per-rule Documentation
     details: Detailed docs with examples for every rule
-  - icon: 🔧
+  - icon: 
     title: Auto-fix
     details: Automatically fix common issues with --fix flag
-  - icon: 🎨
+  - icon: 
     title: Multiple Formats
     details: Stylish, JSON, and compact output modes
-  - icon: 🔌
+  - icon: 
     title: Plugin System
     details: Extensible with custom validators
 ---
@@ -323,8 +323,8 @@ interface Props {
 
 ```vue
 <FeatureGrid :features="[
-  { icon: '⚡', title: 'Fast', details: 'Parallel validation' },
-  { icon: '📋', title: 'Comprehensive', details: '27 rules' }
+  { icon: '', title: 'Fast', details: 'Parallel validation' },
+  { icon: '', title: 'Comprehensive', details: '27 rules' }
 ]" />
 ```
 
