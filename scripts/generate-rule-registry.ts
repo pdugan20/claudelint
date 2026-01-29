@@ -85,7 +85,7 @@ import { RuleRegistry } from '../utils/rule-registry';
   const outputPath = join(process.cwd(), 'src/rules/index.ts');
   await writeFile(outputPath, content);
 
-  console.log(`✅ Generated ${rules.length} rule registrations`);
+  console.log(`[SUCCESS] Generated ${rules.length} rule registrations`);
   console.log(`   Output: ${outputPath}`);
 }
 
@@ -93,12 +93,12 @@ import { RuleRegistry } from '../utils/rule-registry';
  * Main execution
  */
 async function main() {
-  console.log('🔧 Generating rule registry from schemas...\n');
+  console.log('[BUILD] Generating rule registry from schemas...\n');
 
   const rules = await extractRulesFromSchemas();
 
   if (rules.length === 0) {
-    console.log('⚠️  No rules found. Schemas not yet created.');
+    console.log('[WARN] No rules found. Schemas not yet created.');
     console.log('   This is expected in Phase 1.');
     console.log('   Registry generation will work in Phase 2 after schemas are defined.\n');
     process.exit(0);
@@ -106,10 +106,10 @@ async function main() {
 
   await generateRuleRegistry(rules);
 
-  console.log('\n✨ Rule registry generation complete!');
+  console.log('\n[SUCCESS] Rule registry generation complete!');
 }
 
 main().catch((error) => {
-  console.error('❌ Error generating rule registry:', error);
+  console.error('[FAIL] Error generating rule registry:', error);
   process.exit(1);
 });

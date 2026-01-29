@@ -10,5 +10,5 @@
  * Usage: npm run check:duplicate-fixtures
  */
 
-console.log('✅ Duplicate fixtures check (stub - implement in Phase 4)');
+console.log('[SUCCESS] Duplicate fixtures check (stub - implement in Phase 4)');
 process.exit(0);

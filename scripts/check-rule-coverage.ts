@@ -9,5 +9,5 @@
  * Usage: npm run check:rule-coverage
  */
 
-console.log('✅ Rule coverage check (stub - implement in Phase 6)');
+console.log('[SUCCESS] Rule coverage check (stub - implement in Phase 6)');
 process.exit(0);

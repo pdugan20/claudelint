@@ -344,7 +344,7 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   if (violations.length > 0) {
-    console.log(`✗ Found ${violations.length} documentation violations:\n`);
+    console.log(`[FAIL] Found ${violations.length} documentation violations:\n`);
     for (const violation of violations) {
       console.log(`  ${violation.file}`);
       if (violation.line) {
@@ -361,7 +361,7 @@ async function main(): Promise<void> {
   }
 
   if (warnings.length > 0) {
-    console.log(`⚠ Found ${warnings.length} warnings:\n`);
+    console.log(`[WARN] Found ${warnings.length} warnings:\n`);
     for (const warning of warnings) {
       console.log(`  ${warning.file}`);
       console.log(`    ${warning.issue}`);
@@ -370,12 +370,12 @@ async function main(): Promise<void> {
   }
 
   if (!hasErrors && warnings.length === 0) {
-    console.log('✓ All rule documentation is complete and valid');
+    console.log('[PASS] All rule documentation is complete and valid');
     console.log(`  Documented rules: ${ruleDocs.size}`);
     console.log(`  Registered rules: ${registeredRuleIds.size}`);
     console.log(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
   } else if (!hasErrors) {
-    console.log(`\n✓ Documentation validation passed (with ${warnings.length} warnings)`);
+    console.log(`\n[PASS] Documentation validation passed (with ${warnings.length} warnings)`);
     console.log(`  Documented rules: ${ruleDocs.size}/${registeredRuleIds.size}`);
     console.log(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
   }

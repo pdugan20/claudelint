@@ -304,10 +304,10 @@ function main() {
       const content = generateRuleFile(config);
       writeFileSync(filePath, content, 'utf-8');
 
-      console.log(`✓ Created: ${config.id}`);
+      console.log(`[SUCCESS] Created: ${config.id}`);
       created++;
     } catch (error) {
-      console.error(`✗ Failed: ${config.id} - ${error}`);
+      console.error(`[FAIL] Failed: ${config.id} - ${error}`);
       errors++;
     }
   }
@@ -322,7 +322,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log('✓ Schema rule generation complete!');
+  console.log('[SUCCESS] Schema rule generation complete!');
   console.log('\nNext steps:');
   console.log('1. Run: npm run generate:types');
   console.log('2. Remove `as RuleId` from src/utils/schema-helpers.ts');

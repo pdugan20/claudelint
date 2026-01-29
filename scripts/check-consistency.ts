@@ -341,7 +341,7 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   if (violations.length > 0) {
-    console.log(`✗ Found ${violations.length} consistency violations:\n`);
+    console.log(`[FAIL] Found ${violations.length} consistency violations:\n`);
     for (const violation of violations) {
       const location = violation.line ? `${violation.file}:${violation.line}` : violation.file;
       console.log(`  ${location}`);
@@ -355,7 +355,7 @@ async function main(): Promise<void> {
   }
 
   if (warnings.length > 0) {
-    console.log(`⚠ Found ${warnings.length} warnings:\n`);
+    console.log(`[WARN] Found ${warnings.length} warnings:\n`);
     for (const warning of warnings) {
       console.log(`  ${warning.file}`);
       console.log(`    ${warning.issue}`);
@@ -364,7 +364,7 @@ async function main(): Promise<void> {
   }
 
   if (!hasErrors && warnings.length === 0) {
-    console.log('✓ Code and documentation are consistent');
+    console.log('[PASS] Code and documentation are consistent');
     console.log(`  Rules with code: ${ruleIdSeverity.size}`);
     console.log(`  Rules with docs: ${ruleDocs.size}`);
   }

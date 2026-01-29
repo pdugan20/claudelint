@@ -82,9 +82,9 @@ async function main(): Promise<void> {
     results.push(result);
 
     if (result.exitCode !== 0) {
-      console.log(`\n✗ ${check.name} FAILED`);
+      console.log(`\n[FAIL] ${check.name} FAILED`);
     } else {
-      console.log(`\n✓ ${check.name} PASSED`);
+      console.log(`\n[PASS] ${check.name} PASSED`);
     }
   }
 
@@ -98,7 +98,7 @@ async function main(): Promise<void> {
   const failed = results.filter((r) => r.exitCode !== 0);
 
   for (const result of results) {
-    const status = result.exitCode === 0 ? '✓ PASS' : '✗ FAIL';
+    const status = result.exitCode === 0 ? '[PASS]' : '[FAIL]';
     console.log(`  ${status}  ${result.name}`);
   }
 

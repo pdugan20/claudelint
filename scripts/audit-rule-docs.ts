@@ -273,12 +273,12 @@ function main() {
 
   for (const result of prioritized) {
     const target = result.complexity === 'simple' ? 120 : 250;
-    const status = result.lineCount > target ? `❌ ${result.lineCount}/${target}` : `✓ ${result.lineCount}/${target}`;
+    const status = result.lineCount > target ? `[FAIL] ${result.lineCount}/${target}` : `✓ ${result.lineCount}/${target}`;
 
     console.log(`${result.file} (${result.complexity}) ${status}`);
 
     for (const issue of result.issues) {
-      const icon = issue.severity === 'error' ? '  ❌' : issue.severity === 'warning' ? '  ⚠️ ' : '  ℹ️ ';
+      const icon = issue.severity === 'error' ? '  [FAIL]' : issue.severity === 'warning' ? '  [WARN] ' : '  [INFO] ';
       console.log(`${icon} ${issue.issue}`);
     }
     console.log();

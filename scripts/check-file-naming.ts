@@ -318,10 +318,10 @@ async function main(): Promise<void> {
   await checkTestFiles();
 
   if (violations.length === 0) {
-    console.log('✓ All files follow naming conventions');
+    console.log('[PASS] All files follow naming conventions');
     process.exit(0);
   } else {
-    console.log(`✗ Found ${violations.length} naming convention violations:\n`);
+    console.log(`[FAIL] Found ${violations.length} naming convention violations:\n`);
 
     for (const violation of violations) {
       console.log(`  ${violation.file}`);

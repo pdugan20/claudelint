@@ -10,5 +10,5 @@
  * Usage: npm run check:duplicates
  */
 
-console.log('✅ Duplicate logic check (stub - implement in Phase 4)');
+console.log('[SUCCESS] Duplicate logic check (stub - implement in Phase 4)');
 process.exit(0);
