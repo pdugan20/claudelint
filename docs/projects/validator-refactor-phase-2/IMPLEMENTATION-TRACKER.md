@@ -1,13 +1,13 @@
 # Phase 2 Implementation Tracker
 
 **Last Updated:** 2026-01-29
-**Status:** In Progress - Phase 2.2
+**Status:** In Progress - Phase 2.2, Task 2.2.2
 
 ## Overall Progress
 
 - [X] Phase 2.0: Infrastructure (6/6 tasks) COMPLETE
 - [X] Phase 2.1: Ghost Rule Audit (4/4 tasks) COMPLETE
-- [ ] Phase 2.2: Build Testing Infrastructure (0/3 tasks)
+- [ ] Phase 2.2: Build Testing Infrastructure (1/3 tasks) IN PROGRESS
 - [ ] Phase 2.3: Migrate Remaining Validators (0/9 tasks)
 - [ ] Phase 2.4: Fix Early Validators (0/2 tasks)
 - [ ] Phase 2.5: Implement Rule Discovery (0/10 tasks)
@@ -194,7 +194,7 @@ After completing MCP and Claude.md validators, we discovered:
 
 ### Tasks
 
-- [ ] **Task 2.2.1:** Create ClaudeLintRuleTester utility
+- [X] **Task 2.2.1:** Create ClaudeLintRuleTester utility
   - **File:** `tests/helpers/rule-tester.ts`
   - **Action:** Create RuleTester class inspired by ESLint's RuleTester
   - **Action:** Support `valid` and `invalid` test case arrays
@@ -206,9 +206,9 @@ After completing MCP and Claude.md validators, we discovered:
   - **Action:** Throw descriptive errors when expectations don't match reality
   - **Estimated Time:** 2 hours
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-  - **Notes:** Based on ESLint pattern: `ruleTester.run(name, rule, { valid: [...], invalid: [...] })`
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Notes:** Based on ESLint pattern. Supports both sync and async rules. Verified with mcp-stdio-empty-command test.
 
 - [ ] **Task 2.2.2:** Add unit tests for MCP rules
   - **Files:** `tests/rules/mcp/*.test.ts`
