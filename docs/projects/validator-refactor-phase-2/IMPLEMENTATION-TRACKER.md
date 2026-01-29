@@ -12,9 +12,9 @@
 - [ ] Phase 2.4: Fix Early Validators (0/2 tasks)
 - [ ] Phase 2.5: Implement Rule Discovery (0/10 tasks)
 - [ ] Phase 2.6: Extract Common Patterns (0/5 tasks)
-- [ ] Phase 2.7: Testing & Validation (0/11 tasks)
+- [ ] Phase 2.7: Testing & Validation (0/12 tasks)
 
-**Total:** 10/50 tasks complete (20%)
+**Total:** 10/51 tasks complete (20%)
 
 **Current Focus:** Building RuleTester infrastructure to verify rule implementations
 
@@ -199,8 +199,11 @@ After completing MCP and Claude.md validators, we discovered:
   - **Action:** Create RuleTester class inspired by ESLint's RuleTester
   - **Action:** Support `valid` and `invalid` test case arrays
   - **Action:** Automatically verify rules execute and report expected errors
-  - **Action:** Support different file types (JSON, Markdown, YAML)
-  - **Action:** Throw errors when expectations don't match reality
+  - **Action:** Support rule options in test cases: `{ content: '...', options: { maxDepth: 5 }}`
+  - **Action:** Verify error messages match expected messages
+  - **Action:** Verify line numbers when specified: `{ message: '...', line: 5 }`
+  - **Action:** Support different file types (JSON, Markdown, YAML) via filePath
+  - **Action:** Throw descriptive errors when expectations don't match reality
   - **Estimated Time:** 2 hours
   - **Dependencies:** None
   - **Assigned To:** TBD
@@ -568,17 +571,31 @@ After completing MCP and Claude.md validators, we discovered:
   - **Completion Date:** TBD
   - **Notes:** See "Test Architecture After Phase 2" section for detailed before/after examples
 
-- [ ] **Task 2.7.2:** Run full test suite
+- [ ] **Task 2.7.2:** Integrate verification script into test suite
+  - **File:** `package.json`, `.github/workflows/*.yml`
+  - **Action:** Add `npm run verify:rule-implementations` script to package.json
+  - **Action:** Add verification script to `npm test` or as separate npm script
+  - **Action:** Add to pre-commit hook (optional but recommended)
+  - **Action:** Add to CI pipeline to catch stub rules automatically
+  - **Action:** Script should fail build if stub rules found
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Phase 2.3 (all stubs implemented)
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Prevents stub rules from being merged
+
+- [ ] **Task 2.7.3:** Run full test suite
   - **Command:** `npm test`
   - **Action:** Verify all tests pass (integration + unit)
   - **Action:** Expected: ~100 validator tests + ~300 rule tests = ~400 total
+  - **Action:** Verify verification script passes (zero stubs found)
   - **Action:** Fix any failing tests
   - **Estimated Time:** 30 minutes
-  - **Dependencies:** Task 2.7.1, all previous phases
+  - **Dependencies:** Task 2.7.1, Task 2.7.2, all previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.3:** Test config disable for new rules
+- [ ] **Task 2.7.4:** Test config disable for new rules
   - **Action:** Create test `.claudelintrc.json` with new rules disabled
   - **Action:** Verify validations are actually skipped
   - **Estimated Time:** 15 minutes
@@ -586,7 +603,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.4:** Test config severity override
+- [ ] **Task 2.7.5:** Test config severity override
   - **Action:** Create test config with severity overrides
   - **Action:** Verify warnings become errors and vice versa
   - **Estimated Time:** 15 minutes
@@ -594,7 +611,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.5:** Test rule options
+- [ ] **Task 2.7.6:** Test rule options
   - **Action:** Test custom rule configuration
   - **Action:** Verify schema validation rejects invalid options
   - **Estimated Time:** 15 minutes
@@ -602,7 +619,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.6:** Manual validation of each validator
+- [ ] **Task 2.7.7:** Manual validation of each validator
   - **Action:** Run each validator against real test fixtures
   - **Action:** Verify all expected issues are reported
   - **Estimated Time:** 20 minutes
@@ -610,7 +627,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.7:** Performance testing
+- [ ] **Task 2.7.8:** Performance testing
   - **Action:** Benchmark rule execution time
   - **Action:** Verify no significant performance regression
   - **Estimated Time:** 15 minutes
@@ -618,17 +635,17 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.8:** Remove reportError/reportWarning methods entirely
+- [ ] **Task 2.7.9:** Remove reportError/reportWarning methods entirely
   - **File:** `src/validators/base.ts`
   - **Action:** REMOVE reportError() method from base.ts
   - **Action:** REMOVE reportWarning() method from base.ts
   - **Action:** Verify all tests still pass
   - **Estimated Time:** 20 minutes
-  - **Dependencies:** Task 2.5.10, Tasks 2.7.1-2.7.7
+  - **Dependencies:** Task 2.5.10, Tasks 2.7.1-2.7.8
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.9:** Create rule documentation for new rules
+- [ ] **Task 2.7.10:** Create rule documentation for new rules
   - **Files:** `docs/rules/{category}/{rule-id}.md`
   - **Action:** Create documentation for all new rules
   - **Action:** Follow existing documentation template
@@ -637,7 +654,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.10:** Update CHANGELOG.md
+- [ ] **Task 2.7.11:** Update CHANGELOG.md
   - **File:** `CHANGELOG.md`
   - **Action:** Document all new rules added (40+)
   - **Action:** List behavior changes
@@ -647,7 +664,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.11:** Update contributing guide
+- [ ] **Task 2.7.12:** Update contributing guide
   - **File:** `docs/plugin-development.md`
   - **Action:** Document RuleRegistry.getRulesByCategory() pattern
   - **Action:** Document executeRulesForCategory() usage
