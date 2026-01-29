@@ -6,15 +6,18 @@
 
 This guide explains how to convert "ghost rules" (validations without ruleIds) into proper, configurable rules that users can control via `.claudelintrc.json`.
 
+**CRITICAL ARCHITECTURAL PRINCIPLE:** All validation logic MUST live in rule files. Validators should ONLY orchestrate (discover files, execute rules). Validators should NEVER call `reportError()` or `reportWarning()` - these methods will be deprecated and removed.
+
 ## Quick Reference
 
 ```typescript
 // BEFORE (Ghost Rule - Bad)
+// Validation logic in validator:
 this.reportError('MCP stdio transport command cannot be empty', filePath);
 
 // AFTER (Real Rule - Good)
-// 1. Create rule file: src/rules/mcp/mcp-stdio-empty-command.ts
-// 2. Remove reportError call from validator
+// 1. Create rule file: src/rules/mcp/mcp-stdio-empty-command.ts with ALL validation logic
+// 2. Remove reportError call AND validation logic from validator entirely
 // 3. Use executeRulesForCategory('MCP', filePath, content)
 ```
 
@@ -144,12 +147,12 @@ export const rule: Rule = {
 };
 ```
 
-### Step 5: Remove Ghost Rule from Validator
+### Step 5: Remove Ghost Rule AND Validation Logic from Validator
 
-Remove the `reportError`/`reportWarning` call from the validator:
+**CRITICAL:** Remove the validation method entirely from the validator. Validation logic belongs in rule files, NOT validators.
 
 ```typescript
-// BEFORE
+// BEFORE (Validator contains validation logic - WRONG)
 private validateStdioTransport(
   filePath: string,
   transport: z.infer<typeof MCPStdioTransportSchema>
@@ -160,22 +163,27 @@ private validateStdioTransport(
   }
 }
 
-// AFTER
-private validateStdioTransport(
-  filePath: string,
-  transport: z.infer<typeof MCPStdioTransportSchema>
-): void {
-  // Validation moved to rule: mcp-stdio-empty-command
-  // Remove this method entirely if no other logic remains
-}
+// AFTER (Validator has NO validation logic - CORRECT)
+// DELETE the validateStdioTransport method entirely!
+// All validation logic is now in src/rules/mcp/mcp-stdio-empty-command.ts
 ```
 
-### Step 6: Use Rule Discovery
+**Key Point:** If the validator method ONLY contained validation logic, delete it completely. Validators should NOT contain validation logic.
 
-Ensure the validator uses `executeRulesForCategory()` instead of manual rule execution:
+### Step 6: Use Rule Discovery (Validator Orchestration Only)
+
+Validators should ONLY:
+1. Find files to validate
+2. Call `executeRulesForCategory()` to run all rules
+3. Return results
+
+Validators should NOT:
+- Call `reportError()` or `reportWarning()` directly
+- Contain validation methods (like `validateStdioTransport()`)
+- Have any validation logic whatsoever
 
 ```typescript
-// In validate() method
+// CORRECT validator pattern - orchestration only
 async validate(): Promise<ValidationResult> {
   const files = await this.findFiles();
 
@@ -185,12 +193,15 @@ async validate(): Promise<ValidationResult> {
     // Execute ALL rules for this category automatically
     await this.executeRulesForCategory('MCP', filePath, content);
 
-    // No need to call validateStdioTransport() anymore!
+    // NO validation methods called here!
+    // NO reportError/reportWarning calls here!
   }
 
   return this.getResult();
 }
 ```
+
+**Architecture:** Validators discover files and execute rules. Rules contain all validation logic.
 
 ### Step 7: Test the Conversion
 
@@ -521,43 +532,43 @@ validate: (context) => {
 
 **Problem:** `validateToolName()` is called by multiple validators with different contexts
 
-**Current:**
-```typescript
-// In base.ts
-protected validateToolName(toolName: string, filePath: string, context: string): void {
-  if (!VALID_TOOLS.includes(toolName)) {
-    this.reportWarning(`Unknown ${context}: ${toolName}`, filePath);
-  }
-}
+**WRONG SOLUTION:** Add ruleId parameter to shared utility method
 
-// Called by agents.ts, hooks.ts, settings.ts with different contexts
+**CORRECT SOLUTION:** Convert to separate rules per validator category
+
+```typescript
+// REMOVE validateToolName() from base.ts entirely!
+
+// CREATE rule files instead:
+// src/rules/agents/agent-unknown-tool.ts
+// src/rules/hooks/hooks-unknown-tool.ts
+// src/rules/settings/settings-unknown-tool.ts
+
+// Each rule contains its own validation logic:
+export const rule: Rule = {
+  meta: {
+    id: 'agent-unknown-tool',
+    category: 'Agents',
+    severity: 'warn',
+    // ...
+  },
+  validate: (context) => {
+    const config = parseConfig(context.fileContent);
+
+    if (config.tools) {
+      for (const toolName of config.tools) {
+        if (!VALID_TOOLS.includes(toolName)) {
+          context.report({
+            message: `Unknown tool in agent: ${toolName}`,
+          });
+        }
+      }
+    }
+  }
+};
 ```
 
-**Solution:** Add optional ruleId parameter:
-```typescript
-// In base.ts
-protected validateToolName(
-  toolName: string,
-  filePath: string,
-  context: string,
-  ruleId?: RuleId
-): void {
-  if (!VALID_TOOLS.includes(toolName)) {
-    this.reportWarning(
-      `Unknown ${context}: ${toolName}`,
-      filePath,
-      undefined,
-      ruleId  // ← Now passes ruleId if provided
-    );
-  }
-}
-
-// In agents.ts
-this.validateToolName(tool, filePath, 'tool in agent', 'agent-unknown-tool');
-
-// In hooks.ts
-this.validateToolName(tool, filePath, 'tool in hook', 'hooks-unknown-tool');
-```
+**Key Principle:** Shared validation logic should be converted to separate rules per category, NOT shared methods with ruleId parameters. Each validator category gets its own rule with category-specific logic.
 
 ## Checklist
 
@@ -596,9 +607,15 @@ For each ghost rule conversion:
 
 ### "Config disable doesn't work"
 
-**Cause:** Rule might be going through reportError without ruleId
+**Cause:** Validation logic is still in validator calling `reportError()` or `reportWarning()`
 
-**Fix:** Ensure rule uses `context.report()`, not validator `reportError()`
+**Fix:**
+1. Verify validation logic is in rule file's `validate()` function
+2. Verify validator does NOT call `reportError()` or `reportWarning()`
+3. Ensure validator uses `executeRulesForCategory()` to run rules
+4. Delete any validation methods from validator
+
+**Remember:** If validation logic is in the validator, it bypasses the config system entirely. ALL validation logic must be in rule files.
 
 ### "Performance regression"
 
@@ -608,16 +625,25 @@ For each ghost rule conversion:
 
 ## Summary
 
-**Key Points:**
-1. Ghost rules bypass config → Convert to real rules
-2. Real rules use `context.report()` → Configurable by users
-3. Remove ghost from validator → Use `executeRulesForCategory()`
-4. Test config disable/override → Ensure it works
-5. Document the rule → Users need guidance
+**Key Architectural Points:**
+1. **ALL validation logic goes in rule files** - No exceptions
+2. **Validators ONLY orchestrate** - Find files, execute rules, return results
+3. **ZERO reportError/reportWarning calls in validators** - These methods will be deprecated and removed
+4. **Ghost rules bypass config** - Convert all validations to real rules
+5. **Real rules use context.report()** - Makes them configurable by users
+
+**Migration Steps:**
+1. Create rule file with ALL validation logic in `validate()` function
+2. Delete validation logic AND reportError/reportWarning calls from validator
+3. Delete validator methods that only contained validation logic
+4. Use `executeRulesForCategory()` to run all rules automatically
+5. Test that config disable/override works
+6. Document the rule for users
 
 **Benefits:**
 - [YES] Users can disable unwanted rules
 - [YES] Users can change severity
-- [YES] Consistent architecture
+- [YES] Consistent ESLint-style architecture
 - [YES] Better maintainability
-- [YES] Clearer separation of concerns
+- [YES] Clear separation: validators orchestrate, rules validate
+- [YES] Zero coupling between validators and rules

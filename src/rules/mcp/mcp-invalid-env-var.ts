@@ -81,7 +81,15 @@ function validateTransport(
   // Validate environment variables
   if (transport.env) {
     for (const [key, value] of Object.entries(transport.env)) {
-      validateVariableExpansion(context, value, `environment variable ${key}`);
+      // Check for empty values
+      if (!value || value.trim().length === 0) {
+        context.report({
+          message: `Empty value for environment variable: ${key}`,
+        });
+      } else {
+        // Only validate expansion if value is not empty
+        validateVariableExpansion(context, value, `environment variable ${key}`);
+      }
     }
   }
 }

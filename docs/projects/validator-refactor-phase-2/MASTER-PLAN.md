@@ -131,26 +131,33 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 
 ### Phase 2.2: Convert Ghost Rules to Real Rules (4-6 hours)
 
-**Goal:** Create rule files for all ghost validations
+**Goal:** Create rule files with validation logic, remove ghost rules from validators
+
+**CRITICAL:** Validation logic MUST be in rule files, NOT in validators.
+Validators should ONLY call `executeRulesForCategory()`.
 
 **Tasks:**
-- [ ] Create rule files for MCP ghost rules (10 rules)
-- [ ] Create rule files for Claude.md ghost rules (8 rules)
-- [ ] Create rule files for Skills ghost rules (12 rules)
-- [ ] Create rule files for Agents ghost rules (6 rules)
+- [ ] Create MCP rule files with validation logic (10 rules)
+- [ ] Create Claude.md rule files with validation logic (8 rules)
+- [ ] Create Skills rule files with validation logic (12 rules)
+- [ ] Create Agents rule files with validation logic (6 rules)
 - [ ] Create rule files for other validators (8 rules)
+- [ ] Remove validation methods from validators (replaced by rules)
+- [ ] Remove ALL `reportError()`/`reportWarning()` calls from validators
 - [ ] Update rule-ids.ts with new rule IDs
 - [ ] Update RuleRegistry auto-generation
 
 **Deliverables:**
-- ~44 new rule files in `src/rules/*/`
+- ~44 new rule files in `src/rules/*/` with FULL validation logic
+- Validators contain ZERO validation logic (only orchestration)
+- ZERO calls to `reportError()`/`reportWarning()` from validators
 - Updated `rule-ids.ts`
 - Auto-generated registry includes all rules
 - Documentation for each new rule
 
-### Phase 2.3: Implement Rule Discovery (2-3 hours)
+### Phase 2.3: Implement Rule Discovery & Clean Validators (2-3 hours)
 
-**Goal:** Remove manual rule imports, use RuleRegistry discovery
+**Goal:** Remove manual rule imports, use RuleRegistry discovery, deprecate old methods
 
 **Tasks:**
 - [ ] Replace manual imports in claude-md.ts with discovery (6 imports)
@@ -160,11 +167,16 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 - [ ] Replace manual imports in hooks.ts with discovery (3 imports)
 - [ ] Replace manual imports in settings.ts with discovery (4 imports)
 - [ ] Replace manual imports in commands.ts with discovery (2 imports)
-- [ ] Remove executeRule calls, use executeRulesForCategory
+- [ ] Replace all `executeRule()` calls with `executeRulesForCategory()`
+- [ ] Verify ZERO `reportError()`/`reportWarning()` calls remain in validators
+- [ ] Mark `reportError()`/`reportWarning()` as @deprecated in base.ts
+- [ ] Document that these methods will be removed in next major version
 
 **Deliverables:**
 - Zero manual rule imports in validators
 - All validators use RuleRegistry discovery
+- Zero ghost rule calls (all validation in rule files)
+- `reportError()`/`reportWarning()` marked deprecated
 - Cleaner, more maintainable validator code
 
 ### Phase 2.4: Extract Common Patterns (2-3 hours)
@@ -187,7 +199,7 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 
 ### Phase 2.5: Testing & Validation (2.5-3 hours)
 
-**Goal:** Ensure nothing broke and documentation is complete
+**Goal:** Ensure nothing broke, documentation complete, architecture clean
 
 **Tasks:**
 - [ ] Run full test suite (688 tests)
@@ -196,6 +208,8 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 - [ ] Test rule options for configurable rules
 - [ ] Manual validation of each validator
 - [ ] Performance testing (should be same or better)
+- [ ] Verify ZERO `reportError()`/`reportWarning()` callers remain
+- [ ] Remove deprecated `reportError()`/`reportWarning()` methods from base.ts
 - [ ] Write user migration guide
 - [ ] Update CHANGELOG.md with breaking changes
 - [ ] Update contributing guide with new patterns
@@ -204,6 +218,8 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 - All tests passing
 - Config system works for all rules
 - No performance regressions
+- `reportError()`/`reportWarning()` completely removed
+- 100% rule-based architecture (zero ghost rules)
 - Complete user migration guide
 - CHANGELOG.md updated
 - Contributing guide updated with RuleRegistry patterns

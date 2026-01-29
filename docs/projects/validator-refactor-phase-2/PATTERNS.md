@@ -6,6 +6,23 @@
 
 This document defines the new architectural patterns introduced in Phase 2 to eliminate code duplication and establish consistent validator behavior.
 
+**CRITICAL ARCHITECTURAL PRINCIPLE:** Validators are orchestrators, NOT validators. All validation logic MUST live in rule files. Validators should NEVER call `reportError()` or `reportWarning()` - these methods will be deprecated and removed entirely.
+
+## Validator vs Rule Responsibilities
+
+### Validators (Orchestrators)
+- Find files to validate
+- Read file contents
+- Execute rules via `executeRulesForCategory()`
+- Return validation results
+- **NEVER contain validation logic**
+
+### Rules (Validators)
+- Contain ALL validation logic in `validate()` function
+- Report issues via `context.report()`
+- Are configurable by users (enable/disable, severity)
+- Are auto-discovered by RuleRegistry
+
 ---
 
 ## Pattern 1: Rule Discovery via RuleRegistry
@@ -144,29 +161,27 @@ protected async executeRulesForCategory(
 
 ---
 
-## Pattern 2: Frontmatter Validation Abstraction
+## Pattern 2: Frontmatter Parsing Abstraction
 
 ### Problem
 
-4 validators duplicate frontmatter validation logic:
+4 validators duplicate frontmatter parsing and structure logic:
 
 ```typescript
 // Duplicated in agents.ts, skills.ts, output-styles.ts, claude-md.ts
-private async validateFrontmatter(filePath: string, content: string, expectedName: string) {
+private async parseFrontmatter(filePath: string, content: string) {
   const { data: frontmatter, result } = validateFrontmatterWithSchema(...);
   this.mergeSchemaValidationResult(result);
 
-  if (!frontmatter) return;
+  if (!frontmatter) return null;
 
-  if (frontmatter.name !== expectedName) {
-    this.reportError(`Name mismatch: expected ${expectedName}`, filePath);
-  }
-
-  // More validation...
+  return frontmatter;
 }
 ```
 
 ### Solution
+
+**IMPORTANT:** This abstraction is for **parsing and schema validation**, NOT for business logic validation like name matching. Name matching validation should be in a rule.
 
 Extract to BaseValidator:
 
@@ -193,7 +208,9 @@ protected async validateFrontmatterWithNameCheck<T>(
     return null;
   }
 
-  // Name validation with proper ruleId
+  // NOTE: Name validation should ideally be in a rule, not here
+  // This is a temporary abstraction for common validator orchestration
+  // TODO Phase 3: Move name validation to rules like `{category}-name-mismatch`
   if (frontmatter.name !== expectedName) {
     this.reportError(
       `${entityType} name "${frontmatter.name}" does not match directory name "${expectedName}"`,
@@ -206,6 +223,8 @@ protected async validateFrontmatterWithNameCheck<T>(
   return frontmatter as T;
 }
 ```
+
+**Future Improvement:** The name validation inside this method should be extracted to category-specific rules. This abstraction is pragmatic for Phase 2 but violates the "no validation in validators" principle.
 
 ### Usage
 
@@ -234,7 +253,9 @@ if (!frontmatter) return;
 
 ---
 
-## Pattern 3: Body Content Validation Abstraction
+## Pattern 3: Body Content Validation Abstraction (Deprecated Pattern)
+
+**NOTE:** This pattern is being deprecated in favor of rules. Body content validations should be in rule files, not validator abstractions.
 
 ### Problem
 
@@ -360,6 +381,25 @@ this.validateBodyContentStructure(styleMdPath, content, {
 - [YES] Proper ruleIds for each check
 - [YES] Consistent pattern across validators
 - [YES] ~60 lines of duplication removed
+
+### Deprecation Notice
+
+**This pattern is being deprecated.** Body content validations (min length, required sections) should be converted to individual rule files instead of using this abstraction:
+
+```typescript
+// BETTER APPROACH: Create rules instead
+// src/rules/agents/agent-body-too-short.ts
+// src/rules/agents/agent-missing-system-prompt.ts
+// src/rules/skills/skill-body-too-short.ts
+// etc.
+```
+
+**Rationale:** Validation logic should be in rules, not in validator abstractions. This allows:
+- Users to disable specific validations
+- Better separation of concerns
+- No reportError/reportWarning calls in validators
+
+**Phase 3 Goal:** Convert all body content validations to rules and remove this abstraction entirely.
 
 ---
 
@@ -631,15 +671,17 @@ if (!content) return;
 
 ### Patterns Applied
 
-| Pattern | Validators Affected | Lines Saved | Complexity |
-|---------|---------------------|-------------|------------|
-| Rule Discovery | All (7) | ~38 imports | Medium |
-| Frontmatter Validation | 4 | ~80 lines | Medium |
-| Body Content Validation | 3 | ~60 lines | Low |
-| File Walking | 1 (Skills) | ~70 lines | Medium |
-| Directory Filtering | 3 | ~30 lines | Low |
-| Error Handling | All | ~40 lines | Low |
-| **Total** | **All** | **~318 lines** | **Medium** |
+| Pattern | Validators Affected | Lines Saved | Complexity | Status |
+|---------|---------------------|-------------|------------|--------|
+| Rule Discovery | All (7) | ~38 imports | Medium | Permanent |
+| Frontmatter Parsing | 4 | ~80 lines | Medium | Temporary* |
+| Body Content Validation | 3 | ~60 lines | Low | **Deprecated** |
+| File Walking | 1 (Skills) | ~70 lines | Medium | Permanent |
+| Directory Filtering | 3 | ~30 lines | Low | Permanent |
+| Error Handling | All | ~40 lines | Low | Permanent |
+| **Total** | **All** | **~318 lines** | **Medium** | Mixed |
+
+*Temporary patterns contain validation logic and will be deprecated in Phase 3
 
 ### Code Quality Impact
 
@@ -648,27 +690,43 @@ if (!content) return;
 - 66 ghost rules (unconfigurable)
 - ~200 lines of duplicated code
 - Inconsistent error handling
+- Validation logic in validators
 
 **After Phase 2:**
-- 0 manual rule imports
-- 0 ghost rules (all configurable)
-- ~50 lines of duplicated code (unavoidable)
-- Consistent error handling
+- 0 manual rule imports ✓
+- 0 ghost rules (all configurable) ✓
+- ~50 lines of duplicated code (unavoidable) ✓
+- Consistent error handling ✓
+- **Most validation logic in rules** (some abstractions remain)
+
+**After Phase 3 (Future):**
+- Zero validation logic in validators
+- Zero reportError/reportWarning calls
+- Pure orchestration pattern
 
 ### Validator Complexity
 
-| Validator | Before | After | Change |
-|-----------|--------|-------|--------|
-| skills.ts | 400 lines | 280 lines | -30% |
-| agents.ts | 250 lines | 180 lines | -28% |
-| claude-md.ts | 350 lines | 260 lines | -26% |
-| mcp.ts | 220 lines | 150 lines | -32% |
-| Others | Varies | Varies | -10-20% |
+| Validator | Before | After | Phase 3 Target |
+|-----------|--------|-------|----------------|
+| skills.ts | 400 lines | 280 lines | ~200 lines |
+| agents.ts | 250 lines | 180 lines | ~120 lines |
+| claude-md.ts | 350 lines | 260 lines | ~180 lines |
+| mcp.ts | 220 lines | 150 lines | ~100 lines |
+| Others | Varies | Varies | -40-50% |
 
 ### Maintainability Score
 
-**Before:** 4/10 (lots of duplication, ghost rules, manual imports)
-**After:** 8/10 (clean abstractions, all rules configurable, auto-discovery)
+**Before:** 4/10 (lots of duplication, ghost rules, manual imports, validation in validators)
+**After Phase 2:** 7/10 (clean abstractions, most rules configurable, auto-discovery, some validation still in validators)
+**After Phase 3:** 10/10 (pure orchestration, zero validation logic, complete rule-based architecture)
+
+### Phase 3 Goals
+
+1. Convert frontmatter name validation to rules
+2. Convert body content validations to rules
+3. Remove `reportError()`/`reportWarning()` methods entirely
+4. Remove validation abstractions from BaseValidator
+5. Pure orchestration: find files → execute rules → return results
 
 ---
 
