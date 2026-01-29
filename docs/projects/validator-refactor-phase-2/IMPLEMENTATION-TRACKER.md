@@ -1,23 +1,67 @@
 # Phase 2 Implementation Tracker
 
 **Last Updated:** 2026-01-29
-**Status:** Not Started
+**Status:** In Progress - Phase 2.2
 
 ## Overall Progress
 
 - [X] Phase 2.0: Infrastructure (6/6 tasks) COMPLETE
 - [X] Phase 2.1: Ghost Rule Audit (4/4 tasks) COMPLETE
-- [X] Phase 2.2: Convert Ghost Rules (2/7 tasks - MCP & Claude.md COMPLETE)
-- [ ] Phase 2.3: Implement Rule Discovery (0/10 tasks)
-- [ ] Phase 2.4: Extract Common Patterns (0/5 tasks)
-- [ ] Phase 2.5: Testing & Validation (0/10 tasks)
+- [ ] Phase 2.2: Build Testing Infrastructure (0/3 tasks)
+- [ ] Phase 2.3: Migrate Remaining Validators (0/9 tasks)
+- [ ] Phase 2.4: Fix Early Validators (0/2 tasks)
+- [ ] Phase 2.5: Implement Rule Discovery (0/10 tasks)
+- [ ] Phase 2.6: Extract Common Patterns (0/5 tasks)
+- [ ] Phase 2.7: Testing & Validation (0/10 tasks)
 
-**Total:** 12/44 tasks complete (27%)
+**Total:** 10/49 tasks complete (20%)
 
-**Phase 2.2 Progress:**
-- [DONE] MCP Validator: 13 rules created, 162 lines removed, 23 tests passing
-- [DONE] Claude.md Validator: 6 rules fixed, 247 lines removed, 18 tests passing
-- [TODO] Skills, Agents, Plugin, Hooks, Settings, Output-styles validators remaining
+**Current Focus:** Building RuleTester infrastructure to verify rule implementations
+
+---
+
+## CRITICAL DISCOVERY (2026-01-29)
+
+### Problems Identified
+
+After completing MCP and Claude.md validators, we discovered:
+
+1. **25 Stub Rules** - Rules with empty validate() functions:
+   - 10 agents rules (agent-name, agent-description, etc.)
+   - 11 skills rules (skill-name, skill-description, etc.)
+   - 3 output-styles rules
+   - These rely on Zod schema validation instead of rule logic
+
+2. **Duplicate Validation** - Both Zod schemas AND rules validate the same things:
+   - claude-md-paths: Schema validates "must be array", rule also validates it
+   - MCP rules: Some validation duplicated between schema and rules
+   - This creates confusion about source of truth
+
+3. **No Unit Tests for Rules** - Tests don't verify individual rules:
+   - Integration tests only check validator output
+   - Tests pass even with empty validate() functions
+   - Zod schema errors mask missing rule implementations
+   - No way to verify rules actually execute
+
+4. **Two Validation Patterns Coexist**:
+   - MCP/Claude.md: Pure orchestration (correct, but has duplication)
+   - Agents/Skills/Output-styles: Schema validation via mergeSchemaValidationResult() (old pattern)
+
+### Impact
+
+- Cannot safely continue without rule unit tests
+- Need to remove validation from Zod schemas (structure only)
+- Need to implement 25 stub rules properly with tests
+- Need to fix duplication in completed validators
+
+### Solution
+
+**Revised Approach:**
+1. Build RuleTester infrastructure (like ESLint's RuleTester)
+2. Add unit tests for existing MCP/Claude.md rules
+3. For remaining validators: Remove schema validation, implement stubs with tests, migrate
+4. Go back and fix duplication in MCP/Claude.md
+5. Then continue with discovery and cleanup
 
 ---
 
@@ -25,7 +69,7 @@
 
 **Goal:** Create patterns and utilities for migration
 **Estimated Time:** 2-3 hours
-**Status:** Not Started
+**Status:** COMPLETE ✓
 
 ### Tasks
 
@@ -86,7 +130,7 @@
   - **Action:** Document edge cases and exceptions
   - **Estimated Time:** 30 minutes
   - **Dependencies:** None
-  - **Assigned To:** Claude (completed in planning phase)
+  - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
 ---
@@ -95,7 +139,7 @@
 
 **Goal:** Identify and categorize all ghost rules
 **Estimated Time:** 1-2 hours
-**Status:** Not Started
+**Status:** COMPLETE ✓
 
 ### Tasks
 
@@ -106,7 +150,7 @@
   - **Action:** Document in GHOST-RULES-AUDIT.md
   - **Estimated Time:** 20 minutes
   - **Dependencies:** None
-  - **Assigned To:** Claude (completed in planning phase)
+  - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
 - [X] **Task 2.1.2:** Audit all other validators for ghost rules
@@ -116,7 +160,7 @@
   - **Action:** Rate migration difficulty (easy/medium/hard)
   - **Estimated Time:** 1 hour
   - **Dependencies:** None
-  - **Assigned To:** Claude (completed in planning phase)
+  - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
 - [X] **Task 2.1.3:** Audit utility functions for ghost validations
@@ -126,7 +170,7 @@
   - **Action:** Document in GHOST-RULES-AUDIT.md
   - **Estimated Time:** 15 minutes
   - **Dependencies:** None
-  - **Assigned To:** Claude (completed in planning phase)
+  - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
 - [X] **Task 2.1.4:** Identify edge cases and exceptions
@@ -136,242 +180,313 @@
   - **Action:** Get approval for exception handling approach
   - **Estimated Time:** 15 minutes
   - **Dependencies:** Tasks 2.1.1, 2.1.2, 2.1.3
-  - **Assigned To:** Claude (completed in planning phase, documented in MIGRATION-GUIDE.md)
+  - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
 ---
 
-## Phase 2.2: Convert Ghost Rules to Real Rules
+## Phase 2.2: Build Testing Infrastructure
 
-**Goal:** Create rule files with ALL validation logic, remove ALL validation logic from validators
-**Estimated Time:** 4-6 hours
-**Status:** In Progress
-**CRITICAL:** Validation logic MUST be in rule files, NOT in validators. Validators should ONLY orchestrate.
+**Goal:** Create RuleTester utility and verify existing rules work
+**Estimated Time:** 3-4 hours
+**Status:** Not Started
+**CRITICAL:** Must verify rules actually execute before continuing
 
 ### Tasks
 
-- [X] **Task 2.2.1:** Create MCP ghost rules (~10 rules) AND remove validation from validator
-  - **Files:** `src/rules/mcp/*.ts`, `src/validators/mcp.ts`
-  - **Action:** Convert stdio transport validation to rule WITH full validation logic ✓
-  - **Action:** Convert SSE transport validation to rule WITH full validation logic ✓
-  - **Action:** Convert HTTP transport validation to rule WITH full validation logic ✓
-  - **Action:** Convert WebSocket transport validation to rule WITH full validation logic ✓
-  - **Action:** Convert env var naming to rule (from utility function) ✓
-  - **Action:** Convert env var empty value to rule (from utility function) ✓
-  - **Action:** Convert env var secret detection to rule (from utility function) ✓
-  - **Action:** Convert simple var expansion warning to rule ✓
-  - **Action:** REMOVE ALL validation logic from src/validators/mcp.ts ✓
-  - **Action:** REMOVE ALL reportError/reportWarning calls from src/validators/mcp.ts ✓
-  - **Action:** DELETE validation methods from mcp.ts (validateStdioTransport, etc.) ✓
-  - **Action:** Update rule-ids.ts with new IDs ✓
-  - **Estimated Time:** 1.5 hours
-  - **Dependencies:** Task 2.1.1
-  - **Assigned To:** Claude
-  - **Completion Date:** 2026-01-29 COMPLETE
-  - **Notes:** Created 13 MCP rules with full validation logic. Removed 162 lines from validator (218→56 lines). Zero reportError/reportWarning calls. Pure orchestration pattern. All 23 tests passing.
-
-- [X] **Task 2.2.2:** Create Claude.md ghost rules (~8 rules) AND remove validation from validator
-  - **Files:** `src/rules/claude-md/*.ts`, `src/validators/claude-md.ts`
-  - **Action:** Convert file not found to rule WITH full validation logic ✓
-  - **Action:** Convert import validation to rules WITH full validation logic ✓
-  - **Action:** Convert circular import checks to rule WITH full validation logic ✓
-  - **Action:** Convert case-sensitive filename collision to rule WITH full validation logic ✓
-  - **Action:** Convert import read failures to rule WITH full validation logic ✓
-  - **Action:** Convert import depth checking to rule WITH full validation logic ✓
-  - **Action:** REMOVE ALL validation logic from src/validators/claude-md.ts ✓
-  - **Action:** REMOVE ALL reportError/reportWarning calls from src/validators/claude-md.ts ✓
-  - **Action:** DELETE validation methods (checkImports, checkCaseSensitivity, checkSymlinkCycle) ✓
-  - **Action:** Update rule-ids.ts with new IDs ✓
-  - **Estimated Time:** 1 hour
-  - **Dependencies:** Task 2.1.2
-  - **Assigned To:** Claude
-  - **Completion Date:** 2026-01-29 COMPLETE
-  - **Notes:** Fixed 6 Claude.md rules with full cross-file validation logic (import-missing, import-circular, import-depth-exceeded, import-read-failed, filename-case-sensitive, file-not-found). Removed 247 lines from validator (362→115 lines). Zero reportError/reportWarning calls. Pure orchestration pattern. All 18 tests passing.
-
-- [ ] **Task 2.2.3:** Create Skills ghost rules (~12 rules) AND remove validation from validator
-  - **Files:** `src/rules/skills/*.ts`, `src/validators/skills.ts`
-  - **Action:** Convert "no skills found" warning to rule WITH full validation logic
-  - **Action:** Convert SKILL.md not found to rule WITH full validation logic
-  - **Action:** Convert name mismatch to rule WITH full validation logic
-  - **Action:** Convert body content checks to rules WITH full validation logic
-  - **Action:** Convert documentation checks to rules WITH full validation logic
-  - **Action:** REMOVE ALL validation logic from src/validators/skills.ts
-  - **Action:** REMOVE ALL reportError/reportWarning calls from src/validators/skills.ts
-  - **Action:** DELETE validation methods that only contained validation logic
-  - **Action:** Update rule-ids.ts with new IDs
-  - **Estimated Time:** 1.5 hours
-  - **Dependencies:** Task 2.1.2
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.2.4:** Create Agents ghost rules (~6 rules) AND remove validation from validator
-  - **Files:** `src/rules/agents/*.ts`, `src/validators/agents.ts`
-  - **Action:** Convert "no agents found" warning to rule WITH full validation logic
-  - **Action:** Convert AGENT.md not found to rule WITH full validation logic
-  - **Action:** Convert name mismatch to rule WITH full validation logic
-  - **Action:** Convert body content checks to rules WITH full validation logic
-  - **Action:** REMOVE ALL validation logic from src/validators/agents.ts
-  - **Action:** REMOVE ALL reportError/reportWarning calls from src/validators/agents.ts
-  - **Action:** DELETE validation methods that only contained validation logic
-  - **Action:** Update rule-ids.ts with new IDs
-  - **Estimated Time:** 45 minutes
-  - **Dependencies:** Task 2.1.2
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.2.5:** Create remaining validator ghost rules (~8 rules) AND remove validation from validators
-  - **Files:** `src/rules/{plugin,hooks,settings,output-styles,lsp}/*.ts`, `src/validators/{plugin,hooks,settings,output-styles,lsp}.ts`
-  - **Action:** Convert plugin ghost rules WITH full validation logic
-  - **Action:** Convert hooks ghost rules WITH full validation logic
-  - **Action:** Convert settings ghost rules WITH full validation logic
-  - **Action:** Convert output-styles ghost rules WITH full validation logic
-  - **Action:** Convert LSP ghost rules WITH full validation logic
-  - **Action:** REMOVE ALL validation logic from ALL affected validators
-  - **Action:** REMOVE ALL reportError/reportWarning calls from ALL affected validators
-  - **Action:** DELETE validation methods that only contained validation logic
-  - **Action:** Update rule-ids.ts with new IDs
-  - **Estimated Time:** 1 hour
-  - **Dependencies:** Task 2.1.2
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.2.6:** Update rule-ids.ts and regenerate types
-  - **File:** `src/rules/rule-ids.ts`
-  - **Action:** Add all new rule IDs from tasks 2.2.1-2.2.5
-  - **Action:** Run `npm run generate:types` to regenerate
-  - **Action:** Verify all new IDs are in the union type
-  - **Estimated Time:** 15 minutes
-  - **Dependencies:** Tasks 2.2.1-2.2.5
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.2.7:** Create rule documentation for new rules
-  - **Files:** `docs/rules/{category}/{rule-id}.md`
-  - **Action:** Create documentation for each new rule
-  - **Action:** Follow existing documentation template
-  - **Action:** Include examples for each rule
+- [ ] **Task 2.2.1:** Create ClaudeLintRuleTester utility
+  - **File:** `tests/helpers/rule-tester.ts`
+  - **Action:** Create RuleTester class inspired by ESLint's RuleTester
+  - **Action:** Support `valid` and `invalid` test case arrays
+  - **Action:** Automatically verify rules execute and report expected errors
+  - **Action:** Support different file types (JSON, Markdown, YAML)
+  - **Action:** Throw errors when expectations don't match reality
   - **Estimated Time:** 2 hours
-  - **Dependencies:** Tasks 2.2.1-2.2.5
+  - **Dependencies:** None
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Based on ESLint pattern: `ruleTester.run(name, rule, { valid: [...], invalid: [...] })`
+
+- [ ] **Task 2.2.2:** Add unit tests for MCP rules
+  - **Files:** `tests/rules/mcp/*.test.ts`
+  - **Action:** Create test file for each of 8 MCP rules
+  - **Action:** Use ClaudeLintRuleTester for declarative test cases
+  - **Action:** Cover valid and invalid cases for each rule
+  - **Action:** Verify all 8 rules actually execute and report errors
+  - **Estimated Time:** 1 hour
+  - **Dependencies:** Task 2.2.1
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.2.3:** Add unit tests for Claude.md rules
+  - **Files:** `tests/rules/claude-md/*.test.ts`
+  - **Action:** Create test file for each of 13 Claude.md rules
+  - **Action:** Use ClaudeLintRuleTester for declarative test cases
+  - **Action:** Cover valid and invalid cases for each rule
+  - **Action:** Verify all 13 rules actually execute (including the 2 fixed stubs)
+  - **Estimated Time:** 1 hour
+  - **Dependencies:** Task 2.2.1
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
 ---
 
-## Phase 2.3: Implement Rule Discovery & Deprecate Ghost Methods
+## Phase 2.3: Migrate Remaining Validators (The RIGHT Way)
 
-**Goal:** Remove manual rule imports, verify zero validation logic in validators, deprecate reportError/reportWarning
+**Goal:** For each validator: remove schema validation, implement stubs with tests, convert to pure orchestration
+**Estimated Time:** 6-8 hours
+**Status:** Not Started
+**CRITICAL:** Each validator must be fully complete with tests before moving to next
+
+### Tasks
+
+- [ ] **Task 2.3.1:** Migrate Skills validator
+  - **Files:** `src/schemas/skill-frontmatter.schema.ts`, `src/rules/skills/*.ts`, `src/validators/skills.ts`, `tests/rules/skills/*.test.ts`
+  - **Action:** Remove ALL validation from SkillFrontmatterSchema (keep structure only)
+  - **Action:** Implement 11 stub rules with FULL validation logic
+  - **Action:** Create unit tests for each rule using RuleTester
+  - **Action:** Convert validator to pure orchestration (executeRulesForCategory only)
+  - **Action:** Verify all integration tests still pass
+  - **Action:** Verify stub rules now have real implementations
+  - **Estimated Time:** 2 hours
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Stub rules: skill-name, skill-description, skill-version, skill-tags, skill-agent, skill-model, skill-context, skill-dependencies, skill-allowed-tools, skill-disallowed-tools
+
+- [ ] **Task 2.3.2:** Migrate Agents validator
+  - **Files:** `src/schemas/agent-frontmatter.schema.ts`, `src/rules/agents/*.ts`, `src/validators/agents.ts`, `tests/rules/agents/*.test.ts`
+  - **Action:** Remove ALL validation from AgentFrontmatterSchema (keep structure only)
+  - **Action:** Implement 10 stub rules with FULL validation logic
+  - **Action:** Create unit tests for each rule using RuleTester
+  - **Action:** Convert validator to pure orchestration
+  - **Action:** Remove validateReferencedSkills, validateHooks, validateBodyContent methods
+  - **Action:** Verify all integration tests still pass
+  - **Estimated Time:** 2 hours
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Stub rules: agent-name, agent-description, agent-model, agent-tools, agent-disallowed-tools, agent-events, agent-skills, agent-hooks, agent-skills-not-found, agent-hooks-invalid-schema
+
+- [ ] **Task 2.3.3:** Migrate Output-styles validator
+  - **Files:** `src/schemas/output-style-frontmatter.schema.ts`, `src/rules/output-styles/*.ts`, `src/validators/output-styles.ts`, `tests/rules/output-styles/*.test.ts`
+  - **Action:** Remove ALL validation from OutputStyleFrontmatterSchema
+  - **Action:** Implement 3 stub rules with FULL validation logic
+  - **Action:** Create unit tests for each rule using RuleTester
+  - **Action:** Convert validator to pure orchestration
+  - **Action:** Verify all integration tests still pass
+  - **Estimated Time:** 1 hour
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Stub rules: output-style-name, output-style-description, output-style-examples
+
+- [ ] **Task 2.3.4:** Remove mergeSchemaValidationResult() pattern
+  - **Files:** All validators
+  - **Action:** Remove all calls to mergeSchemaValidationResult()
+  - **Action:** Schemas should ONLY be used for parsing/typing, not validation
+  - **Action:** All validation must go through rules
+  - **Action:** Verify no schema errors bypass rule system
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Tasks 2.3.1-2.3.3
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.3.5:** Verify all stub rules implemented
+  - **Action:** Run verification script: `npx ts-node scripts/verify-rule-implementations.ts`
+  - **Action:** Should find ZERO stub rules
+  - **Action:** All rules must have validate() logic and context.report() calls
+  - **Estimated Time:** 10 minutes
+  - **Dependencies:** Tasks 2.3.1-2.3.4
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.3.6:** Create Plugin ghost rules
+  - **Files:** `src/rules/plugin/*.ts`, `src/validators/plugin.ts`, `tests/rules/plugin/*.test.ts`
+  - **Action:** Convert remaining plugin validator ghost rules
+  - **Action:** Create unit tests with RuleTester
+  - **Action:** Convert validator to pure orchestration
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.3.7:** Create Hooks ghost rules
+  - **Files:** `src/rules/hooks/*.ts`, `src/validators/hooks.ts`, `tests/rules/hooks/*.test.ts`
+  - **Action:** Convert remaining hooks validator ghost rules
+  - **Action:** Create unit tests with RuleTester
+  - **Action:** Convert validator to pure orchestration
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.3.8:** Create Settings ghost rules
+  - **Files:** `src/rules/settings/*.ts`, `src/validators/settings.ts`, `tests/rules/settings/*.test.ts`
+  - **Action:** Convert remaining settings validator ghost rules
+  - **Action:** Create unit tests with RuleTester
+  - **Action:** Convert validator to pure orchestration
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Phase 2.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.3.9:** Update rule-ids.ts and regenerate types
+  - **File:** `src/rules/rule-ids.ts`
+  - **Action:** Add all new rule IDs from Phase 2.3
+  - **Action:** Run `npm run generate:types` to regenerate
+  - **Action:** Verify all new IDs are in the union type
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Tasks 2.3.1-2.3.8
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+---
+
+## Phase 2.4: Fix Early Validators
+
+**Goal:** Remove duplicate validation from MCP and Claude.md schemas
+**Estimated Time:** 1-2 hours
+**Status:** Not Started
+
+### Tasks
+
+- [ ] **Task 2.4.1:** Remove duplicate validation from MCP schema
+  - **File:** `src/schemas/mcp-config.schema.ts` (in validators/schemas.ts)
+  - **Action:** Remove validation logic (min/max/refine) from MCPConfigSchema
+  - **Action:** Keep ONLY structure (z.string(), z.array(), z.object())
+  - **Action:** Verify MCP rule unit tests still pass
+  - **Action:** Verify integration tests still pass
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Phase 2.2, Phase 2.3
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.4.2:** Remove duplicate validation from Claude.md schema
+  - **File:** `src/schemas/claude-md-frontmatter.schema.ts`
+  - **Action:** Remove validation from ClaudeMdFrontmatterSchema (lines 12-15)
+  - **Action:** Change to: `paths: z.array(z.string()).optional()`
+  - **Action:** Remove .min() and string .min() validators
+  - **Action:** Verify claude-md-paths rule unit tests still pass
+  - **Action:** Verify integration tests still pass
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Phase 2.2, Phase 2.3
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+---
+
+## Phase 2.5: Implement Rule Discovery
+
+**Goal:** Remove manual rule imports, use category-based auto-discovery
 **Estimated Time:** 2-3 hours
 **Status:** Not Started
 
 ### Tasks
 
-- [ ] **Task 2.3.1:** Refactor claude-md.ts to use discovery
+- [ ] **Task 2.5.1:** Refactor claude-md.ts to use discovery
   - **File:** `src/validators/claude-md.ts`
-  - **Action:** Remove 6 manual rule imports (lines 28-33)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('CLAUDE.md')
-  - **Action:** Remove import comments about "pilot migration"
+  - **Action:** Remove 6 manual rule imports (if any remain)
+  - **Action:** Ensure all rules execute via executeRulesForCategory('CLAUDE.md')
   - **Action:** Test all validations still work
   - **Estimated Time:** 20 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.2
+  - **Dependencies:** Tasks 2.0.2, Phase 2.3
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.3.2:** Refactor skills.ts to use discovery
+- [ ] **Task 2.5.2:** Refactor skills.ts to use discovery
   - **File:** `src/validators/skills.ts`
-  - **Action:** Remove 14 manual rule imports (lines 31-44)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('Skills')
+  - **Action:** Remove manual rule imports
+  - **Action:** Replace with executeRulesForCategory('Skills')
   - **Action:** Test all validations still work
   - **Estimated Time:** 25 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.3
+  - **Dependencies:** Tasks 2.0.2, 2.3.1
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.3.3:** Refactor plugin.ts to use discovery
+- [ ] **Task 2.5.3:** Refactor agents.ts to use discovery
+  - **File:** `src/validators/agents.ts`
+  - **Action:** Remove manual rule imports
+  - **Action:** Replace with executeRulesForCategory('Agents')
+  - **Action:** Test all validations still work
+  - **Estimated Time:** 25 minutes
+  - **Dependencies:** Tasks 2.0.2, 2.3.2
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.4:** Refactor plugin.ts to use discovery
   - **File:** `src/validators/plugin.ts`
-  - **Action:** Remove 6 manual rule imports (lines 13-18)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('Plugin')
+  - **Action:** Remove manual rule imports
+  - **Action:** Replace with executeRulesForCategory('Plugin')
   - **Action:** Test all validations still work
   - **Estimated Time:** 20 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.5
+  - **Dependencies:** Tasks 2.0.2, 2.3.6
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.3.4:** Refactor mcp.ts to use discovery
+- [ ] **Task 2.5.5:** Refactor mcp.ts to use discovery
   - **File:** `src/validators/mcp.ts`
-  - **Action:** Remove 3 manual rule imports (lines 18-20)
-  - **Action:** Remove validateEnvironmentVariables method (replaced by rule)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('MCP')
-  - **Action:** Test all validations still work
-  - **Estimated Time:** 25 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.1
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.3.5:** Refactor hooks.ts to use discovery
-  - **File:** `src/validators/hooks.ts`
-  - **Action:** Remove 3 manual rule imports (lines 12-14)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('Hooks')
-  - **Action:** Test all validations still work
-  - **Estimated Time:** 15 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.5
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.3.6:** Refactor settings.ts to use discovery
-  - **File:** `src/validators/settings.ts`
-  - **Action:** Remove 4 manual rule imports (lines 15-18)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('Settings')
-  - **Action:** Test all validations still work
-  - **Estimated Time:** 15 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.5
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.3.7:** Refactor commands.ts to use discovery
-  - **File:** `src/validators/commands.ts`
-  - **Action:** Remove 2 manual rule imports (lines 8-9)
-  - **Action:** Replace executeRule calls with executeRulesForCategory('Commands')
+  - **Action:** Already uses executeRulesForCategory - verify no manual imports remain
   - **Action:** Test all validations still work
   - **Estimated Time:** 10 minutes
-  - **Dependencies:** Tasks 2.0.2, 2.2.5
+  - **Dependencies:** Tasks 2.0.2, Phase 2.3
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.3.8:** Verify zero manual imports remain
+- [ ] **Task 2.5.6:** Refactor hooks.ts to use discovery
+  - **File:** `src/validators/hooks.ts`
+  - **Action:** Remove manual rule imports
+  - **Action:** Replace with executeRulesForCategory('Hooks')
+  - **Action:** Test all validations still work
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Tasks 2.0.2, 2.3.7
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.7:** Refactor settings.ts to use discovery
+  - **File:** `src/validators/settings.ts`
+  - **Action:** Remove manual rule imports
+  - **Action:** Replace with executeRulesForCategory('Settings')
+  - **Action:** Test all validations still work
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Tasks 2.0.2, 2.3.8
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.8:** Refactor remaining validators
+  - **Files:** `src/validators/{commands,output-styles,lsp}.ts`
+  - **Action:** Remove manual rule imports from all remaining validators
+  - **Action:** Replace with executeRulesForCategory pattern
+  - **Action:** Test all validations still work
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** Tasks 2.0.2, Phase 2.3
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.9:** Verify zero manual imports remain
   - **Files:** All validator files
   - **Action:** Run `grep -r "from '../rules/" src/validators/` - should return 0 results
   - **Action:** Verify all validators use executeRulesForCategory pattern
   - **Action:** Document the new pattern in architecture.md
   - **Estimated Time:** 10 minutes
-  - **Dependencies:** Tasks 2.3.1-2.3.7
+  - **Dependencies:** Tasks 2.5.1-2.5.8
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.3.9:** Verify zero reportError/reportWarning calls in validators
-  - **Files:** All validator files
+- [ ] **Task 2.5.10:** Verify zero reportError/reportWarning calls and deprecate
+  - **Files:** All validator files, `src/validators/base.ts`
   - **Action:** Run `grep -r "reportError\|reportWarning" src/validators/` (excluding base.ts)
   - **Action:** Should return 0 results (all validation in rules)
-  - **Action:** Verify validators only call executeRulesForCategory()
-  - **Action:** Document findings - any remaining calls need to be converted to rules
-  - **Estimated Time:** 10 minutes
-  - **Dependencies:** Tasks 2.2.3-2.2.5, 2.3.1-2.3.7
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.3.10:** Mark reportError/reportWarning as @deprecated in base.ts
-  - **File:** `src/validators/base.ts`
-  - **Action:** Add @deprecated JSDoc tags to reportError() method
-  - **Action:** Add @deprecated JSDoc tags to reportWarning() method
-  - **Action:** Add deprecation message: "Use rules with context.report() instead. This method will be removed in next major version."
-  - **Action:** Document that these methods are for backward compatibility only
-  - **Estimated Time:** 10 minutes
-  - **Dependencies:** Task 2.3.9
+  - **Action:** Mark reportError/reportWarning as @deprecated in base.ts
+  - **Action:** Add deprecation message: "Use rules with context.report() instead"
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Tasks 2.5.1-2.5.9
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
 ---
 
-## Phase 2.4: Extract Common Patterns
+## Phase 2.6: Extract Common Patterns
 
 **Goal:** Remove code duplication through abstraction
 **Estimated Time:** 2-3 hours
@@ -379,63 +494,53 @@
 
 ### Tasks
 
-- [ ] **Task 2.4.1:** Refactor agents.ts to use abstractions
+- [ ] **Task 2.6.1:** Refactor agents.ts to use abstractions
   - **File:** `src/validators/agents.ts`
-  - **Action:** Replace validateFrontmatter with base class method
-  - **Action:** Replace validateBodyContent with base class method
-  - **Action:** Replace findAgentDirs filtering with base class method
+  - **Action:** Use base class abstractions for common patterns
   - **Action:** Verify all tests pass
   - **Estimated Time:** 45 minutes
   - **Dependencies:** Tasks 2.0.3, 2.0.4, 2.0.5
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.4.2:** Refactor skills.ts to use abstractions
+- [ ] **Task 2.6.2:** Refactor skills.ts to use abstractions
   - **File:** `src/validators/skills.ts`
-  - **Action:** Replace validateFrontmatter with base class method
-  - **Action:** Replace file walking patterns with validateFilesInDirectory
-  - **Action:** Replace findSkillDirs filtering with base class method
+  - **Action:** Use base class abstractions for common patterns
   - **Action:** Verify all tests pass
   - **Estimated Time:** 1 hour
   - **Dependencies:** Tasks 2.0.3, 2.0.5
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.4.3:** Refactor output-styles.ts to use abstractions
+- [ ] **Task 2.6.3:** Refactor output-styles.ts to use abstractions
   - **File:** `src/validators/output-styles.ts`
-  - **Action:** Replace validateFrontmatter with base class method
-  - **Action:** Replace validateBodyContent with base class method
-  - **Action:** Replace directory filtering with base class method
+  - **Action:** Use base class abstractions for common patterns
   - **Action:** Verify all tests pass
   - **Estimated Time:** 30 minutes
   - **Dependencies:** Tasks 2.0.3, 2.0.4, 2.0.5
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.4.4:** Unify error handling across validators
+- [ ] **Task 2.6.4:** Unify error handling across validators
   - **Files:** All validators
-  - **Action:** Replace try/catch with optional check patterns using tryReadDirectory
-  - **Action:** Remove duplicate error handling code
-  - **Action:** Ensure consistent user-facing error messages
+  - **Action:** Ensure consistent error handling patterns
   - **Estimated Time:** 45 minutes
   - **Dependencies:** Task 2.0.5
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.4.5:** Remove dead code and clean up comments
+- [ ] **Task 2.6.5:** Remove dead code and clean up comments
   - **Files:** All validators
-  - **Action:** Remove "NEW:" and "OLD:" migration comments
-  - **Action:** Remove deprecated isRuleDisabled() method from base.ts
-  - **Action:** Remove await Promise.resolve() anti-patterns
+  - **Action:** Remove migration comments
   - **Action:** Clean up imports
   - **Estimated Time:** 30 minutes
-  - **Dependencies:** Tasks 2.4.1-2.4.4
+  - **Dependencies:** Tasks 2.6.1-2.6.4
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
 ---
 
-## Phase 2.5: Testing & Validation
+## Phase 2.7: Testing & Validation
 
 **Goal:** Ensure nothing broke and documentation is complete
 **Estimated Time:** 2.5-3 hours
@@ -443,102 +548,88 @@
 
 ### Tasks
 
-- [ ] **Task 2.5.1:** Run full test suite
+- [ ] **Task 2.7.1:** Run full test suite
   - **Command:** `npm test`
   - **Action:** Verify all 688+ tests pass
   - **Action:** Fix any failing tests
-  - **Action:** Document any expected test changes
   - **Estimated Time:** 30 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.2:** Test config disable for new rules
+- [ ] **Task 2.7.2:** Test config disable for new rules
   - **Action:** Create test `.claudelintrc.json` with new rules disabled
   - **Action:** Verify validations are actually skipped
-  - **Action:** Test with multiple validators
   - **Estimated Time:** 15 minutes
-  - **Dependencies:** Phase 2.2
+  - **Dependencies:** Phase 2.3
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.3:** Test config severity override
-  - **Action:** Create test config with severity overrides for new rules
+- [ ] **Task 2.7.3:** Test config severity override
+  - **Action:** Create test config with severity overrides
   - **Action:** Verify warnings become errors and vice versa
-  - **Action:** Test with multiple validators
   - **Estimated Time:** 15 minutes
-  - **Dependencies:** Phase 2.2
+  - **Dependencies:** Phase 2.3
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.4:** Test rule options
-  - **Action:** For rules with options, test custom configuration
+- [ ] **Task 2.7.4:** Test rule options
+  - **Action:** Test custom rule configuration
   - **Action:** Verify schema validation rejects invalid options
-  - **Action:** Verify default options work correctly
   - **Estimated Time:** 15 minutes
-  - **Dependencies:** Phase 2.2
+  - **Dependencies:** Phase 2.3
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.5:** Manual validation of each validator
+- [ ] **Task 2.7.5:** Manual validation of each validator
   - **Action:** Run each validator against real test fixtures
   - **Action:** Verify all expected issues are reported
-  - **Action:** Verify no false positives
   - **Estimated Time:** 20 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.6:** Performance testing
-  - **Action:** Benchmark rule execution time before/after
+- [ ] **Task 2.7.6:** Performance testing
+  - **Action:** Benchmark rule execution time
   - **Action:** Verify no significant performance regression
-  - **Action:** Document any performance improvements
   - **Estimated Time:** 15 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.6.5:** Verify zero reportError/reportWarning usage and remove methods
+- [ ] **Task 2.7.7:** Remove reportError/reportWarning methods entirely
   - **File:** `src/validators/base.ts`
-  - **Action:** Run `grep -r "reportError\|reportWarning" src/validators/` one final time
-  - **Action:** Verify ZERO results (except method definitions in base.ts)
-  - **Action:** REMOVE reportError() method entirely from base.ts
-  - **Action:** REMOVE reportWarning() method entirely from base.ts
-  - **Action:** Update any tests that referenced these methods
-  - **Action:** Verify all 688+ tests still pass after removal
+  - **Action:** REMOVE reportError() method from base.ts
+  - **Action:** REMOVE reportWarning() method from base.ts
+  - **Action:** Verify all tests still pass
   - **Estimated Time:** 20 minutes
-  - **Dependencies:** Tasks 2.5.1-2.5.5, 2.3.9, 2.3.10
+  - **Dependencies:** Task 2.5.10, Tasks 2.7.1-2.7.6
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.7:** Write user migration guide
-  - **File:** `docs/USER-MIGRATION-GUIDE.md` (new)
-  - **Action:** Document which validations are now configurable
-  - **Action:** Show how to disable new rules in `.claudelintrc.json`
-  - **Action:** Explain severity changes and how to override
-  - **Action:** List all 44+ new rule IDs for reference
-  - **Estimated Time:** 30 minutes
+- [ ] **Task 2.7.8:** Create rule documentation for new rules
+  - **Files:** `docs/rules/{category}/{rule-id}.md`
+  - **Action:** Create documentation for all new rules
+  - **Action:** Follow existing documentation template
+  - **Estimated Time:** 2 hours
+  - **Dependencies:** Phase 2.3
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.7.9:** Update CHANGELOG.md
+  - **File:** `CHANGELOG.md`
+  - **Action:** Document all new rules added (40+)
+  - **Action:** List behavior changes
+  - **Action:** Note removal of reportError/reportWarning
+  - **Estimated Time:** 20 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.5.8:** Update CHANGELOG.md with breaking changes
-  - **File:** `CHANGELOG.md`
-  - **Action:** Document all new rules added (44+)
-  - **Action:** List any behavior changes from ghost rule conversion
-  - **Action:** Add migration instructions reference
-  - **Action:** Note removal of deprecated methods if applicable
-  - **Estimated Time:** 20 minutes
-  - **Dependencies:** Task 2.5.7
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-
-- [ ] **Task 2.5.9:** Update contributing guide with new patterns
-  - **File:** `docs/CONTRIBUTING.md` or `docs/plugin-development.md`
+- [ ] **Task 2.7.10:** Update contributing guide
+  - **File:** `docs/plugin-development.md`
   - **Action:** Document RuleRegistry.getRulesByCategory() pattern
   - **Action:** Document executeRulesForCategory() usage
-  - **Action:** Add examples of proper rule discovery
-  - **Action:** Update "Adding a New Rule" section if needed
   - **Estimated Time:** 20 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
@@ -549,67 +640,76 @@
 ## Completion Checklist
 
 ### Code Quality
-- [ ] Zero `reportError`/`reportWarning` calls in validators (methods removed entirely)
+- [ ] Zero `reportError`/`reportWarning` calls in validators
+- [ ] reportError/reportWarning methods deleted from base.ts
 - [ ] Zero validation logic in validators (all logic in rules)
 - [ ] Zero manual rule imports in validators
-- [ ] No code duplication in validation patterns
+- [ ] Zero stub rules (all have real implementations)
+- [ ] No validation in Zod schemas (structure only)
 - [ ] All validators use consistent error handling
-- [ ] Validators are pure orchestrators (find files, execute rules, return results)
+- [ ] Validators are pure orchestrators
 
-### Functionality
-- [ ] All 688+ tests passing
-- [ ] All validations still work correctly
+### Testing
+- [ ] All 688+ integration tests passing
+- [ ] All rule unit tests passing
+- [ ] ClaudeLintRuleTester utility created
+- [ ] Every rule has unit tests
 - [ ] Config system works for all rules
-- [ ] No breaking changes to user-facing APIs
 
 ### Documentation
-- [ ] All new rules documented in docs/rules/
-- [ ] MIGRATION-GUIDE.md completed
-- [ ] PATTERNS.md completed
+- [ ] All new rules documented
+- [ ] MIGRATION-GUIDE.md updated
+- [ ] PATTERNS.md updated
 - [ ] Architecture.md updated
 - [ ] CHANGELOG.md updated
 
 ### User Experience
-- [ ] All rules configurable via `.claudelintrc.json`
+- [ ] ALL validations configurable via `.claudelintrc.json`
 - [ ] Error messages unchanged (or improved)
 - [ ] Performance same or better
-- [ ] No unexpected behavior changes
 
 ---
 
 ## Notes
 
-### Completed Tasks
-_None yet_
+### Critical Discoveries (2026-01-29)
 
-### Blockers
-_None yet_
+**Issue:** After "completing" MCP and Claude.md validators, discovered:
+1. 25 stub rules with empty validate() functions
+2. Duplicate validation in both Zod schemas and rules
+3. No unit tests - integration tests didn't catch empty rules
+4. Tests passed because Zod schema errors masked missing rule logic
 
-### Decisions Made
+**Root Cause:**
+- Agents/Skills/Output-styles use `mergeSchemaValidationResult()` pattern
+- Zod schemas contain validation logic (.min, .max, .refine)
+- Rule stubs exist but are no-ops with comments like "Schema handles this"
+- Integration tests only verify validator output, not that rules execute
 
-**2026-01-29: Architectural Correction - All Validation Logic Must Be In Rules**
+**Solution:**
+- Build RuleTester infrastructure first (Phase 2.2)
+- Remove ALL validation from Zod schemas (Phase 2.3)
+- Implement all 25 stubs with unit tests (Phase 2.3)
+- Fix duplication in MCP/Claude.md (Phase 2.4)
+- Only then continue with discovery and cleanup
 
-Initial implementation (Tasks 2.2.1 and 2.2.2) incorrectly:
-- Added ruleIds to reportError/reportWarning calls in validators
-- Kept validation logic in validators
-- Created stub rules with empty validate() functions
-
-This was architecturally wrong because:
-- Users still couldn't disable validations (logic in validators, not rules)
-- Validators still contained validation logic (not pure orchestrators)
-- reportError/reportWarning still being called from validators
-
-**Correct approach:**
-1. ALL validation logic goes in rule files' validate() functions
-2. Validators ONLY orchestrate (find files, executeRulesForCategory, return results)
-3. ZERO reportError/reportWarning calls in validators
-4. reportError/reportWarning methods will be deprecated then removed entirely
-5. This matches ESLint-style rule architecture
-
-**Impact:**
-- Tasks 2.2.1 and 2.2.2 need rework
-- All remaining Phase 2.2 tasks must follow correct pattern
-- Documentation updated to reflect correct architecture (MASTER-PLAN.md, MIGRATION-GUIDE.md, PATTERNS.md, IMPLEMENTATION-TRACKER.md)
+**Lessons Learned:**
+- Can't rely on integration tests alone
+- Need unit tests for individual rules
+- Schemas should be for structure, not validation
+- Must verify assumptions with concrete tests
 
 ### Questions/Issues
-_None yet_
+
+**Q:** Should we remove mergeSchemaValidationResult() entirely?
+**A:** Yes - in Phase 2.3.4, after migrating validators. Validation must go through rules.
+
+**Q:** What about parsing errors (invalid JSON, YAML)?
+**A:** Parsing errors can stay in validators - they're not "validation" of content
+
+**Q:** Performance impact of more rules?
+**A:** RuleRegistry caching should minimize impact. Will benchmark in Phase 2.7.
+
+---
+
+**Last Updated:** 2026-01-29
