@@ -4,10 +4,6 @@ import { ValidatorRegistry } from '../utils/validator-factory';
 // Auto-register all rules
 import '../rules';
 
-// Import new-style rules
-import { rule as commandsDeprecatedDirectoryRule } from '../rules/commands/commands-deprecated-directory';
-import { rule as commandsMigrateToSkillsRule } from '../rules/commands/commands-migrate-to-skills';
-
 /**
  * Options specific to Commands validator
  */
@@ -30,10 +26,9 @@ export class CommandsValidator extends BaseValidator {
   }
 
   async validate(): Promise<ValidationResult> {
-    // NEW: Execute deprecation warning rules
+    // Execute ALL Commands rules via category-based discovery
     // Use basePath as filePath since these rules check the project structure
-    await this.executeRule(commandsDeprecatedDirectoryRule, this.basePath, '');
-    await this.executeRule(commandsMigrateToSkillsRule, this.basePath, '');
+    await this.executeRulesForCategory('Commands', this.basePath, '');
 
     return this.getResult();
   }

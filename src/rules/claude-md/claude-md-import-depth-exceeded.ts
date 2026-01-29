@@ -8,7 +8,12 @@ import { Rule } from '../../types/rule';
 import { extractImportsWithLineNumbers } from '../../utils/markdown';
 import { fileExists, resolvePath, readFileContent } from '../../utils/file-system';
 import { dirname } from 'path';
-import { CLAUDE_MD_MAX_IMPORT_DEPTH } from '../../validators/constants';
+import { z } from 'zod';
+
+export interface ClaudeMdImportDepthOptions {
+  /** Maximum import depth before reporting error (default: 5) */
+  maxDepth?: number;
+}
 
 export const rule: Rule = {
   meta: {
@@ -22,11 +27,17 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-import-depth-exceeded.md',
+    schema: z.object({
+      maxDepth: z.number().positive().int().optional(),
+    }),
+    defaultOptions: {
+      maxDepth: 5,
+    },
   },
 
   validate: async (context) => {
     const { filePath, fileContent, options } = context;
-    const maxDepth = (options?.maxDepth as number | undefined) ?? CLAUDE_MD_MAX_IMPORT_DEPTH;
+    const maxDepth = (options as ClaudeMdImportDepthOptions).maxDepth ?? 5;
 
     // Check imports recursively
     await checkImportDepth(context, filePath, fileContent, 0, maxDepth, new Set());

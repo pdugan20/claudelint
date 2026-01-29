@@ -5,12 +5,15 @@
  */
 
 import { Rule } from '../../types/rule';
-import { VAR_EXPANSION_PATTERN, SIMPLE_VAR_PATTERN } from '../../validators/constants';
 import { MCPConfigSchema, MCPStdioTransportSchema, MCPSSETransportSchema, MCPHTTPTransportSchema, MCPWebSocketTransportSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type MCPConfig = z.infer<typeof MCPConfigSchema>;
 type MCPTransport = z.infer<typeof MCPStdioTransportSchema> | z.infer<typeof MCPSSETransportSchema> | z.infer<typeof MCPHTTPTransportSchema> | z.infer<typeof MCPWebSocketTransportSchema>;
+
+// Regex patterns for variable expansion validation
+const VAR_EXPANSION_PATTERN = /\$\{([^}]*)\}/g; // Matches ${VAR} or ${VAR:-default}
+const SIMPLE_VAR_PATTERN = /\$([A-Z_][A-Z0-9_]*)/g; // Matches $VAR without braces
 
 /**
  * Validates environment variable syntax in MCP transport

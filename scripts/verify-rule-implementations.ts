@@ -23,7 +23,7 @@ function findRuleFiles(dir: string, _category: string = ''): string[] {
 
     if (stat.isDirectory()) {
       files.push(...findRuleFiles(fullPath, entry));
-    } else if (entry.endsWith('.ts') && !entry.endsWith('.test.ts')) {
+    } else if (entry.endsWith('.ts') && !entry.endsWith('.test.ts') && entry !== 'index.ts' && entry !== 'rule-ids.ts') {
       files.push(fullPath);
     }
   }
@@ -34,6 +34,11 @@ function findRuleFiles(dir: string, _category: string = ''): string[] {
 function analyzeRule(filePath: string): StubRule | null {
   const content = readFileSync(filePath, 'utf-8');
   const category = filePath.split('/rules/')[1]?.split('/')[0] || 'unknown';
+
+  // Allow explicitly documented no-op rules (cross-reference validation)
+  if (content.includes('// No-op:') && content.includes('Validation implemented in')) {
+    return null;
+  }
 
   // Check if validate function exists
   if (!content.includes('validate:')) {

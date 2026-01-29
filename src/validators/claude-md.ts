@@ -2,6 +2,7 @@ import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
 import {
   findClaudeMdFiles,
   readFileContent,
+  fileExists,
 } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
@@ -42,7 +43,6 @@ export class ClaudeMdValidator extends BaseValidator {
   private async findFiles(): Promise<string[]> {
     if (this.options.path) {
       // If specific path provided, validate just that file
-      // Note: File existence is checked by claude-md-file-not-found rule
       return [this.options.path];
     }
 
@@ -54,7 +54,13 @@ export class ClaudeMdValidator extends BaseValidator {
     // Set current file for config resolution
     this.setCurrentFile(filePath);
 
-    // Read content first
+    // Check file exists first (operational error if missing)
+    const exists = await fileExists(filePath);
+    if (!exists) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
+    // Read content
     const content = await readFileContent(filePath);
 
     // Parse disable comments
@@ -94,10 +100,6 @@ export class ClaudeMdValidator extends BaseValidator {
     if (!frontmatter) {
       return;
     }
-
-    // Glob pattern validation is now handled by separate rules:
-    // - claude-md-glob-pattern-backslash
-    // - claude-md-glob-pattern-too-broad
   }
 }
 

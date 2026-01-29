@@ -6,10 +6,10 @@ import { setupTestDir } from '../helpers/test-utils';
 describe('ClaudeMdValidator', () => {
   const { getTestDir } = setupTestDir();
 
-  describe('File size validation', () => {
-    it('should pass for files under size limit', async () => {
+  describe('Orchestration', () => {
+    it('should validate valid CLAUDE.md file', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
-      await writeFile(filePath, '# Small File\n\nContent here.');
+      await writeFile(filePath, '# Project Instructions\n\nContent here.');
 
       const validator = new ClaudeMdValidator({ path: filePath });
       const result = await validator.validate();
@@ -18,35 +18,39 @@ describe('ClaudeMdValidator', () => {
       expect(result.errors).toHaveLength(0);
     });
 
-    it('should warn for files approaching size limit', async () => {
+    it('should validate CLAUDE.md with imports', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
-      const largeContent = '# Large File\n\n' + 'x'.repeat(36000);
-      await writeFile(filePath, largeContent);
+      const importedFile = join(getTestDir(), 'imported.md');
+
+      await writeFile(importedFile, '# Imported Content\n\nDetails here.');
+      await writeFile(
+        filePath,
+        '# Main\n\nImport: @imported.md\n\nMore content here.'
+      );
 
       const validator = new ClaudeMdValidator({ path: filePath });
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
-      expect(result.warnings.length).toBeGreaterThan(0);
-      expect(result.warnings[0].message).toContain('approaching size limit');
     });
 
-    it('should error for files exceeding size limit', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      const hugeContent = '# Huge File\n\n' + 'x'.repeat(45000);
-      await writeFile(filePath, hugeContent);
+    it('should handle missing CLAUDE.md files', async () => {
+      const originalCwd = process.cwd();
+      process.chdir(getTestDir());
 
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
+      try {
+        const validator = new ClaudeMdValidator();
+        const result = await validator.validate();
 
-      expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
-      expect(result.errors[0].message).toContain('exceeds');
+        expect(result.valid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+        expect(result.warnings).toHaveLength(0);
+      } finally {
+        process.chdir(originalCwd);
+      }
     });
-  });
 
-  describe('Frontmatter validation', () => {
-    it('should validate frontmatter in rules files', async () => {
+    it('should validate rules files with frontmatter', async () => {
       const rulesDir = join(getTestDir(), '.claude', 'rules');
       await mkdir(rulesDir, { recursive: true });
 
@@ -68,169 +72,6 @@ Content here.`
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
-    });
-
-    it('should error for invalid paths field type', async () => {
-      const rulesDir = join(getTestDir(), '.claude', 'rules');
-      await mkdir(rulesDir, { recursive: true });
-
-      const filePath = join(rulesDir, 'typescript.md');
-      await writeFile(
-        filePath,
-        `---
-paths: "src/**/*.ts"
----
-
-# TypeScript Rules`
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      // Zod reports "Expected array, received string"
-      expect(result.errors.some((e) => e.message.includes('Expected array'))).toBe(true);
-    });
-  });
-
-  describe('Import validation', () => {
-    it('should error for non-existent imports', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      await writeFile(
-        filePath,
-        '# Main\n\nImport: @missing-file.md\n\nContent here.'
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('not found'))).toBe(true);
-    });
-
-    it('should validate existing imports', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      const importedFile = join(getTestDir(), 'imported.md');
-
-      await writeFile(importedFile, '# Imported Content');
-      await writeFile(
-        filePath,
-        '# Main\n\nImport: @imported.md\n\nContent here.'
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should error when import is inside code block', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      await writeFile(
-        filePath,
-        `# Main
-
-Some content here.
-
-\`\`\`markdown
-Import: @example.md
-\`\`\`
-
-More content.`
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('inside code block'))).toBe(true);
-    });
-
-    it('should pass when import is outside code block', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      const importedFile = join(getTestDir(), 'imported.md');
-
-      await writeFile(importedFile, '# Imported Content');
-      await writeFile(
-        filePath,
-        `# Main
-
-Import: @imported.md
-
-Some content here.
-
-\`\`\`markdown
-Example of import syntax (not actual import)
-\`\`\``
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should warn for case-sensitive filename collisions', async () => {
-      // Skip on case-insensitive filesystems (macOS, Windows) where you can't create both files
-      // This test validates the detection logic, which works correctly, but setup fails on case-insensitive FS
-      if (process.platform === 'darwin' || process.platform === 'win32') {
-        // On case-insensitive filesystems, creating File.md and file.md results in one file
-        // Skip this test as it can't be properly set up
-        // The actual case-sensitivity detection logic is still tested via unit tests
-        return;
-      }
-
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      const import1 = join(getTestDir(), 'File.md');
-      const import2 = join(getTestDir(), 'file.md');
-
-      await writeFile(import1, '# File 1');
-      await writeFile(import2, '# File 2');
-      await writeFile(
-        filePath,
-        `# Main
-
-Import: @File.md
-
-Import: @file.md`
-      );
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('Case-sensitive'))).toBe(true);
-      expect(result.warnings.some((w) => w.ruleId === 'claude-md-filename-case-sensitive')).toBe(true);
-    });
-  });
-
-  describe('Content organization checks', () => {
-    it('should warn when CLAUDE.md has too many sections', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      // Create content with 25 sections (headings) - 1 H1 + 25 H2 = 26 total
-      const sections = Array.from({ length: 25 }, (_, i) => `## Section ${i + 1}\n\nContent here.`);
-      await writeFile(filePath, '# Main Title\n\n' + sections.join('\n\n'));
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.length).toBeGreaterThan(0);
-      expect(result.warnings.some((w) => w.message.includes('sections'))).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('.claude/rules/'))).toBe(true);
-    });
-
-    it('should not warn when CLAUDE.md has reasonable number of sections', async () => {
-      const filePath = join(getTestDir(), 'CLAUDE.md');
-      // Create content with 10 sections (headings)
-      const sections = Array.from({ length: 10 }, (_, i) => `## Section ${i + 1}\n\nContent here.`);
-      await writeFile(filePath, '# Main Title\n\n' + sections.join('\n\n'));
-
-      const validator = new ClaudeMdValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.length).toBe(0);
     });
   });
 });

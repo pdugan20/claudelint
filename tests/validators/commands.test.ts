@@ -6,8 +6,8 @@ import { setupTestDir } from '../helpers/test-utils';
 describe('CommandsValidator', () => {
   const { getTestDir } = setupTestDir();
 
-  describe('Deprecated commands directory detection', () => {
-    it('should warn when .claude/commands directory exists', async () => {
+  describe('Orchestration', () => {
+    it('should execute rules when commands directory exists', async () => {
       const commandsDir = join(getTestDir(), '.claude', 'commands');
       await mkdir(commandsDir, { recursive: true });
 
@@ -15,23 +15,10 @@ describe('CommandsValidator', () => {
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('deprecated'))).toBe(true);
-      expect(result.warnings.some((w) => w.ruleId === 'commands-deprecated-directory')).toBe(true);
+      expect(result.warnings.length).toBeGreaterThan(0);
     });
 
-    it('should suggest migration to skills', async () => {
-      const commandsDir = join(getTestDir(), '.claude', 'commands');
-      await mkdir(commandsDir, { recursive: true });
-
-      const validator = new CommandsValidator({ path: getTestDir() });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('migrate'))).toBe(true);
-      expect(result.warnings.some((w) => w.ruleId === 'commands-migrate-to-skills')).toBe(true);
-    });
-
-    it('should pass when no commands directory exists', async () => {
+    it('should handle missing commands directory', async () => {
       const validator = new CommandsValidator({ path: getTestDir() });
       const result = await validator.validate();
 

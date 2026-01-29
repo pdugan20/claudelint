@@ -8,7 +8,6 @@
 import { Rule } from '../../types/rule';
 import { getFileSize } from '../../utils/file-system';
 import { z } from 'zod';
-import { CLAUDE_MD_SIZE_ERROR_THRESHOLD } from '../../validators/constants';
 
 /**
  * Options for claude-md-size-error rule
@@ -43,10 +42,8 @@ export const rule: Rule = {
   validate: async (context) => {
     const { filePath, options } = context;
 
-    // Get configured threshold or use default
-    const errorThreshold =
-      (options as ClaudeMdSizeErrorOptions).maxSize ??
-      CLAUDE_MD_SIZE_ERROR_THRESHOLD;
+    // Get configured threshold (already has default from meta.defaultOptions)
+    const errorThreshold = (options as ClaudeMdSizeErrorOptions).maxSize ?? 40000;
 
     // Check file size
     const size = await getFileSize(filePath);

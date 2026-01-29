@@ -9,6 +9,9 @@ import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatte
 import { basename, join } from 'path';
 import { ValidatorRegistry } from '../utils/validator-factory';
 
+// Auto-register all rules
+import '../rules';
+
 /**
  * Options specific to Output Styles validator
  */
@@ -34,7 +37,6 @@ export class OutputStylesValidator extends BaseValidator {
     const outputStyleDirs = await this.findOutputStyleDirs();
 
     if (outputStyleDirs.length === 0) {
-      this.reportWarning('No output style directories found');
       return this.getResult();
     }
 
@@ -57,14 +59,12 @@ export class OutputStylesValidator extends BaseValidator {
   }
 
   private async validateOutputStyle(outputStyleDir: string): Promise<void> {
-    const outputStyleName = basename(outputStyleDir);
     const outputStyleMdPath = join(outputStyleDir, 'OUTPUT_STYLE.md');
 
     // Check OUTPUT_STYLE.md exists
     const exists = await fileExists(outputStyleMdPath);
     if (!exists) {
-      this.reportError(`OUTPUT_STYLE.md not found in output style directory`, outputStyleDir);
-      return;
+      throw new Error(`OUTPUT_STYLE.md not found in output style directory: ${outputStyleDir}`);
     }
 
     // Read content
@@ -74,10 +74,10 @@ export class OutputStylesValidator extends BaseValidator {
     this.parseDisableComments(outputStyleMdPath, content);
 
     // Validate frontmatter
-    await this.validateFrontmatter(outputStyleMdPath, content, outputStyleName);
+    await this.validateFrontmatter(outputStyleMdPath, content);
 
-    // Validate body content
-    this.validateBodyContent(outputStyleMdPath, content);
+    // Execute ALL Output-styles rules via category-based discovery
+    await this.executeRulesForCategory('OutputStyles', outputStyleMdPath, content);
 
     // Report unused disable directives if configured
     if (this.options.config?.reportUnusedDisableDirectives) {
@@ -87,8 +87,7 @@ export class OutputStylesValidator extends BaseValidator {
 
   private async validateFrontmatter(
     filePath: string,
-    content: string,
-    outputStyleName: string
+    content: string
   ): Promise<void> {
     // Ensure async for API consistency
     await Promise.resolve();
@@ -107,50 +106,6 @@ export class OutputStylesValidator extends BaseValidator {
     // If no frontmatter parsed, schema validation already reported the error
     if (!frontmatter) {
       return;
-    }
-
-    // Custom validation: Check name matches directory
-    if (frontmatter.name !== outputStyleName) {
-      this.reportError(
-        `Output style name "${frontmatter.name}" does not match directory name "${outputStyleName}"`,
-        filePath
-      );
-    }
-  }
-
-  private validateBodyContent(filePath: string, content: string): void {
-    // Extract body content (everything after frontmatter)
-    const parts = content.split('---');
-    if (parts.length < 3) {
-      return; // No body content or invalid frontmatter
-    }
-
-    const body = parts.slice(2).join('---').trim();
-
-    // Validate minimum body content length
-    if (body.length < 50) {
-      this.reportWarning(
-        'Output style body content is very short. Consider adding more examples and guidelines.',
-        filePath
-      );
-    }
-
-    // Check for example section
-    const hasExamples = /#{1,3}\s*examples?/i.test(body);
-    if (!hasExamples) {
-      this.reportWarning(
-        'Output style should include an "Examples" section demonstrating the style.',
-        filePath
-      );
-    }
-
-    // Check for guidelines section
-    const hasGuidelines = /#{1,3}\s*(guidelines?|rules?|format)/i.test(body);
-    if (!hasGuidelines) {
-      this.reportWarning(
-        'Output style should include a "Guidelines" or "Format" section.',
-        filePath
-      );
     }
   }
 }

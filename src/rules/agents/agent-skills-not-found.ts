@@ -3,11 +3,14 @@
  *
  * Validates that skills referenced in agent configurations actually exist.
  *
- * This validation is implemented in AgentsValidator.validateSkills() which has
- * access to filesystem context needed to check skill existence.
+ * Agents can reference skills in their frontmatter. This rule ensures those
+ * skill files exist at .claude/skills/{skill-name}/SKILL.md
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { extractFrontmatter } from '../../utils/markdown';
+import { fileExists } from '../../utils/file-system';
+import { dirname, join } from 'path';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +25,40 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-skills-not-found.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentsValidator.validateSkills()
-    // Requires filesystem access to check if .claude/skills/{name}/SKILL.md exists
+  validate: async (context: RuleContext) => {
+    const { filePath, fileContent } = context;
+
+    // Only validate agent .md files in .claude/agents/ directory
+    if (!filePath.includes('.claude/agents/') || !filePath.endsWith('.md')) {
+      return;
+    }
+
+    // Extract frontmatter to get skills array
+    const { frontmatter } = extractFrontmatter(fileContent);
+    if (!frontmatter || !frontmatter.skills || !Array.isArray(frontmatter.skills)) {
+      return;
+    }
+
+    // Get project root: .claude/agents/name.md -> up 2 levels
+    const agentsDir = dirname(filePath); // .claude/agents
+    const claudeDir = dirname(agentsDir); // .claude
+    const projectRoot = dirname(claudeDir); // project root
+    const skillsDir = join(projectRoot, '.claude', 'skills');
+
+    // Check each referenced skill exists
+    for (const skillName of frontmatter.skills) {
+      if (typeof skillName !== 'string') {
+        continue;
+      }
+
+      const skillPath = join(skillsDir, skillName, 'SKILL.md');
+      const exists = await fileExists(skillPath);
+
+      if (!exists) {
+        context.report({
+          message: `Referenced skill not found: ${skillName}`,
+        });
+      }
+    }
   },
 };

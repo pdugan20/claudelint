@@ -6,63 +6,19 @@ import { setupTestDir } from '../helpers/test-utils';
 describe('SettingsValidator', () => {
   const { getTestDir } = setupTestDir();
 
-  async function createSettingsFile(settings: unknown, filename = 'settings.json') {
-    const claudeDir = join(getTestDir(), '.claude');
-    await mkdir(claudeDir, { recursive: true });
+  async function createSettingsFile(settings: Record<string, unknown>) {
+    const settingsDir = join(getTestDir(), '.claude');
+    await mkdir(settingsDir, { recursive: true });
 
-    const filePath = join(claudeDir, filename);
+    const filePath = join(settingsDir, 'settings.json');
     await writeFile(filePath, JSON.stringify(settings, null, 2));
     return filePath;
   }
 
-  describe('JSON validation', () => {
-    it('should pass for valid minimal settings', async () => {
-      const filePath = await createSettingsFile({
-        model: 'sonnet',
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.errors).toHaveLength(0);
-    });
-
-    it('should error for invalid JSON syntax', async () => {
-      const claudeDir = join(getTestDir(), '.claude');
-      await mkdir(claudeDir, { recursive: true });
-      const filePath = join(claudeDir, 'settings.json');
-      await writeFile(filePath, '{ invalid json }');
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('Invalid JSON syntax'))).toBe(true);
-    });
-
-    it('should error for invalid model', async () => {
-      const filePath = await createSettingsFile({
-        model: 'gpt-4',
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('Permission rules validation', () => {
-    it('should pass for valid permission rules', async () => {
+  describe('Orchestration', () => {
+    it('should validate valid settings', async () => {
       const filePath = await createSettingsFile({
         permissions: [
-          {
-            tool: 'Bash',
-            action: 'allow',
-            pattern: 'git *',
-          },
           {
             tool: 'Write',
             action: 'ask',
@@ -74,211 +30,55 @@ describe('SettingsValidator', () => {
       const result = await validator.validate();
 
       expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
 
-    it('should warn for unknown tools', async () => {
+    it('should handle invalid JSON syntax', async () => {
+      const settingsDir = join(getTestDir(), '.claude');
+      await mkdir(settingsDir, { recursive: true });
+      const filePath = join(settingsDir, 'settings.json');
+      await writeFile(filePath, '{ invalid json }');
+
+      const validator = new SettingsValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
+
+    it('should handle schema validation errors', async () => {
       const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'UnknownTool',
-            action: 'allow',
-          },
-        ],
+        permissions: 'not-an-array',
       });
 
       const validator = new SettingsValidator({ path: filePath });
       const result = await validator.validate();
 
-      expect(result.warnings.some((w) => w.message.includes('Unknown tool'))).toBe(true);
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
     });
 
-    it('should allow wildcard tool', async () => {
+    it('should aggregate results from complex settings', async () => {
       const filePath = await createSettingsFile({
         permissions: [
           {
-            tool: '*',
+            tool: 'Write',
             action: 'ask',
           },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should error for invalid permission action', async () => {
-      const filePath = await createSettingsFile({
-        permissions: [
           {
             tool: 'Bash',
-            action: 'invalid',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-    });
-
-    it('should parse Tool(pattern) syntax correctly', async () => {
-      const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'Read(*.md)',
             action: 'allow',
           },
         ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should error when both inline pattern and separate pattern field are used', async () => {
-      const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'Read(*.md)',
-            action: 'allow',
-            pattern: '*.txt',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('both inline pattern'))).toBe(true);
-      expect(result.errors.some((e) => e.ruleId === 'settings-permission-invalid-rule')).toBe(true);
-    });
-
-    it('should warn for empty inline pattern', async () => {
-      const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'Read()',
-            action: 'allow',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('Empty inline pattern'))).toBe(true);
-    });
-
-    it('should validate tool name from Tool(pattern) syntax', async () => {
-      const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'InvalidTool(*.md)',
-            action: 'allow',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-      expect(result.warnings.some((w) => w.message.includes('Unknown tool'))).toBe(true);
-    });
-  });
-
-  describe('Hooks validation', () => {
-    it('should pass for valid command hook', async () => {
-      const filePath = await createSettingsFile({
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-            command: 'npm run lint',
-            matcher: {
-              tool: 'Write',
-              pattern: '.*\\.ts$',
-            },
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should error when command hook missing command field', async () => {
-      const filePath = await createSettingsFile({
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('must have "command" field'))).toBe(
-        true
-      );
-    });
-
-    it('should error when prompt hook missing prompt field', async () => {
-      const filePath = await createSettingsFile({
-        hooks: [
-          {
-            event: 'UserPromptSubmit',
-            type: 'prompt',
-          },
-        ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.message.includes('must have "prompt" field'))).toBe(true);
-    });
-
-    it('should warn for unknown tool in hook matcher', async () => {
-      const filePath = await createSettingsFile({
         hooks: [
           {
             event: 'PreToolUse',
             type: 'command',
             command: 'echo test',
-            matcher: {
-              tool: 'UnknownTool',
-            },
           },
         ],
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.warnings.some((w) => w.message.includes('Unknown tool'))).toBe(true);
-    });
-  });
-
-  describe('Environment variables validation', () => {
-    it('should pass for valid environment variables', async () => {
-      const filePath = await createSettingsFile({
         env: {
-          GITHUB_TOKEN: '${GITHUB_TOKEN}',
-          API_KEY: '${API_KEY}',
+          API_KEY: '${SECRET_KEY}',
         },
       });
 
@@ -288,109 +88,7 @@ describe('SettingsValidator', () => {
       expect(result.valid).toBe(true);
     });
 
-    it('should warn for non-uppercase environment variable names', async () => {
-      const filePath = await createSettingsFile({
-        env: {
-          myApiKey: 'value',
-        },
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.warnings.some((w) => w.message.includes('uppercase with underscores'))).toBe(
-        true
-      );
-    });
-
-    it('should warn for empty environment variable values', async () => {
-      const filePath = await createSettingsFile({
-        env: {
-          EMPTY_VAR: '',
-        },
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.warnings.some((w) => w.message.includes('Empty value'))).toBe(true);
-    });
-
-    it('should warn for possible hardcoded secrets', async () => {
-      const filePath = await createSettingsFile({
-        env: {
-          API_SECRET: 'sk-1234567890abcdefghijklmnop',
-        },
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.warnings.some((w) => w.message.includes('hardcoded secret'))).toBe(true);
-    });
-  });
-
-  describe('Model validation', () => {
-    it('should pass for valid models', async () => {
-      const models = ['sonnet', 'opus', 'haiku', 'inherit'];
-
-      for (const model of models) {
-        const filePath = await createSettingsFile({ model });
-
-        const validator = new SettingsValidator({ path: filePath });
-        const result = await validator.validate();
-
-        expect(result.valid).toBe(true);
-      }
-    });
-  });
-
-  describe('Complex settings validation', () => {
-    it('should validate complete settings file', async () => {
-      const filePath = await createSettingsFile({
-        model: 'sonnet',
-        permissions: [
-          {
-            tool: 'Bash',
-            action: 'allow',
-            pattern: 'git *',
-          },
-        ],
-        env: {
-          GITHUB_TOKEN: '${GITHUB_TOKEN}',
-        },
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-            command: 'npm run lint',
-            matcher: {
-              tool: 'Write',
-            },
-          },
-        ],
-        enabledPlugins: {
-          'my-plugin': true,
-        },
-        attribution: {
-          enabled: true,
-          name: 'Test User',
-        },
-      });
-
-      const validator = new SettingsValidator({ path: filePath });
-      const result = await validator.validate();
-
-      expect(result.valid).toBe(true);
-    });
-  });
-
-  describe('No settings found', () => {
-    it('should warn when no settings files exist', async () => {
-      // Don't create any settings files - validator will search from cwd
-      // Since we're in a temp test directory with no .claude/, it won't find any
-
-      // Change to test directory temporarily
+    it('should handle missing settings files', async () => {
       const originalCwd = process.cwd();
       process.chdir(getTestDir());
 
@@ -398,11 +96,9 @@ describe('SettingsValidator', () => {
         const validator = new SettingsValidator();
         const result = await validator.validate();
 
-        // Should have warnings but be valid
+        // No settings found is not an error - just an empty result
         expect(result.errors).toHaveLength(0);
-        expect(result.warnings.some((w) => w.message.includes('No settings.json files found'))).toBe(
-          true
-        );
+        expect(result.warnings).toHaveLength(0);
         expect(result.valid).toBe(true);
       } finally {
         process.chdir(originalCwd);

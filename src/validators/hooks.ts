@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
 import { findHooksFiles, readFileContent } from '../utils/file-system';
 import { z } from 'zod';
 import { HooksConfigSchema } from './schemas';
@@ -7,11 +7,6 @@ import { validateHook as validateHookHelper } from '../utils/validation-helpers'
 
 // Auto-register all rules
 import '../rules';
-
-// Import new-style rules
-import { rule as hooksInvalidEventRule } from '../rules/hooks/hooks-invalid-event';
-import { rule as hooksMissingScriptRule } from '../rules/hooks/hooks-missing-script';
-import { rule as hooksInvalidConfigRule } from '../rules/hooks/hooks-invalid-config';
 
 /**
  * Options specific to Hooks validator
@@ -42,26 +37,15 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
     // Read file content for rule execution
     const content = await readFileContent(filePath);
 
-    // NEW: Execute new-style rules (these handle registered rule IDs)
-    await this.executeRule(hooksInvalidEventRule, filePath, content);
-    await this.executeRule(hooksMissingScriptRule, filePath, content);
-    await this.executeRule(hooksInvalidConfigRule, filePath, content);
+    // Execute ALL Hooks rules via category-based discovery
+    await this.executeRulesForCategory('Hooks', filePath, content);
 
-    // OLD: Keep additional validation not covered by registered rules
+    // Keep additional validation not covered by registered rules
     for (const hook of config.hooks) {
       // Use shared validation utility for common checks
       const issues = validateHookHelper(hook);
       for (const issue of issues) {
-        if (issue.severity === 'warning') {
-          this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
-        } else {
-          this.reportError(issue.message, filePath, undefined, issue.ruleId);
-        }
-      }
-
-      // Validate matcher tool name
-      if (hook.matcher?.tool) {
-        this.validateToolName(hook.matcher.tool, filePath, 'tool in matcher');
+        this.report(issue.message, filePath, undefined, issue.ruleId);
       }
     }
   }

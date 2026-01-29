@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
+import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
 import { findMcpFiles, readFileContent } from '../utils/file-system';
 import { z } from 'zod';
 import { MCPConfigSchema } from './schemas';

@@ -1,13 +1,14 @@
 # Validator Refactor Phase 2 Project
 
-**Status:** In Progress - Building Testing Infrastructure
+**Status:** In Progress - Phase 2.3B (Complex Validation Rules)
 **Created:** 2026-01-29
-**Estimated Effort:** 20-25 hours (revised from 16-20)
+**Estimated Effort:** 30-35 hours (revised from 20-25)
+**Progress:** 30/59 tasks complete (51%)
 
 ## Quick Links
 
 - [PLAN] [Master Plan](./MASTER-PLAN.md) - Overview, goals, phases, timeline
-- [YES] [Implementation Tracker](./IMPLEMENTATION-TRACKER.md) - Task-by-task progress (13/46 complete)
+- [TRACKER] [Implementation Tracker](./IMPLEMENTATION-TRACKER.md) - Task-by-task progress (30/59 complete)
 - [GHOST] [Ghost Rules Audit](./GHOST-RULES-AUDIT.md) - Complete inventory of 66 ghost rules
 - [GUIDE] [Migration Guide](./MIGRATION-GUIDE.md) - How to convert ghost rules to real rules
 - [PATTERNS] [Architectural Patterns](./PATTERNS.md) - New patterns and abstractions
@@ -15,47 +16,57 @@
 
 ## What is This Project?
 
-Phase 2 completes the Phase 5 migration by:
-1. **Eliminating "ghost rules"** - 66 validations that bypass the config system
-2. **Building test infrastructure** - RuleTester for unit testing rules
-3. **Implementing rule discovery** - Auto-discover rules via RuleRegistry
-4. **Implementing schema-delegating rules** - Thin wrapper pattern (delegate to Zod schemas)
-5. **Extracting common patterns** - Remove ~200 lines of duplicated code
-6. **Standardizing architecture** - All validations become configurable rules
+Phase 2 completes the ESLint-style rule architecture by:
+1. **Eliminating "ghost rules"** - ALL validation logic moves to configurable rules
+2. **Building test infrastructure** - RuleTester for unit testing individual rules
+3. **Implementing rule discovery** - Auto-discover rules via RuleRegistry (no manual imports)
+4. **Implementing field-level rules** - 21 simple schema-delegating rules (Phase 2.3) ✓
+5. **Implementing complex rules** - 35 validation rules requiring context/filesystem (Phase 2.3B) ← **CURRENT**
+6. **Removing validator validation** - Validators only orchestrate, rules validate
+7. **Full user control** - ALL ~56 rules configurable via `.claudelintrc.json`
 
 ## Why This Matters
 
-**Current Problems:**
-- Users cannot disable 66+ validations
-- 25 rules have no actual implementation (stub validate() functions)
-- Zod schemas AND rules both validate same things (duplication)
-- No unit tests - integration tests don't verify rules execute
-- Adding new rules requires editing validator files
-- Inconsistent patterns across validators
+**Current State (INCOMPLETE):**
+- DONE: 21 field-level rules implemented (Phase 2.3 complete)
+- DONE: Rule discovery working (no manual imports)
+- INCOMPLETE: **40 validation checks still non-configurable** (in validators, not rules)
+- INCOMPLETE: Users frustrated: "Why can't I disable 'server name too short' warning?"
+- INCOMPLETE: Doesn't match ESLint model
 
-**After Phase 2:**
-- ALL validations are configurable via `.claudelintrc.json`
-- ALL rules have real implementations with unit tests
-- Schema-delegating rules use thin wrapper pattern (single source of truth)
-- Adding rules is automatic (no validator changes)
-- Consistent patterns across all validators
+**After Phase 2.3B (COMPLETE):**
+- DONE: ALL ~56 validation checks are configurable rules
+- DONE: Users control everything via `.claudelintrc.json`
+- DONE: Matches ESLint architecture: validators orchestrate, rules validate
+- DONE: Zero non-configurable validation (except operational messages)
+- DONE: Full user control matching industry standards
 
-## Critical Discovery (2026-01-29)
+## Critical Realizations (2026-01-29)
 
-After completing MCP and Claude.md validators, we discovered critical issues:
+### Discovery 1: Stub Rules and Testing (Early)
+After completing MCP and Claude.md validators, we discovered:
+- **25 Stub Rules** - Empty validate() functions relying on Zod schemas
+- **No Unit Tests** - Integration tests don't verify individual rules
+- **Solution:** Built RuleTester infrastructure (Phase 2.2) ✓
 
-### Problems Found
-1. **25 Stub Rules** - Empty validate() functions relying on Zod schemas
-2. **Duplicate Validation** - Schemas AND rules validate same things
-3. **No Unit Tests** - Integration tests don't verify individual rules
-4. **Tests Masked Issues** - Zod errors made tests pass with empty rules
+### Discovery 2: Incomplete Migration (Later)
+After Phase 2.3 (21 simple field rules), we stopped with **40 validation checks still in validators:**
+- "LSP server name too short" - hardcoded in validator, users can't disable
+- "Agent body too short" - hardcoded in validator, users can't disable
+- "Skill name doesn't match directory" - hardcoded in validator, users can't disable
+- ...37 more non-configurable checks
+
+**Why we stopped:** The remaining 40 checks were harder (context, filesystem, iteration)
+
+**Why that was wrong:** ESLint doesn't have non-configurable validation. Neither should we.
 
 ### Impact on Plan
-- Added Phase 2.2: Build Testing Infrastructure (3-4 hours)
-- Revised Phase 2.3: Migrate validators with proper testing (6-8 hours)
-- Added Phase 2.4: Fix duplication in completed validators (1-2 hours)
-- Shifted remaining phases down
-- **New total estimate: 20-25 hours** (was 16-20)
+- ✓ Added Phase 2.2: Build Testing Infrastructure (3-4 hours) - COMPLETE
+- ✓ Added Phase 2.3: Simple field-level rules (7 hours) - COMPLETE
+- ✓ Added Phase 2.4: Schema/Rule Consistency Audit (1.5 hours) - COMPLETE
+- ✓ Added Phase 2.5: Rule Discovery (2 hours) - COMPLETE
+- **→ Added Phase 2.3B: Complex validation rules (10-12 hours) - CURRENT**
+- **New total estimate: 30-35 hours** (was 16-20)
 
 ## Project Structure
 
@@ -90,37 +101,51 @@ docs/projects/validator-refactor-phase-2/
 ## Current Status
 
 ### Phase 2.0: Infrastructure [COMPLETE ✓]
-- [X] 6/6 tasks complete
-- Enhance RuleRegistry, create base abstractions
+- [X] 6/6 tasks complete (100%)
+- Enhance RuleRegistry, create base abstractions, add utilities
 
 ### Phase 2.1: Ghost Rule Audit [COMPLETE ✓]
-- [X] 4/4 tasks complete
-- Identify and categorize all ghost rules
+- [X] 4/4 tasks complete (100%)
+- Identified and categorized all ghost rules across validators
 
 ### Phase 2.2: Build Testing Infrastructure [COMPLETE ✓]
-- [X] 3/3 tasks complete
-- Created RuleTester, added unit tests for MCP/Claude.md rules (27 test files)
+- [X] 3/3 tasks complete (100%)
+- Created ClaudeLintRuleTester (ESLint-style)
+- Added unit tests for all 27 MCP/Claude.md rules
+- All tests passing
 
-### Phase 2.3: Implement Schema-Delegating Rules [NOT STARTED]
-- [ ] 0/5 tasks complete
-- Implement stub rules using thin wrapper pattern (delegate to Zod schemas)
-- **CURRENT PHASE**
+### Phase 2.3: Simple Field-Level Rules [COMPLETE ✓]
+- [X] 5/5 tasks complete (100%)
+- Implemented 21 schema-delegating rules (thin wrapper pattern)
+- Skills: 10 rules, Agents: 8 rules, Output-styles: 3 rules
+- All unit tests passing
 
-### Phase 2.4: Audit Schema/Rule Consistency [NOT STARTED]
-- [ ] 0/3 tasks complete
-- Ensure MCP/Claude.md categories follow consistent patterns
+### Phase 2.4: Schema/Rule Consistency Audit [COMPLETE ✓]
+- [X] 3/3 tasks complete (100%)
+- Audited MCP and Claude.md rules
+- Documented when to use thin wrapper vs standalone validation
+- Updated architecture.md with pattern guidance
 
-### Phase 2.5: Implement Rule Discovery [NOT STARTED]
-- [ ] 0/10 tasks complete
-- Remove manual imports, use category-based discovery
+### Phase 2.5: Rule Discovery [COMPLETE ✓]
+- [X] 9/10 tasks complete (90%) - Task 2.5.10 blocked by Phase 2.3B
+- Removed 29 manual rule imports across 8 validators
+- All validators now use executeRulesForCategory() pattern
+- All 207 validator unit tests passing
+
+### Phase 2.3B: Complex Validation Rules [IN PROGRESS ← **CURRENT**]
+- [ ] 0/8 tasks complete (0%)
+- **Goal:** Convert 40 remaining validation checks to configurable rules
+- **Need:** ~35 new rules for LSP, plugin, body content, file references, etc.
+- **Time:** 10-12 hours estimated
+- **Why:** Complete ESLint model - all validation must be user-configurable
 
 ### Phase 2.6: Extract Common Patterns [NOT STARTED]
-- [ ] 0/5 tasks complete
-- Remove ~200 lines of duplication
+- [ ] 0/5 tasks complete (0%)
+- Remove code duplication through abstraction
 
 ### Phase 2.7: Testing & Validation [NOT STARTED]
-- [ ] 0/10 tasks complete
-- Final testing, documentation, remove reportError/reportWarning
+- [ ] 0/12 tasks complete (0%)
+- Final testing, documentation, remove reportError/reportWarning methods
 
 **Overall Progress:** 13/46 tasks (28%)
 

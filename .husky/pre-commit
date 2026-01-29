@@ -1,6 +1,9 @@
 # Check for emojis (strict - only in headings)
 npm run check:emojis
 
+# Verify rule implementations
+npm run verify:rule-implementations
+
 # Run validator tests (without coverage - that's for CI)
 npx jest tests/validators --passWithNoTests
 

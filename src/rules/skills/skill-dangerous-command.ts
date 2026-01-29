@@ -6,7 +6,21 @@
  */
 
 import { Rule } from '../../types/rule';
-import { DANGEROUS_COMMANDS } from '../../validators/constants';
+
+// Dangerous command patterns for security checks
+const DANGEROUS_COMMANDS = [
+  {
+    pattern: /rm\s+-rf\s+\/(?!\s*\$|[a-zA-Z])/,
+    message: 'rm -rf / (deletes entire filesystem)',
+  },
+  { pattern: /:\(\)\{.*\|.*&\s*\}/, message: 'fork bomb pattern' },
+  {
+    pattern: /dd\s+if=.*of=\/dev\/[sh]d[a-z]/,
+    message: 'dd writing to raw disk (data loss risk)',
+  },
+  { pattern: /mkfs\.[a-z]+\s+\/dev/, message: 'mkfs (formats disk, data loss risk)' },
+  { pattern: />\s*\/dev\/[sh]d[a-z]/, message: 'writing to raw disk device' },
+];
 
 /**
  * Dangerous command validation rule implementation

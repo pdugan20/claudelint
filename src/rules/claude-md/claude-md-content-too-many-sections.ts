@@ -7,7 +7,6 @@
 
 import { Rule } from '../../types/rule';
 import { z } from 'zod';
-import { CLAUDE_MD_MAX_SECTIONS } from '../../validators/constants';
 
 /**
  * Options for claude-md-content-too-many-sections rule
@@ -48,8 +47,8 @@ export const rule: Rule = {
       return;
     }
 
-    // Get configured threshold or use default
-    const maxSections = (options as ContentTooManySectionsOptions).maxSections ?? CLAUDE_MD_MAX_SECTIONS;
+    // Get configured threshold (already has default from meta.defaultOptions)
+    const maxSections = (options as ContentTooManySectionsOptions).maxSections ?? 20;
 
     // Count markdown headings (sections)
     const headingRegex = /^#{1,6}\s+.+$/gm;

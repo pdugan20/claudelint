@@ -1,18 +1,12 @@
 // Base validator class that all validators extend
 
-import * as fs from 'fs/promises';
-import { Dirent } from 'fs';
 import * as path from 'path';
-import { readFileContent } from '../utils/file-system';
-import { VALID_TOOLS, VALID_HOOK_EVENTS } from '../schemas/constants';
 import { ClaudeLintConfig } from '../utils/config';
 import { formatError } from '../utils/validation-helpers';
 import { RuleId } from '../rules/rule-ids';
 import { RuleCategory } from '../types/rule';
 import { ConfigResolver } from '../utils/config-resolver';
 import { RuleRegistry } from '../utils/rule-registry';
-import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
-import { z } from 'zod';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue
@@ -200,34 +194,34 @@ export abstract class BaseValidator {
   protected mergeSchemaValidationResult(result: ValidationResult): void {
     // Convert errors to issues
     for (const error of result.errors) {
-      if (error.ruleId) {
-        this.issues.push({
-          message: error.message,
-          file: error.file,
-          line: error.line,
-          ruleId: error.ruleId,
-          fix: error.fix,
-          explanation: error.explanation,
-          howToFix: error.howToFix,
-          autoFix: error.autoFix,
-        });
-      }
+      this.issues.push({
+        message: error.message,
+        file: error.file,
+        line: error.line,
+        ruleId: error.ruleId,
+        // For errors without ruleId (e.g., JSON parse errors), use defaultSeverity
+        defaultSeverity: error.ruleId ? undefined : 'error',
+        fix: error.fix,
+        explanation: error.explanation,
+        howToFix: error.howToFix,
+        autoFix: error.autoFix,
+      });
     }
 
     // Convert warnings to issues
     for (const warning of result.warnings) {
-      if (warning.ruleId) {
-        this.issues.push({
-          message: warning.message,
-          file: warning.file,
-          line: warning.line,
-          ruleId: warning.ruleId,
-          fix: warning.fix,
-          explanation: warning.explanation,
-          howToFix: warning.howToFix,
-          autoFix: warning.autoFix,
-        });
-      }
+      this.issues.push({
+        message: warning.message,
+        file: warning.file,
+        line: warning.line,
+        ruleId: warning.ruleId,
+        // For warnings without ruleId, use defaultSeverity
+        defaultSeverity: warning.ruleId ? undefined : 'warning',
+        fix: warning.fix,
+        explanation: warning.explanation,
+        howToFix: warning.howToFix,
+        autoFix: warning.autoFix,
+      });
     }
   }
 
@@ -285,67 +279,6 @@ export abstract class BaseValidator {
     });
   }
 
-  /**
-   * Report an error (backward compatibility wrapper)
-   *
-   * Convenience method for reporting errors. When a ruleId is provided,
-   * delegates to report() which respects config. When no ruleId is provided,
-   * creates an issue with default error severity for backward compatibility.
-   */
-  protected reportError(
-    message: string,
-    file?: string,
-    line?: number,
-    ruleId?: RuleId,
-    options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
-  ): void {
-    // For backward compatibility: if no ruleId, mark as error by default
-    if (!ruleId) {
-      this.issues.push({
-        message,
-        file,
-        line,
-        defaultSeverity: 'error',
-        fix: options?.fix,
-        explanation: options?.explanation,
-        howToFix: options?.howToFix,
-        autoFix: options?.autoFix,
-      });
-    } else {
-      this.report(message, file, line, ruleId, options);
-    }
-  }
-
-  /**
-   * Report a warning (backward compatibility wrapper)
-   *
-   * Convenience method for reporting warnings. When a ruleId is provided,
-   * delegates to report() which respects config. When no ruleId is provided,
-   * creates an issue with default warning severity for backward compatibility.
-   */
-  protected reportWarning(
-    message: string,
-    file?: string,
-    line?: number,
-    ruleId?: RuleId,
-    options?: { fix?: string; explanation?: string; howToFix?: string; autoFix?: AutoFix }
-  ): void {
-    // For backward compatibility: if no ruleId, mark as warning by default
-    if (!ruleId) {
-      this.issues.push({
-        message,
-        file,
-        line,
-        defaultSeverity: 'warning',
-        fix: options?.fix,
-        explanation: options?.explanation,
-        howToFix: options?.howToFix,
-        autoFix: options?.autoFix,
-      });
-    } else {
-      this.report(message, file, line, ruleId, options);
-    }
-  }
 
   /**
    * Check if rule is disabled by inline comment
@@ -566,16 +499,15 @@ export abstract class BaseValidator {
 
         const ruleIdDisplay = rule.ruleId === 'all' ? '(all rules)' : `'${rule.ruleId}'`;
 
-        this.reportWarning(
-          `Unused disable directive for ${ruleIdDisplay}`,
-          filePath,
-          rule.commentLine,
-          undefined, // unused-disable is a meta-rule, not a validation rule
-          {
-            explanation: `This ${directive} comment doesn't suppress any violations`,
-            howToFix: 'Remove the unused disable comment',
-          }
-        );
+        // Report as issue with default warning severity (meta-rule, not configurable)
+        this.issues.push({
+          message: `Unused disable directive for ${ruleIdDisplay}`,
+          file: filePath,
+          line: rule.commentLine,
+          defaultSeverity: 'warning',
+          explanation: `This ${directive} comment doesn't suppress any violations`,
+          howToFix: 'Remove the unused disable comment',
+        });
       }
     }
   }
@@ -647,281 +579,6 @@ export abstract class BaseValidator {
     };
   }
 
-  /**
-   * Read and parse a JSON file
-   * Reports errors if file cannot be read or contains invalid JSON
-   * Returns parsed object or null if errors occurred
-   */
-  protected async readAndParseJSON<T = unknown>(filePath: string): Promise<T | null> {
-    let content: string;
-
-    try {
-      content = await readFileContent(filePath);
-    } catch (error) {
-      this.reportError(
-        `Failed to read file: ${formatError(error)}`,
-        filePath
-      );
-      return null;
-    }
-
-    try {
-      return JSON.parse(content) as T;
-    } catch (error) {
-      this.reportError(
-        `Invalid JSON syntax: ${formatError(error)}`,
-        filePath
-      );
-      return null;
-    }
-  }
-
-  /**
-   * Validate a tool name against the list of valid tools
-   * Reports a warning if the tool is unknown
-   * Returns true if valid or if wildcard (*) is provided
-   */
-  protected validateToolName(toolName: string, filePath: string, context = 'tool'): boolean {
-    if (toolName === '*') {
-      return true;
-    }
-
-    if (!(VALID_TOOLS as readonly string[]).includes(toolName)) {
-      this.reportWarning(`Unknown ${context}: ${toolName}`, filePath);
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Validate an event name against the list of valid hook events
-   * Reports a warning if the event is unknown
-   * Returns true if valid
-   */
-  protected validateEventName(eventName: string, filePath: string, context = 'event'): boolean {
-    if (!(VALID_HOOK_EVENTS as readonly string[]).includes(eventName)) {
-      this.reportWarning(`Unknown ${context}: ${eventName}`, filePath);
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Validate frontmatter with schema and check name matches expected value
-   *
-   * This method consolidates the common pattern of:
-   * 1. Validating frontmatter against a schema
-   * 2. Checking that the name field matches the directory/file name
-   * 3. Merging schema validation results into the validator
-   *
-   * Used by agents, skills, and output-styles validators.
-   *
-   * @param filePath - Path to file being validated
-   * @param content - Content of file being validated
-   * @param schema - Zod schema for frontmatter validation
-   * @param expectedName - Expected value for the name field
-   * @param entityType - Type of entity (e.g., 'Agent', 'Skill', 'Output style')
-   * @param ruleIdPrefix - Prefix for rule IDs (e.g., 'agent', 'skill')
-   * @returns Parsed frontmatter or null if validation failed
-   */
-  protected validateFrontmatterWithNameCheck<T>(
-    filePath: string,
-    content: string,
-    schema: z.ZodType,
-    expectedName: string,
-    entityType: string,
-    ruleIdPrefix: string
-  ): T | null {
-    const validationResult = validateFrontmatterWithSchema(
-      content,
-      schema,
-      filePath,
-      ruleIdPrefix
-    );
-    const frontmatter = validationResult.data as T | null;
-    const result = validationResult.result;
-
-    this.mergeSchemaValidationResult(result);
-
-    if (!frontmatter) {
-      return null;
-    }
-
-    // Name validation with proper ruleId
-    const fmWithName = frontmatter as { name?: string };
-    if (fmWithName.name !== expectedName) {
-      this.reportError(
-        `${entityType} name "${fmWithName.name}" does not match directory name "${expectedName}"`,
-        filePath,
-        undefined,
-        `${ruleIdPrefix}-name-mismatch` as RuleId
-      );
-    }
-
-    return frontmatter as T;
-  }
-
-  /**
-   * Validate body content structure (length and sections)
-   *
-   * This method provides configurable validation for markdown body content,
-   * checking for minimum length and required sections.
-   *
-   * Used by agents, skills, and output-styles validators.
-   *
-   * @param filePath - Path to file being validated
-   * @param content - Content of file being validated
-   * @param rules - Validation rules to apply
-   */
-  protected validateBodyContentStructure(
-    filePath: string,
-    content: string,
-    rules: {
-      minLength?: {
-        threshold: number;
-        ruleId: RuleId;
-        message: string;
-      };
-      requiredSections?: Array<{
-        name: string;
-        pattern: RegExp;
-        ruleId: RuleId;
-        message: string;
-      }>;
-    }
-  ): void {
-    const body = this.extractBody(content);
-
-    // Min length check
-    if (rules.minLength && body.length < rules.minLength.threshold) {
-      this.reportWarning(rules.minLength.message, filePath, undefined, rules.minLength.ruleId);
-    }
-
-    // Required sections check
-    if (rules.requiredSections) {
-      for (const section of rules.requiredSections) {
-        if (!section.pattern.test(body)) {
-          this.reportWarning(section.message, filePath, undefined, section.ruleId);
-        }
-      }
-    }
-  }
-
-  /**
-   * Extract body content from markdown (content after frontmatter)
-   *
-   * @param content - Full markdown content including frontmatter
-   * @returns Body content without frontmatter
-   */
-  private extractBody(content: string): string {
-    const parts = content.split('---');
-    return parts.length >= 3 ? parts.slice(2).join('---').trim() : content;
-  }
-
-  /**
-   * Validate all matching files in a directory
-   *
-   * This method provides a generic pattern for directory traversal and file validation.
-   * Handles optional vs required checks gracefully with configurable error handling.
-   *
-   * @param dirPath - Directory to scan
-   * @param filter - Function to filter directory entries
-   * @param processor - Async function to process each matching file
-   * @param context - Whether this is an 'optional' or 'required' check
-   */
-  protected async validateFilesInDirectory(
-    dirPath: string,
-    filter: (entry: Dirent) => boolean,
-    processor: (filePath: string, content: string) => Promise<void>,
-    context: 'optional' | 'required' = 'optional'
-  ): Promise<void> {
-    try {
-      const entries = await fs.readdir(dirPath, { withFileTypes: true });
-      const matching = entries.filter(filter);
-
-      for (const entry of matching) {
-        const filePath = path.join(dirPath, entry.name);
-        const content = await readFileContent(filePath);
-        await processor(filePath, content);
-      }
-    } catch (error) {
-      if (context === 'required') {
-        this.reportError(`Failed to read directory: ${formatError(error)}`, dirPath);
-      }
-      // Optional checks fail silently
-    }
-  }
-
-  /**
-   * Execute rules on all matching files in a directory
-   *
-   * Combines file walking with category-based rule execution.
-   * This is a convenience wrapper around validateFilesInDirectory.
-   *
-   * @param dirPath - Directory to scan
-   * @param filter - Function to filter directory entries
-   * @param category - Rule category to execute
-   * @param context - Whether this is an 'optional' or 'required' check
-   */
-  protected async executeRulesOnMatchingFiles(
-    dirPath: string,
-    filter: (entry: Dirent) => boolean,
-    category: RuleCategory,
-    context: 'optional' | 'required' = 'optional'
-  ): Promise<void> {
-    await this.validateFilesInDirectory(
-      dirPath,
-      filter,
-      async (filePath, content) => {
-        await this.executeRulesForCategory(category, filePath, content);
-      },
-      context
-    );
-  }
-
-  /**
-   * Try to read a directory with configurable error handling
-   *
-   * @param dirPath - Path to directory
-   * @param context - Whether this is an 'optional' or 'required' check
-   * @returns Directory entries or null if failed
-   */
-  protected async tryReadDirectory(
-    dirPath: string,
-    context: 'optional' | 'required' = 'required'
-  ): Promise<Dirent[] | null> {
-    try {
-      return await fs.readdir(dirPath, { withFileTypes: true });
-    } catch (error) {
-      if (context === 'required') {
-        this.reportError(`Failed to read directory: ${formatError(error)}`, dirPath);
-      }
-      return null;
-    }
-  }
-
-  /**
-   * Try to read a file with configurable error handling
-   *
-   * @param filePath - Path to file
-   * @param context - Whether this is an 'optional' or 'required' check
-   * @returns File content or null if failed
-   */
-  protected async tryReadFile(
-    filePath: string,
-    context: 'optional' | 'required' = 'required'
-  ): Promise<string | null> {
-    try {
-      return await readFileContent(filePath);
-    } catch (error) {
-      if (context === 'required') {
-        this.reportError(`Failed to read file: ${formatError(error)}`, filePath);
-      }
-      return null;
-    }
-  }
 
   /**
    * Filter directories by name (optional filter)
@@ -942,10 +599,10 @@ export abstract class BaseValidator {
   }
 
   /**
-   * Execute a new-style Rule object on a file
+   * Execute a Rule object on a file
    *
-   * This enables dual-mode operation during migration to ESLint-style rules.
-   * New rules can be executed alongside existing validator methods.
+   * Executes an ESLint-style rule with proper config resolution, option handling,
+   * and exception handling. Rules validate content and call context.report().
    *
    * @param rule - The Rule object to execute
    * @param filePath - Path to file being validated
@@ -1018,13 +675,8 @@ export abstract class BaseValidator {
     try {
       await rule.validate(context);
     } catch (error) {
-      // Report rule execution errors
-      this.reportError(
-        `Rule '${rule.meta.id}' failed: ${formatError(error)}`,
-        filePath,
-        undefined,
-        rule.meta.id
-      );
+      // Re-throw rule execution errors (operational errors, not validation issues)
+      throw new Error(`Rule '${rule.meta.id}' failed: ${formatError(error)}`);
     }
   }
 
@@ -1034,7 +686,7 @@ export abstract class BaseValidator {
    * This method discovers rules via RuleRegistry and executes them all automatically.
    * Respects config for enabling/disabling and severity overrides.
    *
-   * This is the recommended pattern for Phase 2 - validators should use category-based
+   * This is the recommended pattern - validators should use category-based
    * execution instead of manually importing and executing individual rules.
    *
    * @param category - Rule category (e.g., 'CLAUDE.md', 'Skills', 'MCP')

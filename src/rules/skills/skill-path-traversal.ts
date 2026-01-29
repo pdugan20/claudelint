@@ -6,7 +6,9 @@
  */
 
 import { Rule } from '../../types/rule';
-import { PATH_TRAVERSAL_REGEX } from '../../validators/constants';
+
+// Regex pattern for path traversal detection
+const PATH_TRAVERSAL_REGEX = /\.\.[/\\]/; // Matches ../ or ..\ path traversal
 
 /**
  * Path traversal validation rule implementation

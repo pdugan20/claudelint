@@ -116,3 +116,49 @@ export function getFrontmatterFieldLine(content: string, fieldName: string): num
 
   return 2; // Field not found, default to first line after opening ---
 }
+
+/**
+ * Extracts body content (everything after frontmatter) from markdown
+ *
+ * Used by body content validation rules to check minimum length and required sections.
+ *
+ * @param content - The full markdown content including frontmatter
+ * @returns Body content after frontmatter, or empty string if no body
+ *
+ * @example
+ * const body = extractBodyContent(content);
+ * if (body.length < 50) {
+ *   context.report({ message: 'Body too short' });
+ * }
+ */
+export function extractBodyContent(content: string): string {
+  const parts = content.split('---');
+
+  // Need at least 3 parts: empty, frontmatter, body
+  // Format: ---\nfrontmatter\n---\nbody
+  if (parts.length < 3) {
+    return '';
+  }
+
+  // Join everything after the second --- (in case body contains ---)
+  return parts.slice(2).join('---').trim();
+}
+
+/**
+ * Checks if markdown body contains a section matching a pattern
+ *
+ * Used by body content validation rules to verify required sections exist.
+ *
+ * @param body - The markdown body content (after frontmatter)
+ * @param sectionRegex - Regular expression to match section heading
+ * @returns True if section is found
+ *
+ * @example
+ * const hasSystemPrompt = hasMarkdownSection(body, /#{1,3}\s*system\s*prompt/i);
+ * if (!hasSystemPrompt) {
+ *   context.report({ message: 'Missing System Prompt section' });
+ * }
+ */
+export function hasMarkdownSection(body: string, sectionRegex: RegExp): boolean {
+  return sectionRegex.test(body);
+}

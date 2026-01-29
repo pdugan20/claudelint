@@ -3,11 +3,12 @@
  *
  * Output style name must be lowercase-with-hyphens, under 64 characters, with no XML tags
  *
- * This validation is implemented in OutputStyleFrontmatterSchema which validates
- * the field using lowercaseHyphens(), max(64), noXMLTags().
+ * Uses thin wrapper pattern: delegates to OutputStyleFrontmatterSchema.shape.name for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { OutputStyleFrontmatterSchema } from '../../schemas/output-style-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-name.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in OutputStyleFrontmatterSchema
-    // Schema validates using lowercaseHyphens(), max(64), noXMLTags()
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.name) {
+      return;
+    }
+
+    const nameSchema = OutputStyleFrontmatterSchema.shape.name;
+    const result = nameSchema.safeParse(frontmatter.name);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'name');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

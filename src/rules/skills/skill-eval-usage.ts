@@ -7,7 +7,10 @@
  */
 
 import { Rule } from '../../types/rule';
-import { SHELL_EVAL_REGEX, PYTHON_EVAL_EXEC_REGEX } from '../../validators/constants';
+
+// Regex patterns for eval/exec detection
+const SHELL_EVAL_REGEX = /\beval\s+/; // Matches shell eval command
+const PYTHON_EVAL_EXEC_REGEX = /\beval\s*\(|\bexec\s*\(/; // Matches Python eval() or exec()
 
 /**
  * Eval usage validation rule implementation

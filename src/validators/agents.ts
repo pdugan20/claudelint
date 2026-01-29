@@ -3,7 +3,6 @@ import {
   findAgentDirectories,
   readFileContent,
   fileExists,
-  resolvePath,
 } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
@@ -12,6 +11,9 @@ import { validateHook } from '../utils/validation-helpers';
 import { HookSchema } from './schemas';
 import { z } from 'zod';
 import { ValidatorRegistry } from '../utils/validator-factory';
+
+// Auto-register all rules
+import '../rules';
 
 /**
  * Options specific to Agents validator
@@ -38,7 +40,6 @@ export class AgentsValidator extends BaseValidator {
     const agentDirs = await this.findAgentDirs();
 
     if (agentDirs.length === 0) {
-      this.reportWarning('No agent directories found');
       return this.getResult();
     }
 
@@ -61,14 +62,12 @@ export class AgentsValidator extends BaseValidator {
   }
 
   private async validateAgent(agentDir: string): Promise<void> {
-    const agentName = basename(agentDir);
     const agentMdPath = join(agentDir, 'AGENT.md');
 
     // Check AGENT.md exists
     const exists = await fileExists(agentMdPath);
     if (!exists) {
-      this.reportError(`AGENT.md not found in agent directory`, agentDir);
-      return;
+      throw new Error(`AGENT.md not found in agent directory: ${agentDir}`);
     }
 
     // Read content
@@ -78,10 +77,10 @@ export class AgentsValidator extends BaseValidator {
     this.parseDisableComments(agentMdPath, content);
 
     // Validate frontmatter
-    await this.validateFrontmatter(agentMdPath, content, agentName);
+    this.validateFrontmatter(agentMdPath, content);
 
-    // Validate body content
-    this.validateBodyContent(agentMdPath, content);
+    // Execute ALL Agents rules via category-based discovery
+    await this.executeRulesForCategory('Agents', agentMdPath, content);
 
     // Report unused disable directives if configured
     if (this.options.config?.reportUnusedDisableDirectives) {
@@ -89,11 +88,10 @@ export class AgentsValidator extends BaseValidator {
     }
   }
 
-  private async validateFrontmatter(
+  private validateFrontmatter(
     filePath: string,
-    content: string,
-    agentName: string
-  ): Promise<void> {
+    content: string
+  ): void {
     // Use schema-based validation
     const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
@@ -110,64 +108,11 @@ export class AgentsValidator extends BaseValidator {
       return;
     }
 
-    // Custom validation: Check name matches directory
-    if (frontmatter.name !== agentName) {
-      this.reportError(
-        `Agent name "${frontmatter.name}" does not match directory name "${agentName}"`,
-        filePath
-      );
-    }
-
-    // Custom validation: Validate tool names (warning level)
-    if (frontmatter.tools) {
-      for (const tool of frontmatter.tools) {
-        this.validateToolName(tool, filePath);
-      }
-    }
-
-    if (frontmatter['disallowed-tools']) {
-      for (const tool of frontmatter['disallowed-tools']) {
-        this.validateToolName(tool, filePath);
-      }
-    }
-
-    // Custom validation: Validate event names (warning level)
-    if (frontmatter.events) {
-      for (const event of frontmatter.events) {
-        this.validateEventName(event, filePath);
-      }
-    }
-
-    // Custom validation: Validate referenced skills exist
-    if (frontmatter.skills) {
-      await this.validateReferencedSkills(filePath, frontmatter.skills);
-    }
-
     // Custom validation: Validate hooks if present
+    // Note: Hook rules (hooks-invalid-config, hooks-invalid-event) only run on hooks.json
+    // Agent hooks in frontmatter are validated here using validateHook() utility
     if (frontmatter.hooks) {
       this.validateHooks(filePath, frontmatter.hooks);
-    }
-  }
-
-  private async validateReferencedSkills(
-    filePath: string,
-    skills: string[]
-  ): Promise<void> {
-    const claudeDir = resolvePath(this.basePath, '.claude');
-    const skillsDir = join(claudeDir, 'skills');
-
-    for (const skillName of skills) {
-      const skillPath = join(skillsDir, skillName, 'SKILL.md');
-      const exists = await fileExists(skillPath);
-
-      if (!exists) {
-        this.reportError(
-          `Referenced skill not found: ${skillName}`,
-          filePath,
-          undefined,
-          'agent-skills-not-found'
-        );
-      }
     }
   }
 
@@ -176,48 +121,11 @@ export class AgentsValidator extends BaseValidator {
       // Use shared validation utility for common checks
       const issues = validateHook(hook);
       for (const issue of issues) {
-        if (issue.severity === 'warning') {
-          this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
-        } else {
-          // Use ruleId from validation utility if available
-          this.reportError(issue.message, filePath, undefined, issue.ruleId);
-        }
-      }
-
-      // Validate matcher tool name if present
-      if (hook.matcher?.tool) {
-        this.validateToolName(hook.matcher.tool, filePath, 'tool in matcher');
+        this.report(issue.message, filePath, undefined, issue.ruleId);
       }
 
       // Note: We don't validate command scripts for agent hooks since they may be
       // resolved relative to the agent directory or use agent-specific context
-    }
-  }
-
-  private validateBodyContent(filePath: string, content: string): void {
-    // Extract body content (everything after frontmatter)
-    const parts = content.split('---');
-    if (parts.length < 3) {
-      return; // No body content or invalid frontmatter
-    }
-
-    const body = parts.slice(2).join('---').trim();
-
-    // Validate minimum body content length
-    if (body.length < 50) {
-      this.reportWarning(
-        'Agent body content is very short. Consider adding more detailed instructions.',
-        filePath
-      );
-    }
-
-    // Check for system prompt sections
-    const hasSystemPrompt = /#{1,3}\s*system\s*prompt/i.test(body);
-    if (!hasSystemPrompt) {
-      this.reportWarning(
-        'Agent should include a "System Prompt" section with detailed instructions.',
-        filePath
-      );
     }
   }
 }

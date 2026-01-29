@@ -5,11 +5,13 @@
  */
 
 import { Rule } from '../../types/rule';
-import { ENV_VAR_NAME_PATTERN } from '../../validators/constants';
 import { SettingsSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type SettingsConfig = z.infer<typeof SettingsSchema>;
+
+// Regex pattern for environment variable name validation
+const ENV_VAR_NAME_PATTERN = /^[A-Z][A-Z0-9_]*$/;
 
 /**
  * Validates environment variable names and values

@@ -338,7 +338,18 @@ program
         }
       } catch (error: unknown) {
         console.error('\nFatal error during validation:');
-        console.error(error instanceof Error ? error.message : String(error));
+        const errorMessage = error instanceof Error ? error.message : String(error);
+
+        // Provide helpful message for common errors
+        if (errorMessage.includes('not found') || errorMessage.includes('ENOENT')) {
+          console.error(errorMessage);
+          console.error(
+            '\nThis file is required but does not exist. Please check the file path or create the file.'
+          );
+        } else {
+          console.error(errorMessage);
+        }
+
         if (options.verbose && error instanceof Error && error.stack) {
           console.error('\nStack trace:');
           console.error(error.stack);
@@ -362,20 +373,30 @@ program
       warningsAsErrors?: boolean;
       explain?: boolean;
     }) => {
-      const validator = ValidatorRegistry.create('claude-md', options);
-      const reporter = new Reporter({
-        verbose: options.verbose,
-        warningsAsErrors: options.warningsAsErrors,
-        explain: options.explain,
-      });
+      try {
+        const validator = ValidatorRegistry.create('claude-md', options);
+        const reporter = new Reporter({
+          verbose: options.verbose,
+          warningsAsErrors: options.warningsAsErrors,
+          explain: options.explain,
+        });
 
-      reporter.section('Validating CLAUDE.md files...');
+        reporter.section('Validating CLAUDE.md files...');
 
-      const result = await validator.validate();
+        const result = await validator.validate();
 
-      reporter.report(result, 'CLAUDE.md');
+        reporter.report(result, 'CLAUDE.md');
 
-      process.exit(reporter.getExitCode(result));
+        process.exit(reporter.getExitCode(result));
+      } catch (error) {
+        console.error('\nValidation failed:');
+        console.error(error instanceof Error ? error.message : String(error));
+        if (options.verbose && error instanceof Error && error.stack) {
+          console.error('\nStack trace:');
+          console.error(error.stack);
+        }
+        process.exit(2);
+      }
     }
   );
 
@@ -393,19 +414,29 @@ program
       verbose?: boolean;
       warningsAsErrors?: boolean;
     }) => {
-      const validator = ValidatorRegistry.create('skills', options);
-      const reporter = new Reporter({
-        verbose: options.verbose,
-        warningsAsErrors: options.warningsAsErrors,
-      });
+      try {
+        const validator = ValidatorRegistry.create('skills', options);
+        const reporter = new Reporter({
+          verbose: options.verbose,
+          warningsAsErrors: options.warningsAsErrors,
+        });
 
-      reporter.section('Validating Claude skills...');
+        reporter.section('Validating Claude skills...');
 
-      const result = await validator.validate();
+        const result = await validator.validate();
 
-      reporter.report(result, 'Skills');
+        reporter.report(result, 'Skills');
 
-      process.exit(reporter.getExitCode(result));
+        process.exit(reporter.getExitCode(result));
+      } catch (error) {
+        console.error('\nValidation failed:');
+        console.error(error instanceof Error ? error.message : String(error));
+        if (options.verbose && error instanceof Error && error.stack) {
+          console.error('\nStack trace:');
+          console.error(error.stack);
+        }
+        process.exit(2);
+      }
     }
   );
 
@@ -416,19 +447,29 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = ValidatorRegistry.create('settings', options);
-    const reporter = new Reporter({
-      verbose: options.verbose,
-      warningsAsErrors: options.warningsAsErrors,
-    });
+    try {
+      const validator = ValidatorRegistry.create('settings', options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
 
-    reporter.section('Validating settings.json files...');
+      reporter.section('Validating settings.json files...');
 
-    const result = await validator.validate();
+      const result = await validator.validate();
 
-    reporter.report(result, 'Settings');
+      reporter.report(result, 'Settings');
 
-    process.exit(reporter.getExitCode(result));
+      process.exit(reporter.getExitCode(result));
+    } catch (error) {
+      console.error('\nValidation failed:');
+      console.error(error instanceof Error ? error.message : String(error));
+      if (options.verbose && error instanceof Error && error.stack) {
+        console.error('\nStack trace:');
+        console.error(error.stack);
+      }
+      process.exit(2);
+    }
   });
 
 program
@@ -438,19 +479,29 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = ValidatorRegistry.create('hooks', options);
-    const reporter = new Reporter({
-      verbose: options.verbose,
-      warningsAsErrors: options.warningsAsErrors,
-    });
+    try {
+      const validator = ValidatorRegistry.create('hooks', options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
 
-    reporter.section('Validating hooks.json files...');
+      reporter.section('Validating hooks.json files...');
 
-    const result = await validator.validate();
+      const result = await validator.validate();
 
-    reporter.report(result, 'Hooks');
+      reporter.report(result, 'Hooks');
 
-    process.exit(reporter.getExitCode(result));
+      process.exit(reporter.getExitCode(result));
+    } catch (error) {
+      console.error('\nValidation failed:');
+      console.error(error instanceof Error ? error.message : String(error));
+      if (options.verbose && error instanceof Error && error.stack) {
+        console.error('\nStack trace:');
+        console.error(error.stack);
+      }
+      process.exit(2);
+    }
   });
 
 program
@@ -460,19 +511,29 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = ValidatorRegistry.create('mcp', options);
-    const reporter = new Reporter({
-      verbose: options.verbose,
-      warningsAsErrors: options.warningsAsErrors,
-    });
+    try {
+      const validator = ValidatorRegistry.create('mcp', options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
 
-    reporter.section('Validating MCP server configuration files...');
+      reporter.section('Validating MCP server configuration files...');
 
-    const result = await validator.validate();
+      const result = await validator.validate();
 
-    reporter.report(result, 'MCP');
+      reporter.report(result, 'MCP');
 
-    process.exit(reporter.getExitCode(result));
+      process.exit(reporter.getExitCode(result));
+    } catch (error) {
+      console.error('\nValidation failed:');
+      console.error(error instanceof Error ? error.message : String(error));
+      if (options.verbose && error instanceof Error && error.stack) {
+        console.error('\nStack trace:');
+        console.error(error.stack);
+      }
+      process.exit(2);
+    }
   });
 
 program
@@ -482,19 +543,29 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    const validator = ValidatorRegistry.create('plugin', options);
-    const reporter = new Reporter({
-      verbose: options.verbose,
-      warningsAsErrors: options.warningsAsErrors,
-    });
+    try {
+      const validator = ValidatorRegistry.create('plugin', options);
+      const reporter = new Reporter({
+        verbose: options.verbose,
+        warningsAsErrors: options.warningsAsErrors,
+      });
 
-    reporter.section('Validating plugin manifest files...');
+      reporter.section('Validating plugin manifest files...');
 
-    const result = await validator.validate();
+      const result = await validator.validate();
 
-    reporter.report(result, 'Plugin');
+      reporter.report(result, 'Plugin');
 
-    process.exit(reporter.getExitCode(result));
+      process.exit(reporter.getExitCode(result));
+    } catch (error) {
+      console.error('\nValidation failed:');
+      console.error(error instanceof Error ? error.message : String(error));
+      if (options.verbose && error instanceof Error && error.stack) {
+        console.error('\nStack trace:');
+        console.error(error.stack);
+      }
+      process.exit(2);
+    }
   });
 
 program

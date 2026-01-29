@@ -5,11 +5,14 @@
  */
 
 import { Rule } from '../../types/rule';
-import { SEMVER_PATTERN } from '../../validators/constants';
 import { PluginManifestSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type PluginManifest = z.infer<typeof PluginManifestSchema>;
+
+// Regex pattern for semantic versioning validation
+const SEMVER_PATTERN =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
 /**
  * Validates that plugin version follows semver format

@@ -3,11 +3,12 @@
  *
  * Output style description must be at least 10 characters, written in third person, with no XML tags
  *
- * This validation is implemented in OutputStyleFrontmatterSchema which validates
- * the field using min(10), noXMLTags(), thirdPerson().
+ * Uses thin wrapper pattern: delegates to OutputStyleFrontmatterSchema.shape.description for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { OutputStyleFrontmatterSchema } from '../../schemas/output-style-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-description.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in OutputStyleFrontmatterSchema
-    // Schema validates using min(10), noXMLTags(), thirdPerson()
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.description) {
+      return;
+    }
+
+    const descriptionSchema = OutputStyleFrontmatterSchema.shape.description;
+    const result = descriptionSchema.safeParse(frontmatter.description);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'description');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

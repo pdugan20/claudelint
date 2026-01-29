@@ -3,11 +3,12 @@
  *
  * Output style examples must be an array of strings
  *
- * This validation is implemented in OutputStyleFrontmatterSchema which validates
- * the field using Array of strings.
+ * Uses thin wrapper pattern: delegates to OutputStyleFrontmatterSchema.shape.examples for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { OutputStyleFrontmatterSchema } from '../../schemas/output-style-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-examples.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in OutputStyleFrontmatterSchema
-    // Schema validates using Array of strings
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.examples) {
+      return;
+    }
+
+    const examplesSchema = OutputStyleFrontmatterSchema.shape.examples;
+    const result = examplesSchema.safeParse(frontmatter.examples);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'examples');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

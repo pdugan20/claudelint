@@ -34,7 +34,6 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
     const files = await this.findFiles();
 
     if (files.length === 0) {
-      this.reportWarning(this.getNoFilesMessage());
       return this.getResult();
     }
 
@@ -54,8 +53,7 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
     if (this.options.path) {
       const exists = await fileExists(this.options.path);
       if (!exists) {
-        this.reportError(`File not found: ${this.options.path}`);
-        return [];
+        throw new Error(`File not found: ${this.options.path}`);
       }
       return [this.options.path];
     }
@@ -79,13 +77,8 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
     const readValidator = readJSON<z.infer<T>>();
     const readResult = await readValidator(filePath, context);
 
-    // Report read errors
-    for (const error of readResult.errors) {
-      this.reportError(error.message, error.file, error.line, error.ruleId);
-    }
-    for (const warning of readResult.warnings) {
-      this.reportWarning(warning.message, warning.file, warning.line, warning.ruleId);
-    }
+    // Merge read errors/warnings into validator result
+    this.mergeSchemaValidationResult(readResult);
 
     if (!readResult.valid) {
       return;
@@ -95,13 +88,8 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
     const schemaValidator = zodSchema(this.getSchema());
     const schemaResult = await schemaValidator(null, context);
 
-    // Report schema validation errors
-    for (const error of schemaResult.errors) {
-      this.reportError(error.message, error.file, error.line, error.ruleId);
-    }
-    for (const warning of schemaResult.warnings) {
-      this.reportWarning(warning.message, warning.file, warning.line, warning.ruleId);
-    }
+    // Merge schema validation errors/warnings into validator result
+    this.mergeSchemaValidationResult(schemaResult);
 
     // If validation passed, run custom validation
     if (schemaResult.valid) {

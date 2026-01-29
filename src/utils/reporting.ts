@@ -107,16 +107,36 @@ export class Reporter {
       }
     }
 
-    // Run validation
-    const result = await validatorFn();
-    const duration = Date.now() - startTime;
+    // Run validation with exception handling
+    try {
+      const result = await validatorFn();
+      const duration = Date.now() - startTime;
 
-    // Store in cache (if provided)
-    if (cache) {
-      cache.set(name, result, []);
+      // Store in cache (if provided)
+      if (cache) {
+        cache.set(name, result, []);
+      }
+
+      return { name, result, duration };
+    } catch (error) {
+      // Validator threw an exception (operational error, not validation issue)
+      const duration = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      // Return a ValidationResult with the exception as an error
+      const result: ValidationResult = {
+        valid: false,
+        errors: [
+          {
+            message: `Validator failed: ${errorMessage}`,
+            severity: 'error',
+          },
+        ],
+        warnings: [],
+      };
+
+      return { name, result, duration };
     }
-
-    return { name, result, duration };
   }
 
   /**

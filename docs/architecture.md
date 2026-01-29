@@ -287,10 +287,14 @@ export const rule: Rule = {
 ```
 
 **Categories using this pattern:**
-- ClaudeMd (14 rules - mostly file-level and import validation)
-- MCP (13 rules - mostly cross-cutting validation)
-- Settings (various cross-reference rules)
-- Hooks (schema validation and file existence)
+- **ClaudeMd** (14 rules - file-level and import validation, semantic checks)
+  - Rationale: Most rules validate file properties (size, imports, circular refs) not frontmatter fields
+  - Only one field-level rule (paths) already has detailed per-index validation
+- **MCP** (13 rules - transport-specific and cross-cutting validation)
+  - Rationale: Nested JSON structure with dynamic keys, not flat frontmatter
+  - Rules require transport-type-specific validation and iteration over server entries
+- **Settings** (various cross-reference rules)
+- **Hooks** (schema validation and file existence)
 
 ### Choosing the Right Pattern
 
@@ -307,6 +311,87 @@ export const rule: Rule = {
 - Implementing complex logic that doesn't fit in schemas
 
 **Mixed approach is acceptable:** Categories can use both patterns depending on the specific rule's needs.
+
+## Validator vs Rule Responsibilities
+
+### The ESLint Model (What We Follow)
+
+**Validators (Orchestrators):**
+- Find files matching patterns
+- Read file content
+- Parse files (JSON, YAML, Markdown)
+- Execute rules via `executeRulesForCategory()`
+- Aggregate and report results
+- Handle **operational messages only:**
+  - "No files found matching pattern"
+  - "File not found: /path/to/file"
+  - "JSON parse error" (from parser, not validation)
+
+**Rules (Validators):**
+- ALL validation logic
+- Individual field checks
+- Cross-field validation
+- File existence checks
+- Body content validation
+- Name-directory matching
+- Referenced file validation
+- **Everything users might want to configure/disable**
+
+### What Is NOT a Rule (Operational Messages)
+
+These are the ONLY non-configurable messages (8 total across all validators):
+- "No skill directories found"
+- "No agent directories found"
+- "No output style directories found"
+- "SKILL.md not found in skill directory"
+- "AGENT.md not found in agent directory"
+- "OUTPUT_STYLE.md not found in output style directory"
+- "File not found: {path}" (when user specifies --path)
+- "No files found" (JSON config validators)
+
+These are **discovery/parsing failures**, not validation failures.
+
+### What MUST Be a Rule (User-Configurable)
+
+If a user might disagree with the check or want to disable it, it MUST be a rule:
+
+**Examples that MUST be rules:**
+- [RULE] "LSP server name too short" - user might have valid short names
+- [RULE] "Agent body content too short" - user might want different threshold
+- [RULE] "Skill name doesn't match directory" - user might have reasons
+- [RULE] "Referenced file not found" - user might want to disable temporarily
+- [RULE] "Unknown tool name" - user might use custom tools
+
+**Examples that should NOT be rules (operational):**
+- [NOT RULE] "No skill directories found" - not a validation failure
+- [NOT RULE] "SKILL.md not found" - file discovery, not validation
+- [NOT RULE] "JSON parse error" - syntax error, not validation
+
+### Why This Matters
+
+**Bad (current state with 40 non-configurable checks):**
+```bash
+$ claudelint .claude/lsp.json
+Warning: LSP server name "ts" is too short.
+```
+User has no way to disable this warning.
+
+**Good (after Phase 2.3B - all checks are rules):**
+```json
+// .claudelintrc.json
+{
+  "rules": {
+    "lsp-server-name-too-short": "off"  // User disables unwanted warning
+  }
+}
+```
+
+```bash
+$ claudelint .claude/lsp.json
+✓ All checks passed
+```
+
+This matches ESLint, Prettier, and all modern linting tools.
 
 ## Project Structure
 
