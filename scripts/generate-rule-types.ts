@@ -72,7 +72,7 @@ function generateRegistrationContent(ruleFiles: string[]): string {
     .map((file) => {
       const id = basename(file, '.ts');
       const varName = id.replace(/-/g, '_') + '_rule';
-      return `  RuleRegistry.register(${varName}.meta);`;
+      return `  RuleRegistry.register(${varName});`;
     })
     .join('\n');
 

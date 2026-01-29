@@ -3,7 +3,7 @@
 **Status:** Planning
 **Created:** 2026-01-29
 **Target Completion:** TBD
-**Estimated Effort:** 10-15 hours
+**Estimated Effort:** 16-20 hours
 
 ## Executive Summary
 
@@ -185,9 +185,9 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 - Reusable `tryReadDirectory()` error handler
 - 100+ lines of duplication removed
 
-### Phase 2.5: Testing & Validation (1-2 hours)
+### Phase 2.5: Testing & Validation (2.5-3 hours)
 
-**Goal:** Ensure nothing broke
+**Goal:** Ensure nothing broke and documentation is complete
 
 **Tasks:**
 - [ ] Run full test suite (688 tests)
@@ -196,12 +196,17 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 - [ ] Test rule options for configurable rules
 - [ ] Manual validation of each validator
 - [ ] Performance testing (should be same or better)
+- [ ] Write user migration guide
+- [ ] Update CHANGELOG.md with breaking changes
+- [ ] Update contributing guide with new patterns
 
 **Deliverables:**
 - All tests passing
 - Config system works for all rules
 - No performance regressions
-- Documentation updates
+- Complete user migration guide
+- CHANGELOG.md updated
+- Contributing guide updated with RuleRegistry patterns
 
 ## Risk Management
 
@@ -262,10 +267,10 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 | 2.2 | Convert Ghost Rules | 4-6 hours | 2.1 |
 | 2.3 | Rule Discovery | 2-3 hours | 2.0, 2.2 |
 | 2.4 | Extract Patterns | 2-3 hours | None (parallel) |
-| 2.5 | Testing | 1-2 hours | All above |
-| **Total** | | **12-19 hours** | |
+| 2.5 | Testing & Documentation | 2.5-3 hours | All above |
+| **Total** | | **14-20 hours** | |
 
-**Realistic Estimate:** 15-18 hours with typical interruptions and edge cases
+**Realistic Estimate:** 16-20 hours with typical interruptions and edge cases
 
 ## Implementation Order
 
@@ -278,26 +283,32 @@ Phase 2 completes the Phase 5 migration by eliminating "ghost rules" (validation
 4. Complete Phase 2.2: Convert all ghost rules (4-6 hours)
 5. Phase 2.3: Implement discovery pattern (2-3 hours)
 
-### Week 3: Polish (4-5 hours)
+### Week 3: Polish (5-6 hours)
 6. Phase 2.4: Extract common patterns (2-3 hours)
-7. Phase 2.5: Testing and validation (1-2 hours)
-8. Documentation and cleanup (1 hour)
+7. Phase 2.5: Testing, validation, and documentation (2.5-3 hours)
 
 ## Post-Completion
 
 ### Follow-up Work
 
-1. Update all rule documentation for new rules
-2. Write migration guide for users
-3. Update CHANGELOG.md with breaking changes
-4. Consider adding more rule options based on user feedback
+**Note:** Documentation tasks (rule docs, user migration guide, CHANGELOG.md) are now included in Phase 2.5 as discrete tasks.
+
+1. Consider adding more rule options based on user feedback
+2. Gather user feedback on new configurable rules
+3. Monitor for performance issues in production
 
 ### Future Improvements
 
-1. Auto-generate rule documentation from metadata
-2. Interactive config builder for common scenarios
-3. Rule dependency system (rule A requires rule B)
-4. Performance profiling for rule execution order
+1. **Refactor base.ts into smaller modules** - The BaseValidator class is now 1,070 lines after Phase 2. Consider splitting into:
+   - `base-validator.ts` - Core validator class
+   - `validation-helpers.ts` - Tool/event name validation
+   - `frontmatter-helpers.ts` - Frontmatter and body content abstractions
+   - `file-helpers.ts` - File walking and directory operations
+   - `rule-execution.ts` - Rule execution methods
+2. Auto-generate rule documentation from metadata
+3. Interactive config builder for common scenarios
+4. Rule dependency system (rule A requires rule B)
+5. Performance profiling for rule execution order
 
 ## References
 

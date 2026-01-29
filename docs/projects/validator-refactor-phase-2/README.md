@@ -2,12 +2,12 @@
 
 **Status:** Planning Phase
 **Created:** 2026-01-29
-**Estimated Effort:** 15-18 hours
+**Estimated Effort:** 16-20 hours
 
 ## Quick Links
 
 - [PLAN] [Master Plan](./MASTER-PLAN.md) - Overview, goals, phases, timeline
-- [YES] [Implementation Tracker](./IMPLEMENTATION-TRACKER.md) - Task-by-task progress (0/36 complete)
+- [YES] [Implementation Tracker](./IMPLEMENTATION-TRACKER.md) - Task-by-task progress (0/39 complete)
 - [GHOST] [Ghost Rules Audit](./GHOST-RULES-AUDIT.md) - Complete inventory of 66 ghost rules
 - [GUIDE] [Migration Guide](./MIGRATION-GUIDE.md) - How to convert ghost rules to real rules
 - [PATTERNS] [Architectural Patterns](./PATTERNS.md) - New patterns and abstractions
@@ -86,10 +86,10 @@ docs/projects/validator-refactor-phase-2/
 - Remove ~200 lines of duplication
 
 ### Phase 2.5: Testing & Validation [NOT STARTED] Not Started
-- [ ] 0/6 tasks complete
-- Ensure nothing broke
+- [ ] 0/9 tasks complete
+- Ensure nothing broke and documentation is complete
 
-**Overall Progress:** 0/36 tasks (0%)
+**Overall Progress:** 0/39 tasks (0%)
 
 ## Key Metrics
 

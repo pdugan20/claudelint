@@ -5,14 +5,14 @@
 
 ## Overall Progress
 
-- [ ] Phase 2.0: Infrastructure (0/6 tasks)
-- [ ] Phase 2.1: Ghost Rule Audit (0/4 tasks)
+- [X] Phase 2.0: Infrastructure (6/6 tasks) COMPLETE
+- [X] Phase 2.1: Ghost Rule Audit (4/4 tasks) COMPLETE
 - [ ] Phase 2.2: Convert Ghost Rules (0/7 tasks)
 - [ ] Phase 2.3: Implement Rule Discovery (0/8 tasks)
 - [ ] Phase 2.4: Extract Common Patterns (0/5 tasks)
-- [ ] Phase 2.5: Testing & Validation (0/6 tasks)
+- [ ] Phase 2.5: Testing & Validation (0/9 tasks)
 
-**Total:** 0/36 tasks complete (0%)
+**Total:** 10/39 tasks complete (26%)
 
 ---
 
@@ -24,65 +24,65 @@
 
 ### Tasks
 
-- [ ] **Task 2.0.1:** Enhance RuleRegistry with category-based discovery
+- [X] **Task 2.0.1:** Enhance RuleRegistry with category-based discovery
   - **File:** `src/utils/rule-registry.ts`
   - **Action:** Add `getRulesByCategory(category: RuleCategory): Rule[]` method
   - **Action:** Add `getRulesForValidator(validatorId: string): Rule[]` method
   - **Action:** Add rule caching to improve performance
   - **Estimated Time:** 30 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.0.2:** Create executeRulesForCategory() in BaseValidator
+- [X] **Task 2.0.2:** Create executeRulesForCategory() in BaseValidator
   - **File:** `src/validators/base.ts`
   - **Action:** Add `protected async executeRulesForCategory(category, filePath, content)` method
   - **Action:** Method should query RuleRegistry and execute all matching rules
   - **Action:** Handle config checks automatically
   - **Estimated Time:** 45 minutes
   - **Dependencies:** Task 2.0.1
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.0.3:** Add frontmatter validation abstraction
+- [X] **Task 2.0.3:** Add frontmatter validation abstraction
   - **File:** `src/validators/base.ts`
   - **Action:** Add `protected async validateFrontmatterWithNameCheck<T>()` method
   - **Action:** Consolidates agent/skill/output-style frontmatter patterns
   - **Action:** Handles name matching, schema validation, result merging
   - **Estimated Time:** 45 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.0.4:** Add body content validation abstraction
+- [X] **Task 2.0.4:** Add body content validation abstraction
   - **File:** `src/validators/base.ts`
   - **Action:** Add `protected validateBodyContentStructure()` method
   - **Action:** Configurable min length and required sections
   - **Action:** Replace duplicate patterns in agents/skills/output-styles
   - **Estimated Time:** 30 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.0.5:** Add file walking abstraction
+- [X] **Task 2.0.5:** Add file walking abstraction
   - **File:** `src/validators/base.ts`
   - **Action:** Add `protected async validateFilesInDirectory()` method
   - **Action:** Generic pattern for directory traversal + validation
   - **Action:** Handles optional vs required gracefully
   - **Estimated Time:** 30 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.0.6:** Document migration patterns
+- [X] **Task 2.0.6:** Document migration patterns
   - **File:** `docs/projects/validator-refactor-phase-2/MIGRATION-GUIDE.md`
   - **Action:** Write guide for converting ghost rules to real rules
   - **Action:** Include code examples and decision tree
   - **Action:** Document edge cases and exceptions
   - **Estimated Time:** 30 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude (completed in planning phase)
+  - **Completion Date:** 2026-01-29
 
 ---
 
@@ -94,45 +94,45 @@
 
 ### Tasks
 
-- [ ] **Task 2.1.1:** Audit MCP validator for ghost rules
+- [X] **Task 2.1.1:** Audit MCP validator for ghost rules
   - **File:** `src/validators/mcp.ts`
   - **Action:** Find all `reportError`/`reportWarning` calls without ruleId
   - **Action:** Categorize by type (schema, transport, env vars, etc.)
   - **Action:** Document in GHOST-RULES-AUDIT.md
   - **Estimated Time:** 20 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude (completed in planning phase)
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.1.2:** Audit all other validators for ghost rules
+- [X] **Task 2.1.2:** Audit all other validators for ghost rules
   - **Files:** `src/validators/{claude-md,skills,agents,plugin,hooks,settings,commands,output-styles,lsp}.ts`
   - **Action:** Find all ghost rules in remaining validators
   - **Action:** Categorize by validation type
   - **Action:** Rate migration difficulty (easy/medium/hard)
   - **Estimated Time:** 1 hour
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude (completed in planning phase)
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.1.3:** Audit utility functions for ghost validations
+- [X] **Task 2.1.3:** Audit utility functions for ghost validations
   - **File:** `src/utils/validation-helpers.ts`
   - **Action:** Check if utility functions return issues without ruleIds
   - **Action:** Identify which need to be converted to rules
   - **Action:** Document in GHOST-RULES-AUDIT.md
   - **Estimated Time:** 15 minutes
   - **Dependencies:** None
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude (completed in planning phase)
+  - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.1.4:** Identify edge cases and exceptions
+- [X] **Task 2.1.4:** Identify edge cases and exceptions
   - **Files:** Various
   - **Action:** Document validations that might not fit rule pattern
   - **Action:** Propose alternatives for each exception
   - **Action:** Get approval for exception handling approach
   - **Estimated Time:** 15 minutes
   - **Dependencies:** Tasks 2.1.1, 2.1.2, 2.1.3
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude (completed in planning phase, documented in MIGRATION-GUIDE.md)
+  - **Completion Date:** 2026-01-29
 
 ---
 
@@ -390,8 +390,8 @@
 
 ## Phase 2.5: Testing & Validation
 
-**Goal:** Ensure nothing broke
-**Estimated Time:** 1-2 hours
+**Goal:** Ensure nothing broke and documentation is complete
+**Estimated Time:** 2.5-3 hours
 **Status:** Not Started
 
 ### Tasks
@@ -447,6 +447,39 @@
   - **Action:** Verify no significant performance regression
   - **Action:** Document any performance improvements
   - **Estimated Time:** 15 minutes
+  - **Dependencies:** All previous phases
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.7:** Write user migration guide
+  - **File:** `docs/USER-MIGRATION-GUIDE.md` (new)
+  - **Action:** Document which validations are now configurable
+  - **Action:** Show how to disable new rules in `.claudelintrc.json`
+  - **Action:** Explain severity changes and how to override
+  - **Action:** List all 44+ new rule IDs for reference
+  - **Estimated Time:** 30 minutes
+  - **Dependencies:** All previous phases
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.8:** Update CHANGELOG.md with breaking changes
+  - **File:** `CHANGELOG.md`
+  - **Action:** Document all new rules added (44+)
+  - **Action:** List any behavior changes from ghost rule conversion
+  - **Action:** Add migration instructions reference
+  - **Action:** Note removal of deprecated methods if applicable
+  - **Estimated Time:** 20 minutes
+  - **Dependencies:** Task 2.5.7
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+
+- [ ] **Task 2.5.9:** Update contributing guide with new patterns
+  - **File:** `docs/CONTRIBUTING.md` or `docs/plugin-development.md`
+  - **Action:** Document RuleRegistry.getRulesByCategory() pattern
+  - **Action:** Document executeRulesForCategory() usage
+  - **Action:** Add examples of proper rule discovery
+  - **Action:** Update "Adding a New Rule" section if needed
+  - **Estimated Time:** 20 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD

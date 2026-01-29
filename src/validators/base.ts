@@ -1,12 +1,18 @@
 // Base validator class that all validators extend
 
+import * as fs from 'fs/promises';
+import { Dirent } from 'fs';
+import * as path from 'path';
 import { readFileContent } from '../utils/file-system';
 import { VALID_TOOLS, VALID_HOOK_EVENTS } from '../schemas/constants';
 import { ClaudeLintConfig } from '../utils/config';
 import { formatError } from '../utils/validation-helpers';
 import { RuleId } from '../rules/rule-ids';
+import { RuleCategory } from '../types/rule';
 import { ConfigResolver } from '../utils/config-resolver';
 import { RuleRegistry } from '../utils/rule-registry';
+import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { z } from 'zod';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue
@@ -703,6 +709,239 @@ export abstract class BaseValidator {
   }
 
   /**
+   * Validate frontmatter with schema and check name matches expected value
+   *
+   * This method consolidates the common pattern of:
+   * 1. Validating frontmatter against a schema
+   * 2. Checking that the name field matches the directory/file name
+   * 3. Merging schema validation results into the validator
+   *
+   * Used by agents, skills, and output-styles validators.
+   *
+   * @param filePath - Path to file being validated
+   * @param content - Content of file being validated
+   * @param schema - Zod schema for frontmatter validation
+   * @param expectedName - Expected value for the name field
+   * @param entityType - Type of entity (e.g., 'Agent', 'Skill', 'Output style')
+   * @param ruleIdPrefix - Prefix for rule IDs (e.g., 'agent', 'skill')
+   * @returns Parsed frontmatter or null if validation failed
+   */
+  protected validateFrontmatterWithNameCheck<T>(
+    filePath: string,
+    content: string,
+    schema: z.ZodType,
+    expectedName: string,
+    entityType: string,
+    ruleIdPrefix: string
+  ): T | null {
+    const validationResult = validateFrontmatterWithSchema(
+      content,
+      schema,
+      filePath,
+      ruleIdPrefix
+    );
+    const frontmatter = validationResult.data as T | null;
+    const result = validationResult.result;
+
+    this.mergeSchemaValidationResult(result);
+
+    if (!frontmatter) {
+      return null;
+    }
+
+    // Name validation with proper ruleId
+    const fmWithName = frontmatter as { name?: string };
+    if (fmWithName.name !== expectedName) {
+      this.reportError(
+        `${entityType} name "${fmWithName.name}" does not match directory name "${expectedName}"`,
+        filePath,
+        undefined,
+        `${ruleIdPrefix}-name-mismatch` as RuleId
+      );
+    }
+
+    return frontmatter as T;
+  }
+
+  /**
+   * Validate body content structure (length and sections)
+   *
+   * This method provides configurable validation for markdown body content,
+   * checking for minimum length and required sections.
+   *
+   * Used by agents, skills, and output-styles validators.
+   *
+   * @param filePath - Path to file being validated
+   * @param content - Content of file being validated
+   * @param rules - Validation rules to apply
+   */
+  protected validateBodyContentStructure(
+    filePath: string,
+    content: string,
+    rules: {
+      minLength?: {
+        threshold: number;
+        ruleId: RuleId;
+        message: string;
+      };
+      requiredSections?: Array<{
+        name: string;
+        pattern: RegExp;
+        ruleId: RuleId;
+        message: string;
+      }>;
+    }
+  ): void {
+    const body = this.extractBody(content);
+
+    // Min length check
+    if (rules.minLength && body.length < rules.minLength.threshold) {
+      this.reportWarning(rules.minLength.message, filePath, undefined, rules.minLength.ruleId);
+    }
+
+    // Required sections check
+    if (rules.requiredSections) {
+      for (const section of rules.requiredSections) {
+        if (!section.pattern.test(body)) {
+          this.reportWarning(section.message, filePath, undefined, section.ruleId);
+        }
+      }
+    }
+  }
+
+  /**
+   * Extract body content from markdown (content after frontmatter)
+   *
+   * @param content - Full markdown content including frontmatter
+   * @returns Body content without frontmatter
+   */
+  private extractBody(content: string): string {
+    const parts = content.split('---');
+    return parts.length >= 3 ? parts.slice(2).join('---').trim() : content;
+  }
+
+  /**
+   * Validate all matching files in a directory
+   *
+   * This method provides a generic pattern for directory traversal and file validation.
+   * Handles optional vs required checks gracefully with configurable error handling.
+   *
+   * @param dirPath - Directory to scan
+   * @param filter - Function to filter directory entries
+   * @param processor - Async function to process each matching file
+   * @param context - Whether this is an 'optional' or 'required' check
+   */
+  protected async validateFilesInDirectory(
+    dirPath: string,
+    filter: (entry: Dirent) => boolean,
+    processor: (filePath: string, content: string) => Promise<void>,
+    context: 'optional' | 'required' = 'optional'
+  ): Promise<void> {
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+      const matching = entries.filter(filter);
+
+      for (const entry of matching) {
+        const filePath = path.join(dirPath, entry.name);
+        const content = await readFileContent(filePath);
+        await processor(filePath, content);
+      }
+    } catch (error) {
+      if (context === 'required') {
+        this.reportError(`Failed to read directory: ${formatError(error)}`, dirPath);
+      }
+      // Optional checks fail silently
+    }
+  }
+
+  /**
+   * Execute rules on all matching files in a directory
+   *
+   * Combines file walking with category-based rule execution.
+   * This is a convenience wrapper around validateFilesInDirectory.
+   *
+   * @param dirPath - Directory to scan
+   * @param filter - Function to filter directory entries
+   * @param category - Rule category to execute
+   * @param context - Whether this is an 'optional' or 'required' check
+   */
+  protected async executeRulesOnMatchingFiles(
+    dirPath: string,
+    filter: (entry: Dirent) => boolean,
+    category: RuleCategory,
+    context: 'optional' | 'required' = 'optional'
+  ): Promise<void> {
+    await this.validateFilesInDirectory(
+      dirPath,
+      filter,
+      async (filePath, content) => {
+        await this.executeRulesForCategory(category, filePath, content);
+      },
+      context
+    );
+  }
+
+  /**
+   * Try to read a directory with configurable error handling
+   *
+   * @param dirPath - Path to directory
+   * @param context - Whether this is an 'optional' or 'required' check
+   * @returns Directory entries or null if failed
+   */
+  protected async tryReadDirectory(
+    dirPath: string,
+    context: 'optional' | 'required' = 'required'
+  ): Promise<Dirent[] | null> {
+    try {
+      return await fs.readdir(dirPath, { withFileTypes: true });
+    } catch (error) {
+      if (context === 'required') {
+        this.reportError(`Failed to read directory: ${formatError(error)}`, dirPath);
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Try to read a file with configurable error handling
+   *
+   * @param filePath - Path to file
+   * @param context - Whether this is an 'optional' or 'required' check
+   * @returns File content or null if failed
+   */
+  protected async tryReadFile(
+    filePath: string,
+    context: 'optional' | 'required' = 'required'
+  ): Promise<string | null> {
+    try {
+      return await readFileContent(filePath);
+    } catch (error) {
+      if (context === 'required') {
+        this.reportError(`Failed to read file: ${formatError(error)}`, filePath);
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Filter directories by name (optional filter)
+   *
+   * @param directories - List of directory paths
+   * @param filterName - Optional name to filter by
+   * @returns Filtered list of directories
+   */
+  protected filterDirectoriesByName(
+    directories: string[],
+    filterName?: string
+  ): string[] {
+    if (!filterName) {
+      return directories;
+    }
+
+    return directories.filter((dir) => path.basename(dir) === filterName);
+  }
+
+  /**
    * Execute a new-style Rule object on a file
    *
    * This enables dual-mode operation during migration to ESLint-style rules.
@@ -786,6 +1025,48 @@ export abstract class BaseValidator {
         undefined,
         rule.meta.id
       );
+    }
+  }
+
+  /**
+   * Execute all rules for a specific category on a file
+   *
+   * This method discovers rules via RuleRegistry and executes them all automatically.
+   * Respects config for enabling/disabling and severity overrides.
+   *
+   * This is the recommended pattern for Phase 2 - validators should use category-based
+   * execution instead of manually importing and executing individual rules.
+   *
+   * @param category - Rule category (e.g., 'CLAUDE.md', 'Skills', 'MCP')
+   * @param filePath - Path to file being validated
+   * @param fileContent - Content of file being validated
+   *
+   * @example
+   * ```typescript
+   * async validate() {
+   *   const files = await this.findFiles();
+   *
+   *   for (const file of files) {
+   *     const content = await readFileContent(file);
+   *     // Executes ALL rules for this category automatically
+   *     await this.executeRulesForCategory('MCP', file, content);
+   *   }
+   *
+   *   return this.getResult();
+   * }
+   * ```
+   */
+  protected async executeRulesForCategory(
+    category: RuleCategory,
+    filePath: string,
+    fileContent: string
+  ): Promise<void> {
+    // Discover all rules for this category from RuleRegistry
+    const rules = RuleRegistry.getRulesByCategory(category);
+
+    // Execute each rule
+    for (const rule of rules) {
+      await this.executeRule(rule, filePath, fileContent);
     }
   }
 }
