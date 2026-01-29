@@ -1,0 +1,54 @@
+/**
+ * Rule: mcp-websocket-empty-url
+ *
+ * Validates that WebSocket transport has a non-empty URL.
+ */
+
+import { Rule } from '../../types/rule';
+
+export const rule: Rule = {
+  meta: {
+    id: 'mcp-websocket-empty-url',
+    name: 'MCP WebSocket Empty URL',
+    description: 'MCP WebSocket transport URL cannot be empty',
+    category: 'MCP',
+    severity: 'error',
+    fixable: false,
+    deprecated: false,
+    since: '1.0.0',
+    docUrl:
+      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-websocket-empty-url.md',
+  },
+
+  validate: (context) => {
+    const { filePath, fileContent } = context;
+
+    if (!filePath.endsWith('.mcp.json')) {
+      return;
+    }
+
+    let config: {
+      mcpServers?: Record<string, { transport?: { type?: string; url?: string } }>;
+    };
+    try {
+      config = JSON.parse(fileContent);
+    } catch {
+      return;
+    }
+
+    if (!config.mcpServers) {
+      return;
+    }
+
+    for (const server of Object.values(config.mcpServers)) {
+      if (server.transport?.type === 'websocket') {
+        const url = server.transport.url;
+        if (!url || url.trim().length === 0) {
+          context.report({
+            message: 'MCP WebSocket transport URL cannot be empty',
+          });
+        }
+      }
+    }
+  },
+};

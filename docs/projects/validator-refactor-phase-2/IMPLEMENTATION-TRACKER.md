@@ -7,12 +7,12 @@
 
 - [X] Phase 2.0: Infrastructure (6/6 tasks) COMPLETE
 - [X] Phase 2.1: Ghost Rule Audit (4/4 tasks) COMPLETE
-- [ ] Phase 2.2: Convert Ghost Rules (0/7 tasks)
+- [ ] Phase 2.2: Convert Ghost Rules (2/7 tasks)
 - [ ] Phase 2.3: Implement Rule Discovery (0/8 tasks)
 - [ ] Phase 2.4: Extract Common Patterns (0/5 tasks)
 - [ ] Phase 2.5: Testing & Validation (0/9 tasks)
 
-**Total:** 10/39 tasks complete (26%)
+**Total:** 12/39 tasks complete (31%)
 
 ---
 
@@ -144,7 +144,7 @@
 
 ### Tasks
 
-- [ ] **Task 2.2.1:** Create MCP ghost rules (~10 rules)
+- [X] **Task 2.2.1:** Create MCP ghost rules (~10 rules)
   - **Files:** `src/rules/mcp/*.ts`
   - **Action:** Convert stdio transport validation to rule
   - **Action:** Convert SSE transport validation to rule
@@ -157,10 +157,11 @@
   - **Action:** Update rule-ids.ts with new IDs
   - **Estimated Time:** 1.5 hours
   - **Dependencies:** Task 2.1.1
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Notes:** Created 10 new MCP rules, total rules now 76 (was 66)
 
-- [ ] **Task 2.2.2:** Create Claude.md ghost rules (~8 rules)
+- [X] **Task 2.2.2:** Create Claude.md ghost rules (~8 rules)
   - **Files:** `src/rules/claude-md/*.ts`
   - **Action:** Convert file not found to rule
   - **Action:** Convert import validation to rules
@@ -169,8 +170,9 @@
   - **Action:** Update rule-ids.ts with new IDs
   - **Estimated Time:** 1 hour
   - **Dependencies:** Task 2.1.2
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Notes:** Created 3 new Claude.md rules (most were already converted), total rules now 79
 
 - [ ] **Task 2.2.3:** Create Skills ghost rules (~12 rules)
   - **Files:** `src/rules/skills/*.ts`

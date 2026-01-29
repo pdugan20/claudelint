@@ -96,7 +96,12 @@ export class ClaudeMdValidator extends BaseValidator {
       // If specific path provided, validate just that file
       const exists = await fileExists(this.options.path);
       if (!exists) {
-        this.reportError(`File not found: ${this.options.path}`);
+        this.reportError(
+          `File not found: ${this.options.path}`,
+          this.options.path,
+          undefined,
+          'claude-md-file-not-found'
+        );
         return [];
       }
       return [this.options.path];
@@ -249,7 +254,9 @@ export class ClaudeMdValidator extends BaseValidator {
     if (depth > maxDepth) {
       this.reportError(
         `Import depth exceeds maximum of ${maxDepth}. Possible circular import.`,
-        filePath
+        filePath,
+        undefined,
+        'claude-md-import-depth-exceeded'
       );
       return;
     }
@@ -339,7 +346,8 @@ export class ClaudeMdValidator extends BaseValidator {
         this.reportError(
           `Failed to read imported file: ${formatError(error)}`,
           filePath,
-          importInfo.line
+          importInfo.line,
+          'claude-md-import-read-failed'
         );
       }
     }
