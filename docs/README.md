@@ -19,7 +19,7 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
 
 ### Reference
 
-- **[Rules Catalog](./rules/)** - Browse all 27 validation rules
+- **[Rules Catalog](./rules/)** - Browse all 66 validation rules
   - [CLAUDE.md Rules](./rules/claude-md/)
   - [Skills Rules](./rules/skills/)
   - [Settings Rules](./rules/settings/)
@@ -132,7 +132,7 @@ This structure ensures you can find what you need quickly, whether you're just s
 
 ## Features
 
-- ** 27 Validation Rules** - Comprehensive checks across 6 categories
+- ** 66 Validation Rules** - Comprehensive checks across 10 categories
 - ** Parallel Execution** - ~3.5x speedup from concurrent validators
 - ** Smart Caching** - ~2.4x speedup with mtime-based caching
 - ** Auto-fix** - Automatically fix common issues
