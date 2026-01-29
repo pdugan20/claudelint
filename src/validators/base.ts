@@ -281,7 +281,10 @@ export abstract class BaseValidator {
 
   /**
    * Report an error (backward compatibility wrapper)
-   * @deprecated Use report() instead - severity should come from config
+   *
+   * Convenience method for reporting errors. When a ruleId is provided,
+   * delegates to report() which respects config. When no ruleId is provided,
+   * creates an issue with default error severity for backward compatibility.
    */
   protected reportError(
     message: string,
@@ -309,7 +312,10 @@ export abstract class BaseValidator {
 
   /**
    * Report a warning (backward compatibility wrapper)
-   * @deprecated Use report() instead - severity should come from config
+   *
+   * Convenience method for reporting warnings. When a ruleId is provided,
+   * delegates to report() which respects config. When no ruleId is provided,
+   * creates an issue with default warning severity for backward compatibility.
    */
   protected reportWarning(
     message: string,
