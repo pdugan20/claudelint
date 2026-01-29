@@ -64,6 +64,112 @@ Similarly with claudelint:
 
 This approach ensures users get the best tool for each job, without conflicts or confusion.
 
+## Rules vs Validators: Understanding the Architecture
+
+claudelint uses a **rule-based architecture** inspired by ESLint. Understanding the distinction between rules and validators is critical for contributors.
+
+### Rules (What Contributors Write)
+
+**Rules** are individual, focused validation checks located in `src/rules/{category}/{rule-id}.ts`.
+
+**Characteristics:**
+- **66 rules total** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, etc.)
+- **User-configurable** - Can be enabled/disabled, severity changed per-project
+- **Self-contained** - Each rule validates one specific aspect
+- **Metadata-driven** - Include id, name, description, severity, fixable flag
+- **ESLint-style** - Similar pattern to ESLint rules
+
+**Example Rule:**
+```typescript
+// src/rules/skills/skill-missing-version.ts
+export const rule: Rule = {
+  meta: {
+    id: 'skill-missing-version',
+    name: 'Skill Missing Version',
+    description: 'Skill frontmatter must include a version field',
+    category: 'Skills',
+    severity: 'warn',
+    fixable: true,
+  },
+  validate: async (context) => {
+    // Validation logic for this specific check
+  },
+};
+```
+
+### Validators (Internal Orchestrators)
+
+**Validators** are internal orchestration classes in `src/validators/` that collect and run rules.
+
+**Characteristics:**
+- **10 validators** (one per category: ClaudeMdValidator, SkillsValidator, etc.)
+- **Not user-facing** - Users interact with rules, not validators
+- **Implementation detail** - Orchestrate file discovery, parsing, rule execution
+- **Extend BaseValidator** - Share common validation infrastructure
+
+**Validator Responsibilities:**
+1. **File Discovery** - Find files to validate (glob patterns)
+2. **File Parsing** - Read and parse file contents (YAML, JSON, Markdown)
+3. **Rule Orchestration** - Collect category rules, call validate(), aggregate results
+4. **Result Reporting** - Format and report violations to CLI
+
+**Example Validator:**
+```typescript
+// src/validators/skills.ts
+export class SkillsValidator extends BaseValidator {
+  async validate(): Promise<ValidationResult> {
+    const files = await this.findSkillFiles();
+    const rules = this.getRulesForCategory('Skills');
+
+    for (const file of files) {
+      const content = await fs.readFile(file);
+      for (const rule of rules) {
+        await rule.validate({ filePath: file, fileContent: content });
+      }
+    }
+
+    return this.collectResults();
+  }
+}
+```
+
+### What Should Contributors Do?
+
+**DO: Write Rules**
+- Create new rules in `src/rules/{category}/{rule-id}.ts`
+- Follow the Rule interface and metadata schema
+- Write focused, single-purpose validation checks
+- See [contributing-rules.md](./contributing-rules.md) for the complete guide
+
+**DON'T: Extend Validators**
+- Don't create new validators (unless adding a new category)
+- Don't modify validator orchestration logic
+- Don't write validation logic directly in validators
+
+### Evolution: Pre-Phase 5 vs Post-Phase 5
+
+**Before Phase 5 (Validator-Centric):**
+- Contributors extended `BaseValidator` classes
+- Validators contained validation logic
+- Heavy composition patterns required
+- Plugin system exported validators
+
+**After Phase 5 (Rule-Based):**
+- Contributors write individual rules
+- Validators are internal orchestrators
+- Simple, focused rule pattern
+- Plugin system exports rules (ESLint-style)
+
+See [archive/rule-architecture-refactor/](./archive/rule-architecture-refactor/) for complete migration history.
+
+### For Plugin Developers
+
+When building plugins:
+- **Export rules**, not validators
+- Follow the Rule interface
+- Use metadata for documentation
+- See [plugin-development.md](./plugin-development.md) for examples
+
 ## Project Structure
 
 ```text
@@ -75,10 +181,10 @@ claudelint/
 │   └── claudelint           # Main CLI entry point
 ├── dist/                    # Compiled TypeScript output
 ├── docs/                    # Documentation
-│   ├── ROADMAP.md           # Project phases and tasks
 │   ├── architecture.md      # This file
-│   ├── validators.md        # Validator documentation
-│   └── development.md       # Development guide
+│   ├── validation-reference.md  # Validation categories reference
+│   ├── contributing-rules.md    # Rule development guide
+│   └── ...                  # Other documentation
 ├── skills/                  # Claude Code skills
 │   ├── validate-all/
 │   ├── validate-claude-md/
@@ -89,19 +195,23 @@ claudelint/
 ├── src/                     # Source code
 │   ├── cli.ts               # CLI entry point
 │   ├── index.ts             # Library exports
-│   ├── validators/          # Validation logic
+│   ├── rules/               # Validation rules (66 rules)
+│   │   ├── claude-md/       # CLAUDE.md rules
+│   │   ├── skills/          # Skills rules
+│   │   ├── settings/        # Settings rules
+│   │   ├── hooks/           # Hooks rules
+│   │   ├── mcp/             # MCP rules
+│   │   ├── plugin/          # Plugin rules
+│   │   ├── ...              # Other categories
+│   │   └── index.ts         # Rule exports
+│   ├── validators/          # Internal orchestrators
 │   │   ├── base.ts          # Base validator class
 │   │   ├── claude-md.ts     # CLAUDE.md validator
 │   │   ├── skills.ts        # Skills validator
-│   │   ├── settings.ts      # Settings validator
-│   │   ├── hooks.ts         # Hooks validator
-│   │   ├── mcp.ts           # MCP server validator
-│   │   ├── plugin.ts        # Plugin validator
-│   │   └── index.ts         # Validator exports
+│   │   └── ...              # Other validators
 │   └── utils/               # Utilities
 │       ├── file-system.ts   # File operations
 │       ├── markdown.ts      # Markdown parsing
-│       ├── yaml.ts          # YAML parsing
 │       ├── reporting.ts     # Error/warning formatting
 │       └── index.ts         # Utility exports
 ├── tests/                   # Test files

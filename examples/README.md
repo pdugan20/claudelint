@@ -64,18 +64,9 @@ cp examples/integration/.pre-commit-config.yaml .
 | [strict/](./strict/) | New projects, CI/CD | High | 17 | ✗ Zero |
 | [integration/](./integration/) | Complete setup | Medium | All tools | ✓ Per tool |
 
-## Custom Validator Plugin
+## Custom Plugin Development
 
-**Location:** [`custom-validator-plugin/`](./custom-validator-plugin/)
-
-Example of building a custom validator plugin.
-
-- Plugin structure
-- Validator implementation
-- Registration API
-- Testing setup
-
-See the [Plugin Development Guide](../docs/plugin-development.md) for details.
+See the [Plugin Development Guide](../docs/plugin-development.md) for how to build custom plugins with your own validation rules.
 
 ## Test Fixtures
 

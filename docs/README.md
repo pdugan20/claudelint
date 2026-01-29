@@ -26,12 +26,13 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
   - [Hooks Rules](./rules/hooks/)
   - [MCP Rules](./rules/mcp/)
   - [Plugin Rules](./rules/plugin/)
-- **[Validators](./validators.md)** - Understanding each validator
+- **[Validation Reference](./validation-reference.md)** - Understanding validation categories
 
 ### For Developers
 
 - **[Architecture](./architecture.md)** - System design and components
-- **[Plugin Development](./plugin-development.md)** - Build custom validators
+- **[Contributing Rules](./contributing-rules.md)** - Write new validation rules
+- **[Plugin Development](./plugin-development.md)** - Build custom plugins
 
 ## Documentation by User Type
 
@@ -50,14 +51,15 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
 ### Contributors
 
 - **Understanding the codebase**: [Architecture](./architecture.md)
-- **Adding rules**: See validator implementations in `src/validators/`
+- **Adding rules**: [contributing-rules.md](./contributing-rules.md) - Complete guide to writing rules
+- **Rule implementations**: See `src/rules/{category}/` for examples
 - **Testing**: Run `npm test` to execute the test suite
 
 ### Plugin Developers
 
-- **Create custom validators**: [Plugin Development](./plugin-development.md)
-- **Validator registration**: See [Architecture - Plugin System](./architecture.md#plugin-system)
-- **Example plugin**: Check `examples/custom-validator-plugin/`
+- **Create custom plugins**: [Plugin Development](./plugin-development.md)
+- **Plugin architecture**: See [Architecture - Plugin System](./architecture.md#plugin-system)
+- **Contributing rules**: Use [contributing-rules.md](./contributing-rules.md) as your guide
 
 ## Common Tasks
 
@@ -142,7 +144,7 @@ This structure ensures you can find what you need quickly, whether you're just s
 - ** Debug Tools** - Config debugging commands
 - ** Per-rule Docs** - Detailed documentation for each rule
 - ** Inline Disables** - Fine-grained control with comments
-- ** Plugin System** - Extensible with custom validators
+- ** Plugin System** - Extensible with custom rules
 
 ## Getting Help
 

@@ -2,6 +2,12 @@
 
 Thank you for your interest in contributing to claudelint! This document provides guidelines for contributing to the project.
 
+## Quick Start for Contributors
+
+**Want to add a validation rule?** See [docs/contributing-rules.md](docs/contributing-rules.md) - this is our detailed technical guide for writing rules.
+
+**Want to contribute in other ways?** Keep reading this document for general contribution guidelines (git workflow, testing, code style, etc.).
+
 ## Code of Conduct
 
 This project adheres to a Code of Conduct that all contributors are expected to follow. Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before contributing.
@@ -145,33 +151,30 @@ claudelint/
 └── scripts/             # Build and automation scripts
 ```
 
-## Adding a New Validator
+## Adding Validation Rules
 
-Creating a new validator requires following established patterns for architecture, error handling, testing, and type safety.
+claudelint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
 
-**See the comprehensive [Validator Development Guide](docs/validator-development-guide.md) for:**
+**See the comprehensive [Rule Development Guide](docs/contributing-rules.md) for:**
 
-- Architecture overview and component relationships
-- Step-by-step guide for creating validators
-- Error handling standards and patterns
-- Testing guidelines with fixture builders and custom matchers
-- Type safety requirements for rule IDs and schemas
-- Performance considerations and optimization
-- Common patterns and utility functions
-- Plugin development for third-party validators
+- Rule structure and metadata
+- Validation logic patterns
+- File type filtering
+- Reporting violations
+- Testing rules
+- Auto-fix capabilities
+- Best practices
 
 **Quick checklist:**
 
-1. ✓ Create validator class extending `BaseValidator` in `src/validators/`
-2. ✓ Define and register validation rules with `RuleRegistry`
-3. ✓ Update `RuleId` union type for type safety
-4. ✓ Implement validation logic using composition framework
-5. ✓ Add CLI command in `src/cli.ts`
-6. ✓ Write unit tests using fixture builders and custom matchers
-7. ✓ Add integration tests for CLI behavior
-8. ✓ Create fixture builder in `tests/helpers/fixtures.ts`
-9. ✓ Document rules in `docs/rules/`
-10. ✓ Update `docs/validators.md`
+1. ✓ Create rule file in `src/rules/{category}/{rule-id}.ts`
+2. ✓ Define rule metadata (id, name, description, category, severity)
+3. ✓ Implement `validate()` function
+4. ✓ Add rule to category index in `src/rules/{category}/index.ts`
+5. ✓ Write unit tests in `tests/rules/{category}/{rule-id}.test.ts`
+6. ✓ Document rule in `docs/rules/{category}/{rule-id}.md`
+7. ✓ Test the rule with `npm test`
+8. ✓ Run validation on project: `npm run validate`
 
 ## Submitting Pull Requests
 
@@ -226,12 +229,15 @@ Include:
 
 ### Key Documentation
 
-- **[Rule Development Guide](docs/CONTRIBUTING-RULES.md)** - Guide for writing validation rules (recommended for new contributions)
-- **[Validator Development Guide](docs/validator-development-guide.md)** - Comprehensive guide for creating validators
+**For contributing code:**
+- **[Rule Development Guide](docs/contributing-rules.md)** - How to write validation rules (START HERE)
 - **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
-- **[Validator Reference](docs/validators.md)** - Complete validator documentation
-- **[Rule Reference](docs/rules/index.md)** - Individual documentation for all rules
-- **[Test Helpers README](tests/helpers/README.md)** - Guide to fixture builders and custom matchers
+- **[Plugin Development Guide](docs/plugin-development.md)** - Creating custom plugins
+
+**For users:**
+- **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
+- **[Rule Reference](docs/rules/)** - Individual documentation for all 66 rules
+- **[Configuration Guide](docs/configuration.md)** - Configuring claudelint
 
 ## Release Process
 

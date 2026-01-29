@@ -30,8 +30,8 @@
 - Focus on high-value rules first
 
 ### Documentation
-- `docs/plugin-development.md` - Needs rewrite for Phase 5 architecture
-- `docs/validator-development-guide.md` - Redirect to `CONTRIBUTING-RULES.md`
+- [DONE] `docs/plugin-development.md` - Rewritten for Phase 5 architecture
+- [DONE] `docs/validator-development-guide.md` - Archived with redirect to `contributing-rules.md`
 - Add architecture diagrams showing rule-based system
 
 ### Tooling
