@@ -42,7 +42,7 @@ echo "6/6 Running validation..."
 npm run validate
 
 echo ""
-echo "✅ Release v$VERSION prepared successfully!"
+echo "[SUCCESS] Release v$VERSION prepared successfully!"
 echo ""
 echo "Next steps:"
 echo "  1. Review changes: git diff"
