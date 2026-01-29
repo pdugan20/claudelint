@@ -188,8 +188,8 @@ After completing MCP and Claude.md validators, we discovered:
 ## Phase 2.2: Build Testing Infrastructure
 
 **Goal:** Create RuleTester utility and verify existing rules work
-**Estimated Time:** 3-4 hours
-**Status:** In Progress (2/3 tasks complete)
+**Estimated Time:** 3-4 hours (actual: 5 hours)
+**Status:** COMPLETE (3/3 tasks complete)
 **CRITICAL:** Must verify rules actually execute before continuing
 
 ### Tasks
@@ -236,16 +236,33 @@ After completing MCP and Claude.md validators, we discovered:
     - mcp-websocket-invalid-url.test.ts
     - mcp-websocket-invalid-protocol.test.ts
 
-- [ ] **Task 2.2.3:** Add unit tests for Claude.md rules
+- [X] **Task 2.2.3:** Add unit tests for Claude.md rules
   - **Files:** `tests/rules/claude-md/*.test.ts`
-  - **Action:** Create test file for each of 13 Claude.md rules
+  - **Action:** Create test file for each of 14 Claude.md rules (14 found, not 13 as estimated)
   - **Action:** Use ClaudeLintRuleTester for declarative test cases
   - **Action:** Cover valid and invalid cases for each rule
-  - **Action:** Verify all 13 rules actually execute (including the 2 fixed stubs)
-  - **Estimated Time:** 1 hour
+  - **Action:** Verify all 14 rules actually execute (including the 2 fixed stubs: claude-md-paths, claude-md-rules-circular-symlink)
+  - **Estimated Time:** 1 hour (actual: 2 hours due to import syntax issues and file system test setup)
   - **Dependencies:** Task 2.2.1
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Status:** Complete - All 14/14 Claude.md rules tested and passing
+  - **Tests Created:**
+    - claude-md-size-error.test.ts (async, file system)
+    - claude-md-size-warning.test.ts (async, file system)
+    - claude-md-import-missing.test.ts (async, file system)
+    - claude-md-file-not-found.test.ts (async, file system)
+    - claude-md-import-in-code-block.test.ts (sync)
+    - claude-md-filename-case-sensitive.test.ts (async, file system)
+    - claude-md-import-read-failed.test.ts (async, file system)
+    - claude-md-content-too-many-sections.test.ts (sync)
+    - claude-md-import-circular.test.ts (async, file system)
+    - claude-md-import-depth-exceeded.test.ts (async, file system)
+    - claude-md-glob-pattern-backslash.test.ts (sync)
+    - claude-md-glob-pattern-too-broad.test.ts (sync)
+    - claude-md-rules-circular-symlink.test.ts (async, file system)
+    - claude-md-paths.test.ts (sync)
+  - **Notes:** Import syntax in Claude.md is `@path/to/file`, not `@import path/to/file`. Many tests required temp file creation for file system operations.
 
 ---
 
