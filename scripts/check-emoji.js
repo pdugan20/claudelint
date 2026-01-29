@@ -59,6 +59,12 @@ if (fs.existsSync('src')) {
   walkDirectory('src', false);
 }
 
+// Check scripts directory
+console.log('Checking scripts for emojis...');
+if (fs.existsSync('scripts')) {
+  walkDirectory('scripts', false);
+}
+
 // Check documentation (strict mode - no emojis allowed)
 console.log('Checking documentation (strict mode - no emojis allowed)...');
 if (fs.existsSync('docs')) {
