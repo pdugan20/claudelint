@@ -95,11 +95,12 @@ if (fs.existsSync('docs')) {
   walkDirectory('docs', true);
 }
 
-// Check root markdown files
-const rootMarkdownFiles = ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'LICENSE.md'];
-for (const file of rootMarkdownFiles) {
-  if (fs.existsSync(file)) {
-    checkFile(file, true);
+// Check all root markdown files
+console.log('Checking root markdown files for emojis...');
+const rootFiles = fs.readdirSync('.', { withFileTypes: true });
+for (const file of rootFiles) {
+  if (file.isFile() && file.name.endsWith('.md')) {
+    checkFile(file.name, true);
   }
 }
 
