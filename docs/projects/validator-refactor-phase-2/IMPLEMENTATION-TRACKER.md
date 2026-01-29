@@ -12,9 +12,9 @@
 - [ ] Phase 2.4: Fix Early Validators (0/2 tasks)
 - [ ] Phase 2.5: Implement Rule Discovery (0/10 tasks)
 - [ ] Phase 2.6: Extract Common Patterns (0/5 tasks)
-- [ ] Phase 2.7: Testing & Validation (0/10 tasks)
+- [ ] Phase 2.7: Testing & Validation (0/11 tasks)
 
-**Total:** 10/49 tasks complete (20%)
+**Total:** 10/50 tasks complete (20%)
 
 **Current Focus:** Building RuleTester infrastructure to verify rule implementations
 
@@ -542,22 +542,43 @@ After completing MCP and Claude.md validators, we discovered:
 
 ## Phase 2.7: Testing & Validation
 
-**Goal:** Ensure nothing broke and documentation is complete
-**Estimated Time:** 2.5-3 hours
+**Goal:** Refactor validator tests, ensure nothing broke, documentation complete
+**Estimated Time:** 3.5-4 hours (revised from 2.5-3 hours)
 **Status:** Not Started
 
 ### Tasks
 
-- [ ] **Task 2.7.1:** Run full test suite
+- [ ] **Task 2.7.1:** Refactor validator tests to remove validation logic
+  - **Files:** All files in `tests/validators/*.test.ts`
+  - **Action:** Remove tests that check validation logic (now covered by rule unit tests)
+  - **Action:** Keep only orchestration tests (file discovery, parsing, rule execution, aggregation)
+  - **Action:** Expected reduction: ~60% of test lines, ~70% of test count per validator
+  - **Action:** Verify each validator test file focuses on:
+    - ✓ File discovery works (glob patterns, directory traversal)
+    - ✓ Parsing doesn't crash (valid/invalid JSON/YAML/Markdown)
+    - ✓ Rule execution happens (executeRulesForCategory called)
+    - ✓ Results aggregated correctly (multiple files, multiple rules)
+    - ✓ Missing file handling ("No X found" warnings)
+    - ✓ Config integration (file-specific overrides)
+    - ✗ Validation logic (moved to rule tests)
+  - **Example refactor:** Remove "should error for empty command" test from mcp.test.ts (covered by tests/rules/mcp/mcp-stdio-command.test.ts)
+  - **Estimated Time:** 1.5 hours
+  - **Dependencies:** Phase 2.2 (rule tests must exist first), Phase 2.3 (all validators migrated)
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** See "Test Architecture After Phase 2" section for detailed before/after examples
+
+- [ ] **Task 2.7.2:** Run full test suite
   - **Command:** `npm test`
-  - **Action:** Verify all 688+ tests pass
+  - **Action:** Verify all tests pass (integration + unit)
+  - **Action:** Expected: ~100 validator tests + ~300 rule tests = ~400 total
   - **Action:** Fix any failing tests
   - **Estimated Time:** 30 minutes
-  - **Dependencies:** All previous phases
+  - **Dependencies:** Task 2.7.1, all previous phases
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.2:** Test config disable for new rules
+- [ ] **Task 2.7.3:** Test config disable for new rules
   - **Action:** Create test `.claudelintrc.json` with new rules disabled
   - **Action:** Verify validations are actually skipped
   - **Estimated Time:** 15 minutes
@@ -565,7 +586,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.3:** Test config severity override
+- [ ] **Task 2.7.4:** Test config severity override
   - **Action:** Create test config with severity overrides
   - **Action:** Verify warnings become errors and vice versa
   - **Estimated Time:** 15 minutes
@@ -573,7 +594,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.4:** Test rule options
+- [ ] **Task 2.7.5:** Test rule options
   - **Action:** Test custom rule configuration
   - **Action:** Verify schema validation rejects invalid options
   - **Estimated Time:** 15 minutes
@@ -581,7 +602,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.5:** Manual validation of each validator
+- [ ] **Task 2.7.6:** Manual validation of each validator
   - **Action:** Run each validator against real test fixtures
   - **Action:** Verify all expected issues are reported
   - **Estimated Time:** 20 minutes
@@ -589,7 +610,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.6:** Performance testing
+- [ ] **Task 2.7.7:** Performance testing
   - **Action:** Benchmark rule execution time
   - **Action:** Verify no significant performance regression
   - **Estimated Time:** 15 minutes
@@ -597,17 +618,17 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.7:** Remove reportError/reportWarning methods entirely
+- [ ] **Task 2.7.8:** Remove reportError/reportWarning methods entirely
   - **File:** `src/validators/base.ts`
   - **Action:** REMOVE reportError() method from base.ts
   - **Action:** REMOVE reportWarning() method from base.ts
   - **Action:** Verify all tests still pass
   - **Estimated Time:** 20 minutes
-  - **Dependencies:** Task 2.5.10, Tasks 2.7.1-2.7.6
+  - **Dependencies:** Task 2.5.10, Tasks 2.7.1-2.7.7
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.8:** Create rule documentation for new rules
+- [ ] **Task 2.7.9:** Create rule documentation for new rules
   - **Files:** `docs/rules/{category}/{rule-id}.md`
   - **Action:** Create documentation for all new rules
   - **Action:** Follow existing documentation template
@@ -616,7 +637,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.9:** Update CHANGELOG.md
+- [ ] **Task 2.7.10:** Update CHANGELOG.md
   - **File:** `CHANGELOG.md`
   - **Action:** Document all new rules added (40+)
   - **Action:** List behavior changes
@@ -626,10 +647,11 @@ After completing MCP and Claude.md validators, we discovered:
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.10:** Update contributing guide
+- [ ] **Task 2.7.11:** Update contributing guide
   - **File:** `docs/plugin-development.md`
   - **Action:** Document RuleRegistry.getRulesByCategory() pattern
   - **Action:** Document executeRulesForCategory() usage
+  - **Action:** Document two-level testing strategy (rule tests + validator tests)
   - **Estimated Time:** 20 minutes
   - **Dependencies:** All previous phases
   - **Assigned To:** TBD
