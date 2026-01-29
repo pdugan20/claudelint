@@ -84,10 +84,10 @@ export class RuleLoader {
     try {
       // Import the rule module
       const modulePath = join(this.rulesDir, file);
-      const module = await import(modulePath);
+      const module = (await import(modulePath)) as { rule: unknown };
 
       // Extract the rule export
-      const rule: Rule = module.rule;
+      const rule = module.rule as Rule;
 
       // Validate rule structure
       if (!isRule(rule)) {

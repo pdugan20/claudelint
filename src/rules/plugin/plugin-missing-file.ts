@@ -39,7 +39,7 @@ export const rule: Rule = {
 
     let plugin: PluginManifest;
     try {
-      plugin = JSON.parse(fileContent);
+      plugin = JSON.parse(fileContent) as PluginManifest;
     } catch {
       return; // JSON parse errors handled by schema validation
     }

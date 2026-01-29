@@ -90,8 +90,11 @@ export class OutputStylesValidator extends BaseValidator {
     content: string,
     outputStyleName: string
   ): Promise<void> {
+    // Ensure async for API consistency
+    await Promise.resolve();
+
     // Use schema-based validation
-    const { data: frontmatter, result } = await validateFrontmatterWithSchema(
+    const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
       OutputStyleFrontmatterSchema,
       filePath,

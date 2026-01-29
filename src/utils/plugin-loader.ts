@@ -94,6 +94,9 @@ export class PluginLoader {
    */
   async loadPlugin(pluginPath: string): Promise<PluginLoadResult> {
     try {
+      // Ensure this is treated as async (plugin loading may involve I/O in the future)
+      await Promise.resolve();
+
       // Check if already loaded
       if (this.loadedPlugins.has(pluginPath)) {
         return {
@@ -104,8 +107,11 @@ export class PluginLoader {
 
       // Try to require the plugin
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const pluginModule = require(pluginPath);
-      const plugin: ValidatorPlugin = pluginModule.default || pluginModule;
+      const pluginModule = require(pluginPath) as { default?: ValidatorPlugin } | ValidatorPlugin;
+      const plugin: ValidatorPlugin =
+        'default' in pluginModule && pluginModule.default
+          ? pluginModule.default
+          : (pluginModule as ValidatorPlugin);
 
       // Validate plugin interface
       if (!this.isValidPlugin(plugin)) {

@@ -164,7 +164,7 @@ export class SkillsValidator extends BaseValidator {
     skillName: string
   ): Promise<void> {
     // Use schema-based validation
-    const { data: frontmatter, result } = await validateFrontmatterWithSchema(
+    const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
       SkillFrontmatterWithRefinements,
       filePath,

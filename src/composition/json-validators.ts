@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { ComposableValidator } from './types';
+import { ComposableValidator, ComposableValidationResult } from './types';
 import { success, error, mergeResults } from './helpers';
 import { readFileSync } from 'fs';
 
@@ -93,18 +93,31 @@ export function objectProperties<T extends Record<string, unknown>>(
   }
 ): ComposableValidator<T> {
   return async (obj, context) => {
-    const results = await Promise.all(
-      Object.entries(propertyValidators).map(async ([key, validator]) => {
-        if (!validator) return success();
+    const validationTasks: Array<() => Promise<ComposableValidationResult>> = [];
 
+    for (const [key, validatorValue] of Object.entries(propertyValidators)) {
+      // Type assertion needed because Object.entries loses type information
+      const validator = validatorValue as ComposableValidator<unknown> | undefined;
+
+      if (!validator) {
+        validationTasks.push(() => Promise.resolve(success()));
+        continue;
+      }
+
+      validationTasks.push(async () => {
         const value = obj[key as keyof T];
-        return validator(value, {
+        const result = validator(value, {
           ...context,
           state: new Map(context.state).set('currentProperty', key),
         });
-      })
-    );
+        return Promise.resolve(result);
+      });
+    }
 
+    // Execute all validation tasks
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const results = await Promise.all(validationTasks.map((task) => task()));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return mergeResults(results);
   };
 }

@@ -76,7 +76,7 @@ export interface RuleMetadata {
    * Zod schema for rule options validation
    * Used to validate options from .claudelintrc.json
    */
-  schema?: z.ZodType<any>;
+  schema?: z.ZodType;
 
   /**
    * Default option values
@@ -180,19 +180,28 @@ export function isRule(value: unknown): value is Rule {
     return false;
   }
 
-  const rule = value as any;
+  const rule = value as Record<string, unknown>;
 
   return (
-    rule.meta &&
+    rule.meta !== null &&
+    rule.meta !== undefined &&
     typeof rule.meta === 'object' &&
-    typeof rule.meta.id === 'string' &&
-    typeof rule.meta.name === 'string' &&
-    typeof rule.meta.description === 'string' &&
-    typeof rule.meta.category === 'string' &&
-    typeof rule.meta.severity === 'string' &&
-    typeof rule.meta.fixable === 'boolean' &&
-    typeof rule.meta.deprecated === 'boolean' &&
-    typeof rule.meta.since === 'string' &&
+    'id' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).id === 'string' &&
+    'name' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).name === 'string' &&
+    'description' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).description === 'string' &&
+    'category' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).category === 'string' &&
+    'severity' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).severity === 'string' &&
+    'fixable' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).fixable === 'boolean' &&
+    'deprecated' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).deprecated === 'boolean' &&
+    'since' in rule.meta &&
+    typeof (rule.meta as Record<string, unknown>).since === 'string' &&
     typeof rule.validate === 'function'
   );
 }

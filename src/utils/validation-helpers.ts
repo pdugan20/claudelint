@@ -101,7 +101,7 @@ export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[
   const issues: ValidationIssue[] = [];
 
   // Validate event name
-  if (!VALID_HOOK_EVENTS.includes(hook.event as any)) {
+  if (!(VALID_HOOK_EVENTS as readonly string[]).includes(hook.event)) {
     issues.push({
       message: `Unknown hook event: ${hook.event}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
       severity: 'warning',
@@ -109,7 +109,7 @@ export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[
   }
 
   // Validate hook type
-  if (!VALID_HOOK_TYPES.includes(hook.type as any)) {
+  if (!(VALID_HOOK_TYPES as readonly string[]).includes(hook.type)) {
     issues.push({
       message: `Invalid hook type: ${hook.type}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
       severity: 'error',

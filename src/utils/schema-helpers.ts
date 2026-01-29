@@ -72,12 +72,12 @@ export function validateWithSchema<T extends z.ZodType>(
 /**
  * Extract and validate frontmatter using schema
  */
-export async function validateFrontmatterWithSchema<T extends z.ZodType>(
+export function validateFrontmatterWithSchema<T extends z.ZodType>(
   content: string,
   schema: T,
   filePath: string,
   ruleIdPrefix: string
-): Promise<{ data: z.infer<T> | null; result: ValidationResult }> {
+): { data: z.infer<T> | null; result: ValidationResult } {
   const { frontmatter, hasFrontmatter } = extractFrontmatter(content);
 
   if (!hasFrontmatter) {

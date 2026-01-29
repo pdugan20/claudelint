@@ -95,7 +95,7 @@ export class AgentsValidator extends BaseValidator {
     agentName: string
   ): Promise<void> {
     // Use schema-based validation
-    const { data: frontmatter, result } = await validateFrontmatterWithSchema(
+    const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
       AgentFrontmatterWithRefinements,
       filePath,

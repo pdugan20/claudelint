@@ -30,7 +30,7 @@ export const rule: Rule = {
     },
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { filePath, fileContent, options } = context;
 
     // Only validate SKILL.md files

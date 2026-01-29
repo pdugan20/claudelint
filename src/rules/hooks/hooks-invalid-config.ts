@@ -29,7 +29,7 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/hooks/hooks-invalid-config.md',
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { fileContent } = context;
 
     // Parse JSON
@@ -52,7 +52,7 @@ export const rule: Rule = {
 
 function validateHook(context: Parameters<Rule['validate']>[0], hook: Hook): void {
   // Validate hook type
-  if (!VALID_HOOK_TYPES.includes(hook.type as any)) {
+  if (!(VALID_HOOK_TYPES as readonly string[]).includes(hook.type)) {
     context.report({
       message: `Invalid hook type: ${hook.type}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
     });

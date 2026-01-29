@@ -4,6 +4,7 @@
 
 import { ComposableValidator, ValidationContext } from './types';
 import { success, mergeResults } from './helpers';
+import { ValidationError, ValidationWarning } from '../validators/base';
 
 /**
  * Chains validators in sequence, stopping at first error
@@ -20,8 +21,8 @@ export function compose<T>(
   ...validators: ComposableValidator<T>[]
 ): ComposableValidator<T> {
   return async (value: T, context: ValidationContext) => {
-    const errors: any[] = [];
-    const warnings: any[] = [];
+    const errors: ValidationError[] = [];
+    const warnings: ValidationWarning[] = [];
 
     for (const validator of validators) {
       const result = await validator(value, context);

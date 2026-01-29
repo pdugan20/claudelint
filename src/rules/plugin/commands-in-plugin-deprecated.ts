@@ -27,7 +27,7 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/commands-in-plugin-deprecated.md',
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { filePath, fileContent } = context;
 
     // Only validate plugin.json files
@@ -37,7 +37,7 @@ export const rule: Rule = {
 
     let plugin: PluginManifest;
     try {
-      plugin = JSON.parse(fileContent);
+      plugin = JSON.parse(fileContent) as PluginManifest;
     } catch {
       return; // JSON parse errors handled by schema validation
     }

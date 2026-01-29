@@ -27,7 +27,7 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-permission-empty-pattern.md',
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { filePath, fileContent } = context;
 
     // Only validate settings.json files
@@ -37,7 +37,7 @@ export const rule: Rule = {
 
     let config: SettingsConfig;
     try {
-      config = JSON.parse(fileContent);
+      config = JSON.parse(fileContent) as SettingsConfig;
     } catch {
       return; // JSON parse errors handled by schema validation
     }

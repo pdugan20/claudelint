@@ -28,7 +28,7 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/hooks/hooks-invalid-event.md',
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { fileContent } = context;
 
     // Parse JSON
@@ -43,7 +43,7 @@ export const rule: Rule = {
     // Validate each hook's event
     if (config.hooks && Array.isArray(config.hooks)) {
       for (const hook of config.hooks) {
-        if (hook.event && !VALID_HOOK_EVENTS.includes(hook.event as any)) {
+        if (hook.event && !(VALID_HOOK_EVENTS as readonly string[]).includes(hook.event)) {
           context.report({
             message: `Unknown hook event: ${hook.event}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
           });

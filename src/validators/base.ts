@@ -187,7 +187,7 @@ export abstract class BaseValidator {
    *
    * @example
    * ```typescript
-   * const result = await validateFrontmatterWithSchema(content, schema, filePath, 'claude-md');
+   * const result = validateFrontmatterWithSchema(content, schema, filePath, 'claude-md');
    * this.mergeSchemaValidationResult(result);
    * ```
    */

@@ -27,7 +27,7 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-invalid-server.md',
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { filePath, fileContent } = context;
 
     // Only validate .mcp.json files

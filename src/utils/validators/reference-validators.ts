@@ -10,7 +10,7 @@ import { VALID_TOOLS } from '../../schemas/constants';
  * Used by: skill-frontmatter-allowed-tools-invalid, agent-tools-invalid-tool
  */
 export function validateToolName(toolName: string): ValidationIssue | null {
-  if (!VALID_TOOLS.includes(toolName as any)) {
+  if (!(VALID_TOOLS as readonly string[]).includes(toolName)) {
     return {
       message: `Unknown tool: ${toolName}. Valid tools: ${VALID_TOOLS.join(', ')}`,
       severity: 'error',
