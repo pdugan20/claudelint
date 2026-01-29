@@ -1,183 +1,122 @@
-# Rule Reference
+# Rule Index
 
-Complete catalog of all claudelint validation rules.
+This directory contains documentation for all 66 claudelint rules.
 
-## Overview
+## Rules by Category
 
-Claudelint includes 27 rules organized into 6 categories:
 
-- **CLAUDE.md Rules** (4 rules) - Validate CLAUDE.md files and imports
-- **Skills Rules** (11 rules) - Validate Claude Code skills
-- **Settings Rules** (3 rules) - Validate settings.json configuration
-- **Hooks Rules** (3 rules) - Validate hooks.json configuration
-- **MCP Rules** (3 rules) - Validate MCP server configuration
-- **Plugin Rules** (3 rules) - Validate plugin manifests
+### Agents (10 rules)
 
-## Rule Severity
+- [agent-description](./agents/agent-description.md) - Agent description must be at least 10 characters, written in third person, with no XML tags
+- [agent-disallowed-tools](./agents/agent-disallowed-tools.md) - Agent disallowed-tools must be an array of tool names
+- [agent-events](./agents/agent-events.md) - Agent events must be an array with maximum 3 event names
+- [agent-hooks](./agents/agent-hooks.md) - Agent hooks must be an array of valid hook objects
+- [agent-hooks-invalid-schema](./agents/agent-hooks-invalid-schema.md) - Hook configuration in agents.json violates schema requirements
+- [agent-model](./agents/agent-model.md) - Agent model must be one of: sonnet, opus, haiku, inherit
+- [agent-name](./agents/agent-name.md) - Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags
+- [agent-skills](./agents/agent-skills.md) - Agent skills must be an array of skill names
+- [agent-skills-not-found](./agents/agent-skills-not-found.md) - Referenced skill does not exist in .claude/skills directory
+- [agent-tools](./agents/agent-tools.md) - Agent tools must be an array of tool names, cannot be used with disallowed-tools
 
-- **error** - Must be fixed (exit code 1)
-- **warning** - Should be fixed (exit code 0 by default)
+### CLAUDE.md (11 rules)
 
-## Fixable Rules
+- [claude-md-content-too-many-sections](./claude-md/claude-md-content-too-many-sections.md) - CLAUDE.md has too many sections making it hard to navigate
+- [claude-md-filename-case-sensitive](./claude-md/claude-md-filename-case-sensitive.md) - Filename differs only in case from another file, causing conflicts on case-insensitive filesystems
+- [claude-md-glob-pattern-backslash](./claude-md/claude-md-glob-pattern-backslash.md) - Path pattern uses backslashes instead of forward slashes
+- [claude-md-glob-pattern-too-broad](./claude-md/claude-md-glob-pattern-too-broad.md) - Path pattern is overly broad
+- [claude-md-import-circular](./claude-md/claude-md-import-circular.md) - Circular import detected between Claude.md files
+- [claude-md-import-in-code-block](./claude-md/claude-md-import-in-code-block.md) - Import statement found inside code block
+- [claude-md-import-missing](./claude-md/claude-md-import-missing.md) - Imported file does not exist
+- [claude-md-paths](./claude-md/claude-md-paths.md) - Claude MD paths must be a non-empty array with at least one path pattern
+- [claude-md-rules-circular-symlink](./claude-md/claude-md-rules-circular-symlink.md) - Circular symlink detected in .claude directory
+- [claude-md-size-error](./claude-md/claude-md-size-error.md) - CLAUDE.md exceeds maximum file size limit
+- [claude-md-size-warning](./claude-md/claude-md-size-warning.md) - CLAUDE.md file is approaching size limit
 
-Rules marked with can be automatically fixed using `claudelint check-all --fix`.
+### Commands (2 rules)
 
----
+- [commands-deprecated-directory](./commands/commands-deprecated-directory.md) - Commands directory is deprecated, migrate to Skills
+- [commands-migrate-to-skills](./commands/commands-migrate-to-skills.md) - Migration guidance for deprecated Commands
 
-## CLAUDE.md Rules
+### Hooks (3 rules)
 
-Validation rules for CLAUDE.md files and import system.
+- [hooks-invalid-config](./hooks/hooks-invalid-config.md) - Hook configuration must be valid
+- [hooks-invalid-event](./hooks/hooks-invalid-event.md) - Hook events must be valid event names
+- [hooks-missing-script](./hooks/hooks-missing-script.md) - Hook scripts must reference existing files
 
-| Rule ID                                           | Description                                   | Severity | Fixable |
-| ------------------------------------------------- | --------------------------------------------- | -------- | ------- |
-| [size-error](./claude-md/size-error.md)           | CLAUDE.md file exceeds 40KB limit             | error    | No      |
-| [size-warning](./claude-md/size-warning.md)       | CLAUDE.md file exceeds 35KB warning threshold | warning  | No      |
-| [import-missing](./claude-md/import-missing.md)   | Imported file does not exist                  | error    | No      |
-| [import-circular](./claude-md/import-circular.md) | Circular import dependency detected           | error    | No      |
+### MCP (3 rules)
 
----
+- [mcp-invalid-env-var](./mcp/mcp-invalid-env-var.md) - Environment variables must use proper expansion syntax
+- [mcp-invalid-server](./mcp/mcp-invalid-server.md) - MCP server names must be unique
+- [mcp-invalid-transport](./mcp/mcp-invalid-transport.md) - MCP transport type must be one of the supported values
 
-## Skills Rules
+### OutputStyles (3 rules)
 
-Validation rules for Claude Code skills (SKILL.md files and skill directories).
+- [output-style-description](./output-styles/output-style-description.md) - Output style description must be at least 10 characters, written in third person, with no XML tags
+- [output-style-examples](./output-styles/output-style-examples.md) - Output style examples must be an array of strings
+- [output-style-name](./output-styles/output-style-name.md) - Output style name must be lowercase-with-hyphens, under 64 characters, with no XML tags
 
-| Rule ID                                                            | Description                                   | Severity | Fixable |
-| ------------------------------------------------------------------ | --------------------------------------------- | -------- | ------- |
-| [skill-missing-shebang](./skills/skill-missing-shebang.md)         | Shell script missing shebang                  | error    | Yes     |
-| [skill-missing-changelog](./skills/skill-missing-changelog.md)     | Skill missing CHANGELOG.md                    | warning  | Yes     |
-| [skill-missing-version](./skills/skill-missing-version.md)         | SKILL.md missing version in frontmatter       | warning  | Yes     |
-| [skill-missing-comments](./skills/skill-missing-comments.md)       | Shell script lacks sufficient comments        | warning  | No      |
-| [skill-dangerous-command](./skills/skill-dangerous-command.md)     | Dangerous command detected (rm -rf, etc.)     | error    | No      |
-| [skill-eval-usage](./skills/skill-eval-usage.md)                   | Use of eval or exec detected                  | warning  | No      |
-| [skill-path-traversal](./skills/skill-path-traversal.md)           | Path traversal pattern detected               | warning  | No      |
-| [skill-missing-examples](./skills/skill-missing-examples.md)       | SKILL.md missing usage examples               | warning  | No      |
-| [skill-too-many-files](./skills/skill-too-many-files.md)           | Skill directory has too many files at root    | warning  | No      |
-| [skill-deep-nesting](./skills/skill-deep-nesting.md)               | Skill directory nesting exceeds maximum depth | warning  | No      |
-| [skill-naming-inconsistent](./skills/skill-naming-inconsistent.md) | Inconsistent file naming conventions          | warning  | No      |
+### Plugin (6 rules)
 
----
+- [commands-in-plugin-deprecated](./plugin/commands-in-plugin-deprecated.md) - The commands field in plugin.json is deprecated
+- [plugin-circular-dependency](./plugin/plugin-circular-dependency.md) - Plugin must not have circular dependencies
+- [plugin-dependency-invalid-version](./plugin/plugin-dependency-invalid-version.md) - Plugin dependency versions must use valid semver ranges
+- [plugin-invalid-manifest](./plugin/plugin-invalid-manifest.md) - marketplace.json must be valid and reference existing files
+- [plugin-invalid-version](./plugin/plugin-invalid-version.md) - Plugin version must follow semantic versioning format
+- [plugin-missing-file](./plugin/plugin-missing-file.md) - Files referenced in plugin.json must exist
 
-## Settings Rules
+### Settings (4 rules)
 
-Validation rules for settings.json configuration files.
+- [settings-invalid-env-var](./settings/settings-invalid-env-var.md) - Environment variables must follow naming conventions
+- [settings-invalid-permission](./settings/settings-invalid-permission.md) - Permission rules must use valid action values
+- [settings-permission-empty-pattern](./settings/settings-permission-empty-pattern.md) - Tool(pattern) syntax should not have empty patterns
+- [settings-permission-invalid-rule](./settings/settings-permission-invalid-rule.md) - Permission rules must use valid Tool(pattern) syntax
 
-| Rule ID                                                                  | Description                                   | Severity | Fixable |
-| ------------------------------------------------------------------------ | --------------------------------------------- | -------- | ------- |
-| [settings-invalid-schema](./settings/settings-invalid-schema.md)         | Settings file does not match schema           | error    | No      |
-| [settings-invalid-permission](./settings/settings-invalid-permission.md) | Permission rule configuration is invalid      | error    | No      |
-| [settings-invalid-env-var](./settings/settings-invalid-env-var.md)       | Environment variable name or value is invalid | warning  | No      |
+### Skills (24 rules)
 
----
+- [skill-agent](./skills/skill-agent.md) - When skill context is "fork", agent field is required to specify which agent to use
+- [skill-allowed-tools](./skills/skill-allowed-tools.md) - Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools
+- [skill-body-too-long](./skills/skill-body-too-long.md) - SKILL.md body should not exceed 500 lines
+- [skill-context](./skills/skill-context.md) - Skill context must be one of: fork, inline, auto
+- [skill-dangerous-command](./skills/skill-dangerous-command.md) - Skill script contains dangerous commands that could cause system damage
+- [skill-deep-nesting](./skills/skill-deep-nesting.md) - Skill directory has excessive directory nesting
+- [skill-dependencies](./skills/skill-dependencies.md) - Skill dependencies must be an array of strings
+- [skill-description](./skills/skill-description.md) - Skill description must be at least 10 characters, written in third person, with no XML tags
+- [skill-disallowed-tools](./skills/skill-disallowed-tools.md) - Skill disallowed-tools must be an array of tool names
+- [skill-eval-usage](./skills/skill-eval-usage.md) - Script uses eval/exec which can execute arbitrary code
+- [skill-large-reference-no-toc](./skills/skill-large-reference-no-toc.md) - Large SKILL.md files should include a table of contents
+- [skill-missing-changelog](./skills/skill-missing-changelog.md) [FIXABLE] - Skill directory lacks CHANGELOG.md
+- [skill-missing-comments](./skills/skill-missing-comments.md) - Shell script lacks explanatory comments
+- [skill-missing-examples](./skills/skill-missing-examples.md) - SKILL.md lacks usage examples
+- [skill-missing-shebang](./skills/skill-missing-shebang.md) [FIXABLE] - Shell script lacks shebang line
+- [skill-missing-version](./skills/skill-missing-version.md) [FIXABLE] - Skill frontmatter lacks version field
+- [skill-model](./skills/skill-model.md) - Skill model must be one of: sonnet, opus, haiku, inherit
+- [skill-name](./skills/skill-name.md) - Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words
+- [skill-naming-inconsistent](./skills/skill-naming-inconsistent.md) - Skill has inconsistent file naming conventions
+- [skill-path-traversal](./skills/skill-path-traversal.md) - Potential path traversal pattern detected
+- [skill-tags](./skills/skill-tags.md) - Skill tags must be an array of strings
+- [skill-time-sensitive-content](./skills/skill-time-sensitive-content.md) - SKILL.md should avoid time-sensitive references
+- [skill-too-many-files](./skills/skill-too-many-files.md) - Skill directory has too many files at root level
+- [skill-version](./skills/skill-version.md) - Skill version must follow semantic versioning format (e.g., 1.0.0)
 
-## Hooks Rules
+## Legend
 
-Validation rules for hooks.json configuration files.
+- [FIXABLE] - Rule supports auto-fixing with `--fix`
+- [DEPRECATED] - Rule is deprecated and may be removed in future versions
 
-| Rule ID                                                 | Description                              | Severity | Fixable |
-| ------------------------------------------------------- | ---------------------------------------- | -------- | ------- |
-| [hooks-invalid-event](./hooks/hooks-invalid-event.md)   | Hook event name is not recognized        | error    | No      |
-| [hooks-missing-script](./hooks/hooks-missing-script.md) | Hook references non-existent script file | error    | No      |
-| [hooks-invalid-config](./hooks/hooks-invalid-config.md) | Hook configuration is malformed          | error    | No      |
+## Statistics
 
----
+- **Total Rules**: 66
+- **Fixable Rules**: 3
+- **Deprecated Rules**: 0
 
-## MCP Rules
+## Categories
 
-Validation rules for MCP (Model Context Protocol) server configurations.
-
-| Rule ID                                                 | Description                                        | Severity | Fixable |
-| ------------------------------------------------------- | -------------------------------------------------- | -------- | ------- |
-| [mcp-invalid-server](./mcp/mcp-invalid-server.md)       | MCP server configuration is invalid                | error    | No      |
-| [mcp-invalid-transport](./mcp/mcp-invalid-transport.md) | MCP transport configuration is invalid             | error    | No      |
-| [mcp-invalid-env-var](./mcp/mcp-invalid-env-var.md)     | Environment variable usage or expansion is invalid | warning  | No      |
-
----
-
-## Plugin Rules
-
-Validation rules for Claude Code plugin manifests.
-
-| Rule ID                                                        | Description                           | Severity | Fixable |
-| -------------------------------------------------------------- | ------------------------------------- | -------- | ------- |
-| [plugin-invalid-manifest](./plugin/plugin-invalid-manifest.md) | Plugin manifest does not match schema | error    | No      |
-| [plugin-invalid-version](./plugin/plugin-invalid-version.md)   | Plugin version is not valid semver    | error    | No      |
-| [plugin-missing-file](./plugin/plugin-missing-file.md)         | Plugin references non-existent file   | error    | No      |
-
----
-
-## Rule Statistics
-
-- **Total Rules:** 27
-- **Error Severity:** 19 rules
-- **Warning Severity:** 8 rules
-- **Fixable Rules:** 3 rules (skill-missing-shebang, skill-missing-changelog, skill-missing-version)
-
----
-
-## Using Rules
-
-### View All Rules
-
-```bash
-claudelint list-rules
-```
-
-### Configure Rule Severity
-
-Disable a rule:
-
-```json
-{
-  "rules": {
-    "skill-missing-comments": "off"
-  }
-}
-```
-
-Change to warning:
-
-```json
-{
-  "rules": {
-    "size-error": "warning"
-  }
-}
-```
-
-Change to error:
-
-```json
-{
-  "rules": {
-    "settings-invalid-env-var": "error"
-  }
-}
-```
-
-### Auto-fix Rules
-
-Fix all fixable issues:
-
-```bash
-claudelint check-all --fix
-```
-
-Preview fixes without applying:
-
-```bash
-claudelint check-all --fix-dry-run
-```
-
-Fix only errors:
-
-```bash
-claudelint check-all --fix --fix-type errors
-```
-
----
-
-## See Also
-
-- [Configuration Guide](../configuration.md)
-- [Auto-fix Documentation](../auto-fix.md)
-- [Validator Documentation](../validators.md)
+- [Agents](./agents/) - 10 rules
+- [CLAUDE.md](./claude-md/) - 11 rules
+- [Commands](./commands/) - 2 rules
+- [Hooks](./hooks/) - 3 rules
+- [MCP](./mcp/) - 3 rules
+- [OutputStyles](./output-styles/) - 3 rules
+- [Plugin](./plugin/) - 6 rules
+- [Settings](./settings/) - 4 rules
+- [Skills](./skills/) - 24 rules

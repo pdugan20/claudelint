@@ -1,9 +1,12 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { directoryExists, resolvePath } from '../utils/file-system';
-import { join } from 'path';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules
+import { rule as commandsDeprecatedDirectoryRule } from '../rules/commands/commands-deprecated-directory';
+import { rule as commandsMigrateToSkillsRule } from '../rules/commands/commands-migrate-to-skills';
 
 /**
  * Options specific to Commands validator
@@ -27,35 +30,12 @@ export class CommandsValidator extends BaseValidator {
   }
 
   async validate(): Promise<ValidationResult> {
-    await this.checkCommandsDirectory();
+    // NEW: Execute deprecation warning rules
+    // Use basePath as filePath since these rules check the project structure
+    await this.executeRule(commandsDeprecatedDirectoryRule, this.basePath, '');
+    await this.executeRule(commandsMigrateToSkillsRule, this.basePath, '');
+
     return this.getResult();
-  }
-
-  private async checkCommandsDirectory(): Promise<void> {
-    const claudeDir = resolvePath(this.basePath, '.claude');
-    const commandsDir = join(claudeDir, 'commands');
-
-    const exists = await directoryExists(commandsDir);
-    if (exists) {
-      this.reportWarning(
-        'Commands directory (.claude/commands) is deprecated. Please migrate to Skills (.claude/skills). ' +
-        'Skills provide better structure, versioning, and documentation. ' +
-        'See: https://docs.anthropic.com/claude-code/skills',
-        commandsDir,
-        undefined,
-        'commands-deprecated-directory'
-      );
-
-      this.reportWarning(
-        'To migrate: 1) Create skill directories in .claude/skills/<skill-name>, ' +
-        '2) Move command scripts to <skill-name>/<skill-name>.sh, ' +
-        '3) Add SKILL.md with frontmatter and documentation, ' +
-        '4) Update plugin.json to reference skills instead of commands',
-        commandsDir,
-        undefined,
-        'commands-migrate-to-skills'
-      );
-    }
   }
 }
 

@@ -219,14 +219,14 @@ describe('Custom Matchers', () => {
       const result: ValidationResult = {
         valid: false,
         errors: [
-          { message: 'File too large', severity: 'error', ruleId: 'size-error' },
-          { message: 'Invalid syntax', severity: 'error', ruleId: 'import-missing' },
+          { message: 'File too large', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Invalid syntax', severity: 'error', ruleId: 'claude-md-import-missing' },
         ],
         warnings: [],
       };
 
-      expect(result).toHaveErrorWithRule('File too large', 'size-error');
-      expect(result).toHaveErrorWithRule('Invalid', 'import-missing');
+      expect(result).toHaveErrorWithRule('File too large', 'claude-md-size-error');
+      expect(result).toHaveErrorWithRule('Invalid', 'claude-md-import-missing');
     });
 
     it('should pass when error matches regex and rule ID', () => {
@@ -242,21 +242,21 @@ describe('Custom Matchers', () => {
     it('should fail when message matches but rule ID does not', () => {
       const result: ValidationResult = {
         valid: false,
-        errors: [{ message: 'File too large', severity: 'error', ruleId: 'size-error' }],
+        errors: [{ message: 'File too large', severity: 'error', ruleId: 'claude-md-size-error' }],
         warnings: [],
       };
 
-      expect(() => expect(result).toHaveErrorWithRule('File too large', 'import-missing')).toThrow();
+      expect(() => expect(result).toHaveErrorWithRule('File too large', 'claude-md-import-missing')).toThrow();
     });
 
     it('should fail when rule ID matches but message does not', () => {
       const result: ValidationResult = {
         valid: false,
-        errors: [{ message: 'File too large', severity: 'error', ruleId: 'size-error' }],
+        errors: [{ message: 'File too large', severity: 'error', ruleId: 'claude-md-size-error' }],
         warnings: [],
       };
 
-      expect(() => expect(result).toHaveErrorWithRule('Different message', 'size-error')).toThrow();
+      expect(() => expect(result).toHaveErrorWithRule('Different message', 'claude-md-size-error')).toThrow();
     });
   });
 

@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: Skills
-**Category**: Completeness
+**Category**: Cross-Reference
 
-Enforces that shell scripts with more than 10 lines include explanatory comments to aid understanding and maintenance.
+Shell script lacks explanatory comments
 
 ## Rule Details
 
@@ -62,41 +62,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Deployment successful"
-```
-
-## How To Fix
-
-1. **Add file header**: Describe what the script does, how to use it, and any prerequisites (tokens, environment variables, dependencies)
-2. **Add section comments**: Mark major logical sections (validation, configuration, main operation, cleanup)
-3. **Comment complex logic**: Explain non-obvious behavior, tricky operations, or why specific approaches were chosen
-4. **Document configuration**: Explain why certain values are used or where they come from
-5. **Clarify error handling**: Explain what errors mean and how to resolve them
-
-**Comment Guidelines:**
-
-DO explain why code exists (not just what), non-obvious behavior, complex algorithms, prerequisites and dependencies, usage examples and parameters, error conditions.
-
-DON'T restate the code, state the obvious, or let comments become outdated.
-
-**Minimum Example:**
-
-```bash
-#!/usr/bin/env bash
-
-# Backup database to S3
-# Usage: ./backup-db.sh [database-name]
-
-# Validation
-if [ -z "$1" ]; then
-  echo "Error: database name required"
-  exit 1
-fi
-
-# Backup operation
-pg_dump "$1" | gzip | aws s3 cp - "s3://backups/$1-$(date +%Y%m%d).sql.gz"
-
-# Cleanup old backups (keep last 7 days)
-aws s3 ls s3://backups/ | head -n -7 | xargs -I {} aws s3 rm "s3://backups/{}"
 ```
 
 ## Options

@@ -5,7 +5,7 @@
 **Validator**: Skills
 **Category**: Security
 
-Detects `../` or `..\` sequences in skill scripts that may indicate path traversal vulnerabilities allowing access to files outside intended scope.
+Potential path traversal pattern detected
 
 ## Rule Details
 
@@ -69,48 +69,6 @@ if not str(user_path).startswith(str(allowed_dir)):
 
 with open(user_path, 'r') as f:
     print(f.read())
-```
-
-## How To Fix
-
-1. **Validate input**: Check for `..` sequences and reject paths containing them
-2. **Use basename**: Strip all directory components with `basename "$filename"`
-3. **Validate resolved paths**: Ensure absolute path is within allowed directory using `os.path.abspath`
-4. **Use allowlist**: Only permit specific filenames, reject all others
-5. **Canonicalize paths**: Resolve symlinks and `.` / `..` before validation
-
-**Validation Example:**
-
-```bash
-if [[ "$filename" == *".."* ]]; then
-  echo "Error: Path traversal detected"
-  exit 1
-fi
-```
-
-**Absolute Path Validation:**
-
-```python
-def is_safe_path(base_path, user_path):
-    base = os.path.abspath(base_path)
-    target = os.path.abspath(os.path.join(base_path, user_path))
-    return target.startswith(base + os.sep)
-```
-
-**Legitimate Use Cases:**
-
-Hardcoded traversal (not user-controlled) is usually safe:
-
-- Relative imports: `source ../lib/common.sh`
-- Build scripts: `cd ../.. && make`
-- Repository navigation: `git add ../other-file.txt`
-
-Use inline disable for intentional cases:
-
-```bash
-# claudelint-disable-next-line skill-path-traversal
-cd ../..
-make build
 ```
 
 ## Options

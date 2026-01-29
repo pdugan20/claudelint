@@ -1,7 +1,7 @@
 # Rule Architecture Refactor - Design Proposal
 
 **Date**: 2026-01-28
-**Status**: Draft
+**Status**: Approved - Implementation In Progress
 
 ## Executive Summary
 
@@ -53,11 +53,17 @@ class ClaudeMdValidator {
 - **Can't disable at load time** - All validators always load
 - **Plugin-hostile** - Plugins can't easily add rules
 
+### Actual Current Size (41 Rules)
+
+- `rule-ids.ts`: 168 lines
+- `rules/index.ts`: 502 lines
+- **Total**: 668 lines of manual boilerplate
+
 ### Estimated Size at 300 Rules
 
-- `rule-ids.ts`: ~1000 lines
-- `rules/index.ts`: ~2500 lines
-- Completely unmaintainable
+- `rule-ids.ts`: ~1100 lines
+- `rules/index.ts`: ~3700 lines
+- **Total**: ~4800 lines - Completely unmaintainable
 
 ## Option 1: ESLint-Style (Separate Files)
 

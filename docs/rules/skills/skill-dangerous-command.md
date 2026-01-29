@@ -5,7 +5,7 @@
 **Validator**: Skills
 **Category**: Security
 
-Detects dangerous shell commands that could cause catastrophic data loss, system damage, or denial of service.
+Skill script contains dangerous commands that could cause system damage
 
 ## Rule Details
 
@@ -57,38 +57,6 @@ Safe operations using proper tools:
 # Safe: Uses proper backup tools instead of dd
 rsync -av /source/ /backup/
 ```
-
-## How To Fix
-
-1. **Remove the command**: If unnecessary, delete it entirely
-2. **Add validation**: Check paths before destructive operations, use pattern matching to validate variables
-3. **Use parameter expansion safeguards**: `${VAR:?error}` fails if VAR is unset
-4. **Use safer alternatives**: Replace `dd` with `rsync`/`tar`, `mkfs` with GUI tools, `rm -rf` with `trash-cli`
-5. **Add confirmation prompts**: For destructive operations, require explicit confirmation
-6. **Test in sandbox**: Test destructive scripts in containers or VMs first
-
-**Validation Example:**
-
-```bash
-# Validate variable is set and non-empty
-: "${BUILD_DIR:?BUILD_DIR must be set}"
-
-# Validate directory matches expected pattern
-if [[ ! "$BUILD_DIR" =~ ^/tmp/build-[0-9]+$ ]]; then
-  echo "Error: Invalid directory pattern"
-  exit 1
-fi
-
-# Safe deletion with safeguards
-rm -rf "${BUILD_DIR:?}"
-```
-
-**Best Practices:**
-
-- Never use absolute paths with `rm -rf`
-- Always validate input before destructive operations
-- Prefer high-level tools over low-level commands
-- Use `set -euo pipefail` for safer scripts
 
 ## Options
 

@@ -5,7 +5,7 @@
 **Validator**: Skills
 **Category**: Security
 
-Detects use of `eval` in bash scripts and `eval()`/`exec()` in Python scripts which pose significant security risks when handling untrusted input.
+Script uses eval/exec which can execute arbitrary code
 
 ## Rule Details
 
@@ -73,39 +73,6 @@ except (ValueError, SyntaxError):
 
 # Safe: Use JSON for structured data
 config = json.loads(config_string)
-```
-
-## How To Fix
-
-1. **Bash - Use direct execution**: Replace `eval "$command"` with `"${command_array[@]}"` using arrays
-2. **Bash - Use case statements**: Replace dynamic command construction with explicit case statements that dispatch to known functions
-3. **Python - Use ast.literal_eval**: For evaluating data structures, use `ast.literal_eval()` which only evaluates Python literals (strings, numbers, lists, dicts) without executing code
-4. **Python - Use proper parsers**: Replace `eval(config_string)` with `json.loads()`, `yaml.safe_load()`, or `configparser`
-5. **Python - Use dictionaries for dispatch**: Replace `exec(f"{function_name}()")` with dictionary mapping function names to actual function objects
-
-**Bash Example:**
-
-```bash
-# Before
-eval "$action"
-
-# After
-case "$action" in
-  start) start_service ;;
-  stop) stop_service ;;
-esac
-```
-
-**Python Example:**
-
-```python
-# Before
-exec(f"{function_name}()")
-
-# After
-functions = {'start': start_function, 'stop': stop_function}
-if function_name in functions:
-    functions[function_name]()
 ```
 
 ## Options

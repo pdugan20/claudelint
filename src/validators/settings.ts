@@ -1,16 +1,21 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
-import { findSettingsFiles, fileExists } from '../utils/file-system';
+import { findSettingsFiles, fileExists, readFileContent } from '../utils/file-system';
 import { z } from 'zod';
-import { VALID_PERMISSION_ACTIONS } from '../schemas/constants';
 import { SettingsSchema, PermissionRuleSchema, HookSchema } from './schemas';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
 import {
-  validateEnvironmentVariables,
   validateHook as validateHookHelper,
   hasVariableExpansion,
 } from '../utils/validation-helpers';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules
+import { rule as settingsInvalidPermissionRule } from '../rules/settings/settings-invalid-permission';
+import { rule as settingsPermissionInvalidRuleRule } from '../rules/settings/settings-permission-invalid-rule';
+import { rule as settingsPermissionEmptyPatternRule } from '../rules/settings/settings-permission-empty-pattern';
+import { rule as settingsInvalidEnvVarRule } from '../rules/settings/settings-invalid-env-var';
 
 /**
  * Options specific to Settings validator
@@ -38,10 +43,20 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     filePath: string,
     settings: z.infer<typeof SettingsSchema>
   ): Promise<void> {
-    // Validate permission rules
+    // Read file content for rule execution
+    const content = await readFileContent(filePath);
+
+    // NEW: Execute new-style rules
+    await this.executeRule(settingsInvalidPermissionRule, filePath, content);
+    await this.executeRule(settingsPermissionInvalidRuleRule, filePath, content);
+    await this.executeRule(settingsPermissionEmptyPatternRule, filePath, content);
+    await this.executeRule(settingsInvalidEnvVarRule, filePath, content);
+
+    // OLD: Keep additional validation not covered by registered rules
+    // Validate permission rules - tool name validation only
     if (settings.permissions) {
       for (const rule of settings.permissions) {
-        this.validatePermissionRule(filePath, rule);
+        this.validatePermissionRuleToolName(filePath, rule);
       }
     }
 
@@ -57,72 +72,22 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
       await this.validateFilePath(filePath, settings.apiKeyHelper, 'apiKeyHelper');
     }
 
-    // Validate environment variables
-    if (settings.env) {
-      this.validateEnvironmentVariables(filePath, settings.env);
-    }
-
     // Validate output style path
     if (settings.outputStyle) {
       await this.validateFilePath(filePath, settings.outputStyle, 'outputStyle');
     }
   }
 
-  private validatePermissionRule(
+  private validatePermissionRuleToolName(
     filePath: string,
     rule: z.infer<typeof PermissionRuleSchema>
   ): void {
-    // Parse Tool(pattern) syntax if present
+    // Parse Tool(pattern) syntax if present to extract tool name
     const toolPatternMatch = rule.tool.match(/^([^(]+)\(([^)]*)\)$/);
-    let toolName = rule.tool;
-    let inlinePattern: string | null = null;
+    const toolName = toolPatternMatch ? toolPatternMatch[1].trim() : rule.tool;
 
-    if (toolPatternMatch) {
-      toolName = toolPatternMatch[1].trim();
-      inlinePattern = toolPatternMatch[2].trim();
-
-      // Check if both inline pattern and separate pattern field are specified
-      if (inlinePattern && rule.pattern) {
-        this.reportError(
-          `Permission rule has both inline pattern "${inlinePattern}" in tool field and separate pattern field "${rule.pattern}". ` +
-          `Use only one format: either "tool": "${toolName}(${inlinePattern})" OR "tool": "${toolName}", "pattern": "${rule.pattern}"`,
-          filePath,
-          undefined,
-          'settings-permission-invalid-rule'
-        );
-      }
-
-      // Validate inline pattern
-      if (inlinePattern !== null && inlinePattern.length === 0) {
-        this.reportWarning(
-          `Empty inline pattern in Tool(pattern) syntax: ${rule.tool}`,
-          filePath,
-          undefined,
-          'settings-permission-empty-pattern'
-        );
-      }
-    }
-
-    // Validate tool name
+    // Validate tool name (not part of registered rules)
     this.validateToolName(toolName, filePath, 'tool in permission rule');
-
-    // Validate action
-    if (!(VALID_PERMISSION_ACTIONS as readonly string[]).includes(rule.action)) {
-      this.reportError(
-        `Invalid permission action: ${rule.action}. Must be one of: ${VALID_PERMISSION_ACTIONS.join(', ')}`,
-        filePath,
-        undefined,
-        'settings-invalid-permission'
-      );
-    }
-
-    // Validate pattern if present
-    if (rule.pattern) {
-      // Basic pattern validation - could be enhanced
-      if (rule.pattern.trim().length === 0) {
-        this.reportWarning('Empty permission pattern', filePath, undefined, 'settings-invalid-permission');
-      }
-    }
   }
 
   private validateHook(filePath: string, hook: z.infer<typeof HookSchema>): void {
@@ -154,16 +119,6 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     }
   }
 
-  private validateEnvironmentVariables(filePath: string, env: Record<string, string>): void {
-    const issues = validateEnvironmentVariables(env);
-    for (const issue of issues) {
-      if (issue.severity === 'warning') {
-        this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
-      } else {
-        this.reportError(issue.message, filePath, undefined, issue.ruleId);
-      }
-    }
-  }
 }
 
 // Register validator with factory

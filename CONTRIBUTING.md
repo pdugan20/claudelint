@@ -226,6 +226,7 @@ Include:
 
 ### Key Documentation
 
+- **[Rule Development Guide](docs/CONTRIBUTING-RULES.md)** - Guide for writing validation rules (recommended for new contributions)
 - **[Validator Development Guide](docs/validator-development-guide.md)** - Comprehensive guide for creating validators
 - **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
 - **[Validator Reference](docs/validators.md)** - Complete validator documentation

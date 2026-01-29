@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Plugin
-**Category**: File System
+**Category**: Cross-Reference
 
-Validates that all files referenced in `plugin.json` exist in the expected locations within the plugin directory structure.
+Files referenced in plugin.json must exist
 
 ## Rule Details
 
@@ -75,30 +75,6 @@ my-plugin/
     └── commands/
         └── build.md
 ```
-
-## How To Fix
-
-1. **Create missing files**: Use mkdir/touch to create required files in expected locations
-2. **Remove invalid references**: Delete references to components you don't want to provide
-3. **Fix reference names**: Correct typos in component names to match actual files
-4. **Move files to correct locations**: Relocate misplaced files to follow directory conventions
-5. **Match case sensitivity**: Ensure file names match references exactly (case-sensitive on Unix systems)
-
-**Expected File Patterns:**
-
-- Skills: `.claude/skills/<skill-name>/SKILL.md`
-- Agents: `.claude/agents/<agent-name>.md`
-- Hooks: `.claude/hooks/<hook-name>.json`
-- Commands: `.claude/commands/<command-name>.md`
-- MCP Servers: `.mcp.json` (at repository root)
-
-**Common Mistakes:**
-
-- Using lowercase `skill.md` instead of uppercase `SKILL.md`
-- Missing the `skills/` directory level (`.claude/my-skill/` instead of `.claude/skills/my-skill/`)
-- Typos in component names
-- Leftover references after deleting components
-- Case mismatches between references and file names
 
 ## Options
 

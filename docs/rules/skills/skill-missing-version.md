@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: Yes
 **Validator**: Skills
-**Category**: Completeness
+**Category**: Cross-Reference
 
-Enforces that Claude Code skills include a `version` field in SKILL.md frontmatter using semantic versioning.
+Skill frontmatter lacks version field
 
 ## Rule Details
 
@@ -36,31 +36,6 @@ description: Automated deployment skill
 version: "1.0.0"
 user-invocable: true
 ---
-```
-
-## How To Fix
-
-1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically add `version: "1.0.0"` to the frontmatter
-2. **Manual fix**: Add a version field to your SKILL.md frontmatter following semantic versioning
-3. **Start with 1.0.0**: Use this for initial stable release
-4. **Increment appropriately**: PATCH for bug fixes (1.0.0 → 1.0.1), MINOR for new features (1.0.1 → 1.1.0), MAJOR for breaking changes (1.1.0 → 2.0.0)
-5. **Update CHANGELOG.md**: Document version changes in CHANGELOG.md
-
-**Semantic Versioning Format:**
-
-- `MAJOR`: Incompatible API changes (2.0.0)
-- `MINOR`: New functionality, backwards compatible (1.1.0)
-- `PATCH`: Bug fixes, backwards compatible (1.0.1)
-
-**Example Workflow:**
-
-```bash
-# After fixing a bug, update version: 1.0.0 → 1.0.1
-# 1. Edit SKILL.md frontmatter
-# 2. Document in CHANGELOG.md
-# 3. Commit changes
-git add .claude/skills/deploy/SKILL.md .claude/skills/deploy/CHANGELOG.md
-git commit -m "fix(deploy): handle network timeouts - v1.0.1"
 ```
 
 ## Options

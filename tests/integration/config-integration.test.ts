@@ -24,7 +24,7 @@ describe('Config Integration Tests', () => {
       // Configure size-error with custom maxSize of 20KB
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': {
+          'claude-md-size-error': {
             severity: 'error',
             options: {
               maxSize: 20000,
@@ -38,7 +38,7 @@ describe('Config Integration Tests', () => {
 
       // Should error because file (25KB) exceeds custom limit (20KB)
       expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('size-error');
+      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
       expect(result.errors[0].message).toContain('20KB');
     });
 
@@ -53,7 +53,7 @@ describe('Config Integration Tests', () => {
       // Configure size-error with custom maxSize of 30KB (higher than file size)
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': {
+          'claude-md-size-error': {
             severity: 'error',
             options: {
               maxSize: 30000,
@@ -66,7 +66,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not error because file (25KB) is under custom limit (30KB)
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'size-error');
+      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-error');
       expect(sizeErrors.length).toBe(0);
     });
 
@@ -81,7 +81,7 @@ describe('Config Integration Tests', () => {
       // Disable size-error rule
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': 'off',
+          'claude-md-size-error': 'off',
         },
       };
 
@@ -89,7 +89,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not error because rule is disabled
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'size-error');
+      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-error');
       expect(sizeErrors.length).toBe(0);
     });
 
@@ -107,7 +107,7 @@ describe('Config Integration Tests', () => {
 
       // Should error with default threshold
       expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('size-error');
+      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
       expect(result.errors[0].message).toContain('40KB');
     });
   });
@@ -124,7 +124,7 @@ describe('Config Integration Tests', () => {
       // Configure size-warning with custom maxSize of 20KB
       const config: ClaudeLintConfig = {
         rules: {
-          'size-warning': {
+          'claude-md-size-warning': {
             severity: 'warn',
             options: {
               maxSize: 20000,
@@ -138,7 +138,7 @@ describe('Config Integration Tests', () => {
 
       // Should warn because file (25KB) exceeds custom limit (20KB)
       expect(result.warnings.length).toBe(1);
-      expect(result.warnings[0].ruleId).toBe('size-warning');
+      expect(result.warnings[0].ruleId).toBe('claude-md-size-warning');
     });
 
     it('should not report warning when rule is disabled', async () => {
@@ -152,7 +152,7 @@ describe('Config Integration Tests', () => {
       // Disable size-warning rule
       const config: ClaudeLintConfig = {
         rules: {
-          'size-warning': 'off',
+          'claude-md-size-warning': 'off',
         },
       };
 
@@ -160,7 +160,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not warn because rule is disabled
-      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'size-warning');
+      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-size-warning');
       expect(sizeWarnings.length).toBe(0);
     });
   });
@@ -181,7 +181,7 @@ describe('Config Integration Tests', () => {
       // Override size-warning to be an error
       const config: ClaudeLintConfig = {
         rules: {
-          'size-warning': 'error',
+          'claude-md-size-warning': 'error',
         },
       };
 
@@ -189,8 +189,8 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should report as error instead of warning
-      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'size-warning');
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'size-warning');
+      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-size-warning');
+      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-warning');
 
       expect(sizeWarnings.length).toBe(0);
       expect(sizeErrors.length).toBe(1);
@@ -212,7 +212,7 @@ describe('Config Integration Tests', () => {
       // Configure different limits for .claude/rules/*.md files
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': {
+          'claude-md-size-error': {
             severity: 'error',
             options: {
               maxSize: 20000, // 20KB for main files
@@ -223,7 +223,7 @@ describe('Config Integration Tests', () => {
           {
             files: ['**/.claude/rules/*.md'],
             rules: {
-              'size-error': {
+              'claude-md-size-error': {
                 severity: 'error',
                 options: {
                   maxSize: 30000, // 30KB for rules files
@@ -237,13 +237,13 @@ describe('Config Integration Tests', () => {
       // Validate main file (should error - 25KB > 20KB)
       const mainValidator = new ClaudeMdValidator({ path: mainFile, config });
       const mainResult = await mainValidator.validate();
-      const mainErrors = mainResult.errors.filter((e) => e.ruleId === 'size-error');
+      const mainErrors = mainResult.errors.filter((e) => e.ruleId === 'claude-md-size-error');
       expect(mainErrors.length).toBe(1);
 
       // Validate rules file (should pass - 25KB < 30KB)
       const rulesValidator = new ClaudeMdValidator({ path: rulesFile, config });
       const rulesResult = await rulesValidator.validate();
-      const rulesErrors = rulesResult.errors.filter((e) => e.ruleId === 'size-error');
+      const rulesErrors = rulesResult.errors.filter((e) => e.ruleId === 'claude-md-size-error');
       expect(rulesErrors.length).toBe(0);
     });
   });
@@ -257,7 +257,7 @@ describe('Config Integration Tests', () => {
       // Configure with invalid negative maxSize
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': {
+          'claude-md-size-error': {
             severity: 'error',
             options: {
               maxSize: -1000, // Invalid
@@ -283,7 +283,7 @@ describe('Config Integration Tests', () => {
       // Configure with invalid string maxSize
       const config: ClaudeLintConfig = {
         rules: {
-          'size-error': {
+          'claude-md-size-error': {
             severity: 'error',
             options: {
               maxSize: 'large' as unknown as number, // Invalid type
@@ -316,7 +316,7 @@ describe('Config Integration Tests', () => {
 
       // Should use default behavior (error at 40KB)
       expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('size-error');
+      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
     });
   });
 
@@ -337,7 +337,7 @@ describe('Config Integration Tests', () => {
       // Configure maxDepth of 2 (should error on file3 import)
       const config: ClaudeLintConfig = {
         rules: {
-          'import-circular': {
+          'claude-md-import-circular': {
             severity: 'error',
             options: {
               maxDepth: 2,
@@ -366,7 +366,7 @@ describe('Config Integration Tests', () => {
       // Configure to allow self-reference
       const config: ClaudeLintConfig = {
         rules: {
-          'import-circular': {
+          'claude-md-import-circular': {
             severity: 'warn',
             options: {
               allowSelfReference: true,
@@ -380,7 +380,7 @@ describe('Config Integration Tests', () => {
 
       // Should not warn about self-reference
       const selfRefWarnings = result.warnings.filter(
-        (w) => w.ruleId === 'import-circular' && w.message.includes('imports itself')
+        (w) => w.ruleId === 'claude-md-import-circular' && w.message.includes('imports itself')
       );
       expect(selfRefWarnings.length).toBe(0);
     });
@@ -398,7 +398,7 @@ describe('Config Integration Tests', () => {
 
       // Should warn about self-reference
       const selfRefWarnings = result.warnings.filter(
-        (w) => w.ruleId === 'import-circular' && w.message.includes('imports itself')
+        (w) => w.ruleId === 'claude-md-import-circular' && w.message.includes('imports itself')
       );
       expect(selfRefWarnings.length).toBe(1);
     });
@@ -417,7 +417,7 @@ describe('Config Integration Tests', () => {
       // Configure to ignore test files
       const config: ClaudeLintConfig = {
         rules: {
-          'import-circular': {
+          'claude-md-import-circular': {
             severity: 'warn',
             options: {
               ignorePatterns: ['**/test.md'],
@@ -431,7 +431,7 @@ describe('Config Integration Tests', () => {
 
       // Should warn about regular.md circular import but not test.md
       const circularWarnings = result.warnings.filter(
-        (w) => w.ruleId === 'import-circular' && w.message.includes('Circular import')
+        (w) => w.ruleId === 'claude-md-import-circular' && w.message.includes('Circular import')
       );
 
       // Should only warn about regular.md, not test.md
@@ -453,7 +453,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should warn about circular import
-      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'import-circular');
+      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-import-circular');
       expect(circularWarnings.length).toBe(1);
     });
 
@@ -469,7 +469,7 @@ describe('Config Integration Tests', () => {
       // Disable import-circular rule
       const config: ClaudeLintConfig = {
         rules: {
-          'import-circular': 'off',
+          'claude-md-import-circular': 'off',
         },
       };
 
@@ -477,7 +477,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not warn about circular import
-      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'import-circular');
+      const circularWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-import-circular');
       expect(circularWarnings.length).toBe(0);
     });
   });

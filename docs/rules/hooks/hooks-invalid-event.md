@@ -1,11 +1,11 @@
 # Rule: hooks-invalid-event
 
-**Severity**: Error
+**Severity**: Warning
 **Fixable**: No
 **Validator**: Hooks
 **Category**: Schema Validation
 
-Validates that hook configurations use recognized event names from the Claude Code lifecycle.
+Hook events must be valid event names
 
 ## Rule Details
 
@@ -86,23 +86,6 @@ Multiple valid hooks:
   ]
 }
 ```
-
-## How To Fix
-
-1. **Fix typos**: Correct capitalization errors (e.g., `PreTooluse` → `PreToolUse`)
-2. **Use valid event names**: Replace incorrect names with events from the valid list above
-3. **Check case sensitivity**: Ensure exact capitalization matches (`PreToolUse` not `pretooluse`)
-4. **Remove invalid hooks**: Delete hooks referencing non-existent events
-5. **Verify event exists**: Cross-reference with the 13 valid events listed in Rule Details
-
-**Event Categories:**
-
-- Tool execution: Pre/post tool use and failures
-- Permissions: Permission requests
-- User interaction: Prompt submission, notifications, stop
-- Agent lifecycle: Subagent start/stop
-- System: Context compaction, setup
-- Session: Session start/end
 
 ## Options
 

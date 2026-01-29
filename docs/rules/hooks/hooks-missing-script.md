@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Hooks
-**Category**: File System
+**Category**: Cross-Reference
 
-Validates that command hooks reference script files that exist relative to the hooks.json location.
+Hook scripts must reference existing files
 
 ## Rule Details
 
@@ -84,25 +84,6 @@ Using inline commands (not validated):
   ]
 }
 ```
-
-## How To Fix
-
-1. **Create the missing script**: Use `mkdir -p .claude/scripts` and `touch .claude/scripts/hook.sh` with `chmod +x`
-2. **Fix the path**: Correct path to match actual script location (e.g., `./hook.sh` → `./scripts/hook.sh`)
-3. **Fix filename typo**: Correct spelling to match actual filename
-4. **Use inline command**: Replace file reference with inline command if script is simple
-5. **Ensure script is executable**: Run `chmod +x <script-path>` for shell scripts
-
-**Path Resolution:** Paths are resolved relative to `hooks.json` location (typically `.claude/hooks.json`)
-
-**What Gets Validated:**
-
-- `./script.sh` ✓
-- `../scripts/hook.sh` ✓
-- `echo 'test'` ✗ (inline command)
-- `/usr/bin/notify` ✗ (absolute path)
-- `npm run build` ✗ (PATH command)
-- `${SCRIPT_PATH}` ✗ (variable)
 
 ## Options
 

@@ -5,7 +5,7 @@
 **Validator**: Commands
 **Category**: Deprecation
 
-Provides step-by-step instructions for migrating from deprecated commands to Skills.
+Migration guidance for deprecated Commands
 
 ## Rule Details
 
@@ -71,20 +71,6 @@ Step 4: Update plugin.json
 │       └── test.sh
 └── plugin.json (with "skills" field)
 ```
-
-## How To Fix
-
-Follow the migration steps provided in the warning message:
-
-1. **Create skill directories**: For each command, create `.claude/skills/<skill-name>/`
-2. **Move scripts**: Move `commands/<name>.sh` to `skills/<name>/<name>.sh`
-3. **Add SKILL.md**: Create documentation file with:
-   - Frontmatter with name, version, description
-   - Markdown documentation explaining the skill
-   - Usage examples and requirements
-4. **Update plugin.json**: Change `"commands"` array to `"skills"` array
-5. **Test**: Run `claudelint check-all` to verify the migration
-6. **Remove**: Delete the old `.claude/commands` directory
 
 ## Options
 

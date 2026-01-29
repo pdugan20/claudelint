@@ -165,7 +165,7 @@ describe('CLI Integration Tests', () => {
         configPath,
         JSON.stringify({
           rules: {
-            'size-warning': 'off',
+            'claude-md-size-warning': 'off',
           },
         })
       );
@@ -348,7 +348,7 @@ describe('CLI Integration Tests', () => {
         configPath,
         JSON.stringify({
           rules: {
-            'size-error': 'error',
+            'claude-md-size-error': 'error',
           },
         })
       );

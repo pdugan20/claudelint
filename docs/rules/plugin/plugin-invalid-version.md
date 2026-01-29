@@ -5,7 +5,7 @@
 **Validator**: Plugin
 **Category**: Schema Validation
 
-Enforces that plugin versions follow Semantic Versioning (semver) format for standardized version communication and dependency management.
+Plugin version must follow semantic versioning format
 
 ## Rule Details
 
@@ -60,28 +60,6 @@ With pre-release and build metadata:
   "version": "3.0.0-rc.1+build.123"
 }
 ```
-
-## How To Fix
-
-1. **Add missing parts**: Ensure version has all three components `MAJOR.MINOR.PATCH`
-2. **Remove invalid prefix**: Remove `v` or other prefixes (use `1.0.0` not `v1.0.0`)
-3. **Fix separators**: Use dots not underscores (`1.0.0` not `1_0_0`)
-4. **Use numeric version**: Replace text like "latest" with actual semver
-5. **Fix pre-release format**: Use dot separators in pre-release tags (`-beta.1` not `-beta_1`)
-
-**Version Components:**
-
-- `MAJOR`: Breaking changes (1.0.0 → 2.0.0)
-- `MINOR`: New features, backward compatible (1.0.0 → 1.1.0)
-- `PATCH`: Bug fixes, backward compatible (1.0.0 → 1.0.1)
-- `PRERELEASE` (optional): `-alpha`, `-beta.1`, `-rc.2`
-- `BUILD` (optional): `+20230615`, `+build.123`
-
-**Version Incrementing:**
-
-- Bug fixes: Increment PATCH (1.0.0 → 1.0.1)
-- New features: Increment MINOR, reset PATCH (1.0.1 → 1.1.0)
-- Breaking changes: Increment MAJOR, reset MINOR and PATCH (1.1.0 → 2.0.0)
 
 ## Options
 

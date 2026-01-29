@@ -5,7 +5,7 @@
 **Validator**: Commands
 **Category**: Deprecation
 
-Warns that the .claude/commands directory is deprecated and should be migrated to Skills.
+Commands directory is deprecated, migrate to Skills
 
 ## Rule Details
 
@@ -51,18 +51,6 @@ my-project/
             ├── SKILL.md
             └── build.sh
 ```
-
-## How To Fix
-
-1. Create a skills directory: `.claude/skills`
-2. For each command, create a skill directory: `.claude/skills/<skill-name>/`
-3. Move the command script to the skill directory
-4. Create a SKILL.md file with frontmatter and documentation
-5. Update any plugin.json files to reference skills instead of commands
-6. Test the skills to ensure they work correctly
-7. Remove the old `.claude/commands` directory
-
-See the [commands-migrate-to-skills](./commands-migrate-to-skills.md) rule for detailed migration steps.
 
 ## Options
 

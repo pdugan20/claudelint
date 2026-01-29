@@ -5,7 +5,7 @@
 **Validator**: MCP
 **Category**: Schema Validation
 
-Detects invalid environment variable usage in MCP server configurations, including empty values, malformed expansion syntax, and improper variable naming.
+Environment variables must use proper expansion syntax
 
 ## Rule Details
 
@@ -92,20 +92,6 @@ Using special plugin variables:
   }
 }
 ```
-
-## How To Fix
-
-1. **Remove empty variables** or replace with proper expansion syntax `${VAR}`
-2. **Update simple variable syntax** from `$VAR` to `${VAR}` for consistency
-3. **Add default values** for optional variables using `${VAR:-default}` syntax
-4. **Use literal values** for non-secret static configuration instead of variable expansion
-5. **Keep secrets out of config** by using variable expansion to reference environment
-
-**Variable Expansion Syntax:**
-
-- Basic: `${API_KEY}`
-- With default: `${PORT:-3000}`
-- Special: `${CLAUDE_PLUGIN_ROOT}` (auto-set by Claude Code for plugins)
 
 ## Options
 

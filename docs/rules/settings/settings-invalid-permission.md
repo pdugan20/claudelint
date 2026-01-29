@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Settings
-**Category**: Security
+**Category**: Schema Validation
 
-Validates that permission rules in settings have valid actions (allow/ask/deny), valid tool names, and non-empty patterns.
+Permission rules must use valid action values
 
 ## Rule Details
 
@@ -84,29 +84,6 @@ With deny rules:
   ]
 }
 ```
-
-## How To Fix
-
-1. **Use valid actions**: Must be `"allow"`, `"ask"`, or `"deny"` (not "grant", "permit", "approve")
-2. **Remove empty patterns**: Delete empty pattern strings or provide a value, omit pattern field to match all uses
-3. **Use valid tool names**: Common tools are `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep`, `WebFetch`, `WebSearch`, `Task`
-4. **Use glob patterns**: Patterns support `*` (any), `**` (any path), `{a,b}` (alternatives)
-5. **Ensure non-empty values**: All specified fields must have non-empty string values
-
-**Valid Actions:**
-
-- `allow`: Execute without prompting (use for safe operations)
-- `ask`: Prompt user for confirmation (recommended for destructive operations)
-- `deny`: Block the tool (use for dangerous operations)
-
-**Pattern Examples:**
-
-- `npm *`: Match npm followed by anything
-- `src/**/*.ts`: Match all .ts files in src/
-- `*.{js,ts}`: Match .js or .ts files
-- No pattern: Matches all uses of the tool
-
-**Permission Priority:** More specific patterns take precedence over general ones. A specific deny overrides a general allow.
 
 ## Options
 

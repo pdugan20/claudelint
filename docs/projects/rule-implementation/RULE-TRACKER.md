@@ -1,11 +1,38 @@
 # Rule Implementation Tracker
 
-**Total Rules**: 219 (96 implemented + 123 remaining)
-**Approach**: Schema-first with Zod
-**Status**: Phase 5 - Custom Logic Rules (88% complete)
-**Progress**: 44% of all rules implemented
+**[ARCHITECTURE ISSUE RESOLVED] Phase 5.0 Complete**
+
+**Current Status**: 66 rules implemented (44 custom logic + 22 schema-based)
+**Phase**: 5.1 Next - Fix failing tests (old rule ID references)
+
+---
+
+## Architecture Fix Completed (2026-01-28)
+
+**Problem Discovered**:
+1. Schema validations used unsafe type casting (`as RuleId`) to bypass TypeScript
+2. 22 schema-based rules had no rule files - users couldn't disable them
+3. Only 44 custom logic rules had files
+
+**Solution Implemented**:
+1. [DONE] Created inventory of schema validations ([SCHEMA-RULE-INVENTORY.md](../rule-architecture-refactor/SCHEMA-RULE-INVENTORY.md))
+2. [DONE] Built generation script (`scripts/generate-schema-rules.ts`)
+3. [DONE] Generated 22 schema-based rule files
+   - Skills: 10 rules (`skill-name`, `skill-description`, etc.)
+   - Agents: 8 rules (`agent-name`, `agent-description`, etc.)
+   - Claude MD: 1 rule (`claude-md-paths`)
+   - Output Styles: 3 rules (`output-style-name`, etc.)
+4. [DONE] Removed unsafe `as RuleId` casting from `schema-helpers.ts`
+5. [DONE] Now uses runtime validation with `isRuleId()` type guard
+6. [DONE] Regenerated types - RuleId union now has 66 entries
+
+**Result**: Full ESLint compliance - every validation = one rule file with type safety
+
+---
 
 ## Implementation Categories
+
+**NOTE**: These categories describe PLANNED rules, not what's actually implemented.
 
 Rules are categorized by implementation approach:
 
@@ -310,8 +337,8 @@ Rules are categorized by implementation approach:
 | `agent-tools-conflict` | Refinement | Array overlap |  Done |
 | `agent-model-invalid` | Schema | `z.enum()` |  Done |
 | `agent-skills-invalid-type` | Schema | `z.array(z.string())` |  Done |
-| `agent-skills-not-found` | Logic | Skill resolution |  Done |
-| `agent-hooks-invalid-schema` | Logic | Hook schema reuse |  Done |
+| `agent-skills-not-found` | Logic | File existence check |  Done |
+| `agent-hooks-invalid-schema` | Logic | Hook schema validation |  Done |
 | `agent-missing-body` | Logic | Body check |  Done |
 | `agent-empty-body` | Logic | Body check |  Done |
 | `agent-events-invalid-type` | Schema | `z.array(z.string())` |  Done |

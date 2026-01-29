@@ -5,7 +5,7 @@
 **Validator**: Plugin
 **Category**: Schema Validation
 
-Validates that plugin manifest files (`plugin.json`) follow the required schema with all mandatory fields present and properly formatted.
+marketplace.json must be valid and reference existing files
 
 ## Rule Details
 
@@ -67,24 +67,6 @@ Complete manifest with optional fields:
   }
 }
 ```
-
-## How To Fix
-
-1. **Add missing required fields**: Ensure `name`, `version`, and `description` are present
-2. **Fill empty values**: Replace empty strings or whitespace-only values with actual content
-3. **Fix field types**: Use strings for name/version/description, arrays for skills/agents/hooks/commands/mcpServers
-4. **Move to repository root**: Place `plugin.json` at root, not in `.claude-plugin/` directory
-5. **Clean JSON syntax**: Remove comments and trailing commas to ensure valid JSON
-
-**Required Fields:**
-
-- `name` (string): Unique identifier, use kebab-case
-- `version` (string): Semantic version (e.g., `"1.0.0"`)
-- `description` (string): Clear description of plugin functionality
-
-**Optional Fields:**
-
-`author`, `repository`, `license`, `skills`, `agents`, `hooks`, `commands`, `mcpServers`, `dependencies`
 
 ## Options
 

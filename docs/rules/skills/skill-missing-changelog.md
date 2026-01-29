@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: Yes
 **Validator**: Skills
-**Category**: Completeness
+**Category**: Cross-Reference
 
-Enforces that Claude Code skills include a CHANGELOG.md file to track changes over time using the Keep a Changelog format.
+Skill directory lacks CHANGELOG.md
 
 ## Rule Details
 
@@ -46,57 +46,6 @@ All notable changes to deploy will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-- Support for staging environment deployments
-
-## [1.0.0] - 2026-01-27
-
-### Added
-- Initial release
-- Automated deployment to production
-- Rollback functionality
-```
-
-## How To Fix
-
-1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically create CHANGELOG.md with standard template
-2. **Manual creation**: Create `CHANGELOG.md` in your skill directory with Keep a Changelog format
-3. **Follow format**: Use sections: Added, Changed, Deprecated, Removed, Fixed, Security
-4. **Use semantic versioning**: Version headers like `## [1.2.0] - 2026-02-15`
-5. **Update regularly**: Document changes with each version increment
-
-**Template Structure:**
-
-```markdown
-# Changelog
-
-## [Unreleased]
-
-### Added
-- New features not yet released
-
-## [1.0.0] - YYYY-MM-DD
-
-### Added
-- Initial release features
-
-### Fixed
-- Bug fixes
-
-### Security
-- Security updates
-```
-
-**Best Practices:**
-
-- Changelogs are for humans, not machines
-- Use markdown with semantic versioning
-- Use ISO 8601 dates (YYYY-MM-DD)
-- Group changes by type (Added, Changed, Fixed, etc.)
-- Link to version tags when possible
 
 ## Options
 

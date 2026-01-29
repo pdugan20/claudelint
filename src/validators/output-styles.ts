@@ -7,8 +7,6 @@ import {
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
 import { basename, join } from 'path';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
 
 /**

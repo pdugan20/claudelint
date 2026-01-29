@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: Yes
 **Validator**: Skills
-**Category**: Security
+**Category**: Cross-Reference
 
-Enforces that all shell scripts (.sh files) in Claude Code skills begin with a shebang line specifying the interpreter.
+Shell script lacks shebang line
 
 ## Rule Details
 
@@ -46,20 +46,6 @@ Alternative shebangs:
 #!/usr/bin/env sh
 # POSIX shell (most portable but fewer features)
 ```
-
-## How To Fix
-
-1. **Auto-fix with claudelint**: Run `claudelint check-all --fix` to automatically add `#!/usr/bin/env bash` to all shell scripts
-2. **Manual fix**: Add the shebang as the very first line of your script
-3. **Choose the right shebang**: Use `#!/usr/bin/env bash` (recommended - finds bash in PATH, portable), `#!/bin/bash` (direct path, less portable), or `#!/usr/bin/env sh` (POSIX shell, most portable but fewer features)
-
-**Recommended Shebang:**
-
-```bash
-#!/usr/bin/env bash
-```
-
-This uses `env` to find bash in the system's PATH, making scripts work across different Unix-like systems where bash might be installed in different locations.
 
 ## Options
 

@@ -5,7 +5,7 @@
 **Validator**: Hooks
 **Category**: Schema Validation
 
-Validates that hook configurations have valid types (command, prompt, or agent) with all required fields present and properly formatted.
+Hook configuration must be valid
 
 ## Rule Details
 
@@ -76,31 +76,6 @@ Hook with valid matcher:
       }
     }
   ]
-}
-```
-
-## How To Fix
-
-1. **Use valid hook type**: Must be `"command"`, `"prompt"`, or `"agent"`
-2. **Add required fields**: Command hooks need `command`, prompt hooks need `prompt`, agent hooks need `agent`
-3. **Fix regex patterns**: Ensure matcher patterns are valid regex (escape special characters, close brackets)
-4. **Use valid tool names**: Matcher tool names must match available Claude tools (e.g., `"Bash"`, `"Read"`, `"Write"`)
-5. **Ensure non-empty values**: All required fields must have non-empty string values
-
-**Hook Types:**
-
-- `command`: Executes shell command (requires `command` field)
-- `prompt`: Displays custom prompt (requires `prompt` field with template variables like `{{tool}}`)
-- `agent`: Launches subagent (requires `agent` field with agent identifier)
-
-**Matcher Structure (optional):**
-
-```json
-{
-  "matcher": {
-    "tool": "Bash",
-    "pattern": "^git"
-  }
 }
 ```
 

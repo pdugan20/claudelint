@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: Skills
-**Category**: Maintainability
+**Category**: Cross-Reference
 
-Warns when SKILL.md files over 100 lines lack a table of contents, making navigation difficult.
+Large SKILL.md files should include a table of contents
 
 ## Rule Details
 
@@ -23,91 +23,6 @@ name: complex-skill
 ---
 
 # Complex Skill
-
-## Overview
-
-This is a complex skill with many features...
-
-## Installation
-
-...
-
-## Configuration
-
-...
-
-## Usage
-
-...
-
-## Advanced Features
-
-...
-
-## Troubleshooting
-
-...
-
-## Examples
-
-...
-```
-
-### Correct
-
-SKILL.md with TOC for navigation:
-
-```markdown
----
-name: complex-skill
----
-
-# Complex Skill
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Advanced Features](#advanced-features)
-- [Troubleshooting](#troubleshooting)
-- [Examples](#examples)
-
-## Overview
-
-This is a complex skill with many features...
-
-## Installation
-
-...
-
-## Configuration
-
-...
-```
-
-## How To Fix
-
-1. Add a "Table of Contents" heading near the top of your SKILL.md
-2. List all major sections with markdown links to heading anchors
-3. Use markdown's automatic heading anchor syntax: `[Section Name](#section-name)`
-4. Keep TOC entries concise and at consistent heading levels
-5. Update the TOC when you add or remove major sections
-
-Example TOC format:
-
-```markdown
-## Table of Contents
-
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Usage](#usage)
-  - [Basic Usage](#basic-usage)
-  - [Advanced Usage](#advanced-usage)
-- [Examples](#examples)
-- [Troubleshooting](#troubleshooting)
-```
 
 ## Options
 

@@ -9,7 +9,7 @@ describe('Inline rule disabling', () => {
   describe('claudelint-disable-file', () => {
     it('should disable rule for entire file', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
-      const content = `<!-- claudelint-disable-file size-warning -->
+      const content = `<!-- claudelint-disable-file claude-md-size-warning -->
 # Large File
 
 ${'x'.repeat(36000)}`;
@@ -28,7 +28,7 @@ ${'x'.repeat(36000)}`;
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-<!-- claudelint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line claude-md-import-missing -->
 Import: @nonexistent.md
 
 Content here.`;
@@ -47,7 +47,7 @@ Content here.`;
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-Import: @nonexistent.md <!-- claudelint-disable-line import-missing -->
+Import: @nonexistent.md <!-- claudelint-disable-line claude-md-import-missing -->
 
 Content here.`;
       await writeFile(filePath, content);
@@ -65,10 +65,10 @@ Content here.`;
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-<!-- claudelint-disable import-missing -->
+<!-- claudelint-disable claude-md-import-missing -->
 Import: @nonexistent1.md
 Import: @nonexistent2.md
-<!-- claudelint-enable import-missing -->
+<!-- claudelint-enable claude-md-import-missing -->
 
 Import: @nonexistent3.md
 

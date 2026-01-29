@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: Plugin
-**Category**: Dependencies
+**Category**: Schema Validation
 
-Validates that plugin dependency versions use valid semantic versioning (semver) syntax.
+Plugin dependency versions must use valid semver ranges
 
 ## Rule Details
 
@@ -53,18 +53,6 @@ plugin-manifest.json with valid semver:
   }
 }
 ```
-
-## How To Fix
-
-1. Replace `latest` with a specific semver range like `^1.0.0`
-2. Add missing patch version: `1.0` → `1.0.0`
-3. Remove `v` prefix: `v1.2.3` → `1.2.3`
-4. Fix wildcard syntax: `1.x.x.x` → `1.x`
-5. Use valid range operators:
-   - `^` for compatible versions (recommended)
-   - `~` for patch updates only
-   - `>=` and `<` for explicit ranges
-6. Test version ranges using semver.npmjs.com
 
 ## Options
 

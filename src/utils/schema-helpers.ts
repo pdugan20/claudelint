@@ -3,7 +3,7 @@
  */
 import { z } from 'zod';
 import { ValidationResult, ValidationError } from '../validators/base';
-import { RuleId } from '../rules/rule-ids';
+import { RuleId, isRuleId } from '../rules/rule-ids';
 import { extractFrontmatter } from './markdown';
 
 /**
@@ -15,15 +15,26 @@ export function zodErrorToValidationResult(
   ruleIdPrefix?: string
 ): ValidationResult {
   const errors: ValidationError[] = error.issues.map((issue) => {
-    // Generate rule ID from path if not provided
+    // Generate rule ID from path
     const path = issue.path.join('-');
-    const ruleId = (ruleIdPrefix ? `${ruleIdPrefix}-${path}` : path) as RuleId;
+    const generatedId = ruleIdPrefix ? `${ruleIdPrefix}-${path}` : path;
+
+    // Validate that the generated ID is a real rule ID
+    // If not, this indicates a missing schema-based rule file
+    if (!isRuleId(generatedId)) {
+      console.warn(
+        `Schema validation generated invalid rule ID: '${generatedId}'\n` +
+        `This indicates a missing schema-based rule file.\n` +
+        `Create: src/rules/${ruleIdPrefix}/${generatedId}.ts`
+      );
+    }
 
     return {
       message: issue.message,
       file: filePath,
       severity: 'error' as const,
-      ruleId,
+      // Only include ruleId if it's valid - otherwise undefined
+      ruleId: isRuleId(generatedId) ? generatedId : undefined,
     };
   });
 

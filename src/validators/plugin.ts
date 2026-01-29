@@ -1,12 +1,21 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
 import { findPluginManifests, fileExists } from '../utils/file-system';
 import { z } from 'zod';
-import { SEMVER_PATTERN } from './constants';
 import { PluginManifestSchema, MarketplaceMetadataSchema } from './schemas';
 import { dirname, join } from 'path';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
+import { readFileContent } from '../utils/file-system';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules
+import { rule as pluginInvalidVersionRule } from '../rules/plugin/plugin-invalid-version';
+import { rule as commandsInPluginDeprecatedRule } from '../rules/plugin/commands-in-plugin-deprecated';
+import { rule as pluginDependencyInvalidVersionRule } from '../rules/plugin/plugin-dependency-invalid-version';
+import { rule as pluginCircularDependencyRule } from '../rules/plugin/plugin-circular-dependency';
+import { rule as pluginMissingFileRule } from '../rules/plugin/plugin-missing-file';
+import { rule as pluginInvalidManifestRule } from '../rules/plugin/plugin-invalid-manifest';
 
 /**
  * Options specific to Plugin validator
@@ -39,36 +48,26 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     // Store plugin root for file path resolution
     this.pluginRoot = dirname(filePath);
 
-    // Validate required fields
+    // Read file content for rule execution
+    const content = await readFileContent(filePath);
+
+    // NEW: Execute new-style rules
+    await this.executeRule(pluginInvalidVersionRule, filePath, content);
+    await this.executeRule(commandsInPluginDeprecatedRule, filePath, content);
+    await this.executeRule(pluginDependencyInvalidVersionRule, filePath, content);
+    await this.executeRule(pluginCircularDependencyRule, filePath, content);
+    await this.executeRule(pluginMissingFileRule, filePath, content);
+    await this.executeRule(pluginInvalidManifestRule, filePath, content);
+
+    // OLD: Keep additional validation not covered by registered rules
+    // Validate required fields (schema may not catch empty strings)
     this.validateRequiredFields(filePath, plugin);
 
-    // Validate version follows semver
-    this.validateVersion(filePath, plugin.version);
-
-    // Validate directory structure
+    // Validate directory structure (not a registered rule)
     await this.validateDirectoryStructure(filePath);
 
-    // Validate file references
-    await this.validateFileReferences(filePath, plugin);
-
-    // Validate dependencies
-    if (plugin.dependencies) {
-      this.validateDependencies(filePath, plugin);
-    }
-
-    // Warn about deprecated commands field
-    if (plugin.commands && plugin.commands.length > 0) {
-      this.reportWarning(
-        'The "commands" field in plugin.json is deprecated. Please migrate to "skills" instead. ' +
-        'Skills provide better structure, versioning, and documentation.',
-        filePath,
-        undefined,
-        'commands-in-plugin-deprecated'
-      );
-    }
-
-    // Validate marketplace.json if it exists
-    await this.validateMarketplaceMetadata(filePath);
+    // Validate marketplace.json file references (warnings for missing icon, screenshots, etc.)
+    await this.validateMarketplaceFiles(filePath);
   }
 
   private validateRequiredFields(
@@ -88,16 +87,6 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     }
   }
 
-  private validateVersion(filePath: string, version: string): void {
-    if (!SEMVER_PATTERN.test(version)) {
-      this.reportError(
-        `Invalid semantic version: ${version}. Must follow semver format (e.g., 1.0.0, 2.1.3-beta)`,
-        filePath,
-        undefined,
-        'plugin-invalid-version'
-      );
-    }
-  }
 
   private async validateDirectoryStructure(filePath: string): Promise<void> {
     // Check that plugin.json is at root, not in .claude-plugin/
@@ -122,195 +111,9 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     }
   }
 
-  private async validateFileReferences(
-    filePath: string,
-    plugin: z.infer<typeof PluginManifestSchema>
-  ): Promise<void> {
-    // Validate skills references
-    if (plugin.skills) {
-      for (const skillName of plugin.skills) {
-        await this.validateSkillReference(filePath, skillName);
-      }
-    }
 
-    // Validate agents references
-    if (plugin.agents) {
-      for (const agentName of plugin.agents) {
-        await this.validateAgentReference(filePath, agentName);
-      }
-    }
 
-    // Validate hooks references
-    if (plugin.hooks) {
-      for (const hookName of plugin.hooks) {
-        await this.validateHookReference(filePath, hookName);
-      }
-    }
-
-    // Validate commands references
-    if (plugin.commands) {
-      for (const commandName of plugin.commands) {
-        await this.validateCommandReference(filePath, commandName);
-      }
-    }
-
-    // Validate MCP servers references
-    if (plugin.mcpServers) {
-      for (const mcpServerName of plugin.mcpServers) {
-        await this.validateMCPServerReference(filePath, mcpServerName);
-      }
-    }
-  }
-
-  private async validateSkillReference(filePath: string, skillName: string): Promise<void> {
-    const skillPath = join(this.pluginRoot, '.claude', 'skills', skillName, 'SKILL.md');
-    if (!(await fileExists(skillPath))) {
-      this.reportError(
-        `Referenced skill not found: ${skillName} (expected at ${skillPath})`,
-        filePath,
-        undefined,
-        'plugin-missing-file'
-      );
-    }
-  }
-
-  private async validateAgentReference(filePath: string, agentName: string): Promise<void> {
-    const agentPath = join(this.pluginRoot, '.claude', 'agents', `${agentName}.md`);
-    if (!(await fileExists(agentPath))) {
-      this.reportError(
-        `Referenced agent not found: ${agentName} (expected at ${agentPath})`,
-        filePath,
-        undefined,
-        'plugin-missing-file'
-      );
-    }
-  }
-
-  private async validateHookReference(filePath: string, hookName: string): Promise<void> {
-    const hookPath = join(this.pluginRoot, '.claude', 'hooks', `${hookName}.json`);
-    if (!(await fileExists(hookPath))) {
-      this.reportError(
-        `Referenced hook not found: ${hookName} (expected at ${hookPath})`,
-        filePath,
-        undefined,
-        'plugin-missing-file'
-      );
-    }
-  }
-
-  private async validateCommandReference(filePath: string, commandName: string): Promise<void> {
-    const commandPath = join(this.pluginRoot, '.claude', 'commands', `${commandName}.md`);
-    if (!(await fileExists(commandPath))) {
-      this.reportError(
-        `Referenced command not found: ${commandName} (expected at ${commandPath})`,
-        filePath,
-        undefined,
-        'plugin-missing-file'
-      );
-    }
-  }
-
-  private async validateMCPServerReference(filePath: string, mcpServerName: string): Promise<void> {
-    // MCP servers can be defined in .mcp.json at the root
-    const mcpConfigPath = join(this.pluginRoot, '.mcp.json');
-    if (!(await fileExists(mcpConfigPath))) {
-      this.reportWarning(
-        `Referenced MCP server ${mcpServerName} but .mcp.json not found`,
-        filePath
-      );
-    }
-    // Note: We don't validate the actual server exists in the config here
-    // That's the job of the MCP validator
-  }
-
-  private validateDependencies(
-    filePath: string,
-    plugin: z.infer<typeof PluginManifestSchema>
-  ): void {
-    if (!plugin.dependencies) {
-      return;
-    }
-
-    const pluginName = plugin.name;
-    const visited = new Set<string>();
-    const recursionStack = new Set<string>();
-
-    // Check each dependency
-    for (const [depName, depVersion] of Object.entries(plugin.dependencies)) {
-      // Validate dependency version is valid semver or range
-      if (!this.isValidSemverRange(depVersion)) {
-        this.reportWarning(
-          `Invalid semver range for dependency "${depName}": ${depVersion}`,
-          filePath,
-          undefined,
-          'plugin-dependency-invalid-version'
-        );
-      }
-
-      // Check for direct self-dependency
-      if (depName === pluginName) {
-        this.reportError(
-          `Circular dependency detected: ${pluginName} → ${depName}`,
-          filePath,
-          undefined,
-          'plugin-circular-dependency'
-        );
-        continue;
-      }
-
-      // Check for circular dependencies through dependency chain
-      if (this.hasCircularDependency(pluginName, depName, visited, recursionStack, new Map())) {
-        this.reportError(
-          `Circular dependency detected: ${pluginName} → ${depName} → ... → ${pluginName}`,
-          filePath,
-          undefined,
-          'plugin-circular-dependency'
-        );
-      }
-    }
-  }
-
-  private isValidSemverRange(version: string): boolean {
-    // Basic semver range validation
-    // Supports: exact (1.0.0), caret (^1.0.0), tilde (~1.0.0), range (>=1.0.0 <2.0.0)
-    const semverRangePattern =
-      /^(\^|~|>=?|<=?|=)?\s*\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\s+(<=?|>=?)\s*\d+\.\d+\.\d+)?$/;
-    return semverRangePattern.test(version.trim());
-  }
-
-  private hasCircularDependency(
-    _currentPlugin: string,
-    targetDep: string,
-    visited: Set<string>,
-    recursionStack: Set<string>,
-    _dependencyCache: Map<string, string[]>
-  ): boolean {
-    // If we've already checked this path, skip
-    if (visited.has(targetDep)) {
-      return false;
-    }
-
-    // If this dependency is in our current recursion stack, we have a cycle
-    if (recursionStack.has(targetDep)) {
-      return true;
-    }
-
-    // Mark this dependency as being processed
-    recursionStack.add(targetDep);
-
-    // In a real implementation, we would:
-    // 1. Fetch the plugin manifest for targetDep from registry/marketplace
-    // 2. Check its dependencies recursively
-    // For now, we'll just mark as visited since we don't have a registry
-    visited.add(targetDep);
-
-    // Remove from recursion stack
-    recursionStack.delete(targetDep);
-
-    return false;
-  }
-
-  private async validateMarketplaceMetadata(filePath: string): Promise<void> {
+  private async validateMarketplaceFiles(_filePath: string): Promise<void> {
     const marketplacePath = join(this.pluginRoot, 'marketplace.json');
 
     if (!(await fileExists(marketplacePath))) {
@@ -318,7 +121,7 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
       return;
     }
 
-    // Read and validate marketplace.json
+    // Read and parse marketplace.json
     const marketplaceData = await this.readAndParseJSON(marketplacePath);
     if (!marketplaceData) {
       return;
@@ -326,22 +129,7 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
 
     const result = MarketplaceMetadataSchema.safeParse(marketplaceData);
     if (!result.success) {
-      for (const issue of result.error.issues) {
-        this.reportError(`marketplace.json: ${issue.path.join('.')}: ${issue.message}`, filePath, undefined, 'plugin-invalid-manifest');
-      }
-      return;
-    }
-
-    // Validate that marketplace version matches plugin version
-    const pluginData = await this.readAndParseJSON(filePath);
-    if (pluginData && typeof pluginData === 'object' && 'version' in pluginData) {
-      const pluginVersion = (pluginData as { version: string }).version;
-      if (result.data.version !== pluginVersion) {
-        this.reportWarning(
-          `marketplace.json version (${result.data.version}) does not match plugin.json version (${pluginVersion})`,
-          filePath
-        );
-      }
+      return; // Schema validation handled by plugin-invalid-manifest rule
     }
 
     // Validate icon path if present

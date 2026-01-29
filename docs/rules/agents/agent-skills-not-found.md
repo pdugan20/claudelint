@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: References
+**Category**: Cross-Reference
 
-Validates that skills referenced in agent configurations actually exist in the .claude/skills directory.
+Referenced skill does not exist in .claude/skills directory
 
 ## Rule Details
 
@@ -71,16 +71,6 @@ And complete directory structure:
     └── run-tests/
         └── SKILL.md
 ```
-
-## How To Fix
-
-1. Check the skill name in your agents.json for typos
-2. Verify the skill directory exists at `.claude/skills/{skill-name}/`
-3. Verify the SKILL.md file exists in the skill directory
-4. If the skill doesn't exist, either:
-   - Remove the reference from agents.json
-   - Create the skill directory and SKILL.md file
-5. Ensure skill names match exactly (case-sensitive on Linux)
 
 ## Options
 

@@ -2,7 +2,6 @@ import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
 import {
   findClaudeMdFiles,
   readFileContent,
-  getFileSize,
   fileExists,
   resolvePath,
 } from '../utils/file-system';
@@ -13,16 +12,25 @@ import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
 import { formatError } from '../utils/validation-helpers';
 import {
-  CLAUDE_MD_SIZE_WARNING_THRESHOLD,
-  CLAUDE_MD_SIZE_ERROR_THRESHOLD,
+  // CLAUDE_MD_SIZE_ERROR_THRESHOLD moved to new size-error rule
+  // CLAUDE_MD_SIZE_WARNING_THRESHOLD moved to new size-warning rule
   CLAUDE_MD_MAX_IMPORT_DEPTH,
-  CLAUDE_MD_MAX_SECTIONS,
+  // CLAUDE_MD_MAX_SECTIONS moved to new content-too-many-sections rule
 } from './constants';
 import { dirname } from 'path';
 import { minimatch } from 'minimatch';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules (pilot migration)
+import { rule as claudeMdSizeErrorRule } from '../rules/claude-md/claude-md-size-error';
+import { rule as claudeMdSizeWarningRule } from '../rules/claude-md/claude-md-size-warning';
+import { rule as claudeMdContentTooManySectionsRule } from '../rules/claude-md/claude-md-content-too-many-sections';
+import { rule as claudeMdGlobPatternBackslashRule } from '../rules/claude-md/claude-md-glob-pattern-backslash';
+import { rule as claudeMdGlobPatternTooBroadRule } from '../rules/claude-md/claude-md-glob-pattern-too-broad';
+import { rule as claudeMdImportInCodeBlockRule } from '../rules/claude-md/claude-md-import-in-code-block';
 
 /**
  * Options specific to CLAUDE.md validator
@@ -108,21 +116,24 @@ export class ClaudeMdValidator extends BaseValidator {
     // Parse disable comments
     this.parseDisableComments(filePath, content);
 
-    // Check file size
-    await this.checkFileSize(filePath);
+    // NEW: Execute new-style size rules
+    await this.executeRule(claudeMdSizeErrorRule, filePath, content);
+    await this.executeRule(claudeMdSizeWarningRule, filePath, content);
 
     // Check for frontmatter (only in .claude/rules/*.md files)
     if (filePath.includes('.claude/rules/')) {
       await this.checkFrontmatter(filePath, content);
     }
 
-    // Content organization checks (for main CLAUDE.md files)
-    if (filePath.endsWith('CLAUDE.md') && !filePath.includes('.claude/rules/')) {
-      this.checkContentOrganization(filePath, content);
-    }
+    // NEW: Execute glob pattern validation rules
+    await this.executeRule(claudeMdGlobPatternBackslashRule, filePath, content);
+    await this.executeRule(claudeMdGlobPatternTooBroadRule, filePath, content);
 
-    // Check for imports in code blocks (they won't be processed)
-    this.checkImportsInCodeBlocks(filePath, content);
+    // NEW: Execute content organization rule
+    await this.executeRule(claudeMdContentTooManySectionsRule, filePath, content);
+
+    // NEW: Check for imports in code blocks
+    await this.executeRule(claudeMdImportInCodeBlockRule, filePath, content);
 
     // Check imports and validate recursively
     await this.checkImports(filePath, content);
@@ -133,71 +144,6 @@ export class ClaudeMdValidator extends BaseValidator {
     }
   }
 
-  private async checkFileSize(filePath: string): Promise<void> {
-    const size = await getFileSize(filePath);
-
-    // Get configured thresholds or use defaults
-    const errorOptions = this.getRuleOptions<SizeErrorOptions>('size-error');
-    const warningOptions = this.getRuleOptions<SizeWarningOptions>('size-warning');
-
-    const errorThreshold = errorOptions?.maxSize ?? CLAUDE_MD_SIZE_ERROR_THRESHOLD;
-    const warningThreshold = warningOptions?.maxSize ?? CLAUDE_MD_SIZE_WARNING_THRESHOLD;
-
-    if (size >= errorThreshold) {
-      this.reportError(
-        `File exceeds ${errorThreshold / 1000}KB limit (${size} bytes)`,
-        filePath,
-        undefined,
-        'size-error',
-        {
-          explanation:
-            'Claude Code has a context window limit. Large files cause performance issues, ' +
-            "slow context loading, and may exceed the model's context window.",
-          howToFix:
-            '1. Create separate files in .claude/rules/ directory\n' +
-            '2. Move topic-specific content to: .claude/rules/git.md, .claude/rules/api.md, etc.\n' +
-            '3. Import them in CLAUDE.md with: Import: @.claude/rules/git.md',
-          fix: `Split content into smaller files in .claude/rules/ and use @imports`,
-        }
-      );
-    } else if (size >= warningThreshold) {
-      this.reportWarning(
-        `File approaching size limit (${size} bytes)`,
-        filePath,
-        undefined,
-        'size-warning',
-        {
-          explanation:
-            'Large CLAUDE.md files slow down context loading and make the file harder to maintain.',
-          howToFix:
-            '1. Identify logical sections (e.g., Git rules, API guidelines, Testing practices)\n' +
-            '2. Create .claude/rules/ directory: mkdir -p .claude/rules\n' +
-            '3. Move sections to separate files: .claude/rules/git.md\n' +
-            '4. Import in CLAUDE.md: Import: @.claude/rules/git.md',
-          fix: 'Consider organizing content into .claude/rules/ directory with @imports',
-        }
-      );
-    }
-  }
-
-  private checkContentOrganization(filePath: string, content: string): void {
-    // Count sections (markdown headings)
-    const headingRegex = /^#{1,6}\s+.+$/gm;
-    const headings = content.match(headingRegex) || [];
-    const sectionCount = headings.length;
-
-    // Warn if too many sections
-    if (sectionCount > CLAUDE_MD_MAX_SECTIONS) {
-      this.reportWarning(
-        `CLAUDE.md has ${sectionCount} sections (>${CLAUDE_MD_MAX_SECTIONS} is hard to navigate). ` +
-          `Consider organizing content into separate files in .claude/rules/ directory. ` +
-          `For example: .claude/rules/git.md, .claude/rules/api.md, .claude/rules/testing.md`,
-        filePath,
-        undefined,
-        'content-too-many-sections'
-      );
-    }
-  }
 
   private async checkFrontmatter(filePath: string, content: string): Promise<void> {
     // Use schema-based validation
@@ -216,76 +162,11 @@ export class ClaudeMdValidator extends BaseValidator {
       return;
     }
 
-    // Additional validation: Check for glob pattern validity
-    if (frontmatter.paths) {
-      for (const pattern of frontmatter.paths) {
-        this.validateGlobPattern(filePath, pattern);
-      }
-    }
+    // Glob pattern validation is now handled by separate rules:
+    // - claude-md-glob-pattern-backslash
+    // - claude-md-glob-pattern-too-broad
   }
 
-  private validateGlobPattern(filePath: string, pattern: string): void {
-    // Warn about common mistakes in glob patterns
-    if (pattern.includes('\\')) {
-      this.reportWarning(
-        `Path pattern uses backslashes: ${pattern}. Use forward slashes even on Windows.`,
-        filePath,
-        undefined,
-        'glob-pattern-backslash'
-      );
-    }
-
-    // Warn if pattern looks like it might be too broad
-    if (pattern === '**' || pattern === '*') {
-      this.reportWarning(
-        `Path pattern is very broad: ${pattern}. Consider being more specific.`,
-        filePath,
-        undefined,
-        'glob-pattern-too-broad'
-      );
-    }
-  }
-
-  private checkImportsInCodeBlocks(filePath: string, content: string): void {
-    // Find all fenced code blocks (``` or ~~~)
-    const fencedBlockRegex = /^```[\s\S]*?^```|^~~~[\s\S]*?^~~~/gm;
-    const codeBlocks: Array<{ start: number; end: number }> = [];
-
-    let match;
-    while ((match = fencedBlockRegex.exec(content)) !== null) {
-      codeBlocks.push({
-        start: match.index,
-        end: match.index + match[0].length,
-      });
-    }
-
-    // Check if any imports fall within code blocks
-    const imports = extractImportsWithLineNumbers(content);
-
-    for (const importInfo of imports) {
-      // Calculate the character position of this import
-      const lines = content.split('\n');
-      let charPos = 0;
-      for (let i = 0; i < importInfo.line - 1; i++) {
-        charPos += lines[i].length + 1; // +1 for newline
-      }
-
-      // Check if this import is inside any code block
-      for (const block of codeBlocks) {
-        if (charPos >= block.start && charPos <= block.end) {
-          this.reportError(
-            `Import statement found inside code block: ${importInfo.path}. ` +
-              `Imports in code blocks are not processed by Claude Code. ` +
-              `Move the import outside of the code block.`,
-            filePath,
-            importInfo.line,
-            'import-in-code-block'
-          );
-          break;
-        }
-      }
-    }
-  }
 
   /**
    * Check if a path is involved in a circular symlink chain
@@ -348,7 +229,7 @@ export class ClaudeMdValidator extends BaseValidator {
         `This may cause issues on case-insensitive filesystems (macOS, Windows).`,
         originPath,
         undefined,
-        'filename-case-sensitive'
+        'claude-md-filename-case-sensitive'
       );
     } else {
       this.caseInsensitivePathMap.set(normalized, filePath);
@@ -357,7 +238,7 @@ export class ClaudeMdValidator extends BaseValidator {
 
   private async checkImports(filePath: string, content: string, depth = 0): Promise<void> {
     // Get configured options for circular import checking
-    const circularOptions = this.getRuleOptions<ImportCircularOptions>('import-circular');
+    const circularOptions = this.getRuleOptions<ImportCircularOptions>('claude-md-import-circular');
     const maxDepth = circularOptions?.maxDepth ?? CLAUDE_MD_MAX_IMPORT_DEPTH;
     const allowSelfReference = circularOptions?.allowSelfReference ?? false;
     const ignorePatterns = circularOptions?.ignorePatterns ?? [];
@@ -393,7 +274,7 @@ export class ClaudeMdValidator extends BaseValidator {
           `Circular symlink detected: ${importInfo.path}`,
           filePath,
           importInfo.line,
-          'rules-circular-symlink'
+          'claude-md-rules-circular-symlink'
         );
         continue;
       }
@@ -405,7 +286,7 @@ export class ClaudeMdValidator extends BaseValidator {
             `File imports itself: ${importInfo.path}`,
             filePath,
             importInfo.line,
-            'import-circular'
+            'claude-md-import-circular'
           );
         }
         continue;
@@ -417,7 +298,7 @@ export class ClaudeMdValidator extends BaseValidator {
           `Circular import detected: ${importInfo.path}`,
           filePath,
           importInfo.line,
-          'import-circular'
+          'claude-md-import-circular'
         );
         continue;
       }
@@ -429,7 +310,7 @@ export class ClaudeMdValidator extends BaseValidator {
           `Imported file not found: ${importInfo.path}`,
           filePath,
           importInfo.line,
-          'import-missing',
+          'claude-md-import-missing',
           {
             explanation:
               'Claude Code cannot load the imported file. This will cause the context to be incomplete ' +

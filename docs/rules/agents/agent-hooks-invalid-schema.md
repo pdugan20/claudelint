@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: Configuration
+**Category**: Schema Validation
 
-Validates that hooks in agents.json have correct structure, valid event types, and required fields.
+Hook configuration in agents.json violates schema requirements
 
 ## Rule Details
 
@@ -87,17 +87,6 @@ agents.json with valid hooks:
   ]
 }
 ```
-
-## How To Fix
-
-1. **Invalid event name**: Use a valid event from the allowed list (check Claude Code documentation)
-2. **Invalid hook type**: Use `command`, `prompt`, or `agent`
-3. **Missing required field**: Add the field matching your hook type:
-   - `command` type needs `"command": "script.sh"`
-   - `prompt` type needs `"prompt": "Your prompt text"`
-   - `agent` type needs `"agent": "agent-name"`
-4. **Invalid regex pattern**: Fix the regular expression syntax in matcher.pattern
-5. Test your regex patterns using a tool like regex101.com before adding them
 
 ## Options
 

@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Settings
-**Category**: Configuration
+**Category**: Schema Validation
 
-Validates permission rule syntax to prevent conflicting or malformed pattern specifications.
+Permission rules must use valid Tool(pattern) syntax
 
 ## Rule Details
 
@@ -74,17 +74,6 @@ Or with separate pattern field:
   ]
 }
 ```
-
-## How To Fix
-
-1. **Conflicting patterns**: Choose one format and remove the other
-   - Keep inline: `"tool": "Bash(npm test)"`
-   - Or keep separate: `"tool": "Bash", "pattern": "npm test"`
-2. **Empty inline pattern**: Either remove the parentheses or add a pattern
-   - Remove: `"tool": "Bash"`
-   - Or add pattern: `"tool": "Bash(npm test)"`
-3. Use the format that's most readable for your use case
-4. For complex regex patterns, separate field format is often clearer
 
 ## Options
 

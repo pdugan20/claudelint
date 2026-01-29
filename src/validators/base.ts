@@ -695,4 +695,91 @@ export abstract class BaseValidator {
 
     return true;
   }
+
+  /**
+   * Execute a new-style Rule object on a file
+   *
+   * This enables dual-mode operation during migration to ESLint-style rules.
+   * New rules can be executed alongside existing validator methods.
+   *
+   * @param rule - The Rule object to execute
+   * @param filePath - Path to file being validated
+   * @param fileContent - Content of file being validated
+   *
+   * @example
+   * ```typescript
+   * import { rule as sizeErrorRule } from '../rules/claude-md/size-error';
+   *
+   * async validate() {
+   *   for (const file of files) {
+   *     const content = await readFileContent(file);
+   *     await this.executeRule(sizeErrorRule, file, content);
+   *   }
+   * }
+   * ```
+   */
+  protected async executeRule(
+    rule: {
+      meta: { id: RuleId };
+      validate: (context: {
+        filePath: string;
+        fileContent: string;
+        options: Record<string, unknown>;
+        report: (issue: {
+          message: string;
+          line?: number;
+          fix?: string;
+          explanation?: string;
+          howToFix?: string;
+        }) => void;
+      }) => Promise<void> | void;
+    },
+    filePath: string,
+    fileContent: string
+  ): Promise<void> {
+    // Set current file for config resolution
+    this.setCurrentFile(filePath);
+
+    // Check if rule is enabled in config
+    if (!this.isRuleEnabledInConfig(rule.meta.id)) {
+      return;
+    }
+
+    // Get rule options from config (or defaults)
+    const options = this.getRuleOptions<Record<string, unknown>>(rule.meta.id) || {};
+
+    // Create context for the rule
+    const context = {
+      filePath,
+      fileContent,
+      options,
+      report: (issue: {
+        message: string;
+        line?: number;
+        fix?: string;
+        explanation?: string;
+        howToFix?: string;
+      }) => {
+        // Report issue using existing BaseValidator.report()
+        this.report(issue.message, filePath, issue.line, rule.meta.id, {
+          fix: issue.fix,
+          explanation: issue.explanation,
+          howToFix: issue.howToFix,
+        });
+      },
+    };
+
+    // Execute the rule's validate function
+    try {
+      await rule.validate(context);
+    } catch (error) {
+      // Report rule execution errors
+      this.reportError(
+        `Rule '${rule.meta.id}' failed: ${formatError(error)}`,
+        filePath,
+        undefined,
+        rule.meta.id
+      );
+    }
+  }
 }

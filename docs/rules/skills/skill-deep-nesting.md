@@ -5,7 +5,7 @@
 **Validator**: Skills
 **Category**: Best Practices
 
-Enforces that skill directories don't exceed 4 levels of nesting depth to maintain navigability and reduce cognitive overhead.
+Skill directory has excessive directory nesting
 
 ## Rule Details
 
@@ -58,23 +58,6 @@ Easier relative imports:
 ```bash
 # Easier to reference
 source ../lib/format.sh
-```
-
-## How To Fix
-
-1. **Move files up and rename with context**: Change `src/core/deployment/strategies/cloud/aws/ec2.sh` to `lib/aws-ec2.sh`
-2. **Use descriptive file names instead of deep nesting**: Change `strategies/cloud/provider/aws/compute/ec2.sh` to `strategies/aws-ec2.sh`
-3. **Update import paths**: Adjust all `source` statements in scripts after moving files
-4. **Test thoroughly**: Ensure skill still works after reorganization
-
-**Example Refactoring:**
-
-```bash
-# Before (6 levels)
-src/core/deployment/strategies/cloud/aws/ec2.sh
-
-# After (2 levels) - file name includes context
-lib/aws-ec2-deployment.sh
 ```
 
 ## Options

@@ -5,7 +5,7 @@
 **Validator**: MCP
 **Category**: Schema Validation
 
-Validates that MCP server configurations have unique names and consistent key-name mappings within the configuration file.
+MCP server names must be unique
 
 ## Rule Details
 
@@ -110,25 +110,6 @@ Multiple servers with consistent naming:
   }
 }
 ```
-
-## How To Fix
-
-1. **Ensure unique names**: Give each server a distinct name that doesn't conflict with other servers
-2. **Match keys to names**: Make the server object key match the `name` property value
-3. **Use descriptive names**: Choose names that indicate the server's purpose (e.g., `file-operations`, `api-gateway`)
-4. **Use kebab-case**: Follow consistent naming convention with hyphens for multi-word names
-5. **Avoid generic names**: Use specific names like `github-api-gateway` instead of `api` or `server`
-
-**Required Fields:**
-
-- `name` (string): Unique identifier for the server
-- `transport` (object): Transport configuration (stdio or sse)
-
-**Naming Best Practices:**
-
-- Descriptive: `file-operations` not `server1`
-- Kebab-case: `code-analysis` not `CodeAnalysis` or `code_analysis`
-- Specific: `postgres-tools` not `tools`
 
 ## Options
 

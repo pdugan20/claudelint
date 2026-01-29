@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Plugin
-**Category**: Dependencies
+**Category**: Cross-Reference
 
-Detects circular dependencies between plugins that would cause infinite loops or loading failures.
+Plugin must not have circular dependencies
 
 ## Rule Details
 
@@ -70,28 +70,6 @@ plugin-manifest.json with acyclic dependencies:
 ```
 
 Where plugin-utils and plugin-helpers don't depend on plugin-a.
-
-## How To Fix
-
-1. **Direct self-dependency**: Remove the plugin from its own dependencies list
-2. **Indirect cycle**: Identify the cycle and break it by:
-   - Extracting shared code into a separate common plugin
-   - Restructuring dependencies to flow in one direction
-   - Using dependency injection or events instead of direct dependencies
-3. **Visualize dependencies**: Draw a dependency graph to identify cycles
-4. **Restructure**: Organize plugins in layers where each layer only depends on lower layers
-
-Example restructuring:
-
-```text
-Before (circular):
-plugin-a -> plugin-b -> plugin-a
-
-After (hierarchical):
-plugin-a \
-          plugin-common
-plugin-b /
-```
 
 ## Options
 

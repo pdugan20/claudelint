@@ -4,6 +4,21 @@
  *
  * This script reads all registered rules from RuleRegistry and generates
  * individual markdown files for each rule in the docs/rules/ directory.
+ *
+ * Generated content (from metadata):
+ * - Title, severity, fixable, validator, category badges
+ * - Brief description
+ * - Version
+ * - Implementation/test links
+ *
+ * Preserved content (manually written):
+ * - Rule Details section
+ * - Incorrect/Correct examples
+ * - How To Fix section
+ * - Options section
+ * - When Not To Use It section
+ * - Related Rules section
+ * - Additional Resources
  */
 
 import * as fs from 'fs';
@@ -17,6 +32,10 @@ import '../src/validators/settings';
 import '../src/validators/hooks';
 import '../src/validators/mcp';
 import '../src/validators/plugin';
+import '../src/validators/commands';
+import '../src/validators/agents';
+import '../src/validators/lsp';
+import '../src/validators/output-styles';
 
 const DOCS_RULES_DIR = path.join(__dirname, '../docs/rules');
 
@@ -31,97 +50,157 @@ function getCategoryDir(category: string): string {
     'Hooks': 'hooks',
     'MCP': 'mcp',
     'Plugin': 'plugin',
+    'Commands': 'commands',
+    'Agents': 'agents',
+    'LSP': 'lsp',
+    'OutputStyles': 'output-styles',
   };
   return dirMap[category] || category.toLowerCase();
 }
 
 /**
- * Convert rule ID to filename
+ * Read existing documentation to preserve manually-written sections
  */
-function getRuleFilename(ruleId: string): string {
-  return `${ruleId}.md`;
+function readExistingSections(filepath: string): Map<string, string> {
+  const sections = new Map<string, string>();
+
+  if (!fs.existsSync(filepath)) {
+    return sections;
+  }
+
+  const content = fs.readFileSync(filepath, 'utf-8');
+  const lines = content.split('\n');
+
+  let currentSection: string | null = null;
+  let sectionContent: string[] = [];
+  let inMetadata = true;
+
+  for (const line of lines) {
+    // Skip title and metadata badges at the top
+    if (inMetadata) {
+      if (line.startsWith('##')) {
+        inMetadata = false;
+      } else {
+        continue;
+      }
+    }
+
+    // Check for section headers
+    if (line.startsWith('## ')) {
+      // Save previous section
+      if (currentSection && sectionContent.length > 0) {
+        sections.set(currentSection, sectionContent.join('\n').trim());
+      }
+
+      currentSection = line.substring(3).trim();
+      sectionContent = [];
+    } else if (currentSection) {
+      sectionContent.push(line);
+    }
+  }
+
+  // Save last section
+  if (currentSection && sectionContent.length > 0) {
+    sections.set(currentSection, sectionContent.join('\n').trim());
+  }
+
+  return sections;
+}
+
+/**
+ * Determine rule category based on ID patterns
+ */
+function determineRuleType(ruleId: string): string {
+  if (ruleId.includes('schema') || ruleId.includes('invalid')) {
+    return 'Schema Validation';
+  }
+  if (
+    ruleId.includes('missing') ||
+    ruleId.includes('not-found') ||
+    ruleId.includes('reference') ||
+    ruleId.includes('circular')
+  ) {
+    return 'Cross-Reference';
+  }
+  if (
+    ruleId.includes('dangerous') ||
+    ruleId.includes('eval') ||
+    ruleId.includes('secret') ||
+    ruleId.includes('traversal')
+  ) {
+    return 'Security';
+  }
+  if (ruleId.includes('deprecated') || ruleId.includes('migrate')) {
+    return 'Deprecation';
+  }
+  if (ruleId.includes('size') || ruleId.includes('too-many') || ruleId.includes('too-long')) {
+    return 'File System';
+  }
+  return 'Best Practices';
 }
 
 /**
  * Generate markdown content for a rule
  */
-function generateRuleDoc(rule: RuleMetadata): string {
-  const deprecatedNotice = rule.deprecated
-    ? `\n> **⚠️ Deprecated**: This rule is deprecated${
-        rule.replacedBy ? ` and replaced by ${rule.replacedBy.map((r) => `[${r}](../${getCategoryDir(rule.category)}/${r}.md)`).join(', ')}` : ''
-      }.\n`
-    : '';
+function generateRuleDoc(rule: RuleMetadata, existingSections: Map<string, string>): string {
+  let doc = `# Rule: ${rule.id}\n\n`;
 
-  return `# ${rule.name}
+  // Generate metadata badges
+  doc += `**Severity**: ${rule.severity === 'error' ? 'Error' : 'Warning'}\n`;
+  doc += `**Fixable**: ${rule.fixable ? 'Yes' : 'No'}\n`;
+  doc += `**Validator**: ${rule.category}\n`;
 
-${rule.description}
-${deprecatedNotice}
-## Rule Details
+  const ruleType = determineRuleType(rule.id);
+  doc += `**Category**: ${ruleType}\n`;
 
-This rule enforces ${rule.description.toLowerCase()}.
-
-**Category**: ${rule.category}
-**Severity**: ${rule.severity}
-**Fixable**: ${rule.fixable ? 'Yes' : 'No'}
-**Since**: v${rule.since}
-
-Examples of **incorrect** code for this rule:
-
-\`\`\`text
-# Add examples of code that violates this rule
-\`\`\`
-
-Examples of **correct** code for this rule:
-
-\`\`\`text
-# Add examples of code that follows this rule
-\`\`\`
-
-## Options
-
-This rule does not have any configuration options.
-
-## When Not To Use It
-
-You might want to disable this rule if:
-
-- Your project has specific requirements that conflict with this rule
-- You are working with legacy code that cannot be easily updated
-
-## Configuration
-
-To disable this rule, add it to your \`.claudelintrc.json\`:
-
-\`\`\`json
-{
-  "rules": {
-    "${rule.id}": "off"
+  if (rule.deprecated) {
+    doc += `**Deprecated**: Yes`;
+    if (rule.replacedBy && rule.replacedBy.length > 0) {
+      doc += ` (use ${rule.replacedBy.join(', ')} instead)`;
+    }
+    doc += '\n';
   }
-}
-\`\`\`
 
-To change the severity level:
+  // Add description
+  doc += `\n${rule.description}\n\n`;
 
-\`\`\`json
-{
-  "rules": {
-    "${rule.id}": "warning"
+  // Add manually-written sections
+  const manualSections = [
+    'Rule Details',
+    'Options',
+    'When Not To Use It',
+    'Related Rules',
+  ];
+
+  for (const section of manualSections) {
+    if (existingSections.has(section)) {
+      doc += `## ${section}\n\n`;
+      doc += existingSections.get(section)!;
+      doc += '\n\n';
+    }
   }
-}
-\`\`\`
 
-## Related Rules
+  // Add Resources section
+  doc += `## Resources\n\n`;
+  if (existingSections.has('Resources')) {
+    doc += existingSections.get('Resources')!;
+    doc += '\n\n';
+  } else {
+    // Generate default resource links
+    const categoryDir = getCategoryDir(rule.category);
+    doc += `- [Rule Implementation](../../src/rules/${categoryDir}/${rule.id}.ts)\n`;
+    doc += `- [Rule Tests](../../tests/rules/${categoryDir}/${rule.id}.test.ts)\n`;
+    if (rule.docUrl) {
+      doc += `- [Documentation](${rule.docUrl})\n`;
+    }
+    doc += '\n';
+  }
 
-<!-- Add related rules here -->
+  // Add version
+  doc += `## Version\n\n`;
+  doc += `Available since: v${rule.since}\n`;
 
-## Resources
-
-${rule.docUrl ? `- [Documentation](${rule.docUrl})` : ''}
-
-## Version
-
-Available since: v${rule.since}
-`;
+  return doc;
 }
 
 /**
@@ -130,13 +209,9 @@ Available since: v${rule.since}
 function generateIndexPage(rules: RuleMetadata[]): string {
   const categories = Array.from(new Set(rules.map((r) => r.category))).sort();
 
-  let content = `# Rule Index
-
-This directory contains documentation for all ${rules.length} claudelint rules.
-
-## Rules by Category
-
-`;
+  let content = `# Rule Index\n\n`;
+  content += `This directory contains documentation for all ${rules.length} claudelint rules.\n\n`;
+  content += `## Rules by Category\n\n`;
 
   for (const category of categories) {
     const categoryRules = rules.filter((r) => r.category === category).sort((a, b) => a.id.localeCompare(b.id));
@@ -145,26 +220,22 @@ This directory contains documentation for all ${rules.length} claudelint rules.
     content += `\n### ${category} (${categoryRules.length} rules)\n\n`;
 
     for (const rule of categoryRules) {
-      const fixableBadge = rule.fixable ? ' 🔧' : '';
-      const deprecatedBadge = rule.deprecated ? ' ⚠️' : '';
+      const fixableBadge = rule.fixable ? ' [FIXABLE]' : '';
+      const deprecatedBadge = rule.deprecated ? ' [DEPRECATED]' : '';
       content += `- [${rule.id}](./${categoryDir}/${rule.id}.md)${fixableBadge}${deprecatedBadge} - ${rule.description}\n`;
     }
   }
 
-  content += `\n## Legend
+  content += `\n## Legend\n\n`;
+  content += `- [FIXABLE] - Rule supports auto-fixing with \`--fix\`\n`;
+  content += `- [DEPRECATED] - Rule is deprecated and may be removed in future versions\n\n`;
 
-- 🔧 Fixable - Rule supports auto-fixing with \`--fix\`
-- ⚠️ Deprecated - Rule is deprecated and may be removed in future versions
+  content += `## Statistics\n\n`;
+  content += `- **Total Rules**: ${rules.length}\n`;
+  content += `- **Fixable Rules**: ${rules.filter((r) => r.fixable).length}\n`;
+  content += `- **Deprecated Rules**: ${rules.filter((r) => r.deprecated).length}\n\n`;
 
-## Statistics
-
-- **Total Rules**: ${rules.length}
-- **Fixable Rules**: ${rules.filter((r) => r.fixable).length}
-- **Deprecated Rules**: ${rules.filter((r) => r.deprecated).length}
-
-## Categories
-
-`;
+  content += `## Categories\n\n`;
 
   for (const category of categories) {
     const categoryRules = rules.filter((r) => r.category === category);
@@ -192,12 +263,13 @@ function main(): void {
 
   let generatedCount = 0;
   let updatedCount = 0;
+  let skippedCount = 0;
 
   // Generate documentation for each rule
   for (const rule of rules) {
     const categoryDir = getCategoryDir(rule.category);
     const targetDir = path.join(DOCS_RULES_DIR, categoryDir);
-    const filename = getRuleFilename(rule.id);
+    const filename = `${rule.id}.md`;
     const filepath = path.join(targetDir, filename);
 
     // Ensure directory exists
@@ -205,19 +277,24 @@ function main(): void {
       fs.mkdirSync(targetDir, { recursive: true });
     }
 
-    const content = generateRuleDoc(rule);
+    // Read existing sections to preserve manual content
+    const existingSections = readExistingSections(filepath);
 
-    // Check if file exists
+    // Generate new content
+    const content = generateRuleDoc(rule, existingSections);
+
+    // Check if file exists and content changed
     if (fs.existsSync(filepath)) {
       const existingContent = fs.readFileSync(filepath, 'utf-8');
       if (existingContent === content) {
-        console.log(`  ⏭️  Skipped ${rule.id} (no changes)`);
+        console.log(`[SKIP] ${rule.id} (no changes)`);
+        skippedCount++;
         continue;
       }
-      console.log(`  📝 Updated ${rule.id}`);
+      console.log(`[UPDATE] ${rule.id}`);
       updatedCount++;
     } else {
-      console.log(`  ✨ Created ${rule.id}`);
+      console.log(`[CREATE] ${rule.id}`);
       generatedCount++;
     }
 
@@ -228,12 +305,13 @@ function main(): void {
   const indexContent = generateIndexPage(rules);
   const indexPath = path.join(DOCS_RULES_DIR, 'index.md');
   fs.writeFileSync(indexPath, indexContent, 'utf-8');
-  console.log(`\n  📋 Generated index.md`);
+  console.log(`\n[CREATE] index.md`);
 
-  console.log(`\n✅ Documentation generation complete!`);
-  console.log(`   Created: ${generatedCount} files`);
-  console.log(`   Updated: ${updatedCount} files`);
-  console.log(`   Total: ${rules.length} rule docs + 1 index\n`);
+  console.log(`\nDocumentation generation complete!`);
+  console.log(`  Created: ${generatedCount} files`);
+  console.log(`  Updated: ${updatedCount} files`);
+  console.log(`  Skipped: ${skippedCount} files`);
+  console.log(`  Total: ${rules.length} rule docs + 1 index\n`);
 }
 
 // Run if executed directly

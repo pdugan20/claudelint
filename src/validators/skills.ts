@@ -5,28 +5,43 @@ import {
   fileExists,
   resolvePath,
 } from '../utils/file-system';
-import { extractFrontmatter } from '../utils/markdown';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
 import {
-  SKILL_MAX_ROOT_FILES,
-  SKILL_MAX_DIRECTORY_DEPTH,
+  // SKILL_MAX_ROOT_FILES moved to skill-too-many-files rule
+  // SKILL_MAX_DIRECTORY_DEPTH moved to skill-deep-nesting rule
   SKILL_MAX_SCRIPT_FILES,
-  SKILL_MIN_COMMENT_LINES,
-  SKILL_MIN_NAMING_CONSISTENCY,
+  // SKILL_MIN_COMMENT_LINES moved to skill-missing-comments rule
+  // SKILL_MIN_NAMING_CONSISTENCY moved to skill-naming-inconsistent rule
   MARKDOWN_LINK_REGEX,
-  SHELL_EVAL_REGEX,
-  PYTHON_EVAL_EXEC_REGEX,
-  PATH_TRAVERSAL_REGEX,
-  DANGEROUS_COMMANDS,
+  // SHELL_EVAL_REGEX moved to skill-eval-usage rule
+  // PYTHON_EVAL_EXEC_REGEX moved to skill-eval-usage rule
+  // PATH_TRAVERSAL_REGEX moved to skill-path-traversal rule
+  // DANGEROUS_COMMANDS moved to skill-dangerous-command rule
 } from './constants';
 import { SCRIPT_EXTENSIONS } from '../schemas/constants';
 import { basename, dirname, join } from 'path';
 import { readdir } from 'fs/promises';
-import { Dirent } from 'fs';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules
+import { rule as skillDangerousCommandRule } from '../rules/skills/skill-dangerous-command';
+import { rule as skillMissingShebangRule } from '../rules/skills/skill-missing-shebang';
+import { rule as skillMissingCommentsRule } from '../rules/skills/skill-missing-comments';
+import { rule as skillEvalUsageRule } from '../rules/skills/skill-eval-usage';
+import { rule as skillPathTraversalRule } from '../rules/skills/skill-path-traversal';
+import { rule as skillMissingChangelogRule } from '../rules/skills/skill-missing-changelog';
+import { rule as skillMissingExamplesRule } from '../rules/skills/skill-missing-examples';
+import { rule as skillMissingVersionRule } from '../rules/skills/skill-missing-version';
+import { rule as skillTooManyFilesRule } from '../rules/skills/skill-too-many-files';
+import { rule as skillDeepNestingRule } from '../rules/skills/skill-deep-nesting';
+import { rule as skillNamingInconsistentRule } from '../rules/skills/skill-naming-inconsistent';
+import { rule as skillTimeSensitiveContentRule } from '../rules/skills/skill-time-sensitive-content';
+import { rule as skillBodyTooLongRule } from '../rules/skills/skill-body-too-long';
+import { rule as skillLargeReferenceNoTocRule } from '../rules/skills/skill-large-reference-no-toc';
 
 interface SkillFrontmatter {
   name: string;
@@ -113,14 +128,23 @@ export class SkillsValidator extends BaseValidator {
     // Validate string substitutions
     this.validateStringSubstitutions(skillMdPath, content);
 
-    // Analyze body content
-    this.analyzeBodyContent(skillMdPath, content);
+    // NEW: Execute directory organization rules on SKILL.md
+    await this.executeRule(skillTooManyFilesRule, skillMdPath, content);
+    await this.executeRule(skillDeepNestingRule, skillMdPath, content);
+    await this.executeRule(skillNamingInconsistentRule, skillMdPath, content);
 
-    // Check directory organization
-    await this.checkDirectoryOrganization(skillDir);
+    // NEW: Execute documentation rules on SKILL.md
+    await this.executeRule(skillMissingChangelogRule, skillMdPath, content);
+    await this.executeRule(skillMissingExamplesRule, skillMdPath, content);
+    await this.executeRule(skillMissingVersionRule, skillMdPath, content);
 
-    // Check documentation completeness
-    await this.checkDocumentation(skillDir, skillMdPath, content);
+    // NEW: Execute body content rules on SKILL.md
+    await this.executeRule(skillTimeSensitiveContentRule, skillMdPath, content);
+    await this.executeRule(skillBodyTooLongRule, skillMdPath, content);
+    await this.executeRule(skillLargeReferenceNoTocRule, skillMdPath, content);
+
+    // OLD: Check for multi-script README (keeping for now as it's not migrated yet)
+    await this.checkMultiScriptReadme(skillDir);
 
     // Check best practices
     await this.checkBestPractices(skillDir);
@@ -216,131 +240,8 @@ export class SkillsValidator extends BaseValidator {
     }
   }
 
-  private async checkDirectoryOrganization(skillDir: string): Promise<void> {
-    try {
-      const entries = await readdir(skillDir, { withFileTypes: true });
 
-      // Count files at root level (excluding SKILL.md, README.md, CHANGELOG.md)
-      const rootFiles = entries.filter((entry) => {
-        if (entry.isDirectory()) return false;
-        const name = entry.name;
-        const knownFiles = ['SKILL.md', 'README.md', 'CHANGELOG.md', '.gitignore', '.DS_Store'];
-        return !knownFiles.includes(name);
-      });
-
-      // Warn if more than max allowed loose files
-      if (rootFiles.length > SKILL_MAX_ROOT_FILES) {
-        this.reportWarning(
-          `Skill directory has ${rootFiles.length} files at root level (>${SKILL_MAX_ROOT_FILES} is hard to maintain). ` +
-            `Consider organizing scripts into subdirectories like: bin/, lib/, tests/`,
-          skillDir,
-          undefined,
-          'skill-too-many-files'
-        );
-      }
-
-      // Check for excessive nesting in subdirectories
-      const maxDepth = await this.getMaxDirectoryDepth(skillDir);
-      if (maxDepth > SKILL_MAX_DIRECTORY_DEPTH) {
-        this.reportWarning(
-          `Skill directory has ${maxDepth} levels of nesting (>${SKILL_MAX_DIRECTORY_DEPTH} is hard to navigate). ` +
-            `Consider flattening the directory structure.`,
-          skillDir,
-          undefined,
-          'skill-deep-nesting'
-        );
-      }
-    } catch (error) {
-      // Directory read error - already reported elsewhere
-    }
-  }
-
-  private async getMaxDirectoryDepth(dir: string, currentDepth = 0): Promise<number> {
-    try {
-      const entries = await readdir(dir, { withFileTypes: true });
-      const subdirs = entries.filter(
-        (entry) => entry.isDirectory() && entry.name !== 'node_modules'
-      );
-
-      if (subdirs.length === 0) {
-        return currentDepth;
-      }
-
-      const depths = await Promise.all(
-        subdirs.map((subdir) => this.getMaxDirectoryDepth(join(dir, subdir.name), currentDepth + 1))
-      );
-
-      return Math.max(...depths);
-    } catch (error) {
-      return currentDepth;
-    }
-  }
-
-  private async checkDocumentation(
-    skillDir: string,
-    skillMdPath: string,
-    content: string
-  ): Promise<void> {
-    // Check for CHANGELOG.md
-    const changelogPath = join(skillDir, 'CHANGELOG.md');
-    const changelogExists = await fileExists(changelogPath);
-    if (!changelogExists) {
-      const skillName = basename(skillDir);
-      this.reportWarning(
-        'Skill directory lacks CHANGELOG.md',
-        skillDir,
-        undefined,
-        'skill-missing-changelog',
-        {
-          explanation:
-            'A changelog helps users understand what changed between versions and track the evolution of the skill.',
-          howToFix:
-            '1. Create a changelog file in the skill directory\n' +
-            '2. Document all changes, fixes, and new features\n' +
-            '3. Follow Keep a Changelog format: https://keepachangelog.com',
-          fix: 'Create CHANGELOG.md',
-          autoFix: {
-            ruleId: 'skill-missing-changelog',
-            description: 'Create CHANGELOG.md file',
-            filePath: changelogPath,
-            apply: (_currentContent: string) => {
-              // Return template for new CHANGELOG.md
-              return `# Changelog
-
-All notable changes to ${skillName} will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-- Initial skill implementation
-
-## [1.0.0] - ${new Date().toISOString().split('T')[0]}
-
-### Added
-- Initial release
-`;
-            },
-          },
-        }
-      );
-    }
-
-    // Check for usage examples in SKILL.md
-    const hasCodeBlocks = /```[\s\S]*?```/.test(content);
-    const hasExampleSection = /##?\s+(Example|Usage|Examples)/i.test(content);
-    if (!hasCodeBlocks && !hasExampleSection) {
-      this.reportWarning(
-        'SKILL.md lacks usage examples. ' +
-          'Add code blocks or an "Example" section to help users understand how to use this skill.',
-        skillMdPath,
-        undefined,
-        'skill-missing-examples'
-      );
-    }
-
+  private async checkMultiScriptReadme(skillDir: string): Promise<void> {
     // Check for README.md if skill has multiple scripts
     try {
       const entries = await readdir(skillDir, { withFileTypes: true });
@@ -365,42 +266,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       // This is an optional documentation check - if we can't read the directory,
       // we skip this check rather than failing validation
     }
-
-    // Check for version field in frontmatter
-    const { frontmatter } = extractFrontmatter<SkillFrontmatter>(content);
-    if (frontmatter && !frontmatter.version) {
-      this.reportWarning(
-        'Skill frontmatter lacks "version" field',
-        skillMdPath,
-        undefined,
-        'skill-missing-version',
-        {
-          explanation:
-            'Version numbers help users and Claude track skill updates and ensure compatibility.',
-          howToFix:
-            '1. Add a version field to the frontmatter\n' +
-            '2. Use semantic versioning (e.g., 1.0.0)\n' +
-            '3. Update the version when making changes\n' +
-            '4. Document changes in CHANGELOG.md',
-          fix: 'Add "version: 1.0.0" to the SKILL.md frontmatter',
-          autoFix: {
-            ruleId: 'skill-missing-version',
-            description: 'Add version field to frontmatter',
-            filePath: skillMdPath,
-            apply: (currentContent: string) => {
-              // Find the frontmatter closing tag
-              const match = currentContent.match(/^---\n([\s\S]*?)\n---/);
-              if (match) {
-                const frontmatterContent = match[1];
-                const newFrontmatter = frontmatterContent + '\nversion: "1.0.0"';
-                return currentContent.replace(match[0], `---\n${newFrontmatter}\n---`);
-              }
-              return currentContent;
-            },
-          },
-        }
-      );
-    }
   }
 
   private async checkBestPractices(skillDir: string): Promise<void> {
@@ -412,145 +277,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const scriptPath = join(skillDir, script.name);
         const content = await readFileContent(scriptPath);
 
-        // Check for shebang
-        if (!content.startsWith('#!')) {
-          this.reportWarning(
-            `Shell script "${script.name}" lacks shebang line. ` +
-              'Add "#!/bin/bash" or "#!/usr/bin/env bash" as the first line.',
-            scriptPath,
-            undefined,
-            'skill-missing-shebang',
-            {
-              fix: 'Add #!/usr/bin/env bash as first line',
-              autoFix: {
-                ruleId: 'skill-missing-shebang',
-                description: 'Add shebang line to shell script',
-                filePath: scriptPath,
-                apply: (currentContent: string) => {
-                  return '#!/usr/bin/env bash\n' + currentContent;
-                },
-              },
-            }
-          );
-        }
-
-        // Check for explanatory comments
-        const lines = content.split('\n');
-        const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
-        const commentLines = nonEmptyLines.filter((line) => line.trim().startsWith('#'));
-
-        // If script has more than threshold lines but no comments (except shebang), warn
-        if (nonEmptyLines.length > SKILL_MIN_COMMENT_LINES && commentLines.length <= 1) {
-          this.reportWarning(
-            `Shell script "${script.name}" has ${nonEmptyLines.length} lines but no explanatory comments. ` +
-              'Add comments to explain what the script does.',
-            scriptPath,
-            undefined,
-            'skill-missing-comments'
-          );
-        }
+        // NEW: Execute new-style rules for shell script quality
+        await this.executeRule(skillMissingShebangRule, scriptPath, content);
+        await this.executeRule(skillMissingCommentsRule, scriptPath, content);
       }
 
-      // Check naming conventions
-      this.checkNamingConventions(skillDir, entries);
     } catch (error) {
       // Intentionally ignore directory/file read errors here
       // Best practices checks are optional - if we can't read files,
       // we skip these checks rather than failing validation
-    }
-  }
-
-  private checkNamingConventions(skillDir: string, entries: Dirent[]): void {
-    const files = entries.filter((entry) => entry.isFile());
-
-    // Check for inconsistent naming patterns
-    const kebabCase = files.filter((f) => /^[a-z0-9]+(-[a-z0-9]+)*\.(sh|py|js|md)$/.test(f.name));
-    const snakeCase = files.filter((f) => /^[a-z0-9]+(_[a-z0-9]+)+\.(sh|py|js|md)$/.test(f.name));
-    const camelCase = files.filter(
-      (f) => /^[a-z][a-zA-Z0-9]*\.(sh|py|js|md)$/.test(f.name) && /[A-Z]/.test(f.name)
-    );
-
-    const totalNamed = kebabCase.length + snakeCase.length + camelCase.length;
-
-    // Warn if multiple naming conventions are mixed
-    if (totalNamed >= SKILL_MIN_NAMING_CONSISTENCY) {
-      const conventions = [];
-      if (kebabCase.length > 0) conventions.push(`kebab-case (${kebabCase.length})`);
-      if (snakeCase.length > 0) conventions.push(`snake_case (${snakeCase.length})`);
-      if (camelCase.length > 0) conventions.push(`camelCase (${camelCase.length})`);
-
-      if (conventions.length > 1) {
-        this.reportWarning(
-          `Inconsistent file naming conventions detected: ${conventions.join(', ')}. ` +
-            'Choose one naming convention (kebab-case recommended) and apply it consistently.',
-          skillDir
-        );
-      }
-    }
-  }
-
-  private analyzeBodyContent(filePath: string, content: string): void {
-    // Extract body content (everything after frontmatter)
-    const parts = content.split('---');
-    if (parts.length < 3) {
-      return; // No body content or invalid frontmatter
-    }
-
-    const body = parts.slice(2).join('---');
-    const lines = body.split('\n');
-
-    // Check for time-sensitive content
-    const timeSensitivePatterns = [
-      /\btoday\b/i,
-      /\byesterday\b/i,
-      /\btomorrow\b/i,
-      /\bthis (week|month|year)\b/i,
-      /\blast (week|month|year)\b/i,
-      /\bnext (week|month|year)\b/i,
-      /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+20\d{2}\b/i,
-      /\b20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])\b/, // ISO date format
-    ];
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      for (const pattern of timeSensitivePatterns) {
-        if (pattern.test(line)) {
-          this.reportWarning(
-            `Time-sensitive content detected: "${line.trim()}". ` +
-              'Avoid using specific dates or time references that become outdated. ' +
-              'Use relative terms like "recent versions" or update the content regularly.',
-            filePath,
-            i + 1,
-            'skill-time-sensitive-content'
-          );
-          break; // Only warn once per line
-        }
-      }
-    }
-
-    // Check if body is too long (>500 lines)
-    if (lines.length > 500) {
-      this.reportWarning(
-        `SKILL.md body is very long (${lines.length} lines, >500 is hard to maintain). ` +
-          'Consider splitting into multiple files or adding a table of contents.',
-        filePath,
-        undefined,
-        'skill-body-too-long'
-      );
-    }
-
-    // Check if large skill (>100 lines) lacks table of contents
-    if (lines.length > 100) {
-      const hasTOC = /^#{1,6}\s*(table of contents|toc|contents)/i.test(body);
-      if (!hasTOC) {
-        this.reportWarning(
-          `SKILL.md is large (${lines.length} lines) but lacks a table of contents. ` +
-            'Add a TOC section to help users navigate the document.',
-          filePath,
-          undefined,
-          'skill-large-reference-no-toc'
-        );
-      }
     }
   }
 
@@ -566,50 +301,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const scriptPath = join(skillDir, script.name);
         const content = await readFileContent(scriptPath);
 
-        // Check for dangerous shell commands
-        for (const { pattern, message } of DANGEROUS_COMMANDS) {
-          if (pattern.test(content)) {
-            this.reportError(
-              `Dangerous command detected in "${script.name}": ${message}. ` +
-                'This command could cause data loss or system damage.',
-              scriptPath,
-              undefined,
-              'skill-dangerous-command'
-            );
-          }
-        }
-
-        // Check for eval/exec usage
-        if (script.name.endsWith('.sh')) {
-          if (SHELL_EVAL_REGEX.test(content)) {
-            this.reportWarning(
-              `Shell script "${script.name}" uses "eval" command. ` +
-                'Avoid eval as it can execute arbitrary code and poses security risks.',
-              scriptPath,
-              undefined,
-              'skill-eval-usage'
-            );
-          }
-        } else if (script.name.endsWith('.py')) {
-          if (PYTHON_EVAL_EXEC_REGEX.test(content)) {
-            this.reportWarning(
-              `Python script "${script.name}" uses eval() or exec(). ` +
-                'These functions can execute arbitrary code and pose security risks.',
-              scriptPath
-            );
-          }
-        }
-
-        // Check for path traversal in file operations
-        if (PATH_TRAVERSAL_REGEX.test(content)) {
-          this.reportWarning(
-            `Potential path traversal detected in "${script.name}" (../ or ..\\). ` +
-              'Ensure file paths are properly validated to prevent directory traversal attacks.',
-            scriptPath,
-            undefined,
-            'skill-path-traversal'
-          );
-        }
+        // NEW: Execute security and safety rules
+        await this.executeRule(skillDangerousCommandRule, scriptPath, content);
+        await this.executeRule(skillEvalUsageRule, scriptPath, content);
+        await this.executeRule(skillPathTraversalRule, scriptPath, content);
       }
     } catch (error) {
       // Directory read error - ignore

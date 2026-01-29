@@ -8,6 +8,9 @@
     "claudelint": "./bin/claudelint"
   },
   "scripts": {
+    "generate:types": "ts-node scripts/generate-rule-types.ts",
+    "generate:schema-rules": "ts-node scripts/generate-schema-rules.ts",
+    "prebuild": "ts-node scripts/generate-rule-types.ts",
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "jest",

@@ -5,7 +5,7 @@
 **Validator**: MCP
 **Category**: Schema Validation
 
-Validates that MCP server transport configurations use valid types (stdio or SSE) with properly formatted required fields.
+MCP transport type must be one of the supported values
 
 ## Rule Details
 
@@ -87,34 +87,6 @@ Valid SSE transport with variable expansion:
   }
 }
 ```
-
-## How To Fix
-
-1. **Use valid transport type**: Must be `"stdio"` or `"sse"` (not http, websocket, etc.)
-2. **Provide required stdio fields**: Include non-empty `command` field
-3. **Provide required SSE fields**: Include non-empty, valid `url` field with protocol
-4. **Fix URL format**: Ensure URLs include protocol (`http://` or `https://`)
-5. **Use proper variable expansion**: Use `${VAR}` syntax instead of `$VAR` (see [mcp-invalid-env-var](./mcp-invalid-env-var.md))
-
-**Transport Type: "stdio"**
-
-Launches MCP server as subprocess.
-
-Required: `command` (string, non-empty)
-Optional: `args` (array), `env` (object)
-
-**Transport Type: "sse"**
-
-Connects to MCP server via Server-Sent Events.
-
-Required: `url` (string, non-empty, valid URL)
-Optional: `env` (object)
-
-**Variable Expansion:**
-
-- Basic: `${VAR}`
-- With default: `${VAR:-default}`
-- Special: `${CLAUDE_PLUGIN_ROOT}`
 
 ## Options
 

@@ -1,0 +1,57 @@
+/**
+ * Rule: plugin-invalid-version
+ *
+ * Validates plugin version follows semantic versioning.
+ */
+
+import { Rule } from '../../types/rule';
+import { SEMVER_PATTERN } from '../../validators/constants';
+import { PluginManifestSchema } from '../../validators/schemas';
+import { z } from 'zod';
+
+type PluginManifest = z.infer<typeof PluginManifestSchema>;
+
+/**
+ * Validates that plugin version follows semver format
+ */
+export const rule: Rule = {
+  meta: {
+    id: 'plugin-invalid-version',
+    name: 'Plugin Invalid Version',
+    description: 'Plugin version must follow semantic versioning format',
+    category: 'Plugin',
+    severity: 'error',
+    fixable: false,
+    deprecated: false,
+    since: '1.0.0',
+    docUrl:
+      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-invalid-version.md',
+  },
+
+  validate: async (context) => {
+    const { filePath, fileContent } = context;
+
+    // Only validate plugin.json files
+    if (!filePath.endsWith('plugin.json')) {
+      return;
+    }
+
+    let plugin: PluginManifest;
+    try {
+      plugin = JSON.parse(fileContent);
+    } catch {
+      return; // JSON parse errors handled by schema validation
+    }
+
+    if (!plugin.version) {
+      return; // Required field validation handled by schema
+    }
+
+    // Validate semver format
+    if (!SEMVER_PATTERN.test(plugin.version)) {
+      context.report({
+        message: `Invalid semantic version: ${plugin.version}. Must follow semver format (e.g., 1.0.0, 2.1.3-beta)`,
+      });
+    }
+  },
+};

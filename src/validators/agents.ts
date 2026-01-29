@@ -11,8 +11,6 @@ import { basename, join } from 'path';
 import { validateHook } from '../utils/validation-helpers';
 import { HookSchema } from './schemas';
 import { z } from 'zod';
-// Import rules to ensure they're registered
-import '../rules';
 import { ValidatorRegistry } from '../utils/validator-factory';
 
 /**
@@ -181,7 +179,8 @@ export class AgentsValidator extends BaseValidator {
         if (issue.severity === 'warning') {
           this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
         } else {
-          this.reportError(issue.message, filePath, undefined, 'agent-hooks-invalid-schema');
+          // Use ruleId from validation utility if available
+          this.reportError(issue.message, filePath, undefined, issue.ruleId);
         }
       }
 

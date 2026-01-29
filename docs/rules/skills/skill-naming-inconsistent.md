@@ -5,7 +5,7 @@
 **Validator**: Skills
 **Category**: Best Practices
 
-Enforces consistent file naming conventions within skill directories to improve navigability and professionalism.
+Skill has inconsistent file naming conventions
 
 ## Rule Details
 
@@ -49,40 +49,6 @@ Alternative - consistent snake_case:
 ├── rollback_deployment.sh
 └── validate.sh
 ```
-
-## How To Fix
-
-1. **Choose a convention**: Pick kebab-case (recommended), snake_case, or camelCase
-2. **Rename files**: Use `git mv` to preserve history (e.g., `git mv deploy_app.sh deploy-app.sh`)
-3. **Update imports**: Find and update all `source` statements referencing renamed files
-4. **Update documentation**: Change references in README, SKILL.md, comments
-5. **Update CI/CD**: Modify pipeline scripts that reference old names
-6. **Test thoroughly**: Ensure skill still works after renaming
-
-**Rename Script Example:**
-
-```bash
-# Convert snake_case to kebab-case
-for file in *_*.sh; do
-  new_name=$(echo "$file" | tr '_' '-')
-  git mv "$file" "$new_name"
-done
-```
-
-**Migration Checklist:**
-
-- Use `git mv` to preserve history
-- Update `source` statements in scripts
-- Update documentation and guides
-- Update CI/CD pipeline references
-- Test skill functionality
-
-**Naming Best Practices:**
-
-- Be descriptive: `deploy-to-staging.sh` over `deploy.sh`
-- Use verbs for actions: `validate-config.sh` not `config.sh`
-- Avoid abbreviations: `health-check.sh` not `hc.sh`
-- Follow ecosystem norms: kebab-case for shell, snake_case for Python
 
 ## Options
 

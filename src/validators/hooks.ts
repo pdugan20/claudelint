@@ -1,15 +1,17 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-validator';
-import { findHooksFiles, fileExists } from '../utils/file-system';
+import { findHooksFiles, readFileContent } from '../utils/file-system';
 import { z } from 'zod';
-import { dirname, join, resolve } from 'path';
-import { HookSchema, HooksConfigSchema, MatcherSchema } from './schemas';
-// Import rules to ensure they're registered
-import '../rules';
+import { HooksConfigSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validator-factory';
-import {
-  validateHook as validateHookHelper,
-  hasVariableExpansion,
-} from '../utils/validation-helpers';
+import { validateHook as validateHookHelper } from '../utils/validation-helpers';
+
+// Auto-register all rules
+import '../rules';
+
+// Import new-style rules
+import { rule as hooksInvalidEventRule } from '../rules/hooks/hooks-invalid-event';
+import { rule as hooksMissingScriptRule } from '../rules/hooks/hooks-missing-script';
+import { rule as hooksInvalidConfigRule } from '../rules/hooks/hooks-invalid-config';
 
 /**
  * Options specific to Hooks validator
@@ -37,73 +39,31 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
     filePath: string,
     config: z.infer<typeof HooksConfigSchema>
   ): Promise<void> {
+    // Read file content for rule execution
+    const content = await readFileContent(filePath);
+
+    // NEW: Execute new-style rules (these handle registered rule IDs)
+    await this.executeRule(hooksInvalidEventRule, filePath, content);
+    await this.executeRule(hooksMissingScriptRule, filePath, content);
+    await this.executeRule(hooksInvalidConfigRule, filePath, content);
+
+    // OLD: Keep additional validation not covered by registered rules
     for (const hook of config.hooks) {
-      await this.validateHook(filePath, hook);
-    }
-  }
-
-  private async validateHook(filePath: string, hook: z.infer<typeof HookSchema>): Promise<void> {
-    // Use shared validation utility for common checks
-    const issues = validateHookHelper(hook);
-    for (const issue of issues) {
-      if (issue.severity === 'warning') {
-        this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
-      } else {
-        this.reportError(issue.message, filePath, undefined, issue.ruleId);
-      }
-    }
-
-    // Validate command script exists if it's a file path
-    if (hook.type === 'command' && hook.command) {
-      await this.validateCommandScript(filePath, hook.command);
-    }
-
-    // Validate matcher tool name (requires validator context)
-    if (hook.matcher) {
-      this.validateMatcher(filePath, hook.matcher);
-    }
-  }
-
-  private validateMatcher(filePath: string, matcher: z.infer<typeof MatcherSchema>): void {
-    // Validate tool name (regex pattern validation is handled by shared utility)
-    if (matcher.tool) {
-      this.validateToolName(matcher.tool, filePath, 'tool in matcher');
-    }
-  }
-
-  private async validateCommandScript(filePath: string, command: string): Promise<void> {
-    // Skip validation for inline commands (contain spaces or shell operators)
-    if (
-      command.includes(' ') ||
-      command.includes('&&') ||
-      command.includes('||') ||
-      command.includes('|')
-    ) {
-      return;
-    }
-
-    // Skip validation for commands with variables
-    if (hasVariableExpansion(command)) {
-      return;
-    }
-
-    // Check if it's a relative path script
-    if (command.startsWith('./') || command.startsWith('../')) {
-      const baseDir = dirname(filePath);
-      const scriptPath = resolve(join(baseDir, command));
-
-      const exists = await fileExists(scriptPath);
-      if (!exists) {
-        this.reportError(`Hook script not found: ${command}`, filePath, undefined, 'hooks-missing-script');
-        return;
+      // Use shared validation utility for common checks
+      const issues = validateHookHelper(hook);
+      for (const issue of issues) {
+        if (issue.severity === 'warning') {
+          this.reportWarning(issue.message, filePath, undefined, issue.ruleId);
+        } else {
+          this.reportError(issue.message, filePath, undefined, issue.ruleId);
+        }
       }
 
-      // TODO: Could add executability check on Unix systems
-      // For now, just check existence
+      // Validate matcher tool name
+      if (hook.matcher?.tool) {
+        this.validateToolName(hook.matcher.tool, filePath, 'tool in matcher');
+      }
     }
-
-    // For absolute paths or commands in PATH, we can't reliably check without executing
-    // So we skip validation for those
   }
 }
 

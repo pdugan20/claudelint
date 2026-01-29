@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: Skills
-**Category**: Maintainability
+**Category**: Best Practices
 
-Detects time-sensitive language in SKILL.md files that will become outdated and misleading over time.
+SKILL.md should avoid time-sensitive references
 
 ## Rule Details
 
@@ -51,14 +51,6 @@ It currently supports three deployment targets.
 
 The production deploy feature was introduced in version 2.0.
 ```
-
-## How To Fix
-
-1. Replace relative time references with version numbers or specific releases
-2. Replace specific dates with version references or semantic descriptions
-3. Use present tense for current features: "supports" instead of "was added today"
-4. For recent changes, reference version numbers: "added in v2.0" instead of "added last week"
-5. If a date is important, reference it in a changelog instead of inline documentation
 
 ## Options
 

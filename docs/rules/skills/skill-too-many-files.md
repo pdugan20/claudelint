@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
+**Category**: File System
 
-Enforces that skill directories don't have more than 10 files at the root level to maintain navigability and organization.
+Skill directory has too many files at root level
 
 ## Rule Details
 
@@ -62,39 +62,6 @@ Well-organized with subdirectories:
 
 3 files at root (<10)
 ```
-
-## How To Fix
-
-1. **Create subdirectories**: Use standard structure (`bin/`, `lib/`, `tests/`, `config/`)
-2. **Move files to logical groups**: Organize by function (executable, library, test, config)
-3. **Update import paths**: Change `source ./utils.sh` to `source ./lib/utils.sh`
-4. **Update SKILL.md**: Document new structure
-5. **Test**: Ensure skill still works after reorganization
-
-**Standard Structure:**
-
-```bash
-.claude/skills/your-skill/
-├── SKILL.md            # Required documentation
-├── main-script.sh      # Main entry point
-├── bin/                # Executable scripts
-├── lib/                # Shared libraries/utilities
-├── tests/              # Test scripts
-└── config/             # Configuration files
-```
-
-**Alternative: Group by functionality:**
-
-```bash
-.claude/skills/deploy/
-├── SKILL.md
-├── deploy.sh           # Main orchestrator
-├── deployment/         # Deployment operations
-├── backup/             # Backup operations
-└── utilities/          # Shared utilities
-```
-
-**Excluded from count:** `SKILL.md`, `README.md`, `CHANGELOG.md`, `.gitignore`, `.DS_Store`
 
 ## Options
 

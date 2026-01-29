@@ -82,7 +82,7 @@ describe('Reporter', () => {
           {
             message: 'Test error',
             severity: 'error',
-            ruleId: 'size-error',
+            ruleId: 'claude-md-size-error',
             explanation: 'This is why it matters',
             howToFix: 'This is how to fix it',
             fix: 'Apply this fix',
@@ -116,7 +116,7 @@ describe('Reporter', () => {
             file: 'test.md',
             line: 10,
             severity: 'error',
-            ruleId: 'size-error',
+            ruleId: 'claude-md-size-error',
           },
         ],
         warnings: [],
@@ -126,7 +126,7 @@ describe('Reporter', () => {
       reporter.report(result, 'Test');
 
       // Compact format: file:line:0: error: message [rule-id]
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:10:0: error: Test error [size-error]');
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:10:0: error: Test error [claude-md-size-error]');
     });
 
     it('should report warnings in compact format', () => {
@@ -138,7 +138,7 @@ describe('Reporter', () => {
             file: 'test.md',
             line: 5,
             severity: 'warning',
-            ruleId: 'size-warning',
+            ruleId: 'claude-md-size-warning',
           },
         ],
         valid: true,
@@ -147,7 +147,7 @@ describe('Reporter', () => {
       reporter.report(result, 'Test');
 
       // Compact format: file:line:0: warning: message [rule-id]
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:5:0: warning: Test warning [size-warning]');
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:5:0: warning: Test warning [claude-md-size-warning]');
     });
   });
 
@@ -171,14 +171,14 @@ describe('Reporter', () => {
 
     it('should output all results as JSON', () => {
       const result1: ValidationResult = {
-        errors: [{ message: 'Error 1', severity: 'error', ruleId: 'size-error' }],
+        errors: [{ message: 'Error 1', severity: 'error', ruleId: 'claude-md-size-error' }],
         warnings: [],
         valid: false,
       };
 
       const result2: ValidationResult = {
         errors: [],
-        warnings: [{ message: 'Warning 1', severity: 'warning', ruleId: 'size-warning' }],
+        warnings: [{ message: 'Warning 1', severity: 'warning', ruleId: 'claude-md-size-warning' }],
         valid: true,
       };
 
@@ -328,9 +328,9 @@ describe('Reporter', () => {
     it('should report multiple errors', () => {
       const result: ValidationResult = {
         errors: [
-          { message: 'Error 1', severity: 'error', ruleId: 'size-error' },
-          { message: 'Error 2', severity: 'error', ruleId: 'import-missing' },
-          { message: 'Error 3', severity: 'error', ruleId: 'import-circular' },
+          { message: 'Error 1', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Error 2', severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 3', severity: 'error', ruleId: 'claude-md-import-circular' },
         ],
         warnings: [],
         valid: false,
