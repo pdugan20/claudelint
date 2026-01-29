@@ -17,7 +17,7 @@ claudelint includes validators for all major Claude Code components:
 9. LSP Servers
 10. Output Styles
 
-**See also:** [Complete Rule Reference](./rules/index.md) - Individual documentation pages for all 27 validation rules
+**See also:** [Complete Rule Reference](./rules/index.md) - Individual documentation pages for all 66 validation rules
 
 ## Scope Note
 

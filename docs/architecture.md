@@ -576,16 +576,20 @@ for (const rule of rules) {
 
 Core rules (v1.0):
 
-- **CLAUDE.md** (4 rules): size-error, size-warning, import-missing, import-circular
-- **Skills** (11 rules): missing-shebang, missing-comments, dangerous-command, eval-usage, path-traversal, missing-changelog, missing-examples, missing-version, too-many-files, deep-nesting, naming-inconsistent
-- **Settings** (3 rules): invalid-schema, invalid-permission, invalid-env-var
+- **CLAUDE.md** (11 rules): size-error, size-warning, import-missing, import-circular, import-in-code-block, filename-case-sensitive, glob-pattern-backslash, glob-pattern-too-broad, rules-circular-symlink, content-too-many-sections, paths
+- **Skills** (28 rules): missing-shebang, missing-comments, dangerous-command, eval-usage, path-traversal, missing-changelog, missing-examples, missing-version, too-many-files, deep-nesting, naming-inconsistent, time-sensitive-content, body-too-long, large-reference-no-toc, name, description, version, model, tags, context, dependencies, agent, allowed-tools, disallowed-tools
+- **Agents** (10 rules): name, description, model, tools, disallowed-tools, skills, skills-not-found, hooks, hooks-invalid-schema, events
+- **Settings** (4 rules): invalid-permission, invalid-env-var, permission-invalid-rule, permission-empty-pattern
 - **Hooks** (3 rules): invalid-event, missing-script, invalid-config
 - **MCP** (3 rules): invalid-server, invalid-transport, invalid-env-var
-- **Plugin** (3 rules): invalid-manifest, invalid-version, missing-file
+- **Plugin** (6 rules): invalid-manifest, invalid-version, missing-file, circular-dependency, dependency-invalid-version, commands-in-plugin-deprecated
+- **Commands** (2 rules): deprecated-directory, migrate-to-skills
+- **OutputStyles** (3 rules): name, description, examples
+- **LSP** (0 rules): Schema-validated only
 
-**Total:** 27 core rules
+**Total:** 66 core rules (ESLint-style auto-discovered from filesystem)
 
-Plugin rules are registered dynamically when plugins load.
+Plugin rules can be added by third-party packages.
 
 ### Integration with Validators
 

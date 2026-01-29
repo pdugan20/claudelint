@@ -48,7 +48,7 @@ claudelint check-all
 
 ### Rules & Configuration
 
--  **27 Validation Rules** - Comprehensive checks across 6 categories
+-  **66 Validation Rules** - Comprehensive checks across 10 categories
 -  **Per-rule Documentation** - Detailed docs for each rule
 -  **Inline Disable Comments** - Fine-grained control with `<!-- claudelint-disable -->`
 -  **Auto-fix** - Automatically fix common issues (`--fix` flag)
