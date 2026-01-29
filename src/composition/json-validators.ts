@@ -93,31 +93,29 @@ export function objectProperties<T extends Record<string, unknown>>(
   }
 ): ComposableValidator<T> {
   return async (obj, context) => {
-    const validationTasks: Array<() => Promise<ComposableValidationResult>> = [];
+    const validationPromises: Promise<ComposableValidationResult>[] = [];
 
     for (const [key, validatorValue] of Object.entries(propertyValidators)) {
       // Type assertion needed because Object.entries loses type information
       const validator = validatorValue as ComposableValidator<unknown> | undefined;
 
       if (!validator) {
-        validationTasks.push(() => Promise.resolve(success()));
+        validationPromises.push(Promise.resolve(success()));
         continue;
       }
 
-      validationTasks.push(async () => {
-        const value = obj[key as keyof T];
-        const result = validator(value, {
+      const value = obj[key as keyof T];
+      const validationResult: Promise<ComposableValidationResult> | ComposableValidationResult =
+        validator(value, {
           ...context,
           state: new Map(context.state).set('currentProperty', key),
         });
-        return Promise.resolve(result);
-      });
+
+      validationPromises.push(Promise.resolve(validationResult));
     }
 
-    // Execute all validation tasks
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const results = await Promise.all(validationTasks.map((task) => task()));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    // Execute all validation promises
+    const results: ComposableValidationResult[] = await Promise.all(validationPromises);
     return mergeResults(results);
   };
 }
