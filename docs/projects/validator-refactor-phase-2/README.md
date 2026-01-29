@@ -230,6 +230,42 @@ ls tests/rules/{category}/{rule-id}.test.ts
 - [../rule-implementation/](../rule-implementation/) - Phase 5 rule system
 - [../../README.md](../../README.md) - General project documentation
 
+## Test Architecture After Phase 2
+
+Phase 2 introduces a **two-level testing strategy**:
+
+### Rule Tests (Unit Tests)
+- **Location:** `tests/rules/{category}/{rule-id}.test.ts`
+- **Purpose:** Test validation logic in isolation
+- **Tool:** ClaudeLintRuleTester (like ESLint's RuleTester)
+- **Count:** 3-5 tests per rule (~91 rules = ~300 unit tests)
+
+### Validator Tests (Integration Tests)
+- **Location:** `tests/validators/{validator}.test.ts`
+- **Purpose:** Test orchestration only (file discovery, parsing, rule execution)
+- **Count:** 7-10 tests per validator (reduced from 20-40)
+- **Focus:** Does NOT test validation logic (that's in rule tests)
+
+### Size Impact
+
+**Before Phase 2:**
+- Validator tests: 688 tests, test BOTH orchestration AND validation
+- Rule tests: 0
+
+**After Phase 2:**
+- Validator tests: ~100 tests (~60% reduction), test orchestration only
+- Rule tests: ~300 tests (NEW), test validation logic
+- **Total tests: ~400** (better coverage at correct level)
+
+### What This Means
+
+- Validator tests become SIMPLER (just orchestration)
+- Rule tests are MORE FOCUSED (one rule at a time)
+- Test failures are CLEARER (rule test = validation bug, validator test = orchestration bug)
+- Better coverage with tests at the right level of abstraction
+
+See IMPLEMENTATION-TRACKER.md for detailed examples of before/after test structure.
+
 ## Lessons Learned (2026-01-29)
 
 **What We Discovered:**
@@ -237,12 +273,14 @@ ls tests/rules/{category}/{rule-id}.test.ts
 2. Zod schema validation can mask missing rule implementations
 3. Can't assume rules work just because tests pass
 4. Need verification scripts to catch stub implementations
+5. Need to test at the right level of abstraction
 
 **How We're Addressing It:**
 1. Building RuleTester infrastructure (like ESLint)
 2. Unit testing every rule with declarative test cases
 3. Removing ALL validation from Zod schemas
 4. Verification script runs as part of test suite
+5. Two-level testing: rules (unit) + validators (integration)
 
 ## Approval and Sign-off
 

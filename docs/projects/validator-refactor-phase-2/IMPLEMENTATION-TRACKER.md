@@ -699,6 +699,98 @@ After completing MCP and Claude.md validators, we discovered:
 - Schemas should be for structure, not validation
 - Must verify assumptions with concrete tests
 
+### Test Architecture After Phase 2
+
+**Two-Level Testing Strategy:**
+
+1. **Rule Tests (Unit Tests)** - Test validation logic in isolation
+   - Location: `tests/rules/{category}/{rule-id}.test.ts`
+   - Tool: ClaudeLintRuleTester
+   - Tests: 3-5 per rule (valid/invalid cases)
+   - Example: `tests/rules/mcp/mcp-stdio-command.test.ts`
+   - Coverage: All validation logic, edge cases, options
+
+2. **Validator Tests (Integration Tests)** - Test orchestration only
+   - Location: `tests/validators/{validator}.test.ts`
+   - Tests: 7-10 per validator (reduced from 20-40)
+   - Focus: File discovery, parsing, rule execution, aggregation
+   - Example: "should find and process all mcp.json files"
+   - Does NOT test validation logic (that's in rule tests)
+
+**Size Impact:**
+
+Current validator tests (example: mcp.test.ts):
+- 33 tests, ~450 lines
+- Tests BOTH orchestration AND validation logic
+
+After Phase 2:
+- `tests/validators/mcp.test.ts`: ~8 tests, ~150-200 lines (orchestration only)
+- `tests/rules/mcp/*.test.ts`: 8 files, ~3-5 tests each, ~400 lines (validation)
+- **Total tests INCREASES** (better coverage at right level)
+- **Validator test complexity DECREASES** (~60% reduction in lines)
+
+**What Validator Tests Will Test:**
+
+✓ File discovery (glob patterns, directory traversal)
+✓ File parsing (JSON/YAML/Markdown + frontmatter)
+✓ Rule orchestration (executeRulesForCategory calls rules)
+✓ Result aggregation (multiple files, multiple rules)
+✓ Missing file handling ("No X found" warnings)
+✓ Config integration (file-specific overrides work)
+✗ Validation logic (empty fields, invalid formats, etc.) ← MOVES TO RULE TESTS
+
+**What Rule Tests Will Test:**
+
+✓ Validation logic (is empty string caught?)
+✓ Error messages (correct message for each case)
+✓ Edge cases (null, undefined, boundary values)
+✓ Rule options (configurable behavior works)
+✓ Context (file path, line numbers reported correctly)
+✗ File discovery ← STAYS IN VALIDATOR TESTS
+✗ Parsing ← STAYS IN VALIDATOR TESTS
+
+**Example Refactor:**
+
+Before (validator test):
+```typescript
+it('should error for empty command', async () => {
+  const filePath = join(testDir, 'mcp.json');
+  await writeFile(filePath, JSON.stringify({
+    mcpServers: { server1: { transport: { type: 'stdio', command: '' }}}
+  }));
+  const validator = new MCPValidator({ path: filePath });
+  const result = await validator.validate();
+  expect(result.errors.some(e => e.message.includes('empty'))).toBe(true);
+});
+```
+
+After Phase 2:
+
+Rule test (unit):
+```typescript
+ruleTester.run('mcp-stdio-command', rule, {
+  invalid: [{
+    content: JSON.stringify({ mcpServers: { s1: { transport: { type: 'stdio', command: '' }}}}),
+    errors: [{ message: 'stdio command cannot be empty' }]
+  }]
+});
+```
+
+Validator test (integration):
+```typescript
+it('should execute MCP rules for all servers', async () => {
+  const filePath = join(testDir, 'mcp.json');
+  await writeFile(filePath, JSON.stringify({
+    mcpServers: { server1: { /* valid */ }, server2: { /* valid */ }}
+  }));
+  const validator = new MCPValidator({ path: filePath });
+  const result = await validator.validate();
+  expect(result.valid).toBe(true); // Orchestration works
+});
+```
+
+**Key Insight:** Validator tests become SIMPLER and CLEARER because they only test orchestration, not validation logic. Rule tests are MORE FOCUSED because they test one rule at a time.
+
 ### Questions/Issues
 
 **Q:** Should we remove mergeSchemaValidationResult() entirely?
