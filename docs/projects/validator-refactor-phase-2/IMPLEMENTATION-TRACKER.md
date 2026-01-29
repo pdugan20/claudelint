@@ -212,14 +212,15 @@ After completing MCP and Claude.md validators, we discovered:
 
 - [ ] **Task 2.2.2:** Add unit tests for MCP rules
   - **Files:** `tests/rules/mcp/*.test.ts`
-  - **Action:** Create test file for each of 8 MCP rules
+  - **Action:** Create test file for each of 13 MCP rules
   - **Action:** Use ClaudeLintRuleTester for declarative test cases
   - **Action:** Cover valid and invalid cases for each rule
-  - **Action:** Verify all 8 rules actually execute and report errors
-  - **Estimated Time:** 1 hour
+  - **Action:** Verify all 13 rules actually execute and report errors
+  - **Estimated Time:** 1.5 hours (revised from 1 hour - 13 rules not 8)
   - **Dependencies:** Task 2.2.1
-  - **Assigned To:** TBD
+  - **Assigned To:** Claude (in progress)
   - **Completion Date:** TBD
+  - **Status:** 3/13 rules tested (mcp-stdio-empty-command, mcp-sse-empty-url, mcp-invalid-env-var)
 
 - [ ] **Task 2.2.3:** Add unit tests for Claude.md rules
   - **Files:** `tests/rules/claude-md/*.test.ts`
