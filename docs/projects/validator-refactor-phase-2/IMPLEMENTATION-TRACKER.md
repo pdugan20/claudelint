@@ -189,7 +189,7 @@ After completing MCP and Claude.md validators, we discovered:
 
 **Goal:** Create RuleTester utility and verify existing rules work
 **Estimated Time:** 3-4 hours
-**Status:** Not Started
+**Status:** In Progress (2/3 tasks complete)
 **CRITICAL:** Must verify rules actually execute before continuing
 
 ### Tasks
@@ -210,7 +210,7 @@ After completing MCP and Claude.md validators, we discovered:
   - **Completion Date:** 2026-01-29
   - **Notes:** Based on ESLint pattern. Supports both sync and async rules. Verified with mcp-stdio-empty-command test.
 
-- [ ] **Task 2.2.2:** Add unit tests for MCP rules
+- [X] **Task 2.2.2:** Add unit tests for MCP rules
   - **Files:** `tests/rules/mcp/*.test.ts`
   - **Action:** Create test file for each of 13 MCP rules
   - **Action:** Use ClaudeLintRuleTester for declarative test cases
@@ -218,9 +218,23 @@ After completing MCP and Claude.md validators, we discovered:
   - **Action:** Verify all 13 rules actually execute and report errors
   - **Estimated Time:** 1.5 hours (revised from 1 hour - 13 rules not 8)
   - **Dependencies:** Task 2.2.1
-  - **Assigned To:** Claude (in progress)
-  - **Completion Date:** TBD
-  - **Status:** 3/13 rules tested (mcp-stdio-empty-command, mcp-sse-empty-url, mcp-invalid-env-var)
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Status:** Complete - All 13/13 MCP rules tested and passing
+  - **Tests Created:**
+    - mcp-stdio-empty-command.test.ts
+    - mcp-sse-empty-url.test.ts
+    - mcp-invalid-env-var.test.ts
+    - mcp-invalid-server.test.ts
+    - mcp-invalid-transport.test.ts
+    - mcp-server-key-mismatch.test.ts
+    - mcp-sse-transport-deprecated.test.ts
+    - mcp-sse-invalid-url.test.ts
+    - mcp-http-empty-url.test.ts
+    - mcp-http-invalid-url.test.ts
+    - mcp-websocket-empty-url.test.ts
+    - mcp-websocket-invalid-url.test.ts
+    - mcp-websocket-invalid-protocol.test.ts
 
 - [ ] **Task 2.2.3:** Add unit tests for Claude.md rules
   - **Files:** `tests/rules/claude-md/*.test.ts`
