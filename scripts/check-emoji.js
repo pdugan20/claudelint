@@ -59,10 +59,34 @@ if (fs.existsSync('src')) {
   walkDirectory('src', false);
 }
 
+// Check test files
+console.log('Checking tests for emojis...');
+if (fs.existsSync('tests')) {
+  walkDirectory('tests', false);
+}
+
 // Check scripts directory
 console.log('Checking scripts for emojis...');
 if (fs.existsSync('scripts')) {
   walkDirectory('scripts', false);
+}
+
+// Check examples directory
+console.log('Checking examples for emojis...');
+if (fs.existsSync('examples')) {
+  walkDirectory('examples', false);
+}
+
+// Check bin directory
+console.log('Checking bin for emojis...');
+if (fs.existsSync('bin')) {
+  walkDirectory('bin', false);
+}
+
+// Check .github directory (workflows, templates)
+console.log('Checking .github for emojis...');
+if (fs.existsSync('.github')) {
+  walkDirectory('.github', true);
 }
 
 // Check documentation (strict mode - no emojis allowed)
@@ -70,8 +94,13 @@ console.log('Checking documentation (strict mode - no emojis allowed)...');
 if (fs.existsSync('docs')) {
   walkDirectory('docs', true);
 }
-if (fs.existsSync('README.md')) {
-  checkFile('README.md', true);
+
+// Check root markdown files
+const rootMarkdownFiles = ['README.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'LICENSE.md'];
+for (const file of rootMarkdownFiles) {
+  if (fs.existsSync(file)) {
+    checkFile(file, true);
+  }
 }
 
 if (foundEmojis) {
