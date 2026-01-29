@@ -3,11 +3,12 @@
  *
  * Agent model must be one of: sonnet, opus, haiku, inherit
  *
- * This validation is implemented in AgentFrontmatterSchema which validates
- * the field using ModelNames enum.
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.model for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-model.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterSchema
-    // Schema validates using ModelNames enum
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.model) {
+      return;
+    }
+
+    const modelSchema = AgentFrontmatterSchema.shape.model;
+    const result = modelSchema.safeParse(frontmatter.model);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'model');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

@@ -3,11 +3,12 @@
  *
  * Skill model must be one of: sonnet, opus, haiku, inherit
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using ModelNames enum.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.model for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,25 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-model.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using ModelNames enum
+  validate: (context: RuleContext) => {
+    // Extract frontmatter
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.model) {
+      return; // Field not present - model is optional
+    }
+
+    // Delegate to Zod schema validator for 'model' field
+    const modelSchema = SkillFrontmatterSchema.shape.model;
+    const result = modelSchema.safeParse(frontmatter.model);
+
+    if (!result.success) {
+      // Report first error with proper context
+      const line = getFrontmatterFieldLine(context.fileContent, 'model');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

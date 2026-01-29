@@ -3,11 +3,12 @@
  *
  * Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using lowercaseHyphens(), max(64), noXMLTags(), noReservedWords().
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.name for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,25 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using lowercaseHyphens(), max(64), noXMLTags(), noReservedWords()
+  validate: (context: RuleContext) => {
+    // Extract frontmatter
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.name) {
+      return; // Field not present - let other rules handle missing fields
+    }
+
+    // Delegate to Zod schema validator for 'name' field
+    const nameSchema = SkillFrontmatterSchema.shape.name;
+    const result = nameSchema.safeParse(frontmatter.name);
+
+    if (!result.success) {
+      // Report first error with proper context
+      const line = getFrontmatterFieldLine(context.fileContent, 'name');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

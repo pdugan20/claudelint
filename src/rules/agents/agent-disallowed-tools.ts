@@ -3,11 +3,12 @@
  *
  * Agent disallowed-tools must be an array of tool names
  *
- * This validation is implemented in AgentFrontmatterSchema which validates
- * the field using Array of strings.
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-disallowed-tools.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterSchema
-    // Schema validates using Array of strings
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter['disallowed-tools']) {
+      return;
+    }
+
+    const disallowedToolsSchema = AgentFrontmatterSchema.shape['disallowed-tools'];
+    const result = disallowedToolsSchema.safeParse(frontmatter['disallowed-tools']);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'disallowed-tools');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

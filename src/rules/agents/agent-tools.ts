@@ -3,11 +3,12 @@
  *
  * Agent tools must be an array of tool names, cannot be used with disallowed-tools
  *
- * This validation is implemented in AgentFrontmatterWithRefinements which validates
- * the field using Array of strings, mutex refinement with disallowed-tools.
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterWithRefinements for cross-field validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema, AgentFrontmatterWithRefinements } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,41 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-tools.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterWithRefinements
-    // Schema validates using Array of strings, mutex refinement with disallowed-tools
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.tools) {
+      return;
+    }
+
+    // First validate the array itself
+    const toolsSchema = AgentFrontmatterSchema.shape.tools;
+    const result = toolsSchema.safeParse(frontmatter.tools);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'tools');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+      return;
+    }
+
+    // Then check cross-field validation (mutual exclusivity with disallowed-tools)
+    const crossFieldResult = AgentFrontmatterWithRefinements.safeParse(frontmatter);
+
+    if (!crossFieldResult.success) {
+      const toolsError = crossFieldResult.error.issues.find((issue) =>
+        issue.path.includes('tools')
+      );
+
+      if (toolsError) {
+        const line = getFrontmatterFieldLine(context.fileContent, 'tools');
+        context.report({
+          message: toolsError.message,
+          line,
+        });
+      }
+    }
   },
 };

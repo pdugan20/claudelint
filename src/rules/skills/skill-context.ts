@@ -3,11 +3,12 @@
  *
  * Skill context must be one of: fork, inline, auto
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using ContextModes enum.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.context for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-context.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using ContextModes enum
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.context) {
+      return;
+    }
+
+    const contextSchema = SkillFrontmatterSchema.shape.context;
+    const result = contextSchema.safeParse(frontmatter.context);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'context');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

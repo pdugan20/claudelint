@@ -3,11 +3,12 @@
  *
  * Skill disallowed-tools must be an array of tool names
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using Array of strings.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-disallowed-tools.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using Array of strings
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter['disallowed-tools']) {
+      return;
+    }
+
+    const disallowedToolsSchema = SkillFrontmatterSchema.shape['disallowed-tools'];
+    const result = disallowedToolsSchema.safeParse(frontmatter['disallowed-tools']);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'disallowed-tools');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

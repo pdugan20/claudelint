@@ -3,11 +3,12 @@
  *
  * Skill version must follow semantic versioning format (e.g., 1.0.0)
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using semver() refinement.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.version for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,25 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-version.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using semver() refinement
+  validate: (context: RuleContext) => {
+    // Extract frontmatter
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.version) {
+      return; // Field not present or optional - version is optional
+    }
+
+    // Delegate to Zod schema validator for 'version' field
+    const versionSchema = SkillFrontmatterSchema.shape.version;
+    const result = versionSchema.safeParse(frontmatter.version);
+
+    if (!result.success) {
+      // Report first error with proper context
+      const line = getFrontmatterFieldLine(context.fileContent, 'version');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

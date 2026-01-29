@@ -3,11 +3,12 @@
  *
  * Agent skills must be an array of skill names
  *
- * This validation is implemented in AgentFrontmatterSchema which validates
- * the field using Array of strings.
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.skills for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-skills.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterSchema
-    // Schema validates using Array of strings
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.skills) {
+      return;
+    }
+
+    const skillsSchema = AgentFrontmatterSchema.shape.skills;
+    const result = skillsSchema.safeParse(frontmatter.skills);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'skills');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

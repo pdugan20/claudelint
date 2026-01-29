@@ -170,6 +170,144 @@ When building plugins:
 - Use metadata for documentation
 - See [plugin-development.md](./plugin-development.md) for examples
 
+## Rule Implementation Patterns
+
+claudelint supports two primary patterns for implementing rules, depending on the validation requirements.
+
+### Pattern 1: Schema-Delegating Rules (Thin Wrapper)
+
+**Use when:** Validating individual frontmatter fields that have Zod schema definitions.
+
+**Approach:** Rules delegate to Zod schema validators instead of duplicating validation logic.
+
+**Architecture:**
+1. Zod schemas contain the validation logic (min/max length, regex patterns, refinements)
+2. Rules extract specific fields and validate using `schema.shape.fieldName.safeParse()`
+3. Rules provide better error context (line numbers, file paths)
+4. Single source of truth: validation logic stays in schemas
+
+**Example:**
+
+```typescript
+// src/schemas/skill-frontmatter.schema.ts
+export const SkillFrontmatterSchema = z.object({
+  name: lowercaseHyphens()
+    .max(64, 'Skill name must be 64 characters or less')
+    .refine(noXMLTags().check, { message: noXMLTags().message })
+    .refine(noReservedWords().check, { message: noReservedWords().message }),
+  // ... other fields
+});
+
+// src/rules/skills/skill-name.ts
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+
+export const rule: Rule = {
+  meta: {
+    id: 'skill-name',
+    name: 'Skill Name Format',
+    description: 'Skill name must be lowercase-with-hyphens, under 64 characters',
+    category: 'Skills',
+    severity: 'error',
+  },
+  validate: (content: string, filePath: string, context: RuleContext) => {
+    const { data: frontmatter } = parseFrontmatter(content);
+
+    if (!frontmatter?.name) {
+      return; // Field not present
+    }
+
+    // Delegate to schema validator
+    const nameSchema = SkillFrontmatterSchema.shape.name;
+    const result = nameSchema.safeParse(frontmatter.name);
+
+    if (!result.success) {
+      const line = getFrontmatterLineNumber(content, 'name');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+        column: 1,
+      });
+    }
+  },
+};
+```
+
+**Benefits:**
+- No duplication of validation logic
+- Individual rule control (can disable/configure per rule)
+- Better error messages with proper context
+- Schema remains single source of truth
+- Easier to maintain (update schema once, rules automatically reflect changes)
+
+**Categories using this pattern:**
+- Skills (10 rules)
+- Agents (10 rules)
+- Output-styles (3 rules)
+
+### Pattern 2: Standalone Validation Rules
+
+**Use when:** Validating cross-cutting concerns, file-level properties, or cross-references.
+
+**Approach:** Rules implement full validation logic without delegating to schemas.
+
+**Use cases:**
+- File size limits (`claude-md-size-error`, `claude-md-size-warning`)
+- Import cycle detection (`claude-md-import-circular`)
+- Cross-reference validation (`agent-skills-not-found`)
+- Duplicate detection (`mcp-invalid-server`)
+- Cross-field validation (`mcp-server-key-mismatch`)
+
+**Example:**
+
+```typescript
+// src/rules/claude-md/claude-md-import-circular.ts
+export const rule: Rule = {
+  meta: {
+    id: 'claude-md-import-circular',
+    name: 'Circular Import Detection',
+    description: 'Detect circular import chains in Claude.md files',
+    category: 'ClaudeMd',
+    severity: 'error',
+  },
+  validate: async (content: string, filePath: string, context: RuleContext) => {
+    const imports = extractImports(content);
+    const visited = new Set<string>();
+
+    // Traverse import graph
+    const hasCircle = detectCircle(filePath, imports, visited);
+
+    if (hasCircle) {
+      context.report({
+        message: 'Circular import detected',
+        line: 1,
+      });
+    }
+  },
+};
+```
+
+**Categories using this pattern:**
+- ClaudeMd (14 rules - mostly file-level and import validation)
+- MCP (13 rules - mostly cross-cutting validation)
+- Settings (various cross-reference rules)
+- Hooks (schema validation and file existence)
+
+### Choosing the Right Pattern
+
+**Use Schema-Delegating (Thin Wrapper) when:**
+- Validating a single frontmatter field
+- Field has corresponding Zod schema definition
+- Validation is format/type checking (length, regex, enum)
+- You want to maintain single source of truth
+
+**Use Standalone Validation when:**
+- Validating file-level properties (size, encoding)
+- Checking cross-references (does imported file exist?)
+- Detecting patterns across multiple fields
+- Implementing complex logic that doesn't fit in schemas
+
+**Mixed approach is acceptable:** Categories can use both patterns depending on the specific rule's needs.
+
 ## Project Structure
 
 ```text

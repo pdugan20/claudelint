@@ -3,11 +3,12 @@
  *
  * Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags
  *
- * This validation is implemented in AgentFrontmatterSchema which validates
- * the field using lowercaseHyphens(), max(64), noXMLTags().
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.name for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-name.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterSchema
-    // Schema validates using lowercaseHyphens(), max(64), noXMLTags()
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.name) {
+      return;
+    }
+
+    const nameSchema = AgentFrontmatterSchema.shape.name;
+    const result = nameSchema.safeParse(frontmatter.name);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'name');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

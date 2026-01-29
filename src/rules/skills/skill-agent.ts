@@ -3,11 +3,12 @@
  *
  * When skill context is "fork", agent field is required to specify which agent to use
  *
- * This validation is implemented in SkillFrontmatterWithRefinements which validates
- * the field using Cross-field refinement: requires agent when context=fork.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterWithRefinements for cross-field validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterWithRefinements } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,29 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-agent.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterWithRefinements
-    // Schema validates using Cross-field refinement: requires agent when context=fork
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter) {
+      return;
+    }
+
+    // Use SkillFrontmatterWithRefinements for cross-field validation
+    const result = SkillFrontmatterWithRefinements.safeParse(frontmatter);
+
+    if (!result.success) {
+      // Find agent-related errors
+      const agentError = result.error.issues.find((issue) =>
+        issue.path.includes('agent')
+      );
+
+      if (agentError) {
+        const line = getFrontmatterFieldLine(context.fileContent, 'agent');
+        context.report({
+          message: agentError.message,
+          line,
+        });
+      }
+    }
   },
 };

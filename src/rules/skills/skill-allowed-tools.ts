@@ -3,11 +3,12 @@
  *
  * Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools
  *
- * This validation is implemented in SkillFrontmatterWithRefinements which validates
- * the field using Array of strings, mutex refinement with disallowed-tools.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterWithRefinements for cross-field validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema, SkillFrontmatterWithRefinements } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,41 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-allowed-tools.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterWithRefinements
-    // Schema validates using Array of strings, mutex refinement with disallowed-tools
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter['allowed-tools']) {
+      return;
+    }
+
+    // First validate the array itself
+    const allowedToolsSchema = SkillFrontmatterSchema.shape['allowed-tools'];
+    const result = allowedToolsSchema.safeParse(frontmatter['allowed-tools']);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'allowed-tools');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+      return;
+    }
+
+    // Then check cross-field validation (mutual exclusivity with disallowed-tools)
+    const crossFieldResult = SkillFrontmatterWithRefinements.safeParse(frontmatter);
+
+    if (!crossFieldResult.success) {
+      const allowedToolsError = crossFieldResult.error.issues.find((issue) =>
+        issue.path.includes('allowed-tools')
+      );
+
+      if (allowedToolsError) {
+        const line = getFrontmatterFieldLine(context.fileContent, 'allowed-tools');
+        context.report({
+          message: allowedToolsError.message,
+          line,
+        });
+      }
+    }
   },
 };

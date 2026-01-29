@@ -3,11 +3,12 @@
  *
  * Skill tags must be an array of strings
  *
- * This validation is implemented in SkillFrontmatterSchema which validates
- * the field using Array of strings.
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.tags for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-tags.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in SkillFrontmatterSchema
-    // Schema validates using Array of strings
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.tags) {
+      return;
+    }
+
+    const tagsSchema = SkillFrontmatterSchema.shape.tags;
+    const result = tagsSchema.safeParse(frontmatter.tags);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'tags');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

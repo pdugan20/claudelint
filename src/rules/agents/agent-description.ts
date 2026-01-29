@@ -3,11 +3,12 @@
  *
  * Agent description must be at least 10 characters, written in third person, with no XML tags
  *
- * This validation is implemented in AgentFrontmatterSchema which validates
- * the field using min(10), noXMLTags(), thirdPerson().
+ * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.description for validation
  */
 
-import { Rule } from '../../types/rule';
+import { Rule, RuleContext } from '../../types/rule';
+import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -22,8 +23,22 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-description.md',
   },
-  validate: () => {
-    // No-op: Validation implemented in AgentFrontmatterSchema
-    // Schema validates using min(10), noXMLTags(), thirdPerson()
+  validate: (context: RuleContext) => {
+    const { frontmatter } = extractFrontmatter(context.fileContent);
+
+    if (!frontmatter || !frontmatter.description) {
+      return;
+    }
+
+    const descriptionSchema = AgentFrontmatterSchema.shape.description;
+    const result = descriptionSchema.safeParse(frontmatter.description);
+
+    if (!result.success) {
+      const line = getFrontmatterFieldLine(context.fileContent, 'description');
+      context.report({
+        message: result.error.issues[0].message,
+        line,
+      });
+    }
   },
 };

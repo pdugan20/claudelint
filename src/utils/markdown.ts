@@ -90,3 +90,29 @@ export function extractImportsWithLineNumbers(content: string): Import[] {
 export function countLines(content: string): number {
   return content.split('\n').length;
 }
+
+/**
+ * Get the line number of a frontmatter field
+ * Returns the line number (1-indexed) where the field is defined, or 1 if not found
+ */
+export function getFrontmatterFieldLine(content: string, fieldName: string): number {
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---/;
+  const match = content.match(frontmatterRegex);
+
+  if (!match) {
+    return 1; // No frontmatter, default to line 1
+  }
+
+  const frontmatterYaml = match[1];
+  const lines = frontmatterYaml.split('\n');
+
+  for (let i = 0; i < lines.length; i++) {
+    // Match field at start of line (accounting for whitespace)
+    const fieldRegex = new RegExp(`^\\s*${fieldName}\\s*:`);
+    if (fieldRegex.test(lines[i])) {
+      return i + 2; // +1 for 0-indexed, +1 for opening ---
+    }
+  }
+
+  return 2; // Field not found, default to first line after opening ---
+}
