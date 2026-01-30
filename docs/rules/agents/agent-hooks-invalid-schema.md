@@ -88,6 +88,57 @@ agents.json with valid hooks:
 }
 ```
 
+## How To Fix
+
+To fix invalid hook schema errors:
+
+1. **Use valid event names**:
+   ```bash
+   # Check valid events
+   claudelint --help hooks
+   ```
+   Common events: `user-prompt-submit`, `tool-call`, `agent-start`, `agent-complete`
+
+2. **Ensure hook type matches required fields**:
+   ```json
+   # Command hook must have command field
+   {
+     "event": "user-prompt-submit",
+     "type": "command",
+     "command": "npm test"
+   }
+
+   # Prompt hook must have prompt field
+   {
+     "event": "tool-call",
+     "type": "prompt",
+     "prompt": "Review this"
+   }
+
+   # Agent hook must have agent field
+   {
+     "event": "tool-call",
+     "type": "agent",
+     "agent": "reviewer"
+   }
+   ```
+
+3. **Fix invalid regex patterns**:
+   ```bash
+   # Test regex online or in Node
+   node -e "new RegExp('your pattern here')"
+   ```
+
+4. **Validate JSON syntax**:
+   ```bash
+   cat agents.json | jq .
+   ```
+
+5. **Run validation**:
+   ```bash
+   claudelint check-agents
+   ```
+
 ## Options
 
 This rule does not have any configuration options.
@@ -103,9 +154,9 @@ You should not disable this rule. Invalid hook schemas will always cause runtime
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/agents.ts#L177)
-- [Validation Helper](../../src/utils/validation-helpers.ts#L100)
-- [Rule Tests](../../tests/validators/agents.test.ts)
+- [Rule Implementation](../../src/rules/agents/agent-hooks-invalid-schema.ts)
+- [Rule Tests](../../tests/rules/agents/agent-hooks-invalid-schema.test.ts)
+- [Validation Helper](../../src/utils/validation-helpers.ts)
 
 ## Version
 
