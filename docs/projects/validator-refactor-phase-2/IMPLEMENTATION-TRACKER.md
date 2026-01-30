@@ -14,11 +14,11 @@
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
 - [ ] Phase 2.7: Testing & Validation (10/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
-- [ ] Phase 2.8: CLI Output & Dependency Architecture (3/6 tasks) - IN PROGRESS (Task 2.8.4)
+- [ ] Phase 2.8: CLI Output & Dependency Architecture (4/6 tasks) - IN PROGRESS (Task 2.8.5)
 
-**Total:** 65/76 tasks complete (86%)
+**Total:** 66/76 tasks complete (87%)
 
-**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.4 ready to start)
+**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.5 ready to start)
 
 **Previous:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.6.5, and 2.7.16-2.7.18 COMPLETE)
 
@@ -1623,8 +1623,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Tested: ShellCheck runs when available, shows helpful message when missing
   - **Notes:** ShellCheck is now properly treated as an optional system binary. Format command no longer fails when it's missing, just shows a warning. Fixed issue where `.claude/hooks/*` was matching hooks.json.
 
-- [ ] **Task 2.8.4:** Enhance init wizard for tool detection
+- [X] **Task 2.8.4:** Enhance init wizard for tool detection
   - **Files:** `src/cli/init-wizard.ts`
+  - **Actual Time:** 30 minutes
+  - **Completion Date:** 2026-01-29
   - **Current State:**
     - Init wizard only creates config files
     - Doesn't detect available tools
@@ -1671,8 +1673,15 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Better first-run experience
   - **Estimated Time:** 1 hour
   - **Dependencies:** Task 2.8.3 (system-tools utility)
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Deliverables:**
+    - `src/cli/init-wizard.ts` - Added detectOptionalTools() method
+    - `src/cli/init-wizard.ts` - Added displayToolInfo() method to show bundled vs optional tools
+    - Updated run() method to call tool detection and display
+    - Tool display shows ShellCheck version if available
+    - Displays helpful install message for missing ShellCheck
+    - Tested: Init wizard shows correct tool availability status
+  - **Notes:** Init wizard now provides clear visibility into which tools are bundled (prettier, markdownlint) and which are optional (ShellCheck). Users see ShellCheck version and install instructions during setup.
 
 - [ ] **Task 2.8.5:** Update documentation
   - **Files:** `README.md`, `docs/cli-reference.md`, `docs/formatting-tools.md`, `docs/getting-started.md`
