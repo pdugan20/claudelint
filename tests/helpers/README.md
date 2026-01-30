@@ -1,226 +1,20 @@
 # Test Helpers
 
-This directory contains shared test utilities, fixture builders, and custom matchers to reduce test duplication and improve test readability.
+This directory contains shared test utilities and fixture builders to reduce test duplication and improve test readability.
 
-## Table of Contents
+## Available Helpers
 
-- [Custom Matchers](#custom-matchers)
-- [Test Helper Functions](#test-helper-functions)
-- [Fixtures](#fixtures)
+### Fixtures (`fixtures.ts`)
 
-## Custom Matchers
+Fluent builders for creating test files with consistent, chainable API.
 
-The `matchers.ts` module provides custom Jest matchers for more expressive validation assertions.
+### Rule Tester (`rule-tester.ts`)
 
-### Setup
+ClaudeLintRuleTester class for testing rules (ESLint-style testing).
 
-Import the matchers setup in your test file:
+### Test Utils (`test-utils.ts`)
 
-```typescript
-import './helpers/setup-matchers';
-// Or extend matchers manually:
-import { matchers } from './helpers/matchers';
-expect.extend(matchers);
-```
-
-### Available Matchers
-
-#### `toPassValidation()`
-
-Assert that validation passed with no errors:
-
-```typescript
-const result = await validator.validate();
-expect(result).toPassValidation();
-// Equivalent to:
-// expect(result.valid).toBe(true);
-// expect(result.errors).toHaveLength(0);
-```
-
-#### `toFailValidation()`
-
-Assert that validation failed:
-
-```typescript
-const result = await validator.validate();
-expect(result).toFailValidation();
-```
-
-#### `toHaveError(message)`
-
-Assert that validation has an error matching the message:
-
-```typescript
-const result = await validator.validate();
-
-// String matching
-expect(result).toHaveError('File not found');
-expect(result).toHaveError('not found'); // Partial match
-
-// Regex matching
-expect(result).toHaveError(/Expected \d+ items/);
-```
-
-#### `toHaveWarning(message)`
-
-Assert that validation has a warning matching the message:
-
-```typescript
-expect(result).toHaveWarning('Deprecated feature');
-expect(result).toHaveWarning(/File size: \d+KB/);
-```
-
-#### `toHaveErrorCount(count)`
-
-Assert exact number of errors:
-
-```typescript
-expect(result).toHaveErrorCount(3);
-expect(result).toHaveErrorCount(0); // No errors
-```
-
-#### `toHaveWarningCount(count)`
-
-Assert exact number of warnings:
-
-```typescript
-expect(result).toHaveWarningCount(2);
-```
-
-#### `toHaveErrorWithRule(message, ruleId)`
-
-Assert error with specific message and rule ID:
-
-```typescript
-expect(result).toHaveErrorWithRule('File too large', 'size-error');
-expect(result).toHaveErrorWithRule(/too large/, 'size-error');
-```
-
-#### `toHaveErrorInFile(filePath)`
-
-Assert errors exist in a specific file:
-
-```typescript
-expect(result).toHaveErrorInFile('src/index.ts');
-```
-
-#### `toHaveNoErrors()`
-
-Assert no errors:
-
-```typescript
-expect(result).toHaveNoErrors();
-```
-
-#### `toHaveNoWarnings()`
-
-Assert no warnings:
-
-```typescript
-expect(result).toHaveNoWarnings();
-```
-
-## Test Helper Functions
-
-The `test-helpers.ts` module provides utility functions for common test patterns.
-
-### Validation Helpers
-
-```typescript
-import {
-  expectValidationToPass,
-  expectValidationToFail,
-  expectValidationToHaveError,
-  expectValidationToHaveWarning,
-  expectErrorCount,
-  expectWarningCount,
-} from './helpers/test-helpers';
-
-// Expect validation to pass
-await expectValidationToPass(validator);
-
-// Expect validation to fail
-await expectValidationToFail(validator);
-
-// Expect specific error
-await expectValidationToHaveError(validator, 'File not found');
-
-// Expect specific warning
-await expectValidationToHaveWarning(validator, /deprecated/i);
-
-// Expect exact error count
-await expectErrorCount(validator, 3);
-
-// Expect exact warning count
-await expectWarningCount(validator, 1);
-```
-
-### Result Inspection Helpers
-
-```typescript
-import {
-  getErrorMessages,
-  getWarningMessages,
-  hasError,
-  hasWarning,
-  getErrorsForFile,
-  getWarningsForFile,
-  getErrorsWithRule,
-  getWarningsWithRule,
-} from './helpers/test-helpers';
-
-const result = await validator.validate();
-
-// Get all error/warning messages
-const errorMsgs = getErrorMessages(result);
-const warningMsgs = getWarningMessages(result);
-
-// Check for specific messages
-if (hasError(result, 'not found')) {
-  // Handle error
-}
-
-// Filter by file
-const fileErrors = getErrorsForFile(result, 'src/index.ts');
-const fileWarnings = getWarningsForFile(result, 'src/index.ts');
-
-// Filter by rule ID
-const sizeErrors = getErrorsWithRule(result, 'size-error');
-const deprecatedWarnings = getWarningsWithRule(result, 'deprecated-warning');
-```
-
-### Assertion Helpers
-
-```typescript
-import {
-  assertAllErrorsHaveRuleId,
-  assertAllWarningsHaveRuleId,
-} from './helpers/test-helpers';
-
-// Assert all errors have rule IDs
-assertAllErrorsHaveRuleId(result);
-
-// Assert all warnings have rule IDs
-assertAllWarningsHaveRuleId(result);
-```
-
-### Mock Result Creation
-
-```typescript
-import { createMockResult } from './helpers/test-helpers';
-
-// Create mock validation result for testing
-const mockResult = createMockResult({
-  valid: false,
-  errors: [
-    { message: 'Error 1', file: 'test.ts', line: 10, ruleId: 'test-rule' },
-    { message: 'Error 2' },
-  ],
-  warnings: [
-    { message: 'Warning 1', file: 'test.ts' },
-  ],
-});
-```
+Utilities for test directory setup and cleanup.
 
 ## Fixtures
 
@@ -391,9 +185,57 @@ await plugin(testDir)
   .build('custom.json');
 ```
 
+## Rule Tester
+
+The `rule-tester.ts` module provides an ESLint-style testing framework for rules:
+
+```typescript
+import { ClaudeLintRuleTester } from './rule-tester';
+import { myRule } from '../../src/rules/my-rule';
+
+const ruleTester = new ClaudeLintRuleTester();
+
+ruleTester.run('my-rule', myRule, {
+  valid: [
+    {
+      name: 'valid case',
+      content: '# Valid Content',
+    },
+  ],
+  invalid: [
+    {
+      name: 'invalid case',
+      content: '# Invalid Content',
+      errors: [{ message: 'Expected error message' }],
+    },
+  ],
+});
+```
+
+## Test Utils
+
+The `test-utils.ts` module provides test directory management:
+
+```typescript
+import { setupTestDir } from './test-utils';
+
+describe('MyValidator', () => {
+  const { getTestDir, cleanupTestDir } = setupTestDir();
+
+  afterAll(async () => {
+    await cleanupTestDir();
+  });
+
+  it('should validate file', async () => {
+    const testDir = getTestDir();
+    // Use testDir for creating test files
+  });
+});
+```
+
 ## Usage Example
 
-Here's a complete example of using fixtures in a test:
+Here's a complete example using fixtures and test utils:
 
 ```typescript
 import { settings } from '../helpers/fixtures';

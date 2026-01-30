@@ -146,15 +146,7 @@ Tests MUST:
    });
    ```
 
-2. **Use custom matchers**:
-
-   ```typescript
-   expect(result).toHaveError('skill-missing-shebang');
-   expect(result).toHaveWarning('skill-dangerous-command');
-   expect(result).toHaveNoErrors();
-   ```
-
-3. **Test rule IDs**:
+2. **Test rule IDs**:
 
    ```typescript
    const error = result.errors[0];
@@ -350,28 +342,28 @@ Target: All metrics >95%
 
 ### Planned Tooling
 
-1. **Rule ID Validator** (`scripts/check-rule-ids.ts`)
+1. **Rule ID Validator** (`scripts/check/rule-ids.ts`)
    - Scans validator code for reportError/reportWarning calls
    - Verifies all rule IDs are registered
    - Reports orphaned rule IDs
 
-2. **Documentation Validator** (`scripts/check-rule-docs.ts`)
+2. **Documentation Validator** (`scripts/check/rule-docs.ts`)
    - Scans docs/rules/ directory
    - Verifies required sections exist
    - Validates metadata format
    - Checks for missing docs
 
-3. **Consistency Validator** (`scripts/check-consistency.ts`)
+3. **Consistency Validator** (`scripts/check/consistency.ts`)
    - Compares code severity with docs
    - Validates filename matches rule ID
    - Checks validator name consistency
 
-4. **Example Validator** (`scripts/check-examples.ts`)
+4. **Example Validator** (`scripts/check/examples.ts`)
    - Extracts code blocks from docs
    - Validates syntax using appropriate parser
    - Ensures language identifiers are present
 
-5. **Coverage Reporter** (`scripts/check-coverage.ts`)
+5. **Coverage Reporter** (`scripts/check/coverage.ts`)
    - Lists rules without tests
    - Lists rules without docs
    - Generates quality score report
@@ -383,11 +375,11 @@ Add to `package.json`:
 ```json
 {
   "scripts": {
-    "check:rule-ids": "ts-node scripts/check-rule-ids.ts",
-    "check:rule-docs": "ts-node scripts/check-rule-docs.ts",
-    "check:consistency": "ts-node scripts/check-consistency.ts",
-    "check:examples": "ts-node scripts/check-examples.ts",
-    "check:coverage": "ts-node scripts/check-coverage.ts",
+    "check:rule-ids": "ts-node scripts/check/rule-ids.ts",
+    "check:rule-docs": "ts-node scripts/check/rule-docs.ts",
+    "check:consistency": "ts-node scripts/check/consistency.ts",
+    "check:examples": "ts-node scripts/check/examples.ts",
+    "check:coverage": "ts-node scripts/check/coverage.ts",
     "check:all": "npm run check:rule-ids && npm run check:rule-docs && npm run check:consistency && npm run check:examples && npm run check:coverage"
   }
 }
