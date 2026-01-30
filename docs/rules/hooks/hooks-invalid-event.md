@@ -87,6 +87,25 @@ Multiple valid hooks:
 }
 ```
 
+## How To Fix
+
+To fix invalid hook event names:
+
+1. Check the event name for typos (events are case-sensitive)
+2. Compare against the valid events list above
+3. Replace the invalid event name with a valid one
+
+Common mistakes:
+- `PreTooluse` → `PreToolUse` (capital U)
+- `pretooluse` → `PreToolUse` (wrong case)
+- `OnFileChange` → Not a valid event (use appropriate lifecycle event)
+- `BeforeToolUse` → `PreToolUse` (wrong prefix)
+
+If you need an event that doesn't exist, consider:
+- Using the closest existing event
+- Combining multiple hooks for different events
+- Using matchers to filter within an existing event
+
 ## Options
 
 This rule does not have configuration options.
@@ -102,8 +121,8 @@ Never disable this rule. Invalid event names cause hooks to never fire, silent f
 
 ## Resources
 
-- [Implementation](../../../src/validators/hooks.ts)
-- [Tests](../../../tests/validators/hooks.test.ts)
+- [Rule Implementation](../../src/rules/hooks/hooks-invalid-event.ts)
+- [Rule Tests](../../tests/validators/hooks.test.ts)
 - [Hooks Documentation](https://github.com/anthropics/claude-code)
 
 ## Version

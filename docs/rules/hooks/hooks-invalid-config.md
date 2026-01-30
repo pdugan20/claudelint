@@ -79,6 +79,23 @@ Hook with valid matcher:
 }
 ```
 
+## How To Fix
+
+To resolve hook configuration errors:
+
+1. **Invalid hook type**: Change `type` to one of: `command`, `prompt`, or `agent`
+
+2. **Missing required field for type**:
+   - If `type: "command"` - add `"command": "./path/to/script.sh"`
+   - If `type: "prompt"` - add `"prompt": "Your prompt text here"`
+   - If `type: "agent"` - add `"agent": "agent-name"`
+
+3. **Invalid regex pattern**: Fix the regex in `matcher.pattern` using valid regex syntax
+
+4. **Invalid tool name in matcher**: Use a valid tool name from Claude Code's tool registry
+
+Verify your hooks.json is valid JSON and all required fields are present for each hook.
+
 ## Options
 
 This rule does not have configuration options.
@@ -94,8 +111,8 @@ Never disable this rule. Invalid hook configuration causes runtime failures, sil
 
 ## Resources
 
-- [Implementation](../../../src/validators/hooks.ts)
-- [Tests](../../../tests/validators/hooks.test.ts)
+- [Rule Implementation](../../src/rules/hooks/hooks-invalid-config.ts)
+- [Rule Tests](../../tests/validators/hooks.test.ts)
 - [Hooks Documentation](https://github.com/anthropics/claude-code)
 
 ## Version

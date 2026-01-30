@@ -85,6 +85,38 @@ Using inline commands (not validated):
 }
 ```
 
+## How To Fix
+
+To resolve missing script errors:
+
+1. **Create the script file**: If it doesn't exist, create it at the path specified in the hook
+
+   ```bash
+   mkdir -p .claude/scripts
+   touch .claude/scripts/pre-tool.sh
+   chmod +x .claude/scripts/pre-tool.sh
+   ```
+
+2. **Fix the path**: If the script exists elsewhere, update the `command` path in hooks.json
+
+   ```json
+   "command": "./path/to/actual/script.sh"
+   ```
+
+3. **Verify relative path**: Ensure the path is relative to `.claude/hooks.json`
+
+4. **Check file permissions**: Ensure the script is executable
+
+   ```bash
+   chmod +x .claude/scripts/your-script.sh
+   ```
+
+Alternative: Use an inline command instead of a script file (not validated by this rule):
+
+```json
+"command": "echo 'Hook fired' >> hook.log"
+```
+
 ## Options
 
 This rule does not have configuration options.
@@ -100,8 +132,8 @@ Never disable this rule. Missing script files cause runtime errors when hooks fi
 
 ## Resources
 
-- [Implementation](../../../src/validators/hooks.ts)
-- [Tests](../../../tests/validators/hooks.test.ts)
+- [Rule Implementation](../../src/rules/hooks/hooks-missing-script.ts)
+- [Rule Tests](../../tests/validators/hooks.test.ts)
 - [Hooks Documentation](https://github.com/anthropics/claude-code)
 
 ## Version

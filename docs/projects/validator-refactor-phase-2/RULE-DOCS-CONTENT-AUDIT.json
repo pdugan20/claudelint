@@ -34,8 +34,8 @@
       },
       "hooks": {
         "total": 3,
-        "avgScore": 85,
-        "needsWork": 3
+        "avgScore": 95,
+        "needsWork": 0
       },
       "commands": {
         "total": 2,
@@ -57,10 +57,10 @@
     "scoreDistribution": {
       "placeholder": 66,
       "incomplete": 0,
-      "good": 31,
-      "excellent": 8
+      "good": 28,
+      "excellent": 11
     },
-    "rulesNeedingWork": 97,
+    "rulesNeedingWork": 94,
     "placeholders": 66,
     "rulesWithOptions": 14,
     "rulesMissingExamples": 69,
@@ -2260,72 +2260,6 @@
       }
     },
     {
-      "ruleId": "hooks-missing-script",
-      "category": "hooks",
-      "rulePath": "src/rules/hooks/hooks-missing-script.ts",
-      "docPath": "docs/rules/hooks/hooks-missing-script.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 110,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 78
-      }
-    },
-    {
-      "ruleId": "hooks-invalid-event",
-      "category": "hooks",
-      "rulePath": "src/rules/hooks/hooks-invalid-event.ts",
-      "docPath": "docs/rules/hooks/hooks-invalid-event.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 112,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 80
-      }
-    },
-    {
-      "ruleId": "hooks-invalid-config",
-      "category": "hooks",
-      "rulePath": "src/rules/hooks/hooks-invalid-config.ts",
-      "docPath": "docs/rules/hooks/hooks-invalid-config.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 104,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 72
-      }
-    },
-    {
       "ruleId": "claude-md-rules-circular-symlink",
       "category": "claude-md",
       "rulePath": "src/rules/claude-md/claude-md-rules-circular-symlink.ts",
@@ -2613,6 +2547,66 @@
       }
     },
     {
+      "ruleId": "hooks-missing-script",
+      "category": "hooks",
+      "rulePath": "src/rules/hooks/hooks-missing-script.ts",
+      "docPath": "docs/rules/hooks/hooks-missing-script.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 142,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 78
+      }
+    },
+    {
+      "ruleId": "hooks-invalid-event",
+      "category": "hooks",
+      "rulePath": "src/rules/hooks/hooks-invalid-event.ts",
+      "docPath": "docs/rules/hooks/hooks-invalid-event.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 131,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 80
+      }
+    },
+    {
+      "ruleId": "hooks-invalid-config",
+      "category": "hooks",
+      "rulePath": "src/rules/hooks/hooks-invalid-config.ts",
+      "docPath": "docs/rules/hooks/hooks-invalid-config.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 121,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 72
+      }
+    },
+    {
       "ruleId": "commands-migrate-to-skills",
       "category": "commands",
       "rulePath": "src/rules/commands/commands-migrate-to-skills.ts",
@@ -2653,5 +2647,5 @@
       }
     }
   ],
-  "generatedAt": "2026-01-30T07:16:11.501Z"
+  "generatedAt": "2026-01-30T07:18:23.720Z"
 }
