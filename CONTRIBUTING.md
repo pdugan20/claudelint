@@ -236,7 +236,7 @@ Include:
 
 **For users:**
 - **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
-- **[Rule Reference](docs/rules/)** - Individual documentation for all 66 rules
+- **[Rule Reference](docs/rules/)** - Individual documentation for all 105 rules
 - **[Configuration Guide](docs/configuration.md)** - Configuring claudelint
 
 ## Release Process

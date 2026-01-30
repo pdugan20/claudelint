@@ -73,7 +73,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 **Rules** are individual, focused validation checks located in `src/rules/{category}/{rule-id}.ts`.
 
 **Characteristics:**
-- **66 rules total** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, etc.)
+- **105 rules total** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
 - **User-configurable** - Can be enabled/disabled, severity changed per-project
 - **Self-contained** - Each rule validates one specific aspect
 - **Metadata-driven** - Include id, name, description, severity, fixable flag
@@ -418,7 +418,7 @@ claudelint/
 ├── src/                     # Source code
 │   ├── cli.ts               # CLI entry point
 │   ├── index.ts             # Library exports
-│   ├── rules/               # Validation rules (66 rules)
+│   ├── rules/               # Validation rules (105 rules)
 │   │   ├── claude-md/       # CLAUDE.md rules
 │   │   ├── skills/          # Skills rules
 │   │   ├── settings/        # Settings rules
@@ -909,18 +909,18 @@ for (const rule of rules) {
 
 Core rules (v1.0):
 
-- **CLAUDE.md** (11 rules): size-error, size-warning, import-missing, import-circular, import-in-code-block, filename-case-sensitive, glob-pattern-backslash, glob-pattern-too-broad, rules-circular-symlink, content-too-many-sections, paths
-- **Skills** (28 rules): missing-shebang, missing-comments, dangerous-command, eval-usage, path-traversal, missing-changelog, missing-examples, missing-version, too-many-files, deep-nesting, naming-inconsistent, time-sensitive-content, body-too-long, large-reference-no-toc, name, description, version, model, tags, context, dependencies, agent, allowed-tools, disallowed-tools
-- **Agents** (10 rules): name, description, model, tools, disallowed-tools, skills, skills-not-found, hooks, hooks-invalid-schema, events
-- **Settings** (4 rules): invalid-permission, invalid-env-var, permission-invalid-rule, permission-empty-pattern
-- **Hooks** (3 rules): invalid-event, missing-script, invalid-config
-- **MCP** (3 rules): invalid-server, invalid-transport, invalid-env-var
-- **Plugin** (6 rules): invalid-manifest, invalid-version, missing-file, circular-dependency, dependency-invalid-version, commands-in-plugin-deprecated
-- **Commands** (2 rules): deprecated-directory, migrate-to-skills
-- **OutputStyles** (3 rules): name, description, examples
-- **LSP** (0 rules): Schema-validated only
+- **Skills** (28 rules): All skill validation including frontmatter, structure, security, and content checks
+- **CLAUDE.md** (14 rules): Size limits, import validation, frontmatter, circular dependencies, and content structure
+- **MCP** (13 rules): Server configuration, transport validation, environment variables, and command validation
+- **Agents** (13 rules): Agent configuration, frontmatter validation, model/tool/skill references, and hooks
+- **Plugin** (12 rules): Manifest validation, version checking, file existence, dependency management
+- **LSP** (8 rules): LSP server configuration validation, JSON schema, server names, and commands
+- **Output Styles** (7 rules): Output style frontmatter and structure validation
+- **Settings** (5 rules): Permission rules, environment variables, and schema validation
+- **Hooks** (3 rules): Event names, script existence, configuration schema
+- **Commands** (2 rules): Deprecated directory detection, migration prompts
 
-**Total:** 66 core rules (ESLint-style auto-discovered from filesystem)
+**Total:** 105 core rules (ESLint-style auto-discovered from filesystem)
 
 Plugin rules can be added by third-party packages.
 
