@@ -3,30 +3,54 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: MCP
-**Category**: Schema Validation
+**Category**: Best Practices
 
 Environment variables must use proper expansion syntax
 
 ## Rule Details
 
-Environment variables in MCP transport configurations must use proper expansion syntax and cannot be empty. This rule ensures consistent, secure handling of configuration values like API keys, URLs, and paths across different shells and platforms.
+MCP configurations support environment variable expansion in transport fields (command, args, url) and env objects. This rule enforces proper variable syntax to prevent runtime expansion errors and promote consistency.
 
-The rule checks for empty or whitespace-only values, malformed `${VAR}` expansion syntax, and recommends using `${VAR}` instead of simple `$VAR` format for consistency.
+Supported variable syntax:
+- `${VAR}` - Expands to environment variable value
+- `${VAR:-default}` - Expands to value or uses default if unset
+- `${CLAUDE_PLUGIN_ROOT}` - Special variable for plugin paths (always allowed)
+
+The rule warns about:
+- Simple format `$VAR` without braces (suggest using `${VAR}`)
+- Empty variable names `${}`
+- Empty env values
 
 ### Incorrect
+
+Simple variable expansion without braces:
+
+```json
+{
+  "mcpServers": {
+    "local-server": {
+      "name": "local-server",
+      "transport": {
+        "type": "stdio",
+        "command": "$HOME/bin/server"
+      }
+    }
+  }
+}
+```
 
 Empty environment variable value:
 
 ```json
 {
   "mcpServers": {
-    "my-server": {
+    "api-server": {
+      "name": "api-server",
       "transport": {
         "type": "stdio",
         "command": "node server.js",
         "env": {
-          "API_KEY": "",
-          "DATABASE_URL": "   "
+          "API_KEY": ""
         }
       }
     }
@@ -34,18 +58,35 @@ Empty environment variable value:
 }
 ```
 
-Simple variable expansion (should use braces):
+Whitespace-only env value:
 
 ```json
 {
   "mcpServers": {
-    "my-server": {
+    "db-server": {
+      "name": "db-server",
       "transport": {
         "type": "stdio",
-        "command": "$HOME/bin/server",
+        "command": "python db.py",
         "env": {
-          "PATH": "$PATH:/usr/local/bin"
+          "DB_TOKEN": "   "
         }
+      }
+    }
+  }
+}
+```
+
+Empty variable name:
+
+```json
+{
+  "mcpServers": {
+    "tools-server": {
+      "name": "tools-server",
+      "transport": {
+        "type": "stdio",
+        "command": "${}/bin/server"
       }
     }
   }
@@ -54,44 +95,189 @@ Simple variable expansion (should use braces):
 
 ### Correct
 
-Proper variable expansion with defaults:
+Proper variable expansion with braces:
 
 ```json
 {
   "mcpServers": {
-    "my-server": {
+    "local-server": {
+      "name": "local-server",
       "transport": {
         "type": "stdio",
-        "command": "${HOME}/bin/server",
-        "env": {
-          "API_KEY": "${API_KEY}",
-          "PORT": "${PORT:-3000}",
-          "NODE_ENV": "production"
-        }
+        "command": "${HOME}/bin/server"
       }
     }
   }
 }
 ```
 
-Using special plugin variables:
+Variable with default value:
+
+```json
+{
+  "mcpServers": {
+    "node-server": {
+      "name": "node-server",
+      "transport": {
+        "type": "stdio",
+        "command": "${NODE_PATH:-/usr/local/bin/node}",
+        "args": ["server.js"]
+      }
+    }
+  }
+}
+```
+
+CLAUDE_PLUGIN_ROOT special variable:
 
 ```json
 {
   "mcpServers": {
     "plugin-server": {
+      "name": "plugin-server",
       "transport": {
         "type": "stdio",
-        "command": "${CLAUDE_PLUGIN_ROOT}/bin/server",
+        "command": "${CLAUDE_PLUGIN_ROOT}/bin/server"
+      }
+    }
+  }
+}
+```
+
+Valid environment variables:
+
+```json
+{
+  "mcpServers": {
+    "api-server": {
+      "name": "api-server",
+      "transport": {
+        "type": "stdio",
+        "command": "node",
+        "args": ["server.js"],
         "env": {
-          "PLUGIN_ROOT": "${CLAUDE_PLUGIN_ROOT}",
-          "DATA_DIR": "${CLAUDE_PLUGIN_ROOT}/data"
+          "NODE_ENV": "production",
+          "API_KEY": "abc123",
+          "LOG_LEVEL": "info"
         }
       }
     }
   }
 }
 ```
+
+Variables in URLs:
+
+```json
+{
+  "mcpServers": {
+    "http-server": {
+      "name": "http-server",
+      "transport": {
+        "type": "http",
+        "url": "${API_URL:-http://localhost:8080}"
+      }
+    }
+  }
+}
+```
+
+Variables in args array:
+
+```json
+{
+  "mcpServers": {
+    "python-server": {
+      "name": "python-server",
+      "transport": {
+        "type": "stdio",
+        "command": "python",
+        "args": ["-m", "server", "--config", "${CONFIG_PATH}"]
+      }
+    }
+  }
+}
+```
+
+## How To Fix
+
+To resolve environment variable syntax issues:
+
+1. **Use braces for variable expansion**:
+   ```json
+   # Before (warning)
+   {
+     "command": "$HOME/bin/server"
+   }
+
+   # After
+   {
+     "command": "${HOME}/bin/server"
+   }
+   ```
+
+2. **Add default values** for optional variables:
+   ```json
+   {
+     "command": "${NODE_PATH:-/usr/local/bin/node}"
+   }
+   ```
+
+3. **Remove empty env values**:
+   ```json
+   # Before (error)
+   {
+     "env": {
+       "API_KEY": "",
+       "LOG_LEVEL": "info"
+     }
+   }
+
+   # After
+   {
+     "env": {
+       "LOG_LEVEL": "info"
+     }
+   }
+   ```
+
+4. **Or provide actual values**:
+   ```json
+   {
+     "env": {
+       "API_KEY": "${API_KEY}",
+       "LOG_LEVEL": "info"
+     }
+   }
+   ```
+
+5. **Fix empty variable names**:
+   ```json
+   # Before (error)
+   {
+     "command": "${}/bin/server"
+   }
+
+   # After
+   {
+     "command": "${BIN_DIR}/bin/server"
+   }
+   ```
+
+6. **Verify environment variables** are set:
+   ```bash
+   # Check if variable is set
+   echo $HOME
+   echo $NODE_PATH
+
+   # Set variable if needed
+   export NODE_PATH=/usr/local/bin/node
+   ```
+
+7. **Run validation**:
+   ```bash
+   claudelint check-mcp
+   ```
 
 ## Options
 
@@ -99,20 +285,33 @@ This rule does not have configuration options.
 
 ## When Not To Use It
 
-Disable this rule if you're using a configuration system that doesn't support variable expansion or if you're generating configurations programmatically with custom variable handling. However, following standard variable expansion practices benefits most projects.
+This rule promotes consistency and prevents common expansion errors. However, you might disable it if:
+
+- Working with legacy configurations using `$VAR` format consistently
+- Your shell/environment handles both `$VAR` and `${VAR}` identically
+- Testing configurations with intentionally empty env values
+
+To disable:
+
+```json
+{
+  "rules": {
+    "mcp-invalid-env-var": "off"
+  }
+}
+```
 
 ## Related Rules
 
-- [mcp-invalid-transport](./mcp-invalid-transport.md) - Transport configuration validation
-- [mcp-invalid-server](./mcp-invalid-server.md) - Server configuration validation
-- [settings-invalid-env-var](../settings/settings-invalid-env-var.md) - Settings environment variable validation
+- [mcp-stdio-empty-command](./mcp-stdio-empty-command.md) - Command validation
+- [mcp-http-invalid-url](./mcp-http-invalid-url.md) - HTTP URL validation
+- [mcp-websocket-invalid-url](./mcp-websocket-invalid-url.md) - WebSocket URL validation
 
 ## Resources
 
-- [Implementation](../../../src/validators/mcp.ts)
-- [Tests](../../../tests/validators/mcp.test.ts)
+- [Rule Implementation](../../src/rules/mcp/mcp-invalid-env-var.ts)
+- [Rule Tests](../../tests/rules/mcp/mcp-invalid-env-var.test.ts)
 - [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [Environment Variables Best Practices](https://12factor.net/config)
 
 ## Version
 
