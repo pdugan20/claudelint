@@ -85,7 +85,32 @@ Tip: Prefer relative imports over symlinks when possible for clearer file relati
 
 ## Options
 
-This rule does not have any configuration options.
+### `maxSymlinkDepth`
+
+Maximum number of symlinks to follow before considering it circular.
+
+- Type: `number`
+- Default: `100`
+
+Example configuration:
+
+```json
+{
+  "rules": {
+    "claude-md-rules-circular-symlink": ["error", { "maxSymlinkDepth": 50 }]
+  }
+}
+```
+
+To allow deeper symlink chains:
+
+```json
+{
+  "rules": {
+    "claude-md-rules-circular-symlink": ["error", { "maxSymlinkDepth": 200 }]
+  }
+}
+```
 
 ## When Not To Use It
 
@@ -99,7 +124,7 @@ You should not disable this rule. Circular symlinks will always cause problems i
 ## Resources
 
 - [Rule Implementation](../../src/rules/claude-md/claude-md-rules-circular-symlink.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Tests](../../tests/rules/claude-md/claude-md-rules-circular-symlink.test.ts)
 
 ## Version
 

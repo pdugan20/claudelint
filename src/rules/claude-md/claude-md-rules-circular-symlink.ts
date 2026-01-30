@@ -10,6 +10,11 @@ import { extractImportsWithLineNumbers } from '../../utils/markdown';
 import { fileExists, resolvePath } from '../../utils/file-system';
 import { dirname } from 'path';
 import { lstat, readlink } from 'fs/promises';
+import { z } from 'zod';
+
+export interface CircularSymlinkOptions {
+  maxSymlinkDepth?: number;
+}
 
 export const rule: Rule = {
   meta: {
@@ -23,10 +28,17 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-rules-circular-symlink.md',
+    schema: z.object({
+      maxSymlinkDepth: z.number().positive().int().optional(),
+    }),
+    defaultOptions: {
+      maxSymlinkDepth: 100,
+    },
   },
 
   validate: async (context) => {
-    const { filePath, fileContent } = context;
+    const { filePath, fileContent, options } = context;
+    const maxDepth = (options as CircularSymlinkOptions).maxSymlinkDepth ?? 100;
 
     // Extract imports
     const imports = extractImportsWithLineNumbers(fileContent);
@@ -43,7 +55,7 @@ export const rule: Rule = {
       }
 
       // Check for circular symlink
-      const hasSymlinkCycle = await checkSymlinkCycle(resolvedPath);
+      const hasSymlinkCycle = await checkSymlinkCycle(resolvedPath, maxDepth);
       if (hasSymlinkCycle) {
         context.report({
           message: `Circular symlink detected: ${importInfo.path}`,
@@ -57,7 +69,7 @@ export const rule: Rule = {
 /**
  * Check if a path is involved in a circular symlink chain
  */
-async function checkSymlinkCycle(filePath: string): Promise<boolean> {
+async function checkSymlinkCycle(filePath: string, maxDepth: number): Promise<boolean> {
   try {
     const stats = await lstat(filePath);
 
@@ -90,7 +102,7 @@ async function checkSymlinkCycle(filePath: string): Promise<boolean> {
       currentPath = resolvedTarget;
 
       // Safety limit to prevent infinite loops
-      if (visited.size > 100) {
+      if (visited.size > maxDepth) {
         return true;
       }
     }
