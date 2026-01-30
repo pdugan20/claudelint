@@ -1,0 +1,108 @@
+/**
+ * Configuration loading utilities for CLI commands
+ *
+ * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
+ */
+
+import { findConfigFile, loadConfig, validateConfig } from '../../utils/config';
+import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver';
+import { ClaudeLintConfig } from '../../utils/config';
+
+/**
+ * Load and validate configuration for commands
+ * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
+ *
+ * @param options - Command options (config, verbose, debugConfig)
+ * @returns Loaded and validated config object (empty if --no-config)
+ */
+export function loadAndValidateConfig(options: {
+  config?: string | false; // Commander sets config to false when --no-config is used
+  verbose?: boolean;
+  debugConfig?: boolean;
+}): ClaudeLintConfig {
+  // Skip config loading if --no-config flag is set (Commander sets config to false)
+  if (options.config === false) {
+    if (options.verbose || options.debugConfig) {
+      console.log('Skipping config file (--no-config)');
+    }
+    return {};
+  }
+
+  let config: ClaudeLintConfig = {};
+
+  // Load from explicit path or auto-discover
+  if (options.config) {
+    if (options.debugConfig) {
+      console.log(`[Config Debug] Loading config from: ${options.config}`);
+    }
+    try {
+      config = loadConfig(options.config);
+      if (options.verbose || options.debugConfig) {
+        console.log(`Using config file: ${options.config}`);
+      }
+      if (options.debugConfig) {
+        console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+      }
+    } catch (error: unknown) {
+      console.error(`Error loading config file: ${options.config}`);
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(2);
+    }
+  } else {
+    if (options.debugConfig) {
+      console.log('[Config Debug] Searching for config file from:', process.cwd());
+    }
+    const configPath = findConfigFile(process.cwd());
+    if (configPath) {
+      if (options.debugConfig) {
+        console.log(`[Config Debug] Found config file: ${configPath}`);
+      }
+      try {
+        config = loadConfig(configPath);
+        if (options.verbose || options.debugConfig) {
+          console.log(`Using config file: ${configPath}`);
+        }
+        if (options.debugConfig) {
+          console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+        }
+      } catch (error: unknown) {
+        console.error(`Error loading config file: ${configPath}`);
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exit(2);
+      }
+    } else if (options.debugConfig) {
+      console.log('[Config Debug] No config file found, using defaults');
+    }
+  }
+
+  // Validate config against rule registry (rule IDs exist)
+  const configErrors = validateConfig(config);
+  if (configErrors.length > 0) {
+    console.error('\nConfiguration validation errors:');
+    for (const error of configErrors) {
+      const prefix = error.severity === 'error' ? '✗ Error:' : '! Warning:';
+      console.error(`${prefix} ${error.message}`);
+    }
+    const hasErrors = configErrors.some((e) => e.severity === 'error');
+    if (hasErrors) {
+      console.error('\nPlease fix configuration errors before continuing.');
+      process.exit(2);
+    }
+    console.error(''); // Empty line after warnings
+  }
+
+  // Validate all rule options early (ESLint pattern: fail fast before running validators)
+  try {
+    validateAllRuleOptions(config);
+  } catch (error) {
+    if (error instanceof ConfigError) {
+      console.error('\nConfiguration error:');
+      console.error(error.message);
+      console.error('\nPlease fix your .claudelintrc.json file and try again.');
+      process.exit(2);
+    }
+    throw error; // Re-throw unexpected errors
+  }
+
+  return config;
+}
