@@ -85,6 +85,37 @@ With deny rules:
 }
 ```
 
+## How To Fix
+
+To resolve invalid permission errors:
+
+1. **Invalid action** - Change to one of the 3 valid actions:
+   - `"allow"` - Permit the tool use without prompting
+   - `"ask"` - Prompt the user before allowing
+   - `"deny"` - Block the tool use entirely
+
+2. **Empty pattern** - Either:
+   - Remove the empty pattern field entirely (allows all uses of the tool)
+   - Add a valid glob pattern: `"pattern": "npm *"`, `"pattern": "src/**/*.ts"`, etc.
+
+3. **Invalid tool name** - Use valid Claude Code tool names:
+   - Common tools: `Bash`, `Read`, `Write`, `Edit`, `WebSearch`, `WebFetch`
+   - Check the tool registry for the complete list
+
+Example fix:
+
+```json
+{
+  "permissions": [
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "pattern": "npm *"
+    }
+  ]
+}
+```
+
 ## Options
 
 This rule does not have configuration options.
@@ -100,7 +131,7 @@ Never disable this rule. Invalid permissions cause settings to be ignored, fallb
 
 ## Resources
 
-- [Implementation](../../../src/validators/settings.ts)
+- [Rule Implementation](../../src/rules/settings/settings-invalid-permission.ts)
 - [Tests](../../../tests/validators/settings.test.ts)
 - [Permissions Documentation](https://github.com/anthropics/claude-code)
 - [Glob Pattern Syntax](https://github.com/isaacs/node-glob#glob-primer)

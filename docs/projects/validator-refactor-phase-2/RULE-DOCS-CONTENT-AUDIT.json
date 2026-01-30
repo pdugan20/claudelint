@@ -9,8 +9,8 @@
       },
       "settings": {
         "total": 5,
-        "avgScore": 53,
-        "needsWork": 5
+        "avgScore": 95,
+        "needsWork": 0
       },
       "plugin": {
         "total": 12,
@@ -53,17 +53,17 @@
         "needsWork": 13
       }
     },
-    "avgScore": 35,
+    "avgScore": 37,
     "scoreDistribution": {
-      "placeholder": 66,
+      "placeholder": 64,
       "incomplete": 0,
-      "good": 28,
-      "excellent": 11
+      "good": 25,
+      "excellent": 16
     },
-    "rulesNeedingWork": 94,
-    "placeholders": 66,
+    "rulesNeedingWork": 89,
+    "placeholders": 64,
     "rulesWithOptions": 14,
-    "rulesMissingExamples": 69,
+    "rulesMissingExamples": 67,
     "easyOptionsOpportunities": 6
   },
   "audits": [
@@ -546,59 +546,6 @@
       "category": "skills",
       "rulePath": "src/rules/skills/skill-agent.ts",
       "docPath": "docs/rules/skills/skill-agent.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "settings-permission-empty-pattern",
-      "category": "settings",
-      "rulePath": "src/rules/settings/settings-permission-empty-pattern.ts",
-      "docPath": "docs/rules/settings/settings-permission-empty-pattern.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": true,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "settings-file-path-not-found",
-      "category": "settings",
-      "rulePath": "src/rules/settings/settings-file-path-not-found.ts",
-      "docPath": "docs/rules/settings/settings-file-path-not-found.md",
       "score": 5,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -2017,72 +1964,6 @@
       }
     },
     {
-      "ruleId": "settings-permission-invalid-rule",
-      "category": "settings",
-      "rulePath": "src/rules/settings/settings-permission-invalid-rule.ts",
-      "docPath": "docs/rules/settings/settings-permission-invalid-rule.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 99,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 68
-      }
-    },
-    {
-      "ruleId": "settings-invalid-permission",
-      "category": "settings",
-      "rulePath": "src/rules/settings/settings-invalid-permission.ts",
-      "docPath": "docs/rules/settings/settings-invalid-permission.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 111,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 78
-      }
-    },
-    {
-      "ruleId": "settings-invalid-env-var",
-      "category": "settings",
-      "rulePath": "src/rules/settings/settings-invalid-env-var.ts",
-      "docPath": "docs/rules/settings/settings-invalid-env-var.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 102,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 69
-      }
-    },
-    {
       "ruleId": "plugin-missing-file",
       "category": "plugin",
       "rulePath": "src/rules/plugin/plugin-missing-file.ts",
@@ -2547,6 +2428,108 @@
       }
     },
     {
+      "ruleId": "settings-permission-invalid-rule",
+      "category": "settings",
+      "rulePath": "src/rules/settings/settings-permission-invalid-rule.ts",
+      "docPath": "docs/rules/settings/settings-permission-invalid-rule.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 116,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 68
+      }
+    },
+    {
+      "ruleId": "settings-permission-empty-pattern",
+      "category": "settings",
+      "rulePath": "src/rules/settings/settings-permission-empty-pattern.ts",
+      "docPath": "docs/rules/settings/settings-permission-empty-pattern.md",
+      "score": 95,
+      "issues": [
+        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
+      ],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": true,
+      "docStats": {
+        "lineCount": 136,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 80
+      }
+    },
+    {
+      "ruleId": "settings-invalid-permission",
+      "category": "settings",
+      "rulePath": "src/rules/settings/settings-invalid-permission.ts",
+      "docPath": "docs/rules/settings/settings-invalid-permission.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 142,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 78
+      }
+    },
+    {
+      "ruleId": "settings-invalid-env-var",
+      "category": "settings",
+      "rulePath": "src/rules/settings/settings-invalid-env-var.ts",
+      "docPath": "docs/rules/settings/settings-invalid-env-var.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 139,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 69
+      }
+    },
+    {
+      "ruleId": "settings-file-path-not-found",
+      "category": "settings",
+      "rulePath": "src/rules/settings/settings-file-path-not-found.ts",
+      "docPath": "docs/rules/settings/settings-file-path-not-found.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 134,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 68
+      }
+    },
+    {
       "ruleId": "hooks-missing-script",
       "category": "hooks",
       "rulePath": "src/rules/hooks/hooks-missing-script.ts",
@@ -2647,5 +2630,5 @@
       }
     }
   ],
-  "generatedAt": "2026-01-30T07:18:23.720Z"
+  "generatedAt": "2026-01-30T07:20:48.250Z"
 }

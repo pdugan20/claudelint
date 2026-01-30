@@ -75,6 +75,23 @@ Or with separate pattern field:
 }
 ```
 
+## How To Fix
+
+To resolve permission rule syntax errors:
+
+1. **Conflicting patterns** - Choose one format:
+   - **Option A**: Use inline pattern only: `"tool": "Bash(npm test)"`
+   - **Option B**: Use separate pattern field: `"tool": "Bash", "pattern": "npm test"`
+   - Remove either the inline pattern or the separate `pattern` field
+
+2. **Empty inline pattern** - Either:
+   - Remove the empty parentheses: `"tool": "Bash()"`  → `"tool": "Bash"`
+   - Add a pattern: `"tool": "Bash()"` → `"tool": "Bash(npm *)"`
+
+3. **Verify your choice**:
+   - Inline format is more concise for simple patterns
+   - Separate field may be clearer for complex patterns with special characters
+
 ## Options
 
 This rule does not have any configuration options.
@@ -90,7 +107,7 @@ You should not disable this rule. Malformed permission rules lead to ambiguous s
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/settings.ts#L85)
+- [Rule Implementation](../../src/rules/settings/settings-permission-invalid-rule.ts)
 - [Rule Tests](../../tests/validators/settings.test.ts)
 
 ## Version

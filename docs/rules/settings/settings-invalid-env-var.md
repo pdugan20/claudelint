@@ -76,6 +76,43 @@ Non-sensitive literal values:
 }
 ```
 
+## How To Fix
+
+To resolve environment variable errors:
+
+1. **Invalid naming** - Convert to SCREAMING_SNAKE_CASE:
+   - `api_key` → `API_KEY`
+   - `nodeEnv` → `NODE_ENV`
+   - `database-url` → `DATABASE_URL`
+
+2. **Empty values** - Either:
+   - Remove the variable entirely if not needed
+   - Use variable expansion: `"${VAR_NAME}"`
+   - Provide a valid default value
+
+3. **Hardcoded secrets** - Use variable expansion:
+   - `"API_KEY": "sk-123..."` → `"API_KEY": "${API_KEY}"`
+   - `"PASSWORD": "secret"` → `"PASSWORD": "${DATABASE_PASSWORD}"`
+   - Store actual values in system environment variables or `.env` files (gitignored)
+
+4. **Verify naming convention**:
+   - Start with uppercase letter or underscore
+   - Use only uppercase letters, numbers, and underscores
+   - No hyphens, lowercase, or camelCase
+
+Example fix:
+
+```json
+{
+  "env": {
+    "NODE_ENV": "production",
+    "API_KEY": "${API_KEY}",
+    "DATABASE_URL": "${DATABASE_URL}",
+    "LOG_LEVEL": "info"
+  }
+}
+```
+
 ## Options
 
 This rule does not have configuration options.
@@ -91,7 +128,7 @@ Consider disabling if your organization uses different naming conventions (not r
 
 ## Resources
 
-- [Implementation](../../../src/validators/settings.ts)
+- [Rule Implementation](../../src/rules/settings/settings-invalid-env-var.ts)
 - [Tests](../../../tests/validators/settings.test.ts)
 - [Environment Variable Best Practices](https://12factor.net/config)
 - [Secrets Management Guide](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)
