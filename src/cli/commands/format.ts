@@ -126,16 +126,16 @@ export function registerFormatCommand(program: Command): void {
 
             const output = execSync(shellCheckCmd, { encoding: 'utf-8', stdio: 'pipe' });
             if (verbose && output) {
-              console.log(output);
+              logger.log(output);
             }
             logger.success('ShellCheck passed');
             logger.newline();
           } catch (error: unknown) {
             if (error && typeof error === 'object' && 'stdout' in error) {
-              console.log(String(error.stdout));
+              logger.log(String(error.stdout));
             }
             if (error && typeof error === 'object' && 'stderr' in error) {
-              console.error(String(error.stderr));
+              logger.error(String(error.stderr));
             }
             hasErrors = true;
             logger.error('ShellCheck found issues');

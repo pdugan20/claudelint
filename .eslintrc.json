@@ -31,5 +31,17 @@
     "node": true,
     "es2022": true
   },
-  "ignorePatterns": ["dist", "node_modules", "*.js"]
+  "ignorePatterns": ["dist", "node_modules", "*.js"],
+  "overrides": [
+    {
+      "files": ["src/cli/**/*.ts"],
+      "excludedFiles": [
+        "src/cli/utils/logger.ts",
+        "src/utils/reporting.ts"
+      ],
+      "rules": {
+        "no-console": "error"
+      }
+    }
+  ]
 }

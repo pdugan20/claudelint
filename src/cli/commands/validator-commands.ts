@@ -9,6 +9,7 @@ import { Command } from 'commander';
 import { ValidatorRegistry } from '../../utils/validator-factory';
 import { Reporter } from '../../utils/reporting';
 import { loadAndValidateConfig } from '../utils/config-loader';
+import { logger } from '../utils/logger';
 
 /**
  * Metadata for creating a validator command
@@ -95,11 +96,13 @@ export function createValidatorCommand(
         // Exit with appropriate code
         process.exit(reporter.getExitCode(result));
       } catch (error) {
-        console.error('\nValidation failed:');
-        console.error(error instanceof Error ? error.message : String(error));
+        logger.newline();
+        logger.error('Validation failed:');
+        logger.error(error instanceof Error ? error.message : String(error));
         if (options.verbose && error instanceof Error && error.stack) {
-          console.error('\nStack trace:');
-          console.error(error.stack);
+          logger.newline();
+          logger.error('Stack trace:');
+          logger.error(error.stack);
         }
         process.exit(2);
       }

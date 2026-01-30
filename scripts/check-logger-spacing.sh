@@ -1,14 +1,13 @@
 #!/bin/bash
 #
-# Check for hardcoded spaces at the start of logger calls
-# Enforces use of logger.detail() instead of logger.log('  ...')
+# Check for manual formatting in logger calls
+# Enforces consistent use of logger methods without manual \n, empty strings, or leading spaces
 
 set -e
 
 ERRORS=0
 
-# Check for logger calls with 2+ spaces at the start
-echo "Checking for hardcoded spaces in logger calls..."
+echo "Checking for manual formatting in logger calls..."
 
 # Pattern 1: logger.method('  ...')
 if grep -rn "logger\.\(log\|info\|warn\|error\)(['\"]  " src/cli/ --exclude-dir=node_modules --exclude=logger.ts; then
@@ -17,10 +16,24 @@ if grep -rn "logger\.\(log\|info\|warn\|error\)(['\"]  " src/cli/ --exclude-dir=
   ERRORS=$((ERRORS + 1))
 fi
 
-# Pattern 2: logger.method(\`  ...\`) - template literals
+# Pattern 2: logger.method(\`  ...\`) - template literals with spaces
 if grep -rn 'logger\.\(log\|info\|warn\|error\)(`  ' src/cli/ --exclude-dir=node_modules --exclude=logger.ts; then
   echo "ERROR: Found logger calls with hardcoded 2+ spaces in template literals"
   echo "Use logger.detail() instead of logger.log(\`  ...\`)"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Pattern 3: Manual \n in logger calls
+if grep -rn 'logger\.\(log\|info\|warn\|error\|success\|section\|detail\).*\\n' src/cli/ --exclude-dir=node_modules --exclude=logger.ts; then
+  echo "ERROR: Found logger calls with manual \\n newlines"
+  echo "Use logger.newline() instead of \\n"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Pattern 4: Empty strings '' or "" in logger calls
+if grep -rn "logger\.\(log\|info\|warn\|error\|success\|section\|detail\)(['\"]\"')" src/cli/ --exclude-dir=node_modules --exclude=logger.ts; then
+  echo "ERROR: Found logger calls with empty strings"
+  echo "Use logger.newline() instead of logger.log('')"
   ERRORS=$((ERRORS + 1))
 fi
 
@@ -29,11 +42,14 @@ fi
 # - Comments and documentation
 
 if [ $ERRORS -eq 0 ]; then
-  echo "No hardcoded spacing found in logger calls"
+  echo "No manual formatting found in logger calls"
   exit 0
 else
   echo ""
   echo "Found $ERRORS violation(s)"
-  echo "Fix by using logger.detail() for indented output"
+  echo ""
+  echo "Fixes:"
+  echo "  - Use logger.detail() for indented output (not '  ...')"
+  echo "  - Use logger.newline() for blank lines (not \\n or '')"
   exit 1
 fi

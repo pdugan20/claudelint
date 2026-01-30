@@ -27,7 +27,7 @@ export function registerListRulesCommand(program: Command): void {
         : RuleRegistry.getAll();
 
       if (options.format === 'json') {
-        console.log(JSON.stringify(rules, null, 2));
+        logger.log(JSON.stringify(rules, null, 2));
         return;
       }
 
