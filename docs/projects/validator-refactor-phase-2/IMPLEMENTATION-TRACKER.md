@@ -13,14 +13,14 @@
 - [X] Phase 2.5: Implement Rule Discovery (9/10 tasks) COMPLETE ✓ (Task 2.5.10 active)
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
-- [ ] Phase 2.7: Testing & Validation (16/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
+- [X] Phase 2.7: Testing & Validation (18/18 tasks) COMPLETE ✓ - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
 - [X] Phase 2.8: CLI Output & Dependency Architecture (6/6 tasks) COMPLETE ✓
 
-**Total:** 74/76 tasks complete (97%)
+**Total:** 76/76 tasks complete (100%)
 
-**Current Focus:** Phase 2.7 - Testing & Validation (Task 2.7.15 in progress)
+**Current Focus:** Phase 2 COMPLETE ✓
 
-**Previous:** Task 2.7.14 - Update CHANGELOG.md (COMPLETE ✓)
+**Previous:** Task 2.7.15 - Update contributing guide (COMPLETE ✓)
 
 ## CRITICAL CLARIFICATION (2026-01-29)
 
@@ -1394,15 +1394,15 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Completion Date:** 2026-01-30
   - **Notes:** COMPLETE! Documented complete Phase 2 refactor including: all 105 rules by category, ESLint-style architecture benefits, 17 configurable rules with options, 708 test cases, rule-based patterns, migration guidance, and "Why This Matters" section explaining benefits for users and developers.
 
-- [ ] **Task 2.7.15:** Update contributing guide
-  - **File:** `docs/plugin-development.md`
+- [X] **Task 2.7.15:** Update contributing guide
+  - **File:** `docs/contributing-rules.md`
   - **Action:** Document RuleRegistry.getRulesByCategory() pattern
   - **Action:** Document executeRulesForCategory() usage
   - **Action:** Document two-level testing strategy (rule tests + validator tests)
-  - **Estimated Time:** 20 minutes
+  - **Actual Time:** 20 minutes
   - **Dependencies:** All previous phases
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Completion Date:** 2026-01-30
+  - **Notes:** COMPLETE! Added comprehensive sections on: RuleRegistry integration patterns, executeRulesForCategory() helper usage, validator implementation pattern with full example, two-level testing strategy (rule unit tests vs validator integration tests), rule options configuration with TypeScript interfaces, and expanded best practices from 7 to 10 items including standard naming conventions and 1:1:1 mapping enforcement.
 
 - [X] **Task 2.7.16:** Make individual validator commands config-aware
   - **File:** `src/cli.ts`
