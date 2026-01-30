@@ -50,10 +50,6 @@ Alternative - consistent snake_case:
 └── validate.sh
 ```
 
-## Options
-
-This rule does not have configuration options.
-
 ## When Not To Use It
 
 Consider disabling if migrating from another system and can't rename yet, your organization has a different standard mixing conventions intentionally, or you're wrapping external tools that dictate naming. However, consistency improves all projects so plan a migration.

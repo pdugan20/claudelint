@@ -14,7 +14,11 @@ import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/json-helpers';
 import { z } from 'zod';
 
-interface RuleOptions {
+/**
+ * Options for lsp-server-name-too-short rule
+ */
+export interface LspServerNameTooShortOptions {
+  /** Minimum server name length (default: 2) */
   minLength?: number;
 }
 
@@ -45,7 +49,7 @@ export const rule: Rule = {
       return;
     }
 
-    const ruleOptions = options as RuleOptions;
+    const ruleOptions = options as LspServerNameTooShortOptions;
     const minLength = ruleOptions?.minLength ?? 2;
 
     const config = safeParseJSON(fileContent);

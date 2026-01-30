@@ -12,7 +12,11 @@ import { dirname } from 'path';
 import { lstat, readlink } from 'fs/promises';
 import { z } from 'zod';
 
-export interface CircularSymlinkOptions {
+/**
+ * Options for claude-md-rules-circular-symlink rule
+ */
+export interface ClaudeMdRulesCircularSymlinkOptions {
+  /** Maximum symlink chain depth before considering circular (default: 100) */
   maxSymlinkDepth?: number;
 }
 
@@ -38,7 +42,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, fileContent, options } = context;
-    const maxDepth = (options as CircularSymlinkOptions).maxSymlinkDepth ?? 100;
+    const maxDepth = (options as ClaudeMdRulesCircularSymlinkOptions).maxSymlinkDepth ?? 100;
 
     // Extract imports
     const imports = extractImportsWithLineNumbers(fileContent);

@@ -8,6 +8,14 @@ import { Rule } from '../../types/rule';
 import { z } from 'zod';
 
 /**
+ * Options for skill-large-reference-no-toc rule
+ */
+export interface SkillLargeReferenceNoTocOptions {
+  /** Minimum line count before table of contents required (default: 100) */
+  minLines?: number;
+}
+
+/**
  * Validates that large SKILL.md files have a table of contents
  */
 export const rule: Rule = {
@@ -46,7 +54,7 @@ export const rule: Rule = {
 
     const body = parts.slice(2).join('---');
     const lines = body.split('\n');
-    const minLines = (options.minLines as number | undefined) ?? 100;
+    const minLines = (options as SkillLargeReferenceNoTocOptions).minLines ?? 100;
 
     // Check if large skill lacks table of contents
     if (lines.length > minLines) {

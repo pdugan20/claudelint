@@ -11,6 +11,14 @@ import { z } from 'zod';
 const DEFAULT_MIN_LINES = 10;
 
 /**
+ * Options for skill-missing-comments rule
+ */
+export interface SkillMissingCommentsOptions {
+  /** Minimum non-empty line count before comments required (default: 10) */
+  minLines?: number;
+}
+
+/**
  * Missing comments validation rule implementation
  */
 export const rule: Rule = {
@@ -35,7 +43,7 @@ export const rule: Rule = {
 
   validate: (context) => {
     const { filePath, fileContent, options } = context;
-    const minLines = (options.minLines as number | undefined) ?? DEFAULT_MIN_LINES;
+    const minLines = (options as SkillMissingCommentsOptions).minLines ?? DEFAULT_MIN_LINES;
 
     // Only check shell scripts
     if (!filePath.endsWith('.sh')) {

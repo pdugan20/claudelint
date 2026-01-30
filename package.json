@@ -28,6 +28,8 @@
     "check:file-naming": "ts-node scripts/check-file-naming.ts",
     "check:rule-ids": "ts-node scripts/check-rule-ids.ts",
     "check:rule-docs": "ts-node scripts/check-rule-docs.ts",
+    "check:rule-option-docs": "ts-node scripts/check-rule-option-docs.ts",
+    "check:rule-option-interfaces": "ts-node scripts/check-rule-option-interfaces.ts",
     "check:consistency": "ts-node scripts/check-consistency.ts",
     "check:all": "ts-node scripts/check-all.ts",
     "audit:rule-docs": "ts-node scripts/audit-rule-docs.ts",

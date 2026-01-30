@@ -63,10 +63,6 @@ Well-organized with subdirectories:
 3 files at root (<10)
 ```
 
-## Options
-
-This rule does not have configuration options. The threshold of 10 files is fixed.
-
 ## When Not To Use It
 
 Consider disabling if your skill genuinely needs many root-level files, you're following a specific project structure convention, or you're mid-reorganization. However, organization improves all projects, so restructuring is preferred over disabling.

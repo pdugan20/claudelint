@@ -11,6 +11,14 @@ import { z } from 'zod';
 type SettingsConfig = z.infer<typeof SettingsSchema>;
 
 /**
+ * Options for settings-permission-empty-pattern rule
+ */
+export interface SettingsPermissionEmptyPatternOptions {
+  /** Allow empty inline patterns in Tool(pattern) syntax (default: false) */
+  allowEmpty?: boolean;
+}
+
+/**
  * Validates that inline patterns in Tool(pattern) syntax are not empty
  */
 export const rule: Rule = {
@@ -52,7 +60,7 @@ export const rule: Rule = {
       return;
     }
 
-    const allowEmpty = (options.allowEmpty as boolean | undefined) ?? false;
+    const allowEmpty = (options as SettingsPermissionEmptyPatternOptions).allowEmpty ?? false;
 
     // Skip validation if empty patterns are allowed
     if (allowEmpty) {

@@ -8,6 +8,14 @@ import { Rule } from '../../types/rule';
 import { z } from 'zod';
 
 /**
+ * Options for skill-body-too-long rule
+ */
+export interface SkillBodyTooLongOptions {
+  /** Maximum body length in lines before warning (default: 500) */
+  maxLines?: number;
+}
+
+/**
  * Validates SKILL.md body length
  */
 export const rule: Rule = {
@@ -46,7 +54,7 @@ export const rule: Rule = {
 
     const body = parts.slice(2).join('---');
     const lines = body.split('\n');
-    const maxLines = (options.maxLines as number | undefined) ?? 500;
+    const maxLines = (options as SkillBodyTooLongOptions).maxLines ?? 500;
 
     // Check if body is too long
     if (lines.length > maxLines) {

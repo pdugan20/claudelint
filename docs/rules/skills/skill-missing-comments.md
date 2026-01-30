@@ -64,10 +64,6 @@ fi
 echo "Deployment successful"
 ```
 
-## Options
-
-This rule does not have configuration options. The threshold of 10 lines is fixed.
-
 ## When Not To Use It
 
 Consider disabling if your code is genuinely trivial and self-documenting, you have comprehensive external documentation, or your team has a different commenting standard. However, comments are generally beneficial even for "simple" scripts.

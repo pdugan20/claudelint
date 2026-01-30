@@ -11,7 +11,7 @@ import { z } from 'zod';
 /**
  * Options for claude-md-content-too-many-sections rule
  */
-export interface ContentTooManySectionsOptions {
+export interface ClaudeMdContentTooManySectionsOptions {
   /** Maximum number of sections (markdown headings) before warning (default: 20) */
   maxSections?: number;
 }
@@ -48,7 +48,7 @@ export const rule: Rule = {
     }
 
     // Get configured threshold (already has default from meta.defaultOptions)
-    const maxSections = (options as ContentTooManySectionsOptions).maxSections ?? 20;
+    const maxSections = (options as ClaudeMdContentTooManySectionsOptions).maxSections ?? 20;
 
     // Count markdown headings (sections)
     const headingRegex = /^#{1,6}\s+.+$/gm;

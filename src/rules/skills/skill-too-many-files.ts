@@ -13,6 +13,14 @@ import { z } from 'zod';
 const DEFAULT_MAX_FILES = 10;
 
 /**
+ * Options for skill-too-many-files rule
+ */
+export interface SkillTooManyFilesOptions {
+  /** Maximum file count at root level before warning (default: 10) */
+  maxFiles?: number;
+}
+
+/**
  * Too many files validation rule implementation
  */
 export const rule: Rule = {
@@ -37,7 +45,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, options } = context;
-    const maxFiles = (options.maxFiles as number | undefined) ?? DEFAULT_MAX_FILES;
+    const maxFiles = (options as SkillTooManyFilesOptions).maxFiles ?? DEFAULT_MAX_FILES;
 
     // Only check SKILL.md files
     if (!filePath.endsWith('SKILL.md')) {

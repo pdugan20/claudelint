@@ -13,6 +13,14 @@ import { z } from 'zod';
 const DEFAULT_MAX_DEPTH = 3;
 
 /**
+ * Options for skill-deep-nesting rule
+ */
+export interface SkillDeepNestingOptions {
+  /** Maximum directory nesting depth (default: 3) */
+  maxDepth?: number;
+}
+
+/**
  * Get maximum directory depth recursively
  */
 async function getMaxDirectoryDepth(dir: string, currentDepth = 0): Promise<number> {
@@ -61,7 +69,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, options } = context;
-    const maxDepth = (options.maxDepth as number | undefined) ?? DEFAULT_MAX_DEPTH;
+    const maxDepth = (options as SkillDeepNestingOptions).maxDepth ?? DEFAULT_MAX_DEPTH;
 
     // Only check SKILL.md files
     if (!filePath.endsWith('SKILL.md')) {

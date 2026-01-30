@@ -14,7 +14,11 @@ import { Rule, RuleContext } from '../../types/rule';
 import { extractBodyContent } from '../../utils/markdown';
 import { z } from 'zod';
 
-interface RuleOptions {
+/**
+ * Options for agent-body-too-short rule
+ */
+export interface AgentBodyTooShortOptions {
+  /** Minimum body content length in characters (default: 50) */
   minLength?: number;
 }
 
@@ -45,7 +49,7 @@ export const rule: Rule = {
       return;
     }
 
-    const ruleOptions = options as RuleOptions;
+    const ruleOptions = options as AgentBodyTooShortOptions;
     const minLength = ruleOptions?.minLength ?? 50;
 
     const body = extractBodyContent(fileContent);

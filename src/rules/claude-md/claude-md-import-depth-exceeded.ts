@@ -10,7 +10,10 @@ import { fileExists, resolvePath, readFileContent } from '../../utils/file-syste
 import { dirname } from 'path';
 import { z } from 'zod';
 
-export interface ClaudeMdImportDepthOptions {
+/**
+ * Options for claude-md-import-depth-exceeded rule
+ */
+export interface ClaudeMdImportDepthExceededOptions {
   /** Maximum import depth before reporting error (default: 5) */
   maxDepth?: number;
 }
@@ -37,7 +40,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, fileContent, options } = context;
-    const maxDepth = (options as ClaudeMdImportDepthOptions).maxDepth ?? 5;
+    const maxDepth = (options as ClaudeMdImportDepthExceededOptions).maxDepth ?? 5;
 
     // Check imports recursively
     await checkImportDepth(context, filePath, fileContent, 0, maxDepth, new Set());

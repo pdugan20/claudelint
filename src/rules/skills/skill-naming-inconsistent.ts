@@ -14,6 +14,14 @@ import { z } from 'zod';
 const DEFAULT_MIN_FILES = 3;
 
 /**
+ * Options for skill-naming-inconsistent rule
+ */
+export interface SkillNamingInconsistentOptions {
+  /** Minimum file count before checking for consistency (default: 3) */
+  minFiles?: number;
+}
+
+/**
  * Naming inconsistency validation rule implementation
  */
 export const rule: Rule = {
@@ -38,7 +46,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, options } = context;
-    const minFiles = (options.minFiles as number | undefined) ?? DEFAULT_MIN_FILES;
+    const minFiles = (options as SkillNamingInconsistentOptions).minFiles ?? DEFAULT_MIN_FILES;
 
     // Only check SKILL.md files
     if (!filePath.endsWith('SKILL.md')) {

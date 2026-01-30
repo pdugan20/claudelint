@@ -11,6 +11,14 @@ import { z } from 'zod';
 type MCPConfig = z.infer<typeof MCPConfigSchema>;
 type MCPTransport = z.infer<typeof MCPStdioTransportSchema> | z.infer<typeof MCPSSETransportSchema> | z.infer<typeof MCPHTTPTransportSchema> | z.infer<typeof MCPWebSocketTransportSchema>;
 
+/**
+ * Options for mcp-invalid-env-var rule
+ */
+export interface McpInvalidEnvVarOptions {
+  /** Regex pattern for valid environment variable names (default: '^[A-Z_][A-Z0-9_]*$') */
+  pattern?: string;
+}
+
 // Regex patterns for variable expansion validation
 const VAR_EXPANSION_PATTERN = /\$\{([^}]*)\}/g; // Matches ${VAR} or ${VAR:-default}
 const SIMPLE_VAR_PATTERN = /\$([A-Z_][A-Z0-9_]*)/g; // Matches $VAR without braces
@@ -113,7 +121,7 @@ function validateVariableExpansion(
     return;
   }
 
-  const pattern = (context.options.pattern as string | undefined) ?? '^[A-Z_][A-Z0-9_]*$';
+  const pattern = (context.options as McpInvalidEnvVarOptions).pattern ?? '^[A-Z_][A-Z0-9_]*$';
   const varNameRegex = new RegExp(pattern);
 
   // Check for properly formatted variable expansion ${VAR} or ${VAR:-default}

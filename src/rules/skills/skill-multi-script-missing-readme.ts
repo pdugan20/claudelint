@@ -20,7 +20,11 @@ import { fileExists } from '../../utils/file-system';
 import { SCRIPT_EXTENSIONS } from '../../schemas/constants';
 import { z } from 'zod';
 
-interface RuleOptions {
+/**
+ * Options for skill-multi-script-missing-readme rule
+ */
+export interface SkillMultiScriptMissingReadmeOptions {
+  /** Maximum script count before README required (default: 3) */
   maxScripts?: number;
 }
 
@@ -51,7 +55,7 @@ export const rule: Rule = {
       return;
     }
 
-    const ruleOptions = options as RuleOptions;
+    const ruleOptions = options as SkillMultiScriptMissingReadmeOptions;
     const maxScripts = ruleOptions?.maxScripts ?? 3;
 
     // Get skill directory

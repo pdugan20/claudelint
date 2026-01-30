@@ -12,6 +12,14 @@ import { z } from 'zod';
 const DEFAULT_MAX_SIZE = 35000;
 
 /**
+ * Options for claude-md-size-warning rule
+ */
+export interface ClaudeMdSizeWarningOptions {
+  /** Maximum file size in bytes before reporting warning (default: 35000) */
+  maxSize?: number;
+}
+
+/**
  * Size warning validation rule implementation
  */
 export const rule: Rule = {
@@ -36,7 +44,7 @@ export const rule: Rule = {
 
   validate: async (context) => {
     const { filePath, options } = context;
-    const maxSize = (options.maxSize as number | undefined) ?? DEFAULT_MAX_SIZE;
+    const maxSize = (options as ClaudeMdSizeWarningOptions).maxSize ?? DEFAULT_MAX_SIZE;
 
     const size = await getFileSize(filePath);
 
