@@ -35,6 +35,7 @@
     "check:duplicates": "ts-node scripts/check-duplicate-logic.ts",
     "check:duplicate-fixtures": "ts-node scripts/check-duplicate-fixtures.ts",
     "verify:rule-implementations": "ts-node scripts/verify-rule-implementations.ts",
+    "verify:rule-structure": "ts-node scripts/check-rule-structure.ts",
     "test:validators": "jest tests/validators --coverage",
     "test:schemas": "jest tests/schemas --coverage",
     "validate": "node bin/claudelint check-all",
