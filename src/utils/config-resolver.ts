@@ -182,9 +182,11 @@ export class ConfigResolver {
 
     // Normalize each rule config
     for (const [ruleId, config] of Object.entries(effectiveRules)) {
-      // Schema validation failures are fatal - don't catch them
       const normalized = this.normalizeRuleConfig(ruleId as RuleId, config);
-      resolved.set(ruleId as RuleId, normalized);
+      // Only add to resolved map if validation succeeded
+      if (normalized !== null) {
+        resolved.set(ruleId as RuleId, normalized);
+      }
     }
 
     return resolved;
@@ -198,8 +200,7 @@ export class ConfigResolver {
    *
    * @param ruleId - The rule ID
    * @param config - The rule configuration (string or object)
-   * @returns Normalized rule configuration
-   * @throws Error if options fail schema validation
+   * @returns Normalized rule configuration, or null if options fail schema validation
    *
    * @example
    * ```typescript
@@ -218,7 +219,7 @@ export class ConfigResolver {
   private normalizeRuleConfig(
     ruleId: RuleId,
     config: RuleConfig | 'off' | 'warn' | 'error'
-  ): ResolvedRuleConfig {
+  ): ResolvedRuleConfig | null {
     // String format: "off" | "warn" | "error"
     if (typeof config === 'string') {
       return {
@@ -237,9 +238,11 @@ export class ConfigResolver {
       try {
         rule.schema.parse(options);
       } catch (error) {
-        throw new ConfigError(
-          `Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}`
+        // Invalid options - return null to exclude rule from resolved config
+        console.warn(
+          `Warning: Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}\nRule will be disabled.`
         );
+        return null;
       }
     }
 

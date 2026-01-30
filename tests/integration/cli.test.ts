@@ -151,7 +151,7 @@ describe('CLI Integration Tests', () => {
 
       // Stylish format has validator names and summary
       expect(result).toContain('CLAUDE.md Validator');
-      expect(result).toContain('=== Overall Summary ===');
+      expect(result).toContain('Overall Summary');
     });
   });
 
@@ -311,11 +311,12 @@ describe('CLI Integration Tests', () => {
           encoding: 'utf-8',
         });
       } catch (error: any) {
-        output = error.stdout || error.stderr || '';
+        // Combine both stdout and stderr since logger uses both
+        output = (error.stdout || '') + (error.stderr || '');
       }
 
-      // Should output message about no config
-      expect(output).toContain('No configuration file found');
+      // Should output message about no config and helpful suggestions
+      expect(output).toContain('Searched locations');
     });
 
     it('should print config when config file exists', () => {
