@@ -4,8 +4,8 @@
 
 Total Rules: 105
 - Started: 99 rules needing work
-- Current: 39 rules needing work
-- Completed: 66 rules (63%)
+- Current: 28 rules needing work
+- Completed: 77 rules (73%)
 
 ## Batch Status
 
@@ -70,7 +70,7 @@ Total Rules: 105
 
 ### [DONE] BATCH B: Medium Categories (COMPLETE)
 
-**Status: 53/53 rules complete**
+**Status: 65/65 rules complete**
 
 #### Plugin (12 rules) - 95/100 avg - [DONE]
 
@@ -173,36 +173,45 @@ Total Rules: 105
 - [x] agent-tools (5→95)
   - Created: Full documentation
 
-#### LSP (8 rules) - 4/100 avg
+#### LSP (8 rules) - 96/100 avg - [DONE]
 
-**Placeholders (8 rules)** - All need full docs:
-- [ ] lsp-command-not-in-path (5→?)
-- [ ] lsp-config-file-not-json (5→?)
-- [ ] lsp-config-file-relative-path (5→?)
-- [ ] lsp-extension-missing-dot (5→?)
-- [ ] lsp-invalid-transport (5→?)
-- [ ] lsp-language-id-empty (5→?)
-- [ ] lsp-language-id-not-lowercase (5→?)
-- [ ] lsp-server-name-too-short (0→?)
-  - **Has Option**: minLength - needs documentation
+**Placeholders (8 rules)** - [DONE]:
+- [x] lsp-command-not-in-path (5→95)
+  - Created: Full documentation
+- [x] lsp-config-file-not-json (5→95)
+  - Created: Full documentation
+- [x] lsp-config-file-relative-path (5→95)
+  - Created: Full documentation
+- [x] lsp-extension-missing-dot (5→95)
+  - Created: Full documentation
+- [x] lsp-invalid-transport (5→95)
+  - Created: Full documentation
+- [x] lsp-language-id-empty (5→95)
+  - Created: Full documentation
+- [x] lsp-language-id-not-lowercase (5→95)
+  - Created: Full documentation
+- [x] lsp-server-name-too-short (0→95)
+  - **Has Option**: minLength (default: 2) - documented with schema
 
-#### Output Styles (7 rules) - 4/100 avg
+#### Output Styles (4 rules) - 95/100 avg - [DONE]
 
-**Placeholders (7 rules)** - All need full docs:
-- [ ] output-style-body-too-short (0→?)
-  - **Has Option**: minBodyLength - needs documentation
-- [ ] output-style-description (5→?)
-- [ ] output-style-examples (5→?)
-- [ ] output-style-missing-examples (5→?)
-- [ ] output-style-missing-guidelines (5→?)
-- [ ] output-style-name (5→?)
-- [ ] output-style-name-directory-mismatch (5→?)
+**Placeholders (4 rules)** - [DONE]:
+- [x] output-style-body-too-short (0→95)
+  - **Has Option**: minLength (default: 50) - documented with schema
+- [x] output-style-missing-examples (5→95)
+  - Created: Full documentation
+- [x] output-style-missing-guidelines (5→95)
+  - Created: Full documentation
+- [x] output-style-name-directory-mismatch (5→95)
+  - Created: Full documentation
+
+**Note**: Only 4 rules exist in the codebase (not 7 as initially thought)
 
 ---
 
-### [TODO] BATCH C: Large Categories
+### [TODO] BATCH C: Final Category
 
-**Status: 4/28 rules complete**
+**Status: 4/28 rules complete (final 24 rules remaining)**
 
 #### Skills (28 rules) - 44/100 avg
 
@@ -248,11 +257,11 @@ Total Rules: 105
 1. **claude-md-content-too-many-sections**: maxSections (default: 20)
 2. **claude-md-import-depth-exceeded**: maxDepth (default: 5)
 3. **claude-md-rules-circular-symlink**: maxSymlinkDepth (default: 100) [DONE] NEW
+4. **agent-body-too-short**: minLength (default: 50) [DONE]
+5. **lsp-server-name-too-short**: minLength (default: 2) [DONE]
+6. **output-style-body-too-short**: minLength (default: 50) [DONE]
 
 ### Has Options (Need Documentation)
-4. **agent-body-too-short**: minBodyLength
-5. **lsp-server-name-too-short**: minLength
-6. **output-style-body-too-short**: minBodyLength
 7. **skill-multi-script-missing-readme**: (needs investigation)
 
 ### Option Opportunities (Easy & Useful)
@@ -267,31 +276,16 @@ Total Rules: 105
 
 ## Next Steps
 
-### Current Focus: Batch C - Remaining Categories (39 rules)
+### Current Focus: Batch C - Final Category (28 rules)
 
-Now tackling the final categories:
-
-1. **LSP Category** (8 rules, 4/100 avg) - NEXT
-   - All 8 placeholders need full documentation
-   - lsp-server-name-too-short has minLength option - needs documentation
-
-2. **Output Styles Category** (7 rules, 4/100 avg)
-   - All 7 placeholders need full documentation
-   - output-style-body-too-short has minBodyLength option - needs documentation
-
-3. **Skills Category** (28 rules, 44/100 avg) - LARGEST
-   - 4 easy wins already complete
-   - 24 placeholders need full documentation
-   - skill-multi-script-missing-readme has option - needs documentation
+**Skills Category** (28 rules, 44/100 avg) - LARGEST - NEXT
+- 4 easy wins already complete
+- 24 placeholders need full documentation
+- skill-multi-script-missing-readme has option - needs documentation
 
 ### After Completion
 
 All 105 rules will be documented to 95/100+ average
-3. LSP (8 rules, 4/100 avg)
-4. Output Styles (7 rules, 4/100 avg)
-
-Then tackle Batch C:
-1. Skills (28 rules, 44/100 avg)
 
 ---
 
@@ -302,6 +296,8 @@ Then tackle Batch C:
 - [DONE] Plugin: 12 rules → 95/100 avg
 - [DONE] MCP: 13 rules → 95/100 avg
 - [DONE] Agents: 13 rules → 95/100 avg (+ minLength option documented)
+- [DONE] LSP: 8 rules → 96/100 avg (+ minLength option documented)
+- [DONE] Output Styles: 4 rules → 95/100 avg (+ minLength option documented)
 
 ---
 
