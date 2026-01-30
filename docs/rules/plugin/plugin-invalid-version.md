@@ -61,6 +61,53 @@ With pre-release and build metadata:
 }
 ```
 
+## How To Fix
+
+To fix invalid version numbers:
+
+1. **Ensure all three parts** are present (MAJOR.MINOR.PATCH):
+   ```json
+   # Before: "1.0"
+   # After: "1.0.0"
+   ```
+
+2. **Remove "v" prefix**:
+   ```json
+   # Before: "v1.0.0"
+   # After: "1.0.0"
+   ```
+
+3. **Replace text versions** with semver:
+   ```json
+   # Before: "latest"
+   # After: "1.0.0"
+   ```
+
+4. **Use valid pre-release** format if needed:
+   ```json
+   # Valid: "2.1.0-beta.1"
+   # Valid: "3.0.0-rc.1+build.123"
+   ```
+
+5. **Update version** in plugin.json:
+   ```bash
+   # Edit plugin.json
+   vim plugin.json
+   # Update version field to valid semver
+   ```
+
+6. **Sync with marketplace.json** if present:
+   ```bash
+   # Ensure both have same version
+   jq '.version' plugin.json
+   jq '.version' marketplace.json
+   ```
+
+7. **Run validation**:
+   ```bash
+   claudelint check-plugin
+   ```
+
 ## Options
 
 This rule does not have configuration options.
@@ -76,8 +123,8 @@ Never disable this rule. Invalid version numbers cause plugin installation failu
 
 ## Resources
 
-- [Implementation](../../../src/validators/plugin.ts)
-- [Tests](../../../tests/validators/plugin.test.ts)
+- [Rule Implementation](../../src/rules/plugin/plugin-invalid-version.ts)
+- [Rule Tests](../../tests/rules/plugin/plugin-invalid-version.test.ts)
 - [Semantic Versioning 2.0.0](https://semver.org/)
 - [NPM Semver](https://docs.npmjs.com/about-semantic-versioning)
 

@@ -71,6 +71,49 @@ plugin-manifest.json with acyclic dependencies:
 
 Where plugin-utils and plugin-helpers don't depend on plugin-a.
 
+## How To Fix
+
+To resolve circular dependency errors:
+
+1. **Identify the circular reference** in your plugin.json:
+   ```bash
+   # Check dependencies section
+   cat plugin.json | jq '.dependencies'
+   ```
+
+2. **Remove direct self-dependencies**:
+   ```json
+   # Before (incorrect)
+   {
+     "name": "my-plugin",
+     "dependencies": {
+       "my-plugin": "^1.0.0"
+     }
+   }
+
+   # After (correct)
+   {
+     "name": "my-plugin",
+     "dependencies": {
+       "other-plugin": "^1.0.0"
+     }
+   }
+   ```
+
+3. **Restructure indirect circular dependencies**:
+   - If plugin-a depends on plugin-b and plugin-b depends on plugin-a
+   - Extract shared code into a third plugin (plugin-common)
+   - Have both plugin-a and plugin-b depend on plugin-common
+   ```text
+   # Bad: A <-> B (circular)
+   # Good: A -> Common <- B (acyclic)
+   ```
+
+4. **Run validation**:
+   ```bash
+   claudelint check-plugin
+   ```
+
 ## Options
 
 This rule does not have any configuration options.
@@ -86,8 +129,8 @@ You should not disable this rule. Circular dependencies will always cause plugin
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/plugin.ts#L250)
-- [Rule Tests](../../tests/validators/plugin.test.ts)
+- [Rule Implementation](../../src/rules/plugin/plugin-circular-dependency.ts)
+- [Rule Tests](../../tests/rules/plugin/plugin-circular-dependency.test.ts)
 
 ## Version
 

@@ -54,6 +54,48 @@ plugin-manifest.json with valid semver:
 }
 ```
 
+## How To Fix
+
+To fix invalid dependency versions:
+
+1. **Identify invalid versions** in plugin.json dependencies
+
+2. **Replace "latest"** with specific version ranges:
+   ```json
+   # Before
+   "dependencies": {
+     "plugin-utils": "latest"
+   }
+
+   # After
+   "dependencies": {
+     "plugin-utils": "^2.0.0"
+   }
+   ```
+
+3. **Fix incomplete versions**:
+   ```json
+   # Before: "1.0" (missing patch)
+   # After: "1.0.0" or "~1.0.0"
+   ```
+
+4. **Remove "v" prefix**:
+   ```json
+   # Before: "v1.2.3"
+   # After: "1.2.3"
+   ```
+
+5. **Use valid semver ranges**:
+   - `^1.0.0` - Compatible with 1.x.x
+   - `~1.2.3` - Patch updates only
+   - `>=1.0.0 <2.0.0` - Range
+   - `1.x` - Any 1.x version
+
+6. **Run validation**:
+   ```bash
+   claudelint check-plugin
+   ```
+
 ## Options
 
 This rule does not have any configuration options.
@@ -69,8 +111,8 @@ Consider disabling this rule if you're using a custom version scheme that doesn'
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/plugin.ts#L241)
-- [Rule Tests](../../tests/validators/plugin.test.ts)
+- [Rule Implementation](../../src/rules/plugin/plugin-dependency-invalid-version.ts)
+- [Rule Tests](../../tests/rules/plugin/plugin-dependency-invalid-version.test.ts)
 - [Semantic Versioning](https://semver.org/)
 
 ## Version

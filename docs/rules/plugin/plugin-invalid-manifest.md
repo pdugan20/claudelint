@@ -68,6 +68,51 @@ Complete manifest with optional fields:
 }
 ```
 
+## How To Fix
+
+To fix invalid marketplace.json:
+
+1. **Check JSON syntax**:
+   ```bash
+   # Validate JSON is parseable
+   cat marketplace.json | jq .
+   ```
+
+2. **Add required fields** if missing:
+   ```json
+   {
+     "name": "my-plugin",
+     "version": "1.0.0",
+     "description": "A useful plugin"
+   }
+   ```
+
+3. **Fix empty or wrong-type fields**:
+   ```bash
+   # Remove empty strings
+   # Change number to string for version
+   # Change string to array for skills/agents/etc
+   ```
+
+4. **Ensure versions match** between plugin.json and marketplace.json:
+   ```bash
+   # Check both versions
+   jq '.version' plugin.json
+   jq '.version' marketplace.json
+   # They must be identical
+   ```
+
+5. **Move to correct location** if needed:
+   ```bash
+   # marketplace.json must be at repository root
+   mv .claude-plugin/marketplace.json ./marketplace.json
+   ```
+
+6. **Run validation**:
+   ```bash
+   claudelint check-plugin
+   ```
+
 ## Options
 
 This rule does not have configuration options.
@@ -83,8 +128,8 @@ Never disable this rule. Invalid plugin manifests cause installation failures, p
 
 ## Resources
 
-- [Implementation](../../../src/validators/plugin.ts)
-- [Tests](../../../tests/validators/plugin.test.ts)
+- [Rule Implementation](../../src/rules/plugin/plugin-invalid-manifest.ts)
+- [Rule Tests](../../tests/rules/plugin/plugin-invalid-manifest.test.ts)
 - [Plugin Development Guide](https://github.com/anthropics/claude-code)
 - [Semantic Versioning](https://semver.org/)
 

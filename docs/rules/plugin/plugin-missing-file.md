@@ -76,6 +76,59 @@ my-plugin/
         └── build.md
 ```
 
+## How To Fix
+
+To resolve missing file errors:
+
+1. **Check which files are missing** from the error message
+
+2. **Create missing skill files**:
+   ```bash
+   mkdir -p .claude/skills/format-code
+   touch .claude/skills/format-code/SKILL.md
+   # Add frontmatter and content
+   ```
+
+3. **Create missing agent files**:
+   ```bash
+   mkdir -p .claude/agents
+   touch .claude/agents/reviewer.md
+   # Add frontmatter and content
+   ```
+
+4. **Create missing hook files**:
+   ```bash
+   mkdir -p .claude/hooks
+   touch .claude/hooks/pre-commit.json
+   # Add hook configuration
+   ```
+
+5. **Create missing command files**:
+   ```bash
+   mkdir -p .claude/commands
+   touch .claude/commands/build.md
+   # Add command documentation
+   ```
+
+6. **Create MCP configuration** if needed:
+   ```bash
+   touch .mcp.json
+   # Add MCP server configuration
+   ```
+
+7. **Or remove the reference** from plugin.json if not needed:
+   ```json
+   {
+     "skills": ["format-code"],
+     "agents": []
+   }
+   ```
+
+8. **Run validation**:
+   ```bash
+   claudelint check-plugin
+   ```
+
 ## Options
 
 This rule does not have configuration options.
@@ -91,8 +144,8 @@ Never disable this rule. Missing files cause plugin installation failures, compo
 
 ## Resources
 
-- [Implementation](../../../src/validators/plugin.ts)
-- [Tests](../../../tests/validators/plugin.test.ts)
+- [Rule Implementation](../../src/rules/plugin/plugin-missing-file.ts)
+- [Rule Tests](../../tests/rules/plugin/plugin-missing-file.test.ts)
 - [Plugin Development Guide](https://github.com/anthropics/claude-code)
 
 ## Version
