@@ -56,6 +56,46 @@ project/
       testing.md
 ```
 
+## How To Fix
+
+To resolve missing import errors:
+
+1. **Check for typos** in the import path:
+   ```markdown
+   # Wrong
+   Import: @.claude/rules/api-guidlines.md
+
+   # Correct
+   Import: @.claude/rules/api-guidelines.md
+   ```
+
+2. **Verify the file exists**:
+   ```bash
+   ls -la .claude/rules/api-guidelines.md
+   ```
+
+3. **Create the missing file** if needed:
+   ```bash
+   touch .claude/rules/api-guidelines.md
+   # Add content to the file
+   ```
+
+4. **Fix the path** if it's incorrect:
+   ```markdown
+   # Wrong - missing .claude/ prefix
+   Import: @rules/deployment.md
+
+   # Correct
+   Import: @.claude/rules/deployment.md
+   ```
+
+5. **Verify relative path resolution** - imports are relative to the importing file's directory
+
+6. **Run validation**:
+   ```bash
+   claudelint check-claude-md
+   ```
+
 ## Options
 
 This rule does not have configuration options.
@@ -70,8 +110,8 @@ Never disable this rule. Missing imports cause Claude Code to fail loading conte
 
 ## Resources
 
-- [Implementation](../../../src/validators/claude-md.ts)
-- [Tests](../../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-import-missing.ts)
+- [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version
 

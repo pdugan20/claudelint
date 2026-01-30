@@ -35,6 +35,39 @@ project/
     security-guidelines.md
 ```
 
+## How To Fix
+
+To resolve case-sensitive filename collisions:
+
+1. **Identify the colliding files**:
+   ```bash
+   find . -iname "security.md"
+   # Shows: Security.md and security.md
+   ```
+
+2. **Rename one or both files** to have unique names:
+   ```bash
+   mv Security.md security-overview.md
+   # OR
+   mv security.md security-implementation.md
+   ```
+
+3. **Update all imports** that reference the renamed file:
+   ```markdown
+   # Before
+   Import: @.claude/rules/Security.md
+
+   # After
+   Import: @.claude/rules/security-overview.md
+   ```
+
+4. **Verify no collisions remain**:
+   ```bash
+   claudelint check-claude-md
+   ```
+
+Tip: Use descriptive names that differentiate the files by content, not just by case.
+
 ## Options
 
 This rule does not have any configuration options.
@@ -49,7 +82,7 @@ Consider disabling this rule if your project will only ever run on Linux systems
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/claude-md.ts#L302)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-filename-case-sensitive.ts)
 - [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version

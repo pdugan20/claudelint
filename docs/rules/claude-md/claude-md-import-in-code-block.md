@@ -47,6 +47,39 @@ import rules/coding-standards.md
 Here's an example of what the import looks like in the file.
 ```
 
+## How To Fix
+
+To move import statements out of code blocks:
+
+1. **Identify imports in code blocks** - look for import statements between backticks
+
+2. **Move the import outside the code block:**
+
+   ```markdown
+   # Before (incorrect)
+   Here's how to import:
+   ```markdown
+   Import: @.claude/rules/standards.md
+   ```
+
+   # After (correct)
+   Import: @.claude/rules/standards.md
+
+   Here's an example of the import syntax.
+   ```
+
+3. **If showing import syntax as an example**, use inline code:
+   ```markdown
+   Use the syntax: `Import: @path/to/file.md`
+   ```
+
+4. **Verify all imports are processed**:
+   ```bash
+   claudelint check-claude-md
+   ```
+
+Remember: Import statements must be outside code blocks to be processed by Claude Code.
+
 ## Options
 
 This rule does not have any configuration options.
@@ -62,7 +95,7 @@ You should not disable this rule. Import statements in code blocks will never wo
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/claude-md.ts#L232)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-import-in-code-block.ts)
 - [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version

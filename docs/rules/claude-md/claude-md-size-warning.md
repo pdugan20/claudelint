@@ -40,6 +40,39 @@ Import: @.claude/rules/git-workflow.md
 Import: @.claude/rules/deployment.md
 ```
 
+## How To Fix
+
+To address files approaching the 35KB warning threshold:
+
+1. **Evaluate current size**:
+   ```bash
+   ls -lh .claude/CLAUDE.md
+   # Shows current size
+   ```
+
+2. **Identify large sections** to extract:
+   - Long lists of guidelines
+   - Detailed code examples
+   - Reference documentation
+   - Technology-specific instructions
+
+3. **Create separate rule files**:
+   ```bash
+   mkdir -p .claude/rules
+   # Extract sections to separate files
+   ```
+
+4. **Import the extracted files**:
+   ```markdown
+   # CLAUDE.md
+
+   Import: @.claude/rules/extracted-section.md
+   ```
+
+5. **Verify the new size** is comfortably under 35KB
+
+Proactively splitting your file before hitting 40KB is much easier than doing it under pressure when validation fails.
+
 ## Options
 
 This rule does not have configuration options. The 35KB threshold is fixed.
@@ -54,8 +87,8 @@ Consider disabling if you're actively working on splitting the file and want to 
 
 ## Resources
 
-- [Implementation](../../../src/validators/claude-md.ts)
-- [Tests](../../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-size-warning.ts)
+- [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version
 

@@ -41,6 +41,38 @@ Import: @.claude/rules/deployment.md
 Import: @.claude/rules/testing.md
 ```
 
+## How To Fix
+
+To resolve files exceeding the 40KB limit:
+
+1. **Split into multiple files** using imports:
+   ```bash
+   mkdir -p .claude/rules
+   # Move sections to separate files
+   mv large-section-1.txt .claude/rules/section-1.md
+   mv large-section-2.txt .claude/rules/section-2.md
+   ```
+
+2. **Update CLAUDE.md** to import the files:
+   ```markdown
+   # Main Guidelines
+
+   Import: @.claude/rules/section-1.md
+   Import: @.claude/rules/section-2.md
+   ```
+
+3. **Verify the size**:
+   ```bash
+   ls -lh .claude/CLAUDE.md
+   # Should show < 40KB
+   ```
+
+4. **Common splitting strategies**:
+   - Split by topic (coding standards, git workflow, deployment)
+   - Split by technology (frontend, backend, database)
+   - Move reference material to separate files
+   - Extract large code examples to dedicated files
+
 ## Options
 
 This rule does not have configuration options. The 40KB limit is a hard constraint and cannot be changed.
@@ -57,8 +89,8 @@ Never disable this rule. The 40KB limit is a technical constraint of Claude Code
 
 ## Resources
 
-- [Implementation](../../../src/validators/claude-md.ts)
-- [Tests](../../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-size-error.ts)
+- [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version
 

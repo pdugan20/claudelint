@@ -44,8 +44,8 @@
       },
       "claude-md": {
         "total": 14,
-        "avgScore": 45,
-        "needsWork": 12
+        "avgScore": 50,
+        "needsWork": 7
       },
       "agents": {
         "total": 13,
@@ -53,14 +53,14 @@
         "needsWork": 13
       }
     },
-    "avgScore": 37,
+    "avgScore": 38,
     "scoreDistribution": {
       "placeholder": 64,
       "incomplete": 0,
-      "good": 25,
-      "excellent": 16
+      "good": 20,
+      "excellent": 21
     },
-    "rulesNeedingWork": 89,
+    "rulesNeedingWork": 84,
     "placeholders": 64,
     "rulesWithOptions": 14,
     "rulesMissingExamples": 67,
@@ -2141,117 +2141,6 @@
       }
     },
     {
-      "ruleId": "claude-md-rules-circular-symlink",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-rules-circular-symlink.ts",
-      "docPath": "docs/rules/claude-md/claude-md-rules-circular-symlink.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section",
-        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": true,
-      "docStats": {
-        "lineCount": 69,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 38
-      }
-    },
-    {
-      "ruleId": "claude-md-import-missing",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-import-missing.ts",
-      "docPath": "docs/rules/claude-md/claude-md-import-missing.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 79,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 49
-      }
-    },
-    {
-      "ruleId": "claude-md-import-in-code-block",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-import-in-code-block.ts",
-      "docPath": "docs/rules/claude-md/claude-md-import-in-code-block.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 71,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 40
-      }
-    },
-    {
-      "ruleId": "claude-md-import-circular",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-import-circular.ts",
-      "docPath": "docs/rules/claude-md/claude-md-import-circular.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 89,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 59
-      }
-    },
-    {
-      "ruleId": "claude-md-filename-case-sensitive",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-filename-case-sensitive.ts",
-      "docPath": "docs/rules/claude-md/claude-md-filename-case-sensitive.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 58,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 28
-      }
-    },
-    {
       "ruleId": "agent-skills-not-found",
       "category": "agents",
       "rulePath": "src/rules/agents/agent-skills-not-found.ts",
@@ -2381,50 +2270,6 @@
         "hasHowToFix": false,
         "hasOptionsSection": true,
         "ruleDetailsLength": 53
-      }
-    },
-    {
-      "ruleId": "claude-md-size-warning",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-size-warning.ts",
-      "docPath": "docs/rules/claude-md/claude-md-size-warning.md",
-      "score": 90,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 63,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 33
-      }
-    },
-    {
-      "ruleId": "claude-md-size-error",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-size-error.ts",
-      "docPath": "docs/rules/claude-md/claude-md-size-error.md",
-      "score": 90,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 66,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 34
       }
     },
     {
@@ -2628,7 +2473,149 @@
         "hasOptionsSection": true,
         "ruleDetailsLength": 45
       }
+    },
+    {
+      "ruleId": "claude-md-rules-circular-symlink",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-rules-circular-symlink.ts",
+      "docPath": "docs/rules/claude-md/claude-md-rules-circular-symlink.md",
+      "score": 95,
+      "issues": [
+        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
+      ],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": true,
+      "docStats": {
+        "lineCount": 107,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 38
+      }
+    },
+    {
+      "ruleId": "claude-md-import-missing",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-import-missing.ts",
+      "docPath": "docs/rules/claude-md/claude-md-import-missing.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 119,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 49
+      }
+    },
+    {
+      "ruleId": "claude-md-import-in-code-block",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-import-in-code-block.ts",
+      "docPath": "docs/rules/claude-md/claude-md-import-in-code-block.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 104,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 40
+      }
+    },
+    {
+      "ruleId": "claude-md-import-circular",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-import-circular.ts",
+      "docPath": "docs/rules/claude-md/claude-md-import-circular.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 125,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 59
+      }
+    },
+    {
+      "ruleId": "claude-md-filename-case-sensitive",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-filename-case-sensitive.ts",
+      "docPath": "docs/rules/claude-md/claude-md-filename-case-sensitive.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 91,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 28
+      }
+    },
+    {
+      "ruleId": "claude-md-size-warning",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-size-warning.ts",
+      "docPath": "docs/rules/claude-md/claude-md-size-warning.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 96,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 33
+      }
+    },
+    {
+      "ruleId": "claude-md-size-error",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-size-error.ts",
+      "docPath": "docs/rules/claude-md/claude-md-size-error.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 98,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 34
+      }
     }
   ],
-  "generatedAt": "2026-01-30T07:20:48.250Z"
+  "generatedAt": "2026-01-30T07:46:41.839Z"
 }

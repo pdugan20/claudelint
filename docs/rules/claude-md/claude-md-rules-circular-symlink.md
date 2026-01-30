@@ -45,6 +45,44 @@ CLAUDE.md importing the symlink:
 import rules.md
 ```
 
+## How To Fix
+
+To resolve circular symlink errors:
+
+1. **Identify the symlink chain**:
+   ```bash
+   ls -la .claude/rules/
+   # Shows symlink targets
+   ```
+
+2. **Break the circular reference** by removing one of the symlinks:
+   ```bash
+   rm .claude/rules/circular-link.md
+   ```
+
+3. **Replace with a proper link**:
+   ```bash
+   # Point to the actual file, not another symlink
+   ln -s ../../shared/actual-content.md .claude/rules/rules.md
+   ```
+
+4. **Or copy the content** instead of using symlinks:
+   ```bash
+   cp ../shared/content.md .claude/rules/content.md
+   ```
+
+5. **Verify no circular symlinks remain**:
+   ```bash
+   find .claude -type l -exec sh -c 'readlink -f {} || echo "Circular: {}"' \;
+   ```
+
+6. **Run validation**:
+   ```bash
+   claudelint check-claude-md
+   ```
+
+Tip: Prefer relative imports over symlinks when possible for clearer file relationships.
+
 ## Options
 
 This rule does not have any configuration options.
@@ -60,7 +98,7 @@ You should not disable this rule. Circular symlinks will always cause problems i
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/claude-md.ts#L336)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-rules-circular-symlink.ts)
 - [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version

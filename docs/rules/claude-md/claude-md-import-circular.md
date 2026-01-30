@@ -66,6 +66,42 @@ CLAUDE.md
       └─ .claude/rules/shared.md
 ```
 
+## How To Fix
+
+To resolve circular import dependencies:
+
+1. **Identify the cycle** from the error message showing the import chain
+
+2. **Refactor the structure** using one of these approaches:
+
+   **a) Extract shared content to a separate file:**
+   ```markdown
+   # Before: A imports B, B imports A
+
+   # After: Both import shared.md
+   # A.md imports shared.md
+   # B.md imports shared.md
+   # shared.md has no imports (leaf node)
+   ```
+
+   **b) Consolidate into a single file** if the files are tightly coupled
+
+   **c) Create a hierarchical structure:**
+   ```text
+   CLAUDE.md
+     ├─ main.md (imports utilities)
+     └─ utilities.md (no imports - leaf node)
+   ```
+
+3. **Remove the circular reference** - delete one of the import statements
+
+4. **Verify the fix**:
+   ```bash
+   claudelint check-claude-md
+   ```
+
+The key principle: imports should form a directed acyclic graph (DAG), not a cycle.
+
 ## Options
 
 This rule does not have configuration options.
@@ -80,8 +116,8 @@ Never disable this rule. Circular imports will cause infinite loops, stack overf
 
 ## Resources
 
-- [Implementation](../../../src/validators/claude-md.ts)
-- [Tests](../../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](../../src/rules/claude-md/claude-md-import-circular.ts)
+- [Rule Tests](../../tests/validators/claude-md.test.ts)
 
 ## Version
 
