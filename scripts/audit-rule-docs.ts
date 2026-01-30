@@ -9,6 +9,7 @@
  * 3. Example count limits
  * 4. Redundant sections
  * 5. Source code links
+ * 6. Resource link format (must use "Rule Implementation" and "Rule Tests")
  */
 
 import * as fs from 'fs';
@@ -107,6 +108,22 @@ function auditRuleDoc(filePath: string): AuditResult {
   // Check for source code links
   if (content.includes('Rule Implementation') || content.includes('../../src/validators/')) {
     result.hasSourceLinks = true;
+  }
+
+  // Check for non-standard Resource link format
+  const hasNonStandardImplementation = /^\- \[Implementation\]/m.test(content);
+  const hasNonStandardTests = /^\- \[Tests\]/m.test(content);
+
+  if (hasNonStandardImplementation || hasNonStandardTests) {
+    const wrongFormats = [];
+    if (hasNonStandardImplementation) wrongFormats.push('[Implementation]');
+    if (hasNonStandardTests) wrongFormats.push('[Tests]');
+
+    result.issues.push({
+      file: result.file,
+      severity: 'error',
+      issue: `Non-standard Resource link format: ${wrongFormats.join(', ')} - should use [Rule Implementation] and [Rule Tests]`,
+    });
   }
 
   // Determine complexity (simple heuristic: has options = complex)

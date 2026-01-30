@@ -72,9 +72,8 @@ Brief guidance on scenarios where you might want to disable this rule.
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/validator-name.ts#L123)
-- [Rule Tests](../../tests/validators/validator-name.test.ts#L456)
-- [Claude Code Documentation](https://github.com/anthropics/claude-code)
+- [Rule Implementation](../../src/rules/category/rule-name.ts)
+- [Rule Tests](../../tests/rules/category/rule-name.test.ts)
 
 ## Version
 
@@ -113,3 +112,16 @@ Available since: v1.0.0
 - Concise but complete Rule Details
 - Actionable "How To Fix" section
 - Source code links for contributors
+
+**Resource Link Format (REQUIRED):**
+- Use ONLY `[Rule Implementation]` and `[Rule Tests]` as link labels
+- Do NOT use shortened forms like `[Implementation]` or `[Tests]`
+- Link to specific rule files: `../../src/rules/category/rule-name.ts`
+- Link to specific test files: `../../tests/rules/category/rule-name.test.ts`
+- Example:
+  ```markdown
+  ## Resources
+
+  - [Rule Implementation](../../src/rules/skills/skill-name.ts)
+  - [Rule Tests](../../tests/rules/skills/skill-name.test.ts)
+  ```

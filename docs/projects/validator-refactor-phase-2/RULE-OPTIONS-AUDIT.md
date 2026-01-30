@@ -357,14 +357,14 @@ Add validation to `scripts/audit-rule-docs.ts`:
 
 **Estimated time**: 1-2 hours
 
-### Phase 4: Standardize Resource Links
+### Phase 4: Standardize Resource Links - COMPLETE
 
-1. ✓ Fix 5 files to use "Rule Implementation" / "Rule Tests" format (COMPLETE)
-2. Update `scripts/audit-rule-docs.ts` to enforce standard format
-3. Update `docs/rules/TEMPLATE.md` with clear formatting requirements
-4. Verify all files pass new validation
+1. ✓ Fix 5 files to use "Rule Implementation" / "Rule Tests" format
+2. ✓ Update `scripts/audit-rule-docs.ts` to enforce standard format
+3. ✓ Update `docs/rules/TEMPLATE.md` with clear formatting requirements
+4. ✓ Verify all files pass new validation
 
-**Status**: Files standardized, enforcement pending
+**Status**: COMPLETE - All files standardized and enforcement added
 
 ---
 
@@ -377,7 +377,7 @@ Add validation to `scripts/audit-rule-docs.ts`:
 - [ ] Check integrated into pre-push hook (Phase 3)
 - [ ] Check integrated into CI workflow (Phase 3)
 - [x] All 5 files standardized to "Rule Implementation" / "Rule Tests" format (Phase 4)
-- [ ] Audit script enforces Resource link format (Phase 4)
+- [x] Audit script enforces Resource link format (Phase 4)
 - [ ] All checks passing on current codebase
 
 ---
