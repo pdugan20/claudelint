@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { ValidationError, ValidationWarning, ValidationResult } from '../validators/base';
 import { ProgressIndicator } from './progress';
 import { ValidationCache } from './cache';
+import { ConfigError } from './config-resolver';
 
 /**
  * Output format for validation results
@@ -94,13 +95,14 @@ export class Reporter {
   async runValidator(
     name: string,
     validatorFn: () => Promise<ValidationResult>,
-    cache?: ValidationCache | null
+    cache?: ValidationCache | null,
+    config?: unknown
   ): Promise<{ name: string; result: ValidationResult; duration: number }> {
     const startTime = Date.now();
 
     // Try cache first (if provided)
     if (cache) {
-      const cached = cache.get(name, []);
+      const cached = cache.get(name, [], config);
       if (cached) {
         const duration = Date.now() - startTime;
         return { name, result: cached, duration };
@@ -114,11 +116,16 @@ export class Reporter {
 
       // Store in cache (if provided)
       if (cache) {
-        cache.set(name, result, []);
+        cache.set(name, result, [], config);
       }
 
       return { name, result, duration };
     } catch (error) {
+      // Re-throw configuration errors - these are fatal and should exit with code 2
+      if (error instanceof ConfigError) {
+        throw error;
+      }
+
       // Validator threw an exception (operational error, not validation issue)
       const duration = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);

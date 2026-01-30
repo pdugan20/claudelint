@@ -7,6 +7,7 @@ import { ValidatorRegistry } from './utils/validator-factory';
 import { Reporter } from './utils/reporting';
 import { execSync } from 'child_process';
 import { findConfigFile, loadConfig, mergeConfig, validateConfig } from './utils/config';
+import { ConfigError, validateAllRuleOptions } from './utils/config-resolver';
 import { InitWizard } from './cli/init-wizard';
 import { ConfigDebugger } from './cli/config-debug';
 import { Fixer } from './utils/fixer';
@@ -147,7 +148,7 @@ program
           }
         }
 
-        // Validate config against rule registry
+        // Validate config against rule registry (rule IDs exist)
         const configErrors = validateConfig(config);
         if (configErrors.length > 0) {
           console.error('\nConfiguration validation errors:');
@@ -161,6 +162,19 @@ program
             process.exit(2);
           }
           console.error(''); // Empty line after warnings
+        }
+
+        // Validate all rule options early (ESLint pattern: fail fast before running validators)
+        try {
+          validateAllRuleOptions(config);
+        } catch (error) {
+          if (error instanceof ConfigError) {
+            console.error('\nConfiguration error:');
+            console.error(error.message);
+            console.error('\nPlease fix your .claudelintrc.json file and try again.');
+            process.exit(2);
+          }
+          throw error; // Re-throw unexpected errors
         }
 
         // Load plugins
@@ -229,7 +243,8 @@ program
             reporter.runValidator(
               metadata.name,
               () => ValidatorRegistry.create(metadata.id, validatorOptions).validate(),
-              cache
+              cache,
+              mergedConfig
             )
           )
         );
@@ -337,6 +352,14 @@ program
           process.exit(0);
         }
       } catch (error: unknown) {
+        // Handle configuration errors (invalid rule options)
+        if (error instanceof ConfigError) {
+          console.error('\nConfiguration error:');
+          console.error(error.message);
+          console.error('\nPlease fix your .claudelintrc.json file and try again.');
+          process.exit(2);
+        }
+
         console.error('\nFatal error during validation:');
         const errorMessage = error instanceof Error ? error.message : String(error);
 

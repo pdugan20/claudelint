@@ -126,7 +126,7 @@ export class ValidationCache {
   /**
    * Generate cache key for a validator
    */
-  private getCacheKey(validatorName: string, projectFiles: string[]): string {
+  private getCacheKey(validatorName: string, projectFiles: string[], config?: unknown): string {
     const hash = createHash('sha256');
 
     // Include claudelint version
@@ -134,6 +134,11 @@ export class ValidationCache {
 
     // Include validator name
     hash.update(validatorName);
+
+    // Include config in hash (critical for cache invalidation when config changes)
+    if (config) {
+      hash.update(JSON.stringify(config));
+    }
 
     // Include file list and modification times
     for (const file of projectFiles.sort()) {
@@ -154,12 +159,12 @@ export class ValidationCache {
   /**
    * Get cached result for a validator
    */
-  get(validatorName: string, projectFiles: string[]): ValidationResult | null {
+  get(validatorName: string, projectFiles: string[], config?: unknown): ValidationResult | null {
     if (!this.options.enabled) {
       return null;
     }
 
-    const cacheKey = this.getCacheKey(validatorName, projectFiles);
+    const cacheKey = this.getCacheKey(validatorName, projectFiles, config);
     const entry = this.index.entries[validatorName];
 
     if (!entry || entry.hash !== cacheKey) {
@@ -183,13 +188,13 @@ export class ValidationCache {
   /**
    * Store validation result in cache
    */
-  set(validatorName: string, result: ValidationResult, projectFiles: string[]): void {
+  set(validatorName: string, result: ValidationResult, projectFiles: string[], config?: unknown): void {
     if (!this.options.enabled) {
       return;
     }
 
     try {
-      const cacheKey = this.getCacheKey(validatorName, projectFiles);
+      const cacheKey = this.getCacheKey(validatorName, projectFiles, config);
       const resultFileName = `${cacheKey}.json`;
       const resultPath = join(this.filesDir, resultFileName);
 

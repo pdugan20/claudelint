@@ -13,11 +13,11 @@
 - [X] Phase 2.5: Implement Rule Discovery (9/10 tasks) COMPLETE ✓ (Task 2.5.10 active)
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
-- [ ] Phase 2.7: Testing & Validation (6/15 tasks) - Task 2.7.9 moved to 2.6.3, Task 2.7.16 added
+- [ ] Phase 2.7: Testing & Validation (8/17 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 added
 
-**Total:** 58/67 tasks complete (87%)
+**Total:** 60/69 tasks complete (87%)
 
-**Current Focus:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6 COMPLETE, continuing with 2.7.7)
+**Current Focus:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.17, and 2.7.18 COMPLETE, ready to continue with remaining tasks)
 
 ## CRITICAL CLARIFICATION (2026-01-29)
 
@@ -1279,6 +1279,65 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Assigned To:** TBD
   - **Completion Date:** TBD
   - **Notes:** Discovered during Task 2.7.4 testing. This aligns with industry standards (ESLint, Prettier, etc.)
+
+- [X] **Task 2.7.17:** Fix cache to include config in hash
+  - **File:** `src/utils/cache.ts`, `src/utils/reporting.ts`, `src/cli.ts`
+  - **Bug:** Cache key doesn't include config hash, so changing .claudelintrc.json doesn't invalidate cache
+  - **Current Behavior:**
+    - Cache key includes: version + validator name + file mtimes
+    - Cache key MISSING: config hash
+    - Users change config, re-run validation, get stale cached results
+    - Workaround: Manual cache clearing required between config changes
+  - **Expected Behavior:**
+    - Cache key should include hash of config
+    - Changing config should invalidate cache automatically
+    - No manual cache clearing needed
+  - **Action:** Update getCacheKey() to include config in hash calculation ✓
+  - **Action:** Pass config to cache.get() and cache.set() calls ✓
+  - **Action:** Update cache index structure if needed (not needed - hash is per-key)
+  - **Action:** Test that config changes invalidate cache ✓
+  - **Actual Time:** 30 minutes
+  - **Dependencies:** Task 2.7.6
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Notes:** COMPLETE! Modified cache.ts to include config in getCacheKey() via JSON.stringify(config). Updated reporting.ts runValidator() to accept config parameter and pass to cache. Updated cli.ts check-all command to pass mergedConfig. Tested all three scenarios: "error" (shows error), "off" (disabled), "warn" (shows warning). Cache hashes now differ when config changes, proving invalidation works correctly.
+  - **Estimated Time:** 15 minutes
+  - **Dependencies:** Task 2.7.4, Task 2.7.5, Task 2.7.6
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Discovered during Task 2.7.4-2.7.6 testing. Critical for config testing accuracy.
+
+- [X] **Task 2.7.18:** Make invalid rule options fatal errors
+  - **File:** `src/utils/config-resolver.ts`, `src/utils/reporting.ts`, `src/cli.ts`
+  - **Bug:** Invalid rule options show warnings but don't fail build (inconsistent with unknown rules)
+  - **Current Behavior:**
+    - Unknown rule ID → Exit 2 (fatal)
+    - Invalid option type (maxSize: "string") → Warning, skip rule, exit 0
+    - Invalid option value (maxSize: -1000) → Warning, skip rule, exit 0
+    - Result: Silent failures (user thinks rule is enabled, but it's skipped)
+  - **ESLint Behavior (Industry Standard):**
+    - All config errors are fatal (exit 2)
+    - No silent skipping of misconfigured rules
+    - Config validation happens early (before running linters)
+  - **Expected Behavior:**
+    - Invalid rule options → Exit 2 (fatal error)
+    - Consistent with unknown rule handling
+    - Prevents silent failures
+    - Fails fast before running validators
+  - **Action:** Create validateAllRuleOptions() for early validation (ESLint pattern) ✓
+  - **Action:** Add ConfigError class for config-specific errors ✓
+  - **Action:** Update CLI to validate all rule options immediately after loading config ✓
+  - **Action:** Re-throw ConfigError in reporting.ts (don't convert to ValidationResult) ✓
+  - **Action:** Remove redundant ConfigError handling from individual validator commands ✓
+  - **Action:** Test that invalid options fail build with clear error message ✓
+  - **Actual Time:** 45 minutes
+  - **Dependencies:** Task 2.7.4, Task 2.7.5, Task 2.7.6, Task 2.7.17
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Architecture:** Follows ESLint pattern - validate config early in check-all command (before validators run), fail fast with exit 2. Individual commands don't load config so no error handling needed. Clean separation of concerns.
+  - **Assigned To:** TBD
+  - **Completion Date:** TBD
+  - **Notes:** Discovered during Task 2.7.6 testing. Improves config error UX and consistency.
 
 ---
 

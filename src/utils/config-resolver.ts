@@ -16,6 +16,88 @@ import { RuleRegistry } from './rule-registry';
 import { ResolvedRuleConfig } from './rule-context';
 
 /**
+ * Error thrown when configuration is invalid
+ * This is a fatal error that should exit with code 2
+ */
+export class ConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ConfigError';
+  }
+}
+
+/**
+ * Validates all rule options in a config file upfront (before any validation runs)
+ * Throws ConfigError if any rule has invalid options
+ *
+ * This matches ESLint's behavior: validate config early, fail fast before running linters
+ *
+ * @param config - The loaded configuration from .claudelintrc.json
+ * @throws ConfigError if any rule options fail schema validation
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   validateAllRuleOptions(config);
+ * } catch (error) {
+ *   if (error instanceof ConfigError) {
+ *     console.error('Invalid config:', error.message);
+ *     process.exit(2);
+ *   }
+ * }
+ * ```
+ */
+export function validateAllRuleOptions(config: ClaudeLintConfig): void {
+  // Validate base rules
+  if (config.rules) {
+    for (const [ruleId, ruleConfig] of Object.entries(config.rules)) {
+      validateSingleRuleConfig(ruleId as RuleId, ruleConfig);
+    }
+  }
+
+  // Validate override rules
+  if (config.overrides) {
+    for (const override of config.overrides) {
+      if (override.rules) {
+        for (const [ruleId, ruleConfig] of Object.entries(override.rules)) {
+          validateSingleRuleConfig(ruleId as RuleId, ruleConfig);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Validates a single rule configuration
+ * @param ruleId - The rule ID
+ * @param config - The rule configuration
+ * @throws ConfigError if options fail schema validation
+ */
+function validateSingleRuleConfig(
+  ruleId: RuleId,
+  config: RuleConfig | 'off' | 'warn' | 'error'
+): void {
+  // String format doesn't have options to validate
+  if (typeof config === 'string') {
+    return;
+  }
+
+  // Object format: validate options against schema
+  const rule = RuleRegistry.get(ruleId);
+  const options = config.options || {};
+
+  if (rule?.schema) {
+    try {
+      rule.schema.parse(options);
+    } catch (error) {
+      throw new ConfigError(
+        `Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+}
+
+/**
  * Resolves configuration for files with caching
  *
  * @example
@@ -100,15 +182,9 @@ export class ConfigResolver {
 
     // Normalize each rule config
     for (const [ruleId, config] of Object.entries(effectiveRules)) {
-      try {
-        const normalized = this.normalizeRuleConfig(ruleId as RuleId, config);
-        resolved.set(ruleId as RuleId, normalized);
-      } catch (error) {
-        // Log warning but continue with other rules
-        console.warn(
-          `Warning: Failed to resolve config for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}`
-        );
-      }
+      // Schema validation failures are fatal - don't catch them
+      const normalized = this.normalizeRuleConfig(ruleId as RuleId, config);
+      resolved.set(ruleId as RuleId, normalized);
     }
 
     return resolved;
@@ -161,7 +237,7 @@ export class ConfigResolver {
       try {
         rule.schema.parse(options);
       } catch (error) {
-        throw new Error(
+        throw new ConfigError(
           `Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}`
         );
       }
