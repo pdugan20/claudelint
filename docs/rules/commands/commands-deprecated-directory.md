@@ -52,6 +52,19 @@ my-project/
             └── build.sh
 ```
 
+## How To Fix
+
+To resolve this warning:
+
+1. Create `.claude/skills/` directory if it doesn't exist
+2. For each command script in `.claude/commands/`, create a skill directory: `.claude/skills/<command-name>/`
+3. Move the script: `.claude/commands/<command-name>.sh` → `.claude/skills/<command-name>/<command-name>.sh`
+4. Create a `SKILL.md` file in each skill directory with frontmatter (name, version, description)
+5. Update any `plugin.json` files to reference skills instead of commands
+6. Remove the `.claude/commands/` directory
+
+See [commands-migrate-to-skills](./commands-migrate-to-skills.md) for detailed migration instructions.
+
 ## Options
 
 This rule does not have any configuration options.
@@ -67,7 +80,7 @@ Consider disabling this rule if you're maintaining a legacy project that cannot 
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/commands.ts#L41)
+- [Rule Implementation](../../src/rules/commands/commands-deprecated-directory.ts)
 - [Rule Tests](../../tests/validators/commands.test.ts)
 - [Skills Documentation](https://docs.anthropic.com/claude-code/skills)
 

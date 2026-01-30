@@ -19,36 +19,9 @@ The migration process involves:
 
 This guidance ensures a smooth transition from the deprecated commands system to Skills.
 
-### Migration Steps
+### Incorrect
 
-```text
-Step 1: Create skill directories
-For each command in .claude/commands/my-command.sh:
-  Create .claude/skills/my-command/
-
-Step 2: Move command scripts
-  Move: .claude/commands/my-command.sh
-  To:   .claude/skills/my-command/my-command.sh
-
-Step 3: Add SKILL.md with frontmatter
-  Create: .claude/skills/my-command/SKILL.md
-  With:
-    ---
-    name: my-command
-    version: 1.0.0
-    description: Brief description
-    ---
-
-    # My Command
-
-    Documentation here...
-
-Step 4: Update plugin.json
-  Change: "commands": ["my-command"]
-  To:     "skills": ["my-command"]
-```
-
-### Before Migration
+Project still using deprecated commands directory:
 
 ```text
 .claude/
@@ -58,7 +31,9 @@ Step 4: Update plugin.json
 └── plugin.json (with "commands" field)
 ```
 
-### After Migration
+### Correct
+
+Project properly using skills:
 
 ```text
 .claude/
@@ -71,6 +46,31 @@ Step 4: Update plugin.json
 │       └── test.sh
 └── plugin.json (with "skills" field)
 ```
+
+## How To Fix
+
+To migrate from commands to skills:
+
+1. **Create skill directories**: For each command script, create a directory: `.claude/skills/<command-name>/`
+
+2. **Move command scripts**: Move each script from `.claude/commands/<command-name>.sh` to `.claude/skills/<command-name>/<command-name>.sh`
+
+3. **Add SKILL.md with frontmatter**: Create `.claude/skills/<command-name>/SKILL.md`:
+   ```markdown
+   ---
+   name: command-name
+   version: 1.0.0
+   description: Brief description of what this skill does
+   ---
+
+   # Command Name
+
+   Documentation here...
+   ```
+
+4. **Update plugin.json**: Change `"commands": ["my-command"]` to `"skills": ["my-command"]`
+
+5. **Remove old directory**: Delete `.claude/commands/` once migration is complete
 
 ## Options
 
@@ -88,7 +88,7 @@ This rule provides helpful migration guidance and should generally remain enable
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/commands.ts#L49)
+- [Rule Implementation](../../src/rules/commands/commands-migrate-to-skills.ts)
 - [Rule Tests](../../tests/validators/commands.test.ts)
 - [Skills Documentation](https://docs.anthropic.com/claude-code/skills)
 

@@ -31,6 +31,7 @@
     "check:consistency": "ts-node scripts/check-consistency.ts",
     "check:all": "ts-node scripts/check-all.ts",
     "audit:rule-docs": "ts-node scripts/audit-rule-docs.ts",
+    "audit:rule-docs:content": "ts-node scripts/audit-rule-docs-content.ts",
     "check:rule-coverage": "ts-node scripts/check-rule-coverage.ts",
     "check:duplicates": "ts-node scripts/check-duplicate-logic.ts",
     "check:duplicate-fixtures": "ts-node scripts/check-duplicate-fixtures.ts",
