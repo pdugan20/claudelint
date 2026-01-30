@@ -10,6 +10,11 @@ import { join } from 'path';
 import chalk from 'chalk';
 import { ClaudeLintConfig } from '../utils/config';
 import { logger } from './utils/logger';
+import {
+  isShellCheckAvailable,
+  getShellCheckInstallMessage,
+  getShellCheckVersion,
+} from './utils/system-tools';
 
 interface ProjectInfo {
   hasClaudeDir: boolean;
@@ -20,6 +25,13 @@ interface ProjectInfo {
   hasPlugin: boolean;
   hasCLAUDEmd: boolean;
   hasPackageJson: boolean;
+}
+
+interface ToolInfo {
+  hasShellCheck: boolean;
+  shellCheckVersion: string | null;
+  hasPrettier: boolean;
+  hasMarkdownlint: boolean;
 }
 
 interface WizardAnswers {
@@ -47,9 +59,12 @@ export class InitWizard {
     const projectInfo = this.detectProject();
     this.displayProjectInfo(projectInfo);
 
+    // Detect available tools
+    const toolInfo = this.detectOptionalTools();
+    this.displayToolInfo(toolInfo);
+
     // Use defaults if --yes flag
     if (options.yes) {
-      logger.newline();
       logger.info('Using default configuration (--yes flag)...');
       this.createDefaultConfig(projectInfo);
       logger.success('Configuration created successfully!');
@@ -89,13 +104,46 @@ export class InitWizard {
    */
   private displayProjectInfo(info: ProjectInfo): void {
     logger.log(chalk.bold('Detected project structure:'));
-    logger.log(`   ${info.hasCLAUDEmd ? chalk.green('[YES]') : chalk.gray('[NO]')} CLAUDE.md`);
-    logger.log(`   ${info.hasClaudeDir ? chalk.green('[YES]') : chalk.gray('[NO]')} .claude/ directory`);
-    logger.log(`   ${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
-    logger.log(`   ${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
-    logger.log(`   ${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);
-    logger.log(`   ${info.hasMCP ? chalk.green('[YES]') : chalk.gray('[NO]')} MCP servers`);
-    logger.log(`   ${info.hasPlugin ? chalk.green('[YES]') : chalk.gray('[NO]')} Plugin manifest`);
+    logger.detail(`${info.hasCLAUDEmd ? chalk.green('[YES]') : chalk.gray('[NO]')} CLAUDE.md`);
+    logger.detail(`${info.hasClaudeDir ? chalk.green('[YES]') : chalk.gray('[NO]')} .claude/ directory`);
+    logger.detail(`${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
+    logger.detail(`${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
+    logger.detail(`${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);
+    logger.detail(`${info.hasMCP ? chalk.green('[YES]') : chalk.gray('[NO]')} MCP servers`);
+    logger.detail(`${info.hasPlugin ? chalk.green('[YES]') : chalk.gray('[NO]')} Plugin manifest`);
+    logger.newline();
+  }
+
+  /**
+   * Detect available formatting and linting tools
+   */
+  private detectOptionalTools(): ToolInfo {
+    return {
+      hasShellCheck: isShellCheckAvailable(),
+      shellCheckVersion: getShellCheckVersion(),
+      hasPrettier: true, // Bundled with claudelint
+      hasMarkdownlint: true, // Bundled with claudelint
+    };
+  }
+
+  /**
+   * Display detected tool information
+   */
+  private displayToolInfo(tools: ToolInfo): void {
+    logger.log(chalk.bold('Available tools:'));
+    logger.log(chalk.dim('Bundled (automatic):'));
+    logger.detail(`${chalk.green('[YES]')} Prettier - Code formatting`);
+    logger.detail(`${chalk.green('[YES]')} Markdownlint - Markdown linting`);
+    logger.newline();
+    logger.log(chalk.dim('Optional (system binaries):'));
+    if (tools.hasShellCheck) {
+      logger.detail(
+        `${chalk.green('[YES]')} ShellCheck ${tools.shellCheckVersion ? `v${tools.shellCheckVersion}` : ''} - Shell script linting`
+      );
+    } else {
+      logger.detail(`${chalk.gray('[NO]')} ShellCheck - Shell script linting`);
+      logger.detail(`  ${chalk.dim(getShellCheckInstallMessage())}`);
+    }
     logger.newline();
   }
 
@@ -310,9 +358,9 @@ export class InitWizard {
   private displayNextSteps(): void {
     logger.log(chalk.bold('Next steps:'));
     logger.newline();
-    logger.log('  1. Review .claudelintrc.json and customize rules');
-    logger.log('  2. Run validation: claudelint check-all');
-    logger.log('  3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.detail('1. Review .claudelintrc.json and customize rules');
+    logger.detail('2. Run validation: claudelint check-all');
+    logger.detail('3. See docs: https://github.com/pdugan20/claudelint#readme');
     logger.newline();
     logger.info('Tip: Use "claudelint list-rules" to see all available rules');
     logger.newline();

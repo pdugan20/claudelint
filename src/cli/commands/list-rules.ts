@@ -52,7 +52,7 @@ export function registerListRulesCommand(program: Command): void {
             rule.severity === 'error'
               ? chalk.red('error  ')
               : chalk.yellow('warning');
-          logger.log(`  ${severityBadge} ${chalk.cyan(rule.id)}${badge} - ${rule.description}`);
+          logger.detail(`${severityBadge} ${chalk.cyan(rule.id)}${badge} - ${rule.description}`);
         });
         logger.newline();
       }

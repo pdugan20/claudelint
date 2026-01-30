@@ -24,6 +24,7 @@
     "docs:generate": "ts-node scripts/generate-rule-docs.ts",
     "generate:rule-registry": "ts-node scripts/generate-rule-registry.ts",
     "check:emojis": "node scripts/check-emoji.js",
+    "check:logger-spacing": "bash scripts/check-logger-spacing.sh",
     "check:file-naming": "ts-node scripts/check-file-naming.ts",
     "check:rule-ids": "ts-node scripts/check-rule-ids.ts",
     "check:rule-docs": "ts-node scripts/check-rule-docs.ts",

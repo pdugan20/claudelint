@@ -160,7 +160,7 @@ export function registerCheckAllCommand(program: Command): void {
             if (failedPlugins.length > 0) {
               logger.warn(`Failed to load ${failedPlugins.length} plugin(s):`);
               for (const failure of failedPlugins) {
-                logger.warn(`  - ${failure.name}: ${failure.error}`);
+                logger.detail(`- ${failure.name}: ${failure.error}`);
               }
             }
           }
@@ -275,7 +275,7 @@ export function registerCheckAllCommand(program: Command): void {
                 logger.newline();
                 logger.error(`${fixResult.failedFixes.length} fixes failed:`);
                 for (const { fix, error } of fixResult.failedFixes) {
-                  logger.log(`  - ${fix.description}: ${error}`);
+                  logger.detail(`- ${fix.description}: ${error}`);
                 }
               }
 
@@ -303,7 +303,7 @@ export function registerCheckAllCommand(program: Command): void {
               logger.newline();
               logger.log('Timing breakdown:');
               Object.entries(timings).forEach(([name, time]) => {
-                logger.log(`  ${name}: ${time}ms`);
+                logger.detail(`${name}: ${time}ms`);
               });
               logger.newline();
               logger.log(`Total: ${duration}ms`);

@@ -90,6 +90,20 @@ export const logger = {
   },
 
   /**
+   * Indented detail/sub-information message (2 spaces)
+   * Use for detail lines under main messages
+   * Uses stdout
+   *
+   * @example
+   * logger.info('Running checks...');
+   * logger.detail('File: example.ts');
+   * logger.detail('Status: passed');
+   */
+  detail: (msg: string): void => {
+    console.log(`  ${msg}`);
+  },
+
+  /**
    * Blank line for spacing
    */
   newline: (): void => {

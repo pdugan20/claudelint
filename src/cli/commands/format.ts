@@ -49,8 +49,8 @@ export function registerFormatCommand(program: Command): void {
 
         if (verbose && result.filesWithErrors.length > 0) {
           for (const [file, errors] of Object.entries(result.errors)) {
-            logger.log(`  ${file}:`);
-            errors.forEach((error) => logger.log(`    ${error}`));
+            logger.detail(`${file}:`);
+            errors.forEach((error) => logger.detail(`  ${error}`));
           }
         }
 
@@ -78,12 +78,12 @@ export function registerFormatCommand(program: Command): void {
 
         if (verbose) {
           if (result.errors.length > 0) {
-            logger.log('  Files with issues:');
-            result.errors.forEach((file) => logger.log(`    ${file}`));
+            logger.detail('Files with issues:');
+            result.errors.forEach((file) => logger.detail(`  ${file}`));
           }
           if (result.formatted.length > 0 && !options.check) {
-            logger.log('  Files formatted:');
-            result.formatted.forEach((file) => logger.log(`    ${file}`));
+            logger.detail('Files formatted:');
+            result.formatted.forEach((file) => logger.detail(`  ${file}`));
           }
         }
 
@@ -121,7 +121,7 @@ export function registerFormatCommand(program: Command): void {
             const shellCheckCmd = `shellcheck ${uniqueShellFiles.join(' ')}`;
 
             if (verbose) {
-              logger.log(`  Files: ${uniqueShellFiles.join(', ')}`);
+              logger.detail(`Files: ${uniqueShellFiles.join(', ')}`);
             }
 
             const output = execSync(shellCheckCmd, { encoding: 'utf-8', stdio: 'pipe' });
@@ -143,14 +143,14 @@ export function registerFormatCommand(program: Command): void {
           }
         } else {
           if (verbose) {
-            logger.log('  No shell scripts found to check');
+            logger.detail('No shell scripts found to check');
           }
           logger.newline();
         }
       } else {
         logger.warn('ShellCheck not installed (optional)');
-        logger.info(`  ${getShellCheckInstallMessage()}`);
-        logger.info('  Shell scripts will skip linting');
+        logger.detail(getShellCheckInstallMessage());
+        logger.detail('Shell scripts will skip linting');
         logger.newline();
       }
 

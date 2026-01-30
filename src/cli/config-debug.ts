@@ -31,9 +31,9 @@ export class ConfigDebugger {
       logger.warn('No configuration file found.');
       logger.newline();
       logger.log('Searched locations:');
-      logger.log('  - .claudelintrc.json');
-      logger.log('  - .claudelintrc.js');
-      logger.log('  - package.json (claudelint key)');
+      logger.detail('- .claudelintrc.json');
+      logger.detail('- .claudelintrc.js');
+      logger.detail('- package.json (claudelint key)');
       logger.newline();
       logger.info('Run "claudelint init" to create a configuration file.');
       process.exit(1);
@@ -79,7 +79,7 @@ export class ConfigDebugger {
         const severity = typeof ruleConfig === 'string' ? ruleConfig : ruleConfig.severity;
         const status = severity === 'error' ? '✗' : severity === 'warn' ? '!' : '○';
         const category = rule ? `[${rule.category}]` : '';
-        logger.log(`  ${status} ${ruleId.padEnd(30)} ${String(severity).padEnd(8)} ${category}`);
+        logger.detail(`${status} ${ruleId.padEnd(30)} ${String(severity).padEnd(8)} ${category}`);
       }
       logger.newline();
     }
@@ -88,8 +88,8 @@ export class ConfigDebugger {
     if (config.output) {
       logger.log('Output:');
       logger.log('-'.repeat(60));
-      logger.log(`  Format:  ${config.output.format || 'stylish'}`);
-      logger.log(`  Verbose: ${config.output.verbose ? 'yes' : 'no'}`);
+      logger.detail(`Format:  ${config.output.format || 'stylish'}`);
+      logger.detail(`Verbose: ${config.output.verbose ? 'yes' : 'no'}`);
       logger.newline();
     }
 
@@ -97,7 +97,7 @@ export class ConfigDebugger {
     if (config.maxWarnings !== undefined) {
       logger.log('Limits:');
       logger.log('-'.repeat(60));
-      logger.log(`  Max warnings: ${config.maxWarnings}`);
+      logger.detail(`Max warnings: ${config.maxWarnings}`);
       logger.newline();
     }
 
@@ -195,7 +195,7 @@ export class ConfigDebugger {
           hasErrors = true;
           logger.log('✗ Unknown rules found:');
           for (const ruleId of unknownRules) {
-            logger.log(`  - ${ruleId}`);
+            logger.detail(`- ${ruleId}`);
           }
           logger.newline();
           logger.log('Run "claudelint list-rules" to see available rules.');
@@ -215,7 +215,7 @@ export class ConfigDebugger {
           logger.log('✗ Invalid rule severities:');
           for (const [ruleId, ruleConfig] of invalidSeverities) {
             const severity = typeof ruleConfig === 'string' ? ruleConfig : ruleConfig.severity;
-            logger.log(`  - ${ruleId}: "${severity}" (must be "error", "warn", or "off")`);
+            logger.detail(`- ${ruleId}: "${severity}" (must be "error", "warn", or "off")`);
           }
           logger.newline();
         }
@@ -225,7 +225,7 @@ export class ConfigDebugger {
       if (config.output?.format && !['stylish', 'compact', 'json'].includes(config.output.format)) {
         hasErrors = true;
         logger.log(`✗ Invalid output format: "${config.output.format}"`);
-        logger.log('  Valid formats: stylish, compact, json');
+        logger.detail('Valid formats: stylish, compact, json');
         logger.newline();
       }
 
@@ -238,17 +238,17 @@ export class ConfigDebugger {
           ? Object.entries(config.rules).filter(([, severity]) => severity !== 'off')
           : [];
         logger.log(`Summary:`);
-        logger.log(`  ${enabledRules.length} rules enabled`);
-        logger.log(`  Format: ${config.output?.format || 'stylish'}`);
+        logger.detail(`${enabledRules.length} rules enabled`);
+        logger.detail(`Format: ${config.output?.format || 'stylish'}`);
         if (config.maxWarnings !== undefined) {
-          logger.log(`  Max warnings: ${config.maxWarnings}`);
+          logger.detail(`Max warnings: ${config.maxWarnings}`);
         }
       } else {
         process.exit(1);
       }
     } catch (error) {
       logger.error('✗ Failed to load configuration:');
-      logger.error(`  ${error instanceof Error ? error.message : String(error)}`);
+      logger.detail(error instanceof Error ? error.message : String(error));
       process.exit(1);
     }
   }
