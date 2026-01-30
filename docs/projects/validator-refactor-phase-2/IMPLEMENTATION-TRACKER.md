@@ -13,14 +13,14 @@
 - [X] Phase 2.5: Implement Rule Discovery (9/10 tasks) COMPLETE ✓ (Task 2.5.10 active)
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
-- [ ] Phase 2.7: Testing & Validation (13/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
+- [ ] Phase 2.7: Testing & Validation (14/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
 - [X] Phase 2.8: CLI Output & Dependency Architecture (6/6 tasks) COMPLETE ✓
 
-**Total:** 71/76 tasks complete (93%)
+**Total:** 72/76 tasks complete (95%)
 
-**Current Focus:** Phase 2.7 - Testing & Validation (Task 2.7.11 ready to start)
+**Current Focus:** Phase 2.7 - Testing & Validation (Task 2.7.12 ready to start)
 
-**Previous:** Task 2.7.10 - Verify rule structure and split combined test files (COMPLETE ✓)
+**Previous:** Task 2.7.11 - Generate placeholder documentation for all rules (COMPLETE ✓)
 
 ## CRITICAL CLARIFICATION (2026-01-29)
 
@@ -1328,17 +1328,25 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Pattern verified: tests/rules/{category}/{rule-id}.test.ts
   - **Notes:** COMPLETE! All combined test files have been split. Test structure now follows consistent 1:1 pattern. Note: Some rules still lack test files entirely (to be addressed in future task).
 
-- [ ] **Task 2.7.11:** Generate placeholder documentation for all rules
+- [X] **Task 2.7.11:** Generate placeholder documentation for all rules
   - **Files:** `docs/rules/{category}/{rule-id}.md`
   - **Action:** Run `npm run generate:docs` (or equivalent) to create placeholder docs
   - **Action:** Verify every rule has a corresponding .md file
   - **Action:** Ensure pattern: `docs/rules/{category}/{rule-id}.md`
   - **Action:** Script should use `scripts/generate-rule-docs.ts`
-  - **Estimated Time:** 15 minutes
+  - **Actual Time:** 15 minutes
   - **Dependencies:** Task 2.7.10
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-  - **Notes:** Placeholder docs created automatically, filled out in Task 2.7.13
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Results:**
+    - Ran `npm run docs:generate` using `scripts/generate-rule-docs.ts`
+    - Created 39 new placeholder docs
+    - Updated 8 existing docs with latest metadata
+    - Created docs/rules/index.md
+    - Total: 107 rule documentation files (was 68)
+    - Pattern verified: docs/rules/{category}/{rule-id}.md
+    - Breakdown: 8 LSP, 10 MCP, 6 plugin, 4 output-styles, 3 agent, 3 CLAUDE.md, 4 skill, 1 settings
+  - **Notes:** COMPLETE! All placeholder docs follow standard template with metadata, description, resources, and version info. Ready for detailed content in Task 2.7.13.
 
 - [ ] **Task 2.7.12:** Add rule structure verification to CI and git hooks
   - **Files:** `scripts/check-rule-structure.ts`, `package.json`, `.github/workflows/*.yml`, `.husky/*` (if using husky)
