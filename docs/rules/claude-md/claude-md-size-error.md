@@ -9,9 +9,9 @@ CLAUDE.md exceeds maximum file size limit
 
 ## Rule Details
 
-This rule triggers an error when a CLAUDE.md file exceeds 40KB (40,960 bytes). This is a hard limit enforced by Claude Code to ensure optimal context loading. Large files cause slow context loading times, difficult maintenance and navigation, poor developer experience, risk of context truncation, and performance degradation.
+This rule triggers an error when a CLAUDE.md file exceeds the maximum size limit (default: 40KB). Large files cause slow context loading times, difficult maintenance and navigation, poor developer experience, risk of context truncation, and performance degradation.
 
-When your file exceeds 40KB, you must reorganize it before Claude Code will validate successfully. Disabling the rule will not allow larger files to work - it will only hide the error while the file continues to fail at runtime. The 40KB limit is a technical constraint that cannot be changed.
+When your file exceeds the size limit, you should reorganize it for optimal performance. The default 40KB limit is based on Claude Code's performance characteristics and ensures fast context loading.
 
 ### Incorrect
 
@@ -75,7 +75,34 @@ To resolve files exceeding the 40KB limit:
 
 ## Options
 
-This rule does not have configuration options. The 40KB limit is a hard constraint and cannot be changed.
+This rule has the following configuration options:
+
+### `maxSize`
+
+Maximum file size in bytes before triggering an error. Must be a positive integer.
+
+**Type**: `number`
+**Default**: `40000` (40KB)
+
+**Schema**:
+
+```typescript
+{
+  maxSize: number // positive integer, bytes
+}
+```
+
+**Example configuration**:
+
+```json
+{
+  "rules": {
+    "claude-md-size-error": ["error", { "maxSize": 50000 }]
+  }
+}
+```
+
+**Note**: While this option is configurable, the default 40KB limit is based on Claude Code's performance characteristics. Increasing it may cause slow context loading and poor performance.
 
 ## When Not To Use It
 

@@ -9,13 +9,13 @@ Skill directory has excessive directory nesting
 
 ## Rule Details
 
-This rule triggers when skill directories exceed 4 levels of nesting depth (counted from the skill root). Deep directory structures make navigation difficult, create long import paths, increase cognitive overhead, and make relative paths harder to understand. Flat structures are easier to browse, have simpler import paths, and reduce mental mapping of directory hierarchies.
+This rule triggers when skill directories exceed the maximum nesting depth (default: 3 levels, counted from the skill root). Deep directory structures make navigation difficult, create long import paths, increase cognitive overhead, and make relative paths harder to understand. Flat structures are easier to browse, have simpler import paths, and reduce mental mapping of directory hierarchies.
 
-The maximum depth of 4 levels provides enough structure for organization (like `lib/`, `tests/`, `bin/`) while preventing over-complicated hierarchies. Files beyond the 4th level should be moved up and renamed with contextual prefixes instead of relying on deep nesting for organization.
+The default maximum depth of 3 levels provides enough structure for organization (like `lib/`, `tests/`, `bin/`) while preventing over-complicated hierarchies. Files beyond the maximum depth should be moved up and renamed with contextual prefixes instead of relying on deep nesting for organization.
 
 ### Incorrect
 
-Skill with excessive nesting (6 levels):
+Skill with excessive nesting (5 levels):
 
 ```text
 .claude/skills/deploy/
@@ -24,9 +24,8 @@ Skill with excessive nesting (6 levels):
     └── core/               (2)
         └── deployment/     (3)
             └── strategies/ (4)
-                └── cloud/  (5)
-                    └── aws/  (6)  Too deep
-                        └── ec2.sh
+                └── aws/    (5)  Too deep (exceeds default max of 3)
+                    └── ec2.sh
 ```
 
 Difficult relative imports:
@@ -62,7 +61,32 @@ source ../lib/format.sh
 
 ## Options
 
-This rule does not have configuration options. The maximum depth of 4 levels is fixed.
+This rule has the following configuration options:
+
+### `maxDepth`
+
+Maximum directory nesting depth before triggering a warning. Must be a positive integer.
+
+**Type**: `number`
+**Default**: `3`
+
+**Schema**:
+
+```typescript
+{
+  maxDepth: number // positive integer
+}
+```
+
+**Example configuration**:
+
+```json
+{
+  "rules": {
+    "skill-deep-nesting": ["warn", { "maxDepth": 4 }]
+  }
+}
+```
 
 ## When Not To Use It
 
@@ -75,8 +99,8 @@ Consider disabling if you're mirroring an external project structure or followin
 
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-deep-nesting.ts)
+- [Rule Tests](../../tests/rules/skills/skill-deep-nesting.test.ts)
 
 ## Version
 

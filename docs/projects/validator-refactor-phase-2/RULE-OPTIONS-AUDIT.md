@@ -14,7 +14,7 @@ During Task 2.7.13 (rule documentation), we discovered that rule options were no
 
 ### 1. claude-md-size-error
 
-**Status**: UNDOCUMENTED - Has option in code, docs say "no options"
+**Status**: COMPLETE - Option documented
 
 **Implementation**: `src/rules/claude-md/claude-md-size-error.ts`
 
@@ -40,7 +40,7 @@ Currently says: "This rule does not have configuration options."
 
 ### 2. claude-md-size-warning
 
-**Status**: UNDOCUMENTED - Has option in code, docs say "no options"
+**Status**: COMPLETE - Option documented
 
 **Implementation**: `src/rules/claude-md/claude-md-size-warning.ts`
 
@@ -68,7 +68,7 @@ Currently says: "This rule does not have configuration options."
 
 ### 3. skill-body-too-long
 
-**Status**: UNDOCUMENTED - Has option in code, docs say "no options"
+**Status**: COMPLETE - Option documented
 
 **Implementation**: `src/rules/skills/skill-body-too-long.ts`
 
@@ -94,7 +94,7 @@ Currently says: "This rule does not have any configuration options."
 
 ### 4. skill-deep-nesting
 
-**Status**: UNDOCUMENTED - Has option in code, docs say "no options" (and wrong default!)
+**Status**: COMPLETE - Option documented (corrected default from 4 to 3)
 
 **Implementation**: `src/rules/skills/skill-deep-nesting.ts`
 
@@ -289,14 +289,14 @@ defaultOptions: {
 
 ## Implementation Order
 
-### Phase 1: Documentation Updates (Quick wins)
+### Phase 1: Documentation Updates (Quick wins) - COMPLETE
 
-1. Document `claude-md-size-error.maxSize`
-2. Document `claude-md-size-warning.maxSize`
-3. Document `skill-body-too-long.maxLines`
-4. Document `skill-deep-nesting.maxDepth` (fix incorrect default)
+1. ✓ Document `claude-md-size-error.maxSize` (default: 40000 bytes)
+2. ✓ Document `claude-md-size-warning.maxSize` (default: 35000 bytes)
+3. ✓ Document `skill-body-too-long.maxLines` (default: 500 lines)
+4. ✓ Document `skill-deep-nesting.maxDepth` (default: 3, corrected from 4)
 
-**Estimated time**: 30 minutes (all 4 rules)
+**Status**: All 4 options documented with schema, defaults, and examples
 
 ### Phase 2: New Option Implementation
 

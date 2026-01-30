@@ -9,9 +9,9 @@ CLAUDE.md file is approaching size limit
 
 ## Rule Details
 
-This rule warns when a CLAUDE.md file reaches 35KB (35,840 bytes). This is a proactive warning before hitting the hard limit of 40KB that would trigger a size-error. Large files cause slower context loading, harder maintenance and navigation, difficulty understanding overall structure, and risk of soon exceeding the 40KB limit.
+This rule warns when a CLAUDE.md file reaches the warning threshold (default: 35KB). This is a proactive warning before hitting the error limit (default: 40KB). Large files cause slower context loading, harder maintenance and navigation, difficulty understanding overall structure, and risk of soon exceeding the error limit.
 
-This warning gives you time to reorganize your content before it becomes an error. Files between 35KB and 40KB will trigger this warning but still validate. Once a file exceeds 40KB, it will fail validation entirely with size-error.
+This warning gives you time to reorganize your content before it becomes an error. Files between the warning and error thresholds will trigger this warning but still validate. Once a file exceeds the error limit, it will fail validation entirely with claude-md-size-error.
 
 ### Incorrect
 
@@ -75,7 +75,34 @@ Proactively splitting your file before hitting 40KB is much easier than doing it
 
 ## Options
 
-This rule does not have configuration options. The 35KB threshold is fixed.
+This rule has the following configuration options:
+
+### `maxSize`
+
+Maximum file size in bytes before triggering a warning. Must be a positive integer.
+
+**Type**: `number`
+**Default**: `35000` (35KB)
+
+**Schema**:
+
+```typescript
+{
+  maxSize: number // positive integer, bytes
+}
+```
+
+**Example configuration**:
+
+```json
+{
+  "rules": {
+    "claude-md-size-warning": ["warn", { "maxSize": 30000 }]
+  }
+}
+```
+
+**Note**: The default 35KB threshold is set to warn 5KB before the error limit (40KB), giving you time to reorganize before validation fails.
 
 ## When Not To Use It
 
