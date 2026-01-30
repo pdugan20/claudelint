@@ -4,8 +4,8 @@
 
 Total Rules: 105
 - Started: 99 rules needing work
-- Current: 65 rules needing work
-- Completed: 40 rules (38%)
+- Current: 52 rules needing work
+- Completed: 53 rules (50%)
 
 ## Batch Status
 
@@ -70,7 +70,7 @@ Total Rules: 105
 
 ### [IN PROGRESS] BATCH B: Medium Categories (IN PROGRESS)
 
-**Status: 26/53 rules complete**
+**Status: 39/53 rules complete**
 
 #### Plugin (12 rules) - 95/100 avg - [DONE]
 
@@ -108,25 +108,39 @@ Total Rules: 105
 - [x] plugin-name-required (5→95)
   - Created: Full documentation
 
-#### MCP (13 rules) - 23/100 avg
+#### MCP (13 rules) - 95/100 avg - [DONE]
 
-**Easy Wins (3 rules)** - Need How To Fix:
-- [ ] mcp-invalid-server (85→?)
-- [ ] mcp-invalid-transport (85→?)
-- [ ] mcp-server-key-mismatch (85→?)
+**Easy Wins (3 rules)** - [DONE]:
+- [x] mcp-invalid-server (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] mcp-invalid-transport (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] mcp-server-key-mismatch (5→95)
+  - Created: Full documentation
 
-**Placeholders (10 rules)** - Need full docs:
-- [ ] mcp-http-empty-url (5→?)
-- [ ] mcp-http-invalid-url (5→?)
-- [ ] mcp-invalid-env-var (5→?)
-  - **Option Opportunity**: Could add pattern validation for env var names
-- [ ] mcp-sse-empty-url (5→?)
-- [ ] mcp-sse-invalid-url (5→?)
-- [ ] mcp-sse-transport-deprecated (5→?)
-- [ ] mcp-stdio-empty-command (5→?)
-- [ ] mcp-websocket-empty-url (5→?)
-- [ ] mcp-websocket-invalid-protocol (5→?)
-- [ ] mcp-websocket-invalid-url (5→?)
+**Placeholders (10 rules)** - [DONE]:
+- [x] mcp-http-empty-url (5→95)
+  - Created: Full documentation
+- [x] mcp-http-invalid-url (5→95)
+  - Created: Full documentation
+- [x] mcp-invalid-env-var (5→95)
+  - Created: Full documentation
+- [x] mcp-sse-empty-url (5→95)
+  - Created: Full documentation
+- [x] mcp-sse-invalid-url (5→95)
+  - Created: Full documentation
+- [x] mcp-sse-transport-deprecated (5→95)
+  - Created: Full documentation
+- [x] mcp-stdio-empty-command (5→95)
+  - Created: Full documentation
+- [x] mcp-websocket-empty-url (5→95)
+  - Created: Full documentation
+- [x] mcp-websocket-invalid-protocol (5→95)
+  - Created: Full documentation
+- [x] mcp-websocket-invalid-url (5→95)
+  - Created: Full documentation
 
 #### Agents (13 rules) - 17/100 avg
 
@@ -240,34 +254,33 @@ Total Rules: 105
 
 ## Next Steps
 
-### Current Focus: MCP Category (13 rules, 23/100 avg)
+### Current Focus: Agents Category (13 rules, 17/100 avg)
 
-1. **Update 3 easy wins** with How To Fix sections
-   - mcp-invalid-server
-   - mcp-invalid-transport
-   - mcp-server-key-mismatch
+1. **Create 13 placeholders** from scratch - ALL need full documentation
+   - agent-body-too-short (has minBodyLength option - needs documentation)
+   - agent-description
+   - agent-disallowed-tools
+   - agent-events
+   - agent-hooks
+   - agent-hooks-invalid-schema
+   - agent-missing-system-prompt
+   - agent-model
+   - agent-name
+   - agent-name-directory-mismatch
+   - agent-skills
+   - agent-skills-not-found
+   - agent-tools
 
-2. **Create 10 placeholders** from scratch
-   - mcp-http-empty-url
-   - mcp-http-invalid-url
-   - mcp-invalid-env-var (consider pattern validation option)
-   - mcp-sse-empty-url
-   - mcp-sse-invalid-url
-   - mcp-sse-transport-deprecated
-   - mcp-stdio-empty-command
-   - mcp-websocket-empty-url
-   - mcp-websocket-invalid-protocol
-   - mcp-websocket-invalid-url
+2. **Fix resource links** for all agent docs
 
-3. **Fix resource links** for all MCP docs
+3. **Document existing option**: agent-body-too-short has minBodyLength option
 
-4. **Commit** when MCP category reaches 95/100 avg
+4. **Commit** when Agents category reaches 95/100 avg
 
-### After MCP
+### After Agents
 
 Continue with Batch B in order:
-1. MCP (13 rules, 23/100 avg)
-2. Agents (13 rules, 17/100 avg)
+1. Agents (13 rules, 17/100 avg) ← Current
 3. LSP (8 rules, 4/100 avg)
 4. Output Styles (7 rules, 4/100 avg)
 
@@ -281,6 +294,7 @@ Then tackle Batch C:
 - [DONE] Batch A (Commands, Hooks, Settings): 10 rules → 95/100 avg
 - [DONE] CLAUDE.md: 14 rules → 97/100 avg (+ maxSymlinkDepth option added)
 - [DONE] Plugin: 12 rules → 95/100 avg
+- [DONE] MCP: 13 rules → 95/100 avg
 
 ---
 
