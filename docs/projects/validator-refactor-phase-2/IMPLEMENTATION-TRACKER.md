@@ -14,11 +14,11 @@
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
 - [ ] Phase 2.7: Testing & Validation (10/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
-- [ ] Phase 2.8: CLI Output & Dependency Architecture (2/6 tasks) - IN PROGRESS (Task 2.8.3)
+- [ ] Phase 2.8: CLI Output & Dependency Architecture (3/6 tasks) - IN PROGRESS (Task 2.8.4)
 
-**Total:** 64/76 tasks complete (84%)
+**Total:** 65/76 tasks complete (86%)
 
-**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.3 ready to start)
+**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.4 ready to start)
 
 **Previous:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.6.5, and 2.7.16-2.7.18 COMPLETE)
 
@@ -1552,8 +1552,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Tested: Format command works correctly with check/fix modes and verbose output
   - **Notes:** Successfully replaced execSync calls with faster programmatic APIs. ShellCheck still uses execSync (will be addressed in Task 2.8.3).
 
-- [ ] **Task 2.8.3:** ShellCheck handling with graceful degradation
+- [X] **Task 2.8.3:** ShellCheck handling with graceful degradation
   - **Files:** `src/cli/utils/system-tools.ts` (new), `src/cli/commands/format.ts`, `src/cli/init-wizard.ts`
+  - **Actual Time:** 1 hour
+  - **Completion Date:** 2026-01-29
   - **Current State:**
     - ShellCheck in format command but it's a linter, not formatter
     - Treated same as npm packages (but it's a system binary)
@@ -1611,8 +1613,15 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Users understand what's optional vs required
   - **Estimated Time:** 1-2 hours
   - **Dependencies:** Task 2.8.1 (logger utility)
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Deliverables:**
+    - `src/cli/utils/system-tools.ts` - Created with isShellCheckAvailable(), getShellCheckInstallMessage(), and getShellCheckVersion()
+    - `src/cli/commands/format.ts` - Updated to check ShellCheck availability before running
+    - Expanded glob patterns to actual files (fixes `.claude/**/*.sh` not expanding)
+    - Added filtering to exclude non-shell files (.json, .md) from ShellCheck
+    - Graceful warning message with platform-specific install instructions when ShellCheck not found
+    - Tested: ShellCheck runs when available, shows helpful message when missing
+  - **Notes:** ShellCheck is now properly treated as an optional system binary. Format command no longer fails when it's missing, just shows a warning. Fixed issue where `.claude/hooks/*` was matching hooks.json.
 
 - [ ] **Task 2.8.4:** Enhance init wizard for tool detection
   - **Files:** `src/cli/init-wizard.ts`

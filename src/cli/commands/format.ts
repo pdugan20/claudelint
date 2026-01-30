@@ -7,6 +7,11 @@ import { execSync } from 'child_process';
 import { logger } from '../utils/logger';
 import { checkPrettier, formatPrettier } from '../utils/formatters/prettier';
 import { checkMarkdownlint } from '../utils/formatters/markdownlint';
+import {
+  isShellCheckAvailable,
+  getShellCheckInstallMessage,
+} from '../utils/system-tools';
+import { glob } from 'glob';
 
 /**
  * Register the format command
@@ -95,35 +100,57 @@ export function registerFormatCommand(program: Command): void {
         logger.newline();
       }
 
-      // 3. ShellCheck (Tier 1)
-      try {
-        logger.info('Running shellcheck on Claude shell scripts...');
-        const shellCheckCmd = `shellcheck ${claudeFiles.shell.join(' ')}`;
+      // 3. ShellCheck (Optional - system binary)
+      if (isShellCheckAvailable()) {
+        logger.info('Running ShellCheck on shell scripts...');
 
-        if (verbose) {
-          logger.log(`  Command: ${shellCheckCmd}`);
+        // Expand glob patterns to actual files
+        const shellFiles: string[] = [];
+        for (const pattern of claudeFiles.shell) {
+          const matches = await glob(pattern, { ignore: ['node_modules/**'] });
+          shellFiles.push(...matches);
         }
 
-        try {
-          const output = execSync(shellCheckCmd, { encoding: 'utf-8', stdio: 'pipe' });
-          if (verbose && output) {
-            console.log(output);
+        // Filter out non-shell files (JSON, etc.)
+        const uniqueShellFiles = [...new Set(shellFiles)].filter(
+          (file) => !file.endsWith('.json') && !file.endsWith('.md')
+        );
+
+        if (uniqueShellFiles.length > 0) {
+          try {
+            const shellCheckCmd = `shellcheck ${uniqueShellFiles.join(' ')}`;
+
+            if (verbose) {
+              logger.log(`  Files: ${uniqueShellFiles.join(', ')}`);
+            }
+
+            const output = execSync(shellCheckCmd, { encoding: 'utf-8', stdio: 'pipe' });
+            if (verbose && output) {
+              console.log(output);
+            }
+            logger.success('ShellCheck passed');
+            logger.newline();
+          } catch (error: unknown) {
+            if (error && typeof error === 'object' && 'stdout' in error) {
+              console.log(String(error.stdout));
+            }
+            if (error && typeof error === 'object' && 'stderr' in error) {
+              console.error(String(error.stderr));
+            }
+            hasErrors = true;
+            logger.error('ShellCheck found issues');
+            logger.newline();
           }
-          logger.success('ShellCheck passed');
-          logger.newline();
-        } catch (error: unknown) {
-          if (error && typeof error === 'object' && 'stdout' in error) {
-            console.log(String(error.stdout));
+        } else {
+          if (verbose) {
+            logger.log('  No shell scripts found to check');
           }
-          if (error && typeof error === 'object' && 'stderr' in error) {
-            console.error(String(error.stderr));
-          }
-          hasErrors = true;
-          logger.error('ShellCheck found issues');
           logger.newline();
         }
-      } catch (error) {
-        logger.warn('ShellCheck not found (install: brew install shellcheck or npm install -g shellcheck)');
+      } else {
+        logger.warn('ShellCheck not installed (optional)');
+        logger.info(`  ${getShellCheckInstallMessage()}`);
+        logger.info('  Shell scripts will skip linting');
         logger.newline();
       }
 
