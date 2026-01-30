@@ -23,21 +23,21 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { RuleRegistry, RuleMetadata } from '../src/utils/rule-registry';
+import { RuleRegistry, RuleMetadata } from '../../src/utils/rule-registry';
 
 // Import all validators to ensure rules are registered
-import '../src/validators/claude-md';
-import '../src/validators/skills';
-import '../src/validators/settings';
-import '../src/validators/hooks';
-import '../src/validators/mcp';
-import '../src/validators/plugin';
-import '../src/validators/commands';
-import '../src/validators/agents';
-import '../src/validators/lsp';
-import '../src/validators/output-styles';
+import '../../src/validators/claude-md';
+import '../../src/validators/skills';
+import '../../src/validators/settings';
+import '../../src/validators/hooks';
+import '../../src/validators/mcp';
+import '../../src/validators/plugin';
+import '../../src/validators/commands';
+import '../../src/validators/agents';
+import '../../src/validators/lsp';
+import '../../src/validators/output-styles';
 
-const DOCS_RULES_DIR = path.join(__dirname, '../docs/rules');
+const DOCS_RULES_DIR = path.join(__dirname, '../../docs/rules');
 
 /**
  * Convert category name to directory name

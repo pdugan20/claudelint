@@ -78,7 +78,7 @@ function analyzeRule(filePath: string): StubRule | null {
 }
 
 function main() {
-  const rulesDir = join(__dirname, '..', 'src', 'rules');
+  const rulesDir = join(__dirname, '../..', 'src', 'rules');
   const ruleFiles = findRuleFiles(rulesDir);
   const stubRules: StubRule[] = [];
 

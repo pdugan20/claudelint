@@ -4,16 +4,26 @@ Comprehensive analysis and action plan for removing deadcode from the claudelint
 
 ## Quick Links
 
-- **[TOOLS-AND-BEST-PRACTICES.md](TOOLS-AND-BEST-PRACTICES.md)** * - Industry tools & automation (start here!)
+- **[NEXT-STEPS.md](NEXT-STEPS.md)** * - **START HERE** - Ready-to-execute action plan
+- **[KNIP-FINDINGS.md](KNIP-FINDINGS.md)** = - Knip analysis results (automated detection)
+- **[TOOLS-AND-BEST-PRACTICES.md](TOOLS-AND-BEST-PRACTICES.md)** - Industry tools & automation
 - **[FINDINGS.md](FINDINGS.md)** - Manual analysis results
-- **[ACTION-CHECKLIST.md](ACTION-CHECKLIST.md)** - Step-by-step tasks with commands
+- **[ACTION-CHECKLIST.md](ACTION-CHECKLIST.md)** - Manual cleanup checklist
 - **[PROPOSAL.md](PROPOSAL.md)** - Full proposal with implementation plan
 
 ## Executive Summary
 
-Analysis completed: 2026-01-30
+**Analysis completed**: 2026-01-30
+
+**Tool used**: Knip v5.81.0 (industry-leading deadcode detector)
 
 **Result**: Codebase in excellent health with minimal deadcode
+
+**Automated Analysis**:
+- [x] Knip installed and configured
+- > 1 confirmed deadcode file found (rule-loader.ts - 206 lines)
+- ! 3 items need investigation
+- * 40 false positives (public API exports)
 
 **Found**:
 - 8 orphaned build artifacts (safe to remove immediately)
@@ -25,22 +35,22 @@ Analysis completed: 2026-01-30
 
 ## Quick Start
 
-### Option 0: Install Automated Tools (Recommended - 5 minutes)
+### Option 0: Remove Confirmed Deadcode (Recommended - 5 minutes)
 
-**Best approach**: Use industry-standard automated detection tools:
+**Fastest path**: Remove the one file Knip confirmed as deadcode:
 
 ```bash
-# Install Knip (industry-leading deadcode detector)
-npm install --save-dev knip
+# Remove obsolete RuleLoader (replaced by RuleRegistry)
+git rm src/utils/rule-loader.ts
 
-# Run comprehensive scan
-npx knip
+# Verify nothing breaks
+npm test
 
-# Add to package.json
-npm pkg set scripts.check:deadcode="knip"
+# Commit
+git commit -m "chore: remove obsolete RuleLoader (replaced by RuleRegistry)"
 ```
 
-See **[TOOLS-AND-BEST-PRACTICES.md](TOOLS-AND-BEST-PRACTICES.md)** for complete setup guide.
+See **[NEXT-STEPS.md](NEXT-STEPS.md)** for investigation tasks and next actions.
 
 ### Option 1: Just Remove the Known Deadcode (5 minutes)
 
@@ -69,7 +79,33 @@ Follow the [ACTION-CHECKLIST.md](ACTION-CHECKLIST.md) for a complete cleanup inc
 
 ## Documents
 
-### TOOLS-AND-BEST-PRACTICES.md *
+### NEXT-STEPS.md * (NEW!)
+
+**Purpose**: Ready-to-execute action plan based on Knip findings
+
+**Contains**:
+- Priority-ordered tasks
+- Investigation commands
+- Expected timeline (65 minutes total)
+- Decision templates
+- Success criteria
+
+**Best for**: Getting started with cleanup immediately
+
+### KNIP-FINDINGS.md = (NEW!)
+
+**Purpose**: Detailed Knip analysis report
+
+**Contains**:
+- All 45 items Knip flagged
+- Categorized by confidence level
+- Evidence and reasoning for each item
+- Verdict (remove/investigate/keep)
+- Knip configuration used
+
+**Best for**: Understanding what Knip found and why
+
+### TOOLS-AND-BEST-PRACTICES.md
 
 **Purpose**: Industry-standard tools and automated detection
 
@@ -126,9 +162,11 @@ Follow the [ACTION-CHECKLIST.md](ACTION-CHECKLIST.md) for a complete cleanup inc
 ```text
 docs/projects/deadcode-cleanup/
 ├── README.md                        # This file - project overview
-├── TOOLS-AND-BEST-PRACTICES.md *   # Industry tools & automation (NEW!)
+├── NEXT-STEPS.md                *   # Action plan (START HERE!)
+├── KNIP-FINDINGS.md             =   # Knip analysis results
+├── TOOLS-AND-BEST-PRACTICES.md      # Industry tools & automation
 ├── FINDINGS.md                      # Manual analysis results
-├── ACTION-CHECKLIST.md              # Step-by-step manual tasks
+├── ACTION-CHECKLIST.md              # Manual cleanup checklist
 └── PROPOSAL.md                      # Full proposal (reference)
 ```
 
@@ -136,57 +174,61 @@ docs/projects/deadcode-cleanup/
 
 | Phase | Status | Priority | Estimated Time |
 |-------|--------|----------|----------------|
-| Remove build artifacts | [ ] Not started | HIGH | 10 minutes |
-| Investigate deprecated code | [ ] Not started | MEDIUM | 30 minutes |
-| Investigate utility scripts | [ ] Not started | MEDIUM | 30 minutes |
-| Remove deprecated code | [ ] Not started | LOW | 30 minutes |
-| Archive utility scripts | [ ] Not started | LOW | 20 minutes |
-| Update documentation | [ ] Not started | LOW | 45 minutes |
+| [x] Install Knip | COMPLETE | HIGH | 5 minutes |
+| [x] Run Knip analysis | COMPLETE | HIGH | 5 minutes |
+| [x] Create Knip config | COMPLETE | HIGH | 5 minutes |
+| Remove rule-loader.ts | [ ] Not started | HIGH | 5 minutes |
+| Investigate 3 items | [ ] Not started | MEDIUM | 30 minutes |
+| Optimize Knip config | [ ] Not started | MEDIUM | 15 minutes |
+| Add package scripts | [ ] Not started | LOW | 5 minutes |
+| CI integration | [ ] Not started | LOW | 10 minutes |
 
-**Total Estimated Time**: 2.5 - 3 hours (can be done incrementally)
+**Total Estimated Time**: 65 minutes (+ 15 minutes already complete)
 
-## Key Findings
+## Key Findings (Knip Analysis)
 
-### 1. Orphaned Build Artifacts (HIGH Priority)
+### 1. * Confirmed Deadcode (Remove Now)
 
-**8 files in dist/** left over from refactored code:
-- cli-hooks.* (4 files)
-- security-validators.* (4 files)
+**src/utils/rule-loader.ts** (206 lines)
+- Obsolete RuleLoader class for filesystem-based rule discovery
+- Replaced by RuleRegistry (generated index file)
+- Not used anywhere in codebase (100% confidence)
 
-**Action**: Run `npm run clean && npm run build`
-
-**Risk**: None
-
-### 2. Intentional Stubs (Keep)
-
-**3 scripts** for future phases:
-- check-duplicate-fixtures.ts (Phase 4)
-- check-duplicate-logic.ts (Phase 4)
-- check-rule-coverage.ts (Phase 6)
-
-**Action**: Document in roadmap
+**Action**: `git rm src/utils/rule-loader.ts`
 
 **Risk**: None
 
-### 3. Utility Scripts (Investigate)
+### 2. ! Needs Investigation (30 min)
 
-**2 scripts** not in package.json:
-- fix-markdown.js (manual MD fixer)
-- remove-emojis.js (batch emoji removal)
+**3 items flagged by Knip**:
+1. tests/helpers/setup-matchers.ts - Check if used in Jest setup
+2. Composition framework exports (9 functions) - Verify framework is active
+3. Test helpers (7 functions) - Likely false positive
 
-**Action**: Check usage, consider archiving
+**Action**: Run investigation commands (see NEXT-STEPS.md)
 
 **Risk**: Low
 
-### 4. Deprecated Code (Investigate)
+### 3. [x] False Positives (Keep)
 
-**2 items** marked @deprecated:
-- isRuleDisabled() method (wrapper)
-- ValidatorOptions type (alias)
+**40 items** - Intentional public API exports:
+- 18 TypeScript types (schemas, interfaces)
+- 2 barrel export index files (convenience)
+- 20 internal utilities (might be used externally)
 
-**Action**: Search for usage, remove if safe
+**Action**: Update Knip config to ignore
 
-**Risk**: Medium (might break external plugins)
+**Risk**: None
+
+### 4. = Manual Analysis Results
+
+**8 orphaned build artifacts** in dist/ (from manual analysis):
+- Already cleaned by running `npm run build`
+
+**2 utility scripts** not in package.json:
+- fix-markdown.js
+- remove-emojis.js
+- **Action**: See manual FINDINGS.md for details
 
 ## Investigation Results
 

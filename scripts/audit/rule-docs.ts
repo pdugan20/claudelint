@@ -195,7 +195,7 @@ function auditRuleDoc(filePath: string): AuditResult {
 }
 
 function main() {
-  const rulesDir = path.join(__dirname, '../docs/rules');
+  const rulesDir = path.join(__dirname, '../../docs/rules');
   const results: AuditResult[] = [];
 
   // Find all rule docs

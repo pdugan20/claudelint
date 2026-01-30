@@ -21,7 +21,7 @@ interface Violation {
 }
 
 const violations: Violation[] = [];
-const projectRoot = join(__dirname, '..');
+const projectRoot = join(__dirname, '../..');
 
 // Exemptions from naming conventions
 const EXEMPT_FILES = new Set([

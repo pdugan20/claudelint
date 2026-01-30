@@ -21,7 +21,7 @@ interface Violation {
 
 const violations: Violation[] = [];
 const warnings: Violation[] = [];
-const projectRoot = join(__dirname, '..');
+const projectRoot = join(__dirname, '../..');
 
 // Track rule ID usage in code
 const ruleIdSeverity = new Map<string, { severity: 'error' | 'warning'; file: string; line: number }[]>();

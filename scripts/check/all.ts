@@ -28,7 +28,7 @@ const results: CheckResult[] = [];
 function runScript(scriptPath: string, name: string): Promise<CheckResult> {
   return new Promise((resolve) => {
     const proc = spawn('ts-node', [scriptPath], {
-      cwd: join(__dirname, '..'),
+      cwd: join(__dirname, '../..'),
       stdio: ['inherit', 'pipe', 'pipe'],
     });
 

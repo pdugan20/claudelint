@@ -20,7 +20,7 @@ import { basename, join } from 'path';
  * Generate RuleId type from discovered rule files
  */
 async function generateRuleIds(): Promise<void> {
-  const rulesDir = join(__dirname, '../src/rules');
+  const rulesDir = join(__dirname, '../../src/rules');
 
   console.log('Scanning for rule files in:', rulesDir);
 

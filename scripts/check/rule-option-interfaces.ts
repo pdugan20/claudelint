@@ -243,7 +243,7 @@ function findRuleFiles(dir: string): string[] {
 }
 
 function main() {
-  const rulesDir = path.join(__dirname, '../src/rules');
+  const rulesDir = path.join(__dirname, '../../src/rules');
 
   console.log('Checking rule option interface naming standards...\n');
 

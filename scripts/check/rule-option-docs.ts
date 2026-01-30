@@ -219,7 +219,7 @@ function findRuleFiles(dir: string): string[] {
 }
 
 function main() {
-  const rulesDir = path.join(__dirname, '../src/rules');
+  const rulesDir = path.join(__dirname, '../../src/rules');
   const docsDir = path.join(__dirname, '../docs/rules');
 
   console.log('Checking rule options vs documentation...\n');

@@ -23,7 +23,7 @@ interface Violation {
 
 const violations: Violation[] = [];
 const warnings: Violation[] = [];
-const projectRoot = join(__dirname, '..');
+const projectRoot = join(__dirname, '../..');
 
 // Required sections in rule documentation
 const REQUIRED_SECTIONS = [
