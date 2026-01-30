@@ -65,7 +65,8 @@ export function loadAndValidateConfig(options: {
           logger.info(`Using config file: ${configPath}`);
         }
         if (options.debugConfig) {
-          logger.info('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+          logger.info('[Config Debug] Loaded config:');
+          logger.log(JSON.stringify(config, null, 2));
         }
       } catch (error: unknown) {
         logger.error(`Error loading config file: ${configPath}`);
