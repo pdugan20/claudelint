@@ -9,7 +9,6 @@ import { ValidatorRegistry } from '../../utils/validator-factory';
 import { Reporter } from '../../utils/reporting';
 import { findConfigFile, loadConfig, mergeConfig, validateConfig } from '../../utils/config';
 import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver';
-import { PluginLoader } from '../../utils/plugin-loader';
 import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/fixer';
 import { logger } from '../utils/logger';
@@ -144,25 +143,6 @@ export function registerCheckAllCommand(program: Command): void {
               process.exit(2);
             }
             throw error; // Re-throw unexpected errors
-          }
-
-          // Load plugins
-          const pluginLoader = new PluginLoader({
-            searchNodeModules: true,
-            pluginPrefix: 'claudelint-plugin-',
-          });
-
-          const pluginResults = await pluginLoader.loadPlugins(process.cwd());
-          const failedPlugins = pluginResults.filter((r) => !r.success);
-
-          if (options.verbose && pluginResults.length > 0) {
-            logger.success(`Loaded ${pluginResults.filter((r) => r.success).length} plugin(s)`);
-            if (failedPlugins.length > 0) {
-              logger.warn(`Failed to load ${failedPlugins.length} plugin(s):`);
-              for (const failure of failedPlugins) {
-                logger.detail(`- ${failure.name}: ${failure.error}`);
-              }
-            }
           }
 
           // Merge CLI options with config

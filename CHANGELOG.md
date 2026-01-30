@@ -429,17 +429,7 @@ Dependencies:
 - Type-safe composable validators
 - Reduced code duplication
 - Enhanced testability
-- Plugin-friendly validator building blocks
-
-**Plugin System**
-
-- Automatic plugin discovery (`claudelint-plugin-*` packages)
-- PluginLoader for loading and validation
-- Plugin API: `register(validatorRegistry, ruleRegistry, composition)`
-- Custom validator support
-- Custom rule registration
-- Composition framework access for plugins
-- Error isolation (plugin failures don't crash validation)
+- Reusable validator building blocks
 
 **Performance Optimizations**
 
