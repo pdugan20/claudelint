@@ -4,8 +4,8 @@
 
 Total Rules: 105
 - Started: 99 rules needing work
-- Current: 77 rules needing work
-- Completed: 28 rules (27%)
+- Current: 65 rules needing work
+- Completed: 40 rules (38%)
 
 ## Batch Status
 
@@ -70,41 +70,43 @@ Total Rules: 105
 
 ### [IN PROGRESS] BATCH B: Medium Categories (IN PROGRESS)
 
-**Status: 14/53 rules complete**
+**Status: 26/53 rules complete**
 
-#### Plugin (12 rules) - 38/100 avg - NEXT
+#### Plugin (12 rules) - 95/100 avg - [DONE]
 
-**Easy Wins (5 rules)** - Need How To Fix:
-- [ ] plugin-circular-dependency (85→?)
-  - Has: Rule Details, examples
-  - Needs: How To Fix section
-  - Resource links need updating
-- [ ] plugin-invalid-manifest (90→?)
-  - Has: Rule Details, examples
-  - Needs: How To Fix section
-  - Resource links need updating
-- [ ] plugin-missing-file (90→?)
-  - Has: Rule Details, examples
-  - Needs: How To Fix section
-  - Resource links need updating
-- [ ] plugin-dependency-invalid-version (85→?)
-  - Has: Rule Details, examples
-  - Needs: How To Fix section
-  - Resource links need updating
-- [ ] plugin-invalid-version (85→?)
-  - Has: Rule Details, examples
-  - Needs: How To Fix section
-  - Resource links need updating
+**Easy Wins (5 rules)** - [DONE]:
+- [x] plugin-circular-dependency (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] plugin-invalid-manifest (90→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] plugin-missing-file (90→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] plugin-dependency-invalid-version (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] plugin-invalid-version (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
 
-**Placeholders (7 rules)** - Need full docs:
-- [ ] commands-in-plugin-deprecated (5→?)
-  - **Option Opportunity**: Could add `warnOnly` boolean (deprecation rule)
-- [ ] plugin-components-wrong-location (5→?)
-- [ ] plugin-version-required (5→?)
-- [ ] plugin-description-required (5→?)
-- [ ] plugin-json-wrong-location (5→?)
-- [ ] plugin-marketplace-files-not-found (5→?)
-- [ ] plugin-name-required (5→?)
+**Placeholders (7 rules)** - [DONE]:
+- [x] commands-in-plugin-deprecated (5→95)
+  - Created: Full documentation
+  - Deprecation warning for commands field
+- [x] plugin-components-wrong-location (5→95)
+  - Created: Full documentation
+- [x] plugin-version-required (5→95)
+  - Created: Full documentation
+- [x] plugin-description-required (5→95)
+  - Created: Full documentation
+- [x] plugin-json-wrong-location (5→95)
+  - Created: Full documentation
+- [x] plugin-marketplace-files-not-found (5→95)
+  - Created: Full documentation
+- [x] plugin-name-required (5→95)
+  - Created: Full documentation
 
 #### MCP (13 rules) - 23/100 avg
 
@@ -238,29 +240,30 @@ Total Rules: 105
 
 ## Next Steps
 
-### Current Focus: Plugin Category (12 rules)
+### Current Focus: MCP Category (13 rules, 23/100 avg)
 
-1. **Update 5 easy wins** with How To Fix sections
-   - plugin-circular-dependency
-   - plugin-invalid-manifest
-   - plugin-missing-file
-   - plugin-dependency-invalid-version
-   - plugin-invalid-version
+1. **Update 3 easy wins** with How To Fix sections
+   - mcp-invalid-server
+   - mcp-invalid-transport
+   - mcp-server-key-mismatch
 
-2. **Create 7 placeholders** from scratch
-   - commands-in-plugin-deprecated (consider warnOnly option)
-   - plugin-components-wrong-location
-   - plugin-version-required
-   - plugin-description-required
-   - plugin-json-wrong-location
-   - plugin-marketplace-files-not-found
-   - plugin-name-required
+2. **Create 10 placeholders** from scratch
+   - mcp-http-empty-url
+   - mcp-http-invalid-url
+   - mcp-invalid-env-var (consider pattern validation option)
+   - mcp-sse-empty-url
+   - mcp-sse-invalid-url
+   - mcp-sse-transport-deprecated
+   - mcp-stdio-empty-command
+   - mcp-websocket-empty-url
+   - mcp-websocket-invalid-protocol
+   - mcp-websocket-invalid-url
 
-3. **Fix resource links** for all plugin docs
+3. **Fix resource links** for all MCP docs
 
-4. **Commit** when plugin category reaches 95/100 avg
+4. **Commit** when MCP category reaches 95/100 avg
 
-### After Plugin
+### After MCP
 
 Continue with Batch B in order:
 1. MCP (13 rules, 23/100 avg)
@@ -277,7 +280,7 @@ Then tackle Batch C:
 
 - [DONE] Batch A (Commands, Hooks, Settings): 10 rules → 95/100 avg
 - [DONE] CLAUDE.md: 14 rules → 97/100 avg (+ maxSymlinkDepth option added)
-- [IN PROGRESS] Plugin: In progress...
+- [DONE] Plugin: 12 rules → 95/100 avg
 
 ---
 
