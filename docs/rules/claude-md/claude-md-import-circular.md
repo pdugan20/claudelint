@@ -1,11 +1,11 @@
 # Rule: claude-md-import-circular
 
-**Severity**: Error
+**Severity**: Warning
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Structure
+**Category**: Cross-Reference
 
-Detects circular `@import` dependencies which create infinite loops and prevent Claude Code from loading context properly.
+Circular import detected between Claude.md files
 
 ## Rule Details
 
@@ -64,37 +64,6 @@ CLAUDE.md
       ├─ .claude/rules/git.md
       ├─ .claude/rules/api.md
       └─ .claude/rules/shared.md
-```
-
-## How To Fix
-
-1. **Identify the cycle**: Error message shows the chain (e.g., "CLAUDE.md → main.md → deployment.md → CLAUDE.md")
-2. **Trace imports**: Use `grep -r "Import:" CLAUDE.md .claude/` to visualize the dependency graph
-3. **Remove circular import**: Delete the import that creates the cycle
-4. **Restructure with shared file**: Create a common file that both files can import instead of importing each other
-5. **Consolidate files**: If files are tightly coupled with circular dependencies, consider merging them
-
-**Example Fix - Remove circular import:**
-
-```markdown
-# Before (circular)
-# .claude/rules/deployment.md
-Import: @../../CLAUDE.md
-
-# After (fixed)
-# .claude/rules/deployment.md
-# (remove the import to CLAUDE.md)
-```
-
-**Example Fix - Restructure:**
-
-```markdown
-# CLAUDE.md
-Import: @.claude/rules/shared.md
-Import: @.claude/rules/main.md
-
-# .claude/rules/main.md
-Import: @./shared.md ← Both import shared, no cycle
 ```
 
 ## Options

@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Import Resolution
+**Category**: Cross-Reference
 
-Detects when an `@import` directive references a file that does not exist, causing incomplete context loading.
+Imported file does not exist
 
 ## Rule Details
 
@@ -55,30 +55,6 @@ project/
       api-guidelines.md
       testing.md
 ```
-
-## How To Fix
-
-1. **Check error message**: Identifies the exact missing path (e.g., "Imported file not found: .claude/rules/api-guidlines.md")
-2. **Verify file exists**: Run `ls -la .claude/rules/` to see actual files
-3. **Fix the typo**: Correct spelling or path in the import directive
-4. **Create missing file**: Use `mkdir -p .claude/rules && touch .claude/rules/api-guidelines.md` then add content
-5. **Remove import**: If no longer needed, delete the import line
-
-**Example Fix:**
-
-```markdown
-# Before (typo)
-Import: @.claude/rules/api-guidlines.md
-
-# After (fixed)
-Import: @.claude/rules/api-guidelines.md
-```
-
-**Path Resolution:**
-
-- `@` = current file's directory
-- Paths are relative to current file
-- Example: In `.claude/rules/main.md`, `@./git.md` resolves to `.claude/rules/git.md`
 
 ## Options
 

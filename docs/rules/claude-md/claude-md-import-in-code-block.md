@@ -1,11 +1,11 @@
 # Rule: claude-md-import-in-code-block
 
 **Severity**: Error
-**Fixable**: Yes
+**Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: File System
+**Category**: Best Practices
 
-Prevents import statements from appearing inside code blocks where they will not be processed.
+Import statement found inside code block
 
 ## Rule Details
 
@@ -46,12 +46,6 @@ import rules/coding-standards.md
 
 Here's an example of what the import looks like in the file.
 ```
-
-## How To Fix
-
-1. Locate the import statement inside the code block
-2. Move it outside the code block to a regular markdown paragraph
-3. Ensure there's a blank line before and after the import statement
 
 ## Options
 

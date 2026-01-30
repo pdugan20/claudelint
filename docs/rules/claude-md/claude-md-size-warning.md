@@ -3,9 +3,9 @@
 **Severity**: Warning
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Best Practices
+**Category**: File System
 
-CLAUDE.md file is approaching the size limit (35KB), warning before reaching the 40KB hard limit.
+CLAUDE.md file is approaching size limit
 
 ## Rule Details
 
@@ -38,30 +38,6 @@ Well-organized CLAUDE.md with imports:
 Import: @.claude/rules/coding-standards.md
 Import: @.claude/rules/git-workflow.md
 Import: @.claude/rules/deployment.md
-```
-
-## How To Fix
-
-Act now to avoid hitting the 40KB error limit:
-
-1. **Create rules directory**: `mkdir -p .claude/rules`
-2. **Identify sections to extract**: Look for logical groups (git/version control, API/coding guidelines, testing, deployment, style guides)
-3. **Create separate files**: `touch .claude/rules/git.md .claude/rules/api.md .claude/rules/testing.md`
-4. **Move content**: Cut sections from CLAUDE.md and paste into appropriate rule files
-5. **Add imports**: Replace moved content with import directives in CLAUDE.md
-
-**Example:**
-
-```markdown
-# CLAUDE.md (now 12KB)
-
-# Project Overview
-Quick overview of the project.
-
-# Development Rules
-Import: @.claude/rules/git.md
-Import: @.claude/rules/api.md
-Import: @.claude/rules/testing.md
 ```
 
 ## Options

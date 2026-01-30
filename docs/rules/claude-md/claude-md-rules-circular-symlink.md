@@ -3,9 +3,9 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: File System
+**Category**: Cross-Reference
 
-Prevents circular symlink chains in imported files that would cause infinite loops.
+Circular symlink detected in import path
 
 ## Rule Details
 
@@ -44,13 +44,6 @@ CLAUDE.md importing the symlink:
 ```markdown
 import rules.md
 ```
-
-## How To Fix
-
-1. Identify which symlinks are involved in the circular chain
-2. Break the cycle by removing one of the symlinks
-3. Create proper symlink targets that point to actual files
-4. Verify with `ls -l` that symlinks resolve correctly
 
 ## Options
 

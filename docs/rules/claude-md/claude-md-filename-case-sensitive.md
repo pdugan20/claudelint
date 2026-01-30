@@ -1,11 +1,11 @@
 # Rule: claude-md-filename-case-sensitive
 
-**Severity**: Warning
-**Fixable**: Yes
+**Severity**: Error
+**Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: File System
+**Category**: Best Practices
 
-Detects filename collisions that differ only in case, which cause problems on case-insensitive filesystems.
+Filename differs only in case from another file, causing conflicts on case-insensitive filesystems
 
 ## Rule Details
 
@@ -34,13 +34,6 @@ project/
     security-overview.md
     security-guidelines.md
 ```
-
-## How To Fix
-
-1. Identify which files have case-sensitive name collisions
-2. Rename one of the conflicting files to have a distinct name
-3. Update any imports or references to use the new filename
-4. Test on both case-sensitive (Linux) and case-insensitive (macOS/Windows) systems
 
 ## Options
 

@@ -5,7 +5,7 @@
 **Validator**: Agents
 **Category**: Best Practices
 
-Agent events must be an array with maximum 3 event names
+Agent events must be an array of event names (max 3 items)
 
 ## Resources
 
