@@ -170,71 +170,249 @@ claudelint check-all || echo "Failed as expected"
 
 For more details, see the [migration guide](./docs/MIGRATION.md).
 
+#### Why This Matters: Benefits of Rule-Based Architecture
+
+**For Users:**
+- **Granular control** - Enable/disable individual checks, not entire validators
+- **Custom severity** - Treat warnings as errors or vice versa per rule
+- **Configuration options** - Customize thresholds (file sizes, line counts, etc.)
+- **Better error messages** - Each rule has specific, actionable guidance
+- **Progressive adoption** - Start strict on critical rules, relax on others
+
+**For Developers:**
+- **Clear architecture** - Each rule is independent and testable
+- **Easier contributions** - Add new rules without touching existing code
+- **Better testing** - Rule-level tests are simpler than validator-level
+- **Discoverable** - `claudelint list-rules` shows all available checks
+- **Self-documenting** - Rule metadata provides all information
+
+**Industry Alignment:**
+- **ESLint-style patterns** - Familiar to developers from JavaScript ecosystem
+- **Standard configuration** - Same patterns as Prettier, Stylelint, etc.
+- **Plugin-friendly** - Easy to extend with custom rules
+- **IDE integration ready** - Metadata supports editor integrations
+
+**Technical Improvements:**
+- Reduced coupling between validation logic
+- Easier to maintain (fix one rule without affecting others)
+- Better error isolation (one rule failure doesn't break others)
+- Improved testability (each rule has focused test suite)
+- Clear separation of concerns (rule logic vs. file discovery vs. reporting)
+
 ### Added
 
-#### Core Validators (6 validators, 27 rules)
+#### BREAKING: ESLint-Style Rule Architecture
 
-**CLAUDE.md Validator** (4 rules)
+Complete refactor from validator-based to rule-based architecture. All validation logic now implemented as individual, configurable rules following ESLint patterns.
 
-- File size validation with Claude context window limits
-  - Warning at 35KB (approaching limit)
-  - Error at 40KB (exceeds recommended limit)
-- `@import` statement validation and file existence checks
-- Recursive import depth detection (max 5 levels)
-- YAML frontmatter schema validation for `.claude/rules/*.md` files
-- Glob pattern validation for `paths` fields
+**What Changed:**
 
-**Skills Validator** (11 rules)
+Before (v0.1.0):
+- 6 validators with hardcoded validation logic
+- Limited configurability
+- All-or-nothing validation per file type
 
-- `SKILL.md` file existence and structure validation
-- YAML frontmatter schema compliance
-- Security checks: dangerous commands, eval usage, path traversal detection
-- Best practices: shebang requirements, inline documentation
-- Metadata validation: changelogs, examples, versioning
-- String substitution syntax (`{{VAR}}`) validation
-- `allowed-tools` and `allowed-prompts` validation
+After (v1.0.0):
+- **105 individual rules** across 10 categories
+- **Full ESLint-style configuration** - enable/disable any rule
+- **Configurable severity** per rule (error, warn, off)
+- **Per-rule options** with defaults
+- **File-specific overrides** via config
+- **Rule documentation** for each rule
 
-**Settings Validator** (3 rules)
+**Migration from v0.1.0:**
 
-- JSON schema validation using Zod
-- Permission rule syntax validation
-- Environment variable naming validation
-- File path existence verification
+No action required for basic usage. All validation remains enabled by default.
 
-**Hooks Validator** (3 rules)
+To customize (new capability):
 
-- hooks.json schema compliance
-- Event name validation against Claude Code events
-- Script file existence and executability checks
-- Matcher pattern syntax validation
+```json
+{
+  "rules": {
+    "claude-md-size-error": ["error", { "maxSize": 50000 }],
+    "skill-dangerous-command": "off",
+    "mcp-invalid-env-var": ["warn", { "pattern": "^[A-Z_][A-Z0-9_]*$" }]
+  }
+}
+```
 
-**MCP Server Validator** (3 rules)
+#### Complete Rule Set (105 rules)
 
-- .mcp.json schema validation
-- Server name uniqueness enforcement
-- Transport type validation (stdio, sse)
-- Environment variable syntax validation
+**CLAUDE.md Rules (13 rules)**
 
-**Plugin Validator** (3 rules)
+- `claude-md-size-error` - File exceeds 40KB limit (configurable)
+- `claude-md-size-warning` - File approaching 35KB limit (configurable)
+- `claude-md-content-too-many-sections` - Too many sections (>20, configurable)
+- `claude-md-import-missing` - Import file not found
+- `claude-md-import-read-failed` - Import file unreadable
+- `claude-md-import-circular` - Circular import detected
+- `claude-md-import-depth-exceeded` - Import depth >5 levels (configurable)
+- `claude-md-import-in-code-block` - Import in code block
+- `claude-md-rules-circular-symlink` - Circular symlink in imports
+- `claude-md-paths` - Invalid paths array format
+- `claude-md-glob-pattern-backslash` - Backslash in glob pattern
+- `claude-md-glob-pattern-too-broad` - Overly broad glob patterns
+- `claude-md-file-not-found` - CLAUDE.md file missing
+- `claude-md-filename-case-sensitive` - Case-sensitive filename issues
 
-- plugin.json schema compliance
-- Semantic versioning validation
-- Directory structure verification
-- Cross-reference validation (skills, agents)
-- marketplace.json schema validation
+**Skills Rules (28 rules)**
 
-**Total:** 27 validation rules covering all Claude Code configuration files
+Schema & Metadata:
+- `skill-name` - Missing or invalid name in frontmatter
+- `skill-description` - Description too short or wrong person
+- `skill-version` - Missing version field
+- `skill-tags` - Invalid tags format
+- `skill-context` - Missing context field
+- `skill-model` - Invalid model specification
+- `skill-agent` - Invalid agent reference
+- `skill-dependencies` - Invalid dependencies format
+- `skill-allowed-tools` - Invalid allowed-tools syntax
+- `skill-disallowed-tools` - Invalid disallowed-tools syntax
+
+Content & Structure:
+- `skill-body-too-long` - Body exceeds 500 lines (configurable)
+- `skill-large-reference-no-toc` - Large file missing TOC (>100 lines, configurable)
+- `skill-missing-examples` - Missing usage examples
+- `skill-name-directory-mismatch` - Skill name doesn't match directory
+
+File Organization:
+- `skill-too-many-files` - Too many files at root (>10, configurable)
+- `skill-deep-nesting` - Excessive directory nesting (>3 levels, configurable)
+- `skill-naming-inconsistent` - Mixed naming conventions (configurable minimum files)
+- `skill-multi-script-missing-readme` - Multiple scripts without README (>3, configurable)
+- `skill-missing-changelog` - Missing CHANGELOG.md
+
+Scripts & Security:
+- `skill-missing-shebang` - Shell script missing shebang
+- `skill-missing-comments` - Script >10 lines without comments (configurable)
+- `skill-dangerous-command` - Dangerous commands (rm -rf, etc.)
+- `skill-eval-usage` - Usage of eval/exec
+- `skill-path-traversal` - Path traversal patterns (../)
+- `skill-time-sensitive-content` - Time-sensitive references
+- `skill-unknown-string-substitution` - Invalid {{VAR}} syntax
+- `skill-referenced-file-not-found` - Referenced file missing
+
+**Settings Rules (5 rules)**
+
+- `settings-invalid-permission` - Invalid permission action value
+- `settings-permission-invalid-rule` - Invalid Tool(pattern) syntax
+- `settings-permission-empty-pattern` - Empty inline pattern (configurable)
+- `settings-invalid-env-var` - Invalid environment variable name
+- `settings-file-path-not-found` - Referenced file path doesn't exist
+
+**Hooks Rules (3 rules)**
+
+- `hooks-invalid-config` - Invalid hooks.json structure
+- `hooks-invalid-event` - Unknown hook event name
+- `hooks-missing-script` - Hook script file not found
+
+**MCP Rules (13 rules)**
+
+Server Configuration:
+- `mcp-invalid-server` - Invalid server configuration
+- `mcp-server-key-mismatch` - Server key doesn't match object key
+- `mcp-invalid-transport` - Unknown transport type
+
+Transport Validation:
+- `mcp-stdio-empty-command` - Empty stdio command
+- `mcp-http-empty-url` - Empty HTTP URL
+- `mcp-http-invalid-url` - Invalid HTTP URL format
+- `mcp-sse-empty-url` - Empty SSE URL
+- `mcp-sse-invalid-url` - Invalid SSE URL format
+- `mcp-sse-transport-deprecated` - SSE transport deprecated
+- `mcp-websocket-empty-url` - Empty WebSocket URL
+- `mcp-websocket-invalid-url` - Invalid WebSocket URL
+- `mcp-websocket-invalid-protocol` - Invalid WebSocket protocol
+
+Environment:
+- `mcp-invalid-env-var` - Invalid env var syntax (configurable pattern)
+
+**Plugin Rules (10 rules)**
+
+Manifest:
+- `plugin-name-required` - Missing plugin name
+- `plugin-version-required` - Missing version
+- `plugin-description-required` - Missing description
+- `plugin-invalid-version` - Invalid semantic version
+- `plugin-invalid-manifest` - Invalid plugin.json structure
+
+Structure:
+- `plugin-json-wrong-location` - plugin.json not in .claude-plugin/
+- `plugin-components-wrong-location` - Components in wrong location
+- `plugin-missing-file` - Referenced file missing
+- `plugin-marketplace-files-not-found` - Marketplace files missing
+
+Dependencies:
+- `plugin-dependency-invalid-version` - Invalid dependency version
+- `plugin-circular-dependency` - Circular plugin dependency
+- `commands-in-plugin-deprecated` - Deprecated commands field
+
+**Agents Rules (13 rules)**
+
+- `agent-name` - Missing or invalid agent name
+- `agent-description` - Description too short or wrong person
+- `agent-model` - Invalid model specification
+- `agent-tools` - Invalid tools array
+- `agent-allowed-tools` - Invalid allowed-tools format
+- `agent-disallowed-tools` - Invalid disallowed-tools format
+- `agent-skills` - Invalid skills array
+- `agent-skills-not-found` - Referenced skill not found
+- `agent-hooks` - Invalid hooks configuration
+- `agent-hooks-invalid-schema` - Hooks schema validation failed
+- `agent-events` - Invalid events array
+- `agent-missing-system-prompt` - Missing system prompt
+- `agent-body-too-short` - Body <50 characters (configurable)
+- `agent-name-directory-mismatch` - Name doesn't match directory
+
+**Output Styles Rules (6 rules)**
+
+- `output-style-name` - Missing or invalid name
+- `output-style-description` - Description too short
+- `output-style-examples` - Invalid examples format
+- `output-style-missing-examples` - No usage examples
+- `output-style-missing-guidelines` - No formatting guidelines
+- `output-style-body-too-short` - Body <50 characters (configurable)
+- `output-style-name-directory-mismatch` - Name doesn't match directory
+
+**LSP Rules (9 rules)**
+
+- `lsp-config-file-not-json` - lsp.json is not valid JSON
+- `lsp-config-file-relative-path` - Config file path is relative
+- `lsp-server-name-too-short` - Server name <2 characters (configurable)
+- `lsp-command-not-in-path` - LSP command not executable
+- `lsp-invalid-transport` - Invalid transport type
+- `lsp-language-id-empty` - Empty language ID
+- `lsp-language-id-not-lowercase` - Language ID not lowercase
+- `lsp-extension-missing-dot` - File extension missing dot
+
+**Commands Rules (2 rules)**
+
+- `commands-deprecated-directory` - .claude/commands deprecated
+- `commands-migrate-to-skills` - Migrate commands to skills
+
+**Total: 105 configurable validation rules**
 
 #### Architecture & Performance
 
+**Rule-Based Architecture**
+
+- **ESLint-style rule system** - Each validation check is an independent rule
+- **Rule metadata** - Standardized meta objects with id, name, description, severity, category
+- **TypeScript interfaces** - Exported option types for all 17 configurable rules
+- **Consistent naming** - All option interfaces follow `{RuleId}Options` pattern
+- **ClaudeLintRuleTester** - Testing framework following ESLint patterns
+- **Automatic rule registration** - Rules auto-register via index imports
+- **1:1:1 mapping enforcement** - Every rule has implementation, test, and documentation
+
 **Rule Registry System**
 
-- Centralized metadata for all 27 validation rules
+- Centralized metadata for all 105 validation rules
 - Single source of truth for rule definitions
 - Config validation against known rules
 - Documentation generation support
 - IDE integration readiness
 - Plugin rule registration
+- Rule option validation with Zod schemas
 
 **Validator Registry & Factory**
 
@@ -356,14 +534,49 @@ For more details, see the [migration guide](./docs/MIGRATION.md).
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "off",
-    "import-missing": "warn"
+    // Disable/enable individual rules
+    "claude-md-size-error": "off",
+    "skill-dangerous-command": "warn",
+
+    // Configure rule options
+    "claude-md-size-error": ["error", { "maxSize": 50000 }],
+    "skill-body-too-long": ["warn", { "maxLines": 1000 }],
+    "lsp-server-name-too-short": ["warn", { "minLength": 3 }],
+
+    // File-specific overrides
+    "overrides": [
+      {
+        "files": ["**/.claude/rules/*.md"],
+        "rules": {
+          "claude-md-size-error": "off"
+        }
+      }
+    ]
   },
   "plugins": ["mycompany"],
   "extends": ["claudelint:recommended"]
 }
 ```
+
+**All 17 Configurable Rules:**
+
+1. `claude-md-size-error` - maxSize (default: 40000 bytes)
+2. `claude-md-size-warning` - maxSize (default: 35000 bytes)
+3. `claude-md-content-too-many-sections` - maxSections (default: 20)
+4. `claude-md-import-depth-exceeded` - maxDepth (default: 5)
+5. `claude-md-rules-circular-symlink` - maxSymlinkDepth (default: 100)
+6. `skill-body-too-long` - maxLines (default: 500)
+7. `skill-large-reference-no-toc` - minLines (default: 100)
+8. `skill-too-many-files` - maxFiles (default: 10)
+9. `skill-deep-nesting` - maxDepth (default: 3)
+10. `skill-naming-inconsistent` - minFiles (default: 3)
+11. `skill-missing-comments` - minLines (default: 10)
+12. `skill-multi-script-missing-readme` - maxScripts (default: 3)
+13. `settings-permission-empty-pattern` - allowEmpty (default: false)
+14. `mcp-invalid-env-var` - pattern (default: '^[A-Z_][A-Z0-9_]*$')
+15. `lsp-server-name-too-short` - minLength (default: 2)
+16. `agent-body-too-short` - minLength (default: 50)
+17. `output-style-body-too-short` - minLength (default: 50)
 
 #### Documentation (30+ pages)
 
@@ -387,10 +600,14 @@ For more details, see the [migration guide](./docs/MIGRATION.md).
 
 **Rule Documentation:**
 
-- 27 individual rule pages (ESLint-style)
-- Per-rule examples and explanations
-- Fix suggestions for each rule
-- When to disable guidance
+- **105 individual rule pages** (ESLint-style)
+- Per-rule examples (Incorrect/Correct code patterns)
+- Configuration options with defaults
+- "When Not To Use It" sections
+- "How To Fix" guidance
+- Related rules cross-references
+- Resource links to implementation and tests
+- Template-driven consistency
 
 **Integration Examples:**
 
@@ -426,12 +643,17 @@ For more details, see the [migration guide](./docs/MIGRATION.md).
 
 **Testing:**
 
-- 202+ test cases covering all validators
-- Unit tests for individual validators
-- Integration tests for CLI
-- Composition framework tests
-- Plugin system tests
-- Helper utilities and custom matchers
+- **708 test cases** covering all 105 rules
+- **Rule-level unit tests** - Each rule has dedicated test file
+- **ClaudeLintRuleTester** framework - ESLint-style testing
+- **Valid/invalid test cases** - Comprehensive coverage per rule
+- **Integration tests** for CLI commands
+- **Validator orchestration tests** - End-to-end validation flows
+- **Config system tests** - Rule configuration and overrides
+- **Cache system tests** - Validation caching behavior
+- **Inline disable tests** - Comment directive handling
+- **100% rule coverage** - All 105 rules have test files
+- **1:1:1 enforcement** - Automated script verifies rule/test/doc mapping
 
 **CI/CD:**
 
@@ -446,6 +668,17 @@ For more details, see the [migration guide](./docs/MIGRATION.md).
 - ESLint + Prettier configuration
 - 100% TypeScript codebase
 - Comprehensive JSDoc comments
+
+**Development Tooling:**
+
+- `check-rule-structure.ts` - Enforces 1:1:1 rule/test/doc mapping
+- `check-rule-option-docs.ts` - Validates option/documentation sync
+- `check-rule-option-interfaces.ts` - Enforces interface naming standards
+- `audit-rule-docs.ts` - Audits documentation quality and completeness
+- `verify-rule-implementations.ts` - Verifies all rules have implementations
+- `generate-rule-types.ts` - Auto-generates TypeScript types from rules
+- Pre-commit hooks validate structure and formatting
+- CI pipeline runs all validation checks
 
 #### Performance Benchmarks
 
