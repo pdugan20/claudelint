@@ -77,10 +77,57 @@ Consider disabling if your code is genuinely trivial and self-documenting, you h
 - [skill-missing-shebang](./skill-missing-shebang.md) - Scripts need shebang lines
 - [skill-missing-examples](./skill-missing-examples.md) - Skills need usage examples
 
+## How To Fix
+
+Add explanatory comments to shell scripts:
+
+1. Add header comment explaining script purpose
+2. Document usage and requirements
+3. Comment complex logic sections
+4. Explain non-obvious decisions
+
+Example additions:
+
+```bash
+#!/usr/bin/env bash
+
+# Deploy application to specified environment
+# Usage: ./deploy.sh <environment> [region]
+# Requires: AWS CLI, Docker
+
+# Configuration
+API_URL="https://api.example.com"
+
+# Validate arguments
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <environment> [region]"
+  exit 1
+fi
+```
+
+## Options
+
+### `minLines`
+
+Minimum number of non-empty lines before comments are required.
+
+Type: `number`
+Default: `10`
+
+Example configuration:
+
+```json
+{
+  "rules": {
+    "skill-missing-comments": ["warn", { "minLines": 20 }]
+  }
+}
+```
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-missing-comments.ts)
+- [Rule Tests](../../tests/rules/skills/skill-missing-comments.test.ts)
 - [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
 
 ## Version

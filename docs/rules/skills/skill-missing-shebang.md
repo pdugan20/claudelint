@@ -60,10 +60,31 @@ Consider disabling if your scripts are always executed explicitly with `bash scr
 - [skill-missing-comments](./skill-missing-comments.md) - Scripts should have explanatory comments
 - [skill-dangerous-command](./skill-dangerous-command.md) - Dangerous shell commands
 
+## How To Fix
+
+Add a shebang line as the first line of the script:
+
+1. Open the shell script file
+2. Add `#!/usr/bin/env bash` as line 1
+3. Ensure there are no blank lines before the shebang
+4. Make the script executable: `chmod +x script.sh`
+
+Example fix:
+
+```bash
+#!/usr/bin/env bash
+
+# Rest of script...
+set -e
+echo "Deploying..."
+```
+
+This rule is auto-fixable and will add the shebang if run with the `--fix` flag.
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-missing-shebang.ts)
+- [Rule Tests](../../tests/rules/skills/skill-missing-shebang.test.ts)
 - [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
 
 ## Version

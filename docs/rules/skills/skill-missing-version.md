@@ -50,10 +50,32 @@ Consider disabling if your skill is experimental and version tracking isn't need
 
 - [skill-missing-changelog](./skill-missing-changelog.md) - Track version history in CHANGELOG
 
+## How To Fix
+
+Add a version field to SKILL.md frontmatter:
+
+1. Open SKILL.md
+2. Add `version: "1.0.0"` to frontmatter
+3. Use semantic versioning format
+4. Update version when making changes
+
+Example fix:
+
+```markdown
+---
+name: deploy
+description: Deploys applications
+version: "1.0.0"          # Add this line
+user-invocable: true
+---
+```
+
+This rule is auto-fixable and will add `version: "1.0.0"` if run with the `--fix` flag.
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-missing-version.ts)
+- [Rule Tests](../../tests/rules/skills/skill-missing-version.test.ts)
 - [Semantic Versioning](https://semver.org/)
 
 ## Version

@@ -76,10 +76,51 @@ Consider disabling if your skill genuinely needs many root-level files, you're f
 - [skill-deep-nesting](./skill-deep-nesting.md) - Excessive directory nesting
 - [skill-naming-inconsistent](./skill-naming-inconsistent.md) - Inconsistent file naming
 
+## How To Fix
+
+Organize files into logical subdirectories:
+
+1. Create subdirectories: `bin/`, `lib/`, `tests/`, `docs/`
+2. Move scripts to appropriate directories
+3. Keep only essential files at root (SKILL.md, main script, README.md)
+4. Update references in scripts and documentation
+
+Example restructuring:
+
+```bash
+# Before: 15 files at root
+.claude/skills/deploy/*.sh
+
+# After: Organized structure
+mkdir -p bin lib tests
+mv *-check.sh *-validate.sh bin/
+mv utils.sh config.sh logging.sh lib/
+mv *-test.sh tests/
+```
+
+## Options
+
+### `maxFiles`
+
+Maximum number of files allowed at root level before warning.
+
+Type: `number`
+Default: `10`
+
+Example configuration:
+
+```json
+{
+  "rules": {
+    "skill-too-many-files": ["warn", { "maxFiles": 15 }]
+  }
+}
+```
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-too-many-files.ts)
+- [Rule Tests](../../tests/rules/skills/skill-too-many-files.test.ts)
 - [Shell Script Organization](https://google.github.io/styleguide/shellguide.html)
 
 ## Version

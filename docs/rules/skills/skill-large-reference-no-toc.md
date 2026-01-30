@@ -24,9 +24,82 @@ name: complex-skill
 
 # Complex Skill
 
+... (150+ lines of content)
+```
+
+### Correct
+
+Large SKILL.md with table of contents:
+
+```markdown
+---
+name: complex-skill
+description: Complex skill with extensive documentation
+---
+
+# Complex Skill
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+
+## Installation
+
+Instructions here...
+
+## Configuration
+
+Config details here...
+
+... (rest of content with section headers)
+```
+
+## How To Fix
+
+Add a table of contents to large SKILL.md files:
+
+1. Add a "Table of Contents" section after the title
+2. Link to all major sections using markdown anchor links
+3. Keep TOC concise and well-organized
+4. Use proper heading hierarchy
+
+Example TOC:
+
+```markdown
+## Table of Contents
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [Advanced Usage](#advanced-usage)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+```
+
 ## Options
 
-This rule does not have any configuration options.
+### `minLines`
+
+Minimum number of body lines before TOC is required.
+
+Type: `number`
+Default: `100`
+
+Example configuration:
+
+```json
+{
+  "rules": {
+    "skill-large-reference-no-toc": ["warn", { "minLines": 150 }]
+  }
+}
+```
 
 ## When Not To Use It
 
@@ -39,8 +112,8 @@ Consider disabling this rule if your documentation tool automatically generates 
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/skills.ts#L543)
-- [Rule Tests](../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-large-reference-no-toc.ts)
+- [Rule Tests](../../tests/rules/skills/skill-large-reference-no-toc.test.ts)
 
 ## Version
 

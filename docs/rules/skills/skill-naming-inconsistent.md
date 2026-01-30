@@ -63,10 +63,46 @@ Consider disabling if migrating from another system and can't rename yet, your o
 - [skill-too-many-files](./skill-too-many-files.md) - File organization
 - [skill-deep-nesting](./skill-deep-nesting.md) - Directory nesting
 
+## How To Fix
+
+Choose one naming convention and rename all files:
+
+1. Audit existing file names
+2. Choose a convention (kebab-case recommended)
+3. Rename files consistently
+4. Update references in scripts
+
+Example renaming:
+
+```bash
+# Standardize to kebab-case
+mv health_check.sh health-check.sh
+mv rollbackDeployment.sh rollback-deployment.sh
+```
+
+## Options
+
+### `minFiles`
+
+Minimum number of files before checking for consistency.
+
+Type: `number`
+Default: `3`
+
+Example configuration:
+
+```json
+{
+  "rules": {
+    "skill-naming-inconsistent": ["warn", { "minFiles": 5 }]
+  }
+}
+```
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-naming-inconsistent.ts)
+- [Rule Tests](../../tests/rules/skills/skill-naming-inconsistent.test.ts)
 - [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
 
 ## Version

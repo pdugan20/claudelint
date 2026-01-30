@@ -84,10 +84,30 @@ Consider disabling if scripts never handle user input for file paths, all paths 
 - [skill-dangerous-command](./skill-dangerous-command.md) - Dangerous shell command detection
 - [skill-eval-usage](./skill-eval-usage.md) - Eval/exec security risk detection
 
+## How To Fix
+
+Validate and sanitize file paths:
+
+1. Use `basename` to remove directory components
+2. Validate paths stay within allowed directories
+3. Use absolute paths with resolved canonicalization
+4. Reject paths containing `../` or `..\`
+
+Example fixes:
+
+```bash
+# Validate with basename
+filename=$(basename "$user_input")
+cat "./allowed-dir/$filename"
+
+# Validate directory containment
+realpath "$user_path" | grep -q "^/allowed/dir/" || exit 1
+```
+
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-path-traversal.ts)
+- [Rule Tests](../../tests/rules/skills/skill-path-traversal.test.ts)
 - [OWASP Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)
 - [CWE-22](https://cwe.mitre.org/data/definitions/22.html)
 

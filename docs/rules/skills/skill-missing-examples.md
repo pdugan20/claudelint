@@ -27,6 +27,99 @@ description: Deploys the application to production
 
 This skill handles deployment to production servers.
 
+````
+
+### Correct
+
+SKILL.md with code block examples:
+
+````markdown
+---
+name: deploy
+description: Deploys applications to production
+---
+
+# Deploy Skill
+
+This skill handles deployment to production servers.
+
+## Usage
+
+```bash
+# Deploy to production
+claude deploy production us-east-1
+
+# Deploy to staging
+claude deploy staging us-west-2
+```
+
+## Arguments
+
+- `environment` - Target environment (production, staging)
+- `region` - AWS region for deployment
+````
+
+SKILL.md with Examples section:
+
+````markdown
+---
+name: deploy
+description: Deploys applications
+---
+
+# Deploy Skill
+
+## Examples
+
+Deploy to production:
+
+```bash
+./deploy.sh production
+```
+
+Deploy with custom configuration:
+
+```bash
+./deploy.sh staging --config custom.yml
+```
+````
+
+## How To Fix
+
+Add usage examples to SKILL.md:
+
+1. Add a code block showing basic usage
+2. Or add an "Examples" section with multiple use cases
+3. Include expected output when helpful
+4. Show common argument combinations
+
+Example additions:
+
+```markdown
+## Usage
+
+```bash
+claude skill-name arg1 arg2
+```
+
+```
+
+Or:
+
+```markdown
+## Examples
+
+Basic usage:
+```bash
+./script.sh input.txt
+```
+
+Advanced usage:
+```bash
+./script.sh input.txt --verbose --output result.txt
+```
+```
+
 ## Options
 
 This rule does not have configuration options.
@@ -43,8 +136,8 @@ Consider disabling if your skill is self-explanatory with no arguments, examples
 
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-missing-examples.ts)
+- [Rule Tests](../../tests/rules/skills/skill-missing-examples.test.ts)
 
 ## Version
 

@@ -47,6 +47,49 @@ All notable changes to deploy will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.0.0] - 2024-01-15
+
+### Added
+
+- Initial release of deploy skill
+- Support for production and staging environments
+- Health check validation
+- Rollback capability
+```
+
+## How To Fix
+
+Create a CHANGELOG.md file in your skill directory:
+
+1. Create `CHANGELOG.md` in the skill directory
+2. Use Keep a Changelog format
+3. Document all notable changes
+4. Link to semantic versioning
+
+This rule is auto-fixable and will create a CHANGELOG.md template if run with the `--fix` flag.
+
+Example creation:
+
+```bash
+cat > .claude/skills/deploy/CHANGELOG.md << 'EOF'
+# Changelog
+
+All notable changes to deploy will be documented in this file.
+
+## [Unreleased]
+
+## [1.0.0] - 2024-01-15
+
+### Added
+
+- Initial release
+EOF
+```
+
 ## Options
 
 This rule does not have configuration options.
@@ -62,8 +105,8 @@ Consider disabling if your skill is in very early development (pre-alpha), you u
 
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-missing-changelog.ts)
+- [Rule Tests](../../tests/rules/skills/skill-missing-changelog.test.ts)
 - [Keep a Changelog](https://keepachangelog.com/)
 
 ## Version
