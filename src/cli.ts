@@ -14,6 +14,106 @@ import { Fixer } from './utils/fixer';
 import { ValidationCache } from './utils/cache';
 import { RuleRegistry, RuleMetadata } from './utils/rule-registry';
 import { PluginLoader } from './utils/plugin-loader';
+import { ClaudeLintConfig } from './utils/config';
+
+/**
+ * Load and validate configuration for commands
+ * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
+ *
+ * @param options - Command options (config, verbose, debugConfig)
+ * @returns Loaded and validated config object (empty if --no-config)
+ */
+function loadAndValidateConfig(options: {
+  config?: string | false; // Commander sets config to false when --no-config is used
+  verbose?: boolean;
+  debugConfig?: boolean;
+}): ClaudeLintConfig {
+  // Skip config loading if --no-config flag is set (Commander sets config to false)
+  if (options.config === false) {
+    if (options.verbose || options.debugConfig) {
+      console.log('Skipping config file (--no-config)');
+    }
+    return {};
+  }
+
+  let config: ClaudeLintConfig = {};
+
+  // Load from explicit path or auto-discover
+  if (options.config) {
+    if (options.debugConfig) {
+      console.log(`[Config Debug] Loading config from: ${options.config}`);
+    }
+    try {
+      config = loadConfig(options.config);
+      if (options.verbose || options.debugConfig) {
+        console.log(`Using config file: ${options.config}`);
+      }
+      if (options.debugConfig) {
+        console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+      }
+    } catch (error: unknown) {
+      console.error(`Error loading config file: ${options.config}`);
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(2);
+    }
+  } else {
+    if (options.debugConfig) {
+      console.log('[Config Debug] Searching for config file from:', process.cwd());
+    }
+    const configPath = findConfigFile(process.cwd());
+    if (configPath) {
+      if (options.debugConfig) {
+        console.log(`[Config Debug] Found config file: ${configPath}`);
+      }
+      try {
+        config = loadConfig(configPath);
+        if (options.verbose || options.debugConfig) {
+          console.log(`Using config file: ${configPath}`);
+        }
+        if (options.debugConfig) {
+          console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+        }
+      } catch (error: unknown) {
+        console.error(`Error loading config file: ${configPath}`);
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exit(2);
+      }
+    } else if (options.debugConfig) {
+      console.log('[Config Debug] No config file found, using defaults');
+    }
+  }
+
+  // Validate config against rule registry (rule IDs exist)
+  const configErrors = validateConfig(config);
+  if (configErrors.length > 0) {
+    console.error('\nConfiguration validation errors:');
+    for (const error of configErrors) {
+      const prefix = error.severity === 'error' ? '✗ Error:' : '! Warning:';
+      console.error(`${prefix} ${error.message}`);
+    }
+    const hasErrors = configErrors.some((e) => e.severity === 'error');
+    if (hasErrors) {
+      console.error('\nPlease fix configuration errors before continuing.');
+      process.exit(2);
+    }
+    console.error(''); // Empty line after warnings
+  }
+
+  // Validate all rule options early (ESLint pattern: fail fast before running validators)
+  try {
+    validateAllRuleOptions(config);
+  } catch (error) {
+    if (error instanceof ConfigError) {
+      console.error('\nConfiguration error:');
+      console.error(error.message);
+      console.error('\nPlease fix your .claudelintrc.json file and try again.');
+      process.exit(2);
+    }
+    throw error; // Re-throw unexpected errors
+  }
+
+  return config;
+}
 
 const program = new Command();
 
@@ -389,15 +489,21 @@ program
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
   .option('--explain', 'Show detailed explanations and fix suggestions')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
   .action(
     async (options: {
       path?: string;
       verbose?: boolean;
       warningsAsErrors?: boolean;
       explain?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
     }) => {
       try {
-        const validator = ValidatorRegistry.create('claude-md', options);
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
+
+        const validator = ValidatorRegistry.create('claude-md', { ...options, config });
         const reporter = new Reporter({
           verbose: options.verbose,
           warningsAsErrors: options.warningsAsErrors,
@@ -430,15 +536,21 @@ program
   .option('--skill <name>', 'Validate specific skill')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
   .action(
     async (options: {
       path?: string;
       skill?: string;
       verbose?: boolean;
       warningsAsErrors?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
     }) => {
       try {
-        const validator = ValidatorRegistry.create('skills', options);
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
+
+        const validator = ValidatorRegistry.create('skills', { ...options, config });
         const reporter = new Reporter({
           verbose: options.verbose,
           warningsAsErrors: options.warningsAsErrors,
@@ -469,9 +581,20 @@ program
   .option('--path <path>', 'Custom path to settings.json')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    try {
-      const validator = ValidatorRegistry.create('settings', options);
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
+  .action(
+    async (options: {
+      path?: string;
+      verbose?: boolean;
+      warningsAsErrors?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
+    }) => {
+      try {
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
+
+        const validator = ValidatorRegistry.create('settings', { ...options, config });
       const reporter = new Reporter({
         verbose: options.verbose,
         warningsAsErrors: options.warningsAsErrors,
@@ -484,16 +607,17 @@ program
       reporter.report(result, 'Settings');
 
       process.exit(reporter.getExitCode(result));
-    } catch (error) {
-      console.error('\nValidation failed:');
-      console.error(error instanceof Error ? error.message : String(error));
-      if (options.verbose && error instanceof Error && error.stack) {
-        console.error('\nStack trace:');
-        console.error(error.stack);
+      } catch (error) {
+        console.error('\nValidation failed:');
+        console.error(error instanceof Error ? error.message : String(error));
+        if (options.verbose && error instanceof Error && error.stack) {
+          console.error('\nStack trace:');
+          console.error(error.stack);
+        }
+        process.exit(2);
       }
-      process.exit(2);
     }
-  });
+  );
 
 program
   .command('validate-hooks')
@@ -501,9 +625,20 @@ program
   .option('--path <path>', 'Custom path to hooks.json')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    try {
-      const validator = ValidatorRegistry.create('hooks', options);
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
+  .action(
+    async (options: {
+      path?: string;
+      verbose?: boolean;
+      warningsAsErrors?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
+    }) => {
+      try {
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
+
+        const validator = ValidatorRegistry.create('hooks', { ...options, config });
       const reporter = new Reporter({
         verbose: options.verbose,
         warningsAsErrors: options.warningsAsErrors,
@@ -516,16 +651,17 @@ program
       reporter.report(result, 'Hooks');
 
       process.exit(reporter.getExitCode(result));
-    } catch (error) {
-      console.error('\nValidation failed:');
-      console.error(error instanceof Error ? error.message : String(error));
-      if (options.verbose && error instanceof Error && error.stack) {
-        console.error('\nStack trace:');
-        console.error(error.stack);
+      } catch (error) {
+        console.error('\nValidation failed:');
+        console.error(error instanceof Error ? error.message : String(error));
+        if (options.verbose && error instanceof Error && error.stack) {
+          console.error('\nStack trace:');
+          console.error(error.stack);
+        }
+        process.exit(2);
       }
-      process.exit(2);
     }
-  });
+  );
 
 program
   .command('validate-mcp')
@@ -533,31 +669,43 @@ program
   .option('--path <path>', 'Custom path to .mcp.json')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    try {
-      const validator = ValidatorRegistry.create('mcp', options);
-      const reporter = new Reporter({
-        verbose: options.verbose,
-        warningsAsErrors: options.warningsAsErrors,
-      });
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
+  .action(
+    async (options: {
+      path?: string;
+      verbose?: boolean;
+      warningsAsErrors?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
+    }) => {
+      try {
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
 
-      reporter.section('Validating MCP server configuration files...');
+        const validator = ValidatorRegistry.create('mcp', { ...options, config });
+        const reporter = new Reporter({
+          verbose: options.verbose,
+          warningsAsErrors: options.warningsAsErrors,
+        });
 
-      const result = await validator.validate();
+        reporter.section('Validating MCP server configuration files...');
 
-      reporter.report(result, 'MCP');
+        const result = await validator.validate();
 
-      process.exit(reporter.getExitCode(result));
-    } catch (error) {
-      console.error('\nValidation failed:');
-      console.error(error instanceof Error ? error.message : String(error));
-      if (options.verbose && error instanceof Error && error.stack) {
-        console.error('\nStack trace:');
-        console.error(error.stack);
+        reporter.report(result, 'MCP');
+
+        process.exit(reporter.getExitCode(result));
+      } catch (error) {
+        console.error('\nValidation failed:');
+        console.error(error instanceof Error ? error.message : String(error));
+        if (options.verbose && error instanceof Error && error.stack) {
+          console.error('\nStack trace:');
+          console.error(error.stack);
+        }
+        process.exit(2);
       }
-      process.exit(2);
     }
-  });
+  );
 
 program
   .command('validate-plugin')
@@ -565,9 +713,20 @@ program
   .option('--path <path>', 'Custom path to plugin.json')
   .option('-v, --verbose', 'Verbose output')
   .option('--warnings-as-errors', 'Treat warnings as errors')
-  .action(async (options: { path?: string; verbose?: boolean; warningsAsErrors?: boolean }) => {
-    try {
-      const validator = ValidatorRegistry.create('plugin', options);
+  .option('-c, --config <path>', 'Path to configuration file')
+  .option('--no-config', 'Disable configuration file loading')
+  .action(
+    async (options: {
+      path?: string;
+      verbose?: boolean;
+      warningsAsErrors?: boolean;
+      config?: string | false; // Commander sets to false when --no-config is used
+    }) => {
+      try {
+        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+        const config = loadAndValidateConfig(options);
+
+        const validator = ValidatorRegistry.create('plugin', { ...options, config });
       const reporter = new Reporter({
         verbose: options.verbose,
         warningsAsErrors: options.warningsAsErrors,
@@ -588,8 +747,9 @@ program
         console.error(error.stack);
       }
       process.exit(2);
+      }
     }
-  });
+  );
 
 program
   .command('format')

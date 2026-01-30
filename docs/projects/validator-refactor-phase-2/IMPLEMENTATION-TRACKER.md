@@ -13,11 +13,11 @@
 - [X] Phase 2.5: Implement Rule Discovery (9/10 tasks) COMPLETE ✓ (Task 2.5.10 active)
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
-- [ ] Phase 2.7: Testing & Validation (8/17 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 added
+- [ ] Phase 2.7: Testing & Validation (9/17 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 added
 
-**Total:** 60/69 tasks complete (87%)
+**Total:** 61/69 tasks complete (88%)
 
-**Current Focus:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.17, and 2.7.18 COMPLETE, ready to continue with remaining tasks)
+**Current Focus:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6 and 2.7.16-2.7.18 COMPLETE, continuing with 2.7.7)
 
 ## CRITICAL CLARIFICATION (2026-01-29)
 
@@ -1258,7 +1258,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Assigned To:** TBD
   - **Completion Date:** TBD
 
-- [ ] **Task 2.7.16:** Make individual validator commands config-aware
+- [X] **Task 2.7.16:** Make individual validator commands config-aware
   - **File:** `src/cli.ts`
   - **Issue:** Individual commands (check-claude-md, validate-skills, etc.) ignore .claudelintrc.json
   - **Current Behavior:**
@@ -1270,15 +1270,22 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - All commands should load config by default
     - Add `--no-config` flag to opt-out
     - Consistent behavior across all commands
-  - **Action:** Update all individual validator command handlers to load config
-  - **Action:** Add config loading logic to each command (check-claude-md, validate-skills, validate-hooks, etc.)
-  - **Action:** Add `--no-config` flag to all commands for opt-out
-  - **Action:** Test that config disable/severity/options work for individual commands
-  - **Estimated Time:** 45 minutes
-  - **Dependencies:** Task 2.7.4, Task 2.7.5, Task 2.7.6
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
-  - **Notes:** Discovered during Task 2.7.4 testing. This aligns with industry standards (ESLint, Prettier, etc.)
+  - **Action:** Create loadAndValidateConfig() helper function for DRY config loading ✓
+  - **Action:** Add --config and --no-config options to all individual commands ✓
+  - **Action:** Call loadAndValidateConfig() in each command before creating validator ✓
+  - **Action:** Pass config to validator via options ✓
+  - **Action:** Test that config disable/severity/options work for individual commands ✓
+  - **Actual Time:** 60 minutes
+  - **Dependencies:** Task 2.7.4, Task 2.7.5, Task 2.7.6, Task 2.7.17, Task 2.7.18
+  - **Assigned To:** Claude
+  - **Completion Date:** 2026-01-29
+  - **Notes:** Discovered during Task 2.7.4 testing. Created reusable helper function to avoid code duplication. Commander.js sets config to false when --no-config is used. All 6 validator commands now load config: check-claude-md, validate-skills, validate-settings, validate-hooks, validate-mcp, validate-plugin.
+  - **Testing verified:**
+    - check-claude-md with rule disabled → No error ✓
+    - check-claude-md with rule enabled → Shows error ✓
+    - check-claude-md --no-config → Uses default severity (warn) ✓
+    - validate-skills with rule disabled → No error ✓
+    - validate-skills with rule enabled → Shows error ✓
 
 - [X] **Task 2.7.17:** Fix cache to include config in hash
   - **File:** `src/utils/cache.ts`, `src/utils/reporting.ts`, `src/cli.ts`
