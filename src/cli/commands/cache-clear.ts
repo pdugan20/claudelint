@@ -4,6 +4,7 @@
 
 import { Command } from 'commander';
 import { ValidationCache } from '../../utils/cache';
+import { logger } from '../utils/logger';
 
 /**
  * Register the cache-clear command
@@ -24,10 +25,10 @@ export function registerCacheClearCommand(program: Command): void {
 
       try {
         cache.clear();
-        console.log('Cache cleared successfully');
+        logger.success('Cache cleared successfully');
         process.exit(0);
       } catch (error) {
-        console.error('[ERROR] Failed to clear cache:', error);
+        logger.error(`Failed to clear cache: ${error}`);
         process.exit(1);
       }
     });

@@ -4,6 +4,7 @@
 
 import { Command } from 'commander';
 import { execSync } from 'child_process';
+import { logger } from '../utils/logger';
 
 /**
  * Register the format command
@@ -21,7 +22,7 @@ export function registerFormatCommand(program: Command): void {
       const mode = options.check ? 'check' : 'fix';
       const verbose = options.verbose || false;
 
-      console.log(`\nFormatting Claude files (${mode} mode)...\n`);
+      logger.section(`Formatting Claude files (${mode} mode)`);
 
       // Define Claude-specific file patterns
       const claudeFiles = {
@@ -35,11 +36,11 @@ export function registerFormatCommand(program: Command): void {
 
       // 1. Markdownlint (Tier 1)
       try {
-        console.log('Running markdownlint on Claude markdown files...');
+        logger.info('Running markdownlint on Claude markdown files...');
         const markdownlintCmd = `markdownlint ${options.check ? '' : '--fix'} '${claudeFiles.markdown.join("' '")}'`;
 
         if (verbose) {
-          console.log(`  Command: ${markdownlintCmd}`);
+          logger.log(`  Command: ${markdownlintCmd}`);
         }
 
         try {
@@ -47,7 +48,8 @@ export function registerFormatCommand(program: Command): void {
           if (verbose && output) {
             console.log(output);
           }
-          console.log('  ✓ Markdownlint passed\n');
+          logger.success('Markdownlint passed');
+          logger.newline();
         } catch (error: unknown) {
           if (error && typeof error === 'object' && 'stdout' in error) {
             console.log(String(error.stdout));
@@ -56,22 +58,22 @@ export function registerFormatCommand(program: Command): void {
             console.error(String(error.stderr));
           }
           hasErrors = true;
-          console.log('  [FAIL] Markdownlint found issues\n');
+          logger.error('Markdownlint found issues');
+          logger.newline();
         }
       } catch (error) {
-        console.log(
-          '  [WARNING] Markdownlint not found (install: npm install -g markdownlint-cli)\n'
-        );
+        logger.warn('Markdownlint not found (install: npm install -g markdownlint-cli)');
+        logger.newline();
       }
 
       // 2. Prettier (Tier 1)
       try {
-        console.log('Running prettier on Claude files...');
+        logger.info('Running prettier on Claude files...');
         const allFiles = [...claudeFiles.markdown, ...claudeFiles.json, ...claudeFiles.yaml];
         const prettierCmd = `prettier ${options.check ? '--check' : '--write'} ${allFiles.map((f) => `"${f}"`).join(' ')}`;
 
         if (verbose) {
-          console.log(`  Command: ${prettierCmd}`);
+          logger.log(`  Command: ${prettierCmd}`);
         }
 
         try {
@@ -79,7 +81,8 @@ export function registerFormatCommand(program: Command): void {
           if (verbose && output) {
             console.log(output);
           }
-          console.log('  ✓ Prettier passed\n');
+          logger.success('Prettier passed');
+          logger.newline();
         } catch (error: unknown) {
           if (error && typeof error === 'object' && 'stdout' in error) {
             console.log(String(error.stdout));
@@ -88,19 +91,21 @@ export function registerFormatCommand(program: Command): void {
             console.error(String(error.stderr));
           }
           hasErrors = true;
-          console.log('  [FAIL] Prettier found issues\n');
+          logger.error('Prettier found issues');
+          logger.newline();
         }
       } catch (error) {
-        console.log('  [WARNING] Prettier not found (install: npm install -g prettier)\n');
+        logger.warn('Prettier not found (install: npm install -g prettier)');
+        logger.newline();
       }
 
       // 3. ShellCheck (Tier 1)
       try {
-        console.log('Running shellcheck on Claude shell scripts...');
+        logger.info('Running shellcheck on Claude shell scripts...');
         const shellCheckCmd = `shellcheck ${claudeFiles.shell.join(' ')}`;
 
         if (verbose) {
-          console.log(`  Command: ${shellCheckCmd}`);
+          logger.log(`  Command: ${shellCheckCmd}`);
         }
 
         try {
@@ -108,7 +113,8 @@ export function registerFormatCommand(program: Command): void {
           if (verbose && output) {
             console.log(output);
           }
-          console.log('  ✓ ShellCheck passed\n');
+          logger.success('ShellCheck passed');
+          logger.newline();
         } catch (error: unknown) {
           if (error && typeof error === 'object' && 'stdout' in error) {
             console.log(String(error.stdout));
@@ -117,20 +123,20 @@ export function registerFormatCommand(program: Command): void {
             console.error(String(error.stderr));
           }
           hasErrors = true;
-          console.log('  [FAIL] ShellCheck found issues\n');
+          logger.error('ShellCheck found issues');
+          logger.newline();
         }
       } catch (error) {
-        console.log(
-          '  [WARNING] ShellCheck not found (install: brew install shellcheck or npm install -g shellcheck)\n'
-        );
+        logger.warn('ShellCheck not found (install: brew install shellcheck or npm install -g shellcheck)');
+        logger.newline();
       }
 
       // Summary
       if (hasErrors) {
-        console.log('[ERROR] Formatting check failed. Run with --fix to auto-fix issues.\n');
+        logger.error('Formatting check failed. Run with --fix to auto-fix issues.');
         process.exit(1);
       } else {
-        console.log('[SUCCESS] All formatting checks passed!\n');
+        logger.success('All formatting checks passed!');
         process.exit(0);
       }
     });

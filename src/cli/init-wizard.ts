@@ -7,7 +7,9 @@
 import inquirer from 'inquirer';
 import { existsSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
+import chalk from 'chalk';
 import { ClaudeLintConfig } from '../utils/config';
+import { logger } from './utils/logger';
 
 interface ProjectInfo {
   hasClaudeDir: boolean;
@@ -39,7 +41,7 @@ export class InitWizard {
    * Run the init wizard
    */
   async run(options: { yes?: boolean } = {}): Promise<void> {
-    console.log('\nWelcome to claudelint configuration wizard!\n');
+    logger.section('Welcome to claudelint configuration wizard!');
 
     // Detect project structure
     const projectInfo = this.detectProject();
@@ -47,9 +49,10 @@ export class InitWizard {
 
     // Use defaults if --yes flag
     if (options.yes) {
-      console.log('\nUsing default configuration (--yes flag)...\n');
+      logger.newline();
+      logger.info('Using default configuration (--yes flag)...');
       this.createDefaultConfig(projectInfo);
-      console.log('[SUCCESS] Configuration created successfully!\n');
+      logger.success('Configuration created successfully!');
       this.displayNextSteps();
       return;
     }
@@ -60,7 +63,8 @@ export class InitWizard {
     // Generate files
     this.generateConfig(answers, projectInfo);
 
-    console.log('\n[SUCCESS] Configuration created successfully!\n');
+    logger.newline();
+    logger.success('Configuration created successfully!');
     this.displayNextSteps();
   }
 
@@ -84,15 +88,15 @@ export class InitWizard {
    * Display detected project information
    */
   private displayProjectInfo(info: ProjectInfo): void {
-    console.log('Detected project structure:');
-    console.log(`   ${info.hasCLAUDEmd ? '[YES]' : '[NO]'} CLAUDE.md`);
-    console.log(`   ${info.hasClaudeDir ? '[YES]' : '[NO]'} .claude/ directory`);
-    console.log(`   ${info.hasSkills ? '[YES]' : '[NO]'} Skills`);
-    console.log(`   ${info.hasSettings ? '[YES]' : '[NO]'} Settings`);
-    console.log(`   ${info.hasHooks ? '[YES]' : '[NO]'} Hooks`);
-    console.log(`   ${info.hasMCP ? '[YES]' : '[NO]'} MCP servers`);
-    console.log(`   ${info.hasPlugin ? '[YES]' : '[NO]'} Plugin manifest`);
-    console.log('');
+    logger.log(chalk.bold('Detected project structure:'));
+    logger.log(`   ${info.hasCLAUDEmd ? chalk.green('[YES]') : chalk.gray('[NO]')} CLAUDE.md`);
+    logger.log(`   ${info.hasClaudeDir ? chalk.green('[YES]') : chalk.gray('[NO]')} .claude/ directory`);
+    logger.log(`   ${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
+    logger.log(`   ${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
+    logger.log(`   ${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);
+    logger.log(`   ${info.hasMCP ? chalk.green('[YES]') : chalk.gray('[NO]')} MCP servers`);
+    logger.log(`   ${info.hasPlugin ? chalk.green('[YES]') : chalk.gray('[NO]')} Plugin manifest`);
+    logger.newline();
   }
 
   /**
@@ -218,12 +222,13 @@ export class InitWizard {
     const configPath = join(this.cwd, '.claudelintrc.json');
 
     if (existsSync(configPath)) {
-      console.log('\n[WARNING] .claudelintrc.json already exists, skipping...');
+      logger.newline();
+      logger.warn('.claudelintrc.json already exists, skipping...');
       return;
     }
 
     writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
-    console.log('[OK] Created .claudelintrc.json');
+    logger.success('Created .claudelintrc.json');
   }
 
   /**
@@ -233,7 +238,7 @@ export class InitWizard {
     const ignorePath = join(this.cwd, '.claudelintignore');
 
     if (existsSync(ignorePath)) {
-      console.log('[WARNING] .claudelintignore already exists, skipping...');
+      logger.warn('.claudelintignore already exists, skipping...');
       return;
     }
 
@@ -256,7 +261,7 @@ export class InitWizard {
     }
 
     writeFileSync(ignorePath, defaultPatterns.join('\n') + '\n', 'utf-8');
-    console.log('[OK] Created .claudelintignore');
+    logger.success('Created .claudelintignore');
   }
 
   /**
@@ -290,12 +295,12 @@ export class InitWizard {
 
       if (added) {
         writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8');
-        console.log('[OK] Added npm scripts to package.json');
+        logger.success('Added npm scripts to package.json');
       } else {
-        console.log('[WARNING] npm scripts already exist, skipping...');
+        logger.warn('npm scripts already exist, skipping...');
       }
     } catch (error) {
-      console.error('[ERROR] Failed to update package.json:', error);
+      logger.error(`Failed to update package.json: ${error}`);
     }
   }
 
@@ -303,13 +308,13 @@ export class InitWizard {
    * Display next steps
    */
   private displayNextSteps(): void {
-    console.log('Next steps:');
-    console.log('');
-    console.log('   1. Review .claudelintrc.json and customize rules');
-    console.log('   2. Run validation: claudelint check-all');
-    console.log('   3. See docs: https://github.com/pdugan20/claudelint#readme');
-    console.log('');
-    console.log('Tip: Use "claudelint list-rules" to see all available rules');
-    console.log('');
+    logger.log(chalk.bold('Next steps:'));
+    logger.newline();
+    logger.log('   1. Review .claudelintrc.json and customize rules');
+    logger.log('   2. Run validation: claudelint check-all');
+    logger.log('   3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.newline();
+    logger.info('Tip: Use "claudelint list-rules" to see all available rules');
+    logger.newline();
   }
 }

@@ -9,8 +9,10 @@
 
 import { existsSync } from 'fs';
 import { resolve, dirname } from 'path';
+import chalk from 'chalk';
 import { loadConfig, findConfigFile, ClaudeLintConfig } from '../utils/config';
 import { RuleRegistry } from '../utils/rule-registry';
+import { logger } from './utils/logger';
 
 export interface ConfigDebugOptions {
   format?: 'json' | 'yaml' | 'table';
@@ -26,34 +28,34 @@ export class ConfigDebugger {
     const configPath = options.configPath || findConfigFile(cwd);
 
     if (!configPath) {
-      console.log('No configuration file found.');
-      console.log('');
-      console.log('Searched locations:');
-      console.log('  - .claudelintrc.json');
-      console.log('  - .claudelintrc.js');
-      console.log('  - package.json (claudelint key)');
-      console.log('');
-      console.log('Run "claudelint init" to create a configuration file.');
+      logger.warn('No configuration file found.');
+      logger.newline();
+      logger.log('Searched locations:');
+      logger.log('  - .claudelintrc.json');
+      logger.log('  - .claudelintrc.js');
+      logger.log('  - package.json (claudelint key)');
+      logger.newline();
+      logger.info('Run "claudelint init" to create a configuration file.');
       process.exit(1);
     }
 
     if (!existsSync(configPath)) {
-      console.error(`Error: Config file not found: ${configPath}`);
+      logger.error(`Config file not found: ${configPath}`);
       process.exit(1);
     }
 
     const config = loadConfig(configPath);
     const format = options.format || 'json';
 
-    console.log(`Configuration loaded from: ${configPath}`);
-    console.log('');
+    logger.log(`Configuration loaded from: ${configPath}`);
+    logger.newline();
 
     if (format === 'json') {
-      console.log(JSON.stringify(config, null, 2));
+      logger.log(JSON.stringify(config, null, 2));
     } else if (format === 'table') {
       this.printConfigTable(config, configPath);
     } else {
-      console.error(`Unsupported format: ${format}`);
+      logger.error(`Unsupported format: ${format}`);
       process.exit(1);
     }
   }
@@ -62,50 +64,50 @@ export class ConfigDebugger {
    * Print config as a table (human-readable)
    */
   private static printConfigTable(config: ClaudeLintConfig, configPath: string): void {
-    console.log('Configuration Summary:');
-    console.log('='.repeat(60));
-    console.log(`Source: ${configPath}`);
-    console.log('');
+    logger.log(chalk.bold('Configuration Summary:'));
+    logger.log('='.repeat(60));
+    logger.log(`Source: ${configPath}`);
+    logger.newline();
 
     // Rules section
     if (config.rules && Object.keys(config.rules).length > 0) {
-      console.log('Rules:');
-      console.log('-'.repeat(60));
+      logger.log('Rules:');
+      logger.log('-'.repeat(60));
       const rules = Object.entries(config.rules).sort(([a], [b]) => a.localeCompare(b));
       for (const [ruleId, ruleConfig] of rules) {
         const rule = RuleRegistry.get(ruleId);
         const severity = typeof ruleConfig === 'string' ? ruleConfig : ruleConfig.severity;
         const status = severity === 'error' ? '✗' : severity === 'warn' ? '!' : '○';
         const category = rule ? `[${rule.category}]` : '';
-        console.log(`  ${status} ${ruleId.padEnd(30)} ${String(severity).padEnd(8)} ${category}`);
+        logger.log(`  ${status} ${ruleId.padEnd(30)} ${String(severity).padEnd(8)} ${category}`);
       }
-      console.log('');
+      logger.newline();
     }
 
     // Output section
     if (config.output) {
-      console.log('Output:');
-      console.log('-'.repeat(60));
-      console.log(`  Format:  ${config.output.format || 'stylish'}`);
-      console.log(`  Verbose: ${config.output.verbose ? 'yes' : 'no'}`);
-      console.log('');
+      logger.log('Output:');
+      logger.log('-'.repeat(60));
+      logger.log(`  Format:  ${config.output.format || 'stylish'}`);
+      logger.log(`  Verbose: ${config.output.verbose ? 'yes' : 'no'}`);
+      logger.newline();
     }
 
     // Other options
     if (config.maxWarnings !== undefined) {
-      console.log('Limits:');
-      console.log('-'.repeat(60));
-      console.log(`  Max warnings: ${config.maxWarnings}`);
-      console.log('');
+      logger.log('Limits:');
+      logger.log('-'.repeat(60));
+      logger.log(`  Max warnings: ${config.maxWarnings}`);
+      logger.newline();
     }
 
     if (config.reportUnusedDisableDirectives !== undefined) {
-      console.log('Directives:');
-      console.log('-'.repeat(60));
-      console.log(
+      logger.log('Directives:');
+      logger.log('-'.repeat(60));
+      logger.log(
         `  Report unused disables: ${config.reportUnusedDisableDirectives ? 'yes' : 'no'}`
       );
-      console.log('');
+      logger.newline();
     }
   }
 
@@ -116,7 +118,7 @@ export class ConfigDebugger {
     const absolutePath = resolve(process.cwd(), filePath);
 
     if (!existsSync(absolutePath)) {
-      console.error(`Error: File not found: ${absolutePath}`);
+      logger.error(`Error: File not found: ${absolutePath}`);
       process.exit(1);
     }
 
@@ -125,9 +127,9 @@ export class ConfigDebugger {
     const configPath = options.configPath || findConfigFile(fileDir);
 
     if (!configPath) {
-      console.log(`No configuration file found for: ${filePath}`);
-      console.log('Using default configuration.');
-      console.log('');
+      logger.log(`No configuration file found for: ${filePath}`);
+      logger.log('Using default configuration.');
+      logger.newline();
       this.printDefaultConfig();
       return;
     }
@@ -135,13 +137,13 @@ export class ConfigDebugger {
     const config = loadConfig(configPath);
     const format = options.format || 'json';
 
-    console.log(`File: ${filePath}`);
-    console.log(`Config: ${configPath}`);
-    console.log('');
+    logger.log(`File: ${filePath}`);
+    logger.log(`Config: ${configPath}`);
+    logger.newline();
 
     if (format === 'json') {
-      console.log('Effective configuration:');
-      console.log(JSON.stringify(config, null, 2));
+      logger.log('Effective configuration:');
+      logger.log(JSON.stringify(config, null, 2));
     } else if (format === 'table') {
       this.printConfigTable(config, configPath);
     }
@@ -159,8 +161,8 @@ export class ConfigDebugger {
       },
     };
 
-    console.log('Default Configuration:');
-    console.log(JSON.stringify(defaultConfig, null, 2));
+    logger.log('Default Configuration:');
+    logger.log(JSON.stringify(defaultConfig, null, 2));
   }
 
   /**
@@ -171,15 +173,15 @@ export class ConfigDebugger {
     const actualConfigPath = configPath || findConfigFile(cwd);
 
     if (!actualConfigPath) {
-      console.log('✓ No configuration file found (using defaults)');
+      logger.log('✓ No configuration file found (using defaults)');
       return;
     }
 
     try {
       const config = loadConfig(actualConfigPath);
 
-      console.log(`Validating: ${actualConfigPath}`);
-      console.log('');
+      logger.log(`Validating: ${actualConfigPath}`);
+      logger.newline();
 
       let hasErrors = false;
 
@@ -191,13 +193,13 @@ export class ConfigDebugger {
 
         if (unknownRules.length > 0) {
           hasErrors = true;
-          console.log('✗ Unknown rules found:');
+          logger.log('✗ Unknown rules found:');
           for (const ruleId of unknownRules) {
-            console.log(`  - ${ruleId}`);
+            logger.log(`  - ${ruleId}`);
           }
-          console.log('');
-          console.log('Run "claudelint list-rules" to see available rules.');
-          console.log('');
+          logger.newline();
+          logger.log('Run "claudelint list-rules" to see available rules.');
+          logger.newline();
         }
       }
 
@@ -210,43 +212,43 @@ export class ConfigDebugger {
 
         if (invalidSeverities.length > 0) {
           hasErrors = true;
-          console.log('✗ Invalid rule severities:');
+          logger.log('✗ Invalid rule severities:');
           for (const [ruleId, ruleConfig] of invalidSeverities) {
             const severity = typeof ruleConfig === 'string' ? ruleConfig : ruleConfig.severity;
-            console.log(`  - ${ruleId}: "${severity}" (must be "error", "warn", or "off")`);
+            logger.log(`  - ${ruleId}: "${severity}" (must be "error", "warn", or "off")`);
           }
-          console.log('');
+          logger.newline();
         }
       }
 
       // Validate output format
       if (config.output?.format && !['stylish', 'compact', 'json'].includes(config.output.format)) {
         hasErrors = true;
-        console.log(`✗ Invalid output format: "${config.output.format}"`);
-        console.log('  Valid formats: stylish, compact, json');
-        console.log('');
+        logger.log(`✗ Invalid output format: "${config.output.format}"`);
+        logger.log('  Valid formats: stylish, compact, json');
+        logger.newline();
       }
 
       if (!hasErrors) {
-        console.log('✓ Configuration is valid');
-        console.log('');
+        logger.log('✓ Configuration is valid');
+        logger.newline();
 
         // Show summary
         const enabledRules = config.rules
           ? Object.entries(config.rules).filter(([, severity]) => severity !== 'off')
           : [];
-        console.log(`Summary:`);
-        console.log(`  ${enabledRules.length} rules enabled`);
-        console.log(`  Format: ${config.output?.format || 'stylish'}`);
+        logger.log(`Summary:`);
+        logger.log(`  ${enabledRules.length} rules enabled`);
+        logger.log(`  Format: ${config.output?.format || 'stylish'}`);
         if (config.maxWarnings !== undefined) {
-          console.log(`  Max warnings: ${config.maxWarnings}`);
+          logger.log(`  Max warnings: ${config.maxWarnings}`);
         }
       } else {
         process.exit(1);
       }
     } catch (error) {
-      console.error('✗ Failed to load configuration:');
-      console.error(`  ${error instanceof Error ? error.message : String(error)}`);
+      logger.error('✗ Failed to load configuration:');
+      logger.error(`  ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     }
   }

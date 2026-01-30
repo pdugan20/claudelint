@@ -3,7 +3,9 @@
  */
 
 import { Command } from 'commander';
+import chalk from 'chalk';
 import { RuleRegistry, RuleMetadata } from '../../utils/rule-registry';
+import { logger } from '../utils/logger';
 
 /**
  * Register the list-rules command
@@ -30,7 +32,7 @@ export function registerListRulesCommand(program: Command): void {
       }
 
       // Table format (default)
-      console.log(`\nAvailable Rules (${rules.length}):\n`);
+      logger.section(`Available Rules (${rules.length})`);
 
       // Group by category
       const byCategory = new Map<string, RuleMetadata[]>();
@@ -43,14 +45,16 @@ export function registerListRulesCommand(program: Command): void {
 
       // Print each category
       for (const [category, categoryRules] of byCategory.entries()) {
-        console.log(`\n${category}:`);
+        logger.log(chalk.bold(`${category}:`));
         categoryRules.forEach((rule: RuleMetadata) => {
-          const badge = rule.fixable ? ' [fixable]' : '';
-          const severity = rule.severity === 'error' ? '[ERROR]' : '[WARNING]';
-          console.log(`  ${severity} ${rule.id}${badge} - ${rule.description}`);
+          const badge = rule.fixable ? chalk.gray(' [fixable]') : '';
+          const severityBadge =
+            rule.severity === 'error'
+              ? chalk.red('error  ')
+              : chalk.yellow('warning');
+          logger.log(`  ${severityBadge} ${chalk.cyan(rule.id)}${badge} - ${rule.description}`);
         });
+        logger.newline();
       }
-
-      console.log('');
     });
 }

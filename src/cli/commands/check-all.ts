@@ -12,6 +12,7 @@ import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver
 import { PluginLoader } from '../../utils/plugin-loader';
 import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/fixer';
+import { logger } from '../utils/logger';
 
 /**
  * Register the check-all command
@@ -65,62 +66,69 @@ export function registerCheckAllCommand(program: Command): void {
           let config = {};
           if (options.config) {
             if (options.debugConfig) {
-              console.log(`[Config Debug] Loading config from: ${options.config}`);
+              logger.info(`[Config Debug] Loading config from: ${options.config}`);
             }
             try {
               config = loadConfig(options.config);
               if (options.verbose || options.debugConfig) {
-                console.log(`Using config file: ${options.config}`);
+                logger.info(`Using config file: ${options.config}`);
               }
               if (options.debugConfig) {
-                console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+                logger.log('[Config Debug] Loaded config:');
+                logger.log(JSON.stringify(config, null, 2));
               }
             } catch (error: unknown) {
-              console.error(`Error loading config file: ${options.config}`);
-              console.error(error instanceof Error ? error.message : String(error));
+              logger.error(`Error loading config file: ${options.config}`);
+              logger.error(error instanceof Error ? error.message : String(error));
               process.exit(2);
             }
           } else {
             if (options.debugConfig) {
-              console.log('[Config Debug] Searching for config file from:', process.cwd());
+              logger.info(`[Config Debug] Searching for config file from: ${process.cwd()}`);
             }
             const configPath = findConfigFile(process.cwd());
             if (configPath) {
               if (options.debugConfig) {
-                console.log(`[Config Debug] Found config file: ${configPath}`);
+                logger.info(`[Config Debug] Found config file: ${configPath}`);
               }
               try {
                 config = loadConfig(configPath);
                 if (options.verbose || options.debugConfig) {
-                  console.log(`Using config file: ${configPath}`);
+                  logger.info(`Using config file: ${configPath}`);
                 }
                 if (options.debugConfig) {
-                  console.log('[Config Debug] Loaded config:', JSON.stringify(config, null, 2));
+                  logger.log('[Config Debug] Loaded config:');
+                  logger.log(JSON.stringify(config, null, 2));
                 }
               } catch (error: unknown) {
-                console.error(`Error loading config file: ${configPath}`);
-                console.error(error instanceof Error ? error.message : String(error));
+                logger.error(`Error loading config file: ${configPath}`);
+                logger.error(error instanceof Error ? error.message : String(error));
                 process.exit(2);
               }
             } else if (options.debugConfig) {
-              console.log('[Config Debug] No config file found, using defaults');
+              logger.info('[Config Debug] No config file found, using defaults');
             }
           }
 
           // Validate config against rule registry (rule IDs exist)
           const configErrors = validateConfig(config);
           if (configErrors.length > 0) {
-            console.error('\nConfiguration validation errors:');
+            logger.newline();
+            logger.error('Configuration validation errors:');
             for (const error of configErrors) {
-              const prefix = error.severity === 'error' ? '✗ Error:' : '! Warning:';
-              console.error(`${prefix} ${error.message}`);
+              if (error.severity === 'error') {
+                logger.error(error.message);
+              } else {
+                logger.warn(error.message);
+              }
             }
             const hasErrors = configErrors.some((e) => e.severity === 'error');
             if (hasErrors) {
-              console.error('\nPlease fix configuration errors before continuing.');
+              logger.newline();
+              logger.error('Please fix configuration errors before continuing.');
               process.exit(2);
             }
-            console.error(''); // Empty line after warnings
+            logger.newline();
           }
 
           // Validate all rule options early (ESLint pattern: fail fast before running validators)
@@ -128,9 +136,11 @@ export function registerCheckAllCommand(program: Command): void {
             validateAllRuleOptions(config);
           } catch (error) {
             if (error instanceof ConfigError) {
-              console.error('\nConfiguration error:');
-              console.error(error.message);
-              console.error('\nPlease fix your .claudelintrc.json file and try again.');
+              logger.newline();
+              logger.error('Configuration error:');
+              logger.error(error.message);
+              logger.newline();
+              logger.error('Please fix your .claudelintrc.json file and try again.');
               process.exit(2);
             }
             throw error; // Re-throw unexpected errors
@@ -146,11 +156,11 @@ export function registerCheckAllCommand(program: Command): void {
           const failedPlugins = pluginResults.filter((r) => !r.success);
 
           if (options.verbose && pluginResults.length > 0) {
-            console.log(`Loaded ${pluginResults.filter((r) => r.success).length} plugin(s)`);
+            logger.success(`Loaded ${pluginResults.filter((r) => r.success).length} plugin(s)`);
             if (failedPlugins.length > 0) {
-              console.warn(`Failed to load ${failedPlugins.length} plugin(s):`);
+              logger.warn(`Failed to load ${failedPlugins.length} plugin(s):`);
               for (const failure of failedPlugins) {
-                console.warn(`  - ${failure.name}: ${failure.error}`);
+                logger.warn(`  - ${failure.name}: ${failure.error}`);
               }
             }
           }
@@ -246,30 +256,36 @@ export function registerCheckAllCommand(program: Command): void {
 
             const fixCount = fixer.getFixCount();
             if (fixCount > 0) {
-              console.log(`\n${options.fixDryRun ? '[Preview]' : '[Applying]'} ${fixCount} fixes...`);
+              logger.newline();
+              logger.info(`${options.fixDryRun ? '[Preview]' : '[Applying]'} ${fixCount} fixes...`);
               const fixResult = fixer.applyFixes();
 
               if (options.fixDryRun && fixResult.diff) {
-                console.log('\nProposed changes:');
-                console.log(fixResult.diff);
+                logger.newline();
+                logger.log('Proposed changes:');
+                logger.log(fixResult.diff);
               }
 
-              console.log(
-                `\n✓ ${fixResult.fixesApplied} fixes ${options.fixDryRun ? 'would be' : ''} applied to ${fixResult.filesFixed} files`
+              logger.newline();
+              logger.success(
+                `${fixResult.fixesApplied} fixes ${options.fixDryRun ? 'would be' : ''} applied to ${fixResult.filesFixed} files`
               );
 
               if (fixResult.failedFixes.length > 0) {
-                console.log(`\n✗ ${fixResult.failedFixes.length} fixes failed:`);
+                logger.newline();
+                logger.error(`${fixResult.failedFixes.length} fixes failed:`);
                 for (const { fix, error } of fixResult.failedFixes) {
-                  console.log(`  - ${fix.description}: ${error}`);
+                  logger.log(`  - ${fix.description}: ${error}`);
                 }
               }
 
               if (!options.fixDryRun && fixResult.filesFixed > 0) {
-                console.log('\nTip: Run validation again to check for remaining issues');
+                logger.newline();
+                logger.info('Tip: Run validation again to check for remaining issues');
               }
             } else {
-              console.log('\nInfo: No auto-fixable issues found');
+              logger.newline();
+              logger.info('No auto-fixable issues found');
             }
           }
 
@@ -280,22 +296,25 @@ export function registerCheckAllCommand(program: Command): void {
           if (options.format === 'json') {
             reporter.reportAllJSON();
           } else {
-            console.log('\n=== Overall Summary ===');
-            console.log(`Total errors: ${totalErrors}`);
-            console.log(`Total warnings: ${totalWarnings}`);
+            logger.section('Overall Summary');
+            logger.log(`Total errors: ${totalErrors}`);
+            logger.log(`Total warnings: ${totalWarnings}`);
             if (options.verbose) {
-              console.log(`\nTiming breakdown:`);
+              logger.newline();
+              logger.log('Timing breakdown:');
               Object.entries(timings).forEach(([name, time]) => {
-                console.log(`  ${name}: ${time}ms`);
+                logger.log(`  ${name}: ${time}ms`);
               });
-              console.log(`\nTotal: ${duration}ms`);
+              logger.newline();
+              logger.log(`Total: ${duration}ms`);
             }
           }
 
           // Check max warnings threshold
           const maxWarnings = options.maxWarnings ?? mergedConfig.maxWarnings ?? -1;
           if (maxWarnings >= 0 && totalWarnings > maxWarnings) {
-            console.log(`\nError: Warning limit exceeded: ${totalWarnings} > ${maxWarnings}`);
+            logger.newline();
+            logger.error(`Warning limit exceeded: ${totalWarnings} > ${maxWarnings}`);
             process.exit(1);
           }
 
@@ -313,28 +332,31 @@ export function registerCheckAllCommand(program: Command): void {
         } catch (error: unknown) {
           // Handle configuration errors (invalid rule options)
           if (error instanceof ConfigError) {
-            console.error('\nConfiguration error:');
-            console.error(error.message);
-            console.error('\nPlease fix your .claudelintrc.json file and try again.');
+            logger.newline();
+            logger.error('Configuration error:');
+            logger.error(error.message);
+            logger.newline();
+            logger.error('Please fix your .claudelintrc.json file and try again.');
             process.exit(2);
           }
 
-          console.error('\nFatal error during validation:');
+          logger.newline();
+          logger.error('Fatal error during validation:');
           const errorMessage = error instanceof Error ? error.message : String(error);
 
           // Provide helpful message for common errors
           if (errorMessage.includes('not found') || errorMessage.includes('ENOENT')) {
-            console.error(errorMessage);
-            console.error(
-              '\nThis file is required but does not exist. Please check the file path or create the file.'
-            );
+            logger.error(errorMessage);
+            logger.newline();
+            logger.error('This file is required but does not exist. Please check the file path or create the file.');
           } else {
-            console.error(errorMessage);
+            logger.error(errorMessage);
           }
 
           if (options.verbose && error instanceof Error && error.stack) {
-            console.error('\nStack trace:');
-            console.error(error.stack);
+            logger.newline();
+            logger.log('Stack trace:');
+            logger.log(error.stack);
           }
           process.exit(2);
         }
