@@ -14,8 +14,8 @@
       },
       "plugin": {
         "total": 12,
-        "avgScore": 38,
-        "needsWork": 12
+        "avgScore": 95,
+        "needsWork": 0
       },
       "output-styles": {
         "total": 7,
@@ -24,8 +24,8 @@
       },
       "mcp": {
         "total": 13,
-        "avgScore": 23,
-        "needsWork": 13
+        "avgScore": 95,
+        "needsWork": 0
       },
       "lsp": {
         "total": 8,
@@ -44,27 +44,27 @@
       },
       "claude-md": {
         "total": 14,
-        "avgScore": 50,
-        "needsWork": 7
+        "avgScore": 97,
+        "needsWork": 0
       },
       "agents": {
         "total": 13,
-        "avgScore": 17,
-        "needsWork": 13
+        "avgScore": 95,
+        "needsWork": 0
       }
     },
-    "avgScore": 38,
+    "avgScore": 69,
     "scoreDistribution": {
-      "placeholder": 64,
+      "placeholder": 29,
       "incomplete": 0,
-      "good": 20,
-      "excellent": 21
+      "good": 10,
+      "excellent": 66
     },
-    "rulesNeedingWork": 84,
-    "placeholders": 64,
-    "rulesWithOptions": 14,
-    "rulesMissingExamples": 67,
-    "easyOptionsOpportunities": 6
+    "rulesNeedingWork": 39,
+    "placeholders": 29,
+    "rulesWithOptions": 15,
+    "rulesMissingExamples": 32,
+    "easyOptionsOpportunities": 5
   },
   "audits": [
     {
@@ -126,87 +126,6 @@
       "category": "lsp",
       "rulePath": "src/rules/lsp/lsp-server-name-too-short.ts",
       "docPath": "docs/rules/lsp/lsp-server-name-too-short.md",
-      "score": 0,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "Rule has configurable options but docs do not document them"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-import-depth-exceeded",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-import-depth-exceeded.ts",
-      "docPath": "docs/rules/claude-md/claude-md-import-depth-exceeded.md",
-      "score": 0,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "Rule has configurable options but docs do not document them"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-content-too-many-sections",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-content-too-many-sections.ts",
-      "docPath": "docs/rules/claude-md/claude-md-content-too-many-sections.md",
-      "score": 0,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "Rule has configurable options but docs do not document them"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-body-too-short",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-body-too-short.ts",
-      "docPath": "docs/rules/agents/agent-body-too-short.md",
       "score": 0,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -568,189 +487,6 @@
       }
     },
     {
-      "ruleId": "plugin-version-required",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-version-required.ts",
-      "docPath": "docs/rules/plugin/plugin-version-required.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "plugin-name-required",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-name-required.ts",
-      "docPath": "docs/rules/plugin/plugin-name-required.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "plugin-marketplace-files-not-found",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-marketplace-files-not-found.ts",
-      "docPath": "docs/rules/plugin/plugin-marketplace-files-not-found.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "plugin-json-wrong-location",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-json-wrong-location.ts",
-      "docPath": "docs/rules/plugin/plugin-json-wrong-location.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "plugin-description-required",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-description-required.ts",
-      "docPath": "docs/rules/plugin/plugin-description-required.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "plugin-components-wrong-location",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-components-wrong-location.ts",
-      "docPath": "docs/rules/plugin/plugin-components-wrong-location.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "commands-in-plugin-deprecated",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/commands-in-plugin-deprecated.ts",
-      "docPath": "docs/rules/plugin/commands-in-plugin-deprecated.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": true,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
       "ruleId": "output-style-name",
       "category": "output-styles",
       "rulePath": "src/rules/output-styles/output-style-name.ts",
@@ -885,266 +621,6 @@
       "category": "output-styles",
       "rulePath": "src/rules/output-styles/output-style-description.ts",
       "docPath": "docs/rules/output-styles/output-style-description.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-websocket-invalid-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-websocket-invalid-url.ts",
-      "docPath": "docs/rules/mcp/mcp-websocket-invalid-url.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-websocket-invalid-protocol",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-websocket-invalid-protocol.ts",
-      "docPath": "docs/rules/mcp/mcp-websocket-invalid-protocol.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-websocket-empty-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-websocket-empty-url.ts",
-      "docPath": "docs/rules/mcp/mcp-websocket-empty-url.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-stdio-empty-command",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-stdio-empty-command.ts",
-      "docPath": "docs/rules/mcp/mcp-stdio-empty-command.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-sse-transport-deprecated",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-sse-transport-deprecated.ts",
-      "docPath": "docs/rules/mcp/mcp-sse-transport-deprecated.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-sse-invalid-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-sse-invalid-url.ts",
-      "docPath": "docs/rules/mcp/mcp-sse-invalid-url.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-sse-empty-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-sse-empty-url.ts",
-      "docPath": "docs/rules/mcp/mcp-sse-empty-url.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-server-key-mismatch",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-server-key-mismatch.ts",
-      "docPath": "docs/rules/mcp/mcp-server-key-mismatch.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-http-invalid-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-http-invalid-url.ts",
-      "docPath": "docs/rules/mcp/mcp-http-invalid-url.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "mcp-http-empty-url",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-http-empty-url.ts",
-      "docPath": "docs/rules/mcp/mcp-http-empty-url.md",
       "score": 5,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -1327,397 +803,6 @@
       "category": "lsp",
       "rulePath": "src/rules/lsp/lsp-command-not-in-path.ts",
       "docPath": "docs/rules/lsp/lsp-command-not-in-path.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-paths",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-paths.ts",
-      "docPath": "docs/rules/claude-md/claude-md-paths.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": true,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-import-read-failed",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-import-read-failed.ts",
-      "docPath": "docs/rules/claude-md/claude-md-import-read-failed.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-glob-pattern-too-broad",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-glob-pattern-too-broad.ts",
-      "docPath": "docs/rules/claude-md/claude-md-glob-pattern-too-broad.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-glob-pattern-backslash",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-glob-pattern-backslash.ts",
-      "docPath": "docs/rules/claude-md/claude-md-glob-pattern-backslash.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "claude-md-file-not-found",
-      "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-file-not-found.ts",
-      "docPath": "docs/rules/claude-md/claude-md-file-not-found.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-tools",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-tools.ts",
-      "docPath": "docs/rules/agents/agent-tools.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-skills",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-skills.ts",
-      "docPath": "docs/rules/agents/agent-skills.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-name",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-name.ts",
-      "docPath": "docs/rules/agents/agent-name.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-name-directory-mismatch",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-name-directory-mismatch.ts",
-      "docPath": "docs/rules/agents/agent-name-directory-mismatch.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-model",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-model.ts",
-      "docPath": "docs/rules/agents/agent-model.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-missing-system-prompt",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-missing-system-prompt.ts",
-      "docPath": "docs/rules/agents/agent-missing-system-prompt.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-hooks",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-hooks.ts",
-      "docPath": "docs/rules/agents/agent-hooks.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-events",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-events.ts",
-      "docPath": "docs/rules/agents/agent-events.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-disallowed-tools",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-disallowed-tools.ts",
-      "docPath": "docs/rules/agents/agent-disallowed-tools.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "agent-description",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-description.ts",
-      "docPath": "docs/rules/agents/agent-description.md",
       "score": 5,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -1964,227 +1049,6 @@
       }
     },
     {
-      "ruleId": "plugin-missing-file",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-missing-file.ts",
-      "docPath": "docs/rules/plugin/plugin-missing-file.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 101,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 69
-      }
-    },
-    {
-      "ruleId": "plugin-invalid-version",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-invalid-version.ts",
-      "docPath": "docs/rules/plugin/plugin-invalid-version.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 87,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 54
-      }
-    },
-    {
-      "ruleId": "plugin-invalid-manifest",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-invalid-manifest.ts",
-      "docPath": "docs/rules/plugin/plugin-invalid-manifest.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 94,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 61
-      }
-    },
-    {
-      "ruleId": "plugin-dependency-invalid-version",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-dependency-invalid-version.ts",
-      "docPath": "docs/rules/plugin/plugin-dependency-invalid-version.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 79,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 47
-      }
-    },
-    {
-      "ruleId": "plugin-circular-dependency",
-      "category": "plugin",
-      "rulePath": "src/rules/plugin/plugin-circular-dependency.ts",
-      "docPath": "docs/rules/plugin/plugin-circular-dependency.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 95,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 64
-      }
-    },
-    {
-      "ruleId": "mcp-invalid-transport",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-invalid-transport.ts",
-      "docPath": "docs/rules/mcp/mcp-invalid-transport.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 114,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 81
-      }
-    },
-    {
-      "ruleId": "mcp-invalid-server",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-invalid-server.ts",
-      "docPath": "docs/rules/mcp/mcp-invalid-server.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 136,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 104
-      }
-    },
-    {
-      "ruleId": "mcp-invalid-env-var",
-      "category": "mcp",
-      "rulePath": "src/rules/mcp/mcp-invalid-env-var.ts",
-      "docPath": "docs/rules/mcp/mcp-invalid-env-var.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section",
-        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": true,
-      "docStats": {
-        "lineCount": 120,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 86
-      }
-    },
-    {
-      "ruleId": "agent-skills-not-found",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-skills-not-found.ts",
-      "docPath": "docs/rules/agents/agent-skills-not-found.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 96,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 65
-      }
-    },
-    {
-      "ruleId": "agent-hooks-invalid-schema",
-      "category": "agents",
-      "rulePath": "src/rules/agents/agent-hooks-invalid-schema.ts",
-      "docPath": "docs/rules/agents/agent-hooks-invalid-schema.md",
-      "score": 85,
-      "issues": [
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 113,
-        "isPlaceholder": false,
-        "hasRuleDetails": true,
-        "hasIncorrectExample": true,
-        "hasCorrectExample": true,
-        "hasHowToFix": false,
-        "hasOptionsSection": true,
-        "ruleDetailsLength": 81
-      }
-    },
-    {
       "ruleId": "skill-too-many-files",
       "category": "skills",
       "rulePath": "src/rules/skills/skill-too-many-files.ts",
@@ -2375,6 +1239,510 @@
       }
     },
     {
+      "ruleId": "plugin-version-required",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-version-required.ts",
+      "docPath": "docs/rules/plugin/plugin-version-required.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 172,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 86
+      }
+    },
+    {
+      "ruleId": "plugin-name-required",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-name-required.ts",
+      "docPath": "docs/rules/plugin/plugin-name-required.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 181,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 86
+      }
+    },
+    {
+      "ruleId": "plugin-missing-file",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-missing-file.ts",
+      "docPath": "docs/rules/plugin/plugin-missing-file.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 154,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 69
+      }
+    },
+    {
+      "ruleId": "plugin-marketplace-files-not-found",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-marketplace-files-not-found.ts",
+      "docPath": "docs/rules/plugin/plugin-marketplace-files-not-found.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 222,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 109
+      }
+    },
+    {
+      "ruleId": "plugin-json-wrong-location",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-json-wrong-location.ts",
+      "docPath": "docs/rules/plugin/plugin-json-wrong-location.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 159,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 74
+      }
+    },
+    {
+      "ruleId": "plugin-invalid-version",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-invalid-version.ts",
+      "docPath": "docs/rules/plugin/plugin-invalid-version.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 134,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 54
+      }
+    },
+    {
+      "ruleId": "plugin-invalid-manifest",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-invalid-manifest.ts",
+      "docPath": "docs/rules/plugin/plugin-invalid-manifest.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 139,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 61
+      }
+    },
+    {
+      "ruleId": "plugin-description-required",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-description-required.ts",
+      "docPath": "docs/rules/plugin/plugin-description-required.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 175,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 86
+      }
+    },
+    {
+      "ruleId": "plugin-dependency-invalid-version",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-dependency-invalid-version.ts",
+      "docPath": "docs/rules/plugin/plugin-dependency-invalid-version.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 121,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 47
+      }
+    },
+    {
+      "ruleId": "plugin-components-wrong-location",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-components-wrong-location.ts",
+      "docPath": "docs/rules/plugin/plugin-components-wrong-location.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 156,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 70
+      }
+    },
+    {
+      "ruleId": "plugin-circular-dependency",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/plugin-circular-dependency.ts",
+      "docPath": "docs/rules/plugin/plugin-circular-dependency.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 138,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 64
+      }
+    },
+    {
+      "ruleId": "commands-in-plugin-deprecated",
+      "category": "plugin",
+      "rulePath": "src/rules/plugin/commands-in-plugin-deprecated.ts",
+      "docPath": "docs/rules/plugin/commands-in-plugin-deprecated.md",
+      "score": 95,
+      "issues": [
+        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
+      ],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": true,
+      "docStats": {
+        "lineCount": 153,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 56
+      }
+    },
+    {
+      "ruleId": "mcp-websocket-invalid-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-websocket-invalid-url.ts",
+      "docPath": "docs/rules/mcp/mcp-websocket-invalid-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 258,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 154
+      }
+    },
+    {
+      "ruleId": "mcp-websocket-invalid-protocol",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-websocket-invalid-protocol.ts",
+      "docPath": "docs/rules/mcp/mcp-websocket-invalid-protocol.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 293,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 161
+      }
+    },
+    {
+      "ruleId": "mcp-websocket-empty-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-websocket-empty-url.ts",
+      "docPath": "docs/rules/mcp/mcp-websocket-empty-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 243,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 137
+      }
+    },
+    {
+      "ruleId": "mcp-stdio-empty-command",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-stdio-empty-command.ts",
+      "docPath": "docs/rules/mcp/mcp-stdio-empty-command.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 279,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 163
+      }
+    },
+    {
+      "ruleId": "mcp-sse-transport-deprecated",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-sse-transport-deprecated.ts",
+      "docPath": "docs/rules/mcp/mcp-sse-transport-deprecated.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 247,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 129
+      }
+    },
+    {
+      "ruleId": "mcp-sse-invalid-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-sse-invalid-url.ts",
+      "docPath": "docs/rules/mcp/mcp-sse-invalid-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 253,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 140
+      }
+    },
+    {
+      "ruleId": "mcp-sse-empty-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-sse-empty-url.ts",
+      "docPath": "docs/rules/mcp/mcp-sse-empty-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 226,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 123
+      }
+    },
+    {
+      "ruleId": "mcp-server-key-mismatch",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-server-key-mismatch.ts",
+      "docPath": "docs/rules/mcp/mcp-server-key-mismatch.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 229,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 122
+      }
+    },
+    {
+      "ruleId": "mcp-invalid-transport",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-invalid-transport.ts",
+      "docPath": "docs/rules/mcp/mcp-invalid-transport.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 181,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 81
+      }
+    },
+    {
+      "ruleId": "mcp-invalid-server",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-invalid-server.ts",
+      "docPath": "docs/rules/mcp/mcp-invalid-server.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 196,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 104
+      }
+    },
+    {
+      "ruleId": "mcp-invalid-env-var",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-invalid-env-var.ts",
+      "docPath": "docs/rules/mcp/mcp-invalid-env-var.md",
+      "score": 95,
+      "issues": [
+        "OPPORTUNITY: Could add configurable options (has hardcoded values)"
+      ],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": true,
+      "docStats": {
+        "lineCount": 319,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 192
+      }
+    },
+    {
+      "ruleId": "mcp-http-invalid-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-http-invalid-url.ts",
+      "docPath": "docs/rules/mcp/mcp-http-invalid-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 229,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 138
+      }
+    },
+    {
+      "ruleId": "mcp-http-empty-url",
+      "category": "mcp",
+      "rulePath": "src/rules/mcp/mcp-http-empty-url.ts",
+      "docPath": "docs/rules/mcp/mcp-http-empty-url.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 207,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 121
+      }
+    },
+    {
       "ruleId": "hooks-missing-script",
       "category": "hooks",
       "rulePath": "src/rules/hooks/hooks-missing-script.ts",
@@ -2475,10 +1843,10 @@
       }
     },
     {
-      "ruleId": "claude-md-rules-circular-symlink",
+      "ruleId": "claude-md-paths",
       "category": "claude-md",
-      "rulePath": "src/rules/claude-md/claude-md-rules-circular-symlink.ts",
-      "docPath": "docs/rules/claude-md/claude-md-rules-circular-symlink.md",
+      "rulePath": "src/rules/claude-md/claude-md-paths.ts",
+      "docPath": "docs/rules/claude-md/claude-md-paths.md",
       "score": 95,
       "issues": [
         "OPPORTUNITY: Could add configurable options (has hardcoded values)"
@@ -2486,14 +1854,34 @@
       "hasOptionsInCode": false,
       "couldHaveOptions": true,
       "docStats": {
-        "lineCount": 107,
+        "lineCount": 270,
         "isPlaceholder": false,
         "hasRuleDetails": true,
         "hasIncorrectExample": true,
         "hasCorrectExample": true,
         "hasHowToFix": true,
         "hasOptionsSection": true,
-        "ruleDetailsLength": 38
+        "ruleDetailsLength": 127
+      }
+    },
+    {
+      "ruleId": "claude-md-import-read-failed",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-import-read-failed.ts",
+      "docPath": "docs/rules/claude-md/claude-md-import-read-failed.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 188,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 88
       }
     },
     {
@@ -2557,6 +1945,46 @@
       }
     },
     {
+      "ruleId": "claude-md-glob-pattern-too-broad",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-glob-pattern-too-broad.ts",
+      "docPath": "docs/rules/claude-md/claude-md-glob-pattern-too-broad.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 222,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 103
+      }
+    },
+    {
+      "ruleId": "claude-md-glob-pattern-backslash",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-glob-pattern-backslash.ts",
+      "docPath": "docs/rules/claude-md/claude-md-glob-pattern-backslash.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 166,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 83
+      }
+    },
+    {
       "ruleId": "claude-md-filename-case-sensitive",
       "category": "claude-md",
       "rulePath": "src/rules/claude-md/claude-md-filename-case-sensitive.ts",
@@ -2574,6 +2002,266 @@
         "hasHowToFix": true,
         "hasOptionsSection": true,
         "ruleDetailsLength": 28
+      }
+    },
+    {
+      "ruleId": "claude-md-file-not-found",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-file-not-found.ts",
+      "docPath": "docs/rules/claude-md/claude-md-file-not-found.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 132,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 56
+      }
+    },
+    {
+      "ruleId": "agent-tools",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-tools.ts",
+      "docPath": "docs/rules/agents/agent-tools.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 148,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 85
+      }
+    },
+    {
+      "ruleId": "agent-skills",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-skills.ts",
+      "docPath": "docs/rules/agents/agent-skills.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 142,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 79
+      }
+    },
+    {
+      "ruleId": "agent-skills-not-found",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-skills-not-found.ts",
+      "docPath": "docs/rules/agents/agent-skills-not-found.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 133,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 67
+      }
+    },
+    {
+      "ruleId": "agent-name",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-name.ts",
+      "docPath": "docs/rules/agents/agent-name.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 145,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 82
+      }
+    },
+    {
+      "ruleId": "agent-name-directory-mismatch",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-name-directory-mismatch.ts",
+      "docPath": "docs/rules/agents/agent-name-directory-mismatch.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 139,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 76
+      }
+    },
+    {
+      "ruleId": "agent-model",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-model.ts",
+      "docPath": "docs/rules/agents/agent-model.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 139,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 85
+      }
+    },
+    {
+      "ruleId": "agent-missing-system-prompt",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-missing-system-prompt.ts",
+      "docPath": "docs/rules/agents/agent-missing-system-prompt.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 137,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 63
+      }
+    },
+    {
+      "ruleId": "agent-hooks",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-hooks.ts",
+      "docPath": "docs/rules/agents/agent-hooks.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 152,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 92
+      }
+    },
+    {
+      "ruleId": "agent-hooks-invalid-schema",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-hooks-invalid-schema.ts",
+      "docPath": "docs/rules/agents/agent-hooks-invalid-schema.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 164,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 81
+      }
+    },
+    {
+      "ruleId": "agent-events",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-events.ts",
+      "docPath": "docs/rules/agents/agent-events.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 142,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 82
+      }
+    },
+    {
+      "ruleId": "agent-disallowed-tools",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-disallowed-tools.ts",
+      "docPath": "docs/rules/agents/agent-disallowed-tools.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 129,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 73
+      }
+    },
+    {
+      "ruleId": "agent-description",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-description.ts",
+      "docPath": "docs/rules/agents/agent-description.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 111,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 55
       }
     },
     {
@@ -2615,7 +2303,87 @@
         "hasOptionsSection": true,
         "ruleDetailsLength": 34
       }
+    },
+    {
+      "ruleId": "claude-md-rules-circular-symlink",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-rules-circular-symlink.ts",
+      "docPath": "docs/rules/claude-md/claude-md-rules-circular-symlink.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 132,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 38
+      }
+    },
+    {
+      "ruleId": "claude-md-import-depth-exceeded",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-import-depth-exceeded.ts",
+      "docPath": "docs/rules/claude-md/claude-md-import-depth-exceeded.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 141,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 44
+      }
+    },
+    {
+      "ruleId": "claude-md-content-too-many-sections",
+      "category": "claude-md",
+      "rulePath": "src/rules/claude-md/claude-md-content-too-many-sections.ts",
+      "docPath": "docs/rules/claude-md/claude-md-content-too-many-sections.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 172,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 13
+      }
+    },
+    {
+      "ruleId": "agent-body-too-short",
+      "category": "agents",
+      "rulePath": "src/rules/agents/agent-body-too-short.ts",
+      "docPath": "docs/rules/agents/agent-body-too-short.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 128,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 51
+      }
     }
   ],
-  "generatedAt": "2026-01-30T07:46:41.839Z"
+  "generatedAt": "2026-01-30T17:01:55.729Z"
 }

@@ -4,8 +4,8 @@
 
 Total Rules: 105
 - Started: 99 rules needing work
-- Current: 52 rules needing work
-- Completed: 53 rules (50%)
+- Current: 39 rules needing work
+- Completed: 66 rules (63%)
 
 ## Batch Status
 
@@ -68,9 +68,9 @@ Total Rules: 105
 
 ---
 
-### [IN PROGRESS] BATCH B: Medium Categories (IN PROGRESS)
+### [DONE] BATCH B: Medium Categories (COMPLETE)
 
-**Status: 39/53 rules complete**
+**Status: 53/53 rules complete**
 
 #### Plugin (12 rules) - 95/100 avg - [DONE]
 
@@ -142,23 +142,36 @@ Total Rules: 105
 - [x] mcp-websocket-invalid-url (5→95)
   - Created: Full documentation
 
-#### Agents (13 rules) - 17/100 avg
+#### Agents (13 rules) - 95/100 avg - [DONE]
 
-**Placeholders (13 rules)** - All need full docs:
-- [ ] agent-body-too-short (0→?)
-  - **Has Option**: minBodyLength - needs documentation
-- [ ] agent-description (5→?)
-- [ ] agent-disallowed-tools (5→?)
-- [ ] agent-events (5→?)
-- [ ] agent-hooks (5→?)
-- [ ] agent-hooks-invalid-schema (5→?)
-- [ ] agent-missing-system-prompt (5→?)
-- [ ] agent-model (5→?)
-- [ ] agent-name (5→?)
-- [ ] agent-name-directory-mismatch (5→?)
-- [ ] agent-skills (5→?)
-- [ ] agent-skills-not-found (5→?)
-- [ ] agent-tools (5→?)
+**Placeholders (13 rules)** - [DONE]:
+- [x] agent-body-too-short (0→95)
+  - **Has Option**: minLength (default: 50) - documented with schema
+- [x] agent-description (5→95)
+  - Created: Full documentation
+- [x] agent-disallowed-tools (5→95)
+  - Created: Full documentation
+- [x] agent-events (5→95)
+  - Created: Full documentation
+- [x] agent-hooks (5→95)
+  - Created: Full documentation
+- [x] agent-hooks-invalid-schema (85→95)
+  - Added: How To Fix section
+  - Updated: Resource links
+- [x] agent-missing-system-prompt (5→95)
+  - Created: Full documentation
+- [x] agent-model (5→95)
+  - Created: Full documentation
+- [x] agent-name (5→95)
+  - Created: Full documentation
+- [x] agent-name-directory-mismatch (5→95)
+  - Created: Full documentation
+- [x] agent-skills (5→95)
+  - Created: Full documentation
+- [x] agent-skills-not-found (5→95)
+  - Created: Full documentation
+- [x] agent-tools (5→95)
+  - Created: Full documentation
 
 #### LSP (8 rules) - 4/100 avg
 
@@ -254,33 +267,26 @@ Total Rules: 105
 
 ## Next Steps
 
-### Current Focus: Agents Category (13 rules, 17/100 avg)
+### Current Focus: Batch C - Remaining Categories (39 rules)
 
-1. **Create 13 placeholders** from scratch - ALL need full documentation
-   - agent-body-too-short (has minBodyLength option - needs documentation)
-   - agent-description
-   - agent-disallowed-tools
-   - agent-events
-   - agent-hooks
-   - agent-hooks-invalid-schema
-   - agent-missing-system-prompt
-   - agent-model
-   - agent-name
-   - agent-name-directory-mismatch
-   - agent-skills
-   - agent-skills-not-found
-   - agent-tools
+Now tackling the final categories:
 
-2. **Fix resource links** for all agent docs
+1. **LSP Category** (8 rules, 4/100 avg) - NEXT
+   - All 8 placeholders need full documentation
+   - lsp-server-name-too-short has minLength option - needs documentation
 
-3. **Document existing option**: agent-body-too-short has minBodyLength option
+2. **Output Styles Category** (7 rules, 4/100 avg)
+   - All 7 placeholders need full documentation
+   - output-style-body-too-short has minBodyLength option - needs documentation
 
-4. **Commit** when Agents category reaches 95/100 avg
+3. **Skills Category** (28 rules, 44/100 avg) - LARGEST
+   - 4 easy wins already complete
+   - 24 placeholders need full documentation
+   - skill-multi-script-missing-readme has option - needs documentation
 
-### After Agents
+### After Completion
 
-Continue with Batch B in order:
-1. Agents (13 rules, 17/100 avg) ← Current
+All 105 rules will be documented to 95/100+ average
 3. LSP (8 rules, 4/100 avg)
 4. Output Styles (7 rules, 4/100 avg)
 
@@ -295,6 +301,7 @@ Then tackle Batch C:
 - [DONE] CLAUDE.md: 14 rules → 97/100 avg (+ maxSymlinkDepth option added)
 - [DONE] Plugin: 12 rules → 95/100 avg
 - [DONE] MCP: 13 rules → 95/100 avg
+- [DONE] Agents: 13 rules → 95/100 avg (+ minLength option documented)
 
 ---
 
