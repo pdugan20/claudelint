@@ -190,4 +190,140 @@ describe('mcp-invalid-env-var', () => {
       ],
     });
   });
+
+  it('should validate variable names against custom pattern', async () => {
+    await ruleTester.run('mcp-invalid-env-var', rule, {
+      valid: [
+        // Matches custom pattern (lowercase allowed)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${my_var}/bin/server',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          options: { pattern: '^[a-z_][a-z0-9_]*$' },
+        },
+      ],
+      invalid: [
+        // Doesn't match custom pattern
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${MY_VAR}/bin/server',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          options: { pattern: '^[a-z_][a-z0-9_]*$' },
+          errors: [
+            {
+              message: 'Environment variable name "MY_VAR" in command does not match pattern: ^[a-z_][a-z0-9_]*$',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('should validate variable names against default pattern', async () => {
+    await ruleTester.run('mcp-invalid-env-var', rule, {
+      valid: [
+        // Matches default pattern (uppercase)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${MY_VAR}/bin/server',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
+      ],
+      invalid: [
+        // Doesn't match default pattern (lowercase)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${my_var}/bin/server',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          errors: [
+            {
+              message: 'Environment variable name "my_var" in command does not match pattern: ^[A-Z_][A-Z0-9_]*$',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('should validate variable names in ${VAR:-default} syntax', async () => {
+    await ruleTester.run('mcp-invalid-env-var', rule, {
+      valid: [],
+      invalid: [
+        // Invalid variable name even with default value
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${my_var:-/default/path}',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          errors: [
+            {
+              message: 'Environment variable name "my_var" in command does not match pattern: ^[A-Z_][A-Z0-9_]*$',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('should skip CLAUDE_PLUGIN_ROOT from pattern validation', async () => {
+    await ruleTester.run('mcp-invalid-env-var', rule, {
+      valid: [
+        // CLAUDE_PLUGIN_ROOT should not be validated against pattern
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                transport: {
+                  type: 'stdio',
+                  command: '${CLAUDE_PLUGIN_ROOT}/bin/server',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          options: { pattern: '^MY_PREFIX_[A-Z_]+$' }, // CLAUDE_PLUGIN_ROOT doesn't match this but should pass
+        },
+      ],
+      invalid: [],
+    });
+  });
 });

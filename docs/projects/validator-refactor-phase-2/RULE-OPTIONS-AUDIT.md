@@ -156,36 +156,19 @@ defaultOptions: {
 
 ### 6. commands-in-plugin-deprecated.warnOnly
 
-**Status**: NEW - To be implemented
+**Status**: SKIPPED - Rule is already 'warn' severity
 
-**Rule**: `src/rules/plugin/commands-in-plugin-deprecated.ts`
+**Issue**: This rule already has severity: 'warn'. The proposed warnOnly option doesn't make sense since there's nothing to downgrade from. The rule is already non-blocking.
 
-**Current behavior**: Warns about deprecated commands field
+**Alternative**: Could add an option to suppress the warning entirely, but that's just disabling the rule which users can already do via config.
 
-**Proposed option**:
-
-```typescript
-schema: z.object({
-  warnOnly: z.boolean().optional(),
-}),
-defaultOptions: {
-  warnOnly: true,
-}
-```
-
-**Use case**: Allow downgrading to warning for gradual migration
-
-**Implementation tasks**:
-1. Add schema and defaultOptions to rule meta
-2. Update severity based on option
-3. Add tests for warnOnly: true and false
-4. Document in rule docs
+**Recommendation**: Skip this option as it provides no value.
 
 ---
 
 ### 7. mcp-invalid-env-var (pattern validation)
 
-**Status**: NEW - To be implemented
+**Status**: COMPLETE - Implemented, tested, and documented
 
 **Rule**: `src/rules/mcp/mcp-invalid-env-var.ts`
 

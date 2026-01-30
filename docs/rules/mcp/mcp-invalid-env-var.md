@@ -281,7 +281,53 @@ To resolve environment variable syntax issues:
 
 ## Options
 
-This rule does not have configuration options.
+This rule has the following configuration options:
+
+### `pattern`
+
+Regular expression pattern that environment variable names must match. This enforces consistent naming conventions for your environment variables.
+
+**Type**: `string` (regex pattern)
+**Default**: `^[A-Z_][A-Z0-9_]*$` (uppercase with underscores)
+
+**Schema**:
+
+```typescript
+{
+  pattern: string // valid regex pattern
+}
+```
+
+**Example configurations**:
+
+Default pattern (uppercase only):
+```json
+{
+  "rules": {
+    "mcp-invalid-env-var": "warn"
+  }
+}
+```
+
+Custom pattern (allow lowercase):
+```json
+{
+  "rules": {
+    "mcp-invalid-env-var": ["warn", { "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$" }]
+  }
+}
+```
+
+Project-specific prefix:
+```json
+{
+  "rules": {
+    "mcp-invalid-env-var": ["warn", { "pattern": "^MY_APP_[A-Z_][A-Z0-9_]*$" }]
+  }
+}
+```
+
+**Note**: The special variable `CLAUDE_PLUGIN_ROOT` is always allowed regardless of the pattern setting.
 
 ## When Not To Use It
 

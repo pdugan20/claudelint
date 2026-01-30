@@ -30,6 +30,12 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-invalid-env-var.md',
+    schema: z.object({
+      pattern: z.string().optional(),
+    }),
+    defaultOptions: {
+      pattern: '^[A-Z_][A-Z0-9_]*$',
+    },
   },
 
   validate: (context) => {
@@ -107,6 +113,9 @@ function validateVariableExpansion(
     return;
   }
 
+  const pattern = (context.options.pattern as string | undefined) ?? '^[A-Z_][A-Z0-9_]*$';
+  const varNameRegex = new RegExp(pattern);
+
   // Check for properly formatted variable expansion ${VAR} or ${VAR:-default}
   const expansionMatches = value.matchAll(VAR_EXPANSION_PATTERN);
   for (const match of expansionMatches) {
@@ -114,6 +123,22 @@ function validateVariableExpansion(
     if (varName.length === 0) {
       context.report({
         message: `Invalid variable expansion syntax in ${contextDesc}: ${match[0]}`,
+      });
+      continue;
+    }
+
+    // Extract just the variable name (before any :- default)
+    const actualVarName = varName.split(':-')[0].trim();
+
+    // Skip CLAUDE_PLUGIN_ROOT from pattern validation
+    if (actualVarName === 'CLAUDE_PLUGIN_ROOT') {
+      continue;
+    }
+
+    // Validate variable name against pattern
+    if (!varNameRegex.test(actualVarName)) {
+      context.report({
+        message: `Environment variable name "${actualVarName}" in ${contextDesc} does not match pattern: ${pattern}`,
       });
     }
   }
