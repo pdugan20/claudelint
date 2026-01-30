@@ -114,7 +114,34 @@ The empty parentheses syntax provides no benefit - either add a pattern to filte
 
 ## Options
 
-This rule does not have configuration options.
+This rule has the following configuration options:
+
+### `allowEmpty`
+
+Allow empty inline patterns in Tool(pattern) syntax. When enabled, rules like `Bash()` or `Read()` will not trigger warnings.
+
+**Type**: `boolean`
+**Default**: `false`
+
+**Schema**:
+
+```typescript
+{
+  allowEmpty: boolean
+}
+```
+
+**Example configuration**:
+
+```json
+{
+  "rules": {
+    "settings-permission-empty-pattern": ["warn", { "allowEmpty": true }]
+  }
+}
+```
+
+**Note**: Empty patterns provide no functional benefit over using just the tool name. This option should only be used if you have a specific need for placeholder patterns in your configuration.
 
 ## When Not To Use It
 
@@ -128,7 +155,7 @@ This rule helps maintain clean, clear permission syntax. There's no good reason 
 ## Resources
 
 - [Rule Implementation](../../src/rules/settings/settings-permission-empty-pattern.ts)
-- [Rule Tests](../../tests/validators/settings.test.ts)
+- [Rule Tests](../../tests/rules/settings/settings-permission-empty-pattern.test.ts)
 
 ## Version
 

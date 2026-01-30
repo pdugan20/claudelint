@@ -127,7 +127,7 @@ Currently says: "This rule does not have configuration options. The maximum dept
 
 ### 5. settings-permission-empty-pattern.allowEmpty
 
-**Status**: NEW - To be implemented
+**Status**: COMPLETE - Implemented, tested, and documented
 
 **Rule**: `src/rules/settings/settings-permission-empty-pattern.ts`
 

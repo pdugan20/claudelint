@@ -25,10 +25,16 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-permission-empty-pattern.md',
+    schema: z.object({
+      allowEmpty: z.boolean().optional(),
+    }),
+    defaultOptions: {
+      allowEmpty: false,
+    },
   },
 
   validate: (context) => {
-    const { filePath, fileContent } = context;
+    const { filePath, fileContent, options } = context;
 
     // Only validate settings.json files
     if (!filePath.endsWith('settings.json')) {
@@ -43,6 +49,13 @@ export const rule: Rule = {
     }
 
     if (!config.permissions) {
+      return;
+    }
+
+    const allowEmpty = (options.allowEmpty as boolean | undefined) ?? false;
+
+    // Skip validation if empty patterns are allowed
+    if (allowEmpty) {
       return;
     }
 
