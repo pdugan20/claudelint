@@ -386,6 +386,286 @@ for (let i = 0; i < lines.length; i++) {
 }
 ```
 
+## Integrating Rules into Validators
+
+While rules are automatically registered, validators orchestrate rule execution for specific file types. Understanding this integration helps when adding rules to new categories.
+
+### RuleRegistry.getRulesByCategory()
+
+Use this to get all rules for a category:
+
+```typescript
+import { RuleRegistry } from '../core/rule-registry';
+
+// In your validator's validate() method
+const rules = RuleRegistry.getRulesByCategory('Skills');
+
+// Returns all rules with meta.category === 'Skills'
+// Each rule has: id, name, description, severity, validate(), etc.
+```
+
+### executeRulesForCategory()
+
+Helper function that runs all rules for a category:
+
+```typescript
+import { executeRulesForCategory } from '../utils/execute-rules';
+
+async validate(context: ValidationContext): Promise<ValidationResult> {
+  const config = await this.loadConfig();
+
+  // Automatically executes all rules for this category
+  const result = await executeRulesForCategory({
+    category: 'Skills',
+    filePath: '/path/to/SKILL.md',
+    fileContent: content,
+    config,
+    context: this.createRuleContext(),
+  });
+
+  return result;
+}
+```
+
+**What it does:**
+1. Gets all rules for the category via `RuleRegistry.getRulesByCategory()`
+2. Checks config to see if each rule is enabled
+3. Applies rule options from config
+4. Executes each enabled rule's `validate()` function
+5. Aggregates results into a `ValidationResult`
+
+### Validator Implementation Pattern
+
+```typescript
+// src/validators/my-validator.ts
+import { BaseValidator } from './base-validator';
+import { executeRulesForCategory } from '../utils/execute-rules';
+
+export class MyValidator extends BaseValidator {
+  constructor() {
+    super({
+      id: 'my-validator',
+      name: 'My Validator',
+      filePatterns: ['**/*.myfile'],
+    });
+  }
+
+  async validate(context: ValidationContext): Promise<ValidationResult> {
+    const { filePath, fileContent } = context;
+
+    // Load config
+    const config = await this.loadConfig();
+
+    // Execute all rules for this category
+    const result = await executeRulesForCategory({
+      category: 'MyCategory',
+      filePath,
+      fileContent,
+      config,
+      context: this.createRuleContext(filePath, fileContent),
+    });
+
+    return result;
+  }
+}
+```
+
+## Two-Level Testing Strategy
+
+ClaudeLint uses a two-level testing approach:
+
+### Level 1: Rule Unit Tests (Required)
+
+Every rule must have focused unit tests:
+
+```typescript
+// tests/rules/{category}/{rule-id}.test.ts
+import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
+import { rule } from '../../../src/rules/skills/skill-missing-version';
+
+const ruleTester = new ClaudeLintRuleTester();
+
+describe('skill-missing-version', () => {
+  it('should pass validation tests', async () => {
+    await ruleTester.run('skill-missing-version', rule, {
+      valid: [
+        {
+          content: '---\nname: test\nversion: 1.0.0\n---\nBody',
+          filePath: '/test/SKILL.md',
+        },
+      ],
+      invalid: [
+        {
+          content: '---\nname: test\n---\nBody',
+          filePath: '/test/SKILL.md',
+          errors: [
+            {
+              message: 'version',
+            },
+          ],
+        },
+      ],
+    });
+  });
+});
+```
+
+**Purpose:**
+- Test the rule's validation logic in isolation
+- Fast execution (no filesystem, no validators)
+- Easy to debug
+- Comprehensive coverage of edge cases
+
+### Level 2: Validator Integration Tests (Recommended)
+
+Test that validators properly orchestrate rules:
+
+```typescript
+// tests/validators/my-validator.test.ts
+import { MyValidator } from '../../src/validators/my-validator';
+
+describe('MyValidator', () => {
+  it('should aggregate results from multiple rules', async () => {
+    const validator = new MyValidator();
+
+    const result = await validator.validate({
+      filePath: '/test/config.json',
+      fileContent: invalidContent,
+    });
+
+    expect(result.errors).toHaveLength(2);
+    expect(result.errors[0].ruleId).toBe('my-rule-one');
+    expect(result.errors[1].ruleId).toBe('my-rule-two');
+  });
+
+  it('should respect config disable', async () => {
+    const validator = new MyValidator();
+    validator.setConfig({
+      rules: {
+        'my-rule-one': 'off',
+      },
+    });
+
+    const result = await validator.validate({
+      filePath: '/test/config.json',
+      fileContent: invalidContent,
+    });
+
+    // my-rule-one should be skipped
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].ruleId).toBe('my-rule-two');
+  });
+});
+```
+
+**Purpose:**
+- Test that rules are discovered and executed
+- Test config integration (enable/disable, severity, options)
+- Test rule aggregation and result formatting
+- Test validator-specific logic (file discovery, caching)
+
+### When to Use Each Level
+
+**Rule Tests (Always):**
+- Testing rule validation logic
+- Testing error messages
+- Testing edge cases and boundary conditions
+- Testing rule options
+
+**Validator Tests (When needed):**
+- Testing multiple rules work together
+- Testing config affects rule execution
+- Testing file discovery patterns
+- Testing validator-specific features
+
+## Rule Options and Configuration
+
+For rules that support configuration options:
+
+### 1. Define Schema and Defaults
+
+```typescript
+import { z } from 'zod';
+
+/**
+ * Options for my-rule rule
+ */
+export interface MyRuleOptions {
+  /** Maximum threshold (default: 100) */
+  maxThreshold?: number;
+}
+
+export const rule: Rule = {
+  meta: {
+    id: 'my-rule',
+    schema: z.object({
+      maxThreshold: z.number().positive().int().optional(),
+    }),
+    defaultOptions: {
+      maxThreshold: 100,
+    },
+    // ... other meta
+  },
+
+  validate: async (context) => {
+    const threshold = (context.options as MyRuleOptions).maxThreshold ?? 100;
+
+    if (someValue > threshold) {
+      context.report({
+        message: `Value exceeds threshold of ${threshold}.`,
+      });
+    }
+  },
+};
+```
+
+### 2. Document Options
+
+In `docs/rules/{category}/{rule-id}.md`, add an Options section:
+
+```markdown
+## Options
+
+### `maxThreshold`
+
+Maximum threshold before reporting an error.
+
+Type: `number`
+Default: `100`
+
+Example configuration:
+
+\`\`\`json
+{
+  "rules": {
+    "my-rule": ["error", { "maxThreshold": 200 }]
+  }
+}
+\`\`\`
+```
+
+### 3. Test with Options
+
+```typescript
+await ruleTester.run('my-rule', rule, {
+  valid: [
+    {
+      content: '99',
+      filePath: '/test.txt',
+      options: { maxThreshold: 100 },
+    },
+  ],
+  invalid: [
+    {
+      content: '150',
+      filePath: '/test.txt',
+      options: { maxThreshold: 100 },
+      errors: [{ message: 'threshold' }],
+    },
+  ],
+});
+```
+
 ## Best Practices
 
 1. **Single Responsibility**: Each rule validates one thing
@@ -394,6 +674,10 @@ for (let i = 0; i < lines.length; i++) {
 4. **Type Safety**: Use schema-derived types, not duplicate interfaces
 5. **Clear Messages**: Users should understand the issue and how to fix it
 6. **Test Coverage**: Test both violation and non-violation cases
+7. **Export Interfaces**: Export option interfaces for TypeScript users
+8. **Standard Naming**: Use `{RuleIdInPascalCase}Options` for option interfaces
+9. **Document Options**: Include Options section in docs for configurable rules
+10. **1:1:1 Mapping**: Every rule must have implementation, test, and documentation
 
 ## Questions?
 
