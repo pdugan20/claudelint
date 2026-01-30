@@ -10,6 +10,14 @@
  * - No manual newline management
  * - Professional and minimal
  *
+ * Indentation convention (matching ESLint):
+ * - Use 2 spaces ('  ') for detail/sub-information lines
+ * - Always use logger.log() for indented content
+ * - Example:
+ *   logger.info('Running checks...');
+ *   logger.log('  File: example.ts');
+ *   logger.log('  Status: passed');
+ *
  * @example
  * ```typescript
  * import { logger } from './cli/utils/logger';
@@ -18,6 +26,7 @@
  * logger.error('Validation failed');
  * logger.warn('Optional tool not found');
  * logger.info('Running checks...');
+ * logger.log('  Details: ...');  // 2 spaces for indentation
  * ```
  */
 

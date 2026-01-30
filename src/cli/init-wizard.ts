@@ -310,9 +310,9 @@ export class InitWizard {
   private displayNextSteps(): void {
     logger.log(chalk.bold('Next steps:'));
     logger.newline();
-    logger.log('   1. Review .claudelintrc.json and customize rules');
-    logger.log('   2. Run validation: claudelint check-all');
-    logger.log('   3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.log('  1. Review .claudelintrc.json and customize rules');
+    logger.log('  2. Run validation: claudelint check-all');
+    logger.log('  3. See docs: https://github.com/pdugan20/claudelint#readme');
     logger.newline();
     logger.info('Tip: Use "claudelint list-rules" to see all available rules');
     logger.newline();
