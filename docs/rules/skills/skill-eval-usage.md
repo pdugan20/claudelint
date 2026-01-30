@@ -90,8 +90,8 @@ Consider disabling if writing a REPL or code evaluation tool (where executing us
 
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-eval-usage.ts)
+- [Rule Tests](../../tests/rules/skills/skill-eval-usage.test.ts)
 - [OWASP Code Injection](https://owasp.org/www-community/attacks/Code_Injection)
 - [Python ast.literal_eval](https://docs.python.org/3/library/ast.html#ast.literal_eval)
 

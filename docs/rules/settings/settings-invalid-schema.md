@@ -130,8 +130,8 @@ Never disable this rule. Invalid JSON causes Claude Code to fail loading setting
 
 ## Resources
 
-- [Implementation](../../../src/validators/settings.ts)
-- [Tests](../../../tests/validators/settings.test.ts)
+- [Rule Implementation](../../src/rules/settings/settings-invalid-schema.ts)
+- [Rule Tests](../../tests/rules/settings/settings-invalid-schema.test.ts)
 - [Settings Documentation](https://github.com/anthropics/claude-code)
 - [JSON Validator](https://jsonlint.com/)
 

@@ -73,8 +73,8 @@ Almost never disable this rule. Only consider disabling if writing system admini
 
 ## Resources
 
-- [Implementation](../../../src/validators/skills.ts)
-- [Tests](../../../tests/validators/skills.test.ts)
+- [Rule Implementation](../../src/rules/skills/skill-dangerous-command.ts)
+- [Rule Tests](../../tests/rules/skills/skill-dangerous-command.test.ts)
 - [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
 - [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls)
 

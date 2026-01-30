@@ -129,7 +129,7 @@ Consider disabling if your organization uses different naming conventions (not r
 ## Resources
 
 - [Rule Implementation](../../src/rules/settings/settings-invalid-env-var.ts)
-- [Tests](../../../tests/validators/settings.test.ts)
+- [Rule Tests](../../tests/rules/settings/settings-invalid-env-var.test.ts)
 - [Environment Variable Best Practices](https://12factor.net/config)
 - [Secrets Management Guide](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)
 

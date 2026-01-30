@@ -287,6 +287,46 @@ defaultOptions: {
 
 ---
 
+## Part 4: Standardize Resource Links
+
+### Problem
+
+Found inconsistent formatting in Resources sections across documentation:
+- **Standard format** (105 files): `[Rule Implementation]` and `[Rule Tests]`
+- **Non-standard format** (5 files): `[Implementation]` and `[Tests]`
+
+### Offending Files
+
+1. `docs/rules/settings/settings-invalid-schema.md`
+2. `docs/rules/settings/settings-invalid-env-var.md`
+3. `docs/rules/settings/settings-invalid-permission.md`
+4. `docs/rules/skills/skill-dangerous-command.md`
+5. `docs/rules/skills/skill-eval-usage.md`
+
+### Standard Format
+
+```markdown
+## Resources
+
+- [Rule Implementation](../../src/rules/category/rule-name.ts)
+- [Rule Tests](../../tests/rules/category/rule-name.test.ts)
+```
+
+### Tasks
+
+1. **Fix 5 files** to use "Rule Implementation" and "Rule Tests"
+2. **Update audit script** (`scripts/audit-rule-docs.ts`) to check Resource link format
+3. **Update TEMPLATE.md** to clearly specify the standard format
+
+### Enforcement
+
+Add validation to `scripts/audit-rule-docs.ts`:
+- Check that Resources section contains `[Rule Implementation]`
+- Check that Resources section contains `[Rule Tests]`
+- Report files using non-standard formats (`[Implementation]` or `[Tests]`)
+
+---
+
 ## Implementation Order
 
 ### Phase 1: Documentation Updates (Quick wins) - COMPLETE
@@ -317,16 +357,27 @@ defaultOptions: {
 
 **Estimated time**: 1-2 hours
 
+### Phase 4: Standardize Resource Links
+
+1. ✓ Fix 5 files to use "Rule Implementation" / "Rule Tests" format (COMPLETE)
+2. Update `scripts/audit-rule-docs.ts` to enforce standard format
+3. Update `docs/rules/TEMPLATE.md` with clear formatting requirements
+4. Verify all files pass new validation
+
+**Status**: Files standardized, enforcement pending
+
 ---
 
 ## Success Criteria
 
 - [x] All 4 existing options documented with schema, defaults, examples (Phase 1 COMPLETE)
-- [ ] All 4 new options implemented with tests
-- [ ] All 4 new options documented
-- [ ] Automated check script created and tested
-- [ ] Check integrated into pre-push hook
-- [ ] Check integrated into CI workflow
+- [ ] All 4 new options implemented with tests (Phase 2)
+- [ ] All 4 new options documented (Phase 2)
+- [ ] Automated option check script created and tested (Phase 3)
+- [ ] Check integrated into pre-push hook (Phase 3)
+- [ ] Check integrated into CI workflow (Phase 3)
+- [x] All 5 files standardized to "Rule Implementation" / "Rule Tests" format (Phase 4)
+- [ ] Audit script enforces Resource link format (Phase 4)
 - [ ] All checks passing on current codebase
 
 ---
