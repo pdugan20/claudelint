@@ -14,11 +14,11 @@
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
 - [ ] Phase 2.7: Testing & Validation (10/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
-- [ ] Phase 2.8: CLI Output & Dependency Architecture (4/6 tasks) - IN PROGRESS (Task 2.8.5)
+- [ ] Phase 2.8: CLI Output & Dependency Architecture (5/6 tasks) - IN PROGRESS (Task 2.8.6)
 
-**Total:** 66/76 tasks complete (87%)
+**Total:** 67/76 tasks complete (88%)
 
-**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.5 ready to start)
+**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.6 ready to start)
 
 **Previous:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.6.5, and 2.7.16-2.7.18 COMPLETE)
 
@@ -1683,8 +1683,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Tested: Init wizard shows correct tool availability status
   - **Notes:** Init wizard now provides clear visibility into which tools are bundled (prettier, markdownlint) and which are optional (ShellCheck). Users see ShellCheck version and install instructions during setup.
 
-- [ ] **Task 2.8.5:** Update documentation
+- [X] **Task 2.8.5:** Update documentation
   - **Files:** `README.md`, `docs/cli-reference.md`, `docs/formatting-tools.md`, `docs/getting-started.md`
+  - **Actual Time:** 20 minutes
+  - **Completion Date:** 2026-01-29
   - **Action:** Update README with bundled vs optional dependencies section:
     ```markdown
     ## Dependencies
@@ -1714,8 +1716,14 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Better onboarding experience
   - **Estimated Time:** 30 minutes
   - **Dependencies:** Tasks 2.8.1-2.8.4 (all implementation complete)
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Deliverables:**
+    - `README.md` - Added "Dependencies" section explaining bundled vs optional tools
+    - `README.md` - Updated "Formatting Tools" section to reflect bundled prettier/markdownlint
+    - Removed outdated install instructions for prettier/markdownlint
+    - Added ShellCheck install instructions for macOS/Linux/Windows
+    - Clear messaging about automatic detection and graceful degradation
+  - **Notes:** Documentation now clearly distinguishes between bundled tools (prettier, markdownlint, chalk) and optional system binaries (ShellCheck). Users understand they get formatting out of the box.
 
 - [ ] **Task 2.8.6:** Add CLI output enforcement mechanisms
   - **Files:** `.eslintrc.json`, `scripts/check-cli-output.ts` (new), `.husky/pre-commit`, `.github/workflows/ci.yml`, `CONTRIBUTING.md`

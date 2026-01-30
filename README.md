@@ -158,6 +158,31 @@ claudelint check-all                # Claude-specific validation
 ```text
 See [Formatting Tools](#formatting-tools) below for the complete ecosystem.
 
+## Dependencies
+
+claudelint automatically bundles most formatting tools. You don't need to install them separately.
+
+### Bundled (Automatic)
+
+These tools are included when you install claudelint:
+
+- **Prettier** - Code formatting for markdown, JSON, YAML
+- **Markdownlint** - Markdown linting and validation
+- **Chalk** - Colored terminal output
+
+No additional installation required - these work out of the box.
+
+### Optional (Install Separately)
+
+These system-level tools enhance claudelint but aren't required:
+
+- **ShellCheck** - Shell script linting (recommended for `.sh` files)
+  - macOS: `brew install shellcheck`
+  - Linux: `apt install shellcheck` or `snap install shellcheck`
+  - Windows: [Download from GitHub](https://github.com/koalaman/shellcheck#installing)
+
+claudelint detects and uses ShellCheck automatically if available. The `claudelint format` command will show helpful install instructions if ShellCheck is missing.
+
 ## Formatting Tools
 
 claudelint provides **shareable configs** for formatting Claude-specific files. These configs use **scoped overrides** to avoid conflicts with your existing project formatters.
@@ -173,56 +198,33 @@ Following industry standards (like `eslint-config-airbnb`), we provide configs t
 
 ### Three Tiers of Tools
 
-#### Tier 1: Critical (Must Have)
+#### Tier 1: Bundled with claudelint
 
-**1. markdownlint-config-claude**
+**1. Prettier & Markdownlint** (bundled)
 
-Validates markdown structure in CLAUDE.md and SKILL.md files.
-
-```bash
-npm install --save-dev markdownlint-config-claude markdownlint-cli
-```text
-```json
-// package.json
-{
-  "scripts": {
-    "lint:md:claude": "markdownlint --config node_modules/markdownlint-config-claude 'CLAUDE.md' '.claude/**/*.md'"
-  }
-}
-```text
-**2. prettier-config-claude**
-
-Formats markdown, JSON, and YAML in Claude files.
+These tools are included automatically when you install claudelint. No separate installation needed.
 
 ```bash
-npm install --save-dev prettier-config-claude prettier
-```text
-```json
-// .prettierrc.json
-{
-  "overrides": [
-    {
-      "files": ["CLAUDE.md", ".claude/**/*.{md,json,yaml}"],
-      "options": "prettier-config-claude"
-    }
-  ]
-}
-```text
-**3. ShellCheck**
+# Check formatting
+claudelint format --check
 
-Lints shell scripts in skills and hooks (finds bugs, security issues).
+# Fix formatting issues
+claudelint format --fix
+```
+
+**2. ShellCheck** (optional)
+
+Lints shell scripts in skills and hooks (finds bugs, security issues). Install separately:
 
 ```bash
-npm install --save-dev shellcheck
-```text
-```json
-// package.json
-{
-  "scripts": {
-    "lint:shell:claude": "shellcheck .claude/**/*.sh .claude/hooks/*"
-  }
-}
-```text
+# macOS
+brew install shellcheck
+
+# Linux
+apt install shellcheck
+```
+
+Once installed, `claudelint format` will automatically detect and use ShellCheck.
 #### Tier 2: Recommended (Should Have)
 
 **4. shfmt**
