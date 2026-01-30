@@ -14,11 +14,11 @@
 - [X] Phase 2.3B: Complex Validation Rules (8/8 tasks) **COMPLETE** ✓
 - [X] Phase 2.6: Clean Up and ESLint-Style Error Handling (9/9 tasks) COMPLETE ✓
 - [ ] Phase 2.7: Testing & Validation (10/18 tasks) - Task 2.7.9 moved to 2.6.3, Tasks 2.7.16-2.7.18 and 2.7.6.5 added
-- [ ] Phase 2.8: CLI Output & Dependency Architecture (1/6 tasks) - IN PROGRESS (Task 2.8.1 COMPLETE, ready for 2.8.2)
+- [ ] Phase 2.8: CLI Output & Dependency Architecture (2/6 tasks) - IN PROGRESS (Task 2.8.3)
 
-**Total:** 63/76 tasks complete (83%)
+**Total:** 64/76 tasks complete (84%)
 
-**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.1 COMPLETE, ready for Task 2.8.2)
+**Current Focus:** Phase 2.8 - CLI Output & Dependency Architecture (Task 2.8.3 ready to start)
 
 **Previous:** Phase 2.7 - Testing & Validation (Tasks 2.7.1-2.7.6, 2.7.6.5, and 2.7.16-2.7.18 COMPLETE)
 
@@ -1474,8 +1474,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
 
-- [ ] **Task 2.8.2:** Move dependencies and use programmatic APIs
+- [X] **Task 2.8.2:** Move dependencies and use programmatic APIs
   - **Files:** `package.json`, `src/cli/commands/format.ts`, `src/cli/utils/formatters/` (new)
+  - **Actual Time:** 1.5 hours
+  - **Completion Date:** 2026-01-29
   - **Current State:**
     - prettier/markdownlint in `devDependencies` (users don't get them automatically)
     - Using `execSync('prettier --check ...')` (slow, spawns processes)
@@ -1541,8 +1543,14 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Industry standard approach (ESLint bundles its tools)
   - **Estimated Time:** 2-3 hours
   - **Dependencies:** Task 2.8.1 (logger utility for error reporting)
-  - **Assigned To:** TBD
-  - **Completion Date:** TBD
+  - **Assigned To:** Claude
+  - **Deliverables:**
+    - `package.json` - Moved prettier (^3.1.1) and markdownlint (^0.35.0) to dependencies
+    - `src/cli/utils/formatters/prettier.ts` - Created with checkPrettier() and formatPrettier() functions
+    - `src/cli/utils/formatters/markdownlint.ts` - Created with checkMarkdownlint() function
+    - `src/cli/commands/format.ts` - Updated to use programmatic APIs instead of execSync for prettier/markdownlint
+    - Tested: Format command works correctly with check/fix modes and verbose output
+  - **Notes:** Successfully replaced execSync calls with faster programmatic APIs. ShellCheck still uses execSync (will be addressed in Task 2.8.3).
 
 - [ ] **Task 2.8.3:** ShellCheck handling with graceful degradation
   - **Files:** `src/cli/utils/system-tools.ts` (new), `src/cli/commands/format.ts`, `src/cli/init-wizard.ts`

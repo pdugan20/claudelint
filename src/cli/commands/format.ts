@@ -5,6 +5,8 @@
 import { Command } from 'commander';
 import { execSync } from 'child_process';
 import { logger } from '../utils/logger';
+import { checkPrettier, formatPrettier } from '../utils/formatters/prettier';
+import { checkMarkdownlint } from '../utils/formatters/markdownlint';
 
 /**
  * Register the format command
@@ -18,7 +20,7 @@ export function registerFormatCommand(program: Command): void {
     .option('--check', 'Check formatting without making changes')
     .option('--fix', 'Fix formatting issues (default)')
     .option('-v, --verbose', 'Verbose output')
-    .action((options: { check?: boolean; fix?: boolean; verbose?: boolean }) => {
+    .action(async (options: { check?: boolean; fix?: boolean; verbose?: boolean }) => {
       const mode = options.check ? 'check' : 'fix';
       const verbose = options.verbose || false;
 
@@ -37,32 +39,26 @@ export function registerFormatCommand(program: Command): void {
       // 1. Markdownlint (Tier 1)
       try {
         logger.info('Running markdownlint on Claude markdown files...');
-        const markdownlintCmd = `markdownlint ${options.check ? '' : '--fix'} '${claudeFiles.markdown.join("' '")}'`;
 
-        if (verbose) {
-          logger.log(`  Command: ${markdownlintCmd}`);
+        const result = await checkMarkdownlint(claudeFiles.markdown, !options.check);
+
+        if (verbose && result.filesWithErrors.length > 0) {
+          for (const [file, errors] of Object.entries(result.errors)) {
+            logger.log(`  ${file}:`);
+            errors.forEach((error) => logger.log(`    ${error}`));
+          }
         }
 
-        try {
-          const output = execSync(markdownlintCmd, { encoding: 'utf-8', stdio: 'pipe' });
-          if (verbose && output) {
-            console.log(output);
-          }
+        if (result.passed) {
           logger.success('Markdownlint passed');
           logger.newline();
-        } catch (error: unknown) {
-          if (error && typeof error === 'object' && 'stdout' in error) {
-            console.log(String(error.stdout));
-          }
-          if (error && typeof error === 'object' && 'stderr' in error) {
-            console.error(String(error.stderr));
-          }
+        } else {
           hasErrors = true;
-          logger.error('Markdownlint found issues');
+          logger.error(`Markdownlint found issues in ${result.filesWithErrors.length} file(s)`);
           logger.newline();
         }
       } catch (error) {
-        logger.warn('Markdownlint not found (install: npm install -g markdownlint-cli)');
+        logger.warn('Markdownlint check failed');
         logger.newline();
       }
 
@@ -70,32 +66,32 @@ export function registerFormatCommand(program: Command): void {
       try {
         logger.info('Running prettier on Claude files...');
         const allFiles = [...claudeFiles.markdown, ...claudeFiles.json, ...claudeFiles.yaml];
-        const prettierCmd = `prettier ${options.check ? '--check' : '--write'} ${allFiles.map((f) => `"${f}"`).join(' ')}`;
+
+        const result = options.check
+          ? await checkPrettier(allFiles)
+          : await formatPrettier(allFiles);
 
         if (verbose) {
-          logger.log(`  Command: ${prettierCmd}`);
+          if (result.errors.length > 0) {
+            logger.log('  Files with issues:');
+            result.errors.forEach((file) => logger.log(`    ${file}`));
+          }
+          if (result.formatted.length > 0 && !options.check) {
+            logger.log('  Files formatted:');
+            result.formatted.forEach((file) => logger.log(`    ${file}`));
+          }
         }
 
-        try {
-          const output = execSync(prettierCmd, { encoding: 'utf-8', stdio: 'pipe' });
-          if (verbose && output) {
-            console.log(output);
-          }
+        if (result.passed) {
           logger.success('Prettier passed');
           logger.newline();
-        } catch (error: unknown) {
-          if (error && typeof error === 'object' && 'stdout' in error) {
-            console.log(String(error.stdout));
-          }
-          if (error && typeof error === 'object' && 'stderr' in error) {
-            console.error(String(error.stderr));
-          }
+        } else {
           hasErrors = true;
-          logger.error('Prettier found issues');
+          logger.error(`Prettier found issues in ${result.errors.length} file(s)`);
           logger.newline();
         }
       } catch (error) {
-        logger.warn('Prettier not found (install: npm install -g prettier)');
+        logger.warn('Prettier check failed');
         logger.newline();
       }
 
