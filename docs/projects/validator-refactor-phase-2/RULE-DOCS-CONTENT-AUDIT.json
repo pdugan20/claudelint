@@ -29,8 +29,8 @@
       },
       "lsp": {
         "total": 8,
-        "avgScore": 4,
-        "needsWork": 8
+        "avgScore": 96,
+        "needsWork": 0
       },
       "hooks": {
         "total": 3,
@@ -53,17 +53,17 @@
         "needsWork": 0
       }
     },
-    "avgScore": 69,
+    "avgScore": 76,
     "scoreDistribution": {
-      "placeholder": 29,
+      "placeholder": 21,
       "incomplete": 0,
       "good": 10,
-      "excellent": 66
+      "excellent": 74
     },
-    "rulesNeedingWork": 39,
-    "placeholders": 29,
+    "rulesNeedingWork": 31,
+    "placeholders": 21,
     "rulesWithOptions": 15,
-    "rulesMissingExamples": 32,
+    "rulesMissingExamples": 24,
     "easyOptionsOpportunities": 5
   },
   "audits": [
@@ -99,33 +99,6 @@
       "category": "output-styles",
       "rulePath": "src/rules/output-styles/output-style-body-too-short.ts",
       "docPath": "docs/rules/output-styles/output-style-body-too-short.md",
-      "score": 0,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section",
-        "Rule has configurable options but docs do not document them"
-      ],
-      "hasOptionsInCode": true,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-server-name-too-short",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-server-name-too-short.ts",
-      "docPath": "docs/rules/lsp/lsp-server-name-too-short.md",
       "score": 0,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -621,188 +594,6 @@
       "category": "output-styles",
       "rulePath": "src/rules/output-styles/output-style-description.ts",
       "docPath": "docs/rules/output-styles/output-style-description.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-language-id-not-lowercase",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-language-id-not-lowercase.ts",
-      "docPath": "docs/rules/lsp/lsp-language-id-not-lowercase.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-language-id-empty",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-language-id-empty.ts",
-      "docPath": "docs/rules/lsp/lsp-language-id-empty.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-invalid-transport",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-invalid-transport.ts",
-      "docPath": "docs/rules/lsp/lsp-invalid-transport.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-extension-missing-dot",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-extension-missing-dot.ts",
-      "docPath": "docs/rules/lsp/lsp-extension-missing-dot.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-config-file-relative-path",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-config-file-relative-path.ts",
-      "docPath": "docs/rules/lsp/lsp-config-file-relative-path.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-config-file-not-json",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-config-file-not-json.ts",
-      "docPath": "docs/rules/lsp/lsp-config-file-not-json.md",
-      "score": 5,
-      "issues": [
-        "PLACEHOLDER - needs full documentation with examples and explanations",
-        "Missing \"Rule Details\" section",
-        "Missing \"Incorrect\" code example",
-        "Missing \"Correct\" code example",
-        "Missing \"How To Fix\" section"
-      ],
-      "hasOptionsInCode": false,
-      "couldHaveOptions": false,
-      "docStats": {
-        "lineCount": 19,
-        "isPlaceholder": true,
-        "hasRuleDetails": false,
-        "hasIncorrectExample": false,
-        "hasCorrectExample": false,
-        "hasHowToFix": false,
-        "hasOptionsSection": false,
-        "ruleDetailsLength": 0
-      }
-    },
-    {
-      "ruleId": "lsp-command-not-in-path",
-      "category": "lsp",
-      "rulePath": "src/rules/lsp/lsp-command-not-in-path.ts",
-      "docPath": "docs/rules/lsp/lsp-command-not-in-path.md",
       "score": 5,
       "issues": [
         "PLACEHOLDER - needs full documentation with examples and explanations",
@@ -1743,6 +1534,146 @@
       }
     },
     {
+      "ruleId": "lsp-language-id-not-lowercase",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-language-id-not-lowercase.ts",
+      "docPath": "docs/rules/lsp/lsp-language-id-not-lowercase.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 138,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 63
+      }
+    },
+    {
+      "ruleId": "lsp-language-id-empty",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-language-id-empty.ts",
+      "docPath": "docs/rules/lsp/lsp-language-id-empty.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 136,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 65
+      }
+    },
+    {
+      "ruleId": "lsp-invalid-transport",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-invalid-transport.ts",
+      "docPath": "docs/rules/lsp/lsp-invalid-transport.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 170,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 88
+      }
+    },
+    {
+      "ruleId": "lsp-extension-missing-dot",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-extension-missing-dot.ts",
+      "docPath": "docs/rules/lsp/lsp-extension-missing-dot.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 129,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 61
+      }
+    },
+    {
+      "ruleId": "lsp-config-file-relative-path",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-config-file-relative-path.ts",
+      "docPath": "docs/rules/lsp/lsp-config-file-relative-path.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 136,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 74
+      }
+    },
+    {
+      "ruleId": "lsp-config-file-not-json",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-config-file-not-json.ts",
+      "docPath": "docs/rules/lsp/lsp-config-file-not-json.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 141,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 74
+      }
+    },
+    {
+      "ruleId": "lsp-command-not-in-path",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-command-not-in-path.ts",
+      "docPath": "docs/rules/lsp/lsp-command-not-in-path.md",
+      "score": 95,
+      "issues": [],
+      "hasOptionsInCode": false,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 141,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 68
+      }
+    },
+    {
       "ruleId": "hooks-missing-script",
       "category": "hooks",
       "rulePath": "src/rules/hooks/hooks-missing-script.ts",
@@ -2265,6 +2196,26 @@
       }
     },
     {
+      "ruleId": "lsp-server-name-too-short",
+      "category": "lsp",
+      "rulePath": "src/rules/lsp/lsp-server-name-too-short.ts",
+      "docPath": "docs/rules/lsp/lsp-server-name-too-short.md",
+      "score": 100,
+      "issues": [],
+      "hasOptionsInCode": true,
+      "couldHaveOptions": false,
+      "docStats": {
+        "lineCount": 168,
+        "isPlaceholder": false,
+        "hasRuleDetails": true,
+        "hasIncorrectExample": true,
+        "hasCorrectExample": true,
+        "hasHowToFix": true,
+        "hasOptionsSection": true,
+        "ruleDetailsLength": 71
+      }
+    },
+    {
       "ruleId": "claude-md-size-warning",
       "category": "claude-md",
       "rulePath": "src/rules/claude-md/claude-md-size-warning.ts",
@@ -2385,5 +2336,5 @@
       }
     }
   ],
-  "generatedAt": "2026-01-30T17:01:55.729Z"
+  "generatedAt": "2026-01-30T18:03:49.014Z"
 }
