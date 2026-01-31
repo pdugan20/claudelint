@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-01-30
+## [0.2.0-beta.0] - 2026-01-30
+
+**BETA RELEASE:** This is a pre-release version for testing and feedback. The API is stable but may change based on user feedback before the final 0.2.0 release.
 
 ### Added
 
@@ -829,5 +831,6 @@ Validator execution times (parallel):
 - Basic validation capabilities
 - Test suite with 202+ tests
 
-[Unreleased]: https://github.com/pdugan20/claudelint/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.0...HEAD
+[0.2.0-beta.0]: https://github.com/pdugan20/claudelint/compare/v0.1.0...v0.2.0-beta.0
 [0.1.0]: https://github.com/pdugan20/claudelint/releases/tag/v0.1.0

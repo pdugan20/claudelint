@@ -9,6 +9,8 @@
  */
 
 import { Command } from 'commander';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 // Import validators to ensure self-registration
 import './validators';
@@ -21,6 +23,11 @@ import { registerFormatCommand } from './cli/commands/format';
 import { registerListRulesCommand } from './cli/commands/list-rules';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
 
+// Read version from package.json
+const packageJsonPath = join(__dirname, '../package.json');
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+const version = packageJson.version;
+
 // Create Commander program
 const program = new Command();
 
@@ -28,7 +35,7 @@ const program = new Command();
 program
   .name('claudelint')
   .description('A comprehensive linter for Claude Code projects')
-  .version('0.1.0');
+  .version(version);
 
 // Register all commands
 // =====================

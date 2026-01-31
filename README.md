@@ -6,6 +6,33 @@
 
 A comprehensive linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
 
+## Beta Release Notice
+
+This is a beta release (v0.2.0-beta.0). The package is fully functional but being tested before the stable 0.2.0 release.
+
+**What this means:**
+
+- All features are implemented and tested
+- API may change based on beta feedback
+- Please report any issues on [GitHub](https://github.com/pdugan20/claudelint/issues)
+- Suitable for testing and feedback, use with caution in production
+
+**Installation:**
+
+```bash
+# Install the beta version
+npm install -g @pdugan20/claudelint@beta
+
+# Or for project use
+npm install --save-dev @pdugan20/claudelint@beta
+```
+
+**Known Limitations:**
+
+- Package name will change from `@pdugan20/claudelint` to `claudelint` in stable release
+- Some documentation still references the old package name
+- Migration guide will be provided when stable releases
+
 ## Quick Start
 
 ```bash
