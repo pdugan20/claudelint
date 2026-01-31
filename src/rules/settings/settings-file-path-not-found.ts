@@ -8,9 +8,9 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { safeParseJSON } from '../../utils/json-helpers';
-import { fileExists } from '../../utils/file-system';
-import { hasVariableExpansion } from '../../utils/validation-helpers';
+import { safeParseJSON } from '../../utils/formats/json';
+import { fileExists } from '../../utils/filesystem/files';
+import { hasVariableExpansion } from '../../utils/validators/helpers';
 
 export const rule: Rule = {
   meta: {

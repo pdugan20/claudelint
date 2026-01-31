@@ -3,7 +3,7 @@ import {
   countLines,
   extractBodyContent,
   hasMarkdownSection,
-} from '../../src/utils/markdown';
+} from '../../src/utils/formats/markdown';
 
 describe('Markdown utilities', () => {
   describe('extractFrontmatter', () => {

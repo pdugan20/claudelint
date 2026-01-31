@@ -4,7 +4,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { RuleRegistry, RuleMetadata } from '../../utils/rule-registry';
+import { RuleRegistry, RuleMetadata } from '../../utils/rules/registry';
 import { logger } from '../utils/logger';
 
 /**

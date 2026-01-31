@@ -1,6 +1,6 @@
-import { ConfigResolver } from '../../src/utils/config-resolver';
-import { RuleRegistry } from '../../src/utils/rule-registry';
-import { ClaudeLintConfig } from '../../src/utils/config';
+import { ConfigResolver } from '../../src/utils/config/resolver';
+import { RuleRegistry } from '../../src/utils/rules/registry';
+import { ClaudeLintConfig } from '../../src/utils/config/types';
 import { RuleId } from '../../src/rules/rule-ids';
 import { z } from 'zod';
 

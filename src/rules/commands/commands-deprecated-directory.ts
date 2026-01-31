@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { directoryExists, resolvePath } from '../../utils/file-system';
+import { directoryExists, resolvePath } from '../../utils/filesystem/files';
 import { join } from 'path';
 
 /**

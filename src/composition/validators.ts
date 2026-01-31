@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { ComposableValidator } from './types';
 import { success, error } from './helpers';
-import { fileExists as fsFileExists } from '../utils/file-system';
+import { fileExists as fsFileExists } from '../utils/filesystem/files';
 
 /**
  * Validates that a file exists at the given path

@@ -6,8 +6,8 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractImportsWithLineNumbers } from '../../utils/markdown';
-import { fileExists, resolvePath } from '../../utils/file-system';
+import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
+import { fileExists, resolvePath } from '../../utils/filesystem/files';
 import { dirname } from 'path';
 import { lstat, readlink } from 'fs/promises';
 import { z } from 'zod';

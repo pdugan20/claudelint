@@ -10,10 +10,10 @@
  */
 
 import { minimatch } from 'minimatch';
-import { ClaudeLintConfig, RuleConfig } from './config';
-import { RuleId } from '../rules/rule-ids';
-import { RuleRegistry } from './rule-registry';
-import { ResolvedRuleConfig } from './rule-context';
+import { ClaudeLintConfig, RuleConfig } from './types';
+import { RuleId } from '../../rules/rule-ids';
+import { RuleRegistry } from '../rules/registry';
+import { ResolvedRuleConfig } from '../rules/context';
 
 /**
  * Error thrown when configuration is invalid

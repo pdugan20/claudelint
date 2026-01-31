@@ -4,7 +4,7 @@
  */
 
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { fileExists } from '../utils/file-system';
+import { fileExists } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { ValidationContext } from '../composition/types';
 import { readJSON, zodSchema } from '../composition/json-validators';

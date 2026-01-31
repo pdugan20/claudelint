@@ -1,4 +1,4 @@
-import { parseYaml, isValidYaml, stringifyYaml } from '../../src/utils/yaml';
+import { parseYaml, isValidYaml, stringifyYaml } from '../../src/utils/formats/yaml';
 
 describe('YAML utilities', () => {
   describe('parseYaml', () => {

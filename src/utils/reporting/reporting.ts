@@ -1,8 +1,8 @@
 import chalk from 'chalk';
-import { ValidationError, ValidationWarning, ValidationResult } from '../validators/base';
+import { ValidationError, ValidationWarning, ValidationResult } from '../../validators/base';
 import { ProgressIndicator } from './progress';
-import { ValidationCache } from './cache';
-import { ConfigError } from './config-resolver';
+import { ValidationCache } from '../cache';
+import { ConfigError } from '../config/resolver';
 
 /**
  * Output format for validation results

@@ -88,7 +88,7 @@ function generateRegistrationContent(ruleFiles: string[]): string {
  * Rules registered: ${ruleFiles.length}
  */
 
-import { RuleRegistry } from '../utils/rule-registry';
+import { RuleRegistry } from '../utils/rules/registry';
 
 // Import all rule files
 ${imports}

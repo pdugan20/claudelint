@@ -5,10 +5,10 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractImportsWithLineNumbers } from '../../utils/markdown';
-import { fileExists, resolvePath, readFileContent } from '../../utils/file-system';
+import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
+import { fileExists, resolvePath, readFileContent } from '../../utils/filesystem/files';
 import { dirname } from 'path';
-import { formatError } from '../../utils/validation-helpers';
+import { formatError } from '../../utils/validators/helpers';
 
 export const rule: Rule = {
   meta: {

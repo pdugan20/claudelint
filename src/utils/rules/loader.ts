@@ -5,8 +5,8 @@
 
 import { existsSync, readdirSync } from 'fs';
 import { join, resolve } from 'path';
-import { RuleRegistry } from './rule-registry';
-import type { Rule } from '../types/rule';
+import { RuleRegistry } from './registry';
+import type { Rule } from '../../types/rule';
 
 /**
  * Result of loading a custom rule

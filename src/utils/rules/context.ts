@@ -5,7 +5,7 @@
  * These types enable validators to access rule-specific configuration and options.
  */
 
-import { RuleId } from '../rules/rule-ids';
+import { RuleId } from '../../rules/rule-ids';
 
 /**
  * Context passed to validators for rule execution

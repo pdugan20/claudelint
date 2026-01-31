@@ -5,7 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { fileExists } from '../../utils/file-system';
+import { fileExists } from '../../utils/filesystem/files';
 import { dirname, join, resolve } from 'path';
 import { HooksConfigSchema } from '../../validators/schemas';
 import { z } from 'zod';

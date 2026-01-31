@@ -16,7 +16,7 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { dirname } from 'path';
 import { readdir } from 'fs/promises';
-import { fileExists } from '../../utils/file-system';
+import { fileExists } from '../../utils/filesystem/files';
 import { SCRIPT_EXTENSIONS } from '../../schemas/constants';
 import { z } from 'zod';
 

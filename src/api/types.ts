@@ -7,7 +7,7 @@
  * @module api/types
  */
 
-import { ClaudeLintConfig } from '../utils/config';
+import { ClaudeLintConfig } from '../utils/config/types';
 
 /**
  * Information about an automatic fix that can be applied

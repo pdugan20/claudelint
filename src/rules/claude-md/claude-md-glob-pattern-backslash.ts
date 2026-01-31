@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractFrontmatter } from '../../utils/markdown';
+import { extractFrontmatter } from '../../utils/formats/markdown';
 
 /**
  * Glob pattern backslash validation rule implementation

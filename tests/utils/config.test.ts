@@ -1,4 +1,4 @@
-import { findConfigFile, loadConfig, mergeConfig, normalizeRuleConfig } from '../../src/utils/config';
+import { findConfigFile, loadConfig, mergeConfig, normalizeRuleConfig } from '../../src/utils/config/types';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';

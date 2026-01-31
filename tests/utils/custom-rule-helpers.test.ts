@@ -9,7 +9,7 @@ import {
   parseJSON,
   parseYAML,
   findLinesMatching,
-} from '../../src/utils/custom-rule-helpers';
+} from '../../src/utils/rules/helpers';
 import { writeFileSync, mkdirSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';

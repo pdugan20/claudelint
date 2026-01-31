@@ -8,8 +8,8 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { safeParseJSON } from '../../utils/json-helpers';
-import { fileExists } from '../../utils/file-system';
+import { safeParseJSON } from '../../utils/formats/json';
+import { fileExists } from '../../utils/filesystem/files';
 import { dirname, join } from 'path';
 import { MarketplaceMetadataSchema } from '../../validators/schemas';
 

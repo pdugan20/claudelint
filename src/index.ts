@@ -96,8 +96,8 @@ export type { BuiltinFormatterName } from './api/formatter';
  * const config = loadConfig(configPath);
  * ```
  */
-export type { ClaudeLintConfig, RuleConfig, ConfigOverride } from './utils/config';
-export { findConfigFile, loadConfig } from './utils/config';
+export type { ClaudeLintConfig, RuleConfig, ConfigOverride } from './utils/config/types';
+export { findConfigFile, loadConfig } from './utils/config/types';
 
 // ============================================================================
 // Functional API

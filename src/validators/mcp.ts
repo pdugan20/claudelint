@@ -1,8 +1,8 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
-import { findMcpFiles, readFileContent } from '../utils/file-system';
+import { findMcpFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { MCPConfigSchema } from './schemas';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

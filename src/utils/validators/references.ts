@@ -2,7 +2,7 @@
  * Cross-reference validation utilities
  * For validating references between files (skills, tools, etc.)
  */
-import { ValidationIssue } from '../validation-helpers';
+import { ValidationIssue } from './helpers';
 import { VALID_TOOLS } from '../../schemas/constants';
 
 /**

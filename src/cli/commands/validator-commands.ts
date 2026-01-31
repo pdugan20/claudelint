@@ -6,8 +6,8 @@
  */
 
 import { Command } from 'commander';
-import { ValidatorRegistry } from '../../utils/validator-factory';
-import { Reporter } from '../../utils/reporting';
+import { ValidatorRegistry } from '../../utils/validators/factory';
+import { Reporter } from '../../utils/reporting/reporting';
 import { loadAndValidateConfig } from '../utils/config-loader';
 import { logger } from '../utils/logger';
 

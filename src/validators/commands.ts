@@ -1,5 +1,5 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

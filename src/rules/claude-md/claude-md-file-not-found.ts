@@ -5,7 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { fileExists } from '../../utils/file-system';
+import { fileExists } from '../../utils/filesystem/files';
 
 export const rule: Rule = {
   meta: {

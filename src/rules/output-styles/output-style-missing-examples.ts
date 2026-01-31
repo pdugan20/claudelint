@@ -8,7 +8,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { extractBodyContent, hasMarkdownSection } from '../../utils/markdown';
+import { extractBodyContent, hasMarkdownSection } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {

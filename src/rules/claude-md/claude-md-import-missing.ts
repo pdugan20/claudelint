@@ -5,8 +5,8 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractImportsWithLineNumbers } from '../../utils/markdown';
-import { fileExists, resolvePath } from '../../utils/file-system';
+import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
+import { fileExists, resolvePath } from '../../utils/filesystem/files';
 import { dirname } from 'path';
 
 export const rule: Rule = {

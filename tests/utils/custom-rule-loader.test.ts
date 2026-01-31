@@ -1,4 +1,4 @@
-import { CustomRuleLoader } from '../../src/utils/custom-rule-loader';
+import { CustomRuleLoader } from '../../src/utils/rules/loader';
 import { mkdirSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 

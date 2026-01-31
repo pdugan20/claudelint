@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { getFileSize } from '../../utils/file-system';
+import { getFileSize } from '../../utils/filesystem/files';
 import { z } from 'zod';
 
 const DEFAULT_MAX_SIZE = 35000;

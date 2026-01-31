@@ -16,8 +16,8 @@
 import yaml from 'js-yaml';
 
 // Re-export commonly used functions from other modules
-export { fileExists, readFileContent } from './file-system';
-export { extractFrontmatter, type FrontmatterResult } from './markdown';
+export { fileExists, readFileContent } from '../filesystem/files';
+export { extractFrontmatter, type FrontmatterResult } from '../formats/markdown';
 
 /**
  * Check if markdown content contains a heading at a specific level

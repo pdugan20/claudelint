@@ -1,8 +1,8 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
-import { findPluginManifests, readFileContent } from '../utils/file-system';
+import { findPluginManifests, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { PluginManifestSchema } from './schemas';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

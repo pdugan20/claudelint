@@ -2,7 +2,7 @@
  * Tests for json-helpers utilities
  */
 
-import { safeParseJSON } from '../../src/utils/json-helpers';
+import { safeParseJSON } from '../../src/utils/formats/json';
 
 describe('json-helpers', () => {
   describe('safeParseJSON', () => {

@@ -1,8 +1,8 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
-import { findLspFiles } from '../utils/file-system';
+import { findLspFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { LSPConfigSchema } from '../schemas/lsp-config.schema';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

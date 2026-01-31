@@ -1,9 +1,9 @@
 import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
-import { findHooksFiles, readFileContent } from '../utils/file-system';
+import { findHooksFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { HooksConfigSchema } from './schemas';
-import { ValidatorRegistry } from '../utils/validator-factory';
-import { validateHook as validateHookHelper } from '../utils/validation-helpers';
+import { ValidatorRegistry } from '../utils/validators/factory';
+import { validateHook as validateHookHelper } from '../utils/validators/helpers';
 
 // Auto-register all rules
 import '../rules';

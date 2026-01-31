@@ -2,7 +2,7 @@
  * Tests for path-helpers utilities
  */
 
-import { getParentDirectoryName } from '../../src/utils/path-helpers';
+import { getParentDirectoryName } from '../../src/utils/filesystem/paths';
 
 describe('path-helpers', () => {
   describe('getParentDirectoryName', () => {

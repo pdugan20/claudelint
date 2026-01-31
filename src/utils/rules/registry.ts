@@ -6,8 +6,8 @@
  * Provides category-based discovery for validator auto-execution.
  */
 
-import { RuleId } from '../rules/rule-ids';
-import { Rule, RuleMetadata, RuleCategory } from '../types/rule';
+import { RuleId } from '../../rules/rule-ids';
+import { Rule, RuleMetadata, RuleCategory } from '../../types/rule';
 
 // Re-export for backwards compatibility
 export type { RuleMetadata };

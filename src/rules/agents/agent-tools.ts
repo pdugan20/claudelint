@@ -11,7 +11,7 @@ import {
   AgentFrontmatterSchema,
   AgentFrontmatterWithRefinements,
 } from '../../schemas/agent-frontmatter.schema';
-import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {

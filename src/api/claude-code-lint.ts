@@ -30,7 +30,7 @@ import {
   RuleMetadata,
   LintMessage,
 } from './types';
-import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config';
+import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
@@ -406,7 +406,7 @@ export class ClaudeLint {
    * ```
    */
   getRules(): Map<string, RuleMetadata> {
-    const { RuleRegistry } = require('../utils/rule-registry');
+    const { RuleRegistry } = require('../utils/rules/registry');
     const metaMap = new Map<string, RuleMetadata>();
 
     // Get all registered rules
@@ -432,7 +432,7 @@ export class ClaudeLint {
    * ```
    */
   getRulesMetaForResults(results: LintResult[]): Map<string, RuleMetadata> {
-    const { RuleRegistry } = require('../utils/rule-registry');
+    const { RuleRegistry } = require('../utils/rules/registry');
     const metaMap = new Map<string, RuleMetadata>();
 
     // Extract unique rule IDs from all results
@@ -673,7 +673,7 @@ export class ClaudeLint {
    * Task 1.4.2 & 1.4.3: Validation orchestration and validator integration
    */
   private async validateFile(filePath: string): Promise<LintResult> {
-    const { ValidatorRegistry } = await import('../utils/validator-factory');
+    const { ValidatorRegistry } = await import('../utils/validators/factory');
     const { buildLintResult, buildCleanResult } = await import('./result-builder');
     const { readFileSync } = await import('fs');
     const fileStartTime = Date.now();
@@ -777,7 +777,7 @@ export class ClaudeLint {
     effectivePath: string,
     source: string
   ): Promise<LintResult> {
-    const { ValidatorRegistry } = await import('../utils/validator-factory');
+    const { ValidatorRegistry } = await import('../utils/validators/factory');
     const { buildLintResult, buildCleanResult } = await import('./result-builder');
     const fileStartTime = Date.now();
 

@@ -5,7 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { fileExists, readFileContent } from '../../utils/file-system';
+import { fileExists, readFileContent } from '../../utils/filesystem/files';
 import { dirname, join } from 'path';
 import { MarketplaceMetadataSchema } from '../../validators/schemas';
 

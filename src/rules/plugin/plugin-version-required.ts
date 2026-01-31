@@ -8,7 +8,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { safeParseJSON } from '../../utils/json-helpers';
+import { safeParseJSON } from '../../utils/formats/json';
 
 export const rule: Rule = {
   meta: {

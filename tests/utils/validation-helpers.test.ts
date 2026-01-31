@@ -2,7 +2,7 @@ import {
   validateHook,
   formatError,
   hasVariableExpansion,
-} from '../../src/utils/validation-helpers';
+} from '../../src/utils/validators/helpers';
 
 describe('validation-helpers', () => {
   describe('validateHook', () => {

@@ -5,13 +5,13 @@
  */
 
 import { Command } from 'commander';
-import { ValidatorRegistry } from '../../utils/validator-factory';
-import { Reporter } from '../../utils/reporting';
-import { findConfigFile, loadConfig, mergeConfig, validateConfig } from '../../utils/config';
-import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver';
-import { CustomRuleLoader } from '../../utils/custom-rule-loader';
+import { ValidatorRegistry } from '../../utils/validators/factory';
+import { Reporter } from '../../utils/reporting/reporting';
+import { findConfigFile, loadConfig, mergeConfig, validateConfig } from '../../utils/config/types';
+import { ConfigError, validateAllRuleOptions } from '../../utils/config/resolver';
+import { CustomRuleLoader } from '../../utils/rules/loader';
 import { ValidationCache } from '../../utils/cache';
-import { Fixer } from '../../utils/fixer';
+import { Fixer } from '../../utils/rules/fixer';
 import { logger } from '../utils/logger';
 
 /**

@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
-import { RuleRegistry } from './rule-registry';
+import { RuleRegistry } from '../rules/registry';
 
 /**
  * Configuration for a single validation rule

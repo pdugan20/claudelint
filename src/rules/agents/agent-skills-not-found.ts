@@ -8,8 +8,8 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { extractFrontmatter } from '../../utils/markdown';
-import { fileExists } from '../../utils/file-system';
+import { extractFrontmatter } from '../../utils/formats/markdown';
+import { fileExists } from '../../utils/filesystem/files';
 import { dirname, join } from 'path';
 
 export const rule: Rule = {

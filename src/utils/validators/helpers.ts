@@ -2,10 +2,10 @@
  * Shared validation helper functions for validators
  */
 
-import { VALID_HOOK_EVENTS, VALID_HOOK_TYPES } from '../schemas/constants';
+import { VALID_HOOK_EVENTS, VALID_HOOK_TYPES } from '../../schemas/constants';
 import { z } from 'zod';
-import { HookSchema } from '../validators/schemas';
-import { RuleId } from '../rules/rule-ids';
+import { HookSchema } from '../../validators/schemas';
+import { RuleId } from '../../rules/rule-ids';
 
 /**
  * Validation issue returned by helper functions

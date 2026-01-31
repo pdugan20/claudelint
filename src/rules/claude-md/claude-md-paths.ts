@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractFrontmatter } from '../../utils/markdown';
+import { extractFrontmatter } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {

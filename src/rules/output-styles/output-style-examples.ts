@@ -8,7 +8,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { OutputStyleFrontmatterSchema } from '../../schemas/output-style-frontmatter.schema';
-import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
+import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {

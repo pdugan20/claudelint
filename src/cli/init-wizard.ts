@@ -8,7 +8,7 @@ import inquirer from 'inquirer';
 import { existsSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
-import { ClaudeLintConfig } from '../utils/config';
+import { ClaudeLintConfig } from '../utils/config/types';
 import { logger } from './utils/logger';
 import {
   isShellCheckAvailable,

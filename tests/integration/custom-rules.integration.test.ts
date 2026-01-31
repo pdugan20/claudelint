@@ -3,8 +3,8 @@
  * Tests end-to-end custom rule functionality
  */
 
-import { CustomRuleLoader } from '../../src/utils/custom-rule-loader';
-import { RuleRegistry } from '../../src/utils/rule-registry';
+import { CustomRuleLoader } from '../../src/utils/rules/loader';
+import { RuleRegistry } from '../../src/utils/rules/registry';
 import { mkdirSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 

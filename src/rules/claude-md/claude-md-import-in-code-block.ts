@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractImportsWithLineNumbers } from '../../utils/markdown';
+import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
 
 /**
  * Import in code block validation rule implementation

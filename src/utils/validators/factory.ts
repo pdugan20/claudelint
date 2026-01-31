@@ -3,7 +3,7 @@
  * Provides centralized validator registration and discovery
  */
 
-import { BaseValidator, BaseValidatorOptions } from '../validators/base';
+import { BaseValidator, BaseValidatorOptions } from '../../validators/base';
 
 /**
  * Metadata describing a validator

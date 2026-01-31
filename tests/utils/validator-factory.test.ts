@@ -1,4 +1,4 @@
-import { ValidatorRegistry, ValidatorMetadata } from '../../src/utils/validator-factory';
+import { ValidatorRegistry, ValidatorMetadata } from '../../src/utils/validators/factory';
 import { BaseValidator, ValidationResult } from '../../src/validators/base';
 
 // Mock validator for testing

@@ -1,11 +1,11 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { findSkillDirectories, readFileContent, fileExists } from '../utils/file-system';
-import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { findSkillDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
+import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
 import { SCRIPT_EXTENSIONS } from '../schemas/constants';
 import { basename, join } from 'path';
 import { readdir } from 'fs/promises';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

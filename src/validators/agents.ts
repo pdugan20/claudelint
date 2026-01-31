@@ -1,12 +1,12 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { findAgentDirectories, readFileContent, fileExists } from '../utils/file-system';
-import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { findAgentDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
+import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
 import { basename, join } from 'path';
-import { validateHook } from '../utils/validation-helpers';
+import { validateHook } from '../utils/validators/helpers';
 import { HookSchema } from './schemas';
 import { z } from 'zod';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

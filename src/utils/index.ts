@@ -1,12 +1,12 @@
 // Utility exports
-export * from './file-system';
-export * from './markdown';
-export * from './yaml';
-export * from './reporting';
-export * from './custom-rule-loader';
-export * from './custom-rule-helpers';
-export * from './validator-factory';
-export * from './schema-helpers';
+export * from './filesystem/files';
+export * from './formats/markdown';
+export * from './formats/yaml';
+export * from './reporting/reporting';
+export * from './rules/loader';
+export * from './rules/helpers';
+export * from './validators/factory';
+export * from './formats/schema';
 export * from './validators';
 
 // Export AutoFix for custom rules

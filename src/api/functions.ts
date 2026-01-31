@@ -9,7 +9,7 @@
 
 import { ClaudeLint } from './claude-code-lint';
 import type { LintResult, LintOptions, LintTextOptions, FileInfo } from './types';
-import type { ClaudeLintConfig } from '../utils/config';
+import type { ClaudeLintConfig } from '../utils/config/types';
 import type { Formatter } from './types';
 
 /**
@@ -128,7 +128,7 @@ export async function getFileInfo(filePath: string, options?: { cwd?: string }):
 
   // Get validators that would run for this file
   // We'll use a minimal approach - import ValidatorRegistry directly
-  const { ValidatorRegistry } = await import('../utils/validator-factory');
+  const { ValidatorRegistry } = await import('../utils/validators/factory');
   const allValidators = ValidatorRegistry.getAll({
     path: filePath,
     verbose: false,

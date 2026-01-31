@@ -6,7 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractFrontmatter } from '../../utils/markdown';
+import { extractFrontmatter } from '../../utils/formats/markdown';
 import { SkillFrontmatter } from '../../schemas/skill-frontmatter.schema';
 
 /**

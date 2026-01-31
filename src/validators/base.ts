@@ -1,12 +1,12 @@
 // Base validator class that all validators extend
 
 import * as path from 'path';
-import { ClaudeLintConfig } from '../utils/config';
-import { formatError } from '../utils/validation-helpers';
+import { ClaudeLintConfig } from '../utils/config/types';
+import { formatError } from '../utils/validators/helpers';
 import { RuleId } from '../rules/rule-ids';
 import { RuleCategory } from '../types/rule';
-import { ConfigResolver } from '../utils/config-resolver';
-import { RuleRegistry } from '../utils/rule-registry';
+import { ConfigResolver } from '../utils/config/resolver';
+import { RuleRegistry } from '../utils/rules/registry';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue

@@ -1,8 +1,8 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/file-system';
-import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/filesystem/files';
+import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';

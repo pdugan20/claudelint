@@ -11,7 +11,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { extractBodyContent } from '../../utils/markdown';
+import { extractBodyContent } from '../../utils/formats/markdown';
 import { z } from 'zod';
 
 /**

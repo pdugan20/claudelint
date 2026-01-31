@@ -1,7 +1,7 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
 import { join, resolve } from 'path';
-import { loadIgnorePatterns } from './ignore';
+import { loadIgnorePatterns } from '../config/ignore';
 
 /**
  * Find files matching a glob pattern

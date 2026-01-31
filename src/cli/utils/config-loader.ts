@@ -4,9 +4,9 @@
  * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
  */
 
-import { findConfigFile, loadConfig, validateConfig } from '../../utils/config';
-import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver';
-import { ClaudeLintConfig } from '../../utils/config';
+import { findConfigFile, loadConfig, validateConfig } from '../../utils/config/types';
+import { ConfigError, validateAllRuleOptions } from '../../utils/config/resolver';
+import { ClaudeLintConfig } from '../../utils/config/types';
 import { logger } from './logger';
 
 /**

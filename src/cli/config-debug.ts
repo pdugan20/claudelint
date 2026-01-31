@@ -10,8 +10,8 @@
 import { existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import chalk from 'chalk';
-import { loadConfig, findConfigFile, ClaudeLintConfig } from '../utils/config';
-import { RuleRegistry } from '../utils/rule-registry';
+import { loadConfig, findConfigFile, ClaudeLintConfig } from '../utils/config/types';
+import { RuleRegistry } from '../utils/rules/registry';
 import { logger } from './utils/logger';
 
 export interface ConfigDebugOptions {

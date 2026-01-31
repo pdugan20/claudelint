@@ -1,4 +1,4 @@
-import { Reporter } from '../../src/utils/reporting';
+import { Reporter } from '../../src/utils/reporting/reporting';
 import { ValidationResult } from '../../src/validators/base';
 
 describe('Reporter', () => {

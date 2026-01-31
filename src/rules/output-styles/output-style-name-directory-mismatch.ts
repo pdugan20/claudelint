@@ -8,8 +8,8 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { extractFrontmatter } from '../../utils/markdown';
-import { getParentDirectoryName } from '../../utils/path-helpers';
+import { extractFrontmatter } from '../../utils/formats/markdown';
+import { getParentDirectoryName } from '../../utils/filesystem/paths';
 
 export const rule: Rule = {
   meta: {

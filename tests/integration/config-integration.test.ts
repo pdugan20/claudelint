@@ -4,7 +4,7 @@
  */
 
 import { ClaudeMdValidator } from '../../src/validators/claude-md';
-import { ClaudeLintConfig } from '../../src/utils/config';
+import { ClaudeLintConfig } from '../../src/utils/config/types';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';

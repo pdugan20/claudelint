@@ -9,7 +9,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { fileExists } from '../../utils/file-system';
+import { fileExists } from '../../utils/filesystem/files';
 import { dirname, join } from 'path';
 
 export const rule: Rule = {

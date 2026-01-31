@@ -8,7 +8,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { fileExists, resolvePath } from '../../utils/file-system';
+import { fileExists, resolvePath } from '../../utils/filesystem/files';
 import { dirname } from 'path';
 
 // Matches relative markdown links: [text](./file.md)

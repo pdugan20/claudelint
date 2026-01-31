@@ -5,7 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { formatError } from '../../utils/validation-helpers';
+import { formatError } from '../../utils/validators/helpers';
 
 export const rule: Rule = {
   meta: {

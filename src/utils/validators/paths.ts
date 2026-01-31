@@ -1,8 +1,8 @@
 /**
  * Path validation utilities
  */
-import { fileExists as fsFileExists, directoryExists as fsDirExists } from '../file-system';
-import { ValidationIssue } from '../validation-helpers';
+import { fileExists as fsFileExists, directoryExists as fsDirExists } from '../filesystem/files';
+import { ValidationIssue } from './helpers';
 
 /**
  * Validate file exists

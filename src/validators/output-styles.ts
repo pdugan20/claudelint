@@ -1,9 +1,9 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import { findOutputStyleDirectories, readFileContent, fileExists } from '../utils/file-system';
-import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
+import { findOutputStyleDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
+import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
 import { basename, join } from 'path';
-import { ValidatorRegistry } from '../utils/validator-factory';
+import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
 import '../rules';
