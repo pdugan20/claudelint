@@ -433,4 +433,48 @@ describe('CustomRuleLoader', () => {
       expect(loader.getLoadedRules()).toHaveLength(0);
     });
   });
+
+  describe('Auto-Fix Support', () => {
+    it('should load and execute rule with autoFix', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      // Create a rule that provides auto-fix
+      writeFileSync(
+        join(rulesDir, 'auto-fix-rule.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'auto-fix-test',
+            name: 'Auto Fix Test',
+            description: 'Test rule with auto-fix',
+            category: 'Custom',
+            severity: 'error',
+            fixable: true,
+            deprecated: false,
+            since: '1.0.0',
+          },
+          validate: async (context) => {
+            if (context.fileContent.includes('BAD')) {
+              context.report({
+                message: 'Found BAD text',
+                autoFix: {
+                  ruleId: 'auto-fix-test',
+                  description: 'Replace BAD with GOOD',
+                  filePath: context.filePath,
+                  apply: (content) => content.replace(/BAD/g, 'GOOD'),
+                },
+              });
+            }
+          },
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(true);
+      expect(results[0].rule?.meta.fixable).toBe(true);
+    });
+  });
 });

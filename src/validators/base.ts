@@ -628,6 +628,7 @@ export abstract class BaseValidator {
           fix?: string;
           explanation?: string;
           howToFix?: string;
+          autoFix?: AutoFix;
         }) => void;
       }) => Promise<void> | void;
     },
@@ -656,12 +657,14 @@ export abstract class BaseValidator {
         fix?: string;
         explanation?: string;
         howToFix?: string;
+        autoFix?: AutoFix;
       }) => {
         // Report issue using existing BaseValidator.report()
         this.report(issue.message, filePath, issue.line, rule.meta.id, {
           fix: issue.fix,
           explanation: issue.explanation,
           howToFix: issue.howToFix,
+          autoFix: issue.autoFix,
         });
       },
     };

@@ -11,6 +11,7 @@
 
 import { z } from 'zod';
 import { RuleId } from '../rules/rule-ids';
+import { AutoFix } from '../validators/base';
 
 /**
  * Rule category - used for organizing rules in documentation
@@ -99,6 +100,9 @@ export interface RuleIssue {
 
   /** Optional quick fix suggestion */
   fix?: string;
+
+  /** Optional automatic fix that can be applied */
+  autoFix?: AutoFix;
 }
 
 /**

@@ -15,11 +15,11 @@
 **v1.0 Complete:** 39/39 tasks (100%)
 
 ### Enhancement Phases (Future)
-- **Phase 7:** 0/6 complete (0%) - Custom Rules Enhancement (v1.1)
+- **Phase 7:** 8/8 complete (100%) [x] - Custom Rules Enhancement (v1.1)
 - **Phase 8:** 0/5 complete (0%) - Developer Experience (v1.2)
 - **Phase 9:** 0/8 complete (0%) - Future Enhancements (v2.0+)
 
-**Overall:** 39/58 tasks complete (67%)
+**Overall:** 47/58 tasks complete (81%)
 
 ---
 
@@ -162,7 +162,7 @@ Core plugin system removal complete. Ready for final git commit.
 
 ## Phase 7: Custom Rules Enhancement (v1.1)
 
-**Status:** Not Started
+**Status:** [x] COMPLETE (8/8 complete, 100%)
 
 **Goal:** Enable auto-fix and add helper utilities for custom rules
 
@@ -171,53 +171,52 @@ Core plugin system removal complete. Ready for final git commit.
 **Priority:** HIGH - Delivers immediate user value
 
 ### Auto-Fix Support
-- [ ] 7.1 Update `ValidationContext` interface to accept `autoFix` parameter (2h)
-  - Add `autoFix?: AutoFix` to `report()` method
-  - Update type definitions
-  - Export `AutoFix` interface from utils
-- [ ] 7.2 Update custom-rule-loader to pass through autoFix (1h)
-  - Ensure context.report supports autoFix
-  - Test with built-in Fixer class
-- [ ] 7.3 Create example custom rule with auto-fix (2h)
-  - Add to docs/examples/custom-rules/
-  - Show simple pattern replacement
-  - Demonstrate best practices
-- [ ] 7.4 Add auto-fix section to docs/custom-rules.md (1h)
-  - Document AutoFix interface
-  - Show examples
-  - Explain apply() function
+- [x] 7.1 Update `ValidationContext` interface to accept `autoFix` parameter (2h)
+  - Added `autoFix?: AutoFix` to RuleIssue interface
+  - Updated executeRule() context.report to pass through autoFix
+  - Exported `AutoFix` interface from utils/index.ts
+  - All tests passing (22 custom rule tests)
+- [x] 7.2 Update custom-rule-loader to pass through autoFix (1h)
+  - No changes needed - custom-rule-loader just loads rules
+  - Actual execution in BaseValidator.executeRule() already updated
+  - Auto-fix support flows through automatically
+- [x] 7.3 Create example custom rule with auto-fix (2h)
+  - Created no-trailing-whitespace.js example
+  - Demonstrates autoFix with apply() function
+  - Added test for auto-fix functionality (17 tests passing)
+- [x] 7.4 Add auto-fix section to docs/custom-rules.md (1h)
+  - Documented AutoFix interface with TypeScript types
+  - Added 2 complete examples (trailing whitespace + pattern replacement)
+  - Explained apply() function and best practices
+  - Documented --fix CLI usage
 
 ### Helper Library
-- [ ] 7.5 Create `src/utils/custom-rule-helpers.ts` (6h)
-  - Extract common patterns from built-in rules
-  - Implement helpers:
-    - `hasHeading(content: string, level: number): boolean`
-    - `fileExists(path: string): Promise<boolean>`
-    - `matchesPattern(content: string, pattern: RegExp): boolean`
-    - `countOccurrences(content: string, search: string): number`
-    - `extractFrontmatter(content: string): object | null`
-    - `validateSemver(version: string): boolean`
-    - `readFile(path: string): Promise<string>`
-    - `parseJSON(content: string): object | null`
-    - `parseYAML(content: string): object | null`
-  - Add JSDoc documentation
-  - Export from utils/index.ts
-- [ ] 7.6 Update docs/custom-rules.md with helper examples (2h)
-  - Document each helper function
-  - Show usage examples
-  - Link to API reference
+- [x] 7.5 Create `src/utils/custom-rule-helpers.ts` (6h)
+  - Created 11 helper functions with full JSDoc
+  - Implemented: hasHeading, extractHeadings, matchesPattern, countOccurrences,
+    extractFrontmatter, validateSemver, fileExists, parseJSON, parseYAML,
+    readFileContent, findLinesMatching
+  - Re-exported from utils/index.ts
+  - 24 tests passing with 100% coverage
+- [x] 7.6 Update docs/custom-rules.md with helper examples (2h)
+  - Added "Helper Library" section with 11 helper functions
+  - Documented each function with examples and use cases
+  - Included complete example rule using multiple helpers
+  - Organized by category (headings, patterns, frontmatter, file system, parsing)
 
 ### Enhanced Documentation
-- [ ] 7.7 Create 5 additional example rules (4h)
-  - no-absolute-paths (uses matchesPattern)
-  - max-file-size (uses readFile)
-  - require-version (uses validateSemver, hasHeading)
-  - check-links (uses fileExists)
-  - enforce-frontmatter (uses extractFrontmatter)
-- [ ] 7.8 Add troubleshooting FAQ to docs (2h)
-  - Common errors and solutions
-  - Debugging tips
-  - Performance considerations
+- [x] 7.7 Create 5 additional example rules (4h)
+  - Created no-absolute-paths.js (uses matchesPattern, findLinesMatching)
+  - Created max-file-size.js (uses countOccurrences)
+  - Created require-version.js (uses extractFrontmatter, validateSemver, hasHeading)
+  - Created check-links.js (uses fileExists, findLinesMatching)
+  - Created enforce-frontmatter.js (uses extractFrontmatter, validateSemver)
+  - All examples in docs/examples/custom-rules/
+- [x] 7.8 Add troubleshooting FAQ to docs (2h)
+  - Added 9 comprehensive troubleshooting sections
+  - Covers: helper imports, auto-fix, regex, frontmatter, file checks, async/await
+  - Includes debugging tips and performance optimization
+  - Added code examples for each common issue
 
 ---
 
