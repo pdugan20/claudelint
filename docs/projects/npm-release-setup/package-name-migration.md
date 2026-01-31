@@ -1,11 +1,11 @@
 # Package Name Migration Guide
 
-Complete guide for migrating from `claude-code-lint` (scoped) to `claude-code-lint` (unscoped).
+Complete guide for migrating from `claudelint` (scoped) to `claudelint` (unscoped).
 
 ## Overview
 
-**Current:** `claude-code-lint`
-**Target:** `claude-code-lint`
+**Current:** `claudelint`
+**Target:** `claudelint`
 
 **References to update:** 140+ across codebase
 
@@ -80,8 +80,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 
-const OLD_NAME = 'claude-code-lint';
-const NEW_NAME = 'claude-code-lint';
+const OLD_NAME = 'claudelint';
+const NEW_NAME = 'claudelint';
 
 interface MigrationResult {
   file: string;
@@ -217,7 +217,7 @@ npm run migrate:name:dry
 # ==============================================================
 # DRY RUN - No files will be modified
 # ==============================================================
-# Migrating: claude-code-lint → claude-code-lint
+# Migrating: claudelint → claudelint
 #
 #   README.md (11 occurrences)
 #   package.json (1 occurrence)
@@ -240,7 +240,7 @@ npm run migrate:name
 # ==============================================================
 # LIVE RUN - Files will be modified
 # ==============================================================
-# Migrating: claude-code-lint → claude-code-lint
+# Migrating: claudelint → claudelint
 #
 # ✓ README.md (11 occurrences)
 # ✓ package.json (1 occurrence)
@@ -264,11 +264,11 @@ npm run migrate:name
 git diff
 
 # 2. Check for any missed references
-grep -r "claude-code-lint" . --exclude-dir=node_modules --exclude-dir=dist
+grep -r "claudelint" . --exclude-dir=node_modules --exclude-dir=dist
 
 # 3. Verify package.json
 cat package.json | grep "name"
-# Should show: "name": "claude-code-lint",
+# Should show: "name": "claudelint",
 
 # 4. Build and test
 npm run build
@@ -276,10 +276,10 @@ npm test
 
 # 5. Test local installation
 npm pack
-# Creates: claude-code-lint-0.2.0-beta.0.tgz
+# Creates: claudelint-0.2.0-beta.0.tgz
 
 npm install -g ./claude-code-lint-0.2.0-beta.0.tgz
-claude-code-lint --version
+claudelint --version
 # Should work
 
 # 6. Test API import
@@ -294,13 +294,13 @@ node -e "const { ClaudeLint } = require('claude-code-lint'); console.log('OK')"
 Before:
 
 ```markdown
-[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/claude-code-lint)
+[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/claudelint)
 ```
 
 After:
 
 ```markdown
-[![npm version](https://badge.fury.io/js/claude-code-lint.svg)](https://www.npmjs.com/package/claude-code-lint)
+[![npm version](https://badge.fury.io/js/claudelint.svg)](https://www.npmjs.com/package/claudelint)
 ```
 
 ### Import Examples
@@ -340,7 +340,7 @@ Before (examples/integration/package.json):
 ```json
 {
   "devDependencies": {
-    "claude-code-lint": "^0.2.0"
+    "claudelint": "^0.2.0"
   }
 }
 ```
@@ -350,7 +350,7 @@ After:
 ```json
 {
   "devDependencies": {
-    "claude-code-lint": "^0.2.0"
+    "claudelint": "^0.2.0"
   }
 }
 ```
@@ -419,19 +419,19 @@ If we ever need to migrate from published scoped package:
 
 ```bash
 # Deprecate old scoped package
-npm deprecate claude-code-lint "Package has moved to 'claude-code-lint' (unscoped)"
+npm deprecate claudelint "Package has moved to 'claudelint' (unscoped)"
 ```
 
 ### Migration Guide for Users
 
 ```markdown
-## Migration from claude-code-lint to claude-code-lint
+## Migration from claudelint to claudelint
 
 The package has moved to an unscoped name for easier installation.
 
 ### Uninstall old package
 
-npm uninstall claude-code-lint
+npm uninstall claudelint
 
 ### Install new package
 

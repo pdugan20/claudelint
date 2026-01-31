@@ -1,5 +1,5 @@
 /**
- * Functional API for claude-code-lint
+ * Functional API for claudelint
  *
  * This module provides stateless functional utilities for common operations.
  * These are convenience wrappers around the ClaudeLint class for simple use cases.
@@ -7,7 +7,7 @@
  * @module api/functions
  */
 
-import { ClaudeLint } from './claude-code-lint';
+import { ClaudeLint } from './claudelint';
 import type { LintResult, LintOptions, LintTextOptions, FileInfo } from './types';
 import type { ClaudeLintConfig } from '../utils/config/types';
 import type { Formatter } from './types';

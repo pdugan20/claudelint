@@ -136,7 +136,7 @@ await writeFile('lint-report.xml', output);
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="claude-code-lint" tests="2" failures="2">
+<testsuites name="claudelint" tests="2" failures="2">
   <testsuite name="CLAUDE.md" tests="2" failures="2">
     <testcase name="claude-md-size-error" classname="CLAUDE.md">
       <failure message="File size exceeds 30,000 characters">

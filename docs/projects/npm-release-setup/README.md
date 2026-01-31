@@ -1,10 +1,10 @@
 # NPM Release Setup Project
 
-Project to establish professional npm package versioning, release automation, and publish `claude-code-lint` as an unscoped package.
+Project to establish professional npm package versioning, release automation, and publish `claudelint` as an unscoped package.
 
 ## Project Goals
 
-1. **Claim package name**: Publish `claude-code-lint` (unscoped) to npm
+1. **Claim package name**: Publish `claudelint` (unscoped) to npm
 2. **Automate releases**: Use release-it for versioning and publishing
 3. **Synchronize versions**: Keep all version references in sync
 4. **Establish workflow**: Document and standardize release process
@@ -12,7 +12,7 @@ Project to establish professional npm package versioning, release automation, an
 ## Current Status
 
 **Phase:** Not Started
-**Package Name:** `claude-code-lint` (scoped) → `claude-code-lint` (unscoped)
+**Package Name:** `claudelint` (scoped) → `claudelint` (unscoped)
 **Current Version:** 0.2.0
 **Target Version:** 0.2.0-beta.0
 
@@ -93,7 +93,7 @@ Create scripts to sync version numbers across all files.
 
 ### Phase 3: Package Name Migration [Not Started]
 
-Migrate from `claude-code-lint` to `claude-code-lint`.
+Migrate from `claudelint` to `claudelint`.
 
 **Documents:** [tracker.md](./tracker.md#phase-3-package-name-migration), [package-name-migration.md](./package-name-migration.md)
 
@@ -105,7 +105,7 @@ Build, test, and prepare for first beta release.
 
 ### Phase 5: First Beta Release [Not Started]
 
-Publish `claude-code-lint@beta` to npm and claim the package name.
+Publish `claudelint@beta` to npm and claim the package name.
 
 **Documents:** [tracker.md](./tracker.md#phase-5-first-beta-release), [publishing-strategy.md](./publishing-strategy.md)
 
@@ -139,7 +139,7 @@ Establish release cadence and automation for future releases.
 
 ### Why unscoped package?
 
-- Shorter, more memorable name (`claude-code-lint` vs `claude-code-lint`)
+- Shorter, more memorable name (`claudelint` vs `claudelint`)
 - Easier to install (`npm i claude-code-lint` vs `npm i claude-code-lint`)
 - More discoverable on npm
 - Professional appearance
@@ -153,7 +153,7 @@ Establish release cadence and automation for future releases.
 
 ## Success Criteria
 
-- [ ] Package published as `claude-code-lint` on npm
+- [ ] Package published as `claudelint` on npm
 - [ ] Beta version (`0.2.0-beta.0`) available via `npm install claude-code-lint@beta`
 - [ ] All version numbers synchronized across codebase
 - [ ] release-it configured and working
@@ -206,7 +206,7 @@ Establish release cadence and automation for future releases.
 
 ## Notes
 
-- Package name `claude-code-lint` verified as available (2026-01-30)
+- Package name `claudelint` verified as available (2026-01-30)
 - Using beta tag prevents accidental unstable installations
 - Version sync script will be integrated with release-it hooks
 - Following SemVer 2.0.0 strictly

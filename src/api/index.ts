@@ -1,7 +1,7 @@
 /**
- * claude-code-lint programmatic API
+ * claudelint programmatic API
  *
- * This module provides the main programmatic API for claude-code-lint, including
+ * This module provides the main programmatic API for claudelint, including
  * the ClaudeLint class, functional utilities, and all type definitions.
  *
  * @module api
@@ -55,7 +55,7 @@ export { loadFormatter, isBuiltinFormatter, BaseFormatter, BUILTIN_FORMATTERS } 
 export type { BuiltinFormatterName } from './formatter';
 
 // Main ClaudeLint class
-export { ClaudeLint } from './claude-code-lint';
+export { ClaudeLint } from './claudelint';
 
 // Functional API
 export { lint, lintText, resolveConfig, formatResults, getFileInfo } from './functions';

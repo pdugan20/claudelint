@@ -10,7 +10,7 @@ import { claudeMd, skill, settings, hooks, mcp, plugin } from '../helpers/fixtur
 
 describe('CLI Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
-  const claudelintBin = join(projectRoot, 'bin/claude-code-lint');
+  const claudelintBin = join(projectRoot, 'bin/claudelint');
   let testProjectDir: string;
 
   beforeEach(() => {

@@ -35,7 +35,7 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fast', 'Fast mode: skip expensive checks')
     .option('--cache', 'Enable caching (default: true)')
     .option('--no-cache', 'Disable caching')
-    .option('--cache-location <path>', 'Cache directory', '.claude-code-lint-cache')
+    .option('--cache-location <path>', 'Cache directory', '.claudelint-cache')
     .option('--debug-config', 'Show configuration loading debug information')
     .option('--fix', 'Automatically fix problems')
     .option('--fix-dry-run', 'Preview fixes without applying them')
@@ -148,7 +148,7 @@ export function registerCheckAllCommand(program: Command): void {
 
           // Load custom rules
           const customRuleLoader = new CustomRuleLoader({
-            customRulesPath: '.claude-code-lint/rules',
+            customRulesPath: '.claudelint/rules',
             enableCustomRules: true,
           });
 
@@ -194,7 +194,7 @@ export function registerCheckAllCommand(program: Command): void {
             options.cache !== false && !options.fix && !options.fixDryRun
               ? new ValidationCache({
                   enabled: true,
-                  location: options.cacheLocation || '.claude-code-lint-cache',
+                  location: options.cacheLocation || '.claudelint-cache',
                   strategy: 'mtime',
                 })
               : null;

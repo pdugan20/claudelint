@@ -25,7 +25,7 @@ describe('CustomRuleLoader', () => {
 
   describe('Rule Loading', () => {
     it('should load valid custom rule', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -60,7 +60,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should reject rule without meta', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -80,7 +80,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should reject rule without validate function', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -106,7 +106,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should reject file without rule export', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -127,7 +127,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should handle syntax errors in rule file', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(join(rulesDir, 'syntax-error.ts'), 'this is not valid javascript {{{');
@@ -140,7 +140,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should detect ID conflicts between custom rules', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       // Create two rules with the same ID
@@ -197,7 +197,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should load multiple custom rules', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -247,7 +247,7 @@ describe('CustomRuleLoader', () => {
 
   describe('File Discovery', () => {
     it('should discover rules in subdirectories', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       const subDir = join(rulesDir, 'team-rules');
       mkdirSync(subDir, { recursive: true });
 
@@ -278,7 +278,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should skip .d.ts files', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(join(rulesDir, 'types.d.ts'), 'export type CustomRule = any;');
@@ -289,7 +289,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should skip test files', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(join(rulesDir, 'rule.test.ts'), 'test code');
@@ -308,7 +308,7 @@ describe('CustomRuleLoader', () => {
 
     it('should handle disabled custom rules', async () => {
       const loaderDisabled = new CustomRuleLoader({ enableCustomRules: false });
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -372,7 +372,7 @@ describe('CustomRuleLoader', () => {
     });
 
     it('should return loaded rules', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -404,7 +404,7 @@ describe('CustomRuleLoader', () => {
 
   describe('clear', () => {
     it('should clear loaded rules', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       writeFileSync(
@@ -436,7 +436,7 @@ describe('CustomRuleLoader', () => {
 
   describe('Auto-Fix Support', () => {
     it('should load and execute rule with autoFix', async () => {
-      const rulesDir = join(testDir, '.claude-code-lint/rules');
+      const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
       // Create a rule that provides auto-fix

@@ -244,7 +244,7 @@ To resolve protocol mismatch warnings:
 6. **Run validation**:
 
    ```bash
-   claude-code-lint check-mcp
+   claudelint check-mcp
    ```
 
 ## Protocol Guide

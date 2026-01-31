@@ -1,8 +1,8 @@
 // ============================================================================
-// claude-code-lint Programmatic API
+// claudelint Programmatic API
 // ============================================================================
 //
-// This module provides the public API for claude-code-lint, following the same
+// This module provides the public API for claudelint, following the same
 // patterns as ESLint and Prettier. Only stable, documented APIs are exported.
 //
 // Internal implementation details (validators, registries, etc.) are NOT
@@ -29,7 +29,7 @@
  * const results = await linter.lintFiles(['**\/*.md']);
  * ```
  */
-export { ClaudeLint } from './api/claude-code-lint';
+export { ClaudeLint } from './api/claudelint';
 
 // ============================================================================
 // Type Definitions

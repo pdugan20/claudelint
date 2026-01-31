@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate MCP Servers
 
-Runs `claude-code-lint validate-mcp` to validate `.mcp.json` configuration files.
+Runs `claudelint validate-mcp` to validate `.mcp.json` configuration files.
 
 ## Usage
 
 ```bash
-claude-code-lint validate-mcp
+claudelint validate-mcp
 ```
 
 ## Options
@@ -36,8 +36,8 @@ claude-code-lint validate-mcp
 ## Examples
 
 ```bash
-claude-code-lint validate-mcp
-claude-code-lint validate-mcp --path /path/to/.mcp.json
+claudelint validate-mcp
+claudelint validate-mcp --path /path/to/.mcp.json
 ```
 
 ## See Also

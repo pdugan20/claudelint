@@ -1,6 +1,6 @@
 # File Naming Conventions
 
-This document defines the file naming conventions used throughout the claude-code-lint project.
+This document defines the file naming conventions used throughout the claudelint project.
 
 ## Documentation Files
 

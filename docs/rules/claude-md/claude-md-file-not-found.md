@@ -9,7 +9,7 @@ Specified CLAUDE.md file path does not exist
 
 ## Rule Details
 
-This rule validates that the CLAUDE.md file specified for validation actually exists on the filesystem. When running `claude-code-lint check-claude-md <file>`, the linter must be able to locate and read the target file. If the file path is incorrect, mistyped, or points to a non-existent location, validation cannot proceed.
+This rule validates that the CLAUDE.md file specified for validation actually exists on the filesystem. When running `claudelint check-claude-md <file>`, the linter must be able to locate and read the target file. If the file path is incorrect, mistyped, or points to a non-existent location, validation cannot proceed.
 
 This is a fundamental sanity check that prevents wasted time debugging validation errors when the root cause is simply that the file doesn't exist. It provides clear feedback about the missing file path so you can quickly correct the issue.
 
@@ -18,7 +18,7 @@ This is a fundamental sanity check that prevents wasted time debugging validatio
 Attempting to validate a non-existent file:
 
 ```bash
-claude-code-lint check-claude-md /path/to/nonexistent/CLAUDE.md
+claudelint check-claude-md /path/to/nonexistent/CLAUDE.md
 ```
 
 Error output:
@@ -30,14 +30,14 @@ Error: File not found: /path/to/nonexistent/CLAUDE.md
 Typo in file path:
 
 ```bash
-claude-code-lint check-claude-md ./CLUADE.md
+claudelint check-claude-md ./CLUADE.md
                                 ^^^^^^^ Typo: should be CLAUDE.md
 ```
 
 Wrong directory:
 
 ```bash
-claude-code-lint check-claude-md ../other-project/CLAUDE.md
+claudelint check-claude-md ../other-project/CLAUDE.md
 ```
 
 When the file is actually in the current directory.
@@ -47,20 +47,20 @@ When the file is actually in the current directory.
 Validating an existing file with absolute path:
 
 ```bash
-claude-code-lint check-claude-md /Users/username/project/CLAUDE.md
+claudelint check-claude-md /Users/username/project/CLAUDE.md
 ```
 
 Validating with relative path:
 
 ```bash
-claude-code-lint check-claude-md ./CLAUDE.md
+claudelint check-claude-md ./CLAUDE.md
 ```
 
 Validating from project root:
 
 ```bash
 cd /path/to/project
-claude-code-lint check-claude-md CLAUDE.md
+claudelint check-claude-md CLAUDE.md
 ```
 
 ## How To Fix
@@ -77,10 +77,10 @@ To resolve file not found errors:
 
    ```bash
    # Wrong
-   claude-code-lint check-claude-md CLUADE.md
+   claudelint check-claude-md CLUADE.md
 
    # Correct
-   claude-code-lint check-claude-md CLAUDE.md
+   claudelint check-claude-md CLAUDE.md
    ```
 
 3. **Use absolute paths** to avoid confusion:
@@ -91,7 +91,7 @@ To resolve file not found errors:
    # /Users/username/project
 
    # Use full path
-   claude-code-lint check-claude-md /Users/username/project/CLAUDE.md
+   claudelint check-claude-md /Users/username/project/CLAUDE.md
    ```
 
 4. **Check current directory**:

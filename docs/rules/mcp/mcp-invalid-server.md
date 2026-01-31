@@ -172,7 +172,7 @@ To resolve duplicate server name or key mismatch issues:
 5. **Run validation**:
 
    ```bash
-   claude-code-lint check-mcp
+   claudelint check-mcp
    ```
 
 ## Options

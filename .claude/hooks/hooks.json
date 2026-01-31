@@ -3,7 +3,7 @@
     {
       "event": "SessionStart",
       "type": "command",
-      "command": "claude-code-lint check-all --format compact",
+      "command": "claudelint check-all --format compact",
       "description": "Validate Claude Code project files at session start"
     }
   ]

@@ -147,8 +147,8 @@ To fix invalid transport configuration:
    # Check JSON syntax
    cat .mcp.json | jq .
 
-   # Run claude-code-lint
-   claude-code-lint check-mcp
+   # Run claudelint
+   claudelint check-mcp
    ```
 
 6. **Test the server connection**:

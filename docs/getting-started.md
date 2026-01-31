@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide will help you set up claude-code-lint in your Claude Code project.
+This guide will help you set up claudelint in your Claude Code project.
 
 ## Installation
 
@@ -17,8 +17,8 @@ npm install --save-dev claude-code-lint
 ### As Claude Code Plugin
 
 ```bash
-/plugin marketplace add pdugan20/claude-code-lint
-/plugin install claude-code-lint
+/plugin marketplace add pdugan20/claudelint
+/plugin install claudelint
 ```text
 ## Quick Start
 
@@ -27,12 +27,12 @@ npm install --save-dev claude-code-lint
 Run the interactive init wizard:
 
 ```bash
-claude-code-lint init
+claudelint init
 ```text
 Or use defaults (non-interactive):
 
 ```bash
-claude-code-lint init --yes
+claudelint init --yes
 ```text
 This creates:
 
@@ -44,14 +44,14 @@ This creates:
 
 ```bash
 # Validate everything
-claude-code-lint check-all
+claudelint check-all
 
 # Or use npm script (if added by init)
 npm run lint:claude
 ```text
 ### 3. Review Results
 
-claude-code-lint will show validation results with:
+claudelint will show validation results with:
 
 - ✓ Success indicators
 - ✗ Errors (exit code 1)
@@ -116,8 +116,8 @@ See [Configuration](configuration.md) for all options.
 ### List Available Rules
 
 ```bash
-claude-code-lint list-rules
-claude-code-lint list-rules --category Skills
+claudelint list-rules
+claudelint list-rules --category Skills
 ```text
 ## Common Workflows
 
@@ -125,13 +125,13 @@ claude-code-lint list-rules --category Skills
 
 ```bash
 # Run validation
-claude-code-lint check-all
+claudelint check-all
 
 # Run with verbose output
-claude-code-lint check-all --verbose
+claudelint check-all --verbose
 
 # Fail on any issues (warnings or errors)
-claude-code-lint check-all --strict
+claudelint check-all --strict
 ```text
 ### CI/CD Integration
 
@@ -148,7 +148,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - run: npm install -g claude-code-lint
-      - run: claude-code-lint check-all
+      - run: claudelint check-all
 ```text
 ### Pre-commit Hook
 
@@ -157,7 +157,7 @@ jobs:
 repos:
   - repo: local
     hooks:
-      - id: claude-code-lint
+      - id: claudelint
         name: Validate Claude Configuration
         entry: npx claude-code-lint check-all
         language: node
@@ -169,8 +169,8 @@ repos:
 ```json
 {
   "scripts": {
-    "lint:claude": "claude-code-lint check-all",
-    "lint:claude:fix": "claude-code-lint format --fix",
+    "lint:claude": "claudelint check-all",
+    "lint:claude:fix": "claudelint format --fix",
     "lint:all": "npm run lint:claude && npm run lint:md",
     "precommit": "npm run lint:claude"
   }
@@ -190,25 +190,25 @@ repos:
 
 ```bash
 # If globally installed
-which claude-code-lint
+which claudelint
 
 # If locally installed
 npx claude-code-lint check-all
 
 # Or use full path
-./node_modules/.bin/claude-code-lint check-all
+./node_modules/.bin/claudelint check-all
 ```text
 ### Config File Not Found
 
-claude-code-lint searches for config starting from current directory:
+claudelint searches for config starting from current directory:
 
 ```bash
 # Specify config explicitly
-claude-code-lint check-all --config /path/to/.claudelintrc.json
+claudelint check-all --config /path/to/.claudelintrc.json
 
 # Or cd to project root
 cd /path/to/project
-claude-code-lint check-all
+claudelint check-all
 ```text
 ### Too Many Warnings
 
@@ -216,7 +216,7 @@ Configure rules or use `--max-warnings`:
 
 ```bash
 # Allow up to 10 warnings
-claude-code-lint check-all --max-warnings 10
+claudelint check-all --max-warnings 10
 
 # Or disable specific rules in .claudelintrc.json
 {
@@ -230,7 +230,7 @@ claude-code-lint check-all --max-warnings 10
 Use inline disable comments:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import non-existent-file.md
 ```text
 See [Configuration](configuration.md#inline-disable-comments) for more options.
@@ -238,7 +238,7 @@ See [Configuration](configuration.md#inline-disable-comments) for more options.
 ## Getting Help
 
 - **Documentation**: [docs/](.)
-- **Issues**: [GitHub Issues](https://github.com/pdugan20/claude-code-lint/issues)
+- **Issues**: [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
 - **Examples**: [examples/](../examples/)
 - **Changelog**: [CHANGELOG.md](../CHANGELOG.md)
 ````

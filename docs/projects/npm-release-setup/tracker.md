@@ -1,6 +1,6 @@
 # NPM Release Setup - Progress Tracker
 
-Project to set up professional npm versioning, release automation, and package name migration from `claude-code-lint` to `claude-code-lint`.
+Project to set up professional npm versioning, release automation, and package name migration from `claudelint` to `claudelint`.
 
 **Status:** In Progress
 **Start Date:** 2026-01-30
@@ -68,8 +68,8 @@ Project to set up professional npm versioning, release automation, and package n
 ### 3.1 Create Migration Script
 
 - [x] Create `scripts/migrate-package-name.ts`
-- [x] Script finds all `claude-code-lint` references (180 found)
-- [x] Script replaces with `claude-code-lint`
+- [x] Script finds all `claudelint` references (180 found)
+- [x] Script replaces with `claudelint`
 - [x] Script updates package.json name field
 - [x] Script updates README badges
 - [x] Script updates all documentation
@@ -133,7 +133,7 @@ Project to set up professional npm versioning, release automation, and package n
 ### 5.1 Execute Migration
 
 - [x] Run package name migration script
-- [x] Verify all references updated to `claude-code-lint` (183 occurrences in 39 files)
+- [x] Verify all references updated to `claudelint` (183 occurrences in 39 files)
 - [x] Commit name migration changes
 - [x] Create git tag: `v0.2.0-beta.0`
 
@@ -143,7 +143,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [x] Dry run: `npm publish --dry-run --tag beta --access public`
 - [x] Review dry-run output (769 files, 263KB compressed, 1.3MB unpacked)
 - [x] Publish: `npm publish --tag beta --access public --otp=CODE`
-- [x] Verify package on npmjs.com (https://www.npmjs.com/package/claude-code-lint)
+- [x] Verify package on npmjs.com (https://www.npmjs.com/package/claudelint)
 - [x] Test installation: `npm install claude-code-lint@beta`
 - [x] Verify installed CLI works (version 0.2.0-beta.0)
 - [x] Verify installed API works (ClaudeLint class and lint function)
@@ -152,9 +152,9 @@ Project to set up professional npm versioning, release automation, and package n
 
 - [x] Check npm package page displays correctly
 - [x] Test installation in clean directory
-- [x] Update all documentation and examples to reference `claude-code-lint` (1,508 occurrences across 276 files)
-- [x] Rename source files: `src/api/claudelint.ts` → `src/api/claude-code-lint.ts`
-- [x] Rename bin file: `bin/claudelint` → `bin/claude-code-lint`
+- [x] Update all documentation and examples to reference `claudelint` (1,508 occurrences across 276 files)
+- [x] Rename source files: `src/api/claudelint.ts` → `src/api/claudelint.ts`
+- [x] Rename bin file: `bin/claudelint` → `bin/claudelint`
 - [x] Verify all tests passing (759 tests)
 - [ ] Verify README renders on npm
 - [ ] Update GitHub release with notes
@@ -162,7 +162,7 @@ Project to set up professional npm versioning, release automation, and package n
 
 **Phase 5 Completion Criteria:**
 
-- [x] Package published to npm as `claude-code-lint@beta`
+- [x] Package published to npm as `claudelint@beta`
 - Package installs and functions correctly
 - Name claimed on npm registry
 

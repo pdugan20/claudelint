@@ -133,7 +133,7 @@ To resolve missing file errors:
 8. **Run validation**:
 
    ```bash
-   claude-code-lint check-plugin
+   claudelint check-plugin
    ```
 
 ## Options

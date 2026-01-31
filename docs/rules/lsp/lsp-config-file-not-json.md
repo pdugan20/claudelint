@@ -113,7 +113,7 @@ cat .claude/tsconfig.json | jq .
 1. **Run validation**:
 
 ```bash
-claude-code-lint check-lsp
+claudelint check-lsp
 ```
 
 ## Options

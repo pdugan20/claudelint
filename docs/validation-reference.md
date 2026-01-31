@@ -1,10 +1,10 @@
 # Validation Reference
 
-Comprehensive documentation for all validation categories in claude-code-lint.
+Comprehensive documentation for all validation categories in claudelint.
 
 ## Overview
 
-claude-code-lint validates all major Claude Code components through organized validation categories:
+claudelint validates all major Claude Code components through organized validation categories:
 
 1. CLAUDE.md files (memory system)
 2. Skills (agent workflows)
@@ -23,7 +23,7 @@ claude-code-lint validates all major Claude Code components through organized va
 
 ## Architecture Note
 
-claude-code-lint uses a **rule-based architecture** (similar to ESLint):
+claudelint uses a **rule-based architecture** (similar to ESLint):
 
 - **Rules** (105 total in `src/rules/`) - Individual validation checks that users can configure
 - **Validators** - Internal orchestrators that collect and run rules by category
@@ -31,7 +31,7 @@ claude-code-lint uses a **rule-based architecture** (similar to ESLint):
 
 ## Scope Note
 
-claude-code-lint focuses **exclusively on Claude-specific validation**. For generic markdown formatting (H1 headings, blank lines, code fence languages), use [markdownlint](https://github.com/DavidAnson/markdownlint). For code formatting, use [prettier](https://prettier.io).
+claudelint focuses **exclusively on Claude-specific validation**. For generic markdown formatting (H1 headings, blank lines, code fence languages), use [markdownlint](https://github.com/DavidAnson/markdownlint). For code formatting, use [prettier](https://prettier.io).
 
 See [README.md](../README.md#philosophy-complementary-tools) for the full complementary tools approach.
 
@@ -46,7 +46,7 @@ See [README.md](../README.md#philosophy-complementary-tools) for the full comple
 - **YAML frontmatter schema** - In `.claude/rules/*.md` files
 - **Glob patterns** - `paths` field validation in rule frontmatter
 
-**Note:** Generic markdown formatting (H1 headings, blank lines, code fence languages) is handled by markdownlint, not claude-code-lint.
+**Note:** Generic markdown formatting (H1 headings, blank lines, code fence languages) is handled by markdownlint, not claudelint.
 
 ### Rules
 
@@ -99,13 +99,13 @@ invalid_field: true   # Unknown field
 
 ```bash
 # Validate CLAUDE.md files
-claude-code-lint check-claude-md
+claudelint check-claude-md
 
 # Specify custom path
-claude-code-lint check-claude-md --path .claude/CLAUDE.md
+claudelint check-claude-md --path .claude/CLAUDE.md
 
 # Verbose output
-claude-code-lint check-claude-md --verbose
+claudelint check-claude-md --verbose
 ```
 
 ### Exit Codes
@@ -126,7 +126,7 @@ claude-code-lint check-claude-md --verbose
 - **Skill file references** - Referenced files in skill directory exist
 - **String substitutions** - Claude-specific substitution syntax (`$ARGUMENTS`, `$0`, `${VAR}`)
 
-**Note:** Generic markdown formatting is handled by markdownlint, not claude-code-lint.
+**Note:** Generic markdown formatting is handled by markdownlint, not claudelint.
 
 ### Frontmatter Fields
 
@@ -199,16 +199,16 @@ Then `template.md` must exist in the skill directory.
 
 ```bash
 # Validate all skills
-claude-code-lint validate-skills
+claudelint validate-skills
 
 # Validate specific path
-claude-code-lint validate-skills --path .claude/skills
+claudelint validate-skills --path .claude/skills
 
 # Validate single skill
-claude-code-lint validate-skills --skill my-skill
+claudelint validate-skills --skill my-skill
 
 # Verbose output
-claude-code-lint validate-skills --verbose
+claudelint validate-skills --verbose
 ```
 
 ---
@@ -303,10 +303,10 @@ Invalid:
 
 ```bash
 # Validate settings
-claude-code-lint validate-settings
+claudelint validate-settings
 
 # Validate specific file
-claude-code-lint validate-settings --path .claude/settings.json
+claudelint validate-settings --path .claude/settings.json
 ```
 
 ---
@@ -382,10 +382,10 @@ Invalid:
 
 ```bash
 # Validate hooks
-claude-code-lint validate-hooks
+claudelint validate-hooks
 
 # Validate specific file
-claude-code-lint validate-hooks --path .claude/hooks/hooks.json
+claudelint validate-hooks --path .claude/hooks/hooks.json
 ```
 
 ---
@@ -441,10 +441,10 @@ Invalid:
 
 ```bash
 # Validate MCP servers
-claude-code-lint validate-mcp
+claudelint validate-mcp
 
 # Validate specific file
-claude-code-lint validate-mcp --path .mcp.json
+claudelint validate-mcp --path .mcp.json
 ```
 
 ---
@@ -515,10 +515,10 @@ Invalid:
 
 ```bash
 # Validate plugin
-claude-code-lint validate-plugin
+claudelint validate-plugin
 
 # Validate from specific directory
-claude-code-lint validate-plugin --path ./my-plugin
+claudelint validate-plugin --path ./my-plugin
 ```
 
 ---
@@ -548,10 +548,10 @@ claude-code-lint validate-plugin --path ./my-plugin
 
 ```bash
 # Validate agents
-claude-code-lint validate-agents
+claudelint validate-agents
 
 # Validate specific path
-claude-code-lint validate-agents --path .claude/agents
+claudelint validate-agents --path .claude/agents
 ```
 
 ---
@@ -568,10 +568,10 @@ claude-code-lint validate-agents --path .claude/agents
 
 ```bash
 # Validate commands
-claude-code-lint validate-commands
+claudelint validate-commands
 
 # Validate specific path
-claude-code-lint validate-commands --path .claude/commands
+claudelint validate-commands --path .claude/commands
 ```
 
 ---

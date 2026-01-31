@@ -85,7 +85,7 @@ This rule enforces a critical organizational requirement for output styles. Disa
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-name-directory-mismatch.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-name-directory-mismatch.test.ts)
-- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-name-directory-mismatch.md)
+- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-name-directory-mismatch.md)
 
 ## Version
 

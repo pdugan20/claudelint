@@ -1,6 +1,6 @@
 # Caching
 
-claude-code-lint caches validation results to speed up repeated validations.
+claudelint caches validation results to speed up repeated validations.
 
 ## How It Works
 
@@ -8,7 +8,7 @@ Caching is enabled by default and uses modification time (mtime) of files to det
 
 **Cache Strategy:**
 
-1. **On first run:** Validates all files, stores results in `.claude-code-lint-cache/`
+1. **On first run:** Validates all files, stores results in `.claudelint-cache/`
 2. **On subsequent runs:** Checks if files have changed (mtime comparison)
 3. **If unchanged:** Returns cached results (~2.4x faster)
 4. **If changed:** Re-validates and updates cache
@@ -16,7 +16,7 @@ Caching is enabled by default and uses modification time (mtime) of files to det
 ## Cache Directory Structure
 
 ````text
-.claude-code-lint-cache/
+.claudelint-cache/
 ├── index.json          # Cache index with metadata
 └── files/
     ├── abc123.json     # Cached validation result for validator
@@ -30,34 +30,34 @@ Caching is **enabled by default**:
 
 ```bash
 # Use cache (default)
-claude-code-lint check-all
+claudelint check-all
 
 # Explicitly enable cache
-claude-code-lint check-all --cache
+claudelint check-all --cache
 
 # Disable cache
-claude-code-lint check-all --no-cache
+claudelint check-all --no-cache
 ```text
 ### Custom Cache Location
 
 ```bash
 # Use custom cache directory
-claude-code-lint check-all --cache-location /tmp/my-cache
+claudelint check-all --cache-location /tmp/my-cache
 
 # Clear custom cache
-claude-code-lint cache-clear --cache-location /tmp/my-cache
+claudelint cache-clear --cache-location /tmp/my-cache
 ```text
 ### Clear Cache
 
 ```bash
 # Clear all cached results
-claude-code-lint cache-clear
+claudelint cache-clear
 ```text
 ## When Cache Is Invalidated
 
 The cache is automatically invalidated when:
 
-1. **claude-code-lint version changes** - Different version may have different rules
+1. **claudelint version changes** - Different version may have different rules
 2. **Files are modified** - Detected via modification time (mtime)
 3. **Cache is manually cleared** - Using `cache-clear` command
 
@@ -81,7 +81,7 @@ Future configuration options:
 {
   "cache": {
     "enabled": true,
-    "location": ".claude-code-lint-cache",
+    "location": ".claudelint-cache",
     "strategy": "mtime"
   }
 }
@@ -92,7 +92,7 @@ The cache directory is automatically ignored by Git:
 
 ```text
 # .gitignore
-.claude-code-lint-cache/
+.claudelint-cache/
 ```text
 **Never commit the cache directory** - it's specific to your local machine and file states.
 
@@ -101,13 +101,13 @@ The cache directory is automatically ignored by Git:
 ### GitHub Actions
 
 ```yaml
-- name: Cache claude-code-lint
+- name: Cache claudelint
   uses: actions/cache@v3
   with:
-    path: .claude-code-lint-cache
-    key: ${{ runner.os }}-claude-code-lint-${{ hashFiles('**/*.md', '.claude/**/*') }}
+    path: .claudelint-cache
+    key: ${{ runner.os }}-claudelint-${{ hashFiles('**/*.md', '.claude/**/*') }}
 
-- name: Run claude-code-lint
+- name: Run claudelint
   run: npx claude-code-lint check-all
 ```text
 ### GitLab CI
@@ -115,7 +115,7 @@ The cache directory is automatically ignored by Git:
 ```yaml
 cache:
   paths:
-    - .claude-code-lint-cache/
+    - .claudelint-cache/
 
 lint:
   script:
@@ -132,17 +132,17 @@ lint:
 1. Check cache is enabled:
 
    ```bash
-   claude-code-lint check-all --cache  # Explicit flag
+   claudelint check-all --cache  # Explicit flag
    ```text
 2. Verify cache directory exists:
 
    ```bash
-   ls -la .claude-code-lint-cache/
+   ls -la .claudelint-cache/
    ```text
 3. Check cache has entries:
 
    ```bash
-   cat .claude-code-lint-cache/index.json | jq
+   cat .claudelint-cache/index.json | jq
    ```text
 ### Stale Results
 
@@ -151,21 +151,21 @@ lint:
 **Solution:** Clear cache and re-run:
 
 ```bash
-claude-code-lint cache-clear
-claude-code-lint check-all
+claudelint cache-clear
+claudelint check-all
 ```text
 ### Cache Too Large
 
-**Problem:** `.claude-code-lint-cache/` directory is large
+**Problem:** `.claudelint-cache/` directory is large
 
 **Solution:** Clear cache periodically:
 
 ```bash
 # Clear cache
-claude-code-lint cache-clear
+claudelint cache-clear
 
 # Or delete manually
-rm -rf .claude-code-lint-cache/
+rm -rf .claudelint-cache/
 ```text
 ## Cache Internals
 
@@ -174,7 +174,7 @@ rm -rf .claude-code-lint-cache/
 ```typescript
 // Cache key = hash(version + validator + file_mtimes)
 const hash = createHash('sha256');
-hash.update(version);          // claude-code-lint version
+hash.update(version);          // claudelint version
 hash.update(validatorName);    // 'CLAUDE.md', 'Skills', etc.
 for (file of files) {
   hash.update(file.mtime);     // File modification time
@@ -195,6 +195,6 @@ Planned improvements:
 1. **Content-based strategy** - Hash file contents for more accuracy
 2. **Config-aware caching** - Invalidate when `.claudelintrc.json` changes
 3. **Partial invalidation** - Only re-validate changed files
-4. **Cache statistics** - `claude-code-lint cache-stats` command
+4. **Cache statistics** - `claudelint cache-stats` command
 5. **Cache warming** - Pre-populate cache in CI
 ````

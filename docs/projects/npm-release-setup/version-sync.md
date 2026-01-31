@@ -1,6 +1,6 @@
 # Version Synchronization Strategy
 
-Strategy and implementation for keeping version numbers synchronized across the claude-code-lint codebase.
+Strategy and implementation for keeping version numbers synchronized across the claudelint codebase.
 
 ## Problem Statement
 
@@ -34,7 +34,7 @@ These should always match package.json:
 
    ```json
    {
-     "name": "claude-code-lint",
+     "name": "claudelint",
      "version": "0.1.0",  // ← Must sync
      "description": "..."
    }
@@ -44,7 +44,7 @@ These should always match package.json:
 
    ```json
    {
-     "identifier": "claude-code-lint",
+     "identifier": "claudelint",
      "version": "0.1.0",  // ← Must sync
      "category": "developer-tools"
    }
@@ -55,7 +55,7 @@ These should always match package.json:
    ```json
    {
      "devDependencies": {
-       "claude-code-lint": "^0.1.0"  // ← Must sync
+       "claudelint": "^0.1.0"  // ← Must sync
      }
    }
    ```

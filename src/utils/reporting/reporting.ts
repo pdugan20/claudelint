@@ -429,7 +429,7 @@ export class Reporter {
     }
 
     // Use repository base URL (can be configured later)
-    const baseUrl = 'https://github.com/patd/claude-code-lint/blob/main/docs/rules';
+    const baseUrl = 'https://github.com/patd/claudelint/blob/main/docs/rules';
     return `${baseUrl}/${category}/${ruleId}.md`;
   }
 

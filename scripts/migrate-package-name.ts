@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 
-const OLD_NAME = 'claude-code-lint';
-const NEW_NAME = 'claude-code-lint';
+const OLD_NAME = 'claudelint';
+const NEW_NAME = 'claudelint';
 
 interface MigrationResult {
   file: string;

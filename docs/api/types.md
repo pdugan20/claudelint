@@ -258,7 +258,7 @@ interface ClaudeLintOptions {
 **Caching:**
 
 - `cache` - Enable result caching
-- `cacheLocation` - Cache directory (default: '.claude-code-lint-cache')
+- `cacheLocation` - Cache directory (default: '.claudelint-cache')
 - `cacheStrategy` - Cache invalidation strategy
 
 **Progress Callbacks:**

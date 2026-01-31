@@ -6,7 +6,7 @@
  *
  * Import in custom rules:
  * ```javascript
- * const { hasHeading, matchesPattern } = require('claude-code-lint/utils');
+ * const { hasHeading, matchesPattern } = require('claudelint/utils');
  * ```
  *
  * Note: Some functions (fileExists, readFileContent, extractFrontmatter) are

@@ -1,6 +1,6 @@
 # Publishing Strategy
 
-Complete strategy for publishing claude-code-lint to npm, from beta to stable releases.
+Complete strategy for publishing claudelint to npm, from beta to stable releases.
 
 ## Overview
 
@@ -44,7 +44,7 @@ npm publish --tag beta
 ### Pre-publish Checklist
 
 - [ ] Version synced across all files
-- [ ] Package name migrated to `claude-code-lint`
+- [ ] Package name migrated to `claudelint`
 - [ ] Build succeeds: `npm run build`
 - [ ] Tests pass: `npm test`
 - [ ] Linting passes: `npm run lint`
@@ -59,9 +59,9 @@ npm publish --tag beta
 Add to top of README.md:
 
 ```markdown
-> **Beta Release**: claude-code-lint is currently in beta testing (v0.2.0-beta.x).
+> **Beta Release**: claudelint is currently in beta testing (v0.2.0-beta.x).
 > The API may change before the stable 1.0.0 release. Please report issues
-> at [github.com/pdugan20/claude-code-lint/issues](https://github.com/pdugan20/claude-code-lint/issues).
+> at [github.com/pdugan20/claudelint/issues](https://github.com/pdugan20/claudelint/issues).
 ```
 
 ### Publishing Steps
@@ -80,27 +80,27 @@ npm run build
 
 # 4. Pack and test locally
 npm pack
-# Creates: claude-code-lint-0.2.0-beta.0.tgz
+# Creates: claudelint-0.2.0-beta.0.tgz
 
 # Install globally from tarball
 npm install -g ./claude-code-lint-0.2.0-beta.0.tgz
 
 # Test CLI
-claude-code-lint --version
-claude-code-lint --help
-claude-code-lint check-all
+claudelint --version
+claudelint --help
+claudelint check-all
 
 # Uninstall test version
-npm uninstall -g claude-code-lint
+npm uninstall -g claudelint
 
 # 5. Publish to npm with beta tag
 npm publish --tag beta --access public
 
 # 6. Verify on npm
-npm view claude-code-lint
+npm view claudelint
 
 # Should show:
-# name: claude-code-lint
+# name: claudelint
 # version: 0.2.0-beta.0
 # dist-tags:
 #   beta: 0.2.0-beta.0
@@ -113,18 +113,18 @@ npm view claude-code-lint
 npm install -g claude-code-lint@beta
 
 # Verify version
-claude-code-lint --version
+claudelint --version
 # Should show: 0.2.0-beta.0
 
 # Test basic functionality
 cd /tmp
-mkdir test-claude-code-lint
-cd test-claude-code-lint
-claude-code-lint init
-claude-code-lint check-all
+mkdir test-claudelint
+cd test-claudelint
+claudelint init
+claudelint check-all
 
 # Check package page
-open https://www.npmjs.com/package/claude-code-lint
+open https://www.npmjs.com/package/claudelint
 ```
 
 ### What Users See
@@ -265,7 +265,7 @@ npm publish --access public
 
 ```bash
 # After publishing 0.2.0, verify latest tag
-npm view claude-code-lint dist-tags
+npm view claudelint dist-tags
 
 # Should show:
 # latest: 0.2.0
@@ -406,11 +406,11 @@ npm publish --access restricted
 
 ```bash
 # Unpublish specific version
-npm unpublish claude-code-lint@0.2.0-beta.0
+npm unpublish claudelint@0.2.0-beta.0
 
 # NEVER unpublish stable versions
 # Instead, deprecate:
-npm deprecate claude-code-lint@0.2.0 "Critical bug, upgrade to 0.2.1"
+npm deprecate claudelint@0.2.0 "Critical bug, upgrade to 0.2.1"
 ```
 
 ## Deprecation
@@ -419,10 +419,10 @@ Mark old versions as deprecated:
 
 ```bash
 # Deprecate single version
-npm deprecate claude-code-lint@0.1.0 "Upgrade to 0.2.0 or later"
+npm deprecate claudelint@0.1.0 "Upgrade to 0.2.0 or later"
 
 # Deprecate range
-npm deprecate claude-code-lint@"< 0.2.0" "Upgrade to 0.2.0 or later"
+npm deprecate claudelint@"< 0.2.0" "Upgrade to 0.2.0 or later"
 ```
 
 ## Version Lifecycle
@@ -486,18 +486,18 @@ npm install claude-code-lint@beta
 npm publish  # Should have used --tag beta
 
 # Fix: Move latest tag back
-npm dist-tag add claude-code-lint@0.1.9 latest
-npm dist-tag add claude-code-lint@0.2.0-beta.0 beta
+npm dist-tag add claudelint@0.1.9 latest
+npm dist-tag add claudelint@0.2.0-beta.0 beta
 ```
 
 ### Need to unpublish
 
 ```bash
 # Within 72 hours
-npm unpublish claude-code-lint@0.2.0-beta.0
+npm unpublish claudelint@0.2.0-beta.0
 
 # After 72 hours: can't unpublish, must deprecate
-npm deprecate claude-code-lint@0.2.0-beta.0 "Do not use, broken build"
+npm deprecate claudelint@0.2.0-beta.0 "Do not use, broken build"
 ```
 
 ## Checklist Templates

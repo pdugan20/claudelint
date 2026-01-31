@@ -1,6 +1,6 @@
 ---
 name: validate
-description: Run comprehensive claude-code-lint validation on all Claude Code project files
+description: Run comprehensive claudelint validation on all Claude Code project files
 version: 1.0.0
 allowed-tools:
   - Bash
@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate Claude Code Project
 
-Runs `claude-code-lint check-all` to validate all Claude Code project files including CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests.
+Runs `claudelint check-all` to validate all Claude Code project files including CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests.
 
 ## Usage
 
 ```bash
-claude-code-lint check-all
+claudelint check-all
 ```
 
 ## Options
@@ -34,31 +34,31 @@ Available flags:
 Basic validation:
 
 ```bash
-claude-code-lint check-all
+claudelint check-all
 ```
 
 Verbose output with explanations:
 
 ```bash
-claude-code-lint check-all --verbose --explain
+claudelint check-all --verbose --explain
 ```
 
 JSON output for CI/CD:
 
 ```bash
-claude-code-lint check-all --format json
+claudelint check-all --format json
 ```
 
 Use custom config:
 
 ```bash
-claude-code-lint check-all --config .claudelintrc.custom.json
+claudelint check-all --config .claudelintrc.custom.json
 ```
 
 Treat warnings as errors (strict mode):
 
 ```bash
-claude-code-lint check-all --warnings-as-errors
+claudelint check-all --warnings-as-errors
 ```
 
 ## What Gets Validated
@@ -118,8 +118,8 @@ Add to package.json scripts:
 ```json
 {
   "scripts": {
-    "lint:claude": "claude-code-lint check-all",
-    "lint:claude:fix": "claude-code-lint format --fix"
+    "lint:claude": "claudelint check-all",
+    "lint:claude:fix": "claudelint format --fix"
   }
 }
 ```
@@ -128,7 +128,7 @@ Add to pre-commit hooks:
 
 ```bash
 #!/bin/sh
-claude-code-lint check-all --warnings-as-errors
+claudelint check-all --warnings-as-errors
 ```
 
 ## See Also

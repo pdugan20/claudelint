@@ -97,7 +97,7 @@ To fix invalid hook schema errors:
 
    ```bash
    # Check valid events
-   claude-code-lint --help hooks
+   claudelint --help hooks
    ```
 
    Common events: `user-prompt-submit`, `tool-call`, `agent-start`, `agent-complete`
@@ -143,7 +143,7 @@ To fix invalid hook schema errors:
 5. **Run validation**:
 
    ```bash
-   claude-code-lint check-agents
+   claudelint check-agents
    ```
 
 ## Options

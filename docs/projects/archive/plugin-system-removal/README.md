@@ -15,9 +15,9 @@ Removed the unused third-party plugin system (PluginLoader) and replaced it with
 ### Before (Complex - Deleted)
 
 ```typescript
-// Required npm package: claude-code-lint-plugin-myplugin
+// Required npm package: claudelint-plugin-myplugin
 const plugin: ValidatorPlugin = {
-  name: 'claude-code-lint-plugin-myplugin',
+  name: 'claudelint-plugin-myplugin',
   version: '1.0.0',
   register: (registry) => {
     registry.register({ id: 'validator' }, () => new MyValidator());
@@ -28,7 +28,7 @@ const plugin: ValidatorPlugin = {
 ### After (Simple - Implemented)
 
 ```typescript
-// Just create: .claude-code-lint/rules/my-rule.js
+// Just create: .claudelint/rules/my-rule.js
 module.exports.rule = {
   meta: {
     id: 'my-rule',
@@ -105,7 +105,7 @@ module.exports.rule = {
 ### v1.2 - Developer Experience (Planned)
 
 - RuleTester for testing custom rules
-- `claude-code-lint create-rule` CLI command
+- `claudelint create-rule` CLI command
 
 ### v2.0+ - Advanced Features (Future)
 
@@ -115,7 +115,7 @@ module.exports.rule = {
 ## Key Decisions Made
 
 1. [x] **Local-file only approach** - No npm plugins (like markdownlint)
-2. [x] **Auto-discovery** - Recursively scan `.claude-code-lint/rules/`
+2. [x] **Auto-discovery** - Recursively scan `.claudelint/rules/`
 3. [x] **Same Rule interface** - Consistent with built-in rules
 4. [x] **TypeScript support** - Native `.ts` file loading
 5. [x] **ID conflict detection** - Prevent duplicate rule IDs

@@ -124,7 +124,7 @@ To resolve missing marketplace file errors:
 1. **Check which files are missing** from the validation error:
 
    ```bash
-   claude-code-lint check-plugin
+   claudelint check-plugin
    ```
 
 2. **Create missing icon file**:
@@ -198,7 +198,7 @@ To resolve missing marketplace file errors:
 8. **Run validation**:
 
    ```bash
-   claude-code-lint check-plugin
+   claudelint check-plugin
    ```
 
 ## Options

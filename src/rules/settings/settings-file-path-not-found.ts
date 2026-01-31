@@ -23,7 +23,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl:
-      'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/settings/settings-file-path-not-found.md',
+      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-file-path-not-found.md',
   },
   validate: async (context: RuleContext) => {
     const { filePath, fileContent } = context;

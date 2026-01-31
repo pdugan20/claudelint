@@ -1,6 +1,6 @@
 # Glossary
 
-This glossary defines key terminology used throughout claude-code-lint documentation.
+This glossary defines key terminology used throughout claudelint documentation.
 
 ## Core Concepts
 
@@ -147,10 +147,10 @@ A mechanism that automatically corrects rule violations.
 
 ```bash
 # Preview fixes
-claude-code-lint check-all --fix-dry-run
+claudelint check-all --fix-dry-run
 
 # Apply fixes
-claude-code-lint check-all --fix
+claudelint check-all --fix
 ```
 
 **Fixable Rules:**
@@ -185,7 +185,7 @@ A grouping of related rules.
 
 ```bash
 # List rules by category
-claude-code-lint list-rules --category Skills
+claudelint list-rules --category Skills
 ```
 
 ---
@@ -194,7 +194,7 @@ claude-code-lint list-rules --category Skills
 
 ### Config File
 
-A file that customizes claude-code-lint behavior.
+A file that customizes claudelint behavior.
 
 **Supported Files:**
 
@@ -225,17 +225,17 @@ A comment in a file that disables specific rules for the next line or entire fil
 **Syntax:**
 
 ```markdown
-<!-- claude-code-lint-disable-next-line rule-id -->
+<!-- claudelint-disable-next-line rule-id -->
 
 Content that would normally violate the rule
 
-<!-- claude-code-lint-disable rule-id -->
+<!-- claudelint-disable rule-id -->
 
 Multiple lines
 That are exempt
 From the rule
 
-<!-- claude-code-lint-enable rule-id -->
+<!-- claudelint-enable rule-id -->
 ```
 
 **See:** [Inline Disables](./inline-disables.md)
@@ -244,7 +244,7 @@ From the rule
 
 ### Ignore Pattern
 
-A glob pattern that tells claude-code-lint to skip certain files or directories.
+A glob pattern that tells claudelint to skip certain files or directories.
 
 **Configuration:**
 
@@ -327,8 +327,8 @@ A component that transforms validation results into human-readable output.
 **Usage:**
 
 ```bash
-claude-code-lint check-all --format json
-claude-code-lint check-all --format compact
+claudelint check-all --format json
+claudelint check-all --format compact
 ```
 
 **Custom Formatters:**
@@ -346,22 +346,22 @@ A performance optimization that stores validation results and skips re-validatin
 **Properties:**
 
 - Enabled by default
-- Stored in `.claude-code-lint-cache/`
+- Stored in `.claudelint-cache/`
 - Invalidated when files change (mtime-based)
-- Cleared when upgrading claude-code-lint
+- Cleared when upgrading claudelint
 - Can be disabled with `--no-cache`
 
 **Commands:**
 
 ```bash
 # Use cache (default)
-claude-code-lint check-all
+claudelint check-all
 
 # Disable cache
-claude-code-lint check-all --no-cache
+claudelint check-all --no-cache
 
 # Clear cache
-claude-code-lint cache-clear
+claudelint cache-clear
 ```
 
 **See:** [Caching Guide](./caching.md)
@@ -450,7 +450,7 @@ Defines automation hooks for Claude Code. Located at `.claude/hooks/hooks.json`.
     {
       "event": "SessionStart",
       "type": "command",
-      "command": "claude-code-lint check-all"
+      "command": "claudelint check-all"
     }
   ]
 }
@@ -468,19 +468,19 @@ Defines automation hooks for Claude Code. Located at `.claude/hooks/hooks.json`.
 
 ### Custom Rule
 
-A user-defined validation rule stored in `.claude-code-lint/rules/`.
+A user-defined validation rule stored in `.claudelint/rules/`.
 
 **Properties:**
 
 - Written in JavaScript or TypeScript
 - Loaded automatically on startup
-- Can use helper functions from `claude-code-lint/utils`
+- Can use helper functions from `claudelint/utils`
 - Must have unique rule ID
 
 **Example:**
 
 ```javascript
-// .claude-code-lint/rules/no-profanity.js
+// .claudelint/rules/no-profanity.js
 module.exports.rule = {
   meta: {
     id: 'no-profanity',
@@ -500,7 +500,7 @@ module.exports.rule = {
 
 ### Built-in Rule
 
-A validation rule that ships with claude-code-lint. Located in `src/rules/{category}/`.
+A validation rule that ships with claudelint. Located in `src/rules/{category}/`.
 
 **Properties:**
 
@@ -553,7 +553,7 @@ tags: [automation, cli]
 **Parsing:**
 
 ```typescript
-import { extractFrontmatter } from 'claude-code-lint/utils';
+import { extractFrontmatter } from 'claudelint/utils';
 
 const result = extractFrontmatter(fileContent);
 const { frontmatter, body } = result;
@@ -622,7 +622,7 @@ const rule = RuleRegistry.getRule('skill-missing-version');
 
 ### Command
 
-An action performed by the claude-code-lint CLI.
+An action performed by the claudelint CLI.
 
 **Common Commands:**
 
@@ -671,7 +671,7 @@ The numeric status returned by the CLI indicating success or failure.
 
 ### ESLint
 
-A JavaScript linter that inspired claude-code-lint's architecture.
+A JavaScript linter that inspired claudelint's architecture.
 
 **Similarities:**
 
@@ -683,18 +683,18 @@ A JavaScript linter that inspired claude-code-lint's architecture.
 **Differences:**
 
 - ESLint: JavaScript/TypeScript code
-- claude-code-lint: Claude Code configuration
+- claudelint: Claude Code configuration
 
 ---
 
 ### Markdownlint
 
-A markdown linter used alongside claude-code-lint.
+A markdown linter used alongside claudelint.
 
 **Division of Responsibility:**
 
 - **Markdownlint** - Generic markdown structure and formatting
-- **claude-code-lint** - Claude-specific validation (imports, size limits, etc.)
+- **claudelint** - Claude-specific validation (imports, size limits, etc.)
 
 **See:** [Formatting Tools](./formatting-tools.md)
 
@@ -702,12 +702,12 @@ A markdown linter used alongside claude-code-lint.
 
 ### Prettier
 
-A code formatter used alongside claude-code-lint.
+A code formatter used alongside claudelint.
 
 **Division of Responsibility:**
 
 - **Prettier** - Code formatting and whitespace
-- **claude-code-lint** - Configuration validation
+- **claudelint** - Configuration validation
 
 **See:** [Formatting Tools](./formatting-tools.md)
 
@@ -719,7 +719,7 @@ A code formatter used alongside claude-code-lint.
 | -------- | --------------------------------- | ------------------------------------------------------- |
 | **MCP**  | Model Context Protocol            | Protocol for connecting Claude to external data sources |
 | **LSP**  | Language Server Protocol          | Protocol for editor/IDE language features               |
-| **CLI**  | Command Line Interface            | Terminal-based interface for claude-code-lint           |
+| **CLI**  | Command Line Interface            | Terminal-based interface for claudelint           |
 | **API**  | Application Programming Interface | Programmatic interface for Node.js                      |
 | **YAML** | YAML Ain't Markup Language        | Data serialization format used in frontmatter           |
 | **JSON** | JavaScript Object Notation        | Data format for config files                            |
@@ -729,7 +729,7 @@ A code formatter used alongside claude-code-lint.
 ## See Also
 
 - [Getting Started](./getting-started.md) - Installation and first steps
-- [Configuration](./configuration.md) - Configuring claude-code-lint
+- [Configuration](./configuration.md) - Configuring claudelint
 - [CLI Reference](./cli-reference.md) - Complete command documentation
 - [Rule Development](./rule-development.md) - Writing custom rules
 - [Architecture](./architecture.md) - System design

@@ -15,7 +15,7 @@ This rule validates the `paths` field in the frontmatter of `.claude/rules/*.md`
 - Non-empty (containing at least one path pattern)
 - Containing only non-empty string values
 
-The `paths` field tells claude-code-lint which files to check when validating a rule. Without proper path patterns, the rule won't know which files to validate, or it may attempt to validate inappropriate files.
+The `paths` field tells claudelint which files to check when validating a rule. Without proper path patterns, the rule won't know which files to validate, or it may attempt to validate inappropriate files.
 
 This rule only applies to `.claude/rules/*.md` files, which are custom rule definitions that require frontmatter. Regular CLAUDE.md files do not require this field.
 
@@ -244,7 +244,7 @@ To fix invalid `paths` fields:
 7. **Verify the fix**:
 
    ```bash
-   claude-code-lint check-claude-md
+   claudelint check-claude-md
    ```
 
 ## Options

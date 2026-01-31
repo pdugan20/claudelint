@@ -319,7 +319,7 @@ Track progress through each phase of VitePress documentation website implementat
 
 ### Custom Domain (Optional)
 
-- [ ] Purchase domain (docs.claude-code-lint.dev)
+- [ ] Purchase domain (docs.claudelint.dev)
 - [ ] Configure DNS records
   - [ ] Add CNAME record
   - [ ] Configure A records

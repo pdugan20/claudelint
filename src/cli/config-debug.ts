@@ -33,9 +33,9 @@ export class ConfigDebugger {
       logger.log('Searched locations:');
       logger.detail('- .claudelintrc.json');
       logger.detail('- .claudelintrc.js');
-      logger.detail('- package.json (claude-code-lint key)');
+      logger.detail('- package.json (claudelint key)');
       logger.newline();
-      logger.info('Run "claude-code-lint init" to create a configuration file.');
+      logger.info('Run "claudelint init" to create a configuration file.');
       process.exit(1);
     }
 
@@ -198,7 +198,7 @@ export class ConfigDebugger {
             logger.detail(`- ${ruleId}`);
           }
           logger.newline();
-          logger.log('Run "claude-code-lint list-rules" to see available rules.');
+          logger.log('Run "claudelint list-rules" to see available rules.');
           logger.newline();
         }
       }

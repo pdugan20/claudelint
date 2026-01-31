@@ -11,7 +11,7 @@ Output style name must be lowercase-with-hyphens, under 64 characters, with no X
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-name.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-name.test.ts)
-- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-name.md)
+- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-name.md)
 
 ## Version
 

@@ -1,5 +1,5 @@
 /**
- * Type definitions for claude-code-lint programmatic API
+ * Type definitions for claudelint programmatic API
  *
  * This module contains all public type definitions for the API, including
  * result types, message types, and configuration options.
@@ -146,7 +146,7 @@ export interface ClaudeLintOptions {
   /** Enable result caching for better performance */
   cache?: boolean;
 
-  /** Directory to store cache files (default: '.claude-code-lint-cache') */
+  /** Directory to store cache files (default: '.claudelint-cache') */
   cacheLocation?: string;
 
   /** Cache invalidation strategy ('metadata' | 'content') */

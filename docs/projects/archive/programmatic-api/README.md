@@ -6,7 +6,7 @@
 
 ## Summary
 
-This project developed a comprehensive programmatic API for claude-code-lint, allowing Node.js applications, build tools, and editor extensions to use claude-code-lint programmatically.
+This project developed a comprehensive programmatic API for claudelint, allowing Node.js applications, build tools, and editor extensions to use claudelint programmatically.
 
 ## Key Outcomes
 
@@ -59,7 +59,7 @@ The programmatic API was successfully implemented with the following features:
 
 ## Migration Note
 
-If you're looking for information about using claude-code-lint programmatically:
+If you're looking for information about using claudelint programmatically:
 
 - **Don't read the planning documents** in this archived folder
 - **Do read the active documentation** at [docs/api/README.md](../../../api/README.md)

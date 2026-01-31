@@ -6,10 +6,10 @@ import { setupTestDir } from '../helpers/test-utils';
 describe('Inline rule disabling', () => {
   const { getTestDir } = setupTestDir();
 
-  describe('claude-code-lint-disable-file', () => {
+  describe('claudelint-disable-file', () => {
     it('should disable rule for entire file', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
-      const content = `<!-- claude-code-lint-disable-file claude-md-size-warning -->
+      const content = `<!-- claudelint-disable-file claude-md-size-warning -->
 # Large File
 
 ${'x'.repeat(36000)}`;
@@ -23,12 +23,12 @@ ${'x'.repeat(36000)}`;
     });
   });
 
-  describe('claude-code-lint-disable-next-line', () => {
+  describe('claudelint-disable-next-line', () => {
     it('should disable rule for next line only', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-<!-- claude-code-lint-disable-next-line claude-md-import-missing -->
+<!-- claudelint-disable-next-line claude-md-import-missing -->
 Import: @nonexistent.md
 
 Content here.`;
@@ -42,12 +42,12 @@ Content here.`;
     });
   });
 
-  describe('claude-code-lint-disable-line', () => {
+  describe('claudelint-disable-line', () => {
     it('should disable rule for current line', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-Import: @nonexistent.md <!-- claude-code-lint-disable-line claude-md-import-missing -->
+Import: @nonexistent.md <!-- claudelint-disable-line claude-md-import-missing -->
 
 Content here.`;
       await writeFile(filePath, content);
@@ -60,15 +60,15 @@ Content here.`;
     });
   });
 
-  describe('claude-code-lint-disable and claude-code-lint-enable', () => {
+  describe('claudelint-disable and claudelint-enable', () => {
     it('should disable rule for range', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
       const content = `# Test
 
-<!-- claude-code-lint-disable claude-md-import-missing -->
+<!-- claudelint-disable claude-md-import-missing -->
 Import: @nonexistent1.md
 Import: @nonexistent2.md
-<!-- claude-code-lint-enable claude-md-import-missing -->
+<!-- claudelint-enable claude-md-import-missing -->
 
 Import: @nonexistent3.md
 

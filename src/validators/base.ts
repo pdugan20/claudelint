@@ -288,7 +288,7 @@ export abstract class BaseValidator {
   }
 
   /**
-   * Check if rule is disabled by inline comment (claude-code-lint-disable)
+   * Check if rule is disabled by inline comment (claudelint-disable)
    */
   protected isRuleDisabledByComment(file?: string, line?: number, ruleId?: RuleId): boolean {
     if (!file || !ruleId) {
@@ -411,17 +411,17 @@ export abstract class BaseValidator {
       const line = lines[i];
       const lineNumber = i + 1;
 
-      // claude-code-lint-disable-file (with or without rule ID)
-      const fileDisableMatch = line.match(/<!--\s*claude-code-lint-disable-file(?:\s+([a-z-]+))?\s*-->/);
+      // claudelint-disable-file (with or without rule ID)
+      const fileDisableMatch = line.match(/<!--\s*claudelint-disable-file(?:\s+([a-z-]+))?\s*-->/);
       if (fileDisableMatch) {
         const ruleId = fileDisableMatch[1] || 'all';
         rules.push({ ruleId, commentLine: lineNumber, used: false });
         continue;
       }
 
-      // claude-code-lint-disable-next-line (with or without rule ID)
+      // claudelint-disable-next-line (with or without rule ID)
       const nextLineMatch = line.match(
-        /<!--\s*claude-code-lint-disable-next-line(?:\s+([a-z-]+))?\s*-->/
+        /<!--\s*claudelint-disable-next-line(?:\s+([a-z-]+))?\s*-->/
       );
       if (nextLineMatch && i + 1 < lines.length) {
         const ruleId = nextLineMatch[1] || 'all';
@@ -429,24 +429,24 @@ export abstract class BaseValidator {
         continue;
       }
 
-      // claude-code-lint-disable-line (on current line, with or without rule ID)
-      const disableLineMatch = line.match(/<!--\s*claude-code-lint-disable-line(?:\s+([a-z-]+))?\s*-->/);
+      // claudelint-disable-line (on current line, with or without rule ID)
+      const disableLineMatch = line.match(/<!--\s*claudelint-disable-line(?:\s+([a-z-]+))?\s*-->/);
       if (disableLineMatch) {
         const ruleId = disableLineMatch[1] || 'all';
         rules.push({ ruleId, startLine: lineNumber, commentLine: lineNumber, used: false });
         continue;
       }
 
-      // claude-code-lint-disable (start range, with or without rule ID)
-      const disableMatch = line.match(/<!--\s*claude-code-lint-disable(?:\s+([a-z-]+))?\s*-->/);
+      // claudelint-disable (start range, with or without rule ID)
+      const disableMatch = line.match(/<!--\s*claudelint-disable(?:\s+([a-z-]+))?\s*-->/);
       if (disableMatch) {
         const ruleId = disableMatch[1] || 'all';
         activeDisables.set(ruleId, { startLine: lineNumber, commentLine: lineNumber });
         continue;
       }
 
-      // claude-code-lint-enable (end range, with or without rule ID)
-      const enableMatch = line.match(/<!--\s*claude-code-lint-enable(?:\s+([a-z-]+))?\s*-->/);
+      // claudelint-enable (end range, with or without rule ID)
+      const enableMatch = line.match(/<!--\s*claudelint-enable(?:\s+([a-z-]+))?\s*-->/);
       if (enableMatch) {
         const ruleId = enableMatch[1] || 'all';
         const disable = activeDisables.get(ruleId);
@@ -489,12 +489,12 @@ export abstract class BaseValidator {
       if (!rule.used) {
         const directive =
           rule.startLine === undefined && rule.endLine === undefined
-            ? 'claude-code-lint-disable-file'
+            ? 'claudelint-disable-file'
             : rule.startLine !== undefined && rule.endLine !== undefined
-              ? 'claude-code-lint-disable'
+              ? 'claudelint-disable'
               : rule.startLine !== undefined
-                ? 'claude-code-lint-disable-next-line or claude-code-lint-disable-line'
-                : 'claude-code-lint-disable';
+                ? 'claudelint-disable-next-line or claudelint-disable-line'
+                : 'claudelint-disable';
 
         const ruleIdDisplay = rule.ruleId === 'all' ? '(all rules)' : `'${rule.ruleId}'`;
 

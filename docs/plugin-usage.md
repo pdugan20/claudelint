@@ -1,26 +1,26 @@
 # Claude Code Plugin Usage Guide
 
-This guide covers how to install and use claude-code-lint as a Claude Code plugin.
+This guide covers how to install and use claudelint as a Claude Code plugin.
 
 ## Installation
 
 ### Add the Marketplace
 
-First, add the claude-code-lint marketplace to your Claude Code:
+First, add the claudelint marketplace to your Claude Code:
 
 ```bash
-/plugin marketplace add pdugan20/claude-code-lint
+/plugin marketplace add pdugan20/claudelint
 ```
 
 ### Install the Plugin
 
-Then install the claude-code-lint plugin:
+Then install the claudelint plugin:
 
 ```bash
-/plugin install claude-code-lint
+/plugin install claudelint
 ```
 
-This makes all 8 claude-code-lint skills available as slash commands in your Claude Code sessions.
+This makes all 8 claudelint skills available as slash commands in your Claude Code sessions.
 
 ## Available Skills
 
@@ -233,7 +233,7 @@ Create `.claude/hooks/hooks.json`:
     {
       "event": "SessionStart",
       "type": "command",
-      "command": "claude-code-lint check-all --format compact",
+      "command": "claudelint check-all --format compact",
       "description": "Validate Claude Code project at session start"
     }
   ]
@@ -249,7 +249,7 @@ See [hooks.md](./hooks.md) for more hook examples.
 If slash commands aren't available:
 
 1. Check plugin is installed: `/plugin list`
-2. Reinstall if needed: `/plugin uninstall claude-code-lint` then `/plugin install claude-code-lint`
+2. Reinstall if needed: `/plugin uninstall claudelint` then `/plugin install claudelint`
 3. Restart Claude Code session
 
 ### Validation Fails
@@ -265,7 +265,7 @@ If validation returns errors:
 
 If you get permission errors:
 
-1. Check `claude-code-lint` is installed: `which claude-code-lint`
+1. Check `claudelint` is installed: `which claudelint`
 2. Install globally if needed: `npm install -g claude-code-lint`
 3. Check PATH includes npm global bin directory
 
@@ -275,7 +275,7 @@ If SessionStart hook isn't triggering:
 
 1. Verify `.claude/hooks/hooks.json` exists
 2. Validate hook config: `/validate-hooks`
-3. Check command syntax: `"claude-code-lint check-all --format compact"`
+3. Check command syntax: `"claudelint check-all --format compact"`
 4. Test command manually first
 
 ### Slow Performance
@@ -291,7 +291,7 @@ If validation is slow:
 
 If you get warnings/errors that shouldn't apply:
 
-1. Use inline disable comments: `<!-- claude-code-lint-disable rule-name -->`
+1. Use inline disable comments: `<!-- claudelint-disable rule-name -->`
 2. Configure rules in `.claudelintrc.json`
 3. Add file overrides for specific patterns
 4. Report issue if rule is incorrect
@@ -325,7 +325,7 @@ If you get warnings/errors that shouldn't apply:
 
 ## Performance
 
-Plugin skills run the same claude-code-lint CLI commands, so performance is identical:
+Plugin skills run the same claudelint CLI commands, so performance is identical:
 
 | Project Size | Skills | Time      |
 | ------------ | ------ | --------- |
@@ -341,13 +341,13 @@ All skills complete quickly enough for interactive use.
 To remove the plugin:
 
 ```bash
-/plugin uninstall claude-code-lint
+/plugin uninstall claudelint
 ```
 
 To remove the marketplace:
 
 ```bash
-/plugin marketplace remove pdugan20/claude-code-lint
+/plugin marketplace remove pdugan20/claudelint
 ```
 
 ## See Also

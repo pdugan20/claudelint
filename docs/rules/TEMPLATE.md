@@ -37,10 +37,10 @@ Brief step-by-step remediation:
 2. Second step (if applicable)
 3. Third step (if applicable)
 
-Or use claude-code-lint auto-fix:
+Or use claudelint auto-fix:
 
 ```bash
-claude-code-lint check-all --fix
+claudelint check-all --fix
 ```
 
 ## Options

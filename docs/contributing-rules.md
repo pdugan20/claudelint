@@ -1,6 +1,6 @@
 # Contributing Rules to ClaudeLint
 
-> **Note:** This guide has been consolidated into the [Rule Development Guide](./rule-development.md). Please refer to **Part 3: Contributing Built-in Rules** in that document for the most up-to-date information on contributing rules to claude-code-lint.
+> **Note:** This guide has been consolidated into the [Rule Development Guide](./rule-development.md). Please refer to **Part 3: Contributing Built-in Rules** in that document for the most up-to-date information on contributing rules to claudelint.
 >
 > This file is kept for backward compatibility with existing links.
 
@@ -30,7 +30,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl: 'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/{category}/{rule-id}.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/{category}/{rule-id}.md',
   },
 
   validate: async (context) => {

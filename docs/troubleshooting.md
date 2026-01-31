@@ -1,10 +1,10 @@
 # Troubleshooting Guide
 
-This guide helps you quickly resolve common issues with claude-code-lint.
+This guide helps you quickly resolve common issues with claudelint.
 
 ## Quick Rule Lookup
 
-When claude-code-lint reports an error, the rule ID is shown in the output. Use this table to find the documentation for that rule:
+When claudelint reports an error, the rule ID is shown in the output. Use this table to find the documentation for that rule:
 
 ### CLAUDE.md Rules
 
@@ -60,7 +60,7 @@ When claude-code-lint reports an error, the rule ID is shown in the output. Use 
 For a complete list of all rules, run:
 
 ```bash
-claude-code-lint list-rules
+claudelint list-rules
 ```
 
 ---
@@ -162,7 +162,7 @@ version: 1.0.0
 ---
 ```
 
-**Auto-fix:** Run `claude-code-lint check-all --fix` to automatically add `version: "1.0.0"`.
+**Auto-fix:** Run `claudelint check-all --fix` to automatically add `version: "1.0.0"`.
 
 **See:** [skill-missing-version](./rules/skills/skill-missing-version.md)
 
@@ -200,7 +200,7 @@ Add shebang to first line of script:
 # Rest of script...
 ```
 
-**Auto-fix:** Run `claude-code-lint check-all --fix` to automatically add shebang.
+**Auto-fix:** Run `claudelint check-all --fix` to automatically add shebang.
 
 **See:** [skill-missing-shebang](./rules/skills/skill-missing-shebang.md)
 
@@ -283,7 +283,7 @@ See [Configuration Guide](./configuration.md) for details.
 Use inline disable comments:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 
 @import optional-file.md
 ```
@@ -292,7 +292,7 @@ See [Inline Disables](./inline-disables.md) for details.
 
 #### Q: Where should I put my config file?
 
-claude-code-lint searches for config files starting from the current directory and moving up:
+claudelint searches for config files starting from the current directory and moving up:
 
 Supported files:
 
@@ -307,7 +307,7 @@ Place it in your project root for best results.
 Run:
 
 ```bash
-claude-code-lint print-config
+claudelint print-config
 ```
 
 This shows the resolved configuration with all defaults.
@@ -333,9 +333,9 @@ See [Configuration - Ignoring Files](./configuration.md#ignoring-files) for deta
 Yes, use specific commands:
 
 ```bash
-claude-code-lint check-claude-md
-claude-code-lint validate-skills
-claude-code-lint validate-settings
+claudelint check-claude-md
+claudelint validate-skills
+claudelint validate-settings
 ```
 
 See [CLI Reference](./cli-reference.md) for all commands.
@@ -345,7 +345,7 @@ See [CLI Reference](./cli-reference.md) for all commands.
 Use the `--verbose` flag:
 
 ```bash
-claude-code-lint check-all --verbose
+claudelint check-all --verbose
 ```
 
 This shows timing information and additional context.
@@ -359,7 +359,7 @@ This shows timing information and additional context.
 Run:
 
 ```bash
-claude-code-lint list-rules --fixable
+claudelint list-rules --fixable
 ```
 
 This shows all rules that support auto-fix.
@@ -369,7 +369,7 @@ This shows all rules that support auto-fix.
 Use `--fix-dry-run`:
 
 ```bash
-claude-code-lint check-all --fix-dry-run
+claudelint check-all --fix-dry-run
 ```
 
 This shows what would be fixed without making changes.
@@ -379,7 +379,7 @@ This shows what would be fixed without making changes.
 Yes:
 
 ```bash
-claude-code-lint check-all --fix --fix-type errors
+claudelint check-all --fix --fix-type errors
 ```
 
 See [Auto-fix Guide](./auto-fix.md) for details.
@@ -393,7 +393,7 @@ See [Auto-fix Guide](./auto-fix.md) for details.
 1. **Use caching** (enabled by default):
 
    ```bash
-   claude-code-lint check-all  # Uses cache
+   claudelint check-all  # Uses cache
    ```
 
 2. **Add ignore patterns** in `.claudelintignore`:
@@ -407,7 +407,7 @@ See [Auto-fix Guide](./auto-fix.md) for details.
 3. **Check timing** to find slow validators:
 
    ```bash
-   claude-code-lint check-all --verbose
+   claudelint check-all --verbose
    ```
 
 See [Caching Guide](./caching.md) for details.
@@ -415,10 +415,10 @@ See [Caching Guide](./caching.md) for details.
 #### Q: How do I clear the cache?
 
 ```bash
-claude-code-lint cache-clear
+claudelint cache-clear
 ```
 
-Run this after upgrading claude-code-lint or changing config.
+Run this after upgrading claudelint or changing config.
 
 ---
 
@@ -430,7 +430,7 @@ Run this after upgrading claude-code-lint or changing config.
 
 ```bash
 npm install -g claude-code-lint
-claude-code-lint --version
+claudelint --version
 ```
 
 **Project install:**
@@ -443,7 +443,7 @@ npx claude-code-lint --version
 **Or use full path:**
 
 ```bash
-./node_modules/.bin/claude-code-lint --version
+./node_modules/.bin/claudelint --version
 ```
 
 #### Q: Permission denied when installing globally
@@ -469,7 +469,7 @@ npm install -g claude-code-lint
 
 ### Understanding Error Output
 
-claude-code-lint error messages follow this format:
+claudelint error messages follow this format:
 
 ```text
 /path/to/file.md
@@ -497,7 +497,7 @@ To see full documentation for a rule:
 Or use the CLI:
 
 ```bash
-claude-code-lint explain skill-referenced-file-not-found
+claudelint explain skill-referenced-file-not-found
 ```
 
 ---
@@ -513,7 +513,7 @@ claude-code-lint explain skill-referenced-file-not-found
 1. Create `.claudelintrc.json` in project root:
 
    ```bash
-   claude-code-lint init
+   claudelint init
    ```
 
 2. Or add config to `package.json`:
@@ -531,7 +531,7 @@ claude-code-lint explain skill-referenced-file-not-found
 3. Or specify config path:
 
    ```bash
-   claude-code-lint check-all --config /path/to/config.json
+   claudelint check-all --config /path/to/config.json
    ```
 
 ### Problem: Rules not being applied
@@ -560,7 +560,7 @@ claude-code-lint explain skill-referenced-file-not-found
 3. **View resolved config:**
 
    ```bash
-   claude-code-lint print-config
+   claudelint print-config
    ```
 
 ### Problem: JSON parsing error
@@ -602,7 +602,7 @@ Common mistakes:
 
 ```bash
 # Most CI systems check for non-zero exit
-claude-code-lint check-all || exit 1
+claudelint check-all || exit 1
 
 # If you were checking for exit code 2:
 # Before: if [ $? -eq 2 ]; then ...
@@ -616,12 +616,12 @@ See [README - Exit Code Changes](../README.md#exit-code-changes-v10-breaking-cha
 **Solutions:**
 
 1. Verify `.claude/hooks/hooks.json` exists
-2. Validate: `claude-code-lint validate-hooks`
+2. Validate: `claudelint validate-hooks`
 3. Check event name is `"SessionStart"` (capital S)
 4. Test command manually first:
 
    ```bash
-   claude-code-lint check-all --format compact
+   claudelint check-all --format compact
    ```
 
 ---
@@ -634,7 +634,7 @@ See [README - Exit Code Changes](../README.md#exit-code-changes-v10-breaking-cha
 
 **Solutions:**
 
-1. Verify file is in `.claude-code-lint/rules/` directory
+1. Verify file is in `.claudelint/rules/` directory
 2. Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`)
 3. Ensure `module.exports.rule` is used:
 
@@ -683,7 +683,7 @@ See [Custom Rules Guide](./rule-development.md#part-2-writing-custom-rules) for 
 
 If you can't find a solution here:
 
-1. **Search existing issues:** [GitHub Issues](https://github.com/pdugan20/claude-code-lint/issues)
+1. **Search existing issues:** [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
 2. **Check documentation:**
    - [Getting Started](./getting-started.md)
    - [Configuration](./configuration.md)
@@ -691,14 +691,14 @@ If you can't find a solution here:
 3. **Enable verbose output:**
 
    ```bash
-   claude-code-lint check-all --verbose
+   claudelint check-all --verbose
    ```
 
 4. **Open a new issue** with:
    - Command you ran
    - Error message
    - OS and Node version (`node --version`)
-   - Output of `claude-code-lint check-all --verbose`
+   - Output of `claudelint check-all --verbose`
 
 ---
 
@@ -708,25 +708,25 @@ If you can't find a solution here:
 
 ```bash
 # Initialize config
-claude-code-lint init
+claudelint init
 
 # Run all validation
-claude-code-lint check-all
+claudelint check-all
 
 # List all rules
-claude-code-lint list-rules
+claudelint list-rules
 
 # Auto-fix issues
-claude-code-lint check-all --fix
+claudelint check-all --fix
 
 # Check config
-claude-code-lint print-config
+claudelint print-config
 
 # Clear cache
-claude-code-lint cache-clear
+claudelint cache-clear
 
 # Get help
-claude-code-lint --help
+claudelint --help
 ```
 
 ### Common Config Patterns

@@ -147,7 +147,7 @@ To add a required description field:
 6. **Run validation**:
 
    ```bash
-   claude-code-lint check-plugin
+   claudelint check-plugin
    ```
 
 ## Options

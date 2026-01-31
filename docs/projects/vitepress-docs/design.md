@@ -1,6 +1,6 @@
 # Design System
 
-Visual design and branding guidelines for claude-code-lint documentation.
+Visual design and branding guidelines for claudelint documentation.
 
 ## Brand Identity
 
@@ -9,7 +9,7 @@ Visual design and branding guidelines for claude-code-lint documentation.
 **Primary Logo**: SVG wordmark with icon
 
 - **Icon**: Terminal/checkmark combo
-- **Wordmark**: "claude-code-lint" in custom monospace font
+- **Wordmark**: "claudelint" in custom monospace font
 - **Usage**: Navbar, hero section, social cards
 
 **Favicon Sizes**:
@@ -364,7 +364,7 @@ VitePress built-in containers styled:
 
 ```markdown
 ::: tip
-Pro tip: Use `claude-code-lint init` for interactive setup.
+Pro tip: Use `claudelint init` for interactive setup.
 :::
 ```
 
@@ -438,7 +438,7 @@ Pro tip: Use `claude-code-lint init` for interactive setup.
     <!-- Hero -->
     <section class="hero">
       <div class="container">
-        <h1 class="hero-title">claude-code-lint</h1>
+        <h1 class="hero-title">claudelint</h1>
         <p class="hero-tagline">
           Comprehensive linter for Claude Code projects
         </p>
@@ -446,7 +446,7 @@ Pro tip: Use `claude-code-lint init` for interactive setup.
           <a href="/guide/getting-started" class="vp-button vp-button-brand">
             Get Started
           </a>
-          <a href="https://github.com/pdugan20/claude-code-lint" class="vp-button vp-button-alt">
+          <a href="https://github.com/pdugan20/claudelint" class="vp-button vp-button-alt">
             View on GitHub
           </a>
         </div>

@@ -189,7 +189,7 @@ To migrate away from deprecated SSE transport:
 
    ```bash
    # Verify new transport works
-   claude-code-lint check-mcp
+   claudelint check-mcp
 
    # Test connection to server
    # (specific test depends on your server implementation)

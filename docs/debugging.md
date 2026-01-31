@@ -1,10 +1,10 @@
 # Debugging Configuration
 
-This guide helps you debug and understand claude-code-lint configuration issues.
+This guide helps you debug and understand claudelint configuration issues.
 
 ## Overview
 
-claude-code-lint provides several commands to help you:
+claudelint provides several commands to help you:
 
 - Print resolved configuration
 - Show effective config for specific files
@@ -19,13 +19,13 @@ Print the resolved configuration loaded from your config file.
 
 ````bash
 # Print as JSON (default)
-claude-code-lint print-config
+claudelint print-config
 
 # Print as human-readable table
-claude-code-lint print-config --format table
+claudelint print-config --format table
 
 # Print specific config file
-claude-code-lint print-config --config /path/to/.claudelintrc.json
+claudelint print-config --config /path/to/.claudelintrc.json
 ```text
 **Example output (table format):**
 
@@ -57,10 +57,10 @@ Validate your configuration file for errors.
 
 ```bash
 # Validate config in current directory
-claude-code-lint validate-config
+claudelint validate-config
 
 # Validate specific config file
-claude-code-lint validate-config --config /path/to/.claudelintrc.json
+claudelint validate-config --config /path/to/.claudelintrc.json
 ```text
 **Checks performed:**
 
@@ -90,7 +90,7 @@ Validating: .claudelintrc.json
   - size-huge
   - skill-invalid-rule
 
-Run "claude-code-lint list-rules" to see available rules.
+Run "claudelint list-rules" to see available rules.
 ```text
 ### resolve-config
 
@@ -98,13 +98,13 @@ Show the effective configuration for a specific file (useful for debugging overr
 
 ```bash
 # Show config for specific file
-claude-code-lint resolve-config CLAUDE.md
+claudelint resolve-config CLAUDE.md
 
 # Show as table
-claude-code-lint resolve-config .claude/skills/test/SKILL.md --format table
+claudelint resolve-config .claude/skills/test/SKILL.md --format table
 
 # Use specific config file
-claude-code-lint resolve-config CLAUDE.md --config /path/to/.claudelintrc.json
+claudelint resolve-config CLAUDE.md --config /path/to/.claudelintrc.json
 ```text
 **Output:**
 
@@ -129,7 +129,7 @@ Effective configuration:
 Use the `--debug-config` flag with `check-all` to see detailed config loading information.
 
 ```bash
-claude-code-lint check-all --debug-config
+claudelint check-all --debug-config
 ```text
 **Example output:**
 
@@ -157,13 +157,13 @@ No configuration file found.
 Searched locations:
   - .claudelintrc.json
   - .claudelintrc.js
-  - package.json (claude-code-lint key)
+  - package.json (claudelint key)
 ```text
 **Solution:**
 
-1. Run `claude-code-lint init` to create a config file
-2. Or specify config path: `claude-code-lint check-all --config /path/to/config.json`
-3. Or add `claude-code-lint` key to package.json
+1. Run `claudelint init` to create a config file
+2. Or specify config path: `claudelint check-all --config /path/to/config.json`
+3. Or add `claudelint` key to package.json
 
 ### Unknown Rules
 
@@ -176,7 +176,7 @@ Searched locations:
 **Solution:**
 
 1. Check rule name spelling
-2. Run `claude-code-lint list-rules` to see available rules
+2. Run `claudelint list-rules` to see available rules
 3. Update .claudelintrc.json with correct rule names
 
 ### Invalid Severities
@@ -200,14 +200,14 @@ Change severity to one of the valid values:
 ```text
 ### Config Not Loading
 
-**Problem:** Config file exists but claude-code-lint isn't using it.
+**Problem:** Config file exists but claudelint isn't using it.
 
 **Debug Steps:**
 
 1. Check config file location:
 
    ```bash
-   claude-code-lint print-config
+   claudelint print-config
    ```text
 2. Verify config is valid JSON:
 
@@ -217,20 +217,20 @@ Change severity to one of the valid values:
 3. Use --debug-config flag:
 
    ```bash
-   claude-code-lint check-all --debug-config
+   claudelint check-all --debug-config
    ```text
 4. Specify config explicitly:
 
    ```bash
-   claude-code-lint check-all --config ./.claudelintrc.json
+   claudelint check-all --config ./.claudelintrc.json
    ```text
 ## Config File Locations
 
-claude-code-lint searches for config in the following order:
+claudelint searches for config in the following order:
 
 1. `.claudelintrc.json` (recommended)
 2. `.claudelintrc.js`
-3. `package.json` (with "claude-code-lint" key)
+3. `package.json` (with "claudelint" key)
 
 **Search algorithm:**
 
@@ -248,49 +248,49 @@ ls -la .claudelintrc.json
 ```text
 #### Step 2: Validate config
 ```bash
-claude-code-lint validate-config
+claudelint validate-config
 ```text
 #### Step 3: Print resolved config
 ```bash
-claude-code-lint print-config --format table
+claudelint print-config --format table
 ```text
 #### Step 4: Test with specific file
 ```bash
-claude-code-lint resolve-config CLAUDE.md
+claudelint resolve-config CLAUDE.md
 ```text
 #### Step 5: Run with debug output
 ```bash
-claude-code-lint check-all --debug-config
+claudelint check-all --debug-config
 ```text
 ## Tips
 
 **Use table format for readability:**
 
 ```bash
-claude-code-lint print-config --format table
+claudelint print-config --format table
 ```text
 **Check which rules are enabled:**
 
 ```bash
-claude-code-lint print-config --format table | grep '✗\|!'
+claudelint print-config --format table | grep '✗\|!'
 ```text
 **Validate before committing:**
 
 ```bash
-claude-code-lint validate-config && claude-code-lint check-all
+claudelint validate-config && claudelint check-all
 ```text
 **Debug in CI:**
 
 ```bash
 # Add to CI script
-claude-code-lint print-config
-claude-code-lint check-all --debug-config
+claudelint print-config
+claudelint check-all --debug-config
 ```text
 ## Related Commands
 
-- `claude-code-lint init` - Create configuration file
-- `claude-code-lint list-rules` - List all available rules
-- `claude-code-lint check-all --verbose` - Verbose validation output
+- `claudelint init` - Create configuration file
+- `claudelint list-rules` - List all available rules
+- `claudelint check-all --verbose` - Verbose validation output
 
 ## See Also
 

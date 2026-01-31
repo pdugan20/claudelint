@@ -69,7 +69,7 @@ Exit codes now follow POSIX/Unix standard conventions to improve compatibility w
 **Previous behavior (v0.1.0):**
 
 ```bash
-claude-code-lint check-all
+claudelint check-all
 # Exit 2 if validation errors found
 # Exit 1 if only warnings found
 # Exit 0 if no issues
@@ -78,7 +78,7 @@ claude-code-lint check-all
 **New behavior (v1.0.0):**
 
 ```bash
-claude-code-lint check-all
+claudelint check-all
 # Exit 0 - Success (no issues)
 # Exit 1 - Validation issues (errors OR warnings)
 # Exit 2 - Fatal error (crash, invalid config, etc.)
@@ -99,7 +99,7 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
 **No changes needed** if you:
 
 - Use standard CI checks: `if [ $? -ne 0 ]; then fail; fi`
-- Check for non-zero exit: `claude-code-lint check-all || exit 1`
+- Check for non-zero exit: `claudelint check-all || exit 1`
 - Run in CI with default failure behavior
 
 **Changes required** if you:
@@ -108,14 +108,14 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
 
    ```bash
    # Before (v0.1.0)
-   claude-code-lint check-all
+   claudelint check-all
    if [ $? -eq 2 ]; then
      echo "Errors found!"
      exit 1
    fi
 
    # After (v1.0.0)
-   claude-code-lint check-all
+   claudelint check-all
    if [ $? -eq 1 ]; then
      echo "Issues found!"
      exit 1
@@ -126,7 +126,7 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
 
    ```bash
    # Before (v0.1.0)
-   claude-code-lint check-all
+   claudelint check-all
    EXIT_CODE=$?
    if [ $EXIT_CODE -eq 2 ]; then
      echo "Errors - fail build"
@@ -137,7 +137,7 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
    fi
 
    # After (v1.0.0) - Use JSON output for detailed analysis
-   claude-code-lint check-all --format json > results.json
+   claudelint check-all --format json > results.json
    ERRORS=$(jq '.summary.errors' results.json)
    WARNINGS=$(jq '.summary.warnings' results.json)
 
@@ -154,22 +154,22 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
 
    ```yaml
    # Before (v0.1.0)
-   - name: Run claude-code-lint
+   - name: Run claudelint
      run: |
-       claude-code-lint check-all
+       claudelint check-all
        if [ $? -eq 2 ]; then
          echo "::error::Validation errors found"
          exit 1
        fi
 
    # After (v1.0.0) - Simpler
-   - name: Run claude-code-lint
-     run: claude-code-lint check-all
+   - name: Run claudelint
+     run: claudelint check-all
      # Automatically fails on exit 1
 
    # Or with warning threshold
-   - name: Run claude-code-lint
-     run: claude-code-lint check-all --max-warnings 0
+   - name: Run claudelint
+     run: claudelint check-all --max-warnings 0
      # Fails if any warnings/errors
    ```
 
@@ -177,20 +177,20 @@ Most CI systems treat any non-zero exit as failure, making this change transpare
 
    ```bash
    # Treat warnings as success (exit 0)
-   claude-code-lint check-all --quiet
+   claudelint check-all --quiet
 
    # Fail only on errors, allow warnings
-   claude-code-lint check-all --max-warnings 999
+   claudelint check-all --max-warnings 999
 
    # Strict mode: fail on everything including info
-   claude-code-lint check-all --strict
+   claudelint check-all --strict
    ```
 
 **Alternative: JSON output for detailed control:**
 
 ```bash
 # Get structured results
-claude-code-lint check-all --format json > results.json
+claudelint check-all --format json > results.json
 
 # Parse results in your script
 ERROR_COUNT=$(jq '.summary.errors' results.json)
@@ -214,11 +214,11 @@ echo "# Test" > CLAUDE.md
 printf '%040000s' | tr ' ' 'x' >> CLAUDE.md  # 40KB+ file
 
 # v1.0.0 behavior
-claude-code-lint check-claude-md
+claudelint check-claude-md
 echo "Exit code: $?"  # Should be 1 (issues found)
 
 # Verify CI compatibility
-claude-code-lint check-all || echo "Failed as expected"
+claudelint check-all || echo "Failed as expected"
 ```
 
 For more details, see the [migration guide](./docs/MIGRATION.md).
@@ -234,21 +234,21 @@ The third-party plugin system has been removed and replaced with a custom rules 
 npm install claude-code-lint-plugin-example
 
 # Plugins were loaded automatically from node_modules
-claude-code-lint check-all
+claudelint check-all
 ```
 
 **New behavior:**
 
 ```bash
-# Create custom rules in .claude-code-lint/rules/
-# .claude-code-lint/rules/my-rule.js
+# Create custom rules in .claudelint/rules/
+# .claudelint/rules/my-rule.js
 module.exports.rule = {
   meta: { id: 'my-rule', ... },
   validate: async (context) => { ... }
 };
 
 # Custom rules load automatically
-claude-code-lint check-all
+claudelint check-all
 ```
 
 **Rationale:**
@@ -264,11 +264,11 @@ claude-code-lint check-all
 If you were using third-party plugins:
 
 1. Extract the plugin rule logic
-2. Create corresponding custom rule files in `.claude-code-lint/rules/`
+2. Create corresponding custom rule files in `.claudelint/rules/`
 3. Adapt to the Rule interface (see [Custom Rules Guide](./docs/custom-rules.md))
 4. Remove npm plugin dependencies
 
-**Note:** This change only affects the third-party plugin system. The claude-code-lint npm package can still be used as a Claude Code plugin via `/plugin install claude-code-lint`.
+**Note:** This change only affects the third-party plugin system. The claudelint npm package can still be used as a Claude Code plugin via `/plugin install claudelint`.
 
 **See Also:**
 
@@ -291,7 +291,7 @@ If you were using third-party plugins:
 - **Clear architecture** - Each rule is independent and testable
 - **Easier contributions** - Add new rules without touching existing code
 - **Better testing** - Rule-level tests are simpler than validator-level
-- **Discoverable** - `claude-code-lint list-rules` shows all available checks
+- **Discoverable** - `claudelint list-rules` shows all available checks
 - **Self-documenting** - Rule metadata provides all information
 
 **Industry Alignment:**
@@ -615,7 +615,7 @@ Dependencies:
 **Caching:**
 
 - `--cache` / `--no-cache` - Enable/disable validation caching (default: enabled)
-- `--cache-location <path>` - Custom cache directory (default: `.claude-code-lint-cache/`)
+- `--cache-location <path>` - Custom cache directory (default: `.claudelint-cache/`)
 
 **Path Options:**
 
@@ -629,16 +629,16 @@ Dependencies:
 - `.claudelintrc.json` - Project configuration
 - `.claudelintrc.js` - JavaScript configuration with logic
 - `.claudelintrc.yaml` - YAML configuration
-- `package.json` - `claude-code-lint` field support
+- `package.json` - `claudelint` field support
 - `.claudelintignore` - Ignore patterns (gitignore-style)
 
 **Inline Directives:**
 
-- `<!-- claude-code-lint-disable -->` - Disable all rules for block
-- `<!-- claude-code-lint-disable rule-name -->` - Disable specific rule
-- `<!-- claude-code-lint-enable -->` - Re-enable rules
-- `<!-- claude-code-lint-disable-next-line -->` - Disable for next line
-- `<!-- claude-code-lint-disable-line -->` - Disable for current line
+- `<!-- claudelint-disable -->` - Disable all rules for block
+- `<!-- claudelint-disable rule-name -->` - Disable specific rule
+- `<!-- claudelint-enable -->` - Re-enable rules
+- `<!-- claudelint-disable-next-line -->` - Disable for next line
+- `<!-- claudelint-disable-line -->` - Disable for current line
 - **Unused directive detection** with `reportUnusedDisableDirectives` option
 
 **Rule Configuration:**
@@ -666,7 +666,7 @@ Dependencies:
     ]
   },
   "plugins": ["mycompany"],
-  "extends": ["claude-code-lint:recommended"]
+  "extends": ["claudelint:recommended"]
 }
 ```
 
@@ -798,12 +798,12 @@ Real-world performance on typical Claude Code projects:
 
 ```bash
 # First run (cold cache)
-$ time claude-code-lint check-all
+$ time claudelint check-all
 ✓ All validation passed
 204ms
 
 # Second run (warm cache)
-$ time claude-code-lint check-all
+$ time claudelint check-all
 ✓ All validation passed (from cache)
 84ms
 
@@ -831,6 +831,6 @@ Validator execution times (parallel):
 - Basic validation capabilities
 - Test suite with 202+ tests
 
-[Unreleased]: https://github.com/pdugan20/claude-code-lint/compare/v0.2.0-beta.0...HEAD
-[0.2.0-beta.0]: https://github.com/pdugan20/claude-code-lint/compare/v0.1.0...v0.2.0-beta.0
-[0.1.0]: https://github.com/pdugan20/claude-code-lint/releases/tag/v0.1.0
+[Unreleased]: https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.0...HEAD
+[0.2.0-beta.0]: https://github.com/pdugan20/claudelint/compare/v0.1.0...v0.2.0-beta.0
+[0.1.0]: https://github.com/pdugan20/claudelint/releases/tag/v0.1.0

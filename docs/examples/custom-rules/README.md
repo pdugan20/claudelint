@@ -1,6 +1,6 @@
 # Custom Rule Examples
 
-This directory contains example custom rules that demonstrate best practices for extending claude-code-lint.
+This directory contains example custom rules that demonstrate best practices for extending claudelint.
 
 ## Available Examples
 
@@ -18,8 +18,8 @@ Detects potential hardcoded API tokens, keys, or secrets in configuration files.
 **Usage:**
 
 ```bash
-cp docs/examples/custom-rules/no-hardcoded-tokens.js .claude-code-lint/rules/
-claude-code-lint check-all
+cp docs/examples/custom-rules/no-hardcoded-tokens.js .claudelint/rules/
+claudelint check-all
 ```
 
 **Customize:**
@@ -84,7 +84,7 @@ describe('your-rule', () => {
 
 ## Contributing
 
-If you create a useful custom rule, consider contributing it to claude-code-lint:
+If you create a useful custom rule, consider contributing it to claudelint:
 
 1. Add comprehensive tests
 2. Update documentation

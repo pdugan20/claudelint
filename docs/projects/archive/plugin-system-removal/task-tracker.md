@@ -72,7 +72,7 @@
 
 ### Design & Planning
 
-- [x] 3.1 Design custom rules directory structure (`.claude-code-lint/rules/` - decided in Phase 1)
+- [x] 3.1 Design custom rules directory structure (`.claudelint/rules/` - decided in Phase 1)
 - [x] 3.2 Design custom rule file format and conventions (completed in PHASE_1_ANALYSIS.md)
 - [x] 3.3 Create interface for custom rules loading (defined in Phase 1)
 
@@ -122,7 +122,7 @@
 
 ### Manual Testing
 
-- [x] 5.5 Test `claude-code-lint check-all` command (works correctly, found 3 errors, 12 warnings)
+- [x] 5.5 Test `claudelint check-all` command (works correctly, found 3 errors, 12 warnings)
 - [x] 5.6 Test plugin.json validation still works (validate-plugin passed: All checks passed!)
 
 ---
@@ -143,7 +143,7 @@
 ### Key Decisions
 
 - **Decision 1:** Keep plugin.json validation system (validates Claude Code plugins)
-- **Decision 2:** Use `.claude-code-lint/rules/` directory for custom rules
+- **Decision 2:** Use `.claudelint/rules/` directory for custom rules
 - **Decision 3:** Auto-discover `.ts` and `.js` files in custom rules directory
 
 ### Blockers
@@ -165,7 +165,7 @@ Before marking project complete:
 - [x] Documentation reviewed (7 new/updated docs)
 - [x] No broken references (all links valid)
 - [x] Build succeeds (TypeScript compilation successful)
-- [x] Manual testing completed (claude-code-lint check-all works, plugin validation works)
+- [x] Manual testing completed (claudelint check-all works, plugin validation works)
 - [x] CHANGELOG.md updated (breaking change documented)
 - [ ] Git commit created (ready to commit)
 
@@ -274,7 +274,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Prompt for rule metadata (name, category, severity)
   - Generate rule file from template
   - Optionally generate test file
-  - Create in .claude-code-lint/rules/ directory
+  - Create in .claudelint/rules/ directory
 - [ ] 8.5 Create rule/test templates (2h)
   - Template with validation logic placeholder
   - Template with auto-fix example
@@ -381,7 +381,7 @@ Comprehensive research completed comparing our implementation to industry standa
 ### Phase 8 (v1.2) - Ready to Ship When
 
 - [ ] RuleTester fully functional
-- [ ] `claude-code-lint create-rule` command works
+- [ ] `claudelint create-rule` command works
 - [ ] Templates generate valid rules
 - [ ] Documentation includes testing guide
 - [ ] All tests passing

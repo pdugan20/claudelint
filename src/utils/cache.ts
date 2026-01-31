@@ -48,7 +48,7 @@ export class ValidationCache {
   constructor(options: Partial<CacheOptions> = {}) {
     this.options = {
       enabled: options.enabled ?? true,
-      location: options.location || '.claude-code-lint-cache',
+      location: options.location || '.claudelint-cache',
       strategy: options.strategy || 'content',
     };
 
@@ -61,7 +61,7 @@ export class ValidationCache {
   }
 
   /**
-   * Get claude-code-lint version from package.json
+   * Get claudelint version from package.json
    */
   private getVersion(): string {
     try {
@@ -129,7 +129,7 @@ export class ValidationCache {
   private getCacheKey(validatorName: string, projectFiles: string[], config?: unknown): string {
     const hash = createHash('sha256');
 
-    // Include claude-code-lint version
+    // Include claudelint version
     hash.update(this.version);
 
     // Include validator name

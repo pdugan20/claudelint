@@ -285,7 +285,7 @@ To resolve environment variable syntax issues:
 7. **Run validation**:
 
    ```bash
-   claude-code-lint check-mcp
+   claudelint check-mcp
    ```
 
 ## Options

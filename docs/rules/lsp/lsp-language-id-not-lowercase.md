@@ -109,7 +109,7 @@ Common language IDs:
 1. **Verify configuration**:
 
 ```bash
-claude-code-lint check-lsp
+claudelint check-lsp
 ```
 
 ## Options

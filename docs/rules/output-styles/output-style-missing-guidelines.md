@@ -152,7 +152,7 @@ You might disable this rule if your output styles are simple enough that explici
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-missing-guidelines.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-missing-guidelines.test.ts)
-- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-missing-guidelines.md)
+- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-missing-guidelines.md)
 
 ## Version
 

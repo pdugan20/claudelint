@@ -5,7 +5,7 @@
  * projects programmatically. It handles configuration, file discovery, validation
  * orchestration, and result formatting.
  *
- * @module api/claude-code-lint
+ * @module api/claudelint
  *
  * @example
  * ```typescript
@@ -146,7 +146,7 @@ export class ClaudeLint {
 
       // Caching
       cache: options.cache ?? false,
-      cacheLocation: options.cacheLocation ?? '.claude-code-lint-cache',
+      cacheLocation: options.cacheLocation ?? '.claudelint-cache',
       cacheStrategy: options.cacheStrategy ?? 'metadata',
 
       // Callbacks
@@ -267,7 +267,7 @@ export class ClaudeLint {
     }
 
     // Create a temporary file to validate
-    const tmpDir = join(tmpdir(), 'claude-code-lint-linttext');
+    const tmpDir = join(tmpdir(), 'claudelint-linttext');
     const tmpFile = join(tmpDir, `${randomBytes(16).toString('hex')}.tmp`);
 
     try {
@@ -576,13 +576,13 @@ export class ClaudeLint {
   }
 
   /**
-   * Get the claude-code-lint version
+   * Get the claudelint version
    *
    * @returns Version string
    *
    * @example
    * ```typescript
-   * console.log(`Using claude-code-lint ${ClaudeLint.getVersion()}`);
+   * console.log(`Using claudelint ${ClaudeLint.getVersion()}`);
    * ```
    */
   static getVersion(): string {

@@ -258,7 +258,7 @@ To resolve empty command errors:
 7. **Run validation**:
 
    ```bash
-   claude-code-lint check-mcp
+   claudelint check-mcp
    ```
 
 ## Options

@@ -1,6 +1,6 @@
 # Strict Mode Example Configuration
 
-Zero-tolerance claude-code-lint configuration for maximum code quality.
+Zero-tolerance claudelint configuration for maximum code quality.
 
 ## Files
 
@@ -57,7 +57,7 @@ All major rules enabled as errors:
 Warns about disable comments that don't suppress any violations:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line size-error -->
+<!-- claudelint-disable-next-line size-error -->
 Short line - Warning: unused disable directive!
 ```
 
@@ -78,7 +78,7 @@ Any warning counts as a failure. Perfect for CI/CD pipelines.
 cp examples/strict/.claudelintrc.json .
 
 # Test validation
-claude-code-lint check-all --strict
+claudelint check-all --strict
 ```
 
 **Note:** Use `--strict` flag or the config will still allow warnings from validators that don't have rules configured.
@@ -98,7 +98,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - run: npm install -g claude-code-lint
-      - run: claude-code-lint check-all --strict
+      - run: claudelint check-all --strict
 ```
 
 ### npm Scripts
@@ -106,8 +106,8 @@ jobs:
 ```json
 {
   "scripts": {
-    "lint": "claude-code-lint check-all --strict",
-    "lint:fix": "claude-code-lint check-all --fix",
+    "lint": "claudelint check-all --strict",
+    "lint:fix": "claudelint check-all --fix",
     "test": "npm run lint && <other tests>"
   }
 }
@@ -150,13 +150,13 @@ Many rules support auto-fix:
 
 ```bash
 # Preview fixes
-claude-code-lint check-all --fix-dry-run
+claudelint check-all --fix-dry-run
 
 # Apply fixes
-claude-code-lint check-all --fix
+claudelint check-all --fix
 
 # Check results
-claude-code-lint check-all --strict
+claudelint check-all --strict
 ```
 
 **Fixable rules:**
@@ -168,8 +168,8 @@ claude-code-lint check-all --strict
 ## Example Workflow
 
 1. **Setup project** with strict config
-2. **Run validation**: `claude-code-lint check-all --strict`
-3. **Auto-fix** what you can: `claude-code-lint check-all --fix`
+2. **Run validation**: `claudelint check-all --strict`
+3. **Auto-fix** what you can: `claudelint check-all --fix`
 4. **Fix remaining** issues manually
 5. **Validate again**: Should pass with zero issues
 6. **Commit** and push (pre-commit hook runs automatically)
@@ -195,7 +195,7 @@ Gradually migrate from basic to strict:
 cp examples/basic/.claudelintrc.json .
 
 # Fix all errors
-claude-code-lint check-all
+claudelint check-all
 
 # Upgrade warnings to errors one by one
 # Edit .claudelintrc.json: "size-warning": "error"

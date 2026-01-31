@@ -98,7 +98,7 @@ To resolve missing import errors:
 6. **Run validation**:
 
    ```bash
-   claude-code-lint check-claude-md
+   claudelint check-claude-md
    ```
 
 ## Options

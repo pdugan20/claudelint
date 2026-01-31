@@ -113,7 +113,7 @@ which typescript-language-server
 1. **Verify configuration**:
 
 ```bash
-claude-code-lint check-lsp
+claudelint check-lsp
 ```
 
 ## Options

@@ -1,6 +1,6 @@
 # Rule Development Guide
 
-This comprehensive guide explains how to write validation rules for claude-code-lint, whether you're creating custom rules for your team or contributing built-in rules to the project.
+This comprehensive guide explains how to write validation rules for claudelint, whether you're creating custom rules for your team or contributing built-in rules to the project.
 
 ## Quick Navigation
 
@@ -12,7 +12,7 @@ This comprehensive guide explains how to write validation rules for claude-code-
 **For Contributors:**
 
 - [Part 1: Understanding Rules](#part-1-understanding-rules) - Architecture overview
-- [Part 3: Contributing Built-in Rules](#part-3-contributing-built-in-rules) - Add rules to claude-code-lint
+- [Part 3: Contributing Built-in Rules](#part-3-contributing-built-in-rules) - Add rules to claudelint
 
 ---
 
@@ -20,7 +20,7 @@ This comprehensive guide explains how to write validation rules for claude-code-
 
 ### Overview
 
-claude-code-lint validates Claude Code configuration files (CLAUDE.md, settings.json, hooks, skills, etc.) using a rule-based architecture. Each rule validates one specific aspect of a configuration file.
+claudelint validates Claude Code configuration files (CLAUDE.md, settings.json, hooks, skills, etc.) using a rule-based architecture. Each rule validates one specific aspect of a configuration file.
 
 ### Rule Structure
 
@@ -40,7 +40,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl: 'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/{category}/{rule-id}.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/{category}/{rule-id}.md',
   },
 
   validate: async (context) => {
@@ -156,20 +156,20 @@ fix: 'Change the transport type to one of: stdio, sse, http, websocket'
 
 ## Part 2: Writing Custom Rules
 
-Custom rules allow you to extend claude-code-lint with team-specific or project-specific validation requirements.
+Custom rules allow you to extend claudelint with team-specific or project-specific validation requirements.
 
 ### Quick Start
 
-1. Create a `.claude-code-lint/rules/` directory in your project root
+1. Create a `.claudelint/rules/` directory in your project root
 2. Add a custom rule file (`.js` or `.ts`)
 3. Export a `rule` object that implements the Rule interface
-4. Run `claude-code-lint check-all` to load and execute your custom rules
+4. Run `claudelint check-all` to load and execute your custom rules
 
 ### Directory Structure
 
 ```text
 your-project/
-├── .claude-code-lint/
+├── .claudelint/
 │   └── rules/
 │       ├── team-rule.js
 │       ├── project-rule.js
@@ -189,7 +189,7 @@ Key features:
 ### Example: Basic Custom Rule
 
 ```javascript
-// .claude-code-lint/rules/no-profanity.js
+// .claudelint/rules/no-profanity.js
 module.exports.rule = {
   meta: {
     id: 'no-profanity',
@@ -220,7 +220,7 @@ module.exports.rule = {
 ### Example: File Size Limit
 
 ```javascript
-// .claude-code-lint/rules/max-file-size.js
+// .claudelint/rules/max-file-size.js
 module.exports.rule = {
   meta: {
     id: 'max-file-size',
@@ -246,7 +246,7 @@ module.exports.rule = {
 ### Example: Required Heading
 
 ```javascript
-// .claude-code-lint/rules/require-overview.js
+// .claudelint/rules/require-overview.js
 module.exports.rule = {
   meta: {
     id: 'require-overview',
@@ -288,7 +288,7 @@ interface AutoFix {
 #### Example: Auto-Fix Trailing Whitespace
 
 ```javascript
-// .claude-code-lint/rules/no-trailing-whitespace.js
+// .claudelint/rules/no-trailing-whitespace.js
 module.exports.rule = {
   meta: {
     id: 'no-trailing-whitespace',
@@ -354,7 +354,7 @@ Severity levels:
 
 ### Helper Library
 
-claude-code-lint provides utility functions to simplify common validation tasks:
+claudelint provides utility functions to simplify common validation tasks:
 
 ```javascript
 const {
@@ -369,7 +369,7 @@ const {
   parseJSON,
   parseYAML,
   findLinesMatching,
-} = require('claude-code-lint/utils');
+} = require('claudelint/utils');
 ```
 
 See [Part 2 Helper Functions](#helper-functions) below for complete documentation.
@@ -382,7 +382,7 @@ See [Part 2 Helper Functions](#helper-functions) below for complete documentatio
 
 **Solutions:**
 
-- Verify file is in `.claude-code-lint/rules/` directory
+- Verify file is in `.claudelint/rules/` directory
 - Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`, etc.)
 - Ensure `module.exports.rule` is used (not ES6 `export`)
 - Check for syntax errors in the rule file
@@ -404,7 +404,7 @@ For more troubleshooting tips, see the [Troubleshooting](#troubleshooting) secti
 
 ## Part 3: Contributing Built-in Rules
 
-This section is for contributors who want to add rules to the claude-code-lint codebase.
+This section is for contributors who want to add rules to the claudelint codebase.
 
 ### File Organization
 
@@ -722,7 +722,7 @@ async validate(context: ValidationContext): Promise<ValidationResult> {
 
 ## Helper Functions
 
-claude-code-lint provides utility functions to simplify common validation tasks.
+claudelint provides utility functions to simplify common validation tasks.
 
 ### Heading Functions
 
@@ -898,7 +898,7 @@ if (!data) {
 
 **Solutions:**
 
-- Verify file is in `.claude-code-lint/rules/` directory
+- Verify file is in `.claudelint/rules/` directory
 - Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`, etc.)
 - Ensure `module.exports.rule` is used (not ES6 `export`)
 - Check for syntax errors in the rule file
@@ -942,7 +942,7 @@ if (!data) {
 - [Architecture Documentation](./architecture.md) - System design and components
 - [Built-in Rules](./rules/) - Examples of rule implementations
 - [API Documentation](./api/README.md) - Programmatic usage
-- [Contributing Guide](../CONTRIBUTING.md) - How to contribute to claude-code-lint
+- [Contributing Guide](../CONTRIBUTING.md) - How to contribute to claudelint
 
 ---
 
@@ -953,4 +953,4 @@ If you encounter issues with rules:
 1. Check the [Troubleshooting](#troubleshooting) section
 2. Review example rules in `docs/examples/custom-rules/`
 3. Check existing built-in rules in `src/rules/`
-4. Open an issue on [GitHub](https://github.com/pdugan20/claude-code-lint/issues)
+4. Open an issue on [GitHub](https://github.com/pdugan20/claudelint/issues)

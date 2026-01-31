@@ -21,20 +21,20 @@
 
 ### Goal
 
-Refactor claude-code-lint architecture to match industry standards (ESLint/Prettier model)
+Refactor claudelint architecture to match industry standards (ESLint/Prettier model)
 
 ### Current Problem
 
-- `claude-code-lint format` mixes linters (shellcheck, markdownlint) with formatter (prettier)
-- Main `claude-code-lint` command doesn't run external linters
+- `claudelint format` mixes linters (shellcheck, markdownlint) with formatter (prettier)
+- Main `claudelint` command doesn't run external linters
 - Not comprehensive in one pass
 
 ### Target Architecture
 
 ```bash
-claude-code-lint              # ALL linting (custom rules + shellcheck + markdownlint + pylint)
-claude-code-lint --fix        # Same, with autofixes applied
-claude-code-lint format       # Prettier only (or deprecate and use prettier directly)
+claudelint              # ALL linting (custom rules + shellcheck + markdownlint + pylint)
+claudelint --fix        # Same, with autofixes applied
+claudelint format       # Prettier only (or deprecate and use prettier directly)
 ```
 
 ### Tasks
@@ -74,9 +74,9 @@ claude-code-lint format       # Prettier only (or deprecate and use prettier dir
 
 ### Success Criteria
 
-- [ ] Running `claude-code-lint` executes shellcheck, markdownlint, pylint on appropriate files
-- [ ] `claude-code-lint --fix` applies markdownlint fixes
-- [ ] `claude-code-lint format` runs Prettier only
+- [ ] Running `claudelint` executes shellcheck, markdownlint, pylint on appropriate files
+- [ ] `claudelint --fix` applies markdownlint fixes
+- [ ] `claudelint format` runs Prettier only
 - [ ] All tests passing
 - [ ] Documentation updated
 
@@ -445,9 +445,9 @@ claude-code-lint format       # Prettier only (or deprecate and use prettier dir
 
 **Current state**: We ARE already using shellcheck and markdownlint, but in different contexts:
 
-1. **`claude-code-lint format` command** (src/cli/commands/format.ts):
+1. **`claudelint format` command** (src/cli/commands/format.ts):
    - Manually run formatting tool on Claude-specific files (.claude/**, CLAUDE.md)
-   - User explicitly calls `claude-code-lint format` or `claude-code-lint format --check`
+   - User explicitly calls `claudelint format` or `claudelint format --check`
    - Shellcheck checks shell scripts, markdownlint checks markdown files
    - Used for general project formatting/linting
 
@@ -458,7 +458,7 @@ claude-code-lint format       # Prettier only (or deprecate and use prettier dir
 **H10-H12 rules are COMPLEMENTARY, not redundant**:
 
 - **Different purpose**: Validation rules that run during SKILL validation
-- **Automatic**: When you run `claude-code-lint` on a skill, it would automatically check the script quality
+- **Automatic**: When you run `claudelint` on a skill, it would automatically check the script quality
 - **Part of quality validation**: Integrated into the skill validation workflow, not a separate format command
 - **Skill-specific**: Only runs on skill scripts during skill validation
 
@@ -466,10 +466,10 @@ claude-code-lint format       # Prettier only (or deprecate and use prettier dir
 
 ```bash
 # Current (format command - manual)
-claude-code-lint format --check  # Checks all .claude/** files
+claudelint format --check  # Checks all .claude/** files
 
 # With H10-H12 (validation - automatic)
-claude-code-lint validate .claude/skills/my-skill  # Automatically runs shellcheck on my-skill.sh as part of validation
+claudelint validate .claude/skills/my-skill  # Automatically runs shellcheck on my-skill.sh as part of validation
 ```
 
 **Decision**: Keep H10-H12 in the plan - they provide automatic quality checking during skill validation

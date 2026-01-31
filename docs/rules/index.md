@@ -1,6 +1,6 @@
 # Rule Index
 
-This directory contains documentation for all 105 claude-code-lint rules.
+This directory contains documentation for all 105 claudelint rules.
 
 ## Rules by Category
 

@@ -1,6 +1,6 @@
-# Contributing to claude-code-lint
+# Contributing to claudelint
 
-Thank you for your interest in contributing to claude-code-lint! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to claudelint! This document provides guidelines for contributing to the project.
 
 ## Quick Start for Contributors
 
@@ -26,8 +26,8 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 2. Clone your fork locally:
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/claude-code-lint.git
-   cd claude-code-lint
+   git clone https://github.com/YOUR_USERNAME/claudelint.git
+   cd claudelint
    ```
 
 3. Install dependencies:
@@ -135,7 +135,7 @@ Examples:
 ## Project Structure
 
 ```text
-claude-code-lint/
+claudelint/
 ├── src/
 │   ├── validators/      # Validator implementations
 │   ├── utils/           # Utility functions
@@ -153,7 +153,7 @@ claude-code-lint/
 
 ## Adding Validation Rules
 
-claude-code-lint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
+claudelint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
 
 **See the comprehensive [Rule Development Guide](docs/rule-development.md) for:**
 
@@ -205,7 +205,7 @@ claude-code-lint uses a rule-based architecture (similar to ESLint). Contributor
 
 Include:
 
-- claude-code-lint version (`claude-code-lint --version`)
+- claudelint version (`claudelint --version`)
 - Node.js version (`node --version`)
 - Operating system
 - Steps to reproduce
@@ -240,7 +240,7 @@ Include:
 - **[Getting Started](docs/getting-started.md)** - Installation and first steps
 - **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
 - **[Rule Reference](docs/rules/)** - Individual documentation for all rules
-- **[Configuration Guide](docs/configuration.md)** - Configuring claude-code-lint
+- **[Configuration Guide](docs/configuration.md)** - Configuring claudelint
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 
 ## Release Process
@@ -257,10 +257,10 @@ Include:
 ## Getting Help
 
 - Read the [documentation](docs/)
-- Search [existing issues](https://github.com/pdugan20/claude-code-lint/issues)
-- Ask in [discussions](https://github.com/pdugan20/claude-code-lint/discussions)
+- Search [existing issues](https://github.com/pdugan20/claudelint/issues)
+- Ask in [discussions](https://github.com/pdugan20/claudelint/discussions)
 - Open a new issue if needed
 
 ## License
 
-By contributing to claude-code-lint, you agree that your contributions will be licensed under the MIT License.
+By contributing to claudelint, you agree that your contributions will be licensed under the MIT License.

@@ -210,7 +210,7 @@ function generateIndexPage(rules: RuleMetadata[]): string {
   const categories = Array.from(new Set(rules.map((r) => r.category))).sort();
 
   let content = `# Rule Index\n\n`;
-  content += `This directory contains documentation for all ${rules.length} claude-code-lint rules.\n\n`;
+  content += `This directory contains documentation for all ${rules.length} claudelint rules.\n\n`;
   content += `## Rules by Category\n\n`;
 
   for (const category of categories) {

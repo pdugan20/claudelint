@@ -1,6 +1,6 @@
 # Project Status Dashboard
 
-This document provides a high-level overview of all projects in the claude-code-lint repository, both active and archived.
+This document provides a high-level overview of all projects in the claudelint repository, both active and archived.
 
 ## Active Projects
 
@@ -29,7 +29,7 @@ This document provides a high-level overview of all projects in the claude-code-
 **Timeline:** 2-3 weeks
 **Location:** [docs/projects/vitepress-docs/](./vitepress-docs/)
 
-**Purpose:** Build professional documentation website at docs.claude-code-lint.dev
+**Purpose:** Build professional documentation website at docs.claudelint.dev
 
 **Key Features:**
 

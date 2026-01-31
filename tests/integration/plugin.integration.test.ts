@@ -6,7 +6,7 @@ import { tmpdir } from 'os';
 describe('Plugin Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
   const pluginJsonPath = join(projectRoot, 'plugin.json');
-  const claudelintBin = join(projectRoot, 'bin/claude-code-lint');
+  const claudelintBin = join(projectRoot, 'bin/claudelint');
 
   describe('Plugin Manifest', () => {
     it('should have valid plugin.json at repository root', () => {
@@ -124,7 +124,7 @@ describe('Plugin Integration Tests', () => {
       const sessionStartHook = hooks.hooks.find((h: any) => h.event === 'SessionStart');
       expect(sessionStartHook).toBeDefined();
       expect(sessionStartHook.type).toBe('command');
-      expect(sessionStartHook.command).toContain('claude-code-lint check-all');
+      expect(sessionStartHook.command).toContain('claudelint check-all');
     });
   });
 
@@ -173,7 +173,7 @@ describe('Plugin Integration Tests', () => {
 
     it('should support --format json', () => {
       // Write output to a temp file to avoid buffer size limits
-      const tempFile = join(tmpdir(), 'claude-code-lint-test-output.json');
+      const tempFile = join(tmpdir(), 'claudelint-test-output.json');
 
       try {
         // Run command and redirect output to file

@@ -17,7 +17,7 @@ Guide for migrating from CLI to programmatic API usage, or integrating ClaudeLin
 **CLI:**
 
 ```bash
-claude-code-lint check-all
+claudelint check-all
 ```
 
 **Programmatic API:**
@@ -49,7 +49,7 @@ process.exit(hasErrors ? 1 : 0);
 **CLI:**
 
 ```bash
-claude-code-lint check-all --fix
+claudelint check-all --fix
 ```
 
 **Programmatic API:**
@@ -80,7 +80,7 @@ const results = await lint(['**/*.md', '!node_modules/**'], { fix: true });
 **CLI:**
 
 ```bash
-claude-code-lint check-all --format json
+claudelint check-all --format json
 ```
 
 **Programmatic API:**
@@ -111,7 +111,7 @@ console.log(output);
 **CLI:**
 
 ```bash
-claude-code-lint check-all --config custom.json
+claudelint check-all --config custom.json
 ```
 
 **Programmatic API:**
@@ -177,8 +177,8 @@ Replace CLI commands with programmatic scripts:
 ```json
 {
   "scripts": {
-    "lint": "claude-code-lint check-all",
-    "lint:fix": "claude-code-lint check-all --fix"
+    "lint": "claudelint check-all",
+    "lint:fix": "claudelint check-all --fix"
   }
 }
 ```
@@ -225,7 +225,7 @@ main();
 
 ```bash
 #!/bin/bash
-claude-code-lint check-all
+claudelint check-all
 ```
 
 **After (husky/pre-commit):**
@@ -272,7 +272,7 @@ main();
 
 ```yaml
 - name: Lint
-  run: claude-code-lint check-all
+  run: claudelint check-all
 ```
 
 **After:**
@@ -351,7 +351,7 @@ const results = await linter.lintFiles(['**/*.md']);
 
 ```typescript
 // Don't do this - SkillsValidator is not part of public API
-import { SkillsValidator } from 'claude-code-lint/dist/validators/skills';
+import { SkillsValidator } from 'claudelint/dist/validators/skills';
 ```
 
 ### Stability Guarantees
@@ -426,7 +426,7 @@ import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   cache: true,
-  cacheLocation: '.claude-code-lint-cache',
+  cacheLocation: '.claudelint-cache',
   cacheStrategy: 'content',
 });
 ```
@@ -458,7 +458,7 @@ const linter = new ClaudeLint({ config });
 Create a plugin for your build tool:
 
 ```javascript
-// webpack-plugin-claude-code-lint.js
+// webpack-plugin-claudelint.js
 const { ClaudeLint } = require('claude-code-lint');
 
 class ClaudeLintPlugin {

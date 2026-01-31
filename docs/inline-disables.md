@@ -1,6 +1,6 @@
 # Inline Disable Directives
 
-claude-code-lint supports inline comments to disable specific validation rules for parts of your files.
+claudelint supports inline comments to disable specific validation rules for parts of your files.
 
 ## Overview
 
@@ -18,7 +18,7 @@ Use HTML comment syntax to disable rules:
 Disable a specific rule for the entire file:
 
 ````markdown
-<!-- claude-code-lint-disable-file import-missing -->
+<!-- claudelint-disable-file import-missing -->
 
 @import non-existent-file.md
 @import another-missing-file.md
@@ -27,7 +27,7 @@ Disable a specific rule for the entire file:
 Disable all rules for the entire file:
 
 ```markdown
-<!-- claude-code-lint-disable-file -->
+<!-- claudelint-disable-file -->
 
 This file won't be validated at all.
 ```text
@@ -36,7 +36,7 @@ This file won't be validated at all.
 Disable a specific rule for the next line only:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import non-existent-file.md
 
 This line will still be validated.
@@ -44,7 +44,7 @@ This line will still be validated.
 Disable all rules for the next line:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line -->
+<!-- claudelint-disable-next-line -->
 @import non-existent-file.md
 ```text
 ### Disable Current Line
@@ -52,37 +52,37 @@ Disable all rules for the next line:
 Disable a specific rule on the same line as the comment:
 
 ```markdown
-<!-- claude-code-lint-disable-line size-warning --> This is a very long line that would normally trigger a warning
+<!-- claudelint-disable-line size-warning --> This is a very long line that would normally trigger a warning
 ```text
 Disable all rules on the current line:
 
 ```markdown
-<!-- claude-code-lint-disable-line --> Any violation on this line is ignored
+<!-- claudelint-disable-line --> Any violation on this line is ignored
 ```text
 ### Disable Range
 
 Disable a specific rule for a block of lines:
 
 ```markdown
-<!-- claude-code-lint-disable import-missing -->
+<!-- claudelint-disable import-missing -->
 @import file1.md
 @import file2.md
 @import file3.md
-<!-- claude-code-lint-enable import-missing -->
+<!-- claudelint-enable import-missing -->
 
 Validation resumes here.
 ```text
 Disable all rules for a block:
 
 ```markdown
-<!-- claude-code-lint-disable -->
+<!-- claudelint-disable -->
 Content in this block won't be validated.
-<!-- claude-code-lint-enable -->
+<!-- claudelint-enable -->
 ```text
 **Note:** Unclosed disable blocks extend to the end of the file:
 
 ```markdown
-<!-- claude-code-lint-disable size-warning -->
+<!-- claudelint-disable size-warning -->
 Rest of file won't check for size warnings.
 ```text
 ## Rule IDs
@@ -110,11 +110,11 @@ Valid rule IDs depend on the validator:
 - `skill-deep-nesting`
 - `skill-naming-inconsistent`
 
-See [Validators](validators.md) for complete rule list or run `claude-code-lint list-rules`.
+See [Validators](validators.md) for complete rule list or run `claudelint list-rules`.
 
 ## Unused Disable Detection
 
-claude-code-lint can warn about unnecessary disable directives that don't suppress any violations.
+claudelint can warn about unnecessary disable directives that don't suppress any violations.
 
 ### Enabling Detection
 
@@ -132,7 +132,7 @@ Add to `.claudelintrc.json`:
 ```markdown
 # My Project
 
-<!-- claude-code-lint-disable-next-line size-error -->
+<!-- claudelint-disable-next-line size-error -->
 This line has no violations, so the disable is unnecessary.
 ```text
 **Output:**
@@ -169,13 +169,13 @@ Prefer specific rule IDs over disabling all rules:
 **Good:**
 
 ```markdown
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import future-file.md
 ```text
 **Bad:**
 
 ```markdown
-<!-- claude-code-lint-disable-next-line -->
+<!-- claudelint-disable-next-line -->
 @import future-file.md
 ```text
 Specific disables:
@@ -190,7 +190,7 @@ Add a comment explaining why the disable is necessary:
 
 ```markdown
 <!-- Imported file will be created by build script -->
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import generated-content.md
 ```text
 ### Place Carefully
@@ -202,7 +202,7 @@ Put disable comments as close as possible to the violation:
 ```markdown
 Normal content here.
 
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import missing-file.md
 
 More content here.
@@ -210,13 +210,13 @@ More content here.
 **Bad:**
 
 ```markdown
-<!-- claude-code-lint-disable import-missing -->
+<!-- claudelint-disable import-missing -->
 Normal content here.
 
 @import missing-file.md
 
 More content here.
-<!-- claude-code-lint-enable import-missing -->
+<!-- claudelint-enable import-missing -->
 ```text
 ### Review Regularly
 
@@ -234,7 +234,7 @@ For files that will be created later:
 
 ```markdown
 <!-- File will be added in next PR -->
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import upcoming-feature.md
 ```text
 ### Generated Content
@@ -243,7 +243,7 @@ For imports of generated files:
 
 ```markdown
 <!-- Auto-generated during build -->
-<!-- claude-code-lint-disable-file import-missing -->
+<!-- claudelint-disable-file import-missing -->
 
 @import api-docs/generated.md
 @import api-docs/models.md
@@ -254,7 +254,7 @@ For files being gradually fixed:
 
 ```markdown
 <!-- TODO: Fix skills organization - tracked in #123 -->
-<!-- claude-code-lint-disable skill-too-many-files -->
+<!-- claudelint-disable skill-too-many-files -->
 ```text
 ### False Positives
 
@@ -262,7 +262,7 @@ When a rule incorrectly flags valid code:
 
 ```markdown
 <!-- This import uses environment-specific path resolution -->
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import $PLATFORM/config.md
 ```text
 ## Troubleshooting
@@ -273,8 +273,8 @@ When a rule incorrectly flags valid code:
 
 **Checklist:**
 
-1. Verify syntax: `<!-- claude-code-lint-disable-next-line rule-id -->`
-2. Check rule ID spelling: run `claude-code-lint list-rules`
+1. Verify syntax: `<!-- claudelint-disable-next-line rule-id -->`
+2. Check rule ID spelling: run `claudelint list-rules`
 3. Confirm line placement: disable-next-line must be immediately before violation
 4. Check whitespace: no extra lines between comment and violation
 
@@ -282,13 +282,13 @@ When a rule incorrectly flags valid code:
 
 ```markdown
 <!-- Wrong: extra blank line -->
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 
 @import file.md
 
 
 <!-- Correct: no blank lines -->
-<!-- claude-code-lint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line import-missing -->
 @import file.md
 ```text
 ### Unused Disable Warnings
@@ -316,11 +316,11 @@ When a rule incorrectly flags valid code:
 
 ```markdown
 <!-- Line 1: This is the comment line -->
-<!-- Line 2: claude-code-lint-disable-next-line affects line 3 -->
+<!-- Line 2: claudelint-disable-next-line affects line 3 -->
 <!-- Line 3: This line is disabled -->
 Line 4: This line is NOT disabled
 ```text
-Use `claude-code-lint-disable-line` to disable the current line.
+Use `claudelint-disable-line` to disable the current line.
 
 ## Advanced Examples
 
@@ -329,8 +329,8 @@ Use `claude-code-lint-disable-line` to disable the current line.
 Disable multiple rules by using multiple disable comments:
 
 ```markdown
-<!-- claude-code-lint-disable-next-line import-missing -->
-<!-- claude-code-lint-disable-next-line size-warning -->
+<!-- claudelint-disable-next-line import-missing -->
+<!-- claudelint-disable-next-line size-warning -->
 @import very-large-non-existent-file.md
 ```text
 **Note:** Cannot specify multiple rules in a single comment. Each rule needs its own comment.
@@ -340,15 +340,15 @@ Disable multiple rules by using multiple disable comments:
 Range disables can overlap:
 
 ```markdown
-<!-- claude-code-lint-disable import-missing -->
+<!-- claudelint-disable import-missing -->
 @import file1.md
 
-<!-- claude-code-lint-disable size-warning -->
+<!-- claudelint-disable size-warning -->
 @import file2.md
-<!-- claude-code-lint-enable size-warning -->
+<!-- claudelint-enable size-warning -->
 
 @import file3.md
-<!-- claude-code-lint-enable import-missing -->
+<!-- claudelint-enable import-missing -->
 ```text
 ### Skill Files
 
@@ -360,7 +360,7 @@ name: my-skill
 description: Test skill
 ---
 
-<!-- claude-code-lint-disable-next-line skill-missing-shebang -->
+<!-- claudelint-disable-next-line skill-missing-shebang -->
 ```bash
 # This script intentionally has no shebang
 echo "test"
@@ -374,7 +374,7 @@ echo "test"
 
 **Default:** `false`
 
-When `true`, claude-code-lint warns about disable directives that don't suppress any violations.
+When `true`, claudelint warns about disable directives that don't suppress any violations.
 
 ```json
 {
@@ -387,4 +387,4 @@ When `true`, claude-code-lint warns about disable directives that don't suppress
 
 - [Configuration Guide](configuration.md) - Complete configuration reference
 - [Validators](validators.md) - Available validation rules and their IDs
-- [Getting Started](getting-started.md) - Setting up claude-code-lint
+- [Getting Started](getting-started.md) - Setting up claudelint

@@ -1,10 +1,10 @@
 # Architecture
 
-This document describes the architecture of the claude-code-lint toolkit.
+This document describes the architecture of the claudelint toolkit.
 
 ## Overview
 
-claude-code-lint is designed as a dual-purpose tool:
+claudelint is designed as a dual-purpose tool:
 
 1. **NPM Package** - Standalone CLI and library for validation
 2. **Claude Code Plugin** - Interactive skills and hooks for Claude Code
@@ -13,11 +13,11 @@ Both interfaces share the same validation logic through a common core.
 
 ## Validation Philosophy
 
-claude-code-lint follows the **separation of concerns** pattern established by successful linter ecosystems (ESLint + Prettier, markdownlint + Vale). This philosophy emphasizes:
+claudelint follows the **separation of concerns** pattern established by successful linter ecosystems (ESLint + Prettier, markdownlint + Vale). This philosophy emphasizes:
 
 ### Complementary Tools, Not Comprehensive
 
-claude-code-lint is **not** a comprehensive linting solution. Instead, it:
+claudelint is **not** a comprehensive linting solution. Instead, it:
 
 - **Does one thing well** - Validates Claude-specific configurations
 - **Works alongside existing tools** - Complements markdownlint, prettier, etc.
@@ -56,17 +56,17 @@ Following the ESLint + Prettier model:
 - **Prettier** handles formatting
 - Both tools work together without conflicts
 
-Similarly with claude-code-lint:
+Similarly with claudelint:
 
 - **markdownlint** handles generic markdown structure
 - **prettier** handles formatting
-- **claude-code-lint** handles Claude-specific validation
+- **claudelint** handles Claude-specific validation
 
 This approach ensures users get the best tool for each job, without conflicts or confusion.
 
 ## Rules vs Validators: Understanding the Architecture
 
-claude-code-lint uses a **rule-based architecture** inspired by ESLint. Understanding the distinction between rules and validators is critical for contributors.
+claudelint uses a **rule-based architecture** inspired by ESLint. Understanding the distinction between rules and validators is critical for contributors.
 
 ### Rules (What Contributors Write)
 
@@ -173,7 +173,7 @@ See [projects/archive/validator-refactor/](./projects/archive/validator-refactor
 
 ## Rule Implementation Patterns
 
-claude-code-lint supports two primary patterns for implementing rules, depending on the validation requirements.
+claudelint supports two primary patterns for implementing rules, depending on the validation requirements.
 
 ### Pattern 1: Schema-Delegating Rules (Thin Wrapper)
 
@@ -385,7 +385,7 @@ If a user might disagree with the check or want to disable it, it MUST be a rule
 **Bad (current state with 40 non-configurable checks):**
 
 ```bash
-$ claude-code-lint .claude/lsp.json
+$ claudelint .claude/lsp.json
 Warning: LSP server name "ts" is too short.
 ```
 
@@ -403,7 +403,7 @@ User has no way to disable this warning.
 ```
 
 ```bash
-$ claude-code-lint .claude/lsp.json
+$ claudelint .claude/lsp.json
 ✓ All checks passed
 ```
 
@@ -412,12 +412,12 @@ This matches ESLint, Prettier, and all modern linting tools.
 ## Project Structure
 
 ```text
-claude-code-lint/
+claudelint/
 ├── .claude-plugin/          # Claude Code plugin metadata
 │   ├── plugin.json          # Plugin manifest
 │   └── marketplace.json     # Marketplace definition
 ├── bin/                     # CLI executables
-│   └── claude-code-lint           # Main CLI entry point
+│   └── claudelint           # Main CLI entry point
 ├── dist/                    # Compiled TypeScript output
 ├── docs/                    # Documentation
 │   ├── architecture.md      # This file
@@ -519,7 +519,7 @@ Validators can be configured via:
 
 1. **CLI flags** - `--verbose`, `--warnings-as-errors`, `--path`
 2. **Config file** - `.claudelintrc` (future)
-3. **Package.json** - `claude-code-lint` field (future)
+3. **Package.json** - `claudelint` field (future)
 
 ## Validator Implementations
 
@@ -535,7 +535,7 @@ Validators can be configured via:
 - YAML frontmatter schema in `.claude/rules/*.md` files
 - `paths` glob pattern validity
 
-**Note:** Generic markdown formatting (H1 headings, blank lines, code fence languages) is handled by markdownlint, not claude-code-lint.
+**Note:** Generic markdown formatting (H1 headings, blank lines, code fence languages) is handled by markdownlint, not claudelint.
 
 **Algorithm:**
 
@@ -558,7 +558,7 @@ Validators can be configured via:
 - Referenced files in skill directory exist
 - String substitution syntax (`{{VAR}}`) validity
 
-**Note:** Generic markdown formatting is handled by markdownlint, not claude-code-lint.
+**Note:** Generic markdown formatting is handled by markdownlint, not claudelint.
 
 **Algorithm:**
 
@@ -652,7 +652,7 @@ The CLI uses `commander` for argument parsing:
 
 ```typescript
 program
-  .name('claude-code-lint')
+  .name('claudelint')
   .description('Validation toolkit for Claude Code projects')
   .version('0.1.0');
 
@@ -781,7 +781,7 @@ The Rule Registry provides:
 
 3. **Documentation Generation**
    - Generates per-rule documentation automatically
-   - Powers CLI commands like `claude-code-lint list-rules`
+   - Powers CLI commands like `claudelint list-rules`
    - Provides metadata for IDE integrations
 
 4. **Plugin Integration**
@@ -845,7 +845,7 @@ RuleRegistry.register({
 **Plugin rules** register during plugin loading:
 
 ```typescript
-// claude-code-lint-plugin-custom/index.ts
+// claudelint-plugin-custom/index.ts
 export function register(registry: RuleRegistry) {
   registry.register({
     id: 'custom-rule',
@@ -856,7 +856,7 @@ export function register(registry: RuleRegistry) {
     fixable: true,
     deprecated: false,
     since: '1.0.0',
-    source: 'claude-code-lint-plugin-custom',
+    source: 'claudelint-plugin-custom',
   });
 }
 ```
@@ -877,16 +877,16 @@ if (!configErrors.valid) {
 
 ```bash
 # List all available rules
-claude-code-lint list-rules
+claudelint list-rules
 
 # Filter by category
-claude-code-lint list-rules --category Skills
+claudelint list-rules --category Skills
 
 # JSON output for tooling
-claude-code-lint list-rules --format json
+claudelint list-rules --format json
 
 # Show only deprecated rules
-claude-code-lint list-rules --deprecated
+claudelint list-rules --deprecated
 ```
 
 **3. Query rules programmatically:**
@@ -1093,7 +1093,7 @@ const cacheKey = `${VERSION}_${filePath}_${mtime}`;
 **Cache Directory:**
 
 ```text
-.claude-code-lint-cache/
+.claudelint-cache/
 ├── version.txt          # Cache version
 └── <hash>.json          # Cached validation results
 ```
@@ -1123,8 +1123,8 @@ class ValidationCache {
 Cache is invalidated when:
 
 1. **File changes** - mtime differs from cache key
-2. **Version changes** - claude-code-lint version updated
-3. **Manual clear** - `claude-code-lint cache-clear` command
+2. **Version changes** - claudelint version updated
+3. **Manual clear** - `claudelint cache-clear` command
 
 ### Integration
 
@@ -1148,11 +1148,11 @@ if (cache) {
 
 ```bash
 # First run (cold cache)
-time claude-code-lint check-all
+time claudelint check-all
 # ~204ms
 
 # Second run (warm cache)
-time claude-code-lint check-all
+time claudelint check-all
 # ~84ms
 
 # Speedup: ~2.4x
@@ -1164,16 +1164,16 @@ time claude-code-lint check-all
 
 ```bash
 # Enable caching (default)
-claude-code-lint check-all
+claudelint check-all
 
 # Disable caching
-claude-code-lint check-all --no-cache
+claudelint check-all --no-cache
 
 # Custom cache location
-claude-code-lint check-all --cache-location /tmp/cache
+claudelint check-all --cache-location /tmp/cache
 
 # Clear cache
-claude-code-lint cache-clear
+claudelint cache-clear
 ```
 
 ### Trade-offs
@@ -1289,7 +1289,7 @@ const results = await Promise.all(
 External plugins can add validators:
 
 ```typescript
-// claude-code-lint-plugin-custom/index.ts
+// claudelint-plugin-custom/index.ts
 export function register(registry: ValidatorRegistry) {
   registry.register({
     id: 'custom-validator',
@@ -1551,8 +1551,8 @@ class SkillsValidator extends BaseValidator {
 Plugins can use the composition framework to create custom validators:
 
 ```typescript
-// claude-code-lint-plugin-custom/validators/custom.ts
-import { compose, required, regex } from 'claude-code-lint/composition';
+// claudelint-plugin-custom/validators/custom.ts
+import { compose, required, regex } from 'claudelint/composition';
 
 const validateProjectId = compose(
   required(),
@@ -1809,7 +1809,7 @@ User configuration affects all components:
 **list-rules command:**
 
 ```bash
-claude-code-lint list-rules
+claudelint list-rules
 ```
 
 Uses both registries:
@@ -1840,7 +1840,7 @@ async function listRules() {
 **check-all command:**
 
 ```bash
-claude-code-lint check-all --verbose
+claudelint check-all --verbose
 ```
 
 Orchestrates all components:
@@ -1910,14 +1910,14 @@ async function checkAll(options) {
 
 ### Custom Rules
 
-claude-code-lint supports custom rules to extend the built-in validation with team-specific or project-specific checks. Custom rules use the same Rule interface as built-in rules and integrate seamlessly with the validation system.
+claudelint supports custom rules to extend the built-in validation with team-specific or project-specific checks. Custom rules use the same Rule interface as built-in rules and integrate seamlessly with the validation system.
 
 **Implementation:**
 
-Custom rules are loaded from `.claude-code-lint/rules/` directory:
+Custom rules are loaded from `.claudelint/rules/` directory:
 
 ```javascript
-// .claude-code-lint/rules/no-hardcoded-tokens.js
+// .claudelint/rules/no-hardcoded-tokens.js
 module.exports.rule = {
   meta: {
     id: 'no-hardcoded-tokens',
@@ -1937,7 +1937,7 @@ module.exports.rule = {
 
 **Architecture:**
 
-1. **CustomRuleLoader** - Discovers and loads rule files from `.claude-code-lint/rules/`
+1. **CustomRuleLoader** - Discovers and loads rule files from `.claudelint/rules/`
 2. **File Discovery** - Recursively finds `.js` and `.ts` files (excluding `.d.ts`, `.test.ts`, `.spec.ts`)
 3. **Validation** - Ensures rules implement the Rule interface
 4. **Registration** - Registers custom rules with RuleRegistry alongside built-in rules

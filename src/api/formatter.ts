@@ -1,5 +1,5 @@
 /**
- * Formatter system for claude-code-lint programmatic API
+ * Formatter system for claudelint programmatic API
  *
  * This module provides the formatter interface and loading utilities for
  * formatting lint results into various output formats.

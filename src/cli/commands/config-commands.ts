@@ -1,7 +1,7 @@
 /**
  * Configuration-related commands
  *
- * - init: Initialize claude-code-lint configuration
+ * - init: Initialize claudelint configuration
  * - print-config: Print resolved configuration
  * - resolve-config: Show effective configuration for a specific file
  * - validate-config: Validate configuration file
@@ -20,7 +20,7 @@ export function registerConfigCommands(program: Command): void {
   // init command
   program
     .command('init')
-    .description('Initialize claude-code-lint configuration')
+    .description('Initialize claudelint configuration')
     .option('-y, --yes', 'Use default configuration without prompts')
     .action(async (options: { yes?: boolean }) => {
       const wizard = new InitWizard();

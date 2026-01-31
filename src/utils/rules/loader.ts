@@ -1,6 +1,6 @@
 /**
  * Custom rule loader for loading user-defined rules
- * Enables extending claude-code-lint with custom validation rules
+ * Enables extending claudelint with custom validation rules
  */
 
 import { existsSync, readdirSync } from 'fs';
@@ -22,14 +22,14 @@ export interface CustomRuleLoadResult {
  * Options for custom rule loader
  */
 export interface CustomRuleLoaderOptions {
-  /** Directory containing custom rules (default: .claude-code-lint/rules) */
+  /** Directory containing custom rules (default: .claudelint/rules) */
   customRulesPath?: string;
   /** Enable custom rules loading (default: true) */
   enableCustomRules?: boolean;
 }
 
 /**
- * Loads and registers custom rules from .claude-code-lint/rules/
+ * Loads and registers custom rules from .claudelint/rules/
  */
 export class CustomRuleLoader {
   private options: Required<CustomRuleLoaderOptions>;
@@ -37,7 +37,7 @@ export class CustomRuleLoader {
 
   constructor(options: CustomRuleLoaderOptions = {}) {
     this.options = {
-      customRulesPath: options.customRulesPath || '.claude-code-lint/rules',
+      customRulesPath: options.customRulesPath || '.claudelint/rules',
       enableCustomRules: options.enableCustomRules ?? true,
     };
   }

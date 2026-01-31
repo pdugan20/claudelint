@@ -1,6 +1,6 @@
 # release-it Setup Guide
 
-Complete guide to configuring and using release-it for claude-code-lint releases.
+Complete guide to configuring and using release-it for claudelint releases.
 
 ## Overview
 
@@ -374,7 +374,7 @@ npm whoami
 npm login
 
 # Check package name availability
-npm view claude-code-lint
+npm view claudelint
 ```
 
 ### Tests Fail

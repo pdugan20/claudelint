@@ -1,6 +1,6 @@
 # Basic Example Configuration
 
-Minimal claude-code-lint configuration for getting started.
+Minimal claudelint configuration for getting started.
 
 ## Files
 
@@ -40,7 +40,7 @@ cp examples/basic/.claudelintrc.json .
 cp examples/basic/.claudelintignore .
 
 # Test validation
-claude-code-lint check-all
+claudelint check-all
 ```
 
 ### Customize
@@ -74,7 +74,7 @@ As your project matures, enable more rules:
 Browse available rules:
 
 ```bash
-claude-code-lint list-rules
+claudelint list-rules
 ```
 
 See detailed rule documentation:
@@ -91,8 +91,8 @@ Add to `package.json`:
 ```json
 {
   "scripts": {
-    "lint": "claude-code-lint check-all",
-    "lint:fix": "claude-code-lint check-all --fix"
+    "lint": "claudelint check-all",
+    "lint:fix": "claudelint check-all --fix"
   }
 }
 ```
@@ -104,9 +104,9 @@ Add to pre-commit hooks:
 repos:
   - repo: local
     hooks:
-      - id: claude-code-lint
+      - id: claudelint
         name: Validate Claude files
-        entry: claude-code-lint check-all
+        entry: claudelint check-all
         language: system
         pass_filenames: false
 ```
@@ -115,7 +115,7 @@ repos:
 
 **Use this configuration if:**
 
-- Just starting with claude-code-lint
+- Just starting with claudelint
 - Migrating existing project
 - Want to fix critical issues first
 - Team prefers gradual adoption
