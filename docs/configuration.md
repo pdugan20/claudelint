@@ -2,6 +2,25 @@
 
 claude-code-lint supports configuration through multiple methods, allowing you to customize linting rules and behavior for your project.
 
+## Quick Navigation
+
+**Configuration Topics:**
+
+- [Configuration Files](#configuration-files) - Where to put your config
+- [Rules](#rules) - Enabling, disabling, and configuring rules
+- [Ignoring Files](#ignoring-files) - Skip validation for certain paths
+- [Inline Disables](./inline-disables.md) - Disable rules in specific files
+- [CLI Configuration](./cli-reference.md) - Command-line flags and options
+- [Debugging Config](./debugging.md) - Troubleshoot configuration issues
+
+**Common Tasks:**
+
+- **Disable a rule:** See [Rules](#rules)
+- **Ignore a directory:** See [Ignoring Files](#ignoring-files)
+- **Disable for one line:** See [Inline Disables](./inline-disables.md)
+- **Check current config:** Run `claude-code-lint print-config`
+- **Fix config errors:** See [Debugging Guide](./debugging.md)
+
 ## Configuration Files
 
 claude-code-lint will automatically search for configuration files in the following order:
@@ -112,7 +131,7 @@ Override rules for specific file patterns:
 }
 ```
 
-### Ignore Patterns
+### Ignoring Files
 
 Patterns to exclude from linting (in addition to `.claudelintignore`):
 

@@ -123,7 +123,7 @@ Consider disabling if your organization uses different naming conventions (not r
 
 ## Related Rules
 
-- [settings-invalid-schema](./settings-invalid-schema.md) - Settings file schema validation
+- [settings-invalid-schema](./settings-invalid-env-var.md) - Settings file schema validation
 - [settings-invalid-permission](./settings-invalid-permission.md) - Permission rule validation
 
 ## Resources

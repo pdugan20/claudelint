@@ -4,7 +4,6 @@ This guide explains how to add configurable options to claude-code-lint rules.
 
 ## Quick Start
 
-**Before implementing:** Read `docs/projects/rule-implementation/CONFIG-INTEGRATION-PROPOSAL.md` for architecture overview.
 
 ### 1. Define Options Interface
 
@@ -429,6 +428,5 @@ interface RuleMetadata {
 
 ## Related Documentation
 
-- [Configuration Integration Proposal](./projects/rule-implementation/CONFIG-INTEGRATION-PROPOSAL.md) - Full architecture
 - [Configuration Guide](./configuration.md) - User-facing config docs
 - [ESLint Custom Rules](https://eslint.org/docs/latest/extend/custom-rules) - ESLint's approach

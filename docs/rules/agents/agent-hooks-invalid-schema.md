@@ -157,13 +157,13 @@ You should not disable this rule. Invalid hook schemas will always cause runtime
 ## Related Rules
 
 - [agent-skills-not-found](./agent-skills-not-found.md) - Referenced skills must exist
-- [hooks-invalid-schema](../hooks/hooks-invalid-schema.md) - Validates hooks.json structure
+- [hooks-invalid-schema](../hooks/hooks-invalid-config.md) - Validates hooks.json structure
 
 ## Resources
 
 - [Rule Implementation](../../src/rules/agents/agent-hooks-invalid-schema.ts)
 - [Rule Tests](../../tests/rules/agents/agent-hooks-invalid-schema.test.ts)
-- [Validation Helper](../../src/utils/validation-helpers.ts)
+- [Validation Helper](../../src/utils/validators/helpers.ts)
 
 ## Version
 

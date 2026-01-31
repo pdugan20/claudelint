@@ -115,7 +115,7 @@ Never disable this rule. Circular imports will cause infinite loops, stack overf
 
 ## Related Rules
 
-- [import-missing](./import-missing.md) - Missing import files
+- [import-missing](./claude-md-import-missing.md) - Missing import files
 
 ## Resources
 

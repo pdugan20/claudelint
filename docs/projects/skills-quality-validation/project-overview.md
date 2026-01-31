@@ -73,7 +73,7 @@ skills-quality-validation/
 ## Related Documents
 
 - [Anthropic Official Guide](https://claude.ai/skills/guide) (32 pages)
-- [RULES-REFERENCE.md](../RULES-REFERENCE.md) - Comprehensive rule catalog
+- [RULES-REFERENCE.md](../rule-implementation/rules-reference.md) - Comprehensive rule catalog
 - [SKILL-RULES-TRACKER.md](./SKILL-RULES-TRACKER.md) - Implementation tracker
 
 ## Getting Started

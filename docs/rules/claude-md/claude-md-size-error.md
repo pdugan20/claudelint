@@ -113,9 +113,9 @@ Never disable this rule. The 40KB limit is a technical constraint of Claude Code
 
 ## Related Rules
 
-- [size-warning](./size-warning.md) - Warning when file approaches 35KB
-- [import-missing](./import-missing.md) - Imported files must exist
-- [import-circular](./import-circular.md) - Prevent circular import dependencies
+- [size-warning](./claude-md-size-warning.md) - Warning when file approaches 35KB
+- [import-missing](./claude-md-import-missing.md) - Imported files must exist
+- [import-circular](./claude-md-import-circular.md) - Prevent circular import dependencies
 
 ## Resources
 

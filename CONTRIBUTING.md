@@ -155,13 +155,14 @@ claude-code-lint/
 
 claude-code-lint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
 
-**See the comprehensive [Rule Development Guide](docs/contributing-rules.md) for:**
+**See the comprehensive [Rule Development Guide](docs/rule-development.md) for:**
 
+- Understanding rules and architecture
+- Writing custom rules (external developers)
+- Contributing built-in rules (contributors)
 - Rule structure and metadata
 - Validation logic patterns
-- File type filtering
-- Reporting violations
-- Testing rules
+- Testing strategies
 - Auto-fix capabilities
 - Best practices
 
@@ -231,15 +232,16 @@ Include:
 
 **For contributing code:**
 
-- **[Rule Development Guide](docs/contributing-rules.md)** - How to write validation rules (START HERE)
+- **[Rule Development Guide](docs/rule-development.md)** - How to write validation rules (START HERE)
 - **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
-- **[Plugin Development Guide](docs/plugin-development.md)** - Creating custom plugins
 
 **For users:**
 
+- **[Getting Started](docs/getting-started.md)** - Installation and first steps
 - **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
-- **[Rule Reference](docs/rules/)** - Individual documentation for all 105 rules
+- **[Rule Reference](docs/rules/)** - Individual documentation for all rules
 - **[Configuration Guide](docs/configuration.md)** - Configuring claude-code-lint
+- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 
 ## Release Process
 

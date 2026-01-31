@@ -16,6 +16,8 @@ Welcome to the claude-code-lint documentation! claude-code-lint is a comprehensi
 - **[Caching for Performance](./caching.md)** - Speed up validation with smart caching
 - **[Debugging Configuration](./debugging.md)** - Troubleshoot config issues
 - **[Inline Disable Comments](./inline-disables.md)** - Fine-grained rule control
+- **[Troubleshooting](./troubleshooting.md)** - Common errors and quick solutions
+- **[Glossary](./glossary.md)** - Terminology and definitions
 
 ### Reference
 
@@ -31,8 +33,10 @@ Welcome to the claude-code-lint documentation! claude-code-lint is a comprehensi
 ### For Developers
 
 - **[Architecture](./architecture.md)** - System design and components
-- **[Contributing Rules](./contributing-rules.md)** - Write new validation rules
-- **[Custom Rules](./custom-rules.md)** - Create custom validation rules
+- **[Rule Development Guide](./rule-development.md)** - Complete guide to writing rules
+  - Part 1: Understanding Rules
+  - Part 2: Writing Custom Rules (for external developers)
+  - Part 3: Contributing Built-in Rules (for contributors)
 
 ## Documentation by User Type
 
@@ -45,21 +49,18 @@ Welcome to the claude-code-lint documentation! claude-code-lint is a comprehensi
 ### Daily Users
 
 - **Quick reference**: [CLI Reference](./cli-reference.md) for all commands and flags
-- **Troubleshooting**: [Debugging](./debugging.md) for common issues
+- **Troubleshooting**: [Troubleshooting Guide](./troubleshooting.md) for common errors and solutions
+- **Configuration**: [Configuration Guide](./configuration.md) for customizing rules
 - **Performance**: [Caching](./caching.md) to speed up validation
+- **Glossary**: [Glossary](./glossary.md) for terminology
 
 ### Contributors
 
 - **Understanding the codebase**: [Architecture](./architecture.md)
-- **Adding rules**: [contributing-rules.md](./contributing-rules.md) - Complete guide to writing rules
+- **Adding rules**: [Rule Development Guide](./rule-development.md) - Complete guide for writing and contributing rules
 - **Rule implementations**: See `src/rules/{category}/` for examples
 - **Testing**: Run `npm test` to execute the test suite
-
-### Custom Rule Developers
-
-- **Create custom rules**: [Custom Rules Guide](./custom-rules.md)
-- **Custom rule architecture**: See [Architecture - Custom Rules](./architecture.md#custom-rules)
-- **Contributing built-in rules**: Use [contributing-rules.md](./contributing-rules.md) as your guide
+- **Project status**: [Project Dashboard](./projects/STATUS.md) - Active and archived projects
 
 ## Common Tasks
 

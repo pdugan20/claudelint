@@ -725,6 +725,6 @@ const customResults = results as CustomResult[];
 
 ## See Also
 
-- [ClaudeLint Class](./claude-code-lint-class.md) - Class API documentation
+- [ClaudeLint Class](./claudelint-class.md) - Class API documentation
 - [Functional API](./functional-api.md) - Function API documentation
 - [Examples](../../examples/) - Usage examples with types

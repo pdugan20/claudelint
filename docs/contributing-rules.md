@@ -1,5 +1,11 @@
 # Contributing Rules to ClaudeLint
 
+> **Note:** This guide has been consolidated into the [Rule Development Guide](./rule-development.md). Please refer to **Part 3: Contributing Built-in Rules** in that document for the most up-to-date information on contributing rules to claude-code-lint.
+>
+> This file is kept for backward compatibility with existing links.
+
+---
+
 This guide explains how to write and contribute validation rules to ClaudeLint.
 
 ## Overview

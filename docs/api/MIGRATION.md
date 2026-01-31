@@ -561,6 +561,6 @@ describe('Documentation Validation', () => {
 ## See Also
 
 - [API Documentation](./README.md) - Complete API reference
-- [ClaudeLint Class](./claude-code-lint-class.md) - Detailed class documentation
+- [ClaudeLint Class](./claudelint-class.md) - Detailed class documentation
 - [Functional API](./functional-api.md) - Functional API reference
 - [Examples](../../examples/) - Complete usage examples

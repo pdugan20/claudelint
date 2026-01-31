@@ -259,7 +259,7 @@ If validation returns errors:
 1. Run with `--explain` flag for detailed guidance
 2. Check `.claudelintrc.json` for rule configuration
 3. See error messages for specific line numbers and fixes
-4. Review [validators.md](./validators.md) for rule details
+4. Review [validation-reference.md](./validation-reference.md) for rule details
 
 ### Permission Denied
 
@@ -354,5 +354,5 @@ To remove the marketplace:
 
 - [Configuration Guide](./configuration.md) - Customize validation rules
 - [Hooks Guide](./hooks.md) - Automatic validation
-- [Validators Documentation](./validators.md) - What gets validated
+- [Validators Documentation](./validation-reference.md) - What gets validated
 - [CLI Reference](../README.md#usage) - All commands and flags

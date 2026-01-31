@@ -77,7 +77,7 @@ Consider disabling this rule if you're maintaining a legacy project that cannot 
 ## Related Rules
 
 - [commands-migrate-to-skills](./commands-migrate-to-skills.md) - Provides migration instructions
-- [commands-in-plugin-deprecated](./commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
+- [commands-in-plugin-deprecated](./../plugin/commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
 
 ## Resources
 

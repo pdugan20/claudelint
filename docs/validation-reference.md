@@ -50,7 +50,7 @@ See [README.md](../README.md#philosophy-complementary-tools) for the full comple
 
 ### Rules
 
-**See:** [CLAUDE.md Rules](./rules/index.md#claudemd-rules) | [size-error](./rules/claude-md/size-error.md) | [size-warning](./rules/claude-md/size-warning.md) | [import-missing](./rules/claude-md/import-missing.md) | [import-circular](./rules/claude-md/import-circular.md)
+**See:** [CLAUDE.md Rules](./rules/index.md#claudemd-14-rules) | [size-error](./rules/claude-md/claude-md-size-error.md) | [size-warning](./rules/claude-md/claude-md-size-warning.md) | [import-missing](./rules/claude-md/claude-md-import-missing.md) | [import-circular](./rules/claude-md/claude-md-import-circular.md)
 
 #### Size Limits
 
@@ -148,7 +148,7 @@ claude-code-lint check-claude-md --verbose
 
 ### Rules
 
-**See:** [Skills Rules](./rules/index.md#skills-rules) - Complete documentation for all 11 skill validation rules (includes fixable rules for shebang, changelog, and version)
+**See:** [Skills Rules](./rules/index.md#skills-28-rules) - Complete documentation for all 11 skill validation rules (includes fixable rules for shebang, changelog, and version)
 
 #### Skill Naming
 
@@ -246,7 +246,7 @@ interface Settings {
 
 ### Rules
 
-**See:** [Settings Rules](./rules/index.md#settings-rules) | [settings-invalid-schema](./rules/settings/settings-invalid-schema.md) | [settings-invalid-permission](./rules/settings/settings-invalid-permission.md) | [settings-invalid-env-var](./rules/settings/settings-invalid-env-var.md)
+**See:** [Settings Rules](./rules/index.md#settings-5-rules) | [settings-invalid-schema](./rules/settings/settings-invalid-env-var.md) | [settings-invalid-permission](./rules/settings/settings-invalid-permission.md) | [settings-invalid-env-var](./rules/settings/settings-invalid-env-var.md)
 
 #### Permission Rules
 
@@ -342,7 +342,7 @@ Valid events:
 
 ### Rules
 
-**See:** [Hooks Rules](./rules/index.md#hooks-rules) | [hooks-invalid-event](./rules/hooks/hooks-invalid-event.md) | [hooks-missing-script](./rules/hooks/hooks-missing-script.md) | [hooks-invalid-config](./rules/hooks/hooks-invalid-config.md)
+**See:** [Hooks Rules](./rules/index.md#hooks-3-rules) | [hooks-invalid-event](./rules/hooks/hooks-invalid-event.md) | [hooks-missing-script](./rules/hooks/hooks-missing-script.md) | [hooks-invalid-config](./rules/hooks/hooks-invalid-config.md)
 
 #### Hook Configuration
 
@@ -403,7 +403,7 @@ claude-code-lint validate-hooks --path .claude/hooks/hooks.json
 
 ### Rules
 
-**See:** [MCP Rules](./rules/index.md#mcp-rules) | [mcp-invalid-server](./rules/mcp/mcp-invalid-server.md) | [mcp-invalid-transport](./rules/mcp/mcp-invalid-transport.md) | [mcp-invalid-env-var](./rules/mcp/mcp-invalid-env-var.md)
+**See:** [MCP Rules](./rules/index.md#mcp-13-rules) | [mcp-invalid-server](./rules/mcp/mcp-invalid-server.md) | [mcp-invalid-transport](./rules/mcp/mcp-invalid-transport.md) | [mcp-invalid-env-var](./rules/mcp/mcp-invalid-env-var.md)
 
 #### Server Configuration
 
@@ -462,7 +462,7 @@ claude-code-lint validate-mcp --path .mcp.json
 
 ### Rules
 
-**See:** [Plugin Rules](./rules/index.md#plugin-rules) | [plugin-invalid-manifest](./rules/plugin/plugin-invalid-manifest.md) | [plugin-invalid-version](./rules/plugin/plugin-invalid-version.md) | [plugin-missing-file](./rules/plugin/plugin-missing-file.md)
+**See:** [Plugin Rules](./rules/index.md#plugin-12-rules) | [plugin-invalid-manifest](./rules/plugin/plugin-invalid-manifest.md) | [plugin-invalid-version](./rules/plugin/plugin-invalid-version.md) | [plugin-missing-file](./rules/plugin/plugin-missing-file.md)
 
 #### Directory Structure
 

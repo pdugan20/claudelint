@@ -20,7 +20,7 @@ The functional API provides lightweight wrappers around the ClaudeLint class for
 - Custom progress tracking
 - Advanced configuration with overrides
 
-For complex workflows, use the [ClaudeLint class](./claude-code-lint-class.md) instead.
+For complex workflows, use the [ClaudeLint class](./claudelint-class.md) instead.
 
 ## Functions
 
@@ -488,7 +488,7 @@ async function example() {
 
 ## See Also
 
-- [ClaudeLint Class](./claude-code-lint-class.md) - Full class API
+- [ClaudeLint Class](./claudelint-class.md) - Full class API
 - [Types](./types.md) - TypeScript type reference
 - [Formatters](./formatters.md) - Formatter documentation
 - [Examples](../../examples/) - Complete examples

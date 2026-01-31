@@ -1,4 +1,4 @@
-import { parseIgnoreFile, shouldIgnore, loadIgnorePatterns } from '../../src/utils/ignore';
+import { parseIgnoreFile, shouldIgnore, loadIgnorePatterns } from '../../src/utils/config/ignore';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';

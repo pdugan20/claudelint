@@ -6,7 +6,7 @@
 
 ## Quick Links
 
-- **[TASK_TRACKER.md](./TASK_TRACKER.md)** - Complete task list and future roadmap
+- **[task-tracker.md](./task-tracker.md)** - Complete task list and future roadmap
 
 ## What We Did
 
@@ -94,7 +94,7 @@ module.exports.rule = {
 
 **Total:** 39/39 tasks complete (100%)
 
-## Future Enhancements (See TASK_TRACKER.md)
+## Future Enhancements (See task-tracker.md)
 
 ### v1.1 - Custom Rules Enhancement (Planned)
 
@@ -146,12 +146,12 @@ Research showed our implementation:
 ```text
 plugin-system-removal/
 ├── README.md           # This file
-└── TASK_TRACKER.md     # Complete task history + future roadmap
+└── task-tracker.md     # Complete task history + future roadmap
 ```
 
 ## Next Steps
 
-See [TASK_TRACKER.md](./TASK_TRACKER.md) for:
+See [task-tracker.md](./task-tracker.md) for:
 
 - Future enhancement phases (v1.1, v1.2, v2.0+)
 - Detailed task breakdowns
@@ -160,7 +160,7 @@ See [TASK_TRACKER.md](./TASK_TRACKER.md) for:
 
 ## References
 
-- User guide: [docs/custom-rules.md](../../custom-rules.md)
-- Examples: [docs/examples/custom-rules/](../../examples/custom-rules/)
-- Architecture: [docs/architecture.md](../../architecture.md#custom-rules)
-- Implementation: [src/utils/custom-rule-loader.ts](../../../src/utils/custom-rule-loader.ts)
+- User guide: [docs/custom-rules.md](../../../custom-rules.md)
+- Examples: [docs/examples/custom-rules/](../../../examples/custom-rules/)
+- Architecture: [docs/architecture.md](../../../architecture.md#custom-rules)
+- Implementation: [src/utils/custom-rule-loader.ts](../../../src/utils/rules/loader.ts)

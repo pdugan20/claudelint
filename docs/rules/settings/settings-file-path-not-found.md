@@ -125,7 +125,7 @@ Consider disabling if you're dynamically generating files or using environment-s
 
 ## Related Rules
 
-- [settings-invalid-schema](./settings-invalid-schema.md) - Settings file schema validation
+- [settings-invalid-schema](./settings-invalid-env-var.md) - Settings file schema validation
 - [skill-referenced-file-not-found](../skills/skill-referenced-file-not-found.md) - Similar file validation for skills
 
 ## Resources

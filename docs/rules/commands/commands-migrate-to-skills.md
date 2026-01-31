@@ -85,8 +85,8 @@ This rule provides helpful migration guidance and should generally remain enable
 ## Related Rules
 
 - [commands-deprecated-directory](./commands-deprecated-directory.md) - Warns about deprecated commands directory
-- [commands-in-plugin-deprecated](./commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
-- [skill-invalid-schema](../skills/skill-invalid-schema.md) - Validates SKILL.md structure
+- [commands-in-plugin-deprecated](./../plugin/commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
+- [skill-invalid-schema](../skills/skill-name.md) - Validates SKILL.md structure
 
 ## Resources
 

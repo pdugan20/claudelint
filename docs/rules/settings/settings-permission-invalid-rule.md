@@ -104,7 +104,7 @@ You should not disable this rule. Malformed permission rules lead to ambiguous s
 ## Related Rules
 
 - [settings-invalid-permission](./settings-invalid-permission.md) - Validates permission action and tool name
-- [settings-invalid-schema](./settings-invalid-schema.md) - Validates overall settings.json structure
+- [settings-invalid-schema](./settings-invalid-env-var.md) - Validates overall settings.json structure
 
 ## Resources
 

@@ -21,6 +21,8 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
     "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
+    "check:links": "node scripts/check-links.js",
+    "check:links:all": "remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md",
     "docs:generate": "ts-node scripts/generate/rule-docs.ts",
     "generate:rule-registry": "ts-node scripts/generate/rule-registry.ts",
     "check:emojis": "node scripts/check/emoji.js",
@@ -139,6 +141,8 @@
     "lint-staged": "^16.2.7",
     "markdownlint-cli": "^0.47.0",
     "release-it": "^19.2.4",
+    "remark-cli": "^12.0.1",
+    "remark-validate-links": "^13.1.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

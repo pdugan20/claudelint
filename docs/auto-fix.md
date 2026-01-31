@@ -439,6 +439,6 @@ claude-code-lint check-all --fix --no-cache
 
 ## See Also
 
-- [Validators](validators.md) - See which rules are fixable
+- [Validators](validation-reference.md) - See which rules are fixable
 - [Configuration](configuration.md) - Configure validation rules
 - [CLI Reference](../README.md#usage) - All command-line options

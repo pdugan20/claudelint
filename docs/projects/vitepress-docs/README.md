@@ -211,6 +211,5 @@ See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task l
 
 ## Related Documents
 
-- [Launch Plan](../../launch.md) - Overall project launch strategy
 - [Architecture](../../architecture.md) - claude-code-lint system architecture
 - [Contributing](../../../CONTRIBUTING.md) - Contribution guidelines

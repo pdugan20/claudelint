@@ -169,7 +169,7 @@ export class SkillsValidator extends BaseValidator {
 - Simple, focused rule pattern
 - Plugin system exports rules (ESLint-style)
 
-See [archive/rule-architecture-refactor/](./archive/rule-architecture-refactor/) for complete migration history.
+See [projects/archive/validator-refactor/](./projects/archive/validator-refactor/) for complete migration history.
 
 ## Rule Implementation Patterns
 

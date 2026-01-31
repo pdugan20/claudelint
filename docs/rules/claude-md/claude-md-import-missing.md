@@ -111,7 +111,7 @@ Never disable this rule. Missing imports cause Claude Code to fail loading conte
 
 ## Related Rules
 
-- [import-circular](./import-circular.md) - Circular import dependencies
+- [import-circular](./claude-md-import-circular.md) - Circular import dependencies
 
 ## Resources
 

@@ -1,5 +1,11 @@
 # Custom Rules Guide
 
+> **Note:** This guide has been consolidated into the [Rule Development Guide](./rule-development.md). Please refer to **Part 2: Writing Custom Rules** in that document for the most up-to-date information on creating custom validation rules.
+>
+> This file is kept for backward compatibility with existing links.
+
+---
+
 claude-code-lint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements.
 
 ## Quick Start

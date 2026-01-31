@@ -47,7 +47,8 @@ claude-code-lint init --yes
 
 # Validate your project
 claude-code-lint check-all
-```text
+```
+
 **As Claude Code plugin:**
 
 ```bash
@@ -65,7 +66,7 @@ import { ClaudeLint } from 'claude-code-lint';
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['**/*.md']);
 
-const hasErrors = results.some(r => r.errorCount > 0);
+const hasErrors = results.some((r) => r.errorCount > 0);
 if (hasErrors) {
   const formatter = await linter.loadFormatter('stylish');
   console.log(formatter.format(results));
@@ -213,7 +214,8 @@ npm install --save-dev claude-code-lint markdownlint-cli prettier
 markdownlint '**/*.md'              # Generic markdown rules
 prettier --check '**/*.{md,json}'   # Formatting
 claude-code-lint check-all                # Claude-specific validation
-```text
+```
+
 See [Formatting Tools](#formatting-tools) below for the complete ecosystem.
 
 ## Dependencies
@@ -320,7 +322,8 @@ claude-code-lint format --check
 
 # Fix formatting
 claude-code-lint format --fix
-```text
+```
+
 This runs markdownlint, prettier, and shellcheck on ONLY your Claude files.
 
 ### No Conflicts Guarantee
@@ -343,7 +346,8 @@ npm install -g claude-code-lint
 
 # Project installation
 npm install --save-dev claude-code-lint
-```text
+```
+
 After installation, run the init wizard to set up your project:
 
 ```bash
@@ -352,7 +356,8 @@ claude-code-lint init
 
 # Or use defaults (non-interactive, good for CI/scripts)
 claude-code-lint init --yes
-```text
+```
+
 This creates `.claudelintrc.json` (config), `.claudelintignore` (ignore patterns), and optionally adds npm scripts to `package.json`.
 
 See [Getting Started](docs/getting-started.md) for a complete guide.
@@ -365,7 +370,8 @@ See [Getting Started](docs/getting-started.md) for a complete guide.
 
 # Install plugin
 /plugin install claude-code-lint
-```text
+```
+
 ## Usage
 
 ### CLI Usage
@@ -397,7 +403,8 @@ claude-code-lint list-rules --format json
 claude-code-lint check-all --fix-dry-run    # Preview fixes
 claude-code-lint check-all --fix            # Apply fixes
 claude-code-lint check-all --fix --fix-type errors  # Fix only errors
-```text
+```
+
 **Auto-fix:**
 
 claude-code-lint can automatically fix certain issues:
@@ -411,7 +418,8 @@ claude-code-lint check-all --fix
 
 # Fix only errors or warnings
 claude-code-lint check-all --fix --fix-type errors
-```text
+```
+
 **Fixable rules:**
 
 - `skill-missing-shebang` - Adds `#!/usr/bin/env bash` to shell scripts
@@ -429,7 +437,8 @@ claude-code-lint automatically shows validation progress with timing:
 ✓ Validated CLAUDE.md files (45ms)
 ⠋ Validating skills...
 ✓ Validated skills (120ms)
-```text
+```
+
 Progress indicators automatically detect CI environments (GitHub Actions, GitLab CI, etc.) and switch to plain text output.
 
 ### As Claude Code Skill
@@ -442,7 +451,8 @@ Progress indicators automatically detect CI environments (GitHub Actions, GitLab
 /validate-claude-md
 /validate-skills
 /validate-settings
-```text
+```
+
 ### As Claude Code Hook
 
 Automatically validate at session start by creating `.claude/hooks/hooks.json`:
@@ -458,7 +468,8 @@ Automatically validate at session start by creating `.claude/hooks/hooks.json`:
     }
   ]
 }
-```text
+```
+
 This runs validation automatically when you start a Claude Code session (~20-120ms depending on project size).
 
 See [docs/hooks.md](docs/hooks.md) for more hook examples and configuration options.
@@ -493,7 +504,8 @@ Recommended setup with complementary tools:
       language: node
       pass_filenames: false
       files: '^(CLAUDE\.md|\.claude/)'
-```text
+```
+
 ### In npm Scripts
 
 ```json
@@ -505,13 +517,14 @@ Recommended setup with complementary tools:
     "validate:all": "npm run lint:md && npm run format:check && npm run validate:claude"
   }
 }
-```text
+```
+
 ## Documentation
 
 ### API Documentation
 
 - **[Programmatic API](docs/api/README.md)** - Use ClaudeLint in Node.js applications
-- **[ClaudeLint Class](docs/api/claude-code-lint-class.md)** - Class-based API reference
+- **[ClaudeLint Class](docs/api/claudelint-class.md)** - Class-based API reference
 - **[Functional API](docs/api/functional-api.md)** - Stateless function reference
 - **[Formatters](docs/api/formatters.md)** - Built-in and custom formatters
 - **[TypeScript Types](docs/api/types.md)** - Type definitions
@@ -520,16 +533,26 @@ Recommended setup with complementary tools:
 
 ### CLI Documentation
 
-- **[Validators](docs/validators.md)** - Detailed information about each validator
+- **[Validators](docs/validation-reference.md)** - Detailed information about each validator
 - **[Configuration](docs/configuration.md)** - Customize validation rules and behavior
 - **[Custom Rules](docs/custom-rules.md)** - Create your own validation rules
 - **[Plugin Usage](docs/plugin-usage.md)** - Using claude-code-lint as a Claude Code plugin
 - **[Hooks](docs/hooks.md)** - Automatic validation with SessionStart hooks
 - **[Architecture](docs/architecture.md)** - System design and validator architecture
 - **[Formatting Tools](docs/formatting-tools.md)** - Complementary tools ecosystem
-- **[Launch Plan](docs/launch.md)** - Release plan and future roadmap
 - **[Contributing](CONTRIBUTING.md)** - Development setup and contributing guidelines
 - **[Changelog](CHANGELOG.md)** - Version history
+
+## Development Status
+
+Want to see what's being worked on? Check out our active projects and roadmap:
+
+- **[Project Status Dashboard](docs/projects/STATUS.md)** - Overview of all active and archived projects
+- **[npm Release Setup](docs/projects/npm-release-setup/README.md)** - Release automation (Planning)
+- **[VitePress Documentation Site](docs/projects/vitepress-docs/README.md)** - docs.claude-code-lint.dev (Planning)
+- **[Skills Quality Validation](docs/projects/skills-quality-validation/README.md)** - 41 new rules (Planning)
+
+See [docs/projects/](docs/projects/) for complete project documentation.
 
 ## Troubleshooting
 
@@ -549,7 +572,8 @@ npx claude-code-lint check-all
 # Or project install
 npm install --save-dev claude-code-lint
 ./node_modules/.bin/claude-code-lint check-all
-```text
+```
+
 **Problem**: Permission denied when installing globally
 
 **Solution**:
@@ -563,7 +587,8 @@ mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 export PATH=~/.npm-global/bin:$PATH
 npm install -g claude-code-lint
-```text
+```
+
 ### Exit Code Changes (v1.0 Breaking Change)
 
 **Problem**: CI scripts expecting exit code 2 for errors
@@ -584,7 +609,8 @@ claude-code-lint check-all || exit 1
 # If you were specifically checking for exit code 2:
 # Before: if [ $? -eq 2 ]; then ...
 # After:  if [ $? -eq 1 ]; then ...
-```text
+```
+
 ### Validation Errors
 
 **Problem**: Too many warnings
@@ -598,22 +624,26 @@ claude-code-lint check-all || exit 1
     "size-warning": "off"
   }
 }
-```text
+```
+
 **Problem**: False positive errors
 
 **Solution**: Use inline disable comments:
 
 ```markdown
 <!-- claude-code-lint-disable-next-line import-missing -->
+
 @import non-existent-file.md
-```text
+```
+
 **Problem**: Want detailed explanation of errors
 
 **Solution**: Use the `--explain` flag:
 
 ```bash
 claude-code-lint check-all --explain
-```text
+```
+
 ### Plugin Issues
 
 **Problem**: Plugin skills don't appear in Claude Code
@@ -645,7 +675,8 @@ claude-code-lint check-all --explain
    node_modules/
    dist/
    coverage/
-   ```text
+   ```
+
 2. Use `--fast` mode: `claude-code-lint check-all --fast`
 3. Check timing: `claude-code-lint check-all --verbose`
 

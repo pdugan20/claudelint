@@ -113,7 +113,7 @@ Consider disabling if you're actively working on splitting the file and want to 
 
 ## Related Rules
 
-- [size-error](./size-error.md) - Error when file exceeds 40KB hard limit
+- [size-error](./claude-md-size-error.md) - Error when file exceeds 40KB hard limit
 
 ## Resources
 

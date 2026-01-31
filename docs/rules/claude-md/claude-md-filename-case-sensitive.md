@@ -82,7 +82,7 @@ Consider disabling this rule if your project will only ever run on Linux systems
 
 ## Related Rules
 
-- [import-missing](./import-missing.md) - Validates that imported files exist
+- [import-missing](./claude-md-import-missing.md) - Validates that imported files exist
 
 ## Resources
 

@@ -585,7 +585,7 @@ console.log(output);
 
 ## See Also
 
-- [ClaudeLint Class](./claude-code-lint-class.md) - Main API documentation
+- [ClaudeLint Class](./claudelint-class.md) - Main API documentation
 - [Functional API](./functional-api.md) - Stateless functions
 - [Types](./types.md) - TypeScript type reference
 - [Examples](../../examples/) - Complete usage examples

@@ -126,7 +126,7 @@ Never disable this rule. Invalid permissions cause settings to be ignored, fallb
 
 ## Related Rules
 
-- [settings-invalid-schema](./settings-invalid-schema.md) - Settings file schema validation
+- [settings-invalid-schema](./settings-invalid-env-var.md) - Settings file schema validation
 - [settings-invalid-env-var](./settings-invalid-env-var.md) - Environment variable validation
 
 ## Resources

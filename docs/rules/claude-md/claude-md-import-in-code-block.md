@@ -94,8 +94,8 @@ You should not disable this rule. Import statements in code blocks will never wo
 
 ## Related Rules
 
-- [import-missing](./import-missing.md) - Validates that imported files exist
-- [import-circular](./import-circular.md) - Detects circular import dependencies
+- [import-missing](./claude-md-import-missing.md) - Validates that imported files exist
+- [import-circular](./claude-md-import-circular.md) - Detects circular import dependencies
 
 ## Resources
 

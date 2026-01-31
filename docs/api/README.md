@@ -75,7 +75,7 @@ const results = await lintText(code, { filePath: 'CLAUDE.md' });
 
 ### Core APIs
 
-- **[ClaudeLint Class](./claude-code-lint-class.md)** - Full class-based API reference
+- **[ClaudeLint Class](./claudelint-class.md)** - Full class-based API reference
 - **[Functional API](./functional-api.md)** - Stateless function reference
 - **[Formatters](./formatters.md)** - Built-in and custom formatter guide
 - **[Types](./types.md)** - TypeScript type definitions
@@ -186,7 +186,7 @@ Complete examples are available in the [examples directory](../../examples/):
 
 ## Next Steps
 
-- Read the [ClaudeLint Class reference](./claude-code-lint-class.md) for detailed API documentation
+- Read the [ClaudeLint Class reference](./claudelint-class.md) for detailed API documentation
 - Explore the [Functional API](./functional-api.md) for simpler use cases
 - Review [TypeScript types](./types.md) for type-safe integration
 - Check out [example integrations](../../examples/) for common patterns
