@@ -420,7 +420,7 @@
 
 ### 4.3 Migration Guide
 
-- [x] **Task 4.3.1:** Create `docs/api/MIGRATION.md`
+- [x] **Task 4.3.1:** Create `docs/api/migration.md`
   - Completed: 2026-01-30
   - [x] Migration from CLI to API
   - [x] Custom integration examples

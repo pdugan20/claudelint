@@ -82,7 +82,7 @@ const results = await lintText(code, { filePath: 'CLAUDE.md' });
 
 ### Guides
 
-- **[Migration Guide](./MIGRATION.md)** - Migrating from CLI to API
+- **[Migration Guide](./migration.md)** - Migrating from CLI to API
 
 ## Use Cases
 
