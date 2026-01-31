@@ -79,17 +79,20 @@ After researching ESLint, Prettier, Zod, Valibot, and modern API design trends, 
 
 See [PROPOSAL.md - Decision](./PROPOSAL.md#decision-hybrid-class-based--functional-api) for full rationale.
 
-### 100% Backward Compatibility
+### Public API Design
 
-All existing exports remain available. No breaking changes.
+Following ESLint/Prettier patterns, only stable public APIs are exported.
 
 ```typescript
-// Still works (existing)
-import { SkillsValidator } from '@pdugan20/claudelint';
-
-// New (recommended)
+// Main programmatic API
 import { ClaudeLint } from '@pdugan20/claudelint';
+
+// Type definitions and utilities
+import { loadFormatter, findConfigFile } from '@pdugan20/claudelint';
+import type { LintResult, LintMessage } from '@pdugan20/claudelint';
 ```
+
+Internal validators are NOT exported - use the ClaudeLint class instead.
 
 ## Timeline
 
@@ -121,7 +124,7 @@ See [TASK_TRACKER.md](./TASK_TRACKER.md) for detailed task status.
 - [x] At least 3 real-world usage examples
 - [x] TypeScript types fully tested
 - [x] Performance within 5% of CLI
-- [x] Zero breaking changes
+- [x] Clean public API (follows ESLint/Prettier patterns)
 
 ## Getting Started (After Approval)
 

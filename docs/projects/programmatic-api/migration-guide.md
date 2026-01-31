@@ -5,9 +5,9 @@
 
 ## Overview
 
-This guide helps you migrate to claudelint's new programmatic API. Whether you're upgrading from the CLI, direct validator imports, or starting fresh, this guide covers common migration scenarios.
+This guide helps you adopt claudelint's programmatic API. Whether you're upgrading from CLI-only usage, building custom integrations, or starting fresh, this guide covers common usage scenarios.
 
-**Good News:** The new API is **100% backward compatible**. Existing code continues to work while you adopt the new API at your own pace.
+**Note:** claudelint follows ESLint/Prettier patterns by exporting only stable, documented public APIs. The ClaudeLint class is the recommended way to integrate claudelint programmatically.
 
 ---
 
@@ -79,20 +79,21 @@ validate();
 
 ---
 
-### Scenario 2: From Direct Validator Imports
+### Scenario 2: Custom Validation Script
 
-**Before:** Using validators directly (undocumented)
+**Before:** Custom shell script
 
-```typescript
-import { SkillsValidator } from '@pdugan20/claudelint';
+```bash
+#!/bin/bash
 
-const validator = new SkillsValidator({ path: './skills' });
-const result = await validator.validate();
-
-if (!result.valid) {
-  console.error('Validation failed');
-  console.error(result.errors);
-}
+# validate-skills.sh
+cd skills
+find . -name "*.sh" -type f | while read file; do
+  if ! bash -n "$file"; then
+    echo "Syntax error in $file"
+    exit 1
+  fi
+done
 ```
 
 **After:** Using ClaudeLint API
@@ -100,20 +101,32 @@ if (!result.valid) {
 ```typescript
 import { ClaudeLint } from '@pdugan20/claudelint';
 
-const linter = new ClaudeLint({ cwd: './skills' });
-const results = await linter.lintFiles(['**/*.md']);
+async function validateSkills() {
+  const linter = new ClaudeLint({
+    cwd: './skills',
+    onProgress: (file, idx, total) => {
+      console.log(`Validating ${file} (${idx}/${total})`);
+    }
+  });
 
-const formatter = await linter.loadFormatter('stylish');
-console.log(formatter.format(results));
+  const results = await linter.lintFiles(['**/*.sh', '**/*.md']);
+
+  const formatter = await linter.loadFormatter('stylish');
+  console.log(formatter.format(results));
+
+  const hasErrors = results.some(r => r.errorCount > 0);
+  process.exit(hasErrors ? 1 : 0);
+}
+
+validateSkills();
 ```
 
 **Benefits:**
-- [x] Stable, documented API
-- [x] Unified interface for all validators
-- [x] Better result formatting
+- [x] Runs all applicable validators automatically
+- [x] Unified result format
+- [x] Better error reporting
+- [x] Progress callbacks
 - [x] Configuration support
-
-**Note:** Direct validator imports still work for backward compatibility, but the new API is recommended.
 
 ---
 
@@ -291,25 +304,39 @@ export function activate(context: vscode.ExtensionContext) {
 
 ---
 
-## Breaking Changes
+## Public API Exports
 
-**None.** The v0.2.0 release is 100% backward compatible.
+claudelint follows ESLint and Prettier patterns by exporting only stable, documented public APIs.
 
-### Still Works (Deprecated but Supported)
+### What's Exported (Stable Public API)
 
 ```typescript
-// Direct validator imports still work
-import { SkillsValidator, ClaudeMdValidator } from '@pdugan20/claudelint';
+// Main programmatic API class
+import { ClaudeLint } from '@pdugan20/claudelint';
 
-// Utility imports still work
+// Type definitions
+import type {
+  LintResult,
+  LintMessage,
+  ClaudeLintOptions,
+  Formatter
+} from '@pdugan20/claudelint';
+
+// Formatter utilities
+import { loadFormatter, BaseFormatter } from '@pdugan20/claudelint';
+
+// Configuration utilities
 import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
 ```
 
-### Recommended (New API)
+### What's NOT Exported (Internal Implementation)
 
 ```typescript
-// Recommended approach
-import { ClaudeLint } from '@pdugan20/claudelint';
+// Internal validators are NOT part of the public API
+// Use the ClaudeLint class instead:
+
+const linter = new ClaudeLint();
+const results = await linter.lintFiles(['**/*.md']);
 ```
 
 ---

@@ -23,14 +23,14 @@ Currently, claudelint is primarily used as a CLI tool. Developers who want to:
 1. **Provide a stable, documented programmatic API** for Node.js integration
 2. **Match ESLint's API patterns** for familiarity and ecosystem alignment
 3. **Support both simple and complex use cases** through hybrid design
-4. **Maintain backward compatibility** with existing CLI and validator exports
+4. **Design a clean public API** that exports only stable, documented interfaces
 5. **Enable advanced features** like custom formatters, auto-fixing, and caching
 6. **Deliver excellent TypeScript DX** with comprehensive types
 
 ## Non-Goals
 
 - Changing the CLI interface (remains unchanged)
-- Breaking existing validator exports (maintained for backward compatibility)
+- Exporting internal validators (following ESLint/Prettier patterns)
 - Browser support (Node.js only, like ESLint)
 - Rewriting core validation logic (wrapper around existing validators)
 
@@ -211,33 +211,62 @@ See [TASK_TRACKER.md](./TASK_TRACKER.md) for detailed task breakdown.
 - [x] Comprehensive API documentation published
 - [x] At least 3 real-world usage examples
 - [x] TypeScript types exported and tested
-- [x] Zero breaking changes to existing exports
+- [x] Clean public API (follows ESLint/Prettier patterns)
 - [x] Performance parity with CLI (within 5%)
 
 ## Risks & Mitigation
 
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| Breaking changes to existing users | High | Maintain all existing exports, add new API alongside |
 | API complexity creep | Medium | Follow ESLint patterns strictly, avoid over-engineering |
 | Performance regression | Medium | Benchmark before/after, cache aggressively |
 | Poor adoption | Low | Create compelling examples, document thoroughly |
 | Maintenance burden | Medium | Keep API surface minimal, leverage existing code |
+| API design mistakes | Medium | Package is unreleased (v0.1.0), can iterate freely |
 
-## Backward Compatibility
+## Public API Design
 
-**100% backward compatible** - all existing functionality remains:
+Following **ESLint and Prettier patterns**, we export only stable, documented public APIs while keeping internal implementation details private. This approach provides:
+
+- **API Stability** - Internal validators can be refactored without breaking changes
+- **Simplified Maintenance** - Only documented APIs need backward compatibility
+- **Clear Boundaries** - Users know what's supported vs. internal
+- **Future Flexibility** - Can change implementation without user impact
+
+### What's Exported (Public API)
 
 ```typescript
-// Existing validator exports (still work)
-import { SkillsValidator, ClaudeMdValidator } from '@pdugan20/claudelint';
-
-// Existing utilities (still work)
-import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
-
-// NEW: Programmatic API
+// Main programmatic API class
 import { ClaudeLint } from '@pdugan20/claudelint';
+
+// Type definitions
+import type {
+  LintResult, LintMessage, ClaudeLintOptions,
+  Formatter, RuleMetadata
+} from '@pdugan20/claudelint';
+
+// Formatter utilities
+import { loadFormatter, BaseFormatter } from '@pdugan20/claudelint';
+
+// Configuration utilities
+import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
 ```
+
+### What's NOT Exported (Internal Implementation)
+
+```typescript
+// Internal validators - NOT exported
+// - SkillsValidator, ClaudeMdValidator, etc.
+// - ValidatorRegistry
+// - Rule implementations
+// - Internal utilities
+
+// Users should use ClaudeLint class instead:
+const linter = new ClaudeLint();
+const results = await linter.lintFiles(['**/*.md']);
+```
+
+**Note:** Since claudelint v0.1.0 is unreleased, we have complete freedom to design the API correctly from the start, following industry-standard patterns without concern for breaking changes.
 
 ## Alternative Approaches Considered
 

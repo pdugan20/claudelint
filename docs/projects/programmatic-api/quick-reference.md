@@ -9,7 +9,7 @@
 - **Timeline:** 6 weeks (Feb 3 - Mar 14, 2026)
 - **Tasks:** 54 across 4 phases
 - **Target:** v0.2.0 release
-- **Breaking Changes:** None (100% backward compatible)
+- **API Design:** Clean public API (follows ESLint/Prettier patterns)
 
 ## Key Links
 
@@ -170,7 +170,7 @@ interface LintMessage {
 - [ ] >90% test coverage
 - [ ] All existing tests pass
 - [ ] Performance within 5% of CLI
-- [ ] Zero breaking changes
+- [ ] Clean public API (follows ESLint/Prettier patterns)
 - [ ] TypeScript types tested
 - [ ] 3+ real-world examples
 - [ ] API documentation published
