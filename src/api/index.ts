@@ -57,11 +57,11 @@ export type { BuiltinFormatterName } from './formatter';
 // Main ClaudeLint class
 export { ClaudeLint } from './claudelint';
 
-// Functional API (will be added in Phase 3)
-// export {
-//   lint,
-//   lintText,
-//   resolveConfig,
-//   formatResults,
-//   getFileInfo,
-// } from './functions';
+// Functional API
+export {
+  lint,
+  lintText,
+  resolveConfig,
+  formatResults,
+  getFileInfo,
+} from './functions';

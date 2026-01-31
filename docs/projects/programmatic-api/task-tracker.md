@@ -16,10 +16,10 @@
 
 **Phase 1:** 12/12 tasks complete (100%) [x]
 **Phase 2:** 15/15 tasks complete (100%) [x]
-**Phase 3:** 10/13 tasks complete (77%)
+**Phase 3:** 13/13 tasks complete (100%) [x]
 **Phase 4:** 0/14 tasks complete (0%)
 
-**Total:** 37/54 tasks complete (69%)
+**Total:** 40/54 tasks complete (74%)
 
 ---
 
@@ -312,22 +312,25 @@
 
 ### 3.3 Functional API
 
-- [ ] PAUSED **Task 3.3.1:** Create `src/api/functions.ts`
-  - [ ] Implement `lint()` wrapper
-  - [ ] Implement `lintText()` wrapper
-  - [ ] Implement `resolveConfig()`
-  - [ ] Implement `formatResults()`
-  - [ ] Implement `getFileInfo()`
+- [x] **Task 3.3.1:** Create `src/api/functions.ts`
+  - Completed: 2026-01-30
+  - [x] Implement `lint()` wrapper
+  - [x] Implement `lintText()` wrapper
+  - [x] Implement `resolveConfig()`
+  - [x] Implement `formatResults()`
+  - [x] Implement `getFileInfo()`
 
-- [ ] PAUSED **Task 3.3.2:** Add functional API tests
-  - [ ] Test each functional wrapper
-  - [ ] Verify they use ClaudeLint internally
-  - [ ] Test stateless behavior
+- [x] **Task 3.3.2:** Add functional API tests
+  - Completed: 2026-01-30
+  - [x] Test each functional wrapper
+  - [x] Verify they use ClaudeLint internally
+  - [x] Test stateless behavior
 
-- [ ] PAUSED **Task 3.3.3:** Export functional API
-  - [ ] Add exports to `src/index.ts`
-  - [ ] Update TypeScript types
-  - [ ] Document usage
+- [x] **Task 3.3.3:** Export functional API
+  - Completed: 2026-01-30
+  - [x] Add exports to `src/index.ts`
+  - [x] Update TypeScript types
+  - [x] Document usage
 
 ### 3.4 Additional Methods
 

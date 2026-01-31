@@ -95,16 +95,27 @@ export type { ClaudeLintConfig, RuleConfig, ConfigOverride } from './utils/confi
 export { findConfigFile, loadConfig } from './utils/config';
 
 // ============================================================================
-// Functional API (Phase 3 - Coming Soon)
+// Functional API
 // ============================================================================
 
-// export {
-//   lint,
-//   lintText,
-//   resolveConfig,
-//   formatResults,
-//   getFileInfo,
-// } from './api/functions';
+/**
+ * Functional API utilities for stateless operations
+ *
+ * @example
+ * ```typescript
+ * import { lint, formatResults } from '@pdugan20/claudelint';
+ *
+ * const results = await lint(['**\/*.md'], { fix: true });
+ * const output = await formatResults(results, 'stylish');
+ * ```
+ */
+export {
+  lint,
+  lintText,
+  resolveConfig,
+  formatResults,
+  getFileInfo,
+} from './api/functions';
 
 // ============================================================================
 // Internal Implementation (NOT EXPORTED)
