@@ -139,14 +139,14 @@ Project to set up professional npm versioning, release automation, and package n
 
 ### 5.2 Publish Beta
 
-- [x] Verify npm login: `npm whoami` (USER ACTION REQUIRED)
+- [x] Verify npm login: `npm whoami`
 - [x] Dry run: `npm publish --dry-run --tag beta --access public`
 - [x] Review dry-run output (769 files, 263KB compressed, 1.3MB unpacked)
-- [ ] Publish: `npm publish --tag beta --access public` (USER ACTION REQUIRED)
-- [ ] Verify package on npmjs.com
-- [ ] Test installation: `npm install claudelint@beta`
-- [ ] Verify installed CLI works
-- [ ] Verify installed API works
+- [x] Publish: `npm publish --tag beta --access public --otp=CODE`
+- [x] Verify package on npmjs.com (https://www.npmjs.com/package/claude-code-lint)
+- [x] Test installation: `npm install claude-code-lint@beta`
+- [x] Verify installed CLI works (version 0.2.0-beta.0)
+- [x] Verify installed API works (ClaudeLint class and lint function)
 
 ### 5.3 Post-Release Verification
 
