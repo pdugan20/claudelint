@@ -17,9 +17,9 @@
 **Phase 1:** 12/12 tasks complete (100%) [x]
 **Phase 2:** 15/15 tasks complete (100%) [x]
 **Phase 3:** 13/13 tasks complete (100%) [x]
-**Phase 4:** 10/14 tasks complete (71%)
+**Phase 4:** 11/14 tasks complete (79%)
 
-**Total:** 50/54 tasks complete (93%)
+**Total:** 51/54 tasks complete (94%)
 
 ---
 
@@ -420,11 +420,12 @@
 
 ### 4.3 Migration Guide
 
-- [ ] PAUSED **Task 4.3.1:** Create `docs/api/MIGRATION.md`
-  - [ ] Migration from CLI to API
-  - [ ] Custom integration examples
-  - [ ] Common usage patterns
-  - [ ] Public API design notes
+- [x] **Task 4.3.1:** Create `docs/api/MIGRATION.md`
+  - Completed: 2026-01-30
+  - [x] Migration from CLI to API
+  - [x] Custom integration examples
+  - [x] Common usage patterns
+  - [x] Public API design notes
 
 ### 4.4 Testing & Quality
 
