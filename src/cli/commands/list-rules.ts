@@ -49,9 +49,7 @@ export function registerListRulesCommand(program: Command): void {
         categoryRules.forEach((rule: RuleMetadata) => {
           const badge = rule.fixable ? chalk.gray(' [fixable]') : '';
           const severityBadge =
-            rule.severity === 'error'
-              ? chalk.red('error  ')
-              : chalk.yellow('warning');
+            rule.severity === 'error' ? chalk.red('error  ') : chalk.yellow('warning');
           logger.detail(`${severityBadge} ${chalk.cyan(rule.id)}${badge} - ${rule.description}`);
         });
         logger.newline();

@@ -37,7 +37,11 @@ export const rule: Rule = {
     }
 
     // Check if description is missing or empty
-    if (!plugin.description || typeof plugin.description !== 'string' || plugin.description.trim().length === 0) {
+    if (
+      !plugin.description ||
+      typeof plugin.description !== 'string' ||
+      plugin.description.trim().length === 0
+    ) {
       context.report({
         message: 'Plugin description is required and cannot be empty',
       });

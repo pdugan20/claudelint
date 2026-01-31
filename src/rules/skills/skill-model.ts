@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-model.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-model.md',
   },
   validate: (context: RuleContext) => {
     // Extract frontmatter

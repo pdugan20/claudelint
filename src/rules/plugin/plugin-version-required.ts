@@ -37,7 +37,11 @@ export const rule: Rule = {
     }
 
     // Check if version is missing or empty
-    if (!plugin.version || typeof plugin.version !== 'string' || plugin.version.trim().length === 0) {
+    if (
+      !plugin.version ||
+      typeof plugin.version !== 'string' ||
+      plugin.version.trim().length === 0
+    ) {
       context.report({
         message: 'Plugin version is required and cannot be empty',
       });

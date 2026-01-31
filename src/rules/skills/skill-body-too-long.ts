@@ -59,7 +59,8 @@ export const rule: Rule = {
     // Check if body is too long
     if (lines.length > maxLines) {
       context.report({
-        message: `SKILL.md body is very long (${lines.length} lines, >${maxLines} is hard to maintain). ` +
+        message:
+          `SKILL.md body is very long (${lines.length} lines, >${maxLines} is hard to maintain). ` +
           'Consider splitting into multiple files or adding a table of contents.',
       });
     }

@@ -1,9 +1,5 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import {
-  findSkillDirectories,
-  readFileContent,
-  fileExists,
-} from '../utils/file-system';
+import { findSkillDirectories, readFileContent, fileExists } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
 import { SCRIPT_EXTENSIONS } from '../schemas/constants';
@@ -95,10 +91,7 @@ export class SkillsValidator extends BaseValidator {
     }
   }
 
-  private validateFrontmatter(
-    filePath: string,
-    content: string
-  ): void {
+  private validateFrontmatter(filePath: string, content: string): void {
     // Use schema-based validation
     const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
@@ -129,7 +122,6 @@ export class SkillsValidator extends BaseValidator {
         // Rules filter themselves based on file type (SKILL.md vs script files)
         await this.executeRulesForCategory('Skills', scriptPath, content);
       }
-
     } catch (error) {
       // Intentionally ignore directory/file read errors here
       // Best practices checks are optional - if we can't read files,
@@ -141,8 +133,7 @@ export class SkillsValidator extends BaseValidator {
     try {
       const entries = await readdir(skillDir, { withFileTypes: true });
       const scriptFiles = entries.filter(
-        (entry) =>
-          entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
+        (entry) => entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
       );
 
       for (const script of scriptFiles) {

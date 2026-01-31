@@ -26,9 +26,7 @@ export interface SkillDeepNestingOptions {
 async function getMaxDirectoryDepth(dir: string, currentDepth = 0): Promise<number> {
   try {
     const entries = await readdir(dir, { withFileTypes: true });
-    const subdirs = entries.filter(
-      (entry) => entry.isDirectory() && entry.name !== 'node_modules'
-    );
+    const subdirs = entries.filter((entry) => entry.isDirectory() && entry.name !== 'node_modules');
 
     if (subdirs.length === 0) {
       return currentDepth;

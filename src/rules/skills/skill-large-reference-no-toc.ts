@@ -61,7 +61,8 @@ export const rule: Rule = {
       const hasTOC = /^#{1,6}\s*(table of contents|toc|contents)/i.test(body);
       if (!hasTOC) {
         context.report({
-          message: `SKILL.md is large (${lines.length} lines) but lacks a table of contents. ` +
+          message:
+            `SKILL.md is large (${lines.length} lines) but lacks a table of contents. ` +
             'Add a TOC section to help users navigate the document.',
         });
       }

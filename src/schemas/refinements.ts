@@ -44,10 +44,7 @@ export function thirdPerson() {
 export function lowercaseHyphens() {
   return z
     .string()
-    .regex(
-      /^[a-z0-9-]+$/,
-      'Must contain only lowercase letters, numbers, and hyphens'
-    );
+    .regex(/^[a-z0-9-]+$/, 'Must contain only lowercase letters, numbers, and hyphens');
 }
 
 /**
@@ -132,9 +129,7 @@ export function validUUID() {
  * Used by: settings-env-invalid-name, mcp-env-invalid-name
  */
 export function envVarName() {
-  return z
-    .string()
-    .regex(/^[A-Z_][A-Z0-9_]*$/, 'Must be uppercase with underscores');
+  return z.string().regex(/^[A-Z_][A-Z0-9_]*$/, 'Must be uppercase with underscores');
 }
 
 /**

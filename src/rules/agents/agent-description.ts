@@ -14,7 +14,8 @@ export const rule: Rule = {
   meta: {
     id: 'agent-description',
     name: 'Agent Description Format',
-    description: 'Agent description must be at least 10 characters, written in third person, with no XML tags',
+    description:
+      'Agent description must be at least 10 characters, written in third person, with no XML tags',
     category: 'Agents',
     severity: 'error',
     fixable: false,

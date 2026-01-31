@@ -28,10 +28,7 @@ export const rule: Rule = {
     }
 
     let config: {
-      mcpServers?: Record<
-        string,
-        { transport?: { type?: string; command?: string } }
-      >;
+      mcpServers?: Record<string, { transport?: { type?: string; command?: string } }>;
     };
     try {
       config = JSON.parse(fileContent);

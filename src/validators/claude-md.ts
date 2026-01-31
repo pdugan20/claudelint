@@ -1,9 +1,5 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import {
-  findClaudeMdFiles,
-  readFileContent,
-  fileExists,
-} from '../utils/file-system';
+import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
 import { ValidatorRegistry } from '../utils/validator-factory';

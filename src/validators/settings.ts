@@ -56,7 +56,6 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
       this.report(issue.message, filePath, undefined, issue.ruleId);
     }
   }
-
 }
 
 // Register validator with factory

@@ -14,7 +14,8 @@ export const rule: Rule = {
   meta: {
     id: 'output-style-name',
     name: 'Output Style Name Format',
-    description: 'Output style name must be lowercase-with-hyphens, under 64 characters, with no XML tags',
+    description:
+      'Output style name must be lowercase-with-hyphens, under 64 characters, with no XML tags',
     category: 'OutputStyles',
     severity: 'error',
     fixable: false,

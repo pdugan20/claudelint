@@ -3,6 +3,7 @@ export * from './file-system';
 export * from './markdown';
 export * from './yaml';
 export * from './reporting';
+export * from './custom-rule-loader';
 export * from './validator-factory';
 export * from './schema-helpers';
 export * from './validators';

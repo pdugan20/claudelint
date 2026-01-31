@@ -1,9 +1,5 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import {
-  findOutputStyleDirectories,
-  readFileContent,
-  fileExists,
-} from '../utils/file-system';
+import { findOutputStyleDirectories, readFileContent, fileExists } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
 import { basename, join } from 'path';
@@ -85,10 +81,7 @@ export class OutputStylesValidator extends BaseValidator {
     }
   }
 
-  private async validateFrontmatter(
-    filePath: string,
-    content: string
-  ): Promise<void> {
+  private async validateFrontmatter(filePath: string, content: string): Promise<void> {
     // Ensure async for API consistency
     await Promise.resolve();
 

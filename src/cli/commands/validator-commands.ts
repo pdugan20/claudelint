@@ -132,7 +132,9 @@ export function registerValidatorCommands(program: Command): void {
     command: 'check-claude-md',
     description: 'Validate CLAUDE.md files',
     displayName: 'CLAUDE.md',
-    options: [{ flags: '--explain', description: 'Show detailed explanations and fix suggestions' }],
+    options: [
+      { flags: '--explain', description: 'Show detailed explanations and fix suggestions' },
+    ],
   });
 
   // validate-skills

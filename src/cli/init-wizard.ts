@@ -105,7 +105,9 @@ export class InitWizard {
   private displayProjectInfo(info: ProjectInfo): void {
     logger.log(chalk.bold('Detected project structure:'));
     logger.detail(`${info.hasCLAUDEmd ? chalk.green('[YES]') : chalk.gray('[NO]')} CLAUDE.md`);
-    logger.detail(`${info.hasClaudeDir ? chalk.green('[YES]') : chalk.gray('[NO]')} .claude/ directory`);
+    logger.detail(
+      `${info.hasClaudeDir ? chalk.green('[YES]') : chalk.gray('[NO]')} .claude/ directory`
+    );
     logger.detail(`${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
     logger.detail(`${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
     logger.detail(`${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);

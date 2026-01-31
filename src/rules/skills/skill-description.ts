@@ -14,7 +14,8 @@ export const rule: Rule = {
   meta: {
     id: 'skill-description',
     name: 'Skill Description Format',
-    description: 'Skill description must be at least 10 characters, written in third person, with no XML tags',
+    description:
+      'Skill description must be at least 10 characters, written in third person, with no XML tags',
     category: 'Skills',
     severity: 'error',
     fixable: false,

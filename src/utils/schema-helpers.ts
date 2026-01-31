@@ -24,8 +24,8 @@ export function zodErrorToValidationResult(
     if (!isRuleId(generatedId)) {
       console.warn(
         `Schema validation generated invalid rule ID: '${generatedId}'\n` +
-        `This indicates a missing schema-based rule file.\n` +
-        `Create: src/rules/${ruleIdPrefix}/${generatedId}.ts`
+          `This indicates a missing schema-based rule file.\n` +
+          `Create: src/rules/${ruleIdPrefix}/${generatedId}.ts`
       );
     }
 

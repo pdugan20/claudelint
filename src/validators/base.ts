@@ -279,7 +279,6 @@ export abstract class BaseValidator {
     });
   }
 
-
   /**
    * Check if rule is disabled by inline comment
    * @deprecated Internal method renamed to isRuleDisabledByComment for clarity
@@ -579,7 +578,6 @@ export abstract class BaseValidator {
     };
   }
 
-
   /**
    * Filter directories by name (optional filter)
    *
@@ -587,10 +585,7 @@ export abstract class BaseValidator {
    * @param filterName - Optional name to filter by
    * @returns Filtered list of directories
    */
-  protected filterDirectoriesByName(
-    directories: string[],
-    filterName?: string
-  ): string[] {
+  protected filterDirectoriesByName(directories: string[], filterName?: string): string[] {
     if (!filterName) {
       return directories;
     }

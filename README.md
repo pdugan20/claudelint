@@ -57,7 +57,7 @@ claudelint check-all
 ### Developer Tools
 
 -  **Config Debugging** - `print-config`, `resolve-config`, `validate-config` commands
--  **Plugin System** - Extensible with custom validators
+-  **Custom Rules** - Extend claudelint with your own validation rules
 -  **Strict Mode** - `--strict` flag for zero-tolerance validation
 -  **Warning Limits** - `--max-warnings` to prevent accumulation
 
@@ -449,6 +449,7 @@ Recommended setup with complementary tools:
 
 - **[Validators](docs/validators.md)** - Detailed information about each validator
 - **[Configuration](docs/configuration.md)** - Customize validation rules and behavior
+- **[Custom Rules](docs/custom-rules.md)** - Create your own validation rules
 - **[Plugin Usage](docs/plugin-usage.md)** - Using claudelint as a Claude Code plugin
 - **[Hooks](docs/hooks.md)** - Automatic validation with SessionStart hooks
 - **[Architecture](docs/architecture.md)** - System design and validator architecture

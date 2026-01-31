@@ -51,9 +51,7 @@ export function readJSON<T = unknown>(): ComposableValidator<string> {
  * Validates parsed JSON data against a Zod schema
  * Expects parsed JSON to be in context.state.get('parsedJSON')
  */
-export function zodSchema<T extends z.ZodType>(
-  schema: T
-): ComposableValidator<unknown> {
+export function zodSchema<T extends z.ZodType>(schema: T): ComposableValidator<unknown> {
   return (value, context) => {
     // If value is provided, validate it directly
     // Otherwise, get from context state
@@ -87,11 +85,9 @@ export function zodSchema<T extends z.ZodType>(
  * Validates object properties using a validator map
  * Allows declarative validation of object structure
  */
-export function objectProperties<T extends Record<string, unknown>>(
-  propertyValidators: {
-    [K in keyof T]?: ComposableValidator<T[K]>;
-  }
-): ComposableValidator<T> {
+export function objectProperties<T extends Record<string, unknown>>(propertyValidators: {
+  [K in keyof T]?: ComposableValidator<T[K]>;
+}): ComposableValidator<T> {
   return async (obj, context) => {
     const validationPromises: Promise<ComposableValidationResult>[] = [];
 

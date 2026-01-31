@@ -59,12 +59,8 @@ export const rule: Rule = {
       const files = entries.filter((entry) => entry.isFile());
 
       // Check for inconsistent naming patterns
-      const kebabCase = files.filter((f) =>
-        /^[a-z0-9]+(-[a-z0-9]+)*\.(sh|py|js|md)$/.test(f.name)
-      );
-      const snakeCase = files.filter((f) =>
-        /^[a-z0-9]+(_[a-z0-9]+)+\.(sh|py|js|md)$/.test(f.name)
-      );
+      const kebabCase = files.filter((f) => /^[a-z0-9]+(-[a-z0-9]+)*\.(sh|py|js|md)$/.test(f.name));
+      const snakeCase = files.filter((f) => /^[a-z0-9]+(_[a-z0-9]+)+\.(sh|py|js|md)$/.test(f.name));
       const camelCase = files.filter(
         (f) => /^[a-z][a-zA-Z0-9]*\.(sh|py|js|md)$/.test(f.name) && /[A-Z]/.test(f.name)
       );

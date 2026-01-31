@@ -170,6 +170,59 @@ claudelint check-all || echo "Failed as expected"
 
 For more details, see the [migration guide](./docs/MIGRATION.md).
 
+#### BREAKING: Plugin System Removed
+
+The third-party plugin system has been removed and replaced with a custom rules system.
+
+**Previous behavior:**
+
+```bash
+# Install third-party plugins via npm
+npm install claudelint-plugin-example
+
+# Plugins were loaded automatically from node_modules
+claudelint check-all
+```
+
+**New behavior:**
+
+```bash
+# Create custom rules in .claudelint/rules/
+# .claudelint/rules/my-rule.js
+module.exports.rule = {
+  meta: { id: 'my-rule', ... },
+  validate: async (context) => { ... }
+};
+
+# Custom rules load automatically
+claudelint check-all
+```
+
+**Rationale:**
+
+- Simpler architecture - no npm package dependencies required
+- Better integration with rule-based system
+- Easier to create and maintain custom validation logic
+- Same API as built-in rules
+- Direct control over custom rule files in your project
+
+**Migration Guide:**
+
+If you were using third-party plugins:
+
+1. Extract the plugin rule logic
+2. Create corresponding custom rule files in `.claudelint/rules/`
+3. Adapt to the Rule interface (see [Custom Rules Guide](./docs/custom-rules.md))
+4. Remove npm plugin dependencies
+
+**Note:** This change only affects the third-party plugin system. The claudelint npm package can still be used as a Claude Code plugin via `/plugin install claudelint`.
+
+**See Also:**
+
+- [Custom Rules Guide](./docs/custom-rules.md) - Complete documentation
+- [Example Custom Rules](./docs/examples/custom-rules/) - Practical examples
+- [Plugin System Removal Project](./docs/projects/plugin-system-removal/) - Implementation details
+
 #### Why This Matters: Benefits of Rule-Based Architecture
 
 **For Users:**

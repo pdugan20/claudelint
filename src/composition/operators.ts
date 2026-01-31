@@ -17,9 +17,7 @@ import { ValidationError, ValidationWarning } from '../validators/base';
  *   maxLength(64)
  * );
  */
-export function compose<T>(
-  ...validators: ComposableValidator<T>[]
-): ComposableValidator<T> {
+export function compose<T>(...validators: ComposableValidator<T>[]): ComposableValidator<T> {
   return async (value: T, context: ValidationContext) => {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
@@ -142,9 +140,7 @@ export function any<T>(...validators: ComposableValidator<T>[]): ComposableValid
  *   oneOf(VALID_TOOLS)
  * );
  */
-export function arrayOf<T>(
-  itemValidator: ComposableValidator<T>
-): ComposableValidator<T[]> {
+export function arrayOf<T>(itemValidator: ComposableValidator<T>): ComposableValidator<T[]> {
   return async (values: T[], context: ValidationContext) => {
     const results = await Promise.all(
       values.map((item, index) =>

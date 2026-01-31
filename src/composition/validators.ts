@@ -24,9 +24,7 @@ export function fileExists(): ComposableValidator<string> {
 /**
  * Validates value against a Zod schema
  */
-export function jsonSchema<T extends z.ZodType>(
-  schema: T
-): ComposableValidator<unknown> {
+export function jsonSchema<T extends z.ZodType>(schema: T): ComposableValidator<unknown> {
   return (value, context) => {
     const result = schema.safeParse(value);
     if (!result.success) {

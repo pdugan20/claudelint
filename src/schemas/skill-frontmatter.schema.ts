@@ -4,13 +4,7 @@
 
 import { z } from 'zod';
 import { ModelNames, ContextModes } from './constants';
-import {
-  noXMLTags,
-  thirdPerson,
-  lowercaseHyphens,
-  semver,
-  noReservedWords,
-} from './refinements';
+import { noXMLTags, thirdPerson, lowercaseHyphens, semver, noReservedWords } from './refinements';
 
 /**
  * Base skill frontmatter schema without cross-field validations
@@ -76,6 +70,4 @@ export const SkillFrontmatterWithRefinements = SkillFrontmatterSchema.refine(
 );
 
 export type SkillFrontmatter = z.infer<typeof SkillFrontmatterSchema>;
-export type SkillFrontmatterWithValidations = z.infer<
-  typeof SkillFrontmatterWithRefinements
->;
+export type SkillFrontmatterWithValidations = z.infer<typeof SkillFrontmatterWithRefinements>;

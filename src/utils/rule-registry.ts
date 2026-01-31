@@ -35,9 +35,7 @@ export class RuleRegistry {
       const ruleObj: Rule = {
         meta: rule as RuleMetadata,
         validate: () => {
-          throw new Error(
-            `Rule '${ruleId}' has no validate function - metadata-only registration`
-          );
+          throw new Error(`Rule '${ruleId}' has no validate function - metadata-only registration`);
         },
       };
       this.rules.set(ruleId, ruleObj);
@@ -90,9 +88,7 @@ export class RuleRegistry {
     }
 
     // Build category list
-    const rules = Array.from(this.rules.values()).filter(
-      (rule) => rule.meta.category === category
-    );
+    const rules = Array.from(this.rules.values()).filter((rule) => rule.meta.category === category);
 
     // Cache for future lookups
     this.categoryCache.set(category, rules);
@@ -126,9 +122,7 @@ export class RuleRegistry {
    * Get all rules in a specific category (metadata only)
    */
   static getByCategory(category: string): RuleMetadata[] {
-    return this.getRulesByCategory(category as RuleCategory).map(
-      (rule) => rule.meta
-    );
+    return this.getRulesByCategory(category as RuleCategory).map((rule) => rule.meta);
   }
 
   /**

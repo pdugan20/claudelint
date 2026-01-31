@@ -50,9 +50,7 @@ export const rule: Rule = {
       for (const [, server] of Object.entries(config.mcpServers)) {
         if (server.transport && server.transport.type) {
           const transportType = server.transport.type;
-          if (
-            !(VALID_MCP_TRANSPORT_TYPES as readonly string[]).includes(transportType)
-          ) {
+          if (!(VALID_MCP_TRANSPORT_TYPES as readonly string[]).includes(transportType)) {
             context.report({
               message: `Invalid MCP transport type: ${transportType}. Must be one of: ${VALID_MCP_TRANSPORT_TYPES.join(', ')}`,
             });

@@ -16,8 +16,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-sse-empty-url.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-sse-empty-url.md',
   },
 
   validate: (context) => {

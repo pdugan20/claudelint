@@ -1,9 +1,5 @@
 import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
-import {
-  findAgentDirectories,
-  readFileContent,
-  fileExists,
-} from '../utils/file-system';
+import { findAgentDirectories, readFileContent, fileExists } from '../utils/file-system';
 import { validateFrontmatterWithSchema } from '../utils/schema-helpers';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
 import { basename, join } from 'path';
@@ -88,10 +84,7 @@ export class AgentsValidator extends BaseValidator {
     }
   }
 
-  private validateFrontmatter(
-    filePath: string,
-    content: string
-  ): void {
+  private validateFrontmatter(filePath: string, content: string): void {
     // Use schema-based validation
     const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,

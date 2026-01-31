@@ -11,11 +11,11 @@ This document defines the file naming conventions used throughout the claudelint
 **Examples:**
 
 - ✓ `getting-started.md`
-- ✓ `plugin-development.md`
+- ✓ `custom-rules.md`
 - ✓ `validator-development-guide.md`
 - ✓ `rule-development-enforcement.md`
 - ✗ `GettingStarted.md`
-- ✗ `PLUGIN-DEVELOPMENT.md`
+- ✗ `CUSTOM-RULES.md`
 - ✗ `validator_development_guide.md`
 
 **Exception**: `README.md` (uppercase for standard GitHub convention)

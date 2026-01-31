@@ -14,14 +14,14 @@ export const rule: Rule = {
   meta: {
     id: 'skill-name',
     name: 'Skill Name Format',
-    description: 'Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words',
+    description:
+      'Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words',
     category: 'Skills',
     severity: 'error',
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name.md',
   },
   validate: (context: RuleContext) => {
     // Extract frontmatter

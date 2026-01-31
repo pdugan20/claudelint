@@ -7,14 +7,18 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { SkillFrontmatterSchema, SkillFrontmatterWithRefinements } from '../../schemas/skill-frontmatter.schema';
+import {
+  SkillFrontmatterSchema,
+  SkillFrontmatterWithRefinements,
+} from '../../schemas/skill-frontmatter.schema';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
   meta: {
     id: 'skill-allowed-tools',
     name: 'Skill Allowed Tools Format',
-    description: 'Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools',
+    description:
+      'Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools',
     category: 'Skills',
     severity: 'error',
     fixable: false,

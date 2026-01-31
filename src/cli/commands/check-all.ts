@@ -9,6 +9,7 @@ import { ValidatorRegistry } from '../../utils/validator-factory';
 import { Reporter } from '../../utils/reporting';
 import { findConfigFile, loadConfig, mergeConfig, validateConfig } from '../../utils/config';
 import { ConfigError, validateAllRuleOptions } from '../../utils/config-resolver';
+import { CustomRuleLoader } from '../../utils/custom-rule-loader';
 import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/fixer';
 import { logger } from '../utils/logger';
@@ -143,6 +144,27 @@ export function registerCheckAllCommand(program: Command): void {
               process.exit(2);
             }
             throw error; // Re-throw unexpected errors
+          }
+
+          // Load custom rules
+          const customRuleLoader = new CustomRuleLoader({
+            customRulesPath: '.claudelint/rules',
+            enableCustomRules: true,
+          });
+
+          const customRuleResults = await customRuleLoader.loadCustomRules(process.cwd());
+          const failedCustomRules = customRuleResults.filter((r) => !r.success);
+
+          if (options.verbose && customRuleResults.length > 0) {
+            const successful = customRuleResults.filter((r) => r.success);
+            logger.success(`Loaded ${successful.length} custom rule(s)`);
+
+            if (failedCustomRules.length > 0) {
+              logger.warn(`Failed to load ${failedCustomRules.length} custom rule(s):`);
+              for (const failure of failedCustomRules) {
+                logger.detail(`- ${failure.filePath}: ${failure.error}`);
+              }
+            }
           }
 
           // Merge CLI options with config
@@ -328,7 +350,9 @@ export function registerCheckAllCommand(program: Command): void {
           if (errorMessage.includes('not found') || errorMessage.includes('ENOENT')) {
             logger.error(errorMessage);
             logger.newline();
-            logger.error('This file is required but does not exist. Please check the file path or create the file.');
+            logger.error(
+              'This file is required but does not exist. Please check the file path or create the file.'
+            );
           } else {
             logger.error(errorMessage);
           }

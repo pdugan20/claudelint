@@ -57,7 +57,8 @@ export const rule: Rule = {
       for (const pattern of TIME_SENSITIVE_PATTERNS) {
         if (pattern.test(line)) {
           context.report({
-            message: `Time-sensitive content detected: "${line.trim()}". ` +
+            message:
+              `Time-sensitive content detected: "${line.trim()}". ` +
               'Avoid using specific dates or time references that become outdated. ' +
               'Use relative terms like "recent versions" or update the content regularly.',
             line: i + 1,

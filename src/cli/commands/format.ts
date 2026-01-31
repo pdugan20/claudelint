@@ -7,10 +7,7 @@ import { execSync } from 'child_process';
 import { logger } from '../utils/logger';
 import { checkPrettier, formatPrettier } from '../utils/formatters/prettier';
 import { checkMarkdownlint } from '../utils/formatters/markdownlint';
-import {
-  isShellCheckAvailable,
-  getShellCheckInstallMessage,
-} from '../utils/system-tools';
+import { isShellCheckAvailable, getShellCheckInstallMessage } from '../utils/system-tools';
 import { glob } from 'glob';
 
 /**

@@ -14,14 +14,14 @@ export const rule: Rule = {
   meta: {
     id: 'skill-agent',
     name: 'Skill Agent Requirement',
-    description: 'When skill context is "fork", agent field is required to specify which agent to use',
+    description:
+      'When skill context is "fork", agent field is required to specify which agent to use',
     category: 'Skills',
     severity: 'error',
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-agent.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-agent.md',
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);
@@ -35,9 +35,7 @@ export const rule: Rule = {
 
     if (!result.success) {
       // Find agent-related errors
-      const agentError = result.error.issues.find((issue) =>
-        issue.path.includes('agent')
-      );
+      const agentError = result.error.issues.find((issue) => issue.path.includes('agent'));
 
       if (agentError) {
         const line = getFrontmatterFieldLine(context.fileContent, 'agent');

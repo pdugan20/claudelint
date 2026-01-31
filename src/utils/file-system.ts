@@ -106,7 +106,9 @@ export async function findAgentDirectories(basePath: string = process.cwd()): Pr
 /**
  * Find output style directories
  */
-export async function findOutputStyleDirectories(basePath: string = process.cwd()): Promise<string[]> {
+export async function findOutputStyleDirectories(
+  basePath: string = process.cwd()
+): Promise<string[]> {
   const outputStyleFiles = await findFiles('.claude/output_styles/*/OUTPUT_STYLE.md', basePath);
   return outputStyleFiles.map((file) => file.replace('/OUTPUT_STYLE.md', ''));
 }

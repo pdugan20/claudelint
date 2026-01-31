@@ -1885,11 +1885,56 @@ async function checkAll(options) {
 3. **Daemon mode** - Background validation service
 4. **Web UI** - Visualization of validation results
 
-### Custom Rules Ecosystem
+### Custom Rules
 
-Future custom rules support:
+claudelint supports custom rules to extend the built-in validation with team-specific or project-specific checks. Custom rules use the same Rule interface as built-in rules and integrate seamlessly with the validation system.
 
-- Shareable custom rule sets
-- Rule templates and scaffolding
+**Implementation:**
+
+Custom rules are loaded from `.claudelint/rules/` directory:
+
+```javascript
+// .claudelint/rules/no-hardcoded-tokens.js
+module.exports.rule = {
+  meta: {
+    id: 'no-hardcoded-tokens',
+    name: 'No Hardcoded Tokens',
+    description: 'Prevent hardcoded API tokens',
+    category: 'Security',
+    severity: 'error',
+  },
+  validate: async (context) => {
+    // Custom validation logic
+    if (context.fileContent.includes('sk-')) {
+      context.report({ message: 'Hardcoded API key detected' });
+    }
+  },
+};
+```
+
+**Architecture:**
+
+1. **CustomRuleLoader** - Discovers and loads rule files from `.claudelint/rules/`
+2. **File Discovery** - Recursively finds `.js` and `.ts` files (excluding `.d.ts`, `.test.ts`, `.spec.ts`)
+3. **Validation** - Ensures rules implement the Rule interface
+4. **Registration** - Registers custom rules with RuleRegistry alongside built-in rules
+5. **Conflict Detection** - Prevents ID conflicts with built-in or other custom rules
+
+**Integration:**
+
+- Custom rules are loaded automatically by `check-all` command
+- Rules can be configured in `.claudelintrc.json` like built-in rules
+- Violations are reported in the same format as built-in rules
+- Custom rules support same features (severity, categories, etc.)
+
+**See Also:**
+
+- [Custom Rules Guide](./custom-rules.md) - Complete documentation
+- [Example Custom Rules](./examples/custom-rules/) - Practical examples
+
+**Future Enhancements:**
+
+- Shareable custom rule packages (npm)
+- Rule templates and scaffolding CLI
 - Team-specific validation libraries
 - Industry-specific standards

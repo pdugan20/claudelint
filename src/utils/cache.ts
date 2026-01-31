@@ -188,7 +188,12 @@ export class ValidationCache {
   /**
    * Store validation result in cache
    */
-  set(validatorName: string, result: ValidationResult, projectFiles: string[], config?: unknown): void {
+  set(
+    validatorName: string,
+    result: ValidationResult,
+    projectFiles: string[],
+    config?: unknown
+  ): void {
     if (!this.options.enabled) {
       return;
     }

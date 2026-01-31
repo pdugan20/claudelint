@@ -7,7 +7,10 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { AgentFrontmatterSchema, AgentFrontmatterWithRefinements } from '../../schemas/agent-frontmatter.schema';
+import {
+  AgentFrontmatterSchema,
+  AgentFrontmatterWithRefinements,
+} from '../../schemas/agent-frontmatter.schema';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/markdown';
 
 export const rule: Rule = {
@@ -20,8 +23,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-events.md',
+    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-events.md',
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

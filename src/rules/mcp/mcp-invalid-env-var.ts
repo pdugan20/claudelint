@@ -5,11 +5,21 @@
  */
 
 import { Rule } from '../../types/rule';
-import { MCPConfigSchema, MCPStdioTransportSchema, MCPSSETransportSchema, MCPHTTPTransportSchema, MCPWebSocketTransportSchema } from '../../validators/schemas';
+import {
+  MCPConfigSchema,
+  MCPStdioTransportSchema,
+  MCPSSETransportSchema,
+  MCPHTTPTransportSchema,
+  MCPWebSocketTransportSchema,
+} from '../../validators/schemas';
 import { z } from 'zod';
 
 type MCPConfig = z.infer<typeof MCPConfigSchema>;
-type MCPTransport = z.infer<typeof MCPStdioTransportSchema> | z.infer<typeof MCPSSETransportSchema> | z.infer<typeof MCPHTTPTransportSchema> | z.infer<typeof MCPWebSocketTransportSchema>;
+type MCPTransport =
+  | z.infer<typeof MCPStdioTransportSchema>
+  | z.infer<typeof MCPSSETransportSchema>
+  | z.infer<typeof MCPHTTPTransportSchema>
+  | z.infer<typeof MCPWebSocketTransportSchema>;
 
 /**
  * Options for mcp-invalid-env-var rule

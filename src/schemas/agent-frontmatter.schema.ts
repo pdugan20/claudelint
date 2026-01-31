@@ -68,6 +68,4 @@ export const AgentFrontmatterWithRefinements = AgentFrontmatterSchema.refine(
 );
 
 export type AgentFrontmatter = z.infer<typeof AgentFrontmatterSchema>;
-export type AgentFrontmatterWithValidations = z.infer<
-  typeof AgentFrontmatterWithRefinements
->;
+export type AgentFrontmatterWithValidations = z.infer<typeof AgentFrontmatterWithRefinements>;

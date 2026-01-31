@@ -14,7 +14,8 @@ export const rule: Rule = {
   meta: {
     id: 'output-style-description',
     name: 'Output Style Description Format',
-    description: 'Output style description must be at least 10 characters, written in third person, with no XML tags',
+    description:
+      'Output style description must be at least 10 characters, written in third person, with no XML tags',
     category: 'OutputStyles',
     severity: 'error',
     fixable: false,

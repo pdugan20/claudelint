@@ -65,8 +65,7 @@ export const rule: Rule = {
       // Count script files in directory
       const entries = await readdir(skillDir, { withFileTypes: true });
       const scriptFiles = entries.filter(
-        (entry) =>
-          entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
+        (entry) => entry.isFile() && SCRIPT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))
       );
 
       // If skill has multiple scripts, check for README.md
