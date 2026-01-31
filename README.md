@@ -265,13 +265,13 @@ Formats shell scripts consistently.
 ```bash
 npm install --save-dev shfmt
 ```text
-**5. eslint-config-claude**
+**5. ESLint for JSON/YAML**
 
 Advanced JSON/YAML linting (key ordering, duplicate detection).
 
 ```bash
-npm install --save-dev eslint-config-claude
-```text
+npm install --save-dev eslint eslint-plugin-jsonc eslint-plugin-yml
+```
 #### Tier 3: Optional (Nice to Have)
 
 **6. Vale** - Prose quality for documentation

@@ -64,11 +64,6 @@ Complete guide for migrating from `@pdugan20/claudelint` (scoped) to `claudelint
 - `src/index.ts` - 5 import examples
 - `src/api/*.ts` - 10+ import examples
 
-### Package Configs
-
-- `packages/markdownlint-config-claude/README.md` - 2 references
-- `packages/prettier-config-claude/README.md` - 2 references
-- `packages/eslint-config-claude/README.md` - 2 references
 
 ### Archived Documentation
 

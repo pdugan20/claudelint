@@ -7,6 +7,8 @@
 
 import markdownlint from 'markdownlint';
 import { glob } from 'glob';
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 
 export interface MarkdownlintResult {
   passed: boolean;
@@ -43,14 +45,24 @@ export async function checkMarkdownlint(
     };
   }
 
+  // Load user's .markdownlint.json if it exists
+  let config: markdownlint.Configuration = { default: true };
+  const configPath = join(process.cwd(), '.markdownlint.json');
+
+  if (existsSync(configPath)) {
+    try {
+      const configContent = readFileSync(configPath, 'utf-8');
+      config = JSON.parse(configContent);
+    } catch (error) {
+      // If config file is invalid, fall back to defaults
+      console.warn(`Warning: Could not parse .markdownlint.json, using defaults`);
+    }
+  }
+
   // Run markdownlint
   const results = markdownlint.sync({
     files: uniqueFiles,
-    config: {
-      // Load from .markdownlint.json if it exists
-      // Otherwise use defaults
-      default: true,
-    },
+    config,
   });
 
   // Parse results

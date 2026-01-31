@@ -138,41 +138,45 @@ npm install -g shellcheck
 
 The format command automatically scopes to Claude files only, so it won't conflict with your project's existing formatters.
 
-To customize markdownlint:
+### Customizing Markdownlint
 
-```bash
-npm install --save-dev @pdugan20/markdownlint-config-claude
-```
-
-Create `.markdownlintrc.json`:
+Create `.markdownlint.json` in your project root:
 
 ```json
 {
-  "extends": "@pdugan20/markdownlint-config-claude"
+  "default": true,
+  "MD013": false,
+  "MD033": {
+    "allowed_elements": ["kbd", "br"]
+  },
+  "MD041": true,
+  "MD031": true,
+  "MD032": true,
+  "MD040": true,
+  "MD022": true
 }
 ```
 
-To customize prettier:
+`claudelint format` will automatically use this configuration.
 
-```bash
-npm install --save-dev @pdugan20/prettier-config-claude
-```
+### Customizing Prettier
 
-Create `.prettierrc.json`:
+Create `.prettierrc.json` in your project root:
 
 ```json
 {
-  "overrides": [
-    {
-      "files": [".claude/**/*", "CLAUDE.md"],
-      "options": {
-        "proseWrap": "always",
-        "printWidth": 100
-      }
-    }
-  ]
+  "semi": true,
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "proseWrap": "preserve"
 }
 ```
+
+`claudelint format` will automatically use this configuration.
 
 ## Integration
 

@@ -25,36 +25,68 @@ All configs are **scoped** to Claude files only (`.claude/`, `CLAUDE.md`) to avo
 | Python                | `.claude/skills/**/*.py`             | ruff                | black      | 3    |
 | JavaScript/TypeScript | `.claude/skills/**/*.{js,ts}`        | eslint              | prettier   | 3    |
 
-## Tier 1: Critical (Must Have)
+## Using `claudelint format`
 
-These tools provide the most value and should be used on all Claude projects.
-
-### 1. markdownlint-config-claude
-
-**What it does:** Validates markdown structure in CLAUDE.md and SKILL.md files.
+The simplest way to format Claude files is with the built-in `claudelint format` command.
 
 **Installation:**
 
 ```bash
-npm install --save-dev markdownlint-config-claude markdownlint-cli
+npm install --save-dev @pdugan20/claudelint
 ```
 
-**Usage (Scoped to Claude files):**
+**Usage:**
+
+```bash
+# Check formatting (no changes)
+claudelint format --check
+
+# Fix formatting issues
+claudelint format --fix
+```
+
+**What it runs:**
+
+1. **markdownlint** on `.md` files
+2. **prettier** on `.md`, `.json`, `.yaml` files
+3. **shellcheck** on `.sh` files (if installed)
+
+**File targeting:**
+
+The command automatically targets Claude-specific files:
+- `CLAUDE.md`
+- `.claude/**/*.md`
+- `.claude/**/*.json`
+- `.claude/**/*.yaml`
+- `.claude/**/*.sh`
+- `.claude/hooks/*`
+
+## Customizing Formatter Configs
+
+Users can override the default formatting rules by creating config files in their project root.
+
+### Customizing Markdownlint
+
+Create `.markdownlint.json`:
 
 ```json
-// package.json
 {
-  "scripts": {
-    "lint:md:claude": "markdownlint --config node_modules/markdownlint-config-claude 'CLAUDE.md' '.claude/**/*.md'"
-  }
+  "default": true,
+  "MD013": false,
+  "MD033": {
+    "allowed_elements": ["kbd", "br"]
+  },
+  "MD041": true,
+  "MD031": true,
+  "MD032": true,
+  "MD040": true,
+  "MD022": true
 }
 ```
 
-**Why NOT global config:**
+`claudelint format` will automatically use this config.
 
-Don't use this as your project-wide markdownlint config if you already have one. Run it as a separate command targeting only Claude files.
-
-**Rules enforced:**
+**Recommended rules for Claude files:**
 
 - MD041: First line must be H1 heading
 - MD031: Blank lines around code blocks
@@ -63,41 +95,30 @@ Don't use this as your project-wide markdownlint config if you already have one.
 - MD022: Blank lines around headings
 - MD024: No duplicate headings (siblings only)
 
-### 2. prettier-config-claude
+### Customizing Prettier
 
-**What it does:** Formats markdown, JSON, and YAML in Claude files.
-
-**Installation:**
-
-```bash
-npm install --save-dev prettier-config-claude prettier
-```
-
-**Usage (Scoped with overrides):**
+Create `.prettierrc.json`:
 
 ```json
-// .prettierrc.json
 {
   "semi": true,
-  "singleQuote": false,
-
-  "overrides": [
-    {
-      "files": ["CLAUDE.md", ".claude/**/*.{md,json,yaml}"],
-      "options": "prettier-config-claude"
-    }
-  ]
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "proseWrap": "preserve"
 }
 ```
 
-**Why overrides:**
+`claudelint format` will automatically use this config.
 
-This applies prettier-config-claude ONLY to Claude files, leaving your project's existing prettier settings intact.
-
-**Settings:**
+**Recommended settings for Claude files:**
 
 - `proseWrap: "preserve"` - Don't wrap markdown prose
 - `printWidth: 100` - Wider line length for documentation
+- `endOfLine: "lf"` - Consistent line endings
 - `tabWidth: 2` - Consistent indentation
 
 ### 3. ShellCheck
@@ -190,14 +211,14 @@ indent_size = 2
 - Case statement formatting
 - Function definition style
 
-### 5. eslint-config-claude
+### 5. ESLint for JSON/YAML (Advanced)
 
 **What it does:** Advanced JSON/YAML linting (key ordering, duplicate detection).
 
 **Installation:**
 
 ```bash
-npm install --save-dev eslint-config-claude
+npm install --save-dev eslint eslint-plugin-jsonc eslint-plugin-yml
 ```
 
 **Usage (Scoped with overrides):**
@@ -210,7 +231,8 @@ export default [
   // Claude-specific JSON linting
   {
     files: ['.claude/**/*.json', '.mcp.json', '.claude-plugin/**/*.json'],
-    extends: ['claude/json'],
+    plugins: ['jsonc'],
+    parser: 'jsonc-eslint-parser',
     rules: {
       'jsonc/key-name-casing': 'error',
       'jsonc/no-duplicate-keys': 'error',
@@ -221,7 +243,8 @@ export default [
   // Claude-specific YAML linting
   {
     files: ['.claude/**/*.{yaml,yml}'],
-    extends: ['claude/yaml'],
+    plugins: ['yml'],
+    parser: 'yaml-eslint-parser',
     rules: {
       'yml/no-duplicate-keys': 'error',
       'yml/sort-keys': 'warn',
@@ -341,41 +364,25 @@ export default [
 ];
 ```
 
-## The `claudelint format` Command
+## Integration with Package Scripts
 
-For convenience, claudelint provides a wrapper command that automatically scopes all formatting to Claude files.
+Add these to your `package.json` for easy access:
 
-**Installation:**
-
-```bash
-npm install --save-dev @pdugan20/claudelint markdownlint-config-claude prettier-config-claude
+```json
+{
+  "scripts": {
+    "lint:claude": "claudelint check-all",
+    "format:claude": "claudelint format --fix",
+    "format:claude:check": "claudelint format --check"
+  }
+}
 ```
 
-**Usage:**
+Then run:
 
 ```bash
-# Check formatting (no changes)
-claudelint format --check
-
-# Fix formatting issues
-claudelint format --fix
-```
-
-**What it runs:**
-
-1. **markdownlint** on `.md` files with `markdownlint-config-claude`
-2. **prettier** on `.md`, `.json`, `.yaml` files with `prettier-config-claude`
-3. **shellcheck** on `.sh` files in `.claude/`
-
-**Automatic file targeting:**
-
-The command automatically targets:
-
-- `CLAUDE.md` (project root)
-- `.claude/**/*.md` (all markdown in .claude)
-- `.claude/**/*.json` (settings, hooks, etc.)
-- `.claude/**/*.yaml` (any YAML configs)
-- `.claude/**/*.sh` (shell scripts)
+npm run lint:claude      # Validate Claude configurations
+npm run format:claude    # Format Claude files
 - `.claude/hooks/*` (hook scripts)
 
 No manual glob patterns needed!
@@ -388,37 +395,42 @@ Here's a complete setup using all Tier 1 tools:
 // package.json
 {
   "scripts": {
-    "lint:md:claude": "markdownlint --config node_modules/markdownlint-config-claude 'CLAUDE.md' '.claude/**/*.md'",
-    "lint:shell:claude": "shellcheck .claude/**/*.sh .claude/hooks/*",
-    "format:check": "prettier --check 'CLAUDE.md' '.claude/**/*.{md,json,yaml}'",
-    "format:fix": "prettier --write 'CLAUDE.md' '.claude/**/*.{md,json,yaml}'",
-    "validate:claude": "npm run lint:md:claude && npm run lint:shell:claude && npm run format:check && claudelint check-all",
+    "lint:claude": "claudelint check-all",
+    "format:claude": "claudelint format --fix",
+    "format:claude:check": "claudelint format --check",
+    "validate:claude": "npm run lint:claude && npm run format:claude:check",
     "validate:all": "npm run lint && npm run validate:claude"
   },
   "devDependencies": {
-    "@pdugan20/claudelint": "^0.1.0",
-    "markdownlint-config-claude": "^1.0.0",
-    "prettier-config-claude": "^1.0.0",
-    "shellcheck": "^0.9.0",
-    "prettier": "^3.1.0",
-    "markdownlint-cli": "^0.39.0"
+    "@pdugan20/claudelint": "^0.2.0-beta.0",
+    "markdownlint-cli": "^0.39.0",
+    "prettier": "^3.1.0"
   }
 }
 ```
 
+Optionally customize formatting by creating `.markdownlint.json`:
+
 ```json
-// .prettierrc.json
+{
+  "default": true,
+  "MD013": false,
+  "MD041": true,
+  "MD031": true,
+  "MD032": true,
+  "MD040": true,
+  "MD022": true
+}
+```
+
+And `.prettierrc.json`:
+
+```json
 {
   "semi": true,
-  "singleQuote": false,
-  "printWidth": 80,
-
-  "overrides": [
-    {
-      "files": ["CLAUDE.md", ".claude/**/*.{md,json,yaml}"],
-      "options": "prettier-config-claude"
-    }
-  ]
+  "singleQuote": true,
+  "printWidth": 100,
+  "proseWrap": "preserve"
 }
 ```
 
@@ -432,24 +444,19 @@ repos:
       - id: markdownlint
         files: '^(?!CLAUDE\.md|\.claude/).*\.md$'
 
-  # Claude-specific markdown
+  # Claude-specific validation and formatting
   - repo: local
     hooks:
-      - id: markdownlint-claude
-        name: Lint Claude markdown
-        entry: npx markdownlint --config node_modules/markdownlint-config-claude
-        language: node
-        files: '^(CLAUDE\.md|\.claude/.*\.md)$'
-
-      - id: shellcheck-claude
-        name: Lint Claude shell scripts
-        entry: shellcheck
-        language: system
-        files: '^\.claude/.*\.sh$'
-
       - id: claudelint
         name: Validate Claude configuration
         entry: npx claudelint check-all
+        language: node
+        pass_filenames: false
+        files: '^(CLAUDE\.md|\.claude/)'
+
+      - id: claudelint-format
+        name: Format Claude files
+        entry: npx claudelint format --check
         language: node
         pass_filenames: false
         files: '^(CLAUDE\.md|\.claude/)'
@@ -459,64 +466,54 @@ repos:
 
 ### Problem: Multiple Configs
 
-If you already have markdownlint or prettier configs for your project, you might worry about conflicts.
+If you already have markdownlint or prettier configs for your project, you might worry about conflicts with Claude files.
 
-### Solution: Scoping
+### Solution: Use claudelint format
 
-All our configs use **scoping** to apply only to Claude files:
-
-**Prettier:** Use `overrides` array
-
-```json
-{
-  "overrides": [
-    {
-      "files": ["CLAUDE.md", ".claude/**/*"],
-      "options": "prettier-config-claude"
-    }
-  ]
-}
-```
-
-**markdownlint:** Use separate commands
+The `claudelint format` command automatically scopes to Claude files only:
 
 ```bash
-# Your project markdown
-markdownlint '**/*.md' --ignore .claude
+# Format your project files (uses your configs)
+npm run format
 
-# Claude markdown
-markdownlint 'CLAUDE.md' '.claude/**/*.md' --config markdownlint-config-claude
+# Format Claude files (uses .markdownlint.json and .prettierrc.json)
+claudelint format --fix
 ```
 
-**Result:** Zero conflicts! Your project uses your configs, Claude files use Claude configs.
+**Result:** Zero conflicts! The `claudelint format` command only touches:
+- `CLAUDE.md`
+- `.claude/**/*.md`
+- `.claude/**/*.json`
+- `.claude/**/*.yaml`
+- `.claude/**/*.sh`
 
 ## Troubleshooting
 
 ### "markdownlint complains about my CLAUDE.md"
 
-You're probably running markdownlint with your project config on CLAUDE.md. Use the separate command approach:
+Exclude Claude files from your project-wide linting:
 
 ```bash
-# Exclude Claude files from project linting
-markdownlint '**/*.md' --ignore 'CLAUDE.md' --ignore '.claude'
-
-# Lint Claude files separately
-markdownlint 'CLAUDE.md' '.claude/**/*.md' --config node_modules/markdownlint-config-claude
+# In package.json
+{
+  "scripts": {
+    "lint:md": "markdownlint '**/*.md' --ignore 'CLAUDE.md' --ignore '.claude'"
+  }
+}
 ```
+
+Then use `claudelint format` for Claude files.
 
 ### "Prettier formats differently in .claude/"
 
-Make sure your override is configured correctly:
+Make sure you're using `claudelint format` for Claude files, not your project's prettier command:
 
-```json
-{
-  "overrides": [
-    {
-      "files": ["CLAUDE.md", ".claude/**/*.{md,json,yaml}"],
-      "options": "prettier-config-claude" // NOT "extends"
-    }
-  ]
-}
+```bash
+# Wrong: Uses project prettier config on Claude files
+prettier --write '**/*.md'
+
+# Right: Uses .prettierrc.json for Claude files only
+claudelint format --fix
 ```
 
 ### "ShellCheck isn't finding my scripts"
