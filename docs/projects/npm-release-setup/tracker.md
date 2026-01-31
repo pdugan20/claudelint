@@ -139,10 +139,10 @@ Project to set up professional npm versioning, release automation, and package n
 
 ### 5.2 Publish Beta
 
-- [ ] Verify npm login: `npm whoami` (USER ACTION REQUIRED)
-- [ ] Dry run: `npm publish --dry-run --tag beta --access public`
-- [ ] Review dry-run output
-- [ ] Publish: `npm publish --tag beta --access public`
+- [x] Verify npm login: `npm whoami` (USER ACTION REQUIRED)
+- [x] Dry run: `npm publish --dry-run --tag beta --access public`
+- [x] Review dry-run output (769 files, 263KB compressed, 1.3MB unpacked)
+- [ ] Publish: `npm publish --tag beta --access public` (USER ACTION REQUIRED)
 - [ ] Verify package on npmjs.com
 - [ ] Test installation: `npm install claudelint@beta`
 - [ ] Verify installed CLI works
