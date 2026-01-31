@@ -43,12 +43,14 @@ this.reportError('Error message', filePath);
 ### Step 2: Extract Validation Information
 
 From the ghost rule, extract:
+
 1. **Message:** What error/warning text is shown
 2. **Severity:** Is it reportError (error) or reportWarning (warn)?
 3. **Context:** What file type is being validated?
 4. **Condition:** What triggers this validation?
 
 **Example:**
+
 ```typescript
 // In src/validators/mcp.ts:102
 if (!transport.command || transport.command.trim().length === 0) {
@@ -58,6 +60,7 @@ if (!transport.command || transport.command.trim().length === 0) {
 ```
 
 **Extracted:**
+
 - Message: "MCP stdio transport command cannot be empty"
 - Severity: error
 - Context: MCP stdio transport
@@ -68,12 +71,14 @@ if (!transport.command || transport.command.trim().length === 0) {
 Follow naming convention: `{category}-{validation-type}-{specifics}`
 
 **Examples:**
+
 - `mcp-stdio-empty-command`
 - `claude-md-import-missing`
 - `skill-name-mismatch`
 - `agent-body-too-short`
 
 **Add to `src/rules/rule-ids.ts`:**
+
 ```typescript
 export type RuleId =
   // ... existing rules
@@ -173,11 +178,13 @@ private validateStdioTransport(
 ### Step 6: Use Rule Discovery (Validator Orchestration Only)
 
 Validators should ONLY:
+
 1. Find files to validate
 2. Call `executeRulesForCategory()` to run all rules
 3. Return results
 
 Validators should NOT:
+
 - Call `reportError()` or `reportWarning()` directly
 - Contain validation methods (like `validateStdioTransport()`)
 - Have any validation logic whatsoever
@@ -208,6 +215,7 @@ async validate(): Promise<ValidationResult> {
 1. Run tests: `npm test`
 2. Manually test the rule triggers correctly
 3. Test config disable works:
+
    ```json
    {
      "rules": {
@@ -215,7 +223,9 @@ async validate(): Promise<ValidationResult> {
      }
    }
    ```
+
 4. Test severity override works:
+
    ```json
    {
      "rules": {
@@ -281,6 +291,7 @@ This rule has no configuration options.
 ## Implementation
 
 See [rule source code](../../../src/rules/mcp/mcp-stdio-empty-command.ts)
+
 ```
 
 ## Common Patterns
@@ -295,6 +306,7 @@ if (value.length < 50) {
 ```
 
 **Converted Rule:**
+
 ```typescript
 validate: (context) => {
   const { fileContent } = context;
@@ -311,6 +323,7 @@ validate: (context) => {
 ### Pattern 2: Missing File/Section
 
 **Ghost Rule:**
+
 ```typescript
 if (!fs.existsSync(requiredFile)) {
   this.reportError(`${fileName} not found`, dirPath);
@@ -318,6 +331,7 @@ if (!fs.existsSync(requiredFile)) {
 ```
 
 **Converted Rule:**
+
 ```typescript
 validate: async (context) => {
   const { filePath } = context;
@@ -336,6 +350,7 @@ validate: async (context) => {
 ### Pattern 3: Pattern Matching
 
 **Ghost Rule:**
+
 ```typescript
 const pattern = /#{1,3}\s*examples/i;
 if (!pattern.test(content)) {
@@ -344,6 +359,7 @@ if (!pattern.test(content)) {
 ```
 
 **Converted Rule:**
+
 ```typescript
 validate: (context) => {
   const { fileContent } = context;
@@ -361,6 +377,7 @@ validate: (context) => {
 ### Pattern 4: From Utility Function
 
 **Ghost Rule (in utility):**
+
 ```typescript
 export function validateEnvironmentVariables(env): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
@@ -380,6 +397,7 @@ export function validateEnvironmentVariables(env): ValidationIssue[] {
 ```
 
 **Converted Rule:**
+
 ```typescript
 validate: (context) => {
   const config = parseConfig(context.fileContent);
@@ -402,6 +420,7 @@ validate: (context) => {
 ### Pattern 5: Multiple Related Validations
 
 **Ghost Rules:**
+
 ```typescript
 if (!transport.url) {
   this.reportError('URL cannot be empty', filePath);
@@ -415,6 +434,7 @@ try {
 ```
 
 **Converted Rule (combined):**
+
 ```typescript
 validate: (context) => {
   const config = parseConfig(context.fileContent);
@@ -446,6 +466,7 @@ validate: (context) => {
 ```
 
 **Decision:** One rule vs multiple rules?
+
 - **One rule:** If validations are sequential/related (like empty check then format check)
 - **Multiple rules:** If validations are independent (can disable one without affecting others)
 
@@ -456,6 +477,7 @@ validate: (context) => {
 **Problem:** Rule needs to check multiple files (e.g., circular imports)
 
 **Solution:** Rules can read other files:
+
 ```typescript
 validate: async (context) => {
   const { filePath, fileContent } = context;
@@ -478,6 +500,7 @@ validate: async (context) => {
 **Problem:** Validation needs to track state across files (e.g., duplicate names)
 
 **Solution:** Use closure variables:
+
 ```typescript
 const seenNames = new Set<string>();
 
@@ -504,6 +527,7 @@ export const rule: Rule = {
 **Problem:** Validator warns when no files exist to validate
 
 **Current Ghost:**
+
 ```typescript
 if (files.length === 0) {
   this.reportWarning('No skill directories found');
@@ -511,6 +535,7 @@ if (files.length === 0) {
 ```
 
 **Solution:** Create a rule that validators can explicitly execute:
+
 ```typescript
 // In validator
 if (files.length === 0) {
@@ -599,6 +624,7 @@ For each ghost rule conversion:
 ### "Rule doesn't trigger"
 
 **Checklist:**
+
 - [ ] Rule ID in `rule-ids.ts`?
 - [ ] Rule file exports `rule` constant?
 - [ ] Rule category matches validator category?
@@ -610,6 +636,7 @@ For each ghost rule conversion:
 **Cause:** Validation logic is still in validator calling `reportError()` or `reportWarning()`
 
 **Fix:**
+
 1. Verify validation logic is in rule file's `validate()` function
 2. Verify validator does NOT call `reportError()` or `reportWarning()`
 3. Ensure validator uses `executeRulesForCategory()` to run rules
@@ -626,6 +653,7 @@ For each ghost rule conversion:
 ## Summary
 
 **Key Architectural Points:**
+
 1. **ALL validation logic goes in rule files** - No exceptions
 2. **Validators ONLY orchestrate** - Find files, execute rules, return results
 3. **ZERO reportError/reportWarning calls in validators** - These methods will be deprecated and removed
@@ -633,6 +661,7 @@ For each ghost rule conversion:
 5. **Real rules use context.report()** - Makes them configurable by users
 
 **Migration Steps:**
+
 1. Create rule file with ALL validation logic in `validate()` function
 2. Delete validation logic AND reportError/reportWarning calls from validator
 3. Delete validator methods that only contained validation logic
@@ -641,6 +670,7 @@ For each ghost rule conversion:
 6. Document the rule for users
 
 **Benefits:**
+
 - [YES] Users can disable unwanted rules
 - [YES] Users can change severity
 - [YES] Consistent ESLint-style architecture

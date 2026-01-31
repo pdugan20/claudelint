@@ -166,6 +166,7 @@ Valid http:// URL (triggers protocol warning):
 To resolve invalid URL errors:
 
 1. **Add the protocol** if missing:
+
    ```json
    # Before
    {
@@ -185,6 +186,7 @@ To resolve invalid URL errors:
    ```
 
 2. **Use ws:// or wss:/** for WebSocket transport:
+
    ```json
    # Use ws:// for local development
    "url": "ws://localhost:9000"
@@ -194,6 +196,7 @@ To resolve invalid URL errors:
    ```
 
 3. **Remove spaces and special characters**:
+
    ```json
    # Before
    "url": "ws://my server.com/socket"
@@ -203,12 +206,14 @@ To resolve invalid URL errors:
    ```
 
 4. **Encode special characters** if needed:
+
    ```json
    # Use URL encoding for special characters
    "url": "ws://api.example.com/path%20with%20spaces"
    ```
 
 5. **Fix protocol format**:
+
    ```json
    # Before (malformed)
    "url": "ws:/localhost:9000"
@@ -218,6 +223,7 @@ To resolve invalid URL errors:
    ```
 
 6. **Test URL validity**:
+
    ```bash
    # Test if URL is valid
    node -e "new URL('ws://localhost:9000')"
@@ -227,6 +233,7 @@ To resolve invalid URL errors:
    ```
 
 7. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

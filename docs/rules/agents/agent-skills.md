@@ -91,6 +91,7 @@ skills: []
 To fix skills configuration:
 
 1. **Format as array**: Use YAML array syntax with hyphens
+
    ```yaml
    skills:
      - git-commit
@@ -98,6 +99,7 @@ To fix skills configuration:
    ```
 
 2. **Use string values**: Each skill name must be a string
+
    ```yaml
    skills:
      - "git-commit"  # Quotes optional for simple strings

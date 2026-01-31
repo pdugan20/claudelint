@@ -90,13 +90,13 @@ To fix extension mapping errors:
 }
 ```
 
-3. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp
 ```
 
-4. **Test file detection**:
+1. **Test file detection**:
 
 ```bash
 # Open a .ts file and verify LSP features work

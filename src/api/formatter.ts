@@ -16,7 +16,7 @@ import { resolve, isAbsolute } from 'path';
  */
 export const BUILTIN_FORMATTERS = ['stylish', 'json', 'compact'] as const;
 
-export type BuiltinFormatterName = typeof BUILTIN_FORMATTERS[number];
+export type BuiltinFormatterName = (typeof BUILTIN_FORMATTERS)[number];
 
 /**
  * Check if a formatter name is a built-in formatter

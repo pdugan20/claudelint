@@ -135,6 +135,7 @@ URL with default fallback:
 To resolve empty URL errors:
 
 1. **Add a valid URL** to the SSE transport:
+
    ```json
    # Before
    {
@@ -154,6 +155,7 @@ To resolve empty URL errors:
    ```
 
 2. **Use environment variable** for configurable URLs:
+
    ```json
    {
      "transport": {
@@ -164,6 +166,7 @@ To resolve empty URL errors:
    ```
 
 3. **Include a default value** for environment variables:
+
    ```json
    {
      "transport": {
@@ -174,6 +177,7 @@ To resolve empty URL errors:
    ```
 
 4. **Consider migrating** to non-deprecated transports:
+
    ```json
    # Migrate to HTTP transport
    {
@@ -193,6 +197,7 @@ To resolve empty URL errors:
    ```
 
 5. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

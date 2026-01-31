@@ -230,11 +230,13 @@ Include:
 ### Key Documentation
 
 **For contributing code:**
+
 - **[Rule Development Guide](docs/contributing-rules.md)** - How to write validation rules (START HERE)
 - **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
 - **[Plugin Development Guide](docs/plugin-development.md)** - Creating custom plugins
 
 **For users:**
+
 - **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
 - **[Rule Reference](docs/rules/)** - Individual documentation for all 105 rules
 - **[Configuration Guide](docs/configuration.md)** - Configuring claudelint

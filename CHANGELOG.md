@@ -60,8 +60,6 @@ Following ESLint and Prettier patterns, only stable public APIs are exported. In
 
 ### Changed
 
-
-
 #### BREAKING: Exit Code Standardization
 
 Exit codes now follow POSIX/Unix standard conventions to improve compatibility with CI/CD systems and shell scripts.
@@ -279,6 +277,7 @@ If you were using third-party plugins:
 #### Why This Matters: Benefits of Rule-Based Architecture
 
 **For Users:**
+
 - **Granular control** - Enable/disable individual checks, not entire validators
 - **Custom severity** - Treat warnings as errors or vice versa per rule
 - **Configuration options** - Customize thresholds (file sizes, line counts, etc.)
@@ -286,6 +285,7 @@ If you were using third-party plugins:
 - **Progressive adoption** - Start strict on critical rules, relax on others
 
 **For Developers:**
+
 - **Clear architecture** - Each rule is independent and testable
 - **Easier contributions** - Add new rules without touching existing code
 - **Better testing** - Rule-level tests are simpler than validator-level
@@ -293,12 +293,14 @@ If you were using third-party plugins:
 - **Self-documenting** - Rule metadata provides all information
 
 **Industry Alignment:**
+
 - **ESLint-style patterns** - Familiar to developers from JavaScript ecosystem
 - **Standard configuration** - Same patterns as Prettier, Stylelint, etc.
 - **Plugin-friendly** - Easy to extend with custom rules
 - **IDE integration ready** - Metadata supports editor integrations
 
 **Technical Improvements:**
+
 - Reduced coupling between validation logic
 - Easier to maintain (fix one rule without affecting others)
 - Better error isolation (one rule failure doesn't break others)
@@ -314,11 +316,13 @@ Complete refactor from validator-based to rule-based architecture. All validatio
 **What Changed:**
 
 Before (v0.1.0):
+
 - 6 validators with hardcoded validation logic
 - Limited configurability
 - All-or-nothing validation per file type
 
 After (v1.0.0):
+
 - **105 individual rules** across 10 categories
 - **Full ESLint-style configuration** - enable/disable any rule
 - **Configurable severity** per rule (error, warn, off)
@@ -344,7 +348,7 @@ To customize (new capability):
 
 #### Complete Rule Set (105 rules)
 
-**CLAUDE.md Rules (13 rules)**
+##### CLAUDE.md Rules (13 rules)
 
 - `claude-md-size-error` - File exceeds 40KB limit (configurable)
 - `claude-md-size-warning` - File approaching 35KB limit (configurable)
@@ -361,9 +365,10 @@ To customize (new capability):
 - `claude-md-file-not-found` - CLAUDE.md file missing
 - `claude-md-filename-case-sensitive` - Case-sensitive filename issues
 
-**Skills Rules (28 rules)**
+#### Skills Rules (28 rules)
 
 Schema & Metadata:
+
 - `skill-name` - Missing or invalid name in frontmatter
 - `skill-description` - Description too short or wrong person
 - `skill-version` - Missing version field
@@ -376,12 +381,14 @@ Schema & Metadata:
 - `skill-disallowed-tools` - Invalid disallowed-tools syntax
 
 Content & Structure:
+
 - `skill-body-too-long` - Body exceeds 500 lines (configurable)
 - `skill-large-reference-no-toc` - Large file missing TOC (>100 lines, configurable)
 - `skill-missing-examples` - Missing usage examples
 - `skill-name-directory-mismatch` - Skill name doesn't match directory
 
 File Organization:
+
 - `skill-too-many-files` - Too many files at root (>10, configurable)
 - `skill-deep-nesting` - Excessive directory nesting (>3 levels, configurable)
 - `skill-naming-inconsistent` - Mixed naming conventions (configurable minimum files)
@@ -389,6 +396,7 @@ File Organization:
 - `skill-missing-changelog` - Missing CHANGELOG.md
 
 Scripts & Security:
+
 - `skill-missing-shebang` - Shell script missing shebang
 - `skill-missing-comments` - Script >10 lines without comments (configurable)
 - `skill-dangerous-command` - Dangerous commands (rm -rf, etc.)
@@ -398,7 +406,7 @@ Scripts & Security:
 - `skill-unknown-string-substitution` - Invalid {{VAR}} syntax
 - `skill-referenced-file-not-found` - Referenced file missing
 
-**Settings Rules (5 rules)**
+#### Settings Rules (5 rules)
 
 - `settings-invalid-permission` - Invalid permission action value
 - `settings-permission-invalid-rule` - Invalid Tool(pattern) syntax
@@ -406,20 +414,22 @@ Scripts & Security:
 - `settings-invalid-env-var` - Invalid environment variable name
 - `settings-file-path-not-found` - Referenced file path doesn't exist
 
-**Hooks Rules (3 rules)**
+#### Hooks Rules (3 rules)
 
 - `hooks-invalid-config` - Invalid hooks.json structure
 - `hooks-invalid-event` - Unknown hook event name
 - `hooks-missing-script` - Hook script file not found
 
-**MCP Rules (13 rules)**
+#### MCP Rules (13 rules)
 
 Server Configuration:
+
 - `mcp-invalid-server` - Invalid server configuration
 - `mcp-server-key-mismatch` - Server key doesn't match object key
 - `mcp-invalid-transport` - Unknown transport type
 
 Transport Validation:
+
 - `mcp-stdio-empty-command` - Empty stdio command
 - `mcp-http-empty-url` - Empty HTTP URL
 - `mcp-http-invalid-url` - Invalid HTTP URL format
@@ -431,11 +441,13 @@ Transport Validation:
 - `mcp-websocket-invalid-protocol` - Invalid WebSocket protocol
 
 Environment:
+
 - `mcp-invalid-env-var` - Invalid env var syntax (configurable pattern)
 
-**Plugin Rules (10 rules)**
+#### Plugin Rules (10 rules)
 
 Manifest:
+
 - `plugin-name-required` - Missing plugin name
 - `plugin-version-required` - Missing version
 - `plugin-description-required` - Missing description
@@ -443,17 +455,19 @@ Manifest:
 - `plugin-invalid-manifest` - Invalid plugin.json structure
 
 Structure:
+
 - `plugin-json-wrong-location` - plugin.json not in .claude-plugin/
 - `plugin-components-wrong-location` - Components in wrong location
 - `plugin-missing-file` - Referenced file missing
 - `plugin-marketplace-files-not-found` - Marketplace files missing
 
 Dependencies:
+
 - `plugin-dependency-invalid-version` - Invalid dependency version
 - `plugin-circular-dependency` - Circular plugin dependency
 - `commands-in-plugin-deprecated` - Deprecated commands field
 
-**Agents Rules (13 rules)**
+#### Agents Rules (13 rules)
 
 - `agent-name` - Missing or invalid agent name
 - `agent-description` - Description too short or wrong person
@@ -470,7 +484,7 @@ Dependencies:
 - `agent-body-too-short` - Body <50 characters (configurable)
 - `agent-name-directory-mismatch` - Name doesn't match directory
 
-**Output Styles Rules (6 rules)**
+#### Output Styles Rules (6 rules)
 
 - `output-style-name` - Missing or invalid name
 - `output-style-description` - Description too short
@@ -480,7 +494,7 @@ Dependencies:
 - `output-style-body-too-short` - Body <50 characters (configurable)
 - `output-style-name-directory-mismatch` - Name doesn't match directory
 
-**LSP Rules (9 rules)**
+#### LSP Rules (9 rules)
 
 - `lsp-config-file-not-json` - lsp.json is not valid JSON
 - `lsp-config-file-relative-path` - Config file path is relative
@@ -491,16 +505,16 @@ Dependencies:
 - `lsp-language-id-not-lowercase` - Language ID not lowercase
 - `lsp-extension-missing-dot` - File extension missing dot
 
-**Commands Rules (2 rules)**
+#### Commands Rules (2 rules)
 
 - `commands-deprecated-directory` - .claude/commands deprecated
 - `commands-migrate-to-skills` - Migrate commands to skills
 
-**Total: 105 configurable validation rules**
+#### Total: 105 configurable validation rules
 
 #### Architecture & Performance
 
-**Rule-Based Architecture**
+#### Rule-Based Architecture
 
 - **ESLint-style rule system** - Each validation check is an independent rule
 - **Rule metadata** - Standardized meta objects with id, name, description, severity, category
@@ -510,7 +524,7 @@ Dependencies:
 - **Automatic rule registration** - Rules auto-register via index imports
 - **1:1:1 mapping enforcement** - Every rule has implementation, test, and documentation
 
-**Rule Registry System**
+#### Rule Registry System
 
 - Centralized metadata for all 105 validation rules
 - Single source of truth for rule definitions
@@ -520,7 +534,7 @@ Dependencies:
 - Plugin rule registration
 - Rule option validation with Zod schemas
 
-**Validator Registry & Factory**
+#### Validator Registry & Factory
 
 - Self-registration pattern for validators
 - Dynamic validator discovery
@@ -528,7 +542,7 @@ Dependencies:
 - Factory pattern for validator instantiation
 - Metadata-driven validator management
 
-**Composition Framework**
+#### Composition Framework
 
 - Functional validator composition (inspired by FP patterns)
 - Reusable validation primitives: `compose()`, `optional()`, `conditional()`, `all()`, `any()`
@@ -537,7 +551,7 @@ Dependencies:
 - Enhanced testability
 - Reusable validator building blocks
 
-**Performance Optimizations**
+#### Performance Optimizations
 
 - **Parallel Validation**: Concurrent validator execution using `Promise.all()`
   - ~3.5x speedup over sequential execution

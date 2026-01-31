@@ -120,6 +120,7 @@ The `context.report()` method accepts three fields:
 The error message shown to the user.
 
 **Guidelines:**
+
 - Start with a capital letter
 - End with a period
 - Be clear and specific
@@ -127,6 +128,7 @@ The error message shown to the user.
 - Keep it concise (1-2 sentences)
 
 **Good examples:**
+
 ```typescript
 message: 'File exceeds 100KB limit (152340 bytes).'
 message: 'Referenced skill not found: authentication (expected at .claude/skills/authentication/SKILL.md).'
@@ -134,6 +136,7 @@ message: 'Invalid semantic version: 1.0. Must follow semver format (e.g., 1.0.0,
 ```
 
 **Bad examples:**
+
 ```typescript
 message: 'error'  // Too vague
 message: 'file is too big'  // Not capitalized, no period, no details
@@ -145,6 +148,7 @@ message: 'The file that you have created appears to be exceeding the maximum all
 The line number where the issue occurs.
 
 **When to use:**
+
 - YES: **Line-specific issues**: Import on wrong line, time-sensitive content on line 42
 - NO: **File-level issues**: File too large, missing required file, invalid JSON structure
 
@@ -171,16 +175,19 @@ context.report({
 An actionable suggestion for fixing the issue.
 
 **When to use:**
+
 - The fix is straightforward and clear
 - You can provide concrete steps or examples
 - The user needs guidance on how to resolve the issue
 
 **When to omit:**
+
 - The message already makes the fix obvious
 - The fix is complex and better documented in the rule docs
 - Multiple valid approaches exist
 
 **Good examples:**
+
 ```typescript
 fix: 'Add "version: 1.0.0" to the SKILL.md frontmatter'
 fix: 'Split content into smaller files in .claude/rules/ and use @imports'
@@ -188,6 +195,7 @@ fix: 'Change the transport type to one of: stdio, sse, http, websocket'
 ```
 
 **Bad examples:**
+
 ```typescript
 fix: 'Fix it'  // Not actionable
 fix: 'This needs to be corrected by...'  // Too verbose, use imperative mood
@@ -428,6 +436,7 @@ async validate(context: ValidationContext): Promise<ValidationResult> {
 ```
 
 **What it does:**
+
 1. Gets all rules for the category via `RuleRegistry.getRulesByCategory()`
 2. Checks config to see if each rule is enabled
 3. Applies rule options from config
@@ -511,6 +520,7 @@ describe('skill-missing-version', () => {
 ```
 
 **Purpose:**
+
 - Test the rule's validation logic in isolation
 - Fast execution (no filesystem, no validators)
 - Easy to debug
@@ -559,6 +569,7 @@ describe('MyValidator', () => {
 ```
 
 **Purpose:**
+
 - Test that rules are discovered and executed
 - Test config integration (enable/disable, severity, options)
 - Test rule aggregation and result formatting
@@ -567,12 +578,14 @@ describe('MyValidator', () => {
 ### When to Use Each Level
 
 **Rule Tests (Always):**
+
 - Testing rule validation logic
 - Testing error messages
 - Testing edge cases and boundary conditions
 - Testing rule options
 
 **Validator Tests (When needed):**
+
 - Testing multiple rules work together
 - Testing config affects rule execution
 - Testing file discovery patterns

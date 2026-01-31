@@ -61,6 +61,7 @@ project/
 To resolve missing import errors:
 
 1. **Check for typos** in the import path:
+
    ```markdown
    # Wrong
    Import: @.claude/rules/api-guidlines.md
@@ -70,17 +71,20 @@ To resolve missing import errors:
    ```
 
 2. **Verify the file exists**:
+
    ```bash
    ls -la .claude/rules/api-guidelines.md
    ```
 
 3. **Create the missing file** if needed:
+
    ```bash
    touch .claude/rules/api-guidelines.md
    # Add content to the file
    ```
 
 4. **Fix the path** if it's incorrect:
+
    ```markdown
    # Wrong - missing .claude/ prefix
    Import: @rules/deployment.md
@@ -92,6 +96,7 @@ To resolve missing import errors:
 5. **Verify relative path resolution** - imports are relative to the importing file's directory
 
 6. **Run validation**:
+
    ```bash
    claudelint check-claude-md
    ```

@@ -94,6 +94,7 @@ To fix empty inline patterns:
 1. **Remove the empty parentheses**: `"tool": "Bash()"` → `"tool": "Bash"`
 
 2. **Or add a pattern** if you want to filter:
+
    ```json
    {
      "tool": "Bash(npm *)",
@@ -102,6 +103,7 @@ To fix empty inline patterns:
    ```
 
 3. **Or use separate pattern field** for clarity:
+
    ```json
    {
      "tool": "Bash",

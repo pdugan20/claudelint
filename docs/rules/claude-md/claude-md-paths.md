@@ -139,6 +139,7 @@ paths:
 To fix invalid `paths` fields:
 
 1. **Convert string to array**:
+
    ```markdown
    # Wrong - paths is a string
    ---
@@ -153,6 +154,7 @@ To fix invalid `paths` fields:
    ```
 
 2. **Add at least one path pattern** to empty arrays:
+
    ```markdown
    # Wrong - empty array
    ---
@@ -168,6 +170,7 @@ To fix invalid `paths` fields:
    ```
 
 3. **Ensure all values are strings**:
+
    ```markdown
    # Wrong - contains non-string values
    ---
@@ -186,6 +189,7 @@ To fix invalid `paths` fields:
    ```
 
 4. **Remove empty strings**:
+
    ```markdown
    # Wrong - contains empty string
    ---
@@ -204,6 +208,7 @@ To fix invalid `paths` fields:
    ```
 
 5. **Add paths field if missing** (when creating rules files):
+
    ```markdown
    # Wrong - no paths field
    ---
@@ -221,6 +226,7 @@ To fix invalid `paths` fields:
    ```
 
 6. **Use YAML array syntax properly**:
+
    ```markdown
    # Option 1: Multi-line array
    ---
@@ -236,6 +242,7 @@ To fix invalid `paths` fields:
    ```
 
 7. **Verify the fix**:
+
    ```bash
    claudelint check-claude-md
    ```

@@ -134,12 +134,14 @@ Server without name property (no validation needed):
 To resolve key-name mismatches:
 
 1. **Identify mismatches** in .mcp.json:
+
    ```bash
    # Check for key-name mismatches
    cat .mcp.json | jq '.mcpServers | to_entries | map(select(.key != .value.name)) | .[].key'
    ```
 
 2. **Update the object key** to match the name:
+
    ```json
    # Before
    {
@@ -161,6 +163,7 @@ To resolve key-name mismatches:
    ```
 
 3. **Or update the name** to match the key:
+
    ```json
    # Before
    {
@@ -187,6 +190,7 @@ To resolve key-name mismatches:
    - Match case exactly: if key is `MyServer`, name must be `MyServer`
 
 5. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

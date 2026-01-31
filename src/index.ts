@@ -73,7 +73,12 @@ export type {
  * const formatter = await loadFormatter('stylish');
  * ```
  */
-export { loadFormatter, isBuiltinFormatter, BaseFormatter, BUILTIN_FORMATTERS } from './api/formatter';
+export {
+  loadFormatter,
+  isBuiltinFormatter,
+  BaseFormatter,
+  BUILTIN_FORMATTERS,
+} from './api/formatter';
 export type { BuiltinFormatterName } from './api/formatter';
 
 // ============================================================================
@@ -109,13 +114,7 @@ export { findConfigFile, loadConfig } from './utils/config';
  * const output = await formatResults(results, 'stylish');
  * ```
  */
-export {
-  lint,
-  lintText,
-  resolveConfig,
-  formatResults,
-  getFileInfo,
-} from './api/functions';
+export { lint, lintText, resolveConfig, formatResults, getFileInfo } from './api/functions';
 
 // ============================================================================
 // Internal Implementation (NOT EXPORTED)

@@ -11,6 +11,7 @@ This document defines the new architectural patterns introduced in Phase 2 to el
 ## Validator vs Rule Responsibilities
 
 ### Validators (Orchestrators)
+
 - Find files to validate
 - Read file contents
 - Execute rules via `executeRulesForCategory()`
@@ -18,6 +19,7 @@ This document defines the new architectural patterns introduced in Phase 2 to el
 - **NEVER contain validation logic**
 
 ### Rules (Validators)
+
 - Contain ALL validation logic in `validate()` function
 - Report issues via `context.report()`
 - Are configurable by users (enable/disable, severity)
@@ -49,6 +51,7 @@ async validate() {
 ```
 
 **Issues:**
+
 - Adding new rules requires editing validator
 - No way to see which rules apply to a validator
 - Manual import maintenance burden
@@ -395,6 +398,7 @@ this.validateBodyContentStructure(styleMdPath, content, {
 ```
 
 **Rationale:** Validation logic should be in rules, not in validator abstractions. This allows:
+
 - Users to disable specific validations
 - Better separation of concerns
 - No reportError/reportWarning calls in validators
@@ -686,6 +690,7 @@ if (!content) return;
 ### Code Quality Impact
 
 **Before Phase 2:**
+
 - 38 manual rule imports
 - 66 ghost rules (unconfigurable)
 - ~200 lines of duplicated code
@@ -693,6 +698,7 @@ if (!content) return;
 - Validation logic in validators
 
 **After Phase 2:**
+
 - 0 manual rule imports ✓
 - 0 ghost rules (all configurable) ✓
 - ~50 lines of duplicated code (unavoidable) ✓
@@ -700,6 +706,7 @@ if (!content) return;
 - **Most validation logic in rules** (some abstractions remain)
 
 **After Phase 3 (Future):**
+
 - Zero validation logic in validators
 - Zero reportError/reportWarning calls
 - Pure orchestration pattern

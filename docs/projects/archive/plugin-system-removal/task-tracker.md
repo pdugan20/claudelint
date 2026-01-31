@@ -5,6 +5,7 @@
 ## Progress Overview
 
 ### Core Implementation (v1.0)
+
 - **Phase 1:** 5/5 complete (100%) [x] - Analysis & Documentation
 - **Phase 2:** 8/8 complete (100%) [x] - Delete Plugin System
 - **Phase 3:** 9/9 complete (100%) [x] - Implement Custom Rules
@@ -15,6 +16,7 @@
 **v1.0 Complete:** 39/39 tasks (100%)
 
 ### Enhancement Phases (Future)
+
 - **Phase 7:** 8/8 complete (100%) [x] - Custom Rules Enhancement (v1.1)
 - **Phase 8:** 0/5 complete (0%) - Developer Experience (v1.2)
 - **Phase 9:** 0/8 complete (0%) - Future Enhancements (v2.0+)
@@ -42,18 +44,21 @@
 **Status:** [x] Complete
 
 ### Files to Delete
+
 - [x] 2.1 Delete `src/utils/plugin-loader.ts`
 - [x] 2.2 Delete `tests/utils/plugin-loader.test.ts`
 - [x] 2.3 Delete `docs/plugin-development.md`
 - [x] 2.4 Check and delete `docs/plugin-usage.md` (KEPT - only about Claude Code plugin)
 
 ### Code to Modify
+
 - [x] 2.5 Remove PluginLoader import from `src/cli/commands/check-all.ts`
 - [x] 2.6 Remove plugin loading logic from `src/cli/commands/check-all.ts` (lines 149-166)
 - [x] 2.7 Remove PluginLoader export from `src/utils/index.ts`
 - [x] 2.8 Search for any other references to PluginLoader and remove
 
 **Files Modified:**
+
 - src/cli/commands/check-all.ts (import + lines 148-165 removed)
 - src/utils/index.ts (export removed)
 - docs/architecture.md (Plugin System section + examples removed, ~550 lines)
@@ -66,16 +71,19 @@
 **Status:** [x] Complete
 
 ### Design & Planning
+
 - [x] 3.1 Design custom rules directory structure (`.claudelint/rules/` - decided in Phase 1)
 - [x] 3.2 Design custom rule file format and conventions (completed in PHASE_1_ANALYSIS.md)
 - [x] 3.3 Create interface for custom rules loading (defined in Phase 1)
 
 ### Implementation
+
 - [x] 3.4 Create `src/utils/custom-rule-loader.ts` (270 lines)
 - [x] 3.5 Integrate custom rule loader into rule registry (exported from utils/index.ts)
 - [x] 3.6 Add custom rule discovery to CLI commands (integrated into check-all.ts)
 
 ### Testing
+
 - [x] 3.7 Create `tests/utils/custom-rule-loader.test.ts` (380 lines, 18 tests)
 - [x] 3.8 Create test fixtures for custom rules (5 fixtures in tests/fixtures/custom-rules/)
 - [x] 3.9 Add integration tests for custom rules (220 lines, 7 integration tests)
@@ -87,11 +95,13 @@
 **Status:** [x] Complete
 
 ### New Documentation
+
 - [x] 4.1 Create `docs/custom-rules.md` (comprehensive guide, 650 lines)
 - [x] 4.2 Create example custom rule in docs (docs/examples/custom-rules/)
 - [x] 4.3 Document custom rule file naming conventions (covered in custom-rules.md)
 
 ### Update Existing Documentation
+
 - [x] 4.4 Update `README.md` (changed "Plugin System" to "Custom Rules", added doc link)
 - [x] 4.5 Update `docs/architecture.md` (updated Custom Rules section with implementation details)
 - [x] 4.6 Search and update any other docs referencing plugins (file-naming-conventions.md, docs/README.md, docs/todo.md)
@@ -104,12 +114,14 @@
 **Status:** [x] Complete
 
 ### Automated Testing
+
 - [x] 5.1 Run full test suite: `npm test` (668 tests passed, 2 skipped, 141 suites passed)
 - [x] 5.2 Check test coverage: `jest --coverage` (custom-rule-loader: 93.84% coverage)
 - [x] 5.3 Run build: `npm run build` (successful, no errors)
 - [x] 5.4 Verify TypeScript compilation succeeds (tsc completed successfully)
 
 ### Manual Testing
+
 - [x] 5.5 Test `claudelint check-all` command (works correctly, found 3 errors, 12 warnings)
 - [x] 5.6 Test plugin.json validation still works (validate-plugin passed: All checks passed!)
 
@@ -129,14 +141,17 @@
 ## Notes & Decisions
 
 ### Key Decisions
+
 - **Decision 1:** Keep plugin.json validation system (validates Claude Code plugins)
 - **Decision 2:** Use `.claudelint/rules/` directory for custom rules
 - **Decision 3:** Auto-discover `.ts` and `.js` files in custom rules directory
 
 ### Blockers
+
 - None currently
 
 ### Questions
+
 - None currently
 
 ---
@@ -171,6 +186,7 @@ Core plugin system removal complete. Ready for final git commit.
 **Priority:** HIGH - Delivers immediate user value
 
 ### Auto-Fix Support
+
 - [x] 7.1 Update `ValidationContext` interface to accept `autoFix` parameter (2h)
   - Added `autoFix?: AutoFix` to RuleIssue interface
   - Updated executeRule() context.report to pass through autoFix
@@ -191,6 +207,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Documented --fix CLI usage
 
 ### Helper Library
+
 - [x] 7.5 Create `src/utils/custom-rule-helpers.ts` (6h)
   - Created 11 helper functions with full JSDoc
   - Implemented: hasHeading, extractHeadings, matchesPattern, countOccurrences,
@@ -205,6 +222,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Organized by category (headings, patterns, frontmatter, file system, parsing)
 
 ### Enhanced Documentation
+
 - [x] 7.7 Create 5 additional example rules (4h)
   - Created no-absolute-paths.js (uses matchesPattern, findLinesMatching)
   - Created max-file-size.js (uses countOccurrences)
@@ -231,6 +249,7 @@ Core plugin system removal complete. Ready for final git commit.
 **Priority:** MEDIUM - Improves developer productivity
 
 ### Rule Testing Utilities
+
 - [ ] 8.1 Create `src/utils/rule-tester.ts` (8h)
   - Implement RuleTester class
   - Mock ValidationContext
@@ -249,6 +268,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Document best practices
 
 ### Rule Generator CLI
+
 - [ ] 8.4 Add `create-rule` command to CLI (6h)
   - Add command to src/cli/commands/
   - Prompt for rule metadata (name, category, severity)
@@ -274,6 +294,7 @@ Core plugin system removal complete. Ready for final git commit.
 **Priority:** LOW - Wait for user demand
 
 ### Shareable Config Presets
+
 - [ ] 9.1 Design config extension mechanism (4h)
   - Define config file format
   - Design merge/override logic
@@ -289,6 +310,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Versioning strategy
 
 ### Documentation Website
+
 - [ ] 9.4 Set up static site generator (8h)
   - Choose framework (VitePress/Docusaurus)
   - Set up site structure
@@ -305,6 +327,7 @@ Core plugin system removal complete. Ready for final git commit.
   - Rule examples showcase
 
 ### npm Plugin Support
+
 - [ ] 9.7 Design plugin API (8h)
   - Define plugin package structure
   - Design namespace isolation
@@ -346,7 +369,8 @@ Comprehensive research completed comparing our implementation to industry standa
 
 ## Completion Criteria by Phase
 
-### Phase 7 (v1.1) - Ready to Ship When:
+### Phase 7 (v1.1) - Ready to Ship When
+
 - [ ] Auto-fix works for custom rules
 - [ ] Helper library has 9+ utility functions
 - [ ] 5+ new example rules demonstrating helpers
@@ -354,14 +378,16 @@ Comprehensive research completed comparing our implementation to industry standa
 - [ ] All tests passing
 - [ ] No breaking changes
 
-### Phase 8 (v1.2) - Ready to Ship When:
+### Phase 8 (v1.2) - Ready to Ship When
+
 - [ ] RuleTester fully functional
 - [ ] `claudelint create-rule` command works
 - [ ] Templates generate valid rules
 - [ ] Documentation includes testing guide
 - [ ] All tests passing
 
-### Phase 9 (v2.0+) - Only If:
+### Phase 9 (v2.0+) - Only If
+
 - Users request shareable configs
 - Community wants to publish plugins
 - Ecosystem demand emerges

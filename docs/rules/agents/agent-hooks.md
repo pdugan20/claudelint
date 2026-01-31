@@ -104,6 +104,7 @@ hooks:
 To fix hooks configuration:
 
 1. **Format as array**: Use YAML array syntax with hyphens
+
    ```yaml
    hooks:
      - event: PreToolUse

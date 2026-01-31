@@ -112,7 +112,7 @@ To fix transport configuration errors:
 }
 ```
 
-2. **Use "socket" only when required**:
+1. **Use "socket" only when required**:
 
 ```json
 {
@@ -126,7 +126,7 @@ To fix transport configuration errors:
 }
 ```
 
-3. **Or omit transport entirely** (defaults to stdio):
+1. **Or omit transport entirely** (defaults to stdio):
 
 ```json
 {
@@ -138,7 +138,7 @@ To fix transport configuration errors:
 }
 ```
 
-4. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp

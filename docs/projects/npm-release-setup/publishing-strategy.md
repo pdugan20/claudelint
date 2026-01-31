@@ -221,6 +221,7 @@ npm publish --tag rc --access public
 **Duration:** 1-2 weeks
 
 **Goals:**
+
 - Identify any remaining bugs
 - Validate documentation
 - Test in real projects

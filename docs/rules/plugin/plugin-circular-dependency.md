@@ -10,6 +10,7 @@ Plugin must not have circular dependencies
 ## Rule Details
 
 This rule triggers when Claude Code detects circular dependency chains in plugin manifests. A circular dependency occurs when:
+
 - A plugin depends on itself directly: `plugin-a → plugin-a`
 - A plugin depends on another that depends back: `plugin-a → plugin-b → plugin-a`
 - Multiple plugins form a dependency cycle: `plugin-a → plugin-b → plugin-c → plugin-a`
@@ -76,12 +77,14 @@ Where plugin-utils and plugin-helpers don't depend on plugin-a.
 To resolve circular dependency errors:
 
 1. **Identify the circular reference** in your plugin.json:
+
    ```bash
    # Check dependencies section
    cat plugin.json | jq '.dependencies'
    ```
 
 2. **Remove direct self-dependencies**:
+
    ```json
    # Before (incorrect)
    {
@@ -104,12 +107,14 @@ To resolve circular dependency errors:
    - If plugin-a depends on plugin-b and plugin-b depends on plugin-a
    - Extract shared code into a third plugin (plugin-common)
    - Have both plugin-a and plugin-b depend on plugin-common
+
    ```text
    # Bad: A <-> B (circular)
    # Good: A -> Common <- B (acyclic)
    ```
 
 4. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```

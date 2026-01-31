@@ -40,12 +40,14 @@ project/
 To resolve case-sensitive filename collisions:
 
 1. **Identify the colliding files**:
+
    ```bash
    find . -iname "security.md"
    # Shows: Security.md and security.md
    ```
 
 2. **Rename one or both files** to have unique names:
+
    ```bash
    mv Security.md security-overview.md
    # OR
@@ -53,6 +55,7 @@ To resolve case-sensitive filename collisions:
    ```
 
 3. **Update all imports** that reference the renamed file:
+
    ```markdown
    # Before
    Import: @.claude/rules/Security.md
@@ -62,6 +65,7 @@ To resolve case-sensitive filename collisions:
    ```
 
 4. **Verify no collisions remain**:
+
    ```bash
    claudelint check-claude-md
    ```

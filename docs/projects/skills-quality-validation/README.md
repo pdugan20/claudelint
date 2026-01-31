@@ -48,11 +48,13 @@ Pick a rule → Read implementation guide → Write code → Test → Update tra
 ## Implementation Roadmap
 
 ### Phase 0: Architecture Refactor (PREREQUISITE)
+
 **Status**: Not started
 **Duration**: 2-3 days
 **Priority**: CRITICAL - Must complete before any rule implementation
 
 Refactor claudelint to match industry standards (ESLint/Prettier model):
+
 - Move shellcheck, markdownlint, pylint to main linting command
 - Keep only Prettier in format command
 - Support --fix flag for autofix capabilities
@@ -62,6 +64,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 ---
 
 ### Phase 1: Easy Rules (2-3 days)
+
 **Status**: Not started
 **Priority**: Quick wins
 
@@ -71,6 +74,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 - See [EASY-RULES.md](./EASY-RULES.md)
 
 **Top Priorities**:
+
 1. `skill-readme-forbidden` - Explicit requirement
 2. `skill-body-word-count` - Align with guide
 3. `skill-xml-tags-anywhere` - Security
@@ -78,6 +82,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 ---
 
 ### Phase 2: Medium Rules (1-2 weeks)
+
 **Status**: Not started
 **Priority**: Core quality validation
 
@@ -88,6 +93,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 - See [MEDIUM-RULES.md](./MEDIUM-RULES.md)
 
 **Top Priorities**:
+
 1. `skill-description-trigger-phrases` HIGH - Most impactful
 2. `skill-description-structure` HIGH - Core quality
 3. `skill-hardcoded-secrets` Security - Security critical
@@ -97,6 +103,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 ---
 
 ### Phase 3: Hard Rules (2-3 weeks)
+
 **Status**: Not started
 **Priority**: Advanced validation
 
@@ -106,6 +113,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 - See [HARD-RULES.md](./HARD-RULES.md)
 
 **Top Priorities**:
+
 1. `skill-mcp-server-exists` - Prevent broken skills
 2. `skill-mcp-tool-exists` - Runtime validation
 3. `skill-trigger-phrase-quality` HIGH - LLM evaluation
@@ -141,13 +149,16 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 ## Key Learnings
 
 ### Coverage Analysis
+
 We have **~60% coverage** of Anthropic's official guide (pages 8-13):
+
 - DONE **Excellent** (90%): Structural/naming requirements
 - DONE **Good** (75%): Basic security checks
 - PARTIAL **Weak** (30%): Content quality validation
 - MISSING **Missing** (0%): Progressive disclosure enforcement
 
 ### Critical Gaps Identified
+
 1. **Description quality** - No validation of trigger phrases (most important!)
 2. **README.md forbidden** - Explicit requirement not enforced
 3. **Word count vs line count** - Using wrong metric
@@ -157,6 +168,7 @@ We have **~60% coverage** of Anthropic's official guide (pages 8-13):
 ### Impact Assessment
 
 **High Impact Rules** (implement first):
+
 - Description trigger phrase validation (M1-M3)
 - File structure compliance (E1, E6)
 - Security issues (M13)
@@ -169,6 +181,7 @@ We have **~60% coverage** of Anthropic's official guide (pages 8-13):
 ### 1. Pick a Rule
 
 Check [SKILL-RULES-TRACKER.md](./SKILL-RULES-TRACKER.md) for available rules:
+
 - [NOT STARTED] Not Started - Available to claim
 - [IN PROGRESS] In Progress - Someone working on it
 - [COMPLETE] Complete - Already done
@@ -182,6 +195,7 @@ Check [SKILL-RULES-TRACKER.md](./SKILL-RULES-TRACKER.md) for available rules:
 ### 3. Implement
 
 Follow the pattern from the guide:
+
 ```typescript
 export const rule: Rule = {
   meta: { /* ... */ },
@@ -192,6 +206,7 @@ export const rule: Rule = {
 ### 4. Test
 
 Write tests for:
+
 - DONE Good examples (should pass)
 - MISSING Bad examples (should fail)
 - Official Anthropic examples (should pass)
@@ -205,16 +220,20 @@ Update your rule status in [SKILL-RULES-TRACKER.md](./SKILL-RULES-TRACKER.md)
 ## Reference Materials
 
 ### Anthropic Official Guide
+
 **"The Complete Guide to Building Skills for Claude"** (32 pages, January 2026)
+
 - Stored: `~/Downloads/Docs/claude-skills/The-Complete-Guide-to-Building-Skill-for-Claude.pdf`
 - Key sections summarized in [ANTHROPIC-BEST-PRACTICES-SUMMARY.md](./ANTHROPIC-BEST-PRACTICES-SUMMARY.md)
 
 ### Existing Rules (Examples)
+
 - **Easy**: `src/rules/skills/skill-missing-shebang.ts`
 - **Medium**: `src/rules/skills/skill-dangerous-command.ts`
 - **Schema**: `src/schemas/skill-frontmatter.schema.ts`
 
 ### Testing
+
 - Test files: `tests/rules/skills/`
 - Official examples: Check Anthropic skills repository
 
@@ -242,12 +261,14 @@ A: Yes! Some new rules should replace/enhance existing ones (e.g., E6 replaces l
 ## Success Metrics
 
 ### Project Success
+
 - [ ] 90%+ alignment with Anthropic guide recommendations
 - [ ] <5% false positive rate on official example skills
 - [ ] Rules execute in <2 seconds for typical skill
 - [ ] User satisfaction >4/5 based on feedback
 
 ### Individual Rule Success
+
 - [ ] Catches all bad examples from guide
 - [ ] Zero false positives on good examples
 - [ ] Clear, actionable error messages
@@ -266,6 +287,7 @@ A: Yes! Some new rules should replace/enhance existing ones (e.g., E6 replaces l
 ## Low Change Log
 
 ### 2026-01-30
+
 - DONE Initial project structure created
 - DONE Analysis of Anthropic guide completed
 - DONE 44 new rules identified and documented
@@ -273,6 +295,7 @@ A: Yes! Some new rules should replace/enhance existing ones (e.g., E6 replaces l
 - DONE Centralized tracker with priorities established
 
 ### Next Actions
+
 1. Begin Phase 1 implementation
 2. Set up CI/CD for new rules
 3. Create test harness for official examples

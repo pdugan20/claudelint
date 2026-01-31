@@ -63,17 +63,21 @@ To move import statements out of code blocks:
    ```
 
    # After (correct)
+
    Import: @.claude/rules/standards.md
 
    Here's an example of the import syntax.
+
    ```
 
 3. **If showing import syntax as an example**, use inline code:
+
    ```markdown
    Use the syntax: `Import: @path/to/file.md`
    ```
 
 4. **Verify all imports are processed**:
+
    ```bash
    claudelint check-claude-md
    ```

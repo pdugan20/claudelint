@@ -68,11 +68,13 @@ claudelint check-claude-md CLAUDE.md
 To resolve file not found errors:
 
 1. **Verify the file exists**:
+
    ```bash
    ls -la /path/to/CLAUDE.md
    ```
 
 2. **Check for typos** in the file name or path:
+
    ```bash
    # Wrong
    claudelint check-claude-md CLUADE.md
@@ -82,6 +84,7 @@ To resolve file not found errors:
    ```
 
 3. **Use absolute paths** to avoid confusion:
+
    ```bash
    # Get absolute path
    pwd
@@ -92,18 +95,21 @@ To resolve file not found errors:
    ```
 
 4. **Check current directory**:
+
    ```bash
    pwd
    ls -la | grep CLAUDE.md
    ```
 
 5. **Create the file** if it should exist but doesn't:
+
    ```bash
    touch CLAUDE.md
    # Add content to the file
    ```
 
 6. **Verify file permissions** - ensure the file is readable:
+
    ```bash
    chmod 644 CLAUDE.md
    ```

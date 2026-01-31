@@ -12,6 +12,7 @@ Plugin description is required and cannot be empty
 Every plugin must declare a `description` field in `plugin.json`. The description is a required field that explains what the plugin does to users. It must be a non-empty string that is not just whitespace.
 
 The description field serves several purposes:
+
 - **User discovery**: Helps users find relevant plugins in the marketplace
 - **Installation decisions**: Users read descriptions before installing plugins
 - **Search optimization**: Marketplace search indexes description text
@@ -98,6 +99,7 @@ Description with problem statement:
 To add a required description field:
 
 1. **Add description field** to plugin.json:
+
    ```json
    {
      "name": "my-plugin",
@@ -107,6 +109,7 @@ To add a required description field:
    ```
 
 2. **Write clear, descriptive text** (1-2 sentences):
+
    ```bash
    # Good descriptions explain what and why
    "Format code automatically with Prettier, ESLint, and Black"
@@ -119,6 +122,7 @@ To add a required description field:
    ```
 
 3. **Focus on user benefits**:
+
    ```json
    {
      "description": "Streamline your git workflow with automated commit messages and branch management"
@@ -126,12 +130,14 @@ To add a required description field:
    ```
 
 4. **Keep it concise** (typically 50-150 characters):
+
    ```bash
    # Check description length
    cat plugin.json | jq -r '.description | length'
    ```
 
 5. **Update description** if needed:
+
    ```bash
    # Use jq to update description
    jq '.description = "New description text"' plugin.json > plugin.json.tmp
@@ -139,6 +145,7 @@ To add a required description field:
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -150,6 +157,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 Never disable this rule. The description field is mandatory for plugin functionality:
+
 - Plugins without descriptions cannot be published to the marketplace
 - Users cannot understand what the plugin does without a description
 - Marketplace search relies on description text for discovery

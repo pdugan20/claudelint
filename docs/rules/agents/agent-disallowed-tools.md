@@ -85,6 +85,7 @@ disallowed-tools:
 To fix disallowed-tools configuration:
 
 1. **Format as array**: Use YAML array syntax with hyphens
+
    ```yaml
    disallowed-tools:
      - Edit

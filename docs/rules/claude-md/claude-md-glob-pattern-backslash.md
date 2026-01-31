@@ -95,6 +95,7 @@ paths:
 To fix backslash usage in path patterns:
 
 1. **Replace all backslashes with forward slashes**:
+
    ```markdown
    # Wrong
    ---
@@ -110,6 +111,7 @@ To fix backslash usage in path patterns:
    ```
 
 2. **Update Windows-style absolute paths** to use forward slashes:
+
    ```markdown
    # Wrong
    ---
@@ -130,11 +132,13 @@ To fix backslash usage in path patterns:
    - In: frontmatter `paths` field only
 
 4. **Verify pattern matching** after fixing:
+
    ```bash
    claudelint check-claude-md
    ```
 
 5. **Test the glob patterns** to ensure they still match the intended files:
+
    ```bash
    # Example: test if pattern matches expected files
    ls -la src/**/*.ts

@@ -33,6 +33,7 @@ This document defines the file naming conventions used throughout the claudelint
 - ✗ `implementation_tracker.md`
 
 **Exceptions**:
+
 - `README.md` - Standard GitHub convention (uppercase)
 - `CHANGELOG.md` - Standard convention for changelogs
 - `CONTRIBUTING.md` - Standard convention for contribution guidelines

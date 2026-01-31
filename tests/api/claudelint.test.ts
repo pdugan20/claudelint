@@ -127,12 +127,20 @@ describe('ClaudeLint', () => {
   });
 
   describe('lintFiles', () => {
-    it('should return empty array for no matching files', async () => {
-      const linter = new ClaudeLint({ cwd: tempDir });
+    it('should return empty array for no matching files when errorOnUnmatchedPattern is false', async () => {
+      const linter = new ClaudeLint({ cwd: tempDir, errorOnUnmatchedPattern: false });
       const results = await linter.lintFiles(['nonexistent/**/*.md']);
 
       expect(Array.isArray(results)).toBe(true);
       expect(results.length).toBe(0);
+    });
+
+    it('should throw error for no matching files when errorOnUnmatchedPattern is true (default)', async () => {
+      const linter = new ClaudeLint({ cwd: tempDir });
+
+      await expect(linter.lintFiles(['nonexistent/**/*.md'])).rejects.toThrow(
+        'No files matching patterns: nonexistent/**/*.md'
+      );
     });
 
     it('should lint matching files', async () => {

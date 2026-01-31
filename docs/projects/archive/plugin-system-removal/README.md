@@ -48,12 +48,14 @@ module.exports.rule = {
 ## What We Accomplished
 
 ### Removed (1,877 lines deleted)
+
 - [x] `src/utils/plugin-loader.ts` (256 lines)
 - [x] `tests/utils/plugin-loader.test.ts` (304 lines)
 - [x] `docs/plugin-development.md` (690 lines)
 - [x] Plugin System sections from docs (~627 lines)
 
 ### Added (1,500+ lines)
+
 - [x] `src/utils/custom-rule-loader.ts` (262 lines, 93.84% coverage)
 - [x] `tests/utils/custom-rule-loader.test.ts` (437 lines, 16 tests)
 - [x] `tests/integration/custom-rules.integration.test.ts` (330 lines, 6 tests)
@@ -61,6 +63,7 @@ module.exports.rule = {
 - [x] `docs/examples/custom-rules/` (example implementations)
 
 ### Updated
+
 - [x] Updated 9 documentation files
 - [x] Added breaking change notice to CHANGELOG.md
 - [x] All 668 tests passing
@@ -94,15 +97,18 @@ module.exports.rule = {
 ## Future Enhancements (See TASK_TRACKER.md)
 
 ### v1.1 - Custom Rules Enhancement (Planned)
+
 - Enable auto-fix for custom rules
 - Add helper library for common patterns
 - Create more example rules
 
 ### v1.2 - Developer Experience (Planned)
+
 - RuleTester for testing custom rules
 - `claudelint create-rule` CLI command
 
 ### v2.0+ - Advanced Features (Future)
+
 - Shareable config presets (if demand emerges)
 - npm plugin support (if ecosystem develops)
 
@@ -126,6 +132,7 @@ module.exports.rule = {
 ## Comparison to Industry Standards
 
 Research showed our implementation:
+
 - [x] Matches markdownlint's local-file approach
 - [x] Better than markdownlint (auto-discovery, TypeScript, validation)
 - [x] Appropriate for our narrow domain (Claude Code projects)
@@ -145,6 +152,7 @@ plugin-system-removal/
 ## Next Steps
 
 See [TASK_TRACKER.md](./TASK_TRACKER.md) for:
+
 - Future enhancement phases (v1.1, v1.2, v2.0+)
 - Detailed task breakdowns
 - Effort estimates

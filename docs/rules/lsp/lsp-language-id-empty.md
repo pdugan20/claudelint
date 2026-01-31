@@ -94,7 +94,7 @@ To fix empty language ID errors:
 }
 ```
 
-3. **Remove mapping entirely** if language ID is unknown:
+1. **Remove mapping entirely** if language ID is unknown:
 
 ```json
 {
@@ -104,7 +104,7 @@ To fix empty language ID errors:
 }
 ```
 
-4. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp

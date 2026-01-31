@@ -88,6 +88,7 @@ description: Reviews various content
 To resolve name-directory mismatches:
 
 1. **Option A: Rename the frontmatter name** to match the directory
+
    ```markdown
    ---
    name: code-reviewer  # Match directory name
@@ -96,6 +97,7 @@ To resolve name-directory mismatches:
    ```
 
 2. **Option B: Rename the directory** to match the frontmatter name
+
    ```bash
    mv .claude/agents/old-name .claude/agents/new-name
    ```

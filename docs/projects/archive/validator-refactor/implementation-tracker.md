@@ -11,6 +11,7 @@
 ## Project Overview
 
 Phase 2 completed the ESLint-style rule architecture migration by:
+
 1. **Eliminating "ghost rules"** - ALL validation logic moved to configurable rules
 2. **Building test infrastructure** - ClaudeLintRuleTester for unit testing individual rules
 3. **Implementing rule discovery** - Auto-discover rules via RuleRegistry (no manual imports)
@@ -23,6 +24,7 @@ Phase 2 completed the ESLint-style rule architecture migration by:
 This phase completed the Phase 5 migration by eliminating "ghost rules" (validations without configurable ruleIds) and implementing proper rule discovery patterns. This refactor made ALL validations configurable, removed code duplication, and established consistent patterns across 10 validator categories.
 
 **Final Results:**
+
 - 105 configurable validation rules across 10 categories
 - Zero ghost rules (all validations have ruleIds)
 - Zero stub rules (all rules have real implementations)
@@ -33,6 +35,7 @@ This phase completed the Phase 5 migration by eliminating "ghost rules" (validat
 ### Why This Mattered
 
 **Before Phase 2:**
+
 - 66+ validation checks were non-configurable (hardcoded in validators)
 - Users frustrated: "Why can't I disable 'server name too short' warning?"
 - Didn't match ESLint/industry standards
@@ -40,6 +43,7 @@ This phase completed the Phase 5 migration by eliminating "ghost rules" (validat
 - No unit tests for individual rules
 
 **After Phase 2:**
+
 - ALL 105 validation checks are configurable rules
 - Users control everything via `.claudelintrc.json`
 - Matches ESLint architecture: validators orchestrate, rules validate
@@ -140,6 +144,7 @@ After completing MCP and Claude.md validators, we discovered:
 ### Solution
 
 **Revised Approach:**
+
 1. Build RuleTester infrastructure (like ESLint's RuleTester)
 2. Add unit tests for existing MCP/Claude.md rules
 3. For remaining validators: Remove schema validation, implement stubs with tests, migrate
@@ -399,6 +404,7 @@ validate: (content: string, filePath: string, context: RuleContext) => {
 ```
 
 **Benefits:**
+
 - No duplication of validation logic
 - Individual rule control (enable/disable per rule)
 - Better error messages with proper context
@@ -752,6 +758,7 @@ After Phase 2.3, we stopped at 21 "easy" rules (field-level schema delegation). 
     - `src/validators/output-styles.ts` - Removed name-directory check, added `import '../rules'`
   - **Notes:** All 3 rules implemented and tested. Removed skillName/agentName/outputStyleName parameters from validateFrontmatter() methods. Added rule auto-registration imports. All 236 validator tests passing.
   - **Example:**
+
     ```typescript
     // src/rules/skills/skill-name-directory-mismatch.ts
     validate: (context: RuleContext) => {
@@ -790,6 +797,7 @@ After Phase 2.3, we stopped at 21 "easy" rules (field-level schema delegation). 
     - Removed `checkMultiScriptReadme()` from skills.ts
   - **Notes:** Options system uses `meta.schema` (Zod) and `meta.defaultOptions`. Access via `context.options` with nullish coalescing for defaults. All 236 validator tests passing.
   - **Example with options:**
+
     ```typescript
     // src/rules/agents/agent-body-too-short.ts
     meta: {
@@ -964,15 +972,18 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 ### Findings from Code Audit
 
 **Dead Code Identified:**
+
 - ~100 lines of unused abstraction methods in base.ts (validateFrontmatterWithNameCheck, validateBodyContentStructure, validateFilesInDirectory)
 - These were created in Tasks 2.0.3-2.0.5 for Phase 2.6 refactoring, but became obsolete after moving all validation to rules
 
 **Report Calls Audit (32 total):**
+
 - ~8 operational calls ("No files found", parse errors) → Replace with exceptions
 - ~7 tool/event name validation → Convert to rules or remove
 - ~17 in base.ts or relaying rule results → Delete when methods removed
 
 **ESLint Pattern Requirements:**
+
 - Validators: Orchestrate only, throw exceptions for operational errors
 - Rules: Validate only, call context.report()
 - CLI: Catch exceptions, format user-friendly messages
@@ -1252,6 +1263,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Shared utilities: cli/utils/
     - Factory pattern for similar commands
   - **Target Structure:**
+
     ```
     src/
       cli.ts (~200 lines)
@@ -1276,6 +1288,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 
       cli-hooks.ts - DELETE (unused, orphaned)
     ```
+
   - **Action:** Create cli/commands/ directory structure
   - **Action:** Extract check-all command to cli/commands/check-all.ts (most complex, ~200 lines)
   - **Action:** Create validator command factory in cli/commands/validator-commands.ts
@@ -1332,16 +1345,16 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Results:**
     - Created comprehensive test fixtures in /tmp/claudelint-manual-test
     - Verified all 10 validators correctly detect issues:
-      * CLAUDE.md Validator: ✓ Detects size errors, size warnings
-      * Skills Validator: ✓ Detects missing version, missing changelog
-      * Agents Validator: ✓ Detects missing system prompt section
-      * Output Styles Validator: ✓ Working correctly
-      * LSP Validator: ✓ Working correctly
-      * Settings Validator: ✓ Validates schema, detects structural errors
-      * Hooks Validator: ✓ Working correctly
-      * MCP Validator: ✓ Validates schema, detects server key mismatches
-      * Plugin Validator: ✓ Detects missing required fields
-      * Commands Validator: ✓ Working correctly
+      - CLAUDE.md Validator: ✓ Detects size errors, size warnings
+      - Skills Validator: ✓ Detects missing version, missing changelog
+      - Agents Validator: ✓ Detects missing system prompt section
+      - Output Styles Validator: ✓ Working correctly
+      - LSP Validator: ✓ Working correctly
+      - Settings Validator: ✓ Validates schema, detects structural errors
+      - Hooks Validator: ✓ Working correctly
+      - MCP Validator: ✓ Validates schema, detects server key mismatches
+      - Plugin Validator: ✓ Detects missing required fields
+      - Commands Validator: ✓ Working correctly
     - Created valid test fixtures to verify clean pass with no issues
     - All validators pass with valid input (0 errors, 0 warnings)
     - All validators correctly report errors and warnings
@@ -1358,10 +1371,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - **Cold cache performance:** ~316ms average (382ms, 334ms, 233ms over 3 runs)
     - **Warm cache performance:** ~397ms average (565ms, 372ms, 255ms over 3 runs)
     - **Individual validator timings:**
-      * CLAUDE.md: 25ms, Skills: 44ms, Agents: 5ms, Output Styles: 5ms, LSP: 5ms
-      * Settings: 8ms, Hooks: 18ms, MCP: 6ms, Plugin: 32ms, Commands: 6ms
-      * Total validator time: ~154ms
-      * Node.js startup overhead: ~200ms
+      - CLAUDE.md: 25ms, Skills: 44ms, Agents: 5ms, Output Styles: 5ms, LSP: 5ms
+      - Settings: 8ms, Hooks: 18ms, MCP: 6ms, Plugin: 32ms, Commands: 6ms
+      - Total validator time: ~154ms
+      - Node.js startup overhead: ~200ms
     - **Small project test:** 444ms total (<10ms validators, ~430ms overhead)
   - **Analysis:**
     - Performance slower than documented README benchmarks (204ms cold, 84ms warm)
@@ -1598,10 +1611,10 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 
 **Industry Standards (ESLint/Prettier/Husky patterns):**
 
-  - **Actual Time:** 2 hours
-  - **Dependencies:** None (chalk already in dependencies)
-  - **Assigned To:** Claude
-  - **Completion Date:** 2026-01-29
+- **Actual Time:** 2 hours
+- **Dependencies:** None (chalk already in dependencies)
+- **Assigned To:** Claude
+- **Completion Date:** 2026-01-29
 
 - [X] **Task 2.8.2:** Move dependencies and use programmatic APIs
   - **Files:** `package.json`, `src/cli/commands/format.ts`, `src/cli/utils/formatters/` (new)
@@ -1612,6 +1625,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Using `execSync('prettier --check ...')` (slow, spawns processes)
     - Using `execSync('markdownlint ...')` (fragile, depends on global install)
   - **Action:** Update `package.json` dependencies:
+
     ```json
     {
       "dependencies": {
@@ -1624,7 +1638,9 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       }
     }
     ```
+
   - **Action:** Create `src/cli/utils/formatters/prettier.ts`:
+
     ```typescript
     import * as prettier from 'prettier';
 
@@ -1643,7 +1659,9 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       return { passed: errors.length === 0, errors };
     }
     ```
+
   - **Action:** Create `src/cli/utils/formatters/markdownlint.ts`:
+
     ```typescript
     import markdownlint from 'markdownlint';
 
@@ -1661,6 +1679,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       };
     }
     ```
+
   - **Action:** Refactor `src/cli/commands/format.ts` to use programmatic APIs instead of `execSync`
   - **Action:** Test all formatting commands work correctly
   - **Action:** Run `npm install` to update dependencies
@@ -1697,6 +1716,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - **Alternative 2:** Move to validate-skills, keep format for auto-fixable tools only
     - **Recommendation:** Alternative 2 (cleaner separation, matches industry patterns)
   - **Action:** Create `src/cli/utils/system-tools.ts`:
+
     ```typescript
     export function isShellCheckAvailable(): boolean {
       try {
@@ -1717,7 +1737,9 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       return 'Install: https://github.com/koalaman/shellcheck#installing';
     }
     ```
+
   - **Action:** Update format.ts with graceful degradation:
+
     ```typescript
     if (isShellCheckAvailable()) {
       // Run shellcheck on .sh files
@@ -1729,6 +1751,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       logger.info('Shell scripts will skip advanced linting');
     }
     ```
+
   - **Action:** Consider creating `skill-shell-lint` rule for proper integration (optional enhancement):
     - Integrates with validate-skills validator
     - Reports through ValidationResult system
@@ -1762,6 +1785,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Doesn't configure based on what's installed
     - Users don't know what's optional
   - **Action:** Add tool detection to wizard:
+
     ```typescript
     async detectOptionalTools(): Promise<{
       hasShellCheck: boolean;
@@ -1775,7 +1799,9 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       };
     }
     ```
+
   - **Action:** Add prompt for ShellCheck if detected:
+
     ```typescript
     {
       type: 'confirm',
@@ -1793,6 +1819,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       }
     }
     ```
+
   - **Action:** Update generated config based on tool availability
   - **Action:** Display summary of bundled vs optional tools in "Next Steps"
   - **Expected Benefits:**
@@ -1817,6 +1844,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Actual Time:** 20 minutes
   - **Completion Date:** 2026-01-29
   - **Action:** Update README with bundled vs optional dependencies section:
+
     ```markdown
     ## Dependencies
 
@@ -1835,6 +1863,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 
     Claudelint detects and uses these tools if available, but works without them.
     ```
+
   - **Action:** Update CLI reference with new output format examples
   - **Action:** Update formatting-tools.md with programmatic API usage
   - **Action:** Add "Optional Tools" section to getting-started.md
@@ -1865,6 +1894,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Risk of inconsistent output formatting creeping back in
   - **Problem:** After Task 2.8.1 refactor, nothing prevents future code from using raw console calls
   - **Action:** Add ESLint override to `.eslintrc.json`:
+
     ```json
     {
       "overrides": [
@@ -1881,14 +1911,18 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       ]
     }
     ```
+
   - **Action:** Create `scripts/check-cli-output.ts` script to detect manual `\n` usage:
+
     ```typescript
     // Walks src/cli/ directory
     // Checks for manual newlines in strings (e.g., 'message\n')
     // Reports violations with file:line
     // Exits 1 if violations found, 0 if clean
     ```
+
   - **Action:** Add check to `package.json` scripts:
+
     ```json
     {
       "scripts": {
@@ -1897,17 +1931,23 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
       }
     }
     ```
+
   - **Action:** Add to `.husky/pre-commit` hook:
+
     ```bash
     # After existing checks
     npm run check:cli-output
     ```
+
   - **Action:** Add to `.github/workflows/ci.yml`:
+
     ```yaml
     - name: Check CLI output formatting
       run: npm run check:cli-output
     ```
+
   - **Action:** Document guidelines in `CONTRIBUTING.md`:
+
     ```markdown
     ## CLI Output Guidelines
 
@@ -1920,30 +1960,33 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Deliverables:**
     - `.eslintrc.json` - Added no-console rule for src/cli/**/*.ts (excludes logger.ts and reporting.ts)
     - `scripts/check-logger-spacing.sh` - Created comprehensive enforcement script:
-      * Checks for hardcoded 2+ spaces in string literals
-      * Checks for hardcoded 2+ spaces in template literals
-      * Checks for manual \n newlines (must use logger.newline())
-      * Checks for empty strings '' or "" (must use logger.newline())
+      - Checks for hardcoded 2+ spaces in string literals
+      - Checks for hardcoded 2+ spaces in template literals
+      - Checks for manual \n newlines (must use logger.newline())
+      - Checks for empty strings '' or "" (must use logger.newline())
     - `src/cli/utils/config-loader.ts` - Fixed all manual formatting violations:
-      * Replaced logger.error('\n...') with logger.newline() + logger.error('...')
-      * Replaced logger.error('') with logger.newline()
+      - Replaced logger.error('\n...') with logger.newline() + logger.error('...')
+      - Replaced logger.error('') with logger.newline()
     - `package.json` - Added "check:logger-spacing" script
     - All violations fixed, enforcement script passes with zero errors
   - **Notes:** COMPLETE! Comprehensive enforcement prevents all manual formatting patterns. ESLint bans console.log, script catches \n and empty strings. All violations fixed in config-loader.ts.
 
 **Dependency Management:**
+
 - [ ] prettier/markdownlint moved to dependencies
 - [ ] All formatting uses programmatic APIs (no execSync)
 - [ ] ShellCheck optional with graceful degradation
 - [ ] Clear install messages for missing optional tools
 
 **User Experience:**
+
 - [ ] Init wizard detects and configures available tools
 - [ ] Clear documentation on bundled vs optional tools
 - [ ] Professional, consistent CLI output
 - [ ] No confusing errors about missing tools
 
 **Enforcement:**
+
 - [ ] ESLint bans console.log in CLI files
 - [ ] Script checks for manual newlines
 - [ ] Pre-commit hook runs enforcement checks
@@ -1951,6 +1994,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 - [ ] CONTRIBUTING.md documents guidelines
 
 **Testing:**
+
 - [ ] All commands work with new logger utility
 - [ ] Format command works with programmatic APIs
 - [ ] Graceful handling when ShellCheck not installed
@@ -1960,6 +2004,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 ### Expected Impact
 
 **Before:**
+
 ```bash
 $ claudelint format
 
@@ -1979,6 +2024,7 @@ Running prettier on Claude files...
 ```
 
 **After:**
+
 - Follows ESLint/Prettier industry standards
 
 ---
@@ -1989,6 +2035,7 @@ Running prettier on Claude files...
 **Verification Script:** `scripts/verify-phase2-checklist.ts`
 
 ### Code Quality
+
 - [x] Zero `reportError`/`reportWarning` calls in validators (validators throw exceptions instead) [VERIFIED] Verified
 - [x] reportError/reportWarning methods deleted from base.ts [VERIFIED] Verified
 - [x] Zero validation logic in validators (all logic in rules) [VERIFIED] Completed Phase 2.1-2.6
@@ -2004,6 +2051,7 @@ Running prettier on Claude files...
 - [x] base.ts refactored if needed (types split, disable comments extracted, etc.) [VERIFIED] Completed Phase 2.6
 
 ### Testing
+
 - [x] All 714+ integration tests passing [VERIFIED] Verified (714 passing, 2 skipped)
 - [x] All rule unit tests passing [VERIFIED] Verified
 - [x] ClaudeLintRuleTester utility created [VERIFIED] Verified (tests/helpers/rule-tester.ts)
@@ -2014,6 +2062,7 @@ Running prettier on Claude files...
 - [x] Config system works for all rules [VERIFIED] Verified (ConfigResolver + schema validation)
 
 ### Documentation
+
 - [x] Every rule has its own documentation file (`docs/rules/{category}/{rule-id}.md`) [VERIFIED] Verified (105/105)
 - [x] All placeholder docs generated via `scripts/generate-rule-docs.ts` [VERIFIED] Completed Phase 2.7
 - [x] All new rules fully documented (not just placeholders) [VERIFIED] Completed Phase 2.7.13
@@ -2023,6 +2072,7 @@ Running prettier on Claude files...
 - [x] CHANGELOG.md updated [VERIFIED] Verified
 
 ### User Experience
+
 - [x] ALL validations configurable via `.claudelintrc.json` [VERIFIED] Verified (src/cli/utils/config-loader.ts)
 - [x] Error messages unchanged (or improved) [VERIFIED] Improved with rule IDs and fix suggestions
 - [x] Performance same or better [VERIFIED] No performance regressions detected
@@ -2034,18 +2084,21 @@ Running prettier on Claude files...
 ### Critical Discoveries (2026-01-29)
 
 **Issue:** After "completing" MCP and Claude.md validators, discovered:
+
 1. 25 stub rules with empty validate() functions
 2. Duplicate validation in both Zod schemas and rules
 3. No unit tests - integration tests didn't catch empty rules
 4. Tests passed because Zod schema errors masked missing rule logic
 
 **Root Cause:**
+
 - Agents/Skills/Output-styles use `mergeSchemaValidationResult()` pattern
 - Zod schemas contain validation logic (.min, .max, .refine)
 - Rule stubs exist but are no-ops with comments like "Schema handles this"
 - Integration tests only verify validator output, not that rules execute
 
 **Solution:**
+
 - Build RuleTester infrastructure first (Phase 2.2)
 - Remove ALL validation from Zod schemas (Phase 2.3)
 - Implement all 25 stubs with unit tests (Phase 2.3)
@@ -2053,6 +2106,7 @@ Running prettier on Claude files...
 - Only then continue with discovery and cleanup
 
 **Lessons Learned:**
+
 - Can't rely on integration tests alone
 - Need unit tests for individual rules
 - Schemas should be for structure, not validation
@@ -2079,10 +2133,12 @@ Running prettier on Claude files...
 **Size Impact:**
 
 Current validator tests (example: mcp.test.ts):
+
 - 33 tests, ~450 lines
 - Tests BOTH orchestration AND validation logic
 
 After Phase 2:
+
 - `tests/validators/mcp.test.ts`: ~8 tests, ~150-200 lines (orchestration only)
 - `tests/rules/mcp/*.test.ts`: 8 files, ~3-5 tests each, ~400 lines (validation)
 - **Total tests INCREASES** (better coverage at right level)
@@ -2111,6 +2167,7 @@ After Phase 2:
 **Example Refactor:**
 
 Before (validator test):
+
 ```typescript
 it('should error for empty command', async () => {
   const filePath = join(testDir, 'mcp.json');
@@ -2126,6 +2183,7 @@ it('should error for empty command', async () => {
 After Phase 2:
 
 Rule test (unit):
+
 ```typescript
 ruleTester.run('mcp-stdio-command', rule, {
   invalid: [{
@@ -2136,6 +2194,7 @@ ruleTester.run('mcp-stdio-command', rule, {
 ```
 
 Validator test (integration):
+
 ```typescript
 it('should execute MCP rules for all servers', async () => {
   const filePath = join(testDir, 'mcp.json');

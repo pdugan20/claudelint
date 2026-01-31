@@ -173,6 +173,7 @@ URL with variable and default:
 To resolve protocol mismatch warnings:
 
 1. **Replace http:// with ws://**:
+
    ```json
    # Before
    {
@@ -192,6 +193,7 @@ To resolve protocol mismatch warnings:
    ```
 
 2. **Replace https:// with wss://**:
+
    ```json
    # Before
    {
@@ -211,6 +213,7 @@ To resolve protocol mismatch warnings:
    ```
 
 3. **Use ws:// for local development**:
+
    ```json
    {
      "transport": {
@@ -221,6 +224,7 @@ To resolve protocol mismatch warnings:
    ```
 
 4. **Use wss:// for production/remote**:
+
    ```json
    {
      "transport": {
@@ -231,12 +235,14 @@ To resolve protocol mismatch warnings:
    ```
 
 5. **Test WebSocket connection**:
+
    ```bash
    # Test WebSocket connectivity (using wscat or similar tool)
    npx wscat -c ws://localhost:9000
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

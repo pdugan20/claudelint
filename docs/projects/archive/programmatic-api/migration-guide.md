@@ -71,6 +71,7 @@ validate();
 ```
 
 **Benefits:**
+
 - [x] No shell execution overhead
 - [x] Access to structured results
 - [x] Better error handling
@@ -122,6 +123,7 @@ validateSkills();
 ```
 
 **Benefits:**
+
 - [x] Runs all applicable validators automatically
 - [x] Unified result format
 - [x] Better error reporting
@@ -183,6 +185,7 @@ module.exports = {
 ```
 
 **Benefits:**
+
 - [x] Faster (no process spawning)
 - [x] Integrated error handling
 - [x] Access to structured results
@@ -242,6 +245,7 @@ lint();
 ```
 
 **Benefits:**
+
 - [x] GitHub Actions annotations
 - [x] Custom output formatting
 - [x] Better progress reporting
@@ -297,6 +301,7 @@ export function activate(context: vscode.ExtensionContext) {
 ```
 
 **Benefits:**
+
 - [x] Real-time validation
 - [x] In-editor diagnostics
 - [x] Auto-fix integration
@@ -649,4 +654,4 @@ We want to hear about your migration experience! Please:
 4. [x] Migrate one script/integration at a time
 5. [x] Share feedback!
 
-Happy linting! 
+Happy linting!

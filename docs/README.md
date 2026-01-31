@@ -134,17 +134,17 @@ This structure ensures you can find what you need quickly, whether you're just s
 
 ## Features
 
-- ** 66 Validation Rules** - Comprehensive checks across 10 categories
-- ** Parallel Execution** - ~3.5x speedup from concurrent validators
-- ** Smart Caching** - ~2.4x speedup with mtime-based caching
-- ** Auto-fix** - Automatically fix common issues
-- ** Progress Indicators** - Real-time feedback with timing
-- ** Multiple Formats** - Stylish, JSON, and compact output
-- ** Interactive Setup** - Configuration wizard with `claudelint init`
-- ** Debug Tools** - Config debugging commands
-- ** Per-rule Docs** - Detailed documentation for each rule
-- ** Inline Disables** - Fine-grained control with comments
-- ** Custom Rules** - Extend with your own validation rules
+- **66 Validation Rules** - Comprehensive checks across 10 categories
+- **Parallel Execution** - ~3.5x speedup from concurrent validators
+- **Smart Caching** - ~2.4x speedup with mtime-based caching
+- **Auto-fix** - Automatically fix common issues
+- **Progress Indicators** - Real-time feedback with timing
+- **Multiple Formats** - Stylish, JSON, and compact output
+- **Interactive Setup** - Configuration wizard with `claudelint init`
+- **Debug Tools** - Config debugging commands
+- **Per-rule Docs** - Detailed documentation for each rule
+- **Inline Disables** - Fine-grained control with comments
+- **Custom Rules** - Extend with your own validation rules
 
 ## Getting Help
 

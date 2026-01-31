@@ -100,11 +100,13 @@ ls -la ../shared/common.md
 To resolve file read failures:
 
 1. **Check file permissions**:
+
    ```bash
    ls -la .claude/rules/problematic-file.md
    ```
 
 2. **Make the file readable**:
+
    ```bash
    chmod 644 .claude/rules/problematic-file.md
    # or
@@ -112,6 +114,7 @@ To resolve file read failures:
    ```
 
 3. **Verify ownership** - ensure you own the file or have permission to read it:
+
    ```bash
    # Check ownership
    ls -la .claude/rules/file.md
@@ -121,6 +124,7 @@ To resolve file read failures:
    ```
 
 4. **Check for file locks**:
+
    ```bash
    # On macOS/Linux, check if file is open by another process
    lsof .claude/rules/file.md
@@ -129,6 +133,7 @@ To resolve file read failures:
    ```
 
 5. **Verify symbolic links** point to accessible locations:
+
    ```bash
    # Check where symlink points
    ls -la .claude/rules/shared.md
@@ -139,6 +144,7 @@ To resolve file read failures:
    ```
 
 6. **Check file system health**:
+
    ```bash
    # On macOS
    diskutil verifyVolume /
@@ -148,12 +154,14 @@ To resolve file read failures:
    ```
 
 7. **For network drives**, ensure the mount is accessible:
+
    ```bash
    # Check mount status
    mount | grep your-network-drive
    ```
 
 8. **Verify the fix**:
+
    ```bash
    # Test if file is readable
    cat .claude/rules/file.md

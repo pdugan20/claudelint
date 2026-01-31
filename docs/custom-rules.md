@@ -341,6 +341,7 @@ Custom rules can be configured in `.claudelintrc.json`:
 ```
 
 Severity levels:
+
 - `"error"` - Treat violations as errors (exit code 1)
 - `"warn"` - Treat violations as warnings
 - `"off"` - Disable the rule
@@ -365,6 +366,7 @@ Error: Rule does not implement Rule interface (must have meta and validate)
 ```
 
 Common load failures:
+
 - Missing `rule` export
 - Invalid rule interface (missing `meta` or `validate`)
 - Rule ID conflicts with existing rule
@@ -462,6 +464,7 @@ describe('no-profanity rule', () => {
 **Problem:** Custom rule doesn't appear in output
 
 **Solutions:**
+
 - Verify file is in `.claudelint/rules/` directory
 - Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`, etc.)
 - Ensure `module.exports.rule` is used (not ES6 `export`)
@@ -472,6 +475,7 @@ describe('no-profanity rule', () => {
 **Problem:** `Error: Rule ID conflicts with existing rule`
 
 **Solutions:**
+
 - Choose a unique ID that doesn't match built-in rules
 - Check for duplicate IDs across your custom rules
 - Prefix custom rules with a namespace (e.g., `team-no-profanity`)
@@ -481,6 +485,7 @@ describe('no-profanity rule', () => {
 **Problem:** `Parameter 'context' implicitly has an 'any' type`
 
 **Solutions:**
+
 - Use `.js` files instead of `.ts` for simpler setup
 - If using TypeScript, add type annotations:
 
@@ -500,6 +505,7 @@ module.exports.rule = {
 **Problem:** Rule loads but doesn't report violations
 
 **Solutions:**
+
 - Check rule is enabled in `.claudelintrc.json`
 - Verify `context.report()` is being called
 - Add debug logging to validate function
@@ -510,12 +516,14 @@ module.exports.rule = {
 **Problem:** `Cannot find module 'claudelint/utils'`
 
 **Solutions:**
+
 - Use `require('claudelint/utils')` not `import`
 - For `.ts` files, import types separately: `import type { RuleContext } from 'claudelint'`
 - Ensure you're using the helpers within the `validate` function
 - Check that helpers are exported from your rule file
 
 Example:
+
 ```javascript
 const { hasHeading, extractFrontmatter } = require('claudelint/utils');
 
@@ -532,6 +540,7 @@ module.exports.rule = {
 **Problem:** Auto-fix doesn't apply when using `--fix` flag
 
 **Solutions:**
+
 - Verify `meta.fixable: true` in rule metadata
 - Ensure `autoFix` object is passed to `context.report()`
 - Check that `apply()` function returns modified content
@@ -539,6 +548,7 @@ module.exports.rule = {
 - Test `apply()` function independently
 
 Example:
+
 ```javascript
 meta: {
   fixable: true,  // Required for auto-fix
@@ -564,6 +574,7 @@ validate: async (context) => {
 **Problem:** Pattern doesn't match expected content
 
 **Solutions:**
+
 - Test regex at [regex101.com](https://regex101.com) first
 - Use `matchesPattern()` for quick existence checks
 - Use `findLinesMatching()` to get line numbers
@@ -572,6 +583,7 @@ validate: async (context) => {
 - Escape special characters: `\.`, `\?`, `\*`, etc.
 
 Example:
+
 ```javascript
 // Find all TODO comments with line numbers
 const todos = findLinesMatching(context.fileContent, /TODO:/gi);
@@ -588,12 +600,14 @@ todos.forEach(match => {
 **Problem:** `extractFrontmatter()` returns `null`
 
 **Solutions:**
+
 - Verify frontmatter has `---` delimiters at start/end
 - Check YAML syntax is valid (no tabs, proper indentation)
 - Ensure frontmatter is at the very beginning of file
 - Test YAML at [yamllint.com](http://www.yamllint.com)
 
 Valid frontmatter format:
+
 ```yaml
 ---
 name: My File
@@ -607,12 +621,14 @@ tags: [example, test]
 **Problem:** `fileExists()` returns false for existing files
 
 **Solutions:**
+
 - Use absolute paths, not relative paths
 - Join paths with `path.join()` for cross-platform compatibility
 - Get file directory with `path.dirname(context.filePath)`
 - Check for typos in file path
 
 Example:
+
 ```javascript
 const { join, dirname } = require('path');
 const { fileExists } = require('claudelint/utils');
@@ -630,11 +646,13 @@ if (!(await fileExists(targetFile))) {
 **Problem:** `await is only valid in async function`
 
 **Solutions:**
+
 - Mark `validate` function as `async`
 - Use `await` for async helpers like `readFileContent()` and `fileExists()`
 - Don't use `await` with sync helpers (parseJSON, parseYAML, matchesPattern, etc.)
 
 Example:
+
 ```javascript
 validate: async (context) => {  // Note: async keyword
   const content = await readFileContent('./config.json');
@@ -648,6 +666,7 @@ validate: async (context) => {  // Note: async keyword
 **Problem:** Rule is slow on large files
 
 **Solutions:**
+
 - Use `matchesPattern()` before expensive operations
 - Early return if file type doesn't match
 - Avoid calling `split('\n')` multiple times (cache it)
@@ -655,6 +674,7 @@ validate: async (context) => {  // Note: async keyword
 - Limit regex backtracking with atomic groups
 
 Example:
+
 ```javascript
 validate: async (context) => {
   // Early exit for irrelevant files
@@ -680,6 +700,7 @@ validate: async (context) => {
 **Solutions:**
 
 1. Add console.log statements:
+
 ```javascript
 validate: async (context) => {
   console.log('Validating:', context.filePath);
@@ -689,7 +710,8 @@ validate: async (context) => {
 },
 ```
 
-2. Test rule in isolation:
+1. Test rule in isolation:
+
 ```javascript
 // test-my-rule.js
 const { rule } = require('./.claudelint/rules/my-rule');
@@ -704,12 +726,14 @@ const mockContext = {
 rule.validate(mockContext);
 ```
 
-3. Check file is being validated:
+1. Check file is being validated:
+
 ```bash
 claudelint check-all --verbose
 ```
 
-4. Verify rule loads successfully:
+1. Verify rule loads successfully:
+
 ```javascript
 const { CustomRuleLoader } = require('claudelint/utils');
 const loader = new CustomRuleLoader();
@@ -843,6 +867,7 @@ matches.forEach(m => {
 #### extractFrontmatter(content)
 
 Extract YAML frontmatter from markdown files. Returns an object with:
+
 - `frontmatter` - The parsed frontmatter object (or null if none)
 - `content` - The markdown content without frontmatter
 - `hasFrontmatter` - Boolean indicating if frontmatter exists

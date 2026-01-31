@@ -320,6 +320,7 @@ Use Zod schemas to validate options at config load time, not during validation.
 ### 3. Document All Options
 
 Every option needs:
+
 - Description
 - Type
 - Default value
@@ -382,6 +383,7 @@ const max = options?.maxSize; // number | undefined
 ## Examples
 
 See complete working examples:
+
 - `src/validators/claude-md.ts` - size-error, size-warning with maxSize option
 - `src/validators/claude-md.ts` - import-circular with multiple options
 - `tests/integration/config-*.test.ts` - Integration test patterns

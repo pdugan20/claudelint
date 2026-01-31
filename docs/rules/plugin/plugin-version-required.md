@@ -12,6 +12,7 @@ Plugin version is required and cannot be empty
 Every plugin must declare a `version` field in `plugin.json`. The version is a required field used for dependency management, marketplace distribution, and update tracking. It must be a non-empty string that is not just whitespace.
 
 The version field enables:
+
 - **Dependency resolution**: Other plugins can specify version requirements
 - **Update detection**: Claude Code can detect when updates are available
 - **Marketplace distribution**: The marketplace uses versions to track releases
@@ -98,6 +99,7 @@ With build metadata:
 To add a required version field:
 
 1. **Add version field** to plugin.json:
+
    ```json
    {
      "name": "my-plugin",
@@ -107,6 +109,7 @@ To add a required version field:
    ```
 
 2. **Use semantic versioning** format (MAJOR.MINOR.PATCH):
+
    ```text
    1.0.0 - Initial release
    1.1.0 - Added new features
@@ -115,6 +118,7 @@ To add a required version field:
    ```
 
 3. **Choose appropriate version** based on development stage:
+
    ```bash
    # For new plugins starting development
    "version": "0.1.0"
@@ -127,6 +131,7 @@ To add a required version field:
    ```
 
 4. **Update version** when making changes:
+
    ```bash
    # Use jq to update version
    jq '.version = "1.1.0"' plugin.json > plugin.json.tmp
@@ -134,6 +139,7 @@ To add a required version field:
    ```
 
 5. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -145,6 +151,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 Never disable this rule. The version field is mandatory for plugin functionality:
+
 - Plugins without versions cannot be published to the marketplace
 - Dependency management requires version information
 - Update checking relies on version comparison

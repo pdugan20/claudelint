@@ -12,6 +12,7 @@ Plugin components should be in .claude/ not .claude-plugin/
 Plugin components (skills, agents, hooks, commands) must be located in the `.claude/` directory, not in `.claude-plugin/`. The `.claude-plugin/` directory is reserved for plugin metadata and internal configuration, while `.claude/` is the standard location for all functional components that Claude Code loads and executes.
 
 This separation ensures:
+
 - **Consistent discovery**: Claude Code knows where to find components
 - **Clear organization**: Metadata is separated from functional code
 - **Standard conventions**: All plugins follow the same directory structure
@@ -82,45 +83,53 @@ my-plugin/
 To move components to the correct location:
 
 1. **Check for misplaced components**:
+
    ```bash
    # Look for component directories in .claude-plugin/
    ls -la .claude-plugin/
    ```
 
 2. **Create correct directory structure**:
+
    ```bash
    # Ensure .claude/ exists
    mkdir -p .claude
    ```
 
 3. **Move skills directory** if present:
+
    ```bash
    # Move from wrong location to correct location
    mv .claude-plugin/skills .claude/skills
    ```
 
 4. **Move agents directory** if present:
+
    ```bash
    mv .claude-plugin/agents .claude/agents
    ```
 
 5. **Move hooks directory** if present:
+
    ```bash
    mv .claude-plugin/hooks .claude/hooks
    ```
 
 6. **Move commands directory** if present:
+
    ```bash
    mv .claude-plugin/commands .claude/commands
    ```
 
 7. **Verify structure**:
+
    ```bash
    # Check that components are now in .claude/
    tree .claude
    ```
 
 8. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -132,6 +141,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 You should not disable this rule. Claude Code expects components to be in `.claude/` and will not discover them in `.claude-plugin/`. Using the wrong location will cause:
+
 - Components not loading at runtime
 - Skills not appearing in the skills list
 - Agents not being discoverable

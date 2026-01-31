@@ -418,7 +418,7 @@ inspectFile('skills/test-skill/SKILL.md');
 
 ## Comparison: Functional vs Class API
 
-### Use Functional API When:
+### Use Functional API When
 
 - Performing a single operation
 - Don't need to maintain state
@@ -435,7 +435,7 @@ const output = await formatResults(results);
 console.log(output);
 ```
 
-### Use Class API When:
+### Use Class API When
 
 - Multiple related operations
 - Reusing configuration

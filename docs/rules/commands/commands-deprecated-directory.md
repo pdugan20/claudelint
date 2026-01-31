@@ -12,6 +12,7 @@ Commands directory is deprecated, migrate to Skills
 This rule triggers when Claude Code detects a `.claude/commands` directory in your project. The commands directory was an early feature in Claude Code but has been superseded by the Skills system, which provides better structure, versioning, documentation, and reusability.
 
 Skills offer several advantages over commands:
+
 - **Structured format**: SKILL.md with frontmatter and documentation
 - **Versioning**: Track changes with semantic versions
 - **Documentation**: Rich markdown docs integrated with the skill

@@ -69,7 +69,18 @@ export class ClaudeLint {
   /**
    * Linter options
    */
-  private options: Required<Omit<ClaudeLintOptions, 'config' | 'overrideConfigFile' | 'onStart' | 'onProgress' | 'onComplete' | 'ruleFilter' | 'fix'>> & {
+  private options: Required<
+    Omit<
+      ClaudeLintOptions,
+      | 'config'
+      | 'overrideConfigFile'
+      | 'onStart'
+      | 'onProgress'
+      | 'onComplete'
+      | 'ruleFilter'
+      | 'fix'
+    >
+  > & {
     config?: ClaudeLintConfig;
     overrideConfigFile?: string;
     onStart?: (fileCount: number) => void;
@@ -172,7 +183,6 @@ export class ClaudeLint {
    * ```
    */
   async lintFiles(patterns: string[]): Promise<LintResult[]> {
-
     // Task 1.4.1: File discovery
     const files = await this.discoverFiles(patterns);
 
@@ -233,23 +243,27 @@ export class ClaudeLint {
     if (options.warnIgnored && this.isPathIgnored(effectivePath)) {
       const { buildLintResult } = await import('./result-builder');
 
-      return [buildLintResult(
-        effectivePath,
-        {
-          valid: false,
-          errors: [],
-          warnings: [{
-            message: 'File ignored due to configuration',
-            file: effectivePath,
-            severity: 'warning',
-            line: 1,
-            explanation: `The file at ${effectivePath} matches an ignore pattern in your configuration and was not linted.`,
-          }],
-        },
-        code,
-        undefined,
-        0
-      )];
+      return [
+        buildLintResult(
+          effectivePath,
+          {
+            valid: false,
+            errors: [],
+            warnings: [
+              {
+                message: 'File ignored due to configuration',
+                file: effectivePath,
+                severity: 'warning',
+                line: 1,
+                explanation: `The file at ${effectivePath} matches an ignore pattern in your configuration and was not linted.`,
+              },
+            ],
+          },
+          code,
+          undefined,
+          0
+        ),
+      ];
     }
 
     // Create a temporary file to validate

@@ -12,6 +12,7 @@ The commands field in plugin.json is deprecated
 The `commands` field in `plugin.json` is deprecated in favor of the `skills` field. While commands continue to work for backward compatibility, skills provide better structure, versioning, and documentation. Plugins should migrate from commands to skills for improved maintainability and feature support.
 
 Skills offer several advantages over commands:
+
 - **Better structure**: Skills use a dedicated directory with SKILL.md documentation
 - **Versioning**: Skills can specify required versions and dependencies
 - **Documentation**: Skills include inline documentation and usage examples
@@ -68,11 +69,13 @@ Complete migration with skill structure:
 To migrate from commands to skills:
 
 1. **Check current commands** in plugin.json:
+
    ```bash
    cat plugin.json | jq '.commands'
    ```
 
 2. **Create skill directories** for each command:
+
    ```bash
    # For each command, create a skill directory
    mkdir -p .claude/skills/build
@@ -81,6 +84,7 @@ To migrate from commands to skills:
    ```
 
 3. **Create SKILL.md files** with documentation:
+
    ```bash
    # Create SKILL.md for each skill
    cat > .claude/skills/build/SKILL.md << 'EOF'
@@ -98,10 +102,13 @@ To migrate from commands to skills:
    ```bash
    npm run build
    ```
+
    EOF
+
    ```
 
 4. **Update plugin.json** to use skills field:
+
    ```json
    {
      "name": "dev-tools",
@@ -112,6 +119,7 @@ To migrate from commands to skills:
    ```
 
 5. **Remove commands field**:
+
    ```bash
    # Use jq to remove commands field
    jq 'del(.commands)' plugin.json > plugin.json.tmp
@@ -119,6 +127,7 @@ To migrate from commands to skills:
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -130,6 +139,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 You may temporarily suppress this warning if:
+
 - You need to maintain backward compatibility with older Claude Code versions
 - You're in the middle of a gradual migration from commands to skills
 - Your plugin specifically targets environments that don't support skills yet

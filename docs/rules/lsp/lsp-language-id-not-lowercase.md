@@ -93,7 +93,7 @@ To fix language ID case issues:
 }
 ```
 
-3. **Use standard identifiers** from LSP specification:
+1. **Use standard identifiers** from LSP specification:
 
 Common language IDs:
 
@@ -106,7 +106,7 @@ Common language IDs:
 - Java: `"java"`
 - Markdown: `"markdown"`
 
-4. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp

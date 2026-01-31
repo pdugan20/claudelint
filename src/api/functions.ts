@@ -29,10 +29,7 @@ import type { Formatter } from './types';
  * console.log(`Found ${results.length} files`);
  * ```
  */
-export async function lint(
-  patterns: string[],
-  options?: LintOptions
-): Promise<LintResult[]> {
+export async function lint(patterns: string[], options?: LintOptions): Promise<LintResult[]> {
   const linter = new ClaudeLint(options);
   return linter.lintFiles(patterns);
 }
@@ -52,10 +49,7 @@ export async function lint(
  * const results = await lintText(code, { filePath: 'CLAUDE.md' });
  * ```
  */
-export async function lintText(
-  code: string,
-  options?: LintTextOptions
-): Promise<LintResult[]> {
+export async function lintText(code: string, options?: LintTextOptions): Promise<LintResult[]> {
   const linter = new ClaudeLint();
   return linter.lintText(code, options);
 }
@@ -126,10 +120,7 @@ export async function formatResults(
  * console.log(`Validators: ${info.validators.join(', ')}`);
  * ```
  */
-export async function getFileInfo(
-  filePath: string,
-  options?: { cwd?: string }
-): Promise<FileInfo> {
+export async function getFileInfo(filePath: string, options?: { cwd?: string }): Promise<FileInfo> {
   const linter = new ClaudeLint({ cwd: options?.cwd });
 
   // Check if file is ignored

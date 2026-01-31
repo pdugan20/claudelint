@@ -141,6 +141,7 @@ Mixed transports without SSE:
 To migrate away from deprecated SSE transport:
 
 1. **Migrate to HTTP transport** for request-response patterns:
+
    ```json
    # Before (SSE)
    {
@@ -160,6 +161,7 @@ To migrate away from deprecated SSE transport:
    ```
 
 2. **Migrate to WebSocket transport** for bidirectional streaming:
+
    ```json
    # Before (SSE)
    {
@@ -184,6 +186,7 @@ To migrate away from deprecated SSE transport:
    - Ensure server supports the MCP protocol over new transport
 
 4. **Test the migration**:
+
    ```bash
    # Verify new transport works
    claudelint check-mcp

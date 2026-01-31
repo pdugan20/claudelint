@@ -24,6 +24,7 @@ Test individual methods and functions in isolation.
 **Location:** `tests/api/`
 
 **Coverage:**
+
 - `ClaudeLint` class methods
 - Result builders
 - Message converters
@@ -112,6 +113,7 @@ Test API with real validators and files.
 **Location:** `tests/integration/api/`
 
 **Coverage:**
+
 - Full linting workflows
 - Auto-fix application
 - Configuration loading
@@ -172,6 +174,7 @@ Verify TypeScript type definitions and inference.
 **Tool:** `tsd` or `@typescript/lib-types`
 
 **Coverage:**
+
 - Exported types
 - Type inference
 - Generic constraints
@@ -212,6 +215,7 @@ Ensure existing functionality still works.
 **Location:** Existing test suite
 
 **Strategy:**
+
 - Run all existing tests against new implementation
 - Verify CLI still works (uses new API internally)
 - Check all existing validators function correctly
@@ -244,6 +248,7 @@ Benchmark API performance vs CLI.
 **Location:** `tests/performance/`
 
 **Metrics:**
+
 - Execution time
 - Memory usage
 - Cache effectiveness

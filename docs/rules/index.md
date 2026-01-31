@@ -4,7 +4,6 @@ This directory contains documentation for all 105 claudelint rules.
 
 ## Rules by Category
 
-
 ### Agents (13 rules)
 
 - [agent-body-too-short](./agents/agent-body-too-short.md) - Agent body content should meet minimum length requirements

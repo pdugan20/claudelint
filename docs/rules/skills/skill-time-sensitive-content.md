@@ -12,6 +12,7 @@ SKILL.md should avoid time-sensitive references
 This rule triggers when Claude Code detects time-sensitive references in your SKILL.md documentation. Time-sensitive content includes relative terms like "today", "yesterday", "this week", or specific dates like "January 15, 2026" that become inaccurate as time passes.
 
 The rule scans the entire SKILL.md body (excluding frontmatter and title) for these patterns:
+
 - Relative time references: today, yesterday, tomorrow
 - Time period references: this week, last month, next year
 - Specific dates: January 15, 2026, 2026-01-15

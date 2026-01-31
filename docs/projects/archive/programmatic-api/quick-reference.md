@@ -95,6 +95,7 @@ interface LintMessage {
 ## Phase Overview
 
 ### Phase 1: Foundation (Week 1)
+
 - **Tasks:** 12
 - **Focus:** Core class structure, type definitions, basic lintFiles()
 - **Key Deliverables:**
@@ -103,6 +104,7 @@ interface LintMessage {
   - `src/api/result-builder.ts`
 
 ### Phase 2: Core Features (Week 2)
+
 - **Tasks:** 15
 - **Focus:** lintText(), config methods, formatter system
 - **Key Deliverables:**
@@ -111,6 +113,7 @@ interface LintMessage {
   - Result utilities
 
 ### Phase 3: Advanced Features (Week 3)
+
 - **Tasks:** 13
 - **Focus:** Auto-fix, progress callbacks, functional API
 - **Key Deliverables:**
@@ -119,6 +122,7 @@ interface LintMessage {
   - Functional wrappers
 
 ### Phase 4: Documentation & Polish (Week 4)
+
 - **Tasks:** 14
 - **Focus:** Documentation, examples, testing, release prep
 - **Key Deliverables:**
@@ -139,24 +143,28 @@ interface LintMessage {
 ### Architecture: Hybrid Approach
 
 **Class-Based (Primary):**
+
 - For complex workflows
 - State management (config, cache)
 - Multiple operations on instance
 - ESLint-like familiarity
 
 **Functional (Secondary):**
+
 - For simple operations
 - Stateless utilities
 - Tree-shakeable
 - Modern patterns
 
 ### Why Not Pure Functional?
+
 - Bundle size irrelevant (Node.js only)
 - Complex state needed (cache, config)
 - ESLint ecosystem alignment
 - Existing class-based validators
 
 ### Why Not Pure Class-Based?
+
 - Modern trends favor functional
 - Simple operations shouldn't need instances
 - Better for tree-shaking utilities
@@ -178,12 +186,14 @@ interface LintMessage {
 ## Implementation Checklist
 
 ### Before Starting
+
 - [ ] Review [PROPOSAL.md](./PROPOSAL.md)
 - [ ] Review [API_DESIGN.md](./API_DESIGN.md)
 - [ ] Approve technical approach
 - [ ] Approve timeline
 
 ### Phase 1 (Week 1)
+
 - [ ] Create `src/api/` directory
 - [ ] Implement type definitions
 - [ ] Implement ClaudeLint class skeleton
@@ -192,6 +202,7 @@ interface LintMessage {
 - [ ] Update exports
 
 ### Phase 2 (Week 2)
+
 - [ ] Implement lintText()
 - [ ] Implement config methods
 - [ ] Implement formatter system
@@ -200,6 +211,7 @@ interface LintMessage {
 - [ ] Write integration tests
 
 ### Phase 3 (Week 3)
+
 - [ ] Implement auto-fix
 - [ ] Implement progress callbacks
 - [ ] Implement functional API
@@ -207,6 +219,7 @@ interface LintMessage {
 - [ ] Write type tests
 
 ### Phase 4 (Week 4)
+
 - [ ] Write API documentation
 - [ ] Create usage examples
 - [ ] Create migration guide
@@ -218,6 +231,7 @@ interface LintMessage {
 ## Common Commands
 
 ### Development
+
 ```bash
 # Run API tests
 npm test -- tests/api/
@@ -236,6 +250,7 @@ npm run build
 ```
 
 ### Testing
+
 ```bash
 # Unit tests
 npm test -- tests/api/
@@ -301,6 +316,7 @@ examples/
 ## Resources
 
 ### Research Sources
+
 - [ESLint Node.js API](https://eslint.org/docs/latest/integrate/nodejs-api)
 - [Prettier API](https://prettier.io/docs/api)
 - [Node.js Best Practices 2026](https://medium.com/@backendbyeli/node-js-best-practices-2026-what-every-backend-developer-must-know-144873cfc534)
@@ -308,6 +324,7 @@ examples/
 - [TypeScript Library Structures](https://www.typescriptlang.org/docs/handbook/declaration-files/library-structures.html)
 
 ### Similar Projects
+
 - [ESLint](https://github.com/eslint/eslint)
 - [Prettier](https://github.com/prettier/prettier)
 - [markdownlint](https://github.com/DavidAnson/markdownlint)

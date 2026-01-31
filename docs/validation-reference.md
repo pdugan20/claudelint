@@ -24,6 +24,7 @@ claudelint validates all major Claude Code components through organized validati
 ## Architecture Note
 
 claudelint uses a **rule-based architecture** (similar to ESLint):
+
 - **Rules** (105 total in `src/rules/`) - Individual validation checks that users can configure
 - **Validators** - Internal orchestrators that collect and run rules by category
 - **Contributors write rules, not validators** - See [contributing-rules.md](./contributing-rules.md)

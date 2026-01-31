@@ -86,7 +86,7 @@ which typescript-language-server
 # Output: /usr/local/bin/typescript-language-server
 ```
 
-2. **Use the absolute path** in lsp.json:
+1. **Use the absolute path** in lsp.json:
 
 ```json
 {
@@ -98,7 +98,7 @@ which typescript-language-server
 }
 ```
 
-3. **Or use explicit relative paths** for project-local tools:
+1. **Or use explicit relative paths** for project-local tools:
 
 ```json
 {
@@ -110,7 +110,7 @@ which typescript-language-server
 }
 ```
 
-4. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp

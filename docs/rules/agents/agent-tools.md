@@ -97,6 +97,7 @@ tools:
 To fix tools configuration:
 
 1. **Format as array**: Use YAML array syntax with hyphens
+
    ```yaml
    tools:
      - Read

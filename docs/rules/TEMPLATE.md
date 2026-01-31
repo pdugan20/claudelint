@@ -84,16 +84,19 @@ Available since: v1.0.0
 ## Documentation Guidelines
 
 **Line Count Targets:**
+
 - Simple rules (no options, basic check): 80-120 lines
 - Complex rules (multiple options, nuanced logic): 150-250 lines
 
 **Example Guidelines:**
+
 - Maximum 2 incorrect examples
 - Maximum 2 correct examples
 - Use language-specific syntax highlighting (not `text`)
 - Keep examples concise and focused
 
 **Section Guidelines:**
+
 - Rule Details: 2-3 sentences + examples (not multiple subsections)
 - How To Fix: Keep brief (3-5 steps max)
 - Options: Only if rule has configurable options
@@ -101,6 +104,7 @@ Available since: v1.0.0
 - Related Rules: 2-5 max with brief context
 
 **What to Avoid:**
+
 - Multiple organization/pattern sections
 - Separate "Benefits" or "Why It Matters" sections (include in Rule Details)
 - Excessive examples (1-2 per concept maximum)
@@ -108,17 +112,20 @@ Available since: v1.0.0
 - Migration steps unless absolutely necessary
 
 **What to Include:**
+
 - Clear metadata badges at top
 - Concise but complete Rule Details
 - Actionable "How To Fix" section
 - Source code links for contributors
 
 **Resource Link Format (REQUIRED):**
+
 - Use ONLY `[Rule Implementation]` and `[Rule Tests]` as link labels
 - Do NOT use shortened forms like `[Implementation]` or `[Tests]`
 - Link to specific rule files: `../../src/rules/category/rule-name.ts`
 - Link to specific test files: `../../tests/rules/category/rule-name.test.ts`
 - Example:
+
   ```markdown
   ## Resources
 

@@ -12,11 +12,13 @@ Environment variables must use proper expansion syntax
 MCP configurations support environment variable expansion in transport fields (command, args, url) and env objects. This rule enforces proper variable syntax to prevent runtime expansion errors and promote consistency.
 
 Supported variable syntax:
+
 - `${VAR}` - Expands to environment variable value
 - `${VAR:-default}` - Expands to value or uses default if unset
 - `${CLAUDE_PLUGIN_ROOT}` - Special variable for plugin paths (always allowed)
 
 The rule warns about:
+
 - Simple format `$VAR` without braces (suggest using `${VAR}`)
 - Empty variable names `${}`
 - Empty env values
@@ -204,6 +206,7 @@ Variables in args array:
 To resolve environment variable syntax issues:
 
 1. **Use braces for variable expansion**:
+
    ```json
    # Before (warning)
    {
@@ -217,6 +220,7 @@ To resolve environment variable syntax issues:
    ```
 
 2. **Add default values** for optional variables:
+
    ```json
    {
      "command": "${NODE_PATH:-/usr/local/bin/node}"
@@ -224,6 +228,7 @@ To resolve environment variable syntax issues:
    ```
 
 3. **Remove empty env values**:
+
    ```json
    # Before (error)
    {
@@ -242,6 +247,7 @@ To resolve environment variable syntax issues:
    ```
 
 4. **Or provide actual values**:
+
    ```json
    {
      "env": {
@@ -252,6 +258,7 @@ To resolve environment variable syntax issues:
    ```
 
 5. **Fix empty variable names**:
+
    ```json
    # Before (error)
    {
@@ -265,6 +272,7 @@ To resolve environment variable syntax issues:
    ```
 
 6. **Verify environment variables** are set:
+
    ```bash
    # Check if variable is set
    echo $HOME
@@ -275,6 +283,7 @@ To resolve environment variable syntax issues:
    ```
 
 7. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```
@@ -301,6 +310,7 @@ Regular expression pattern that environment variable names must match. This enfo
 **Example configurations**:
 
 Default pattern (uppercase only):
+
 ```json
 {
   "rules": {
@@ -310,6 +320,7 @@ Default pattern (uppercase only):
 ```
 
 Custom pattern (allow lowercase):
+
 ```json
 {
   "rules": {
@@ -319,6 +330,7 @@ Custom pattern (allow lowercase):
 ```
 
 Project-specific prefix:
+
 ```json
 {
   "rules": {

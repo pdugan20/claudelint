@@ -46,6 +46,7 @@ Import: @.claude/rules/testing.md
 To resolve files exceeding the 40KB limit:
 
 1. **Split into multiple files** using imports:
+
    ```bash
    mkdir -p .claude/rules
    # Move sections to separate files
@@ -54,6 +55,7 @@ To resolve files exceeding the 40KB limit:
    ```
 
 2. **Update CLAUDE.md** to import the files:
+
    ```markdown
    # Main Guidelines
 
@@ -62,6 +64,7 @@ To resolve files exceeding the 40KB limit:
    ```
 
 3. **Verify the size**:
+
    ```bash
    ls -lh .claude/CLAUDE.md
    # Should show < 40KB

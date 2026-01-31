@@ -12,6 +12,7 @@ Hook configuration in agents.json violates schema requirements
 This rule triggers when a hook configuration in agents.json violates the schema requirements. Hooks must have valid event names, valid hook types, and the required fields for their type. The rule also validates that regex patterns in matchers are syntactically correct.
 
 Hook validation checks:
+
 - **Event name**: Must be one of the valid hook events (e.g., `user-prompt-submit`, `tool-call`, etc.)
 - **Hook type**: Must be `command`, `prompt`, or `agent`
 - **Required fields**: Command hooks need `command`, prompt hooks need `prompt`, agent hooks need `agent`
@@ -93,13 +94,16 @@ agents.json with valid hooks:
 To fix invalid hook schema errors:
 
 1. **Use valid event names**:
+
    ```bash
    # Check valid events
    claudelint --help hooks
    ```
+
    Common events: `user-prompt-submit`, `tool-call`, `agent-start`, `agent-complete`
 
 2. **Ensure hook type matches required fields**:
+
    ```json
    # Command hook must have command field
    {
@@ -124,17 +128,20 @@ To fix invalid hook schema errors:
    ```
 
 3. **Fix invalid regex patterns**:
+
    ```bash
    # Test regex online or in Node
    node -e "new RegExp('your pattern here')"
    ```
 
 4. **Validate JSON syntax**:
+
    ```bash
    cat agents.json | jq .
    ```
 
 5. **Run validation**:
+
    ```bash
    claudelint check-agents
    ```

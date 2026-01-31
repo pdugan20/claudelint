@@ -94,6 +94,7 @@ events:
 To fix events configuration:
 
 1. **Format as array**: Use YAML array syntax with hyphens
+
    ```yaml
    events:
      - PreToolUse

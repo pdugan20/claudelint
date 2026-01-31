@@ -45,6 +45,7 @@ Import: @.claude/rules/deployment.md
 To address files approaching the 35KB warning threshold:
 
 1. **Evaluate current size**:
+
    ```bash
    ls -lh .claude/CLAUDE.md
    # Shows current size
@@ -57,12 +58,14 @@ To address files approaching the 35KB warning threshold:
    - Technology-specific instructions
 
 3. **Create separate rule files**:
+
    ```bash
    mkdir -p .claude/rules
    # Extract sections to separate files
    ```
 
 4. **Import the extracted files**:
+
    ```markdown
    # CLAUDE.md
 

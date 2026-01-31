@@ -706,15 +706,15 @@ Due to length constraints, here are the remaining medium rules in summary form:
 
 **Week 2** (Days 9-13):
 
-9. **M13** - Hardcoded secrets (Day 9) ← SECURITY CRITICAL
-10. **M11** - MCP qualified names (Day 10)
-11. **M7** - Cross-reference validation (Day 11 AM)
-12. **M10** - Keyword density (Day 11 PM)
-13. **M12** - Argument docs (Day 12 AM)
-14. **M14** - Output format docs (Day 12 PM)
-15. **M15** - Error docs (Day 13 AM)
-16. **M16** - Duplicate content (Day 13 PM)
-17. **M17** - Version compatibility (Day 13 PM)
+1. **M13** - Hardcoded secrets (Day 9) ← SECURITY CRITICAL
+2. **M11** - MCP qualified names (Day 10)
+3. **M7** - Cross-reference validation (Day 11 AM)
+4. **M10** - Keyword density (Day 11 PM)
+5. **M12** - Argument docs (Day 12 AM)
+6. **M14** - Output format docs (Day 12 PM)
+7. **M15** - Error docs (Day 13 AM)
+8. **M16** - Duplicate content (Day 13 PM)
+9. **M17** - Version compatibility (Day 13 PM)
 
 ---
 

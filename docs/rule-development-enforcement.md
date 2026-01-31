@@ -267,46 +267,46 @@ Pull requests adding new rules MUST:
 
 **Missing documentation**:
 
--  BLOCK: Cannot merge PR without docs
+- BLOCK: Cannot merge PR without docs
 - Fix: Create docs file following template
 
 **Incomplete documentation**:
 
--  WARN: Missing sections
+- WARN: Missing sections
 - Fix: Add missing sections
 
 **Inconsistent metadata**:
 
--  BLOCK: Severity/validator mismatch
+- BLOCK: Severity/validator mismatch
 - Fix: Update docs or code to match
 
 ### Code Violations
 
 **Unregistered rule ID**:
 
--  BLOCK: Cannot use unregistered rule ID
+- BLOCK: Cannot use unregistered rule ID
 - Fix: Add to rule-ids.ts
 
 **Missing test coverage**:
 
--  BLOCK: All rules must have tests
+- BLOCK: All rules must have tests
 - Fix: Add test cases
 
 **Severity mismatch**:
 
--  BLOCK: Code severity must match docs
+- BLOCK: Code severity must match docs
 - Fix: Update reportError/reportWarning call
 
 ### Process Violations
 
 **Updating tracker**:
 
--  WARN: RULE-TRACKER.md not updated
+- WARN: RULE-TRACKER.md not updated
 - Fix: Mark rule as implemented
 
 **Breaking changes**:
 
--  BLOCK: Cannot change rule ID
+- BLOCK: Cannot change rule ID
 - Fix: Create new rule, deprecate old
 
 ## Quality Metrics

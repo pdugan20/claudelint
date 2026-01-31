@@ -115,9 +115,11 @@ Basic usage:
 ```
 
 Advanced usage:
+
 ```bash
 ./script.sh input.txt --verbose --output result.txt
 ```
+
 ```
 
 ## Options

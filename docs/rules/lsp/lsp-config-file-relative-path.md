@@ -105,7 +105,7 @@ To fix implicit relative paths:
 }
 ```
 
-4. **Verify configuration**:
+1. **Verify configuration**:
 
 ```bash
 claudelint check-lsp

@@ -31,6 +31,7 @@ Validator
 ```
 
 **Problems:**
+
 - Users couldn't disable "server name too short" warnings
 - Mixed validation across schemas, validators, and rules
 - No unit tests for individual rules
@@ -50,6 +51,7 @@ Validator (Pure Orchestrator)
 ```
 
 **Benefits:**
+
 - Users control everything via config
 - Clear separation of concerns
 - Comprehensive test coverage
@@ -100,12 +102,14 @@ Full `.claudelintrc.json` support:
 ### 3. Two-Level Testing Strategy
 
 **Rule Tests (Unit):**
+
 - Location: `tests/rules/{category}/{rule-id}.test.ts`
 - Tool: ClaudeLintRuleTester
 - Purpose: Test validation logic in isolation
 - Count: 105 rule test files
 
 **Validator Tests (Integration):**
+
 - Location: `tests/validators/{validator}.test.ts`
 - Purpose: Test orchestration only (file discovery, parsing, rule execution)
 - Count: 64 integration tests
@@ -126,22 +130,26 @@ export interface LspServerNameTooShortOptions {
 All automated checks passing (11/11):
 
 **Code Quality:**
+
 - Zero reportError/reportWarning calls in validators ✓
 - Methods deleted from base.ts ✓
 - Zero stub rules ✓
 
 **Testing:**
+
 - All 714 tests passing ✓
 - ClaudeLintRuleTester created ✓
 - Every rule has test file (105/105) ✓
 - Structure verification script ✓
 
 **Documentation:**
+
 - Every rule has docs (105/105) ✓
 - CHANGELOG.md updated ✓
 - Contributing guide updated ✓
 
 **User Experience:**
+
 - Config system implemented ✓
 
 ## Rule Categories
@@ -248,6 +256,7 @@ The Phase 2 architecture is stable and follows industry standards. Core patterns
 ## Acknowledgments
 
 Phase 2 was a comprehensive refactor that touched:
+
 - 105 rule implementations
 - 10 validator refactors
 - 714 test files

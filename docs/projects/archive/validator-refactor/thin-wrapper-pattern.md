@@ -41,16 +41,19 @@ export const SkillFrontmatterSchema = z.object({
 ### Options Considered
 
 **Option A: Full Duplication**
+
 - Implement rules with complete validation logic
 - Remove validation from Zod schemas
 - **Downside:** 100% duplication, maintenance nightmare
 
 **Option B: Keep Stubs**
+
 - Leave stub rules as placeholders
 - Keep validation in schemas only
 - **Downside:** Rules can't be individually controlled, poor error context
 
 **Option C: Thin Wrappers** (CHOSEN)
+
 - Keep Zod schema validation
 - Fill in stub rules to delegate to schemas
 - **Benefits:** Single source of truth, individual rule control, better error messages
@@ -119,6 +122,7 @@ export const rule: Rule = {
 ### Benefits
 
 #### 1. Single Source of Truth
+
 Validation logic stays in Zod schemas. Update once, all rules automatically reflect changes.
 
 ```typescript
@@ -132,6 +136,7 @@ export const SkillFrontmatterSchema = z.object({
 ```
 
 #### 2. Individual Rule Control
+
 Users can disable specific validations:
 
 ```json
@@ -144,6 +149,7 @@ Users can disable specific validations:
 ```
 
 #### 3. Better Error Messages
+
 Rules can provide context that generic schema errors can't:
 
 ```typescript
@@ -158,6 +164,7 @@ Error: Skill name must be lowercase-with-hyphens
 ```
 
 #### 4. Proper Metadata
+
 Each rule has description, category, severity, documentation URL:
 
 ```typescript
@@ -172,18 +179,19 @@ meta: {
 ```
 
 #### 5. No Duplication
+
 Validation logic isn't duplicated. Rules just call schema validators.
 
 ## When to Use This Pattern
 
-### Use Thin Wrapper Pattern When:
+### Use Thin Wrapper Pattern When
 
 - Validating a **single frontmatter field**
 - Field has a **corresponding Zod schema definition**
 - Validation is **format/type checking** (length, regex, enum, refinements)
 - You want to maintain a **single source of truth**
 
-### Don't Use Thin Wrapper Pattern When:
+### Don't Use Thin Wrapper Pattern When
 
 - Validating **file-level properties** (size, encoding, structure)
 - Checking **cross-references** (does imported file exist?)
@@ -194,12 +202,14 @@ Validation logic isn't duplicated. Rules just call schema validators.
 ### Examples by Category
 
 **Use Thin Wrapper (Schema-Delegating):**
+
 - `skill-name` - Validates name field format
 - `skill-description` - Validates description field
 - `agent-model` - Validates model enum value
 - `output-style-examples` - Validates examples array
 
 **Standalone Validation:**
+
 - `claude-md-size-error` - File size limit (file-level)
 - `claude-md-import-circular` - Import cycle detection (cross-file)
 - `agent-skills-not-found` - Cross-reference validation
@@ -283,6 +293,7 @@ ruleTester.run('skill-name', rule, {
 Phase 2.3 implements this pattern for:
 
 ### Task 2.3.1: Skills (10 rules)
+
 - skill-name
 - skill-description
 - skill-version
@@ -295,6 +306,7 @@ Phase 2.3 implements this pattern for:
 - skill-dependencies
 
 ### Task 2.3.2: Agents (10 rules)
+
 - agent-name
 - agent-description
 - agent-model
@@ -307,6 +319,7 @@ Phase 2.3 implements this pattern for:
 - agent-hooks-invalid-schema
 
 ### Task 2.3.3: Output-styles (3 rules)
+
 - output-style-name
 - output-style-description
 - output-style-examples
@@ -354,12 +367,14 @@ describe('skill-name', () => {
 **Decision:** Use thin wrapper pattern - rules delegate to Zod schemas.
 
 **Consequences:**
+
 - **Positive:** Single source of truth, no duplication, individual rule control
 - **Positive:** Better error messages with context, proper metadata
 - **Negative:** Slight indirection (rules call schemas)
 - **Negative:** Mixed patterns across categories (some use wrappers, some don't)
 
 **Alternatives Considered:**
+
 - Full duplication: Rejected due to maintenance burden
 - Keep stubs: Rejected due to lack of individual control
 

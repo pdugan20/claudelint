@@ -75,6 +75,7 @@ To resolve circular import dependencies:
 2. **Refactor the structure** using one of these approaches:
 
    **a) Extract shared content to a separate file:**
+
    ```markdown
    # Before: A imports B, B imports A
 
@@ -87,6 +88,7 @@ To resolve circular import dependencies:
    **b) Consolidate into a single file** if the files are tightly coupled
 
    **c) Create a hierarchical structure:**
+
    ```text
    CLAUDE.md
      ├─ main.md (imports utilities)
@@ -96,6 +98,7 @@ To resolve circular import dependencies:
 3. **Remove the circular reference** - delete one of the import statements
 
 4. **Verify the fix**:
+
    ```bash
    claudelint check-claude-md
    ```

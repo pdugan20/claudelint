@@ -54,9 +54,11 @@ description: Formats code output with syntax highlighting
 Here are some examples of the code style:
 
 ```
+
 function hello() {
   console.log("Hello, world!");
 }
+
 ```
 ```
 

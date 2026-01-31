@@ -58,10 +58,4 @@ export type { BuiltinFormatterName } from './formatter';
 export { ClaudeLint } from './claudelint';
 
 // Functional API
-export {
-  lint,
-  lintText,
-  resolveConfig,
-  formatResults,
-  getFileInfo,
-} from './functions';
+export { lint, lintText, resolveConfig, formatResults, getFileInfo } from './functions';

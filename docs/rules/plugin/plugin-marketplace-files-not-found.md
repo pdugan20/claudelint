@@ -12,6 +12,7 @@ Referenced marketplace file does not exist
 When a plugin includes an optional `marketplace.json` file, any assets referenced in it (icon, screenshots, readme, changelog) must exist at the specified paths. While `marketplace.json` itself is optional, if present, all referenced files must be valid and accessible. Missing files will cause marketplace listing failures and poor user experience.
 
 The `marketplace.json` file can reference:
+
 - **icon**: Plugin icon displayed in the marketplace (PNG, JPG, SVG)
 - **screenshots**: Array of screenshot paths showcasing the plugin
 - **readme**: Path to extended documentation (typically README.md)
@@ -121,11 +122,13 @@ Minimal marketplace.json (no optional files):
 To resolve missing marketplace file errors:
 
 1. **Check which files are missing** from the validation error:
+
    ```bash
    claudelint check-plugin
    ```
 
 2. **Create missing icon file**:
+
    ```bash
    # Create assets directory
    mkdir -p assets
@@ -136,6 +139,7 @@ To resolve missing marketplace file errors:
    ```
 
 3. **Create missing screenshot files**:
+
    ```bash
    # Create docs directory
    mkdir -p docs
@@ -146,6 +150,7 @@ To resolve missing marketplace file errors:
    ```
 
 4. **Ensure README exists** if referenced:
+
    ```bash
    # Check if README exists
    ls README.md
@@ -159,6 +164,7 @@ To resolve missing marketplace file errors:
    ```
 
 5. **Ensure CHANGELOG exists** if referenced:
+
    ```bash
    # Create CHANGELOG.md
    cat > CHANGELOG.md << 'EOF'
@@ -170,6 +176,7 @@ To resolve missing marketplace file errors:
    ```
 
 6. **Or remove the references** if files aren't needed:
+
    ```bash
    # Edit marketplace.json to remove icon reference
    jq 'del(.icon)' marketplace.json > marketplace.json.tmp
@@ -181,6 +188,7 @@ To resolve missing marketplace file errors:
    ```
 
 7. **Verify file paths** are relative to repository root:
+
    ```bash
    # All paths in marketplace.json should be relative
    # Good: "assets/icon.png"
@@ -188,6 +196,7 @@ To resolve missing marketplace file errors:
    ```
 
 8. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -199,6 +208,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 You may suppress this warning if:
+
 - You're developing locally and plan to add marketplace assets before publishing
 - You're maintaining a private plugin that won't be published to the marketplace
 - You're in the process of updating assets and temporarily have broken references

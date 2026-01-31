@@ -85,12 +85,15 @@ console.log(`Errors: ${results.reduce((sum, r) => sum + r.errorCount, 0)}`);
 ```
 
 **Parameters:**
+
 - `patterns: string[]` - Glob patterns to match files
 
 **Returns:**
+
 - `Promise<LintResult[]>` - Array of lint results, one per file
 
 **Behavior:**
+
 - Discovers files using glob patterns
 - Respects ignore patterns from config
 - Runs appropriate validators per file type
@@ -109,15 +112,18 @@ const results = await linter.lintText(
 ```
 
 **Parameters:**
+
 - `code: string` - Source code to lint
 - `options?: LintTextOptions` - Optional settings
   - `filePath?: string` - Virtual file path (for config resolution)
   - `warnIgnored?: boolean` - Warn if file would be ignored
 
 **Returns:**
+
 - `Promise<LintResult[]>` - Array with single result
 
 **Behavior:**
+
 - Treats code as if it were in `filePath` (if provided)
 - Applies configuration based on file path
 - Does not write to disk
@@ -135,12 +141,15 @@ console.log(config.rules);
 ```
 
 **Parameters:**
+
 - `filePath: string` - Path to file
 
 **Returns:**
+
 - `Promise<ClaudeLintConfig>` - Resolved configuration
 
 **Behavior:**
+
 - Resolves base configuration
 - Applies overrides matching file path
 - Returns merged configuration object
@@ -158,9 +167,11 @@ if (!linter.isPathIgnored('node_modules/foo.md')) {
 ```
 
 **Parameters:**
+
 - `filePath: string` - Path to check
 
 **Returns:**
+
 - `boolean` - True if path matches ignore patterns
 
 #### `loadFormatter(nameOrPath: string): Promise<Formatter>`
@@ -176,12 +187,15 @@ console.log(formatter.format(results));
 ```
 
 **Parameters:**
+
 - `nameOrPath: string` - Built-in formatter name or path to custom formatter
 
 **Returns:**
+
 - `Promise<Formatter>` - Formatter instance
 
 **Built-in formatters:**
+
 - `'stylish'` - Human-readable, colored output (default)
 - `'json'` - JSON format
 - `'compact'` - Compact, one-line-per-issue format
@@ -200,6 +214,7 @@ for (const [ruleId, meta] of rules) {
 ```
 
 **Returns:**
+
 - `Map<string, RuleMetadata>` - Map of rule ID to metadata
 
 #### `getRulesMetaForResults(results: LintResult[]): Map<string, RuleMetadata>`
@@ -215,9 +230,11 @@ const meta = linter.getRulesMetaForResults(results);
 ```
 
 **Parameters:**
+
 - `results: LintResult[]` - Lint results
 
 **Returns:**
+
 - `Map<string, RuleMetadata>` - Metadata for triggered rules only
 
 ### Static Methods
@@ -235,12 +252,15 @@ await ClaudeLint.outputFixes(results);
 ```
 
 **Parameters:**
+
 - `results: LintResult[]` - Results with fix information
 
 **Returns:**
+
 - `Promise<void>`
 
 **Behavior:**
+
 - Only writes files that have fixes
 - Uses `result.output` property
 - Preserves file permissions
@@ -261,9 +281,11 @@ for (const [filePath, content] of fixed) {
 ```
 
 **Parameters:**
+
 - `results: LintResult[]` - Results with fix information
 
 **Returns:**
+
 - `Map<string, string>` - Map of file path to fixed content
 
 #### `static getErrorResults(results: LintResult[]): LintResult[]`
@@ -280,9 +302,11 @@ if (errors.length > 0) {
 ```
 
 **Parameters:**
+
 - `results: LintResult[]` - All results
 
 **Returns:**
+
 - `LintResult[]` - Results with `errorCount > 0`
 
 #### `static findConfigFile(cwd: string): Promise<string | null>`
@@ -298,12 +322,15 @@ if (configPath) {
 ```
 
 **Parameters:**
+
 - `cwd: string` - Directory to start search from
 
 **Returns:**
+
 - `Promise<string | null>` - Path to config file, or null if not found
 
 **Behavior:**
+
 - Walks up directory tree
 - Looks for `.claudelintrc.json`, `claudelint.config.js`, etc.
 - Returns first match
@@ -317,6 +344,7 @@ console.log(`Using claudelint ${ClaudeLint.getVersion()}`);
 ```
 
 **Returns:**
+
 - `string` - Version string (e.g., "0.2.0")
 
 ---
@@ -339,6 +367,7 @@ const results = await lint(['**/*.md'], {
 ```
 
 **Equivalent to:**
+
 ```typescript
 const linter = new ClaudeLint(options);
 const results = await linter.lintFiles(patterns);
@@ -369,11 +398,13 @@ console.log(config?.rules);
 ```
 
 **Parameters:**
+
 - `filePath: string` - Path to resolve config for
 - `options?: ConfigOptions`
   - `cwd?: string` - Working directory
 
 **Returns:**
+
 - `Promise<ClaudeLintConfig | null>` - Resolved config or null
 
 ### `formatResults(results: LintResult[], format: string): Promise<string>`
@@ -388,10 +419,12 @@ console.log(output);
 ```
 
 **Parameters:**
+
 - `results: LintResult[]` - Results to format
 - `format: string` - Formatter name or path
 
 **Returns:**
+
 - `Promise<string>` - Formatted output
 
 ### `getFileInfo(filePath: string, options?: FileInfoOptions): Promise<FileInfo>`
@@ -407,11 +440,13 @@ console.log(`Validators: ${info.validators.join(', ')}`);
 ```
 
 **Parameters:**
+
 - `filePath: string` - Path to check
 - `options?: FileInfoOptions`
   - `cwd?: string` - Working directory
 
 **Returns:**
+
 - `Promise<FileInfo>` - File information
 
 ---
@@ -551,6 +586,7 @@ console.log(formatter.format(results));
 ```
 
 Output:
+
 ```
 /path/to/file.md
   1:1  error  File exceeds size limit  claude-md-size-limit
@@ -568,6 +604,7 @@ console.log(formatter.format(results));
 ```
 
 Output:
+
 ```json
 [
   {
@@ -597,6 +634,7 @@ console.log(formatter.format(results));
 ```
 
 Output:
+
 ```
 /path/to/file.md: line 1, col 1, Error - File exceeds size limit (claude-md-size-limit)
 ```
@@ -717,6 +755,7 @@ const linter = new ClaudeLint();
 ```
 
 Search order:
+
 1. `.claudelintrc.json`
 2. `.claudelintrc.yaml`
 3. `claudelint.config.js`

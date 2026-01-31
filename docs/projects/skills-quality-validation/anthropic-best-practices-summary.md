@@ -438,17 +438,17 @@ The guide's troubleshooting section reveals common mistakes we should validate a
 
 ### Tier 2: High Impact
 
-5. **MCP tool qualified names** (M11) - Prevent integration errors
-6. **Description structure** (M2) - Core quality
-7. **Progressive disclosure** (M4) - New concept, not validated
-8. **Frontmatter fields** (E2, E3) - Missing required fields
+1. **MCP tool qualified names** (M11) - Prevent integration errors
+2. **Description structure** (M2) - Core quality
+3. **Progressive disclosure** (M4) - New concept, not validated
+4. **Frontmatter fields** (E2, E3) - Missing required fields
 
 ### Tier 3: Quality Improvements
 
-9. **Example quality** (M6) - Improve skill usability
-10. **Readability** (M9) - Content quality
-11. **Keyword relevance** (M10) - Domain alignment
-12. **MCP server existence** (H1) - Prevent broken references
+1. **Example quality** (M6) - Improve skill usability
+2. **Readability** (M9) - Content quality
+3. **Keyword relevance** (M10) - Domain alignment
+4. **MCP server existence** (H1) - Prevent broken references
 
 ---
 

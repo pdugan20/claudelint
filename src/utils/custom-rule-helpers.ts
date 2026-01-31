@@ -123,7 +123,10 @@ export function countOccurrences(content: string, search: string | RegExp): numb
     return count;
   } else {
     // For RegExp, ensure global flag
-    const regex = new RegExp(search.source, search.flags.includes('g') ? search.flags : search.flags + 'g');
+    const regex = new RegExp(
+      search.source,
+      search.flags.includes('g') ? search.flags : search.flags + 'g'
+    );
     const matches = content.match(regex);
     return matches ? matches.length : 0;
   }

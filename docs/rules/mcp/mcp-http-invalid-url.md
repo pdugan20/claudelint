@@ -150,6 +150,7 @@ URL with variable and default:
 To resolve invalid URL errors:
 
 1. **Add the protocol** if missing:
+
    ```json
    # Before
    {
@@ -169,6 +170,7 @@ To resolve invalid URL errors:
    ```
 
 2. **Use http:// or https://** for HTTP transport:
+
    ```json
    # Use http:// for local development
    "url": "http://localhost:3000"
@@ -178,6 +180,7 @@ To resolve invalid URL errors:
    ```
 
 3. **Remove spaces and special characters**:
+
    ```json
    # Before
    "url": "http://my server.com/api"
@@ -187,18 +190,21 @@ To resolve invalid URL errors:
    ```
 
 4. **Encode special characters** if needed:
+
    ```json
    # Use URL encoding for special characters
    "url": "http://api.example.com/path%20with%20spaces"
    ```
 
 5. **Test URL validity**:
+
    ```bash
    # Test if URL is valid
    node -e "new URL('http://localhost:8080')"
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

@@ -133,6 +133,7 @@ URL with default fallback:
 To resolve empty URL errors:
 
 1. **Add a valid URL** to the HTTP transport:
+
    ```json
    # Before
    {
@@ -152,6 +153,7 @@ To resolve empty URL errors:
    ```
 
 2. **Use environment variable** for configurable URLs:
+
    ```json
    {
      "transport": {
@@ -162,6 +164,7 @@ To resolve empty URL errors:
    ```
 
 3. **Include a default value** for environment variables:
+
    ```json
    {
      "transport": {
@@ -177,6 +180,7 @@ To resolve empty URL errors:
    - Include port if not using standard ports (80/443)
 
 5. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

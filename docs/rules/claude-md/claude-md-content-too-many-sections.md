@@ -82,6 +82,7 @@ Each imported file contains related sections:
 To reduce section count:
 
 1. **Identify logical groupings** of related sections:
+
    ```text
    Git-related: workflow, branches, commits, PRs
    API-related: design, endpoints, auth, errors
@@ -89,6 +90,7 @@ To reduce section count:
    ```
 
 2. **Create separate files** for each group:
+
    ```bash
    mkdir -p .claude/rules
    # Extract sections to files
@@ -98,6 +100,7 @@ To reduce section count:
    ```
 
 3. **Move content** to the new files:
+
    ```markdown
    # .claude/rules/git-workflow.md
 
@@ -109,6 +112,7 @@ To reduce section count:
    ```
 
 4. **Update CLAUDE.md** to import the files:
+
    ```markdown
    # CLAUDE.md
 
@@ -118,6 +122,7 @@ To reduce section count:
    ```
 
 5. **Verify section count**:
+
    ```bash
    grep -c "^#" .claude/CLAUDE.md
    # Should be <= 20

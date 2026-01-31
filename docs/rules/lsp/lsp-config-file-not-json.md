@@ -91,7 +91,7 @@ To fix config file extension issues:
 mv .claude/tsconfig .claude/tsconfig.json
 ```
 
-2. **Update the lsp.json reference**:
+1. **Update the lsp.json reference**:
 
 ```json
 {
@@ -104,13 +104,13 @@ mv .claude/tsconfig .claude/tsconfig.json
 }
 ```
 
-3. **Verify the file contains valid JSON**:
+1. **Verify the file contains valid JSON**:
 
 ```bash
 cat .claude/tsconfig.json | jq .
 ```
 
-4. **Run validation**:
+1. **Run validation**:
 
 ```bash
 claudelint check-lsp

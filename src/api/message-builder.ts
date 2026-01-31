@@ -205,11 +205,7 @@ export function createConfigError(message: string, filePath?: string): LintMessa
  * }
  * ```
  */
-export function createInternalError(
-  error: Error,
-  filePath: string,
-  ruleId?: string
-): LintMessage {
+export function createInternalError(error: Error, filePath: string, ruleId?: string): LintMessage {
   return {
     ruleId: ruleId || null,
     severity: 'error',

@@ -115,6 +115,7 @@ paths:
 To make glob patterns more specific:
 
 1. **Add file extensions** to target specific file types:
+
    ```markdown
    # Too broad
    ---
@@ -131,6 +132,7 @@ To make glob patterns more specific:
    ```
 
 2. **Specify target directories**:
+
    ```markdown
    # Too broad
    ---
@@ -147,6 +149,7 @@ To make glob patterns more specific:
    ```
 
 3. **Combine directory and file patterns**:
+
    ```markdown
    # Too broad
    ---
@@ -164,6 +167,7 @@ To make glob patterns more specific:
    ```
 
 4. **Use multiple specific patterns** instead of one broad pattern:
+
    ```markdown
    # Too broad
    ---
@@ -187,6 +191,7 @@ To make glob patterns more specific:
    - If it's for configuration, use `**/*.json` or specific config files
 
 6. **Verify the pattern matches your intent**:
+
    ```bash
    # Test the glob pattern
    find . -name "*.ts" -not -path "*/node_modules/*"

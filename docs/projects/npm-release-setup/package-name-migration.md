@@ -64,7 +64,6 @@ Complete guide for migrating from `@pdugan20/claudelint` (scoped) to `claudelint
 - `src/index.ts` - 5 import examples
 - `src/api/*.ts` - 10+ import examples
 
-
 ### Archived Documentation
 
 - `docs/projects/archive/programmatic-api/*.md` - 50+ references

@@ -31,6 +31,7 @@ Version numbers are scattered across multiple files:
 These should always match package.json:
 
 1. **plugin.json** (line 3)
+
    ```json
    {
      "name": "claudelint",
@@ -40,6 +41,7 @@ These should always match package.json:
    ```
 
 2. **.claude-plugin/marketplace.json** (line 4)
+
    ```json
    {
      "identifier": "claudelint",
@@ -49,6 +51,7 @@ These should always match package.json:
    ```
 
 3. **examples/integration/package.json** (line 38)
+
    ```json
    {
      "devDependencies": {

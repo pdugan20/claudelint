@@ -116,12 +116,14 @@ Multiple servers with consistent naming:
 To resolve duplicate server name or key mismatch issues:
 
 1. **Identify duplicate names** in .mcp.json:
+
    ```bash
    # Check for duplicate server names
    cat .mcp.json | jq '.mcpServers | to_entries | map(.value.name) | group_by(.) | map(select(length > 1))'
    ```
 
 2. **Rename duplicate servers** to unique names:
+
    ```json
    # Before (duplicate names)
    {
@@ -141,6 +143,7 @@ To resolve duplicate server name or key mismatch issues:
    ```
 
 3. **Match server keys to names** (fixes warnings):
+
    ```json
    # Before (key mismatch - warning)
    {
@@ -167,6 +170,7 @@ To resolve duplicate server name or key mismatch issues:
    - Avoid generic names like `server-1`, `test`, `default`
 
 5. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

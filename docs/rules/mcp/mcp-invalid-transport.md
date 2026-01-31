@@ -93,6 +93,7 @@ Valid SSE transport with variable expansion:
 To fix invalid transport configuration:
 
 1. **Use only supported transport types** (`stdio` or `sse`):
+
    ```json
    # Wrong: "http", "ws", "grpc"
    # Correct: "stdio" or "sse"
@@ -104,6 +105,7 @@ To fix invalid transport configuration:
    ```
 
 2. **For stdio transport**, provide non-empty command:
+
    ```json
    {
      "transport": {
@@ -115,6 +117,7 @@ To fix invalid transport configuration:
    ```
 
 3. **For sse transport**, provide valid URL:
+
    ```json
    {
      "transport": {
@@ -125,6 +128,7 @@ To fix invalid transport configuration:
    ```
 
 4. **Use environment variable expansion** for dynamic values:
+
    ```json
    {
      "transport": {
@@ -138,6 +142,7 @@ To fix invalid transport configuration:
    ```
 
 5. **Validate the configuration**:
+
    ```bash
    # Check JSON syntax
    cat .mcp.json | jq .
@@ -147,6 +152,7 @@ To fix invalid transport configuration:
    ```
 
 6. **Test the server connection**:
+
    ```bash
    # For stdio servers, test command runs
    node server.js

@@ -83,6 +83,7 @@ To resolve missing file errors:
 1. **Check which files are missing** from the error message
 
 2. **Create missing skill files**:
+
    ```bash
    mkdir -p .claude/skills/format-code
    touch .claude/skills/format-code/SKILL.md
@@ -90,6 +91,7 @@ To resolve missing file errors:
    ```
 
 3. **Create missing agent files**:
+
    ```bash
    mkdir -p .claude/agents
    touch .claude/agents/reviewer.md
@@ -97,6 +99,7 @@ To resolve missing file errors:
    ```
 
 4. **Create missing hook files**:
+
    ```bash
    mkdir -p .claude/hooks
    touch .claude/hooks/pre-commit.json
@@ -104,6 +107,7 @@ To resolve missing file errors:
    ```
 
 5. **Create missing command files**:
+
    ```bash
    mkdir -p .claude/commands
    touch .claude/commands/build.md
@@ -111,12 +115,14 @@ To resolve missing file errors:
    ```
 
 6. **Create MCP configuration** if needed:
+
    ```bash
    touch .mcp.json
    # Add MCP server configuration
    ```
 
 7. **Or remove the reference** from plugin.json if not needed:
+
    ```json
    {
      "skills": ["format-code"],
@@ -125,6 +131,7 @@ To resolve missing file errors:
    ```
 
 8. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```

@@ -11,6 +11,7 @@ Add a comprehensive programmatic API to claudelint, enabling developers to integ
 ## Problem Statement
 
 Currently, claudelint is primarily used as a CLI tool. Developers who want to:
+
 - Integrate claudelint into build pipelines programmatically
 - Create custom tooling that includes validation
 - Build editor extensions or IDE integrations
@@ -41,6 +42,7 @@ After extensive research into modern API design patterns (ESLint, Prettier, Zod,
 ### Primary API: Class-Based (`ClaudeLint`)
 
 **Rationale:**
+
 - claudelint is a CLI/build tool where bundle size is irrelevant
 - ESLint uses class-based API - users expect similar patterns
 - Complex state management (configuration, caching, file discovery)
@@ -50,6 +52,7 @@ After extensive research into modern API design patterns (ESLint, Prettier, Zod,
 ### Secondary API: Functional Utilities
 
 **Rationale:**
+
 - Convenience for simple one-off operations
 - Pure functions for stateless operations (config resolution, formatting)
 - Better tree-shaking for users who only need specific utilities
@@ -180,24 +183,28 @@ const linter = new ClaudeLint({
 See [TASK_TRACKER.md](./TASK_TRACKER.md) for detailed task breakdown.
 
 ### Phase 1: Foundation (Week 1)
+
 - Design and implement core `ClaudeLint` class
 - Standardize `LintResult` interface
 - Basic `lintFiles()` method
 - Configuration loading
 
 ### Phase 2: Core Features (Week 2)
+
 - Implement `lintText()` method
 - Add configuration methods
 - Formatter system
 - Result utilities
 
 ### Phase 3: Advanced Features (Week 3)
+
 - Auto-fix support (`outputFixes()`)
 - Progress callbacks
 - Functional API wrappers
 - Caching integration
 
 ### Phase 4: Documentation & Polish (Week 4)
+
 - API documentation
 - Usage examples
 - Migration guide
@@ -271,19 +278,25 @@ const results = await linter.lintFiles(['**/*.md']);
 ## Alternative Approaches Considered
 
 ### 1. Purely Functional API (like Prettier)
+
 **Rejected** - Doesn't fit claudelint's use case:
+
 - Complex state management (config, cache, file discovery)
 - Multiple operations on same files (lint → fix → format)
 - Bundle size irrelevant (Node.js only)
 
 ### 2. Keep CLI-Only
+
 **Rejected** - Limits ecosystem integration:
+
 - Can't build editor extensions easily
 - Hard to integrate into build tools
 - Users forced to shell out or use undocumented internals
 
 ### 3. Pure Refactor to Functional
+
 **Rejected** - Too disruptive:
+
 - Existing validators are class-based
 - Massive refactor with limited benefit
 - Risk of regressions
@@ -323,6 +336,7 @@ const results = await linter.lintFiles(['**/*.md']);
 ---
 
 **Approval Required:**
+
 - [ ] Technical approach approved
 - [ ] Timeline approved
 - [ ] Resource allocation approved

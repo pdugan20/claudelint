@@ -73,6 +73,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 **Rules** are individual, focused validation checks located in `src/rules/{category}/{rule-id}.ts`.
 
 **Characteristics:**
+
 - **105 rules total** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
 - **User-configurable** - Can be enabled/disabled, severity changed per-project
 - **Self-contained** - Each rule validates one specific aspect
@@ -80,6 +81,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 - **ESLint-style** - Similar pattern to ESLint rules
 
 **Example Rule:**
+
 ```typescript
 // src/rules/skills/skill-missing-version.ts
 export const rule: Rule = {
@@ -102,18 +104,21 @@ export const rule: Rule = {
 **Validators** are internal orchestration classes in `src/validators/` that collect and run rules.
 
 **Characteristics:**
+
 - **10 validators** (one per category: ClaudeMdValidator, SkillsValidator, etc.)
 - **Not user-facing** - Users interact with rules, not validators
 - **Implementation detail** - Orchestrate file discovery, parsing, rule execution
 - **Extend BaseValidator** - Share common validation infrastructure
 
 **Validator Responsibilities:**
+
 1. **File Discovery** - Find files to validate (glob patterns)
 2. **File Parsing** - Read and parse file contents (YAML, JSON, Markdown)
 3. **Rule Orchestration** - Collect category rules, call validate(), aggregate results
 4. **Result Reporting** - Format and report violations to CLI
 
 **Example Validator:**
+
 ```typescript
 // src/validators/skills.ts
 export class SkillsValidator extends BaseValidator {
@@ -135,13 +140,15 @@ export class SkillsValidator extends BaseValidator {
 
 ### What Should Contributors Do?
 
-**DO: Write Rules**
+#### DO: Write Rules
+
 - Create new rules in `src/rules/{category}/{rule-id}.ts`
 - Follow the Rule interface and metadata schema
 - Write focused, single-purpose validation checks
 - See [contributing-rules.md](./contributing-rules.md) for the complete guide
 
-**DON'T: Extend Validators**
+#### DON'T: Extend Validators
+
 - Don't create new validators (unless adding a new category)
 - Don't modify validator orchestration logic
 - Don't write validation logic directly in validators
@@ -149,12 +156,14 @@ export class SkillsValidator extends BaseValidator {
 ### Evolution: Pre-Phase 5 vs Post-Phase 5
 
 **Before Phase 5 (Validator-Centric):**
+
 - Contributors extended `BaseValidator` classes
 - Validators contained validation logic
 - Heavy composition patterns required
 - Plugin system exported validators
 
 **After Phase 5 (Rule-Based):**
+
 - Contributors write individual rules
 - Validators are internal orchestrators
 - Simple, focused rule pattern
@@ -173,6 +182,7 @@ claudelint supports two primary patterns for implementing rules, depending on th
 **Approach:** Rules delegate to Zod schema validators instead of duplicating validation logic.
 
 **Architecture:**
+
 1. Zod schemas contain the validation logic (min/max length, regex patterns, refinements)
 2. Rules extract specific fields and validate using `schema.shape.fieldName.safeParse()`
 3. Rules provide better error context (line numbers, file paths)
@@ -225,6 +235,7 @@ export const rule: Rule = {
 ```
 
 **Benefits:**
+
 - No duplication of validation logic
 - Individual rule control (can disable/configure per rule)
 - Better error messages with proper context
@@ -232,6 +243,7 @@ export const rule: Rule = {
 - Easier to maintain (update schema once, rules automatically reflect changes)
 
 **Categories using this pattern:**
+
 - Skills (10 rules)
 - Agents (10 rules)
 - Output-styles (3 rules)
@@ -243,6 +255,7 @@ export const rule: Rule = {
 **Approach:** Rules implement full validation logic without delegating to schemas.
 
 **Use cases:**
+
 - File size limits (`claude-md-size-error`, `claude-md-size-warning`)
 - Import cycle detection (`claude-md-import-circular`)
 - Cross-reference validation (`agent-skills-not-found`)
@@ -279,6 +292,7 @@ export const rule: Rule = {
 ```
 
 **Categories using this pattern:**
+
 - **ClaudeMd** (14 rules - file-level and import validation, semantic checks)
   - Rationale: Most rules validate file properties (size, imports, circular refs) not frontmatter fields
   - Only one field-level rule (paths) already has detailed per-index validation
@@ -291,12 +305,14 @@ export const rule: Rule = {
 ### Choosing the Right Pattern
 
 **Use Schema-Delegating (Thin Wrapper) when:**
+
 - Validating a single frontmatter field
 - Field has corresponding Zod schema definition
 - Validation is format/type checking (length, regex, enum)
 - You want to maintain single source of truth
 
 **Use Standalone Validation when:**
+
 - Validating file-level properties (size, encoding)
 - Checking cross-references (does imported file exist?)
 - Detecting patterns across multiple fields
@@ -309,6 +325,7 @@ export const rule: Rule = {
 ### The ESLint Model (What We Follow)
 
 **Validators (Orchestrators):**
+
 - Find files matching patterns
 - Read file content
 - Parse files (JSON, YAML, Markdown)
@@ -320,6 +337,7 @@ export const rule: Rule = {
   - "JSON parse error" (from parser, not validation)
 
 **Rules (Validators):**
+
 - ALL validation logic
 - Individual field checks
 - Cross-field validation
@@ -332,6 +350,7 @@ export const rule: Rule = {
 ### What Is NOT a Rule (Operational Messages)
 
 These are the ONLY non-configurable messages (8 total across all validators):
+
 - "No skill directories found"
 - "No agent directories found"
 - "No output style directories found"
@@ -348,6 +367,7 @@ These are **discovery/parsing failures**, not validation failures.
 If a user might disagree with the check or want to disable it, it MUST be a rule:
 
 **Examples that MUST be rules:**
+
 - [RULE] "LSP server name too short" - user might have valid short names
 - [RULE] "Agent body content too short" - user might want different threshold
 - [RULE] "Skill name doesn't match directory" - user might have reasons
@@ -355,6 +375,7 @@ If a user might disagree with the check or want to disable it, it MUST be a rule
 - [RULE] "Unknown tool name" - user might use custom tools
 
 **Examples that should NOT be rules (operational):**
+
 - [NOT RULE] "No skill directories found" - not a validation failure
 - [NOT RULE] "SKILL.md not found" - file discovery, not validation
 - [NOT RULE] "JSON parse error" - syntax error, not validation
@@ -362,13 +383,16 @@ If a user might disagree with the check or want to disable it, it MUST be a rule
 ### Why This Matters
 
 **Bad (current state with 40 non-configurable checks):**
+
 ```bash
 $ claudelint .claude/lsp.json
 Warning: LSP server name "ts" is too short.
 ```
+
 User has no way to disable this warning.
 
 **Good (after Phase 2.3B - all checks are rules):**
+
 ```json
 // .claudelintrc.json
 {
@@ -1874,7 +1898,6 @@ async function checkAll(options) {
 - Full TypeScript inference through composition
 - Type-safe rule definitions
 - Registry lookups are type-safe
-
 
 ## Future Architecture
 

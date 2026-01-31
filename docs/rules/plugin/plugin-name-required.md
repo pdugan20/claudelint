@@ -12,6 +12,7 @@ Plugin name is required and cannot be empty
 Every plugin must declare a `name` field in `plugin.json`. The name is a required field that uniquely identifies the plugin in the marketplace and dependency resolution. It must be a non-empty string that is not just whitespace.
 
 The name field serves several critical purposes:
+
 - **Unique identification**: Distinguishes the plugin from all other plugins
 - **Marketplace listing**: Used as the primary identifier in plugin marketplace
 - **Dependency resolution**: Other plugins reference this name in their dependencies
@@ -98,6 +99,7 @@ Name following conventions:
 To add a required name field:
 
 1. **Add name field** to plugin.json:
+
    ```json
    {
      "name": "my-plugin",
@@ -107,6 +109,7 @@ To add a required name field:
    ```
 
 2. **Follow naming conventions**:
+
    ```bash
    # Use lowercase with hyphens
    "name": "code-formatter"
@@ -123,6 +126,7 @@ To add a required name field:
    ```
 
 3. **Choose a unique name**:
+
    ```bash
    # Search the marketplace to avoid conflicts
    claude plugin search "your-plugin-name"
@@ -132,12 +136,14 @@ To add a required name field:
    ```
 
 4. **Keep it concise** (typically 3-30 characters):
+
    ```bash
    # Check name length
    cat plugin.json | jq -r '.name | length'
    ```
 
 5. **Update name** if needed:
+
    ```bash
    # Use jq to update name
    jq '.name = "new-plugin-name"' plugin.json > plugin.json.tmp
@@ -145,6 +151,7 @@ To add a required name field:
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```
@@ -156,6 +163,7 @@ This rule does not have configuration options.
 ## When Not To Use It
 
 Never disable this rule. The name field is mandatory for plugin functionality:
+
 - Plugins without names cannot be installed or loaded by Claude Code
 - Marketplace submission requires a valid name
 - Dependency resolution relies on plugin names

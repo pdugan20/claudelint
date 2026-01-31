@@ -149,6 +149,7 @@ URL with default fallback:
 To resolve empty URL errors:
 
 1. **Add a valid WebSocket URL**:
+
    ```json
    # Before
    {
@@ -168,6 +169,7 @@ To resolve empty URL errors:
    ```
 
 2. **Use ws:// or wss:// protocol**:
+
    ```json
    # Use ws:// for local development
    {
@@ -187,6 +189,7 @@ To resolve empty URL errors:
    ```
 
 3. **Use environment variable** for configurable URLs:
+
    ```json
    {
      "transport": {
@@ -197,6 +200,7 @@ To resolve empty URL errors:
    ```
 
 4. **Include a default value** for environment variables:
+
    ```json
    {
      "transport": {
@@ -213,6 +217,7 @@ To resolve empty URL errors:
    - Add path if your server uses one (e.g., `/ws`, `/mcp`)
 
 6. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

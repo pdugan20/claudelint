@@ -20,9 +20,11 @@
 **Must complete before implementing any skill rules**
 
 ### Goal
+
 Refactor claudelint architecture to match industry standards (ESLint/Prettier model)
 
 ### Current Problem
+
 - `claudelint format` mixes linters (shellcheck, markdownlint) with formatter (prettier)
 - Main `claudelint` command doesn't run external linters
 - Not comprehensive in one pass
@@ -79,6 +81,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 - [ ] Documentation updated
 
 ### Estimated Effort
+
 2-3 days
 
 ---
@@ -354,6 +357,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 ## Overall Project Status
 
 ### Architecture Refactor (Phase 0)
+
 - **Status**: Not started
 - **Required before**: Any rule implementation
 
@@ -459,6 +463,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 - **Skill-specific**: Only runs on skill scripts during skill validation
 
 **Example flow**:
+
 ```bash
 # Current (format command - manual)
 claudelint format --check  # Checks all .claude/** files

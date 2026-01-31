@@ -23,6 +23,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [x] Document release-it workflow (see release-it-setup.md)
 
 **Phase 1 Completion Criteria:**
+
 - [x] All dependencies installed
 - [x] Configuration files created
 - [x] Release scripts functional (pending npm login for actual publishing)
@@ -55,6 +56,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [x] Commit version sync changes
 
 **Phase 2 Completion Criteria:**
+
 - [x] All version numbers synchronized
 - [x] Version sync script functional
 - [x] Version set to 0.2.0-beta.0
@@ -65,28 +67,29 @@ Project to set up professional npm versioning, release automation, and package n
 
 ### 3.1 Create Migration Script
 
-- [ ] Create `scripts/migrate-package-name.ts`
-- [ ] Script finds all `@pdugan20/claudelint` references
-- [ ] Script replaces with `claudelint`
-- [ ] Script updates package.json name field
-- [ ] Script updates README badges
-- [ ] Script updates all documentation
-- [ ] Script updates all examples
-- [ ] Script updates integration packages
-- [ ] Add npm script: `migrate:name`
-- [ ] Test script on sample files (dry-run mode)
+- [x] Create `scripts/migrate-package-name.ts`
+- [x] Script finds all `@pdugan20/claudelint` references (180 found)
+- [x] Script replaces with `claudelint`
+- [x] Script updates package.json name field
+- [x] Script updates README badges
+- [x] Script updates all documentation
+- [x] Script updates all examples
+- [x] Script updates integration packages
+- [x] Add npm script: `migrate:name` (already added in Phase 1)
+- [x] Test script on sample files (dry-run mode) (39 files affected)
 
 ### 3.2 Verify Migration Scope
 
-- [ ] Review all files that will be changed
-- [ ] Check for any missed references
-- [ ] Verify no breaking changes to API exports
-- [ ] Document migration for users (if any published versions exist)
+- [x] Review all files that will be changed (39 files, 180 occurrences)
+- [x] Check for any missed references (comprehensive glob patterns used)
+- [x] Verify no breaking changes to API exports (only string replacements, no code changes)
+- [x] Document migration for users (N/A - package not yet published)
 
 **Phase 3 Completion Criteria:**
-- Migration script functional and tested
-- All references identified
-- Ready to execute migration
+
+- [x] Migration script functional and tested
+- [x] All references identified (180 occurrences in 39 files)
+- [x] Ready to execute migration (will execute in Phase 5)
 
 ---
 
@@ -118,6 +121,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [ ] Verify programmatic API works from packed tarball
 
 **Phase 4 Completion Criteria:**
+
 - All tests passing
 - Documentation complete
 - Package verified locally
@@ -153,6 +157,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [ ] Announce beta release (if applicable)
 
 **Phase 5 Completion Criteria:**
+
 - Package published to npm as `claudelint@beta`
 - Package installs and functions correctly
 - Name claimed on npm registry
@@ -178,6 +183,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [ ] Document CI/CD integration (future)
 
 **Phase 6 Completion Criteria:**
+
 - Release process documented
 - Scripts automated
 - Contributors can follow process
@@ -213,6 +219,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [ ] Announce stable release
 
 **Phase 7 Completion Criteria:**
+
 - Stable version published
 - `latest` tag points to stable release
 - Documentation updated
@@ -239,6 +246,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [ ] Implement OIDC trusted publishing (optional)
 
 **Phase 8 Completion Criteria:**
+
 - Release cadence established
 - Automation in place
 - Process running smoothly

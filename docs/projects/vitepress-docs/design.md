@@ -546,18 +546,18 @@ Pro tip: Use `claudelint init` for interactive setup.
 
 **Icons Used**:
 
-- Home: 
-- Guide: 
+- Home:
+- Guide:
 - Validators: ✓
-- Rules: 
-- Examples: 
-- Error: 
-- Warning: 
-- Info: 
-- Success: 
-- Fix: 
-- Fast: 
-- Plugin: 
+- Rules:
+- Examples:
+- Error:
+- Warning:
+- Info:
+- Success:
+- Fix:
+- Fast:
+- Plugin:
 
 **Custom SVG Icons** (for navbar/social):
 

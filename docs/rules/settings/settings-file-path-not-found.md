@@ -12,6 +12,7 @@ Referenced file path does not exist
 Settings can reference external files through fields like `apiKeyHelper` (custom API key scripts) and `outputStyle` (custom output formatting). This rule validates that referenced files actually exist on disk.
 
 The rule checks:
+
 - **apiKeyHelper**: Script path for custom API key retrieval
 - **outputStyle**: Path to custom output style markdown files
 
@@ -80,6 +81,7 @@ Using variable expansion (not validated):
 To resolve missing file errors:
 
 1. **Create the missing file** at the specified path:
+
    ```bash
    mkdir -p .claude/scripts
    touch .claude/scripts/get-api-key.sh
@@ -87,6 +89,7 @@ To resolve missing file errors:
    ```
 
 2. **Fix the path** if the file exists elsewhere:
+
    ```json
    {
      "apiKeyHelper": "./correct/path/to/script.sh"
@@ -94,6 +97,7 @@ To resolve missing file errors:
    ```
 
 3. **Use variable expansion** if the path is dynamic:
+
    ```json
    {
      "apiKeyHelper": "${API_KEY_HELPER_SCRIPT}"
@@ -101,6 +105,7 @@ To resolve missing file errors:
    ```
 
 4. **Remove the field** if you don't need the custom file:
+
    ```json
    {
      "permissions": [...],

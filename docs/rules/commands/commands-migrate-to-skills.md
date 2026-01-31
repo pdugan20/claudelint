@@ -12,6 +12,7 @@ Migration guidance for deprecated Commands
 This rule triggers alongside [commands-deprecated-directory](./commands-deprecated-directory.md) when a `.claude/commands` directory is detected. It provides detailed migration instructions to help you convert your commands to the modern Skills format.
 
 The migration process involves:
+
 1. Creating skill directories with proper structure
 2. Moving command scripts to skill directories
 3. Creating SKILL.md files with documentation
@@ -56,6 +57,7 @@ To migrate from commands to skills:
 2. **Move command scripts**: Move each script from `.claude/commands/<command-name>.sh` to `.claude/skills/<command-name>/<command-name>.sh`
 
 3. **Add SKILL.md with frontmatter**: Create `.claude/skills/<command-name>/SKILL.md`:
+
    ```markdown
    ---
    name: command-name

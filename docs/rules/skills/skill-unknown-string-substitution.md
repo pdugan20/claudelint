@@ -32,6 +32,7 @@ Usage:
 ```
 
 The script will deploy to $ENVIRONMENT region $REGION.
+
 ```
 
 Invalid substitutions:

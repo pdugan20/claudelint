@@ -12,6 +12,7 @@ Permission rules must use valid Tool(pattern) syntax
 This rule triggers when permission rules in settings.json have syntax errors or conflicting pattern specifications. Permission rules can specify patterns in two ways: inline `Tool(pattern)` syntax or separate `pattern` field, but not both.
 
 The rule validates:
+
 - **Pattern conflict**: Cannot specify both inline pattern and separate pattern field
 - **Empty inline pattern**: `Tool()` with empty parentheses is likely a mistake
 

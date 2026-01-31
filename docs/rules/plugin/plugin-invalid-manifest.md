@@ -73,12 +73,14 @@ Complete manifest with optional fields:
 To fix invalid marketplace.json:
 
 1. **Check JSON syntax**:
+
    ```bash
    # Validate JSON is parseable
    cat marketplace.json | jq .
    ```
 
 2. **Add required fields** if missing:
+
    ```json
    {
      "name": "my-plugin",
@@ -88,6 +90,7 @@ To fix invalid marketplace.json:
    ```
 
 3. **Fix empty or wrong-type fields**:
+
    ```bash
    # Remove empty strings
    # Change number to string for version
@@ -95,6 +98,7 @@ To fix invalid marketplace.json:
    ```
 
 4. **Ensure versions match** between plugin.json and marketplace.json:
+
    ```bash
    # Check both versions
    jq '.version' plugin.json
@@ -103,12 +107,14 @@ To fix invalid marketplace.json:
    ```
 
 5. **Move to correct location** if needed:
+
    ```bash
    # marketplace.json must be at repository root
    mv .claude-plugin/marketplace.json ./marketplace.json
    ```
 
 6. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```

@@ -486,6 +486,7 @@ None currently.
 ## Notes & Decisions
 
 ### 2026-01-30
+
 - Decided on hybrid class-based + functional API approach
 - Following ESLint/Prettier patterns for familiarity
 - Exporting only stable public APIs (not internal validators)

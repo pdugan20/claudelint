@@ -56,6 +56,7 @@ CLAUDE.md
 To reduce import depth:
 
 1. **Flatten the structure** - import files directly from CLAUDE.md:
+
    ```markdown
    # Instead of nested imports
    Import: @.claude/rules/main.md
@@ -68,12 +69,14 @@ To reduce import depth:
    ```
 
 2. **Consolidate related content** into single files:
+
    ```bash
    # Instead of: git.md → commits.md → format.md → examples.md
    # Create: git-complete.md with all commit guidelines
    ```
 
 3. **Remove unnecessary intermediate files**:
+
    ```markdown
    # Remove wrapper files that only import other files
    # Bad: main.md that only does imports
@@ -81,12 +84,14 @@ To reduce import depth:
    ```
 
 4. **Check current depth**:
+
    ```bash
    claudelint check-claude-md
    # Shows import chain and depth for each file
    ```
 
 5. **Verify the fix**:
+
    ```bash
    # Ensure no import chain exceeds the limit
    claudelint check-claude-md

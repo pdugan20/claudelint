@@ -54,6 +54,7 @@ claudelint format --fix
 **File targeting:**
 
 The command automatically targets Claude-specific files:
+
 - `CLAUDE.md`
 - `.claude/**/*.md`
 - `.claude/**/*.json`
@@ -481,6 +482,7 @@ claudelint format --fix
 ```
 
 **Result:** Zero conflicts! The `claudelint format` command only touches:
+
 - `CLAUDE.md`
 - `.claude/**/*.md`
 - `.claude/**/*.json`

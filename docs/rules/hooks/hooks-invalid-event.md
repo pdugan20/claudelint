@@ -96,12 +96,14 @@ To fix invalid hook event names:
 3. Replace the invalid event name with a valid one
 
 Common mistakes:
+
 - `PreTooluse` → `PreToolUse` (capital U)
 - `pretooluse` → `PreToolUse` (wrong case)
 - `OnFileChange` → Not a valid event (use appropriate lifecycle event)
 - `BeforeToolUse` → `PreToolUse` (wrong prefix)
 
 If you need an event that doesn't exist, consider:
+
 - Using the closest existing event
 - Combining multiple hooks for different events
 - Using matchers to filter within an existing event

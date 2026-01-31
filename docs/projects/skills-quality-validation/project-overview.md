@@ -7,6 +7,7 @@ This project implements comprehensive quality validation rules for Claude Skills
 ## Current State
 
 **Existing Coverage**: ~60% of Anthropic best practices
+
 - DONE Structural validation (naming, file structure, frontmatter format)
 - DONE Basic security checks (dangerous commands, path traversal)
 - PARTIAL Limited content quality validation

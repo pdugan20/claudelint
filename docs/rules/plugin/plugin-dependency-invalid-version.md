@@ -12,6 +12,7 @@ Plugin dependency versions must use valid semver ranges
 This rule triggers when a plugin's dependency version doesn't conform to semantic versioning standards. Dependency versions should use valid semver format or semver ranges to ensure predictable plugin loading and version resolution.
 
 Valid formats include:
+
 - Exact versions: `1.0.0`, `2.3.4`
 - Range operators: `^1.0.0` (compatible), `~1.2.3` (patch updates)
 - Comparison: `>=1.0.0`, `<2.0.0`
@@ -61,6 +62,7 @@ To fix invalid dependency versions:
 1. **Identify invalid versions** in plugin.json dependencies
 
 2. **Replace "latest"** with specific version ranges:
+
    ```json
    # Before
    "dependencies": {
@@ -74,12 +76,14 @@ To fix invalid dependency versions:
    ```
 
 3. **Fix incomplete versions**:
+
    ```json
    # Before: "1.0" (missing patch)
    # After: "1.0.0" or "~1.0.0"
    ```
 
 4. **Remove "v" prefix**:
+
    ```json
    # Before: "v1.2.3"
    # After: "1.2.3"
@@ -92,6 +96,7 @@ To fix invalid dependency versions:
    - `1.x` - Any 1.x version
 
 6. **Run validation**:
+
    ```bash
    claudelint check-plugin
    ```

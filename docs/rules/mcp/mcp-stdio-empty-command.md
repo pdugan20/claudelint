@@ -175,6 +175,7 @@ Command with environment variables:
 To resolve empty command errors:
 
 1. **Add a valid command** to the stdio transport:
+
    ```json
    # Before
    {
@@ -195,6 +196,7 @@ To resolve empty command errors:
    ```
 
 2. **Use the executable name** if it's in PATH:
+
    ```json
    {
      "transport": {
@@ -206,6 +208,7 @@ To resolve empty command errors:
    ```
 
 3. **Use full path** for executables not in PATH:
+
    ```json
    {
      "transport": {
@@ -217,6 +220,7 @@ To resolve empty command errors:
    ```
 
 4. **Use environment variable** for flexible configuration:
+
    ```json
    {
      "transport": {
@@ -228,6 +232,7 @@ To resolve empty command errors:
    ```
 
 5. **Include default value** for environment variables:
+
    ```json
    {
      "transport": {
@@ -239,6 +244,7 @@ To resolve empty command errors:
    ```
 
 6. **Verify command exists**:
+
    ```bash
    # Check if command is in PATH
    which node
@@ -250,6 +256,7 @@ To resolve empty command errors:
    ```
 
 7. **Run validation**:
+
    ```bash
    claudelint check-mcp
    ```

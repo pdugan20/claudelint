@@ -91,10 +91,13 @@ Always provide severity levels and remediation steps.
 To add a proper System Prompt section:
 
 1. Add a heading with "System Prompt" (case-insensitive):
+
    ```markdown
    # System Prompt
    ```
+
    or
+
    ```markdown
    ## System Prompt
    ```

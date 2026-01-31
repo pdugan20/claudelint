@@ -79,12 +79,14 @@ And complete directory structure:
 To resolve missing skill references:
 
 1. **Create the missing skill**: Add the skill directory and SKILL.md file
+
    ```bash
    mkdir -p .claude/skills/deploy-app
    touch .claude/skills/deploy-app/SKILL.md
    ```
 
 2. **Remove the invalid reference**: Update the agent's frontmatter to remove non-existent skills
+
    ```markdown
    skills:
      - git-commit
@@ -98,6 +100,7 @@ To resolve missing skill references:
    - Ensure exact case match
 
 4. **Verify the file exists**: Confirm the SKILL.md file is present
+
    ```bash
    ls .claude/skills/*/SKILL.md
    ```
