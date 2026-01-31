@@ -150,15 +150,15 @@ Project to set up professional npm versioning, release automation, and package n
 
 ### 5.3 Post-Release Verification
 
-- [ ] Check npm package page displays correctly
-- [ ] Test installation in clean directory
+- [x] Check npm package page displays correctly
+- [x] Test installation in clean directory
 - [ ] Verify README renders on npm
 - [ ] Update GitHub release with notes
 - [ ] Announce beta release (if applicable)
 
 **Phase 5 Completion Criteria:**
 
-- Package published to npm as `claudelint@beta`
+- [x] Package published to npm as `claude-code-lint@beta`
 - Package installs and functions correctly
 - Name claimed on npm registry
 
