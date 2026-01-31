@@ -7,7 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-01-30
+
+### Added
+
+#### Programmatic API
+
+Complete programmatic API for integrating ClaudeLint into Node.js applications, build tools, and editor extensions.
+
+**Class-based API:**
+
+```typescript
+import { ClaudeLint } from '@pdugan20/claudelint';
+
+const linter = new ClaudeLint({ fix: true });
+const results = await linter.lintFiles(['**/*.md']);
+await ClaudeLint.outputFixes(results);
+```
+
+**Functional API:**
+
+```typescript
+import { lint, formatResults } from '@pdugan20/claudelint';
+
+const results = await lint(['**/*.md'], { fix: true });
+const output = await formatResults(results, 'stylish');
+```
+
+**Features:**
+
+- Full-featured `ClaudeLint` class with state management and caching
+- Stateless functional API (`lint()`, `lintText()`, `resolveConfig()`, `formatResults()`, `getFileInfo()`)
+- Configuration utilities (`loadConfig()`, `findConfigFile()`)
+- Formatter system with 4 built-in formatters (stylish, json, compact, junit)
+- Custom formatter support
+- Auto-fix with predicate function filtering
+- Progress callbacks for real-time status updates
+- TypeScript type definitions for all public APIs
+- Configuration file resolution with override support
+
+**Public API Design:**
+
+Following ESLint and Prettier patterns, only stable public APIs are exported. Internal validators and utilities are not exposed to allow refactoring without breaking changes.
+
+**Documentation:**
+
+- Complete API reference (docs/api/)
+- 5 comprehensive usage examples (examples/)
+- Migration guide from CLI to API
+- TypeScript type documentation
+- Integration patterns for build tools and editors
+
 ### Changed
+
+
 
 #### BREAKING: Exit Code Standardization
 

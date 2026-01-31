@@ -1,7 +1,7 @@
 {
   "name": "@pdugan20/claudelint",
-  "version": "0.1.0",
-  "description": "A comprehensive linter for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more",
+  "version": "0.2.0",
+  "description": "Comprehensive linter and programmatic API for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -66,7 +66,11 @@
     "validation",
     "linter",
     "cli",
-    "developer-tools"
+    "developer-tools",
+    "programmatic",
+    "api",
+    "nodejs",
+    "typescript"
   ],
   "author": "Pat Dugan",
   "license": "MIT",

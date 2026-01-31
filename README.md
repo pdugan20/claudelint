@@ -26,7 +26,38 @@ claudelint check-all
 ```bash
 /plugin marketplace add pdugan20/claudelint
 /plugin install claudelint
-```text
+```
+
+## Programmatic API
+
+Use ClaudeLint programmatically in your Node.js applications, build tools, or editor extensions:
+
+```typescript
+import { ClaudeLint } from '@pdugan20/claudelint';
+
+const linter = new ClaudeLint({ fix: true });
+const results = await linter.lintFiles(['**/*.md']);
+
+const hasErrors = results.some(r => r.errorCount > 0);
+if (hasErrors) {
+  const formatter = await linter.loadFormatter('stylish');
+  console.log(formatter.format(results));
+  process.exit(1);
+}
+```
+
+**Or use the functional API for simpler tasks:**
+
+```typescript
+import { lint, formatResults } from '@pdugan20/claudelint';
+
+const results = await lint(['**/*.md'], { fix: true });
+const output = await formatResults(results, 'stylish');
+console.log(output);
+```
+
+See [Programmatic API documentation](docs/api/README.md) for complete reference.
+
 ## Features
 
 ### Validators
@@ -446,6 +477,18 @@ Recommended setup with complementary tools:
 }
 ```text
 ## Documentation
+
+### API Documentation
+
+- **[Programmatic API](docs/api/README.md)** - Use ClaudeLint in Node.js applications
+- **[ClaudeLint Class](docs/api/claudelint-class.md)** - Class-based API reference
+- **[Functional API](docs/api/functional-api.md)** - Stateless function reference
+- **[Formatters](docs/api/formatters.md)** - Built-in and custom formatters
+- **[TypeScript Types](docs/api/types.md)** - Type definitions
+- **[Migration Guide](docs/api/migration.md)** - Migrate from CLI to API
+- **[Examples](examples/)** - Complete usage examples
+
+### CLI Documentation
 
 - **[Validators](docs/validators.md)** - Detailed information about each validator
 - **[Configuration](docs/configuration.md)** - Customize validation rules and behavior
