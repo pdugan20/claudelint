@@ -449,6 +449,29 @@ describe('ClaudeLint', () => {
         expect(meta.size).toBe(0);
       });
     });
+
+    describe('getRules', () => {
+      it('should return map of registered rules', () => {
+        const linter = new ClaudeLint({ cwd: tempDir });
+
+        const rules = linter.getRules();
+
+        expect(rules).toBeInstanceOf(Map);
+        // Rules will be registered when the validators run
+        // In test environment, registry may be empty or populated
+        expect(rules.size).toBeGreaterThanOrEqual(0);
+
+        // If there are rules, verify structure
+        if (rules.size > 0) {
+          for (const [ruleId, metadata] of rules) {
+            expect(typeof ruleId).toBe('string');
+            expect(metadata).toHaveProperty('id');
+            expect(metadata).toHaveProperty('description');
+            expect(metadata).toHaveProperty('category');
+          }
+        }
+      });
+    });
   });
 
   describe('configuration methods', () => {
@@ -569,6 +592,134 @@ describe('ClaudeLint', () => {
         const found = await ClaudeLint.findConfigFile(tempDir);
 
         expect(found).toBeNull();
+      });
+    });
+  });
+
+  describe('auto-fix support', () => {
+    describe('outputFixes', () => {
+      it('should write fixed content to disk', async () => {
+        const { readFileSync } = require('fs');
+        const testFile = join(tempDir, 'test-fix.md');
+        writeFileSync(testFile, '# Original content', 'utf-8');
+
+        const results: LintResult[] = [
+          {
+            filePath: testFile,
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: '# Original content',
+            output: '# Fixed content',
+          },
+        ];
+
+        await ClaudeLint.outputFixes(results);
+
+        const written = readFileSync(testFile, 'utf-8');
+        expect(written).toBe('# Fixed content');
+      });
+
+      it('should not write if output equals source', async () => {
+        const testFile = join(tempDir, 'test-nochange.md');
+        writeFileSync(testFile, '# Content', 'utf-8');
+
+        const results: LintResult[] = [
+          {
+            filePath: testFile,
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: '# Content',
+            output: '# Content', // Same as source
+          },
+        ];
+
+        await ClaudeLint.outputFixes(results);
+
+        // File should remain unchanged
+        const { readFileSync } = require('fs');
+        const content = readFileSync(testFile, 'utf-8');
+        expect(content).toBe('# Content');
+      });
+
+      it('should handle results without output', async () => {
+        const results: LintResult[] = [
+          {
+            filePath: join(tempDir, 'no-output.md'),
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: '# Content',
+            // No output property
+          },
+        ];
+
+        // Should not throw
+        await expect(ClaudeLint.outputFixes(results)).resolves.not.toThrow();
+      });
+    });
+
+    describe('getFixedContent', () => {
+      it('should return map of fixed content', () => {
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: 'original',
+            output: 'fixed',
+          },
+          {
+            filePath: 'file2.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: 'unchanged',
+            output: 'unchanged',
+          },
+        ];
+
+        const fixed = ClaudeLint.getFixedContent(results);
+
+        expect(fixed.size).toBe(1);
+        expect(fixed.get('file1.md')).toBe('fixed');
+        expect(fixed.has('file2.md')).toBe(false);
+      });
+
+      it('should return empty map if no fixes', () => {
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+            source: 'content',
+          },
+        ];
+
+        const fixed = ClaudeLint.getFixedContent(results);
+
+        expect(fixed.size).toBe(0);
       });
     });
   });

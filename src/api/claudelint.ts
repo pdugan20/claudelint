@@ -392,8 +392,17 @@ export class ClaudeLint {
    * ```
    */
   getRules(): Map<string, RuleMetadata> {
-    // Will be implemented in Phase 3
-    throw new Error('getRules() not yet implemented');
+    const { RuleRegistry } = require('../utils/rule-registry');
+    const metaMap = new Map<string, RuleMetadata>();
+
+    // Get all registered rules
+    const allRules = RuleRegistry.getAllRules();
+
+    for (const rule of allRules) {
+      metaMap.set(rule.meta.id, rule.meta);
+    }
+
+    return metaMap;
   }
 
   /**
@@ -455,9 +464,21 @@ export class ClaudeLint {
    * await ClaudeLint.outputFixes(results);
    * ```
    */
-  static async outputFixes(_results: LintResult[]): Promise<void> {
-    // Will be implemented in Phase 3
-    throw new Error('outputFixes() not yet implemented');
+  static async outputFixes(results: LintResult[]): Promise<void> {
+    const { writeFileSync } = await import('fs');
+
+    for (const result of results) {
+      // Only write if there's fixed output
+      if (result.output && result.output !== result.source) {
+        try {
+          writeFileSync(result.filePath, result.output, 'utf-8');
+        } catch (error) {
+          throw new Error(
+            `Failed to write fixes to ${result.filePath}: ${(error as Error).message}`
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -474,9 +495,17 @@ export class ClaudeLint {
    * }
    * ```
    */
-  static getFixedContent(_results: LintResult[]): Map<string, string> {
-    // Will be implemented in Phase 3
-    throw new Error('getFixedContent() not yet implemented');
+  static getFixedContent(results: LintResult[]): Map<string, string> {
+    const fixedContent = new Map<string, string>();
+
+    for (const result of results) {
+      // Only include files that have fixes applied
+      if (result.output && result.output !== result.source) {
+        fixedContent.set(result.filePath, result.output);
+      }
+    }
+
+    return fixedContent;
   }
 
   /**
@@ -670,12 +699,18 @@ export class ClaudeLint {
       // Merge all validation results
       const mergedResult = this.mergeValidationResults(validationResults);
 
+      // Apply fixes if fix option is enabled
+      let output: string | undefined;
+      if (this.shouldApplyFixes()) {
+        output = this.applyFixes(source, mergedResult);
+      }
+
       // Convert to LintResult format
       const lintResult = buildLintResult(
         filePath,
         mergedResult,
         source,
-        undefined, // output will be added in Phase 3 when implementing fixes
+        output,
         Date.now() - fileStartTime
       );
 
@@ -764,12 +799,18 @@ export class ClaudeLint {
       // Merge all validation results
       const mergedResult = this.mergeValidationResults(validationResults);
 
+      // Apply fixes if fix option is enabled
+      let output: string | undefined;
+      if (this.shouldApplyFixes()) {
+        output = this.applyFixes(source, mergedResult);
+      }
+
       // Convert to LintResult format, using effectivePath for reporting
       const lintResult = buildLintResult(
         effectivePath,
         mergedResult,
         source,
-        undefined, // output will be added in Phase 3 when implementing fixes
+        output,
         Date.now() - fileStartTime
       );
 
@@ -790,6 +831,74 @@ export class ClaudeLint {
         source,
       };
     }
+  }
+
+  /**
+   * Check if fixes should be applied based on the fix option
+   */
+  private shouldApplyFixes(): boolean {
+    return this.options.fix !== undefined && this.options.fix !== false;
+  }
+
+  /**
+   * Apply all automatic fixes to the source content
+   *
+   * @param source - Original source content
+   * @param validationResult - Validation result containing errors/warnings with AutoFix objects
+   * @returns Fixed content, or undefined if no fixes were applied
+   */
+  private applyFixes(
+    source: string,
+    validationResult: import('../validators/base').ValidationResult
+  ): string | undefined {
+    // Collect all AutoFix objects from errors and warnings
+    const autoFixes: import('../validators/base').AutoFix[] = [];
+
+    for (const error of validationResult.errors) {
+      if (error.autoFix) {
+        // Check if this fix should be applied (if fix is a predicate function)
+        if (typeof this.options.fix === 'function') {
+          // Convert to LintMessage to check predicate
+          const { buildLintMessage } = require('./message-builder');
+          const lintMessage = buildLintMessage(error, 'error');
+          if (this.options.fix(lintMessage)) {
+            autoFixes.push(error.autoFix);
+          }
+        } else {
+          autoFixes.push(error.autoFix);
+        }
+      }
+    }
+
+    for (const warning of validationResult.warnings) {
+      if (warning.autoFix) {
+        // Check if this fix should be applied (if fix is a predicate function)
+        if (typeof this.options.fix === 'function') {
+          // Convert to LintMessage to check predicate
+          const { buildLintMessage } = require('./message-builder');
+          const lintMessage = buildLintMessage(warning, 'warning');
+          if (this.options.fix(lintMessage)) {
+            autoFixes.push(warning.autoFix);
+          }
+        } else {
+          autoFixes.push(warning.autoFix);
+        }
+      }
+    }
+
+    // If no fixes, return undefined
+    if (autoFixes.length === 0) {
+      return undefined;
+    }
+
+    // Apply all fixes sequentially
+    let fixedContent = source;
+    for (const autoFix of autoFixes) {
+      fixedContent = autoFix.apply(fixedContent);
+    }
+
+    // Return fixed content only if it's different from source
+    return fixedContent !== source ? fixedContent : undefined;
   }
 
   /**
