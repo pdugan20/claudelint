@@ -47,7 +47,6 @@
     "validate:all": "npm run lint && npm run format:check && npm run lint:md && npm run check:emojis && npm run build && npm test",
     "setup:hooks": "bash scripts/util/setup-hooks.sh",
     "postinstall": "bash scripts/util/setup-hooks.sh || true",
-    "prepare": "husky install || true",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist",
     "check:deadcode": "knip",
