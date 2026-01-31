@@ -408,9 +408,35 @@ export class ClaudeLint {
    * const meta = linter.getRulesMetaForResults(results);
    * ```
    */
-  getRulesMetaForResults(_results: LintResult[]): Map<string, RuleMetadata> {
-    // Will be implemented in Phase 3
-    throw new Error('getRulesMetaForResults() not yet implemented');
+  getRulesMetaForResults(results: LintResult[]): Map<string, RuleMetadata> {
+    const { RuleRegistry } = require('../utils/rule-registry');
+    const metaMap = new Map<string, RuleMetadata>();
+
+    // Extract unique rule IDs from all results
+    const ruleIds = new Set<string>();
+    for (const result of results) {
+      for (const message of result.messages) {
+        if (message.ruleId) {
+          ruleIds.add(message.ruleId);
+        }
+      }
+      // Also check suppressed messages
+      for (const message of result.suppressedMessages) {
+        if (message.ruleId) {
+          ruleIds.add(message.ruleId);
+        }
+      }
+    }
+
+    // Load metadata for each rule
+    for (const ruleId of ruleIds) {
+      const metadata = RuleRegistry.get(ruleId);
+      if (metadata) {
+        metaMap.set(ruleId, metadata);
+      }
+    }
+
+    return metaMap;
   }
 
   // Static methods
@@ -469,6 +495,23 @@ export class ClaudeLint {
    */
   static getErrorResults(results: LintResult[]): LintResult[] {
     return results.filter((result) => result.errorCount > 0);
+  }
+
+  /**
+   * Filter results to only those with warnings
+   *
+   * @param results - Array of lint results
+   * @returns New array containing only results with warnings
+   *
+   * @example
+   * ```typescript
+   * const results = await linter.lintFiles(['**\/*.md']);
+   * const warnings = ClaudeLint.getWarningResults(results);
+   * console.log(`Found ${warnings.length} files with warnings`);
+   * ```
+   */
+  static getWarningResults(results: LintResult[]): LintResult[] {
+    return results.filter((result) => result.warningCount > 0);
   }
 
   /**

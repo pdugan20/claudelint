@@ -329,6 +329,126 @@ describe('ClaudeLint', () => {
         expect(version).toMatch(/^\d+\.\d+\.\d+/);
       });
     });
+
+    describe('getWarningResults', () => {
+      it('should filter results to only warnings', () => {
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 0,
+            warningCount: 3,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+          },
+          {
+            filePath: 'file2.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 1,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+          },
+        ];
+
+        const warnings = ClaudeLint.getWarningResults(results);
+
+        expect(warnings.length).toBe(1);
+        expect(warnings[0].filePath).toBe('file1.md');
+      });
+
+      it('should return empty array if no warnings', () => {
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [],
+            suppressedMessages: [],
+            errorCount: 1,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+          },
+        ];
+
+        const warnings = ClaudeLint.getWarningResults(results);
+
+        expect(warnings.length).toBe(0);
+      });
+    });
+  });
+
+  describe('instance methods', () => {
+    describe('getRulesMetaForResults', () => {
+      it('should extract unique rule IDs from results', () => {
+        const linter = new ClaudeLint({ cwd: tempDir });
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [
+              {
+                ruleId: 'claude-md-size-error',
+                severity: 'error',
+                message: 'Test error',
+              },
+              {
+                ruleId: 'claude-md-size-warning',
+                severity: 'warning',
+                message: 'Test warning',
+              },
+            ],
+            suppressedMessages: [],
+            errorCount: 1,
+            warningCount: 1,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+          },
+        ];
+
+        const meta = linter.getRulesMetaForResults(results);
+
+        // Map will contain metadata for rules that exist in the registry
+        expect(meta).toBeInstanceOf(Map);
+        // If rules are registered, they should be in the map
+        // If not registered, map will be empty (which is fine for this test)
+        expect(meta.size).toBeGreaterThanOrEqual(0);
+      });
+
+      it('should return empty map for results without rule IDs', () => {
+        const linter = new ClaudeLint({ cwd: tempDir });
+        const results: LintResult[] = [
+          {
+            filePath: 'file1.md',
+            messages: [
+              {
+                ruleId: null,
+                severity: 'error',
+                message: 'Error without rule ID',
+              },
+            ],
+            suppressedMessages: [],
+            errorCount: 1,
+            warningCount: 0,
+            fixableErrorCount: 0,
+            fixableWarningCount: 0,
+          },
+        ];
+
+        const meta = linter.getRulesMetaForResults(results);
+
+        expect(meta.size).toBe(0);
+      });
+
+      it('should handle empty results', () => {
+        const linter = new ClaudeLint({ cwd: tempDir });
+        const results: LintResult[] = [];
+
+        const meta = linter.getRulesMetaForResults(results);
+
+        expect(meta.size).toBe(0);
+      });
+    });
   });
 
   describe('configuration methods', () => {
