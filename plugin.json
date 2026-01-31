@@ -1,6 +1,6 @@
 {
   "name": "claudelint",
-  "version": "0.1.0",
+  "version": "0.2.0-beta.0",
   "description": "A comprehensive linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.",
   "author": "Pat Dugan (https://github.com/pdugan20)",
   "homepage": "https://github.com/pdugan20/claudelint",

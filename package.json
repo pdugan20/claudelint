@@ -1,6 +1,6 @@
 {
   "name": "@pdugan20/claudelint",
-  "version": "0.2.0",
+  "version": "0.2.0-beta.0",
   "description": "Comprehensive linter and programmatic API for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -49,7 +49,19 @@
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist",
     "check:deadcode": "knip",
-    "check:deadcode:production": "knip --production"
+    "check:deadcode:production": "knip --production",
+    "release": "release-it",
+    "release:beta": "release-it --preRelease=beta",
+    "release:alpha": "release-it --preRelease=alpha",
+    "release:rc": "release-it --preRelease=rc",
+    "release:dry": "release-it --dry-run",
+    "release:patch": "release-it patch",
+    "release:minor": "release-it minor",
+    "release:major": "release-it major",
+    "sync:versions": "ts-node scripts/sync-versions.ts",
+    "sync:versions:check": "ts-node scripts/check/version-sync.ts",
+    "migrate:name": "ts-node scripts/migrate-package-name.ts",
+    "migrate:name:dry": "ts-node scripts/migrate-package-name.ts --dry-run"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -111,6 +123,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
+    "@release-it/conventional-changelog": "^10.0.4",
     "@types/diff": "^7.0.2",
     "@types/jest": "^29.5.11",
     "@types/js-yaml": "^4.0.9",
@@ -125,6 +138,7 @@
     "knip": "^5.82.1",
     "lint-staged": "^16.2.7",
     "markdownlint-cli": "^0.47.0",
+    "release-it": "^19.2.4",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
