@@ -4,7 +4,7 @@
  *
  * Validates that all files in the project follow the documented naming conventions:
  * - docs/*.md: lowercase-with-hyphens.md
- * - docs/projects/*\/*.md: ALL-CAPS-WITH-HYPHENS.md
+ * - docs/projects/*\/*.md: lowercase-with-hyphens.md (exceptions: README, CHANGELOG, CONTRIBUTING)
  * - docs/rules/{validator}/{rule-id}.md: Must match rule ID exactly
  * - src/**\/*.ts: lowercase-with-hyphens.ts
  * - tests/**\/*.test.ts: lowercase-with-hyphens.test.ts
@@ -53,14 +53,6 @@ function isLowercaseWithHyphens(filename: string): boolean {
 }
 
 /**
- * Check if filename follows ALL-CAPS-WITH-HYPHENS pattern
- */
-function isAllCapsWithHyphens(filename: string): boolean {
-  const name = filename.replace(/\.(md|ts|js|json)$/, '');
-  return /^[A-Z0-9]+(-[A-Z0-9]+)*$/.test(name);
-}
-
-/**
  * Convert filename to lowercase-with-hyphens
  */
 function toLowercaseWithHyphens(filename: string): string {
@@ -75,24 +67,6 @@ function toLowercaseWithHyphens(filename: string): string {
       .replace(/_/g, '-')
       // Convert to lowercase
       .toLowerCase() + ext
-  );
-}
-
-/**
- * Convert filename to ALL-CAPS-WITH-HYPHENS
- */
-function toAllCapsWithHyphens(filename: string): string {
-  const ext = extname(filename);
-  const name = basename(filename, ext);
-
-  return (
-    name
-      // Convert camelCase and PascalCase to hyphen-separated
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
-      // Convert underscores to hyphens
-      .replace(/_/g, '-')
-      // Convert to uppercase
-      .toUpperCase() + ext
   );
 }
 
@@ -183,11 +157,11 @@ async function checkProjectDocs(): Promise<void> {
     if (!filename.endsWith('.md')) return;
     if (EXEMPT_FILES.has(filename)) return;
 
-    if (!isAllCapsWithHyphens(filename)) {
+    if (!isLowercaseWithHyphens(filename)) {
       violations.push({
         file: relativePath,
-        issue: 'Project docs must use ALL-CAPS-WITH-HYPHENS.md',
-        suggestion: `Rename to: ${toAllCapsWithHyphens(filename)}`,
+        issue: 'Project docs must use lowercase-with-hyphens.md',
+        suggestion: `Rename to: ${toLowercaseWithHyphens(filename)}`,
       });
     }
   });

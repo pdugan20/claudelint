@@ -22,17 +22,20 @@ This document defines the file naming conventions used throughout the claudelint
 
 ### Project Documentation (`docs/projects/*/`)
 
-**Convention**: `ALL-CAPS-WITH-HYPHENS.md`
+**Convention**: `lowercase-with-hyphens.md` (matches main documentation)
 
 **Examples:**
 
-- ✓ `IMPLEMENTATION-TRACKER.md`
-- ✓ `RULE-TRACKER.md`
-- ✓ `DIFFICULTY-ANALYSIS.md`
-- ✗ `implementation-tracker.md`
-- ✗ `rule_tracker.md`
+- ✓ `implementation-tracker.md`
+- ✓ `task-tracker.md`
+- ✓ `api-design.md`
+- ✗ `IMPLEMENTATION-TRACKER.md`
+- ✗ `implementation_tracker.md`
 
-**Exception**: `README.md` (uppercase for standard GitHub convention)
+**Exceptions**:
+- `README.md` - Standard GitHub convention (uppercase)
+- `CHANGELOG.md` - Standard convention for changelogs
+- `CONTRIBUTING.md` - Standard convention for contribution guidelines
 
 ### Rule Documentation (`docs/rules/{validator}/{rule-id}.md`)
 
@@ -191,8 +194,8 @@ Create `scripts/check-file-naming.ts` to enforce:
 
 2. **Documentation follows conventions**
    - `docs/*.md` uses lowercase-with-hyphens
-   - `docs/projects/*/*.md` uses ALL-CAPS-WITH-HYPHENS
-   - Exception: README.md
+   - `docs/projects/*/*.md` uses lowercase-with-hyphens
+   - Exceptions: README.md, CHANGELOG.md, CONTRIBUTING.md
 
 3. **Source files follow conventions**
    - All `.ts` files use lowercase-with-hyphens
@@ -231,11 +234,12 @@ Add to `package.json`:
 3. **Consistency**: Matches npm package naming convention
 4. **Readability**: Hyphens are easier to read than underscores or no separators
 
-### Why ALL-CAPS for project docs?
+### Why lowercase for all documentation?
 
-1. **Visibility**: Makes project-specific documentation stand out
-2. **Distinction**: Separates project planning docs from general documentation
-3. **Convention**: Follows common practice for project management files
+1. **Consistency**: All documentation follows the same convention
+2. **Simplicity**: No need to remember different conventions for different folders
+3. **Standards**: Matches npm package naming and URL-friendly conventions
+4. **Exceptions**: Only standard files (README, CHANGELOG, CONTRIBUTING) use uppercase
 
 ### Why match rule IDs exactly?
 
@@ -291,8 +295,8 @@ If you find files not following these conventions:
 ### Wrong case in project docs
 
 ```text
-✗ implementation-tracker.md (should be uppercase in projects/)
-✓ IMPLEMENTATION-TRACKER.md
+✗ IMPLEMENTATION-TRACKER.md (should be lowercase to match main docs)
+✓ implementation-tracker.md
 ```
 
 ## Exceptions
@@ -313,8 +317,8 @@ The following files are exempt from standard conventions:
 | Location | Convention | Example |
 | --- | --- | --- |
 | `docs/*.md` | lowercase-with-hyphens.md | getting-started.md |
-| `docs/projects/*/*.md` | ALL-CAPS-WITH-HYPHENS.md | IMPLEMENTATION-TRACKER.md |
+| `docs/projects/*/*.md` | lowercase-with-hyphens.md | implementation-tracker.md |
 | `docs/rules/{validator}/` | {rule-id}.md | skill-missing-shebang.md |
 | `src/**/*.ts` | lowercase-with-hyphens.ts | validation-helpers.ts |
 | `tests/**/*.test.ts` | lowercase-with-hyphens.test.ts | validation-helpers.test.ts |
-| Root project files | UPPERCASE.md or standard | README.md, package.json |
+| Root project files | UPPERCASE.md or standard | README.md, CHANGELOG.md, package.json |
