@@ -18,6 +18,33 @@ Create a modern, fast documentation website for claudelint using VitePress.
 - **Perfect for CLIs**: Used by Vite, Vitest, Vue, Pinia
 - **SEO-Friendly**: Static site generation with excellent performance
 
+## VitePress vs Docusaurus: Key Trade-offs
+
+### What We're Getting
+
+- **Lightning-fast builds**: <100ms HMR, instant dev server
+- **Minimal bundle**: <200KB initial load (Docusaurus often 500KB+)
+- **Better TypeScript DX**: Vue 3 + Vite + TS integration
+- **Built-in local search**: minisearch-powered, no Algolia needed initially
+- **Simpler maintenance**: Less configuration, fewer moving parts
+
+### What We're Giving Up
+
+- **Native versioning**: No built-in v1/v2/v3 doc hosting
+- **Smaller plugin ecosystem**: ~50 VitePress themes vs 500+ Docusaurus plugins
+- **Vue requirement**: Must use Vue for custom components (not React/JSX)
+- **Less mature**: v1.0 released 2024 vs Docusaurus stable since 2020
+- **Smaller community**: Fewer tutorials, Stack Overflow answers
+
+### Why This Trade-off Makes Sense
+
+claudelint is:
+
+- A single-version CLI tool (no multi-version docs needed)
+- Medium-sized documentation (~50 pages total)
+- TypeScript-based (VitePress advantage)
+- Developer-focused (users value performance)
+
 ## Project Documents
 
 ### [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md)
@@ -148,6 +175,11 @@ docs.claudelint.dev/
 - **Vue Components** - Interactive demos
 - **Algolia DocSearch** - Search (future)
 - **GitHub Actions** - CI/CD
+- **Vite Plugins** - Access to 1000+ Vite plugins:
+  - `vite-plugin-pwa` for offline support
+  - `vite-plugin-compression` for gzip/brotli
+  - `vite-plugin-imagetools` for image optimization
+  - `@vitejs/plugin-vue-jsx` for JSX support in Vue
 
 ## Development Workflow
 
@@ -177,10 +209,29 @@ See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task l
 
 ### Performance
 
+**Build Performance**:
+
+- Development server start: <1s (VitePress average: instant)
+- Hot Module Replacement: <100ms (VitePress guarantee)
+- Production build: <30s for 50 pages
+- Memory usage: <500MB during builds
+
+**Runtime Performance**:
+
 - **Lighthouse Score**: 95+ on all metrics
 - **First Contentful Paint**: <1s
 - **Time to Interactive**: <2s
-- **Bundle Size**: <200KB initial load
+- **Total bundle size**: <200KB initial load
+- **Per-page JS**: <50KB
+
+**Why these matter**: Research shows Docusaurus sites with versioning + i18n can require 10GB+ RAM and 26-minute builds. VitePress's Vite-powered architecture avoids these scalability issues.
+
+### Developer Experience
+
+- **Dev server start**: <1 second
+- **HMR speed**: <100ms for content changes
+- **Build time**: <30s for full site
+- **No memory issues**: Builds complete with <500MB RAM
 
 ### Content
 
@@ -202,11 +253,59 @@ See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task l
 - **Week 2**: Content migration, custom components
 - **Week 3**: Deployment, polish, launch
 
+## Vue Components: What You Need to Know
+
+### For Content Authors
+
+- **Markdown is primary**: 95% of docs are just markdown
+- **No Vue knowledge needed** for writing docs
+- Built-in components (code groups, containers) work in markdown
+
+### For Developers (Custom Components)
+
+- **Vue 3 Composition API** required for custom components
+- Similar to React hooks if you know those
+- **Learning resources**:
+  - Vue 3 docs: https://vuejs.org
+  - VitePress components: https://vitepress.dev/guide/extending-default-theme
+
+### Realistic Time Investment
+
+- **Zero Vue experience**: ~4 hours to learn basics for simple components
+- **React experience**: ~2 hours to translate concepts
+- **Vue 2 experience**: ~1 hour to learn Composition API
+
+This is acceptable for the performance and simplicity gains.
+
+## Why This Will Work: Real-World Evidence
+
+### VitePress Migration Success Stories
+
+**400+ page migration** (Material for MkDocs → VitePress):
+
+- Completed in ~1 week
+- "Significantly faster and more responsive"
+- Built-in search "drastically improved speed and accuracy"
+
+**Socket.io considering migration** (Docusaurus → VitePress):
+
+- Primary reason: Vue-based examples align with Vue framework
+- Performance gains expected
+
+**Our situation**:
+
+- ~50 pages (smaller than above migrations)
+- TypeScript-based (VitePress strength)
+- No versioning needs (avoids Docusaurus complexity)
+- Developer audience (values performance)
+
+**Confidence level**: High
+
 ## Questions?
 
-- **Why VitePress over Docusaurus?** Faster, simpler, better for TypeScript projects
-- **Can we use React components?** No, VitePress is Vue-based. Use Vue components.
-- **What about versioning?** Start with single version, add versioning in Phase 6
+- **Why VitePress over Docusaurus?** See trade-offs section above
+- **Can we use React components?** No, VitePress is Vue-based. See Vue section above.
+- **What about versioning?** VitePress has no native versioning - see plan.md for details
 - **Custom domain?** Yes, docs.claudelint.dev (configure in Phase 5)
 
 ## Related Documents

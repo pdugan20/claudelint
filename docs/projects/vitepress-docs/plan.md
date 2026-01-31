@@ -174,6 +174,43 @@ export default defineConfig({
 
 ---
 
+## Search Strategy
+
+### Phase 1: Built-in Local Search (Recommended)
+
+VitePress includes excellent local search out-of-the-box powered by minisearch:
+
+- **No server-side indexing needed**
+- **Works offline**
+- **Fast and accurate for sites <100 pages**
+- **Zero configuration required**
+- **Research finding**: Teams migrating to VitePress reported local search "drastically improved speed and accuracy" vs previous solutions
+
+Configuration:
+
+```typescript
+export default defineConfig({
+  themeConfig: {
+    search: {
+      provider: 'local'
+    }
+  }
+})
+```
+
+### Future Consideration: Algolia DocSearch
+
+Only if we exceed 100+ pages AND need advanced features:
+
+- Typo tolerance
+- Analytics on search queries
+- Advanced filtering
+- Multi-language support
+
+**Current recommendation**: Local search is sufficient for claudelint documentation.
+
+---
+
 ## Content Strategy
 
 ### Homepage Design
@@ -853,19 +890,29 @@ Add to homepage:
 
 ## Future Enhancements (Post-Launch)
 
-### Version 2.0
+### Phase 2.0 (3-6 months)
 
-- [ ] Interactive rule playground (WASM-based validator)
-- [ ] Visual config generator
-- [ ] Multi-version docs (v0.x, v1.x)
-- [ ] API reference (auto-generated from TypeScript)
-- [ ] Video tutorials
-- [ ] Community showcase
-- [ ] Plugin marketplace
+- [ ] Config generator (high value, medium complexity)
+- [ ] Video tutorials (high value, low complexity)
+- [ ] Community showcase (medium value, low complexity)
+
+### Phase 3.0 (6-12 months)
+
+- [ ] **Interactive rule playground** (high complexity)
+  - Requires compiling claudelint to WASM
+  - Or running validator in Node.js via WebContainer
+  - Estimated effort: 40-60 hours
+  - Consider StackBlitz integration first (easier)
+- [ ] Multi-version docs (if needed)
+  - Manual implementation or migrate to Docusaurus
+- [ ] API reference auto-generation
+  - Use TypeDoc → markdown → VitePress
 
 ### Integrations
 
-- [ ] Algolia DocSearch (when >1000 pages/week traffic)
+- [ ] Algolia DocSearch (if needed)
+  - Use when we exceed 100+ pages AND need advanced features
+  - Current local search should be sufficient
 - [ ] GitHub Discussions integration
 - [ ] StackBlitz embedded examples
 - [ ] CodeSandbox templates
@@ -881,13 +928,28 @@ A: Faster builds, simpler config, better TypeScript support, lighter bundle size
 A: No, VitePress is Vue-based. Use Vue components or web components.
 
 **Q: What about versioning?**
-A: Start with single version, add versioning plugin in v2.0 when we have multiple major versions.
+A: VitePress does not have native versioning like Docusaurus. If claudelint requires multi-version docs (v1.x, v2.x, v3.x hosted simultaneously), we would need to:
+
+- Manually organize folders by version
+- Build custom routing/navigation
+- OR migrate to Docusaurus at that point
+
+For now, we'll maintain a single version with a changelog. This is appropriate for a linter tool where users typically stay on the latest version.
 
 **Q: How do we handle API docs?**
 A: Use TypeDoc to generate markdown from TypeScript, then include in VitePress.
 
-**Q: What's the plan for i18n?**
-A: Not planned for v1. VitePress has built-in i18n support for future.
+**Q: What's the plan for internationalization (i18n)?**
+A: Not planned for v1.0.
+
+If needed in the future:
+
+- VitePress supports i18n through manual locale configuration
+- More flexible than Docusaurus (less folder duplication)
+- But requires manual setup (no i18n plugin)
+- Suitable for 2-3 languages; consider Docusaurus if 10+ languages needed
+
+For a CLI tool, English-only is appropriate initially.
 
 **Q: How do we manage redirects?**
 A: Use VitePress cleanUrls option + server-level redirects (netlify.toml/vercel.json).

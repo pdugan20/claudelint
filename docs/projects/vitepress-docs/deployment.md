@@ -81,6 +81,25 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
+### Expected Build Times
+
+Based on VitePress performance characteristics:
+
+- **Cold build**: 10-20 seconds for 50 pages
+- **Incremental builds**: 5-10 seconds
+- **CI/CD total time**: ~2-3 minutes (including npm install)
+
+**Compare to Docusaurus**:
+
+- Similar-sized sites: 30-60 seconds cold build
+- Large sites with versioning: Up to 26 minutes
+
+**GitHub Actions Budget**:
+
+- Free tier: 2,000 minutes/month
+- Expected usage: ~100 builds/month × 3 min = 300 minutes
+- **Well within limits**
+
 **Step 2: Configure repository**
 
 1. Go to repo Settings → Pages
