@@ -152,6 +152,10 @@ Project to set up professional npm versioning, release automation, and package n
 
 - [x] Check npm package page displays correctly
 - [x] Test installation in clean directory
+- [x] Update all documentation and examples to reference `claude-code-lint` (1,508 occurrences across 276 files)
+- [x] Rename source files: `src/api/claudelint.ts` → `src/api/claude-code-lint.ts`
+- [x] Rename bin file: `bin/claudelint` → `bin/claude-code-lint`
+- [x] Verify all tests passing (759 tests)
 - [ ] Verify README renders on npm
 - [ ] Update GitHub release with notes
 - [ ] Announce beta release (if applicable)
