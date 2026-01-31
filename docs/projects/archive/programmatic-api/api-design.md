@@ -6,7 +6,7 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Main ClaudeLint Class](#main-claudelint-class)
+2. [Main ClaudeLint Class](#main-claude-code-lint-class)
 3. [Functional API](#functional-api)
 4. [Type Definitions](#type-definitions)
 5. [Formatter System](#formatter-system)
@@ -20,7 +20,7 @@
 
 ## Overview
 
-The claudelint programmatic API provides two ways to interact with the linter:
+The claude-code-lint programmatic API provides two ways to interact with the linter:
 
 1. **Class-based API** (`ClaudeLint`) - For complex workflows with state management
 2. **Functional API** - For simple, stateless operations
@@ -332,15 +332,15 @@ if (configPath) {
 **Behavior:**
 
 - Walks up directory tree
-- Looks for `.claudelintrc.json`, `claudelint.config.js`, etc.
+- Looks for `.claudelintrc.json`, `claude-code-lint.config.js`, etc.
 - Returns first match
 
 #### `static getVersion(): string`
 
-Returns the claudelint version.
+Returns the claude-code-lint version.
 
 ```typescript
-console.log(`Using claudelint ${ClaudeLint.getVersion()}`);
+console.log(`Using claude-code-lint ${ClaudeLint.getVersion()}`);
 ```
 
 **Returns:**
@@ -358,7 +358,7 @@ Convenience functions for simple, stateless operations.
 Shorthand for creating a linter and running lintFiles.
 
 ```typescript
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 const results = await lint(['**/*.md'], {
   fix: true,
@@ -378,7 +378,7 @@ const results = await linter.lintFiles(patterns);
 Shorthand for linting text.
 
 ```typescript
-import { lintText } from 'claudelint';
+import { lintText } from 'claude-code-lint';
 
 const results = await lintText(code, {
   filePath: 'CLAUDE.md',
@@ -391,7 +391,7 @@ const results = await lintText(code, {
 Resolves configuration for a file path.
 
 ```typescript
-import { resolveConfig } from 'claudelint';
+import { resolveConfig } from 'claude-code-lint';
 
 const config = await resolveConfig('./skills/my-skill/SKILL.md');
 console.log(config?.rules);
@@ -412,7 +412,7 @@ console.log(config?.rules);
 Formats results using a built-in or custom formatter.
 
 ```typescript
-import { formatResults } from 'claudelint';
+import { formatResults } from 'claude-code-lint';
 
 const output = await formatResults(results, 'json');
 console.log(output);
@@ -432,7 +432,7 @@ console.log(output);
 Gets information about a file without linting it.
 
 ```typescript
-import { getFileInfo } from 'claudelint';
+import { getFileInfo } from 'claude-code-lint';
 
 const info = await getFileInfo('CLAUDE.md');
 console.log(`Ignored: ${info.ignored}`);
@@ -758,8 +758,8 @@ Search order:
 
 1. `.claudelintrc.json`
 2. `.claudelintrc.yaml`
-3. `claudelint.config.js`
-4. `package.json` (claudelint key)
+3. `claude-code-lint.config.js`
+4. `package.json` (claude-code-lint key)
 
 ### Explicit Config
 
@@ -895,7 +895,7 @@ try {
 ### Basic Usage
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -911,7 +911,7 @@ process.exit(hasErrors ? 1 : 0);
 ### Auto-Fix Workflow
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['skills/**/*.sh']);
@@ -928,7 +928,7 @@ console.log('Fixes applied!');
 ### Build Integration
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function validateProject() {
   const linter = new ClaudeLint({
@@ -957,7 +957,7 @@ validateProject();
 ### Custom Formatter
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -976,7 +976,7 @@ for (const result of results) {
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 // Quick validation
 const results = await lint(['CLAUDE.md'], { fix: true });

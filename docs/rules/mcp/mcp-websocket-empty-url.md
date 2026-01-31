@@ -219,7 +219,7 @@ To resolve empty URL errors:
 6. **Run validation**:
 
    ```bash
-   claudelint check-mcp
+   claude-code-lint check-mcp
    ```
 
 ## Options

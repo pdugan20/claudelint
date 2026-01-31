@@ -141,7 +141,7 @@ To add a required version field:
 5. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

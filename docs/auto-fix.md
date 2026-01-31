@@ -1,6 +1,6 @@
 # Auto-fix
 
-claudelint can automatically fix certain validation issues.
+claude-code-lint can automatically fix certain validation issues.
 
 ## Overview
 
@@ -20,7 +20,7 @@ Auto-fix capability allows you to:
 See what would be fixed without modifying files:
 
 ```bash
-claudelint check-all --fix-dry-run
+claude-code-lint check-all --fix-dry-run
 ```
 
 **Output:**
@@ -45,7 +45,7 @@ Index: .claude/skills/my-skill/test.sh
 Automatically fix all fixable issues:
 
 ```bash
-claudelint check-all --fix
+claude-code-lint check-all --fix
 ```
 
 **Output:**
@@ -64,13 +64,13 @@ Fix only errors, warnings, or all issues:
 
 ```bash
 # Fix only errors
-claudelint check-all --fix --fix-type errors
+claude-code-lint check-all --fix --fix-type errors
 
 # Fix only warnings
-claudelint check-all --fix --fix-type warnings
+claude-code-lint check-all --fix --fix-type warnings
 
 # Fix all (default)
-claudelint check-all --fix --fix-type all
+claude-code-lint check-all --fix --fix-type all
 ```
 
 ## Fixable Rules
@@ -151,7 +151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. **Preview** fixes to see what will change:
 
    ```bash
-   claudelint check-all --fix-dry-run
+   claude-code-lint check-all --fix-dry-run
    ```
 
 2. **Review** the proposed changes
@@ -159,13 +159,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 3. **Apply** fixes if changes look correct:
 
    ```bash
-   claudelint check-all --fix
+   claude-code-lint check-all --fix
    ```
 
 4. **Validate** again to check for remaining issues:
 
    ```bash
-   claudelint check-all
+   claude-code-lint check-all
    ```
 
 5. **Commit** the auto-fixed files:
@@ -189,10 +189,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g claudelint
+      - run: npm install -g claude-code-lint
 
       # Validate and auto-fix
-      - run: claudelint check-all --fix
+      - run: claude-code-lint check-all --fix
 
       # Commit fixes (optional)
       - uses: stefanzweifel/git-auto-commit-action@v4
@@ -207,13 +207,13 @@ jobs:
 # .git/hooks/pre-commit
 
 # Auto-fix issues before committing
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Re-stage fixed files
 git add -u
 
 # Run validation
-claudelint check-all
+claude-code-lint check-all
 ```
 
 ## How Auto-fix Works
@@ -240,7 +240,7 @@ Files are written atomically - if an error occurs, the file remains unchanged.
 Preview changes without modifying files:
 
 ```bash
-claudelint check-all --fix-dry-run
+claude-code-lint check-all --fix-dry-run
 ```
 
 ### Unified Diffs
@@ -257,7 +257,7 @@ git status  # Check for uncommitted changes
 git stash   # Stash changes if needed
 
 # Apply fixes
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Review changes
 git diff
@@ -276,7 +276,7 @@ Some issues require human judgment:
 - `skill-missing-examples` - Requires understanding skill usage
 - `import-circular` - Requires restructuring imports
 
-Use `claudelint list-rules` to see which rules support auto-fix.
+Use `claude-code-lint list-rules` to see which rules support auto-fix.
 
 ### Caching Disabled with --fix
 
@@ -364,7 +364,7 @@ Fix remaining issues manually based on error messages.
 Always preview changes before applying:
 
 ```bash
-claudelint check-all --fix-dry-run | less
+claude-code-lint check-all --fix-dry-run | less
 ```
 
 ### Commit Before Fixing
@@ -374,7 +374,7 @@ Ensure you can revert if needed:
 ```bash
 git status
 # Commit or stash changes first
-claudelint check-all --fix
+claude-code-lint check-all --fix
 ```
 
 ### Fix in Batches
@@ -382,7 +382,7 @@ claudelint check-all --fix
 Fix one type at a time for easier review:
 
 ```bash
-claudelint check-all --fix --fix-type warnings
+claude-code-lint check-all --fix --fix-type warnings
 git diff
 git add -p  # Review each change
 ```
@@ -392,8 +392,8 @@ git add -p  # Review each change
 Always run validation again:
 
 ```bash
-claudelint check-all --fix
-claudelint check-all  # Verify all issues resolved
+claude-code-lint check-all --fix
+claude-code-lint check-all  # Verify all issues resolved
 ```
 
 ### Review Auto-fixes in PRs
@@ -409,32 +409,32 @@ When auto-fixes are applied in CI:
 ### Fix All Issues
 
 ```bash
-claudelint check-all --fix
+claude-code-lint check-all --fix
 ```
 
 ### Preview Only Errors
 
 ```bash
-claudelint check-all --fix-dry-run --fix-type errors
+claude-code-lint check-all --fix-dry-run --fix-type errors
 ```
 
 ### Fix Warnings Only
 
 ```bash
-claudelint check-all --fix --fix-type warnings
+claude-code-lint check-all --fix --fix-type warnings
 ```
 
 ### Combine with Other Options
 
 ```bash
 # Verbose output + auto-fix
-claudelint check-all --fix --verbose
+claude-code-lint check-all --fix --verbose
 
 # Specific config + auto-fix
-claudelint check-all --fix --config .claudelintrc.custom.json
+claude-code-lint check-all --fix --config .claudelintrc.custom.json
 
 # No cache + auto-fix (cache is auto-disabled with --fix)
-claudelint check-all --fix --no-cache
+claude-code-lint check-all --fix --no-cache
 ```
 
 ## See Also

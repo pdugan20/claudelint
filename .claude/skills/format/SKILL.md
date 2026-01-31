@@ -9,7 +9,7 @@ allowed-tools:
 
 # Format Claude Code Files
 
-Runs `claudelint format` to format Claude Code project files using industry-standard tools:
+Runs `claude-code-lint format` to format Claude Code project files using industry-standard tools:
 
 - **markdownlint** - Markdown structure and formatting
 - **prettier** - Code formatting for markdown, JSON, YAML
@@ -18,7 +18,7 @@ Runs `claudelint format` to format Claude Code project files using industry-stan
 ## Usage
 
 ```bash
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 ## Modes
@@ -28,13 +28,13 @@ claudelint format --fix
 Auto-fix formatting issues:
 
 ```bash
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 Or simply:
 
 ```bash
-claudelint format
+claude-code-lint format
 ```
 
 ### Check Mode
@@ -42,7 +42,7 @@ claudelint format
 Check formatting without making changes:
 
 ```bash
-claudelint format --check
+claude-code-lint format --check
 ```
 
 Useful for CI/CD to verify formatting.
@@ -91,19 +91,19 @@ Tool: shellcheck (analysis only, no auto-fix)
 Format all Claude files:
 
 ```bash
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 Check formatting in CI:
 
 ```bash
-claudelint format --check
+claude-code-lint format --check
 ```
 
 Verbose output:
 
 ```bash
-claudelint format --fix --verbose
+claude-code-lint format --fix --verbose
 ```
 
 ## Required Tools
@@ -157,7 +157,7 @@ Create `.markdownlint.json` in your project root:
 }
 ```
 
-`claudelint format` will automatically use this configuration.
+`claude-code-lint format` will automatically use this configuration.
 
 ### Customizing Prettier
 
@@ -176,7 +176,7 @@ Create `.prettierrc.json` in your project root:
 }
 ```
 
-`claudelint format` will automatically use this configuration.
+`claude-code-lint format` will automatically use this configuration.
 
 ## Integration
 
@@ -185,9 +185,9 @@ Add to package.json scripts:
 ```json
 {
   "scripts": {
-    "format:claude": "claudelint format --fix",
-    "format:claude:check": "claudelint format --check",
-    "lint:claude": "claudelint check-all"
+    "format:claude": "claude-code-lint format --fix",
+    "format:claude:check": "claude-code-lint format --check",
+    "lint:claude": "claude-code-lint check-all"
   }
 }
 ```
@@ -196,8 +196,8 @@ Add to pre-commit hooks:
 
 ```bash
 #!/bin/sh
-claudelint format --check
-claudelint check-all
+claude-code-lint format --check
+claude-code-lint check-all
 ```
 
 ## Exit Codes

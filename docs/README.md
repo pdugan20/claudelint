@@ -1,6 +1,6 @@
-# claudelint Documentation
+# claude-code-lint Documentation
 
-Welcome to the claudelint documentation! claudelint is a comprehensive linter for Claude Code projects that helps you maintain high-quality, secure, and well-structured configurations.
+Welcome to the claude-code-lint documentation! claude-code-lint is a comprehensive linter for Claude Code projects that helps you maintain high-quality, secure, and well-structured configurations.
 
 ## Quick Navigation
 
@@ -40,7 +40,7 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
 
 1. Start with [Getting Started](./getting-started.md) to install and run your first validation
 2. Review [Configuration](./configuration.md) to customize rules for your project
-3. Browse the [Rules Catalog](./rules/) to understand what claudelint checks
+3. Browse the [Rules Catalog](./rules/) to understand what claude-code-lint checks
 
 ### Daily Users
 
@@ -67,58 +67,58 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
 
 ```bash
 # Run all validators
-claudelint check-all
+claude-code-lint check-all
 
 # Strict mode (fail on any issue)
-claudelint check-all --strict
+claude-code-lint check-all --strict
 
 # Limit warnings
-claudelint check-all --max-warnings 5
+claude-code-lint check-all --max-warnings 5
 
 # JSON output for CI
-claudelint check-all --format json
+claude-code-lint check-all --format json
 ```
 
 ### Auto-fixing Issues
 
 ```bash
 # Preview fixes
-claudelint check-all --fix-dry-run
+claude-code-lint check-all --fix-dry-run
 
 # Apply fixes
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Fix only errors
-claudelint check-all --fix --fix-type errors
+claude-code-lint check-all --fix --fix-type errors
 ```
 
 ### Configuration Management
 
 ```bash
 # Initialize configuration
-claudelint init
+claude-code-lint init
 
 # View resolved config
-claudelint print-config
+claude-code-lint print-config
 
 # Check config for specific file
-claudelint resolve-config .claude/CLAUDE.md
+claude-code-lint resolve-config .claude/CLAUDE.md
 
 # Validate config file
-claudelint validate-config
+claude-code-lint validate-config
 ```
 
 ### Performance Optimization
 
 ```bash
 # Enable caching (default)
-claudelint check-all
+claude-code-lint check-all
 
 # Clear cache if stale
-claudelint cache-clear
+claude-code-lint cache-clear
 
 # Disable cache temporarily
-claudelint check-all --no-cache
+claude-code-lint check-all --no-cache
 ```
 
 ## Documentation Structure
@@ -140,7 +140,7 @@ This structure ensures you can find what you need quickly, whether you're just s
 - **Auto-fix** - Automatically fix common issues
 - **Progress Indicators** - Real-time feedback with timing
 - **Multiple Formats** - Stylish, JSON, and compact output
-- **Interactive Setup** - Configuration wizard with `claudelint init`
+- **Interactive Setup** - Configuration wizard with `claude-code-lint init`
 - **Debug Tools** - Config debugging commands
 - **Per-rule Docs** - Detailed documentation for each rule
 - **Inline Disables** - Fine-grained control with comments
@@ -148,7 +148,7 @@ This structure ensures you can find what you need quickly, whether you're just s
 
 ## Getting Help
 
-- **Documentation Issues**: [Report on GitHub](https://github.com/pdugan20/claudelint/issues)
+- **Documentation Issues**: [Report on GitHub](https://github.com/pdugan20/claude-code-lint/issues)
 - **Questions**: Check [Debugging Guide](./debugging.md) or open an issue
 - **Contributing**: See [Architecture](./architecture.md) for contributor info
 

@@ -9,7 +9,7 @@ allowed-tools:
 
 # Validate CLAUDE.md Files
 
-Runs `claudelint check-claude-md` to validate CLAUDE.md files including:
+Runs `claude-code-lint check-claude-md` to validate CLAUDE.md files including:
 
 - File size limits (30KB warning, 50KB error)
 - @import directive validation
@@ -19,7 +19,7 @@ Runs `claudelint check-claude-md` to validate CLAUDE.md files including:
 ## Usage
 
 ```bash
-claudelint check-claude-md
+claude-code-lint check-claude-md
 ```
 
 ## Options
@@ -34,19 +34,19 @@ claudelint check-claude-md
 Validate all CLAUDE.md files:
 
 ```bash
-claudelint check-claude-md
+claude-code-lint check-claude-md
 ```
 
 Validate specific file:
 
 ```bash
-claudelint check-claude-md --path /path/to/CLAUDE.md
+claude-code-lint check-claude-md --path /path/to/CLAUDE.md
 ```
 
 Verbose output with explanations:
 
 ```bash
-claudelint check-claude-md --verbose --explain
+claude-code-lint check-claude-md --verbose --explain
 ```
 
 ## What Gets Validated
@@ -94,17 +94,17 @@ Rules can be configured in `.claudelintrc.json`:
 Disable specific rules inline:
 
 ```markdown
-<!-- claudelint-disable size-warning -->
+<!-- claude-code-lint-disable size-warning -->
 
 Large file content here...
 
-<!-- claudelint-enable size-warning -->
+<!-- claude-code-lint-enable size-warning -->
 ```
 
 Or disable for a single line:
 
 ```markdown
-<!-- claudelint-disable-next-line import-missing -->
+<!-- claude-code-lint-disable-next-line import-missing -->
 
 @import non-existent-file.md
 ```

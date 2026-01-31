@@ -206,7 +206,7 @@ To resolve invalid URL errors:
 6. **Run validation**:
 
    ```bash
-   claudelint check-mcp
+   claude-code-lint check-mcp
    ```
 
 ## Options

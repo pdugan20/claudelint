@@ -1,8 +1,8 @@
 // ============================================================================
-// claudelint Programmatic API
+// claude-code-lint Programmatic API
 // ============================================================================
 //
-// This module provides the public API for claudelint, following the same
+// This module provides the public API for claude-code-lint, following the same
 // patterns as ESLint and Prettier. Only stable, documented APIs are exported.
 //
 // Internal implementation details (validators, registries, etc.) are NOT
@@ -23,13 +23,13 @@
  *
  * @example
  * ```typescript
- * import { ClaudeLint } from 'claudelint';
+ * import { ClaudeLint } from 'claude-code-lint';
  *
  * const linter = new ClaudeLint({ fix: true });
  * const results = await linter.lintFiles(['**\/*.md']);
  * ```
  */
-export { ClaudeLint } from './api/claudelint';
+export { ClaudeLint } from './api/claude-code-lint';
 
 // ============================================================================
 // Type Definitions
@@ -68,7 +68,7 @@ export type {
  *
  * @example
  * ```typescript
- * import { loadFormatter } from 'claudelint';
+ * import { loadFormatter } from 'claude-code-lint';
  *
  * const formatter = await loadFormatter('stylish');
  * ```
@@ -90,7 +90,7 @@ export type { BuiltinFormatterName } from './api/formatter';
  *
  * @example
  * ```typescript
- * import { findConfigFile, loadConfig } from 'claudelint';
+ * import { findConfigFile, loadConfig } from 'claude-code-lint';
  *
  * const configPath = await findConfigFile(process.cwd());
  * const config = loadConfig(configPath);
@@ -108,7 +108,7 @@ export { findConfigFile, loadConfig } from './utils/config';
  *
  * @example
  * ```typescript
- * import { lint, formatResults } from 'claudelint';
+ * import { lint, formatResults } from 'claude-code-lint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * const output = await formatResults(results, 'stylish');

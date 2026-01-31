@@ -5,9 +5,9 @@
  * an automatic fix to remove it.
  *
  * Installation:
- * 1. Copy this file to .claudelint/rules/ in your project
- * 2. Run: claudelint check-all
- * 3. Run: claudelint check-all --fix (to apply auto-fixes)
+ * 1. Copy this file to .claude-code-lint/rules/ in your project
+ * 2. Run: claude-code-lint check-all
+ * 3. Run: claude-code-lint check-all --fix (to apply auto-fixes)
  */
 
 module.exports.rule = {

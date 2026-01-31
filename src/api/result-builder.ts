@@ -1,7 +1,7 @@
 /**
  * Result builder for converting validation results to LintResult format
  *
- * This module provides utilities to convert claudelint's internal ValidationResult
+ * This module provides utilities to convert claude-code-lint's internal ValidationResult
  * format to the standardized LintResult format used by the programmatic API.
  *
  * @module api/result-builder

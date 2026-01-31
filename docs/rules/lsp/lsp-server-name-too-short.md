@@ -94,7 +94,7 @@ To fix server names that are too short:
 3. **Verify configuration**:
 
 ```bash
-claudelint check-lsp
+claude-code-lint check-lsp
 ```
 
 ## Options

@@ -1,5 +1,5 @@
 /**
- * Functional API for claudelint
+ * Functional API for claude-code-lint
  *
  * This module provides stateless functional utilities for common operations.
  * These are convenience wrappers around the ClaudeLint class for simple use cases.
@@ -7,7 +7,7 @@
  * @module api/functions
  */
 
-import { ClaudeLint } from './claudelint';
+import { ClaudeLint } from './claude-code-lint';
 import type { LintResult, LintOptions, LintTextOptions, FileInfo } from './types';
 import type { ClaudeLintConfig } from '../utils/config';
 import type { Formatter } from './types';
@@ -23,7 +23,7 @@ import type { Formatter } from './types';
  *
  * @example
  * ```typescript
- * import { lint } from 'claudelint';
+ * import { lint } from 'claude-code-lint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * console.log(`Found ${results.length} files`);
@@ -43,7 +43,7 @@ export async function lint(patterns: string[], options?: LintOptions): Promise<L
  *
  * @example
  * ```typescript
- * import { lintText } from 'claudelint';
+ * import { lintText } from 'claude-code-lint';
  *
  * const code = '# CLAUDE.md\\n\\nSome content';
  * const results = await lintText(code, { filePath: 'CLAUDE.md' });
@@ -63,7 +63,7 @@ export async function lintText(code: string, options?: LintTextOptions): Promise
  *
  * @example
  * ```typescript
- * import { resolveConfig } from 'claudelint';
+ * import { resolveConfig } from 'claude-code-lint';
  *
  * const config = await resolveConfig('skills/test/SKILL.md');
  * console.log(config.rules);
@@ -87,7 +87,7 @@ export async function resolveConfig(
  *
  * @example
  * ```typescript
- * import { lint, formatResults } from 'claudelint';
+ * import { lint, formatResults } from 'claude-code-lint';
  *
  * const results = await lint(['**\/*.md']);
  * const output = await formatResults(results, 'stylish');
@@ -113,7 +113,7 @@ export async function formatResults(
  *
  * @example
  * ```typescript
- * import { getFileInfo } from 'claudelint';
+ * import { getFileInfo } from 'claude-code-lint';
  *
  * const info = await getFileInfo('test.md');
  * console.log(`Ignored: ${info.ignored}`);

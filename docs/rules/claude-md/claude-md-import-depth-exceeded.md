@@ -86,7 +86,7 @@ To reduce import depth:
 4. **Check current depth**:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    # Shows import chain and depth for each file
    ```
 
@@ -94,7 +94,7 @@ To reduce import depth:
 
    ```bash
    # Ensure no import chain exceeds the limit
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 ## Options

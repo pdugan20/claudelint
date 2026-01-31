@@ -1343,7 +1343,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Assigned To:** Claude
   - **Completion Date:** 2026-01-29
   - **Results:**
-    - Created comprehensive test fixtures in /tmp/claudelint-manual-test
+    - Created comprehensive test fixtures in /tmp/claude-code-lint-manual-test
     - Verified all 10 validators correctly detect issues:
       - CLAUDE.md Validator: ✓ Detects size errors, size warnings
       - Skills Validator: ✓ Detects missing version, missing changelog
@@ -1686,7 +1686,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
   - **Expected Benefits:**
     - Faster execution (no process spawning)
     - Better error handling (structured errors, not string parsing)
-    - Guaranteed availability (bundled with claudelint)
+    - Guaranteed availability (bundled with claude-code-lint)
     - Works offline (no npx auto-install)
     - Industry standard approach (ESLint bundles its tools)
   - **Estimated Time:** 2-3 hours
@@ -1853,7 +1853,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - markdownlint - Markdown linting and fixing
     - chalk - Colored terminal output
 
-    These are installed automatically with claudelint.
+    These are installed automatically with claude-code-lint.
 
     ### Optional (Install Separately)
     - ShellCheck - Shell script linting
@@ -2006,7 +2006,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
 **Before:**
 
 ```bash
-$ claudelint format
+$ claude-code-lint format
 
 Formatting Claude files (fix mode)...
 

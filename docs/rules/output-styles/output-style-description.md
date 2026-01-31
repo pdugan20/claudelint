@@ -11,7 +11,7 @@ Output style description must be at least 10 characters, written in third person
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-description.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-description.test.ts)
-- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-description.md)
+- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-description.md)
 
 ## Version
 

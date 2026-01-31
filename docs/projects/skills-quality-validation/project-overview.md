@@ -57,7 +57,7 @@ skills-quality-validation/
 
 ## Implementation Strategy
 
-0. **FIRST**: Complete **Phase 0 Architecture Refactor** - refactor claudelint to match ESLint/Prettier model
+0. **FIRST**: Complete **Phase 0 Architecture Refactor** - refactor claude-code-lint to match ESLint/Prettier model
 1. Start with **Easy** rules - build momentum, immediate value
 2. Tackle **Medium** rules in priority order (trigger phrases first!)
 3. Defer **Hard** rules requiring external integrations to Phase 3

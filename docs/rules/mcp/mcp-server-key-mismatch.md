@@ -192,7 +192,7 @@ To resolve key-name mismatches:
 5. **Run validation**:
 
    ```bash
-   claudelint check-mcp
+   claude-code-lint check-mcp
    ```
 
 ## Options

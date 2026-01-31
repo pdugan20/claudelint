@@ -134,7 +134,7 @@ To fix backslash usage in path patterns:
 4. **Verify pattern matching** after fixing:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 5. **Test the glob patterns** to ensure they still match the intended files:

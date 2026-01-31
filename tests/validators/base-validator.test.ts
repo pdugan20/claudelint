@@ -334,7 +334,7 @@ describe('BaseValidator config integration', () => {
       // Parse disable comments first
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-line claude-md-size-error -->\n'
+        '<!-- claude-code-lint-disable-line claude-md-size-error -->\n'
       );
 
       validator.testSetCurrentFile(filePath);
@@ -470,7 +470,7 @@ describe('BaseValidator config integration', () => {
       // Parse disable comment for size-error
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-line claude-md-size-error -->\n'
+        '<!-- claude-code-lint-disable-line claude-md-size-error -->\n'
       );
 
       validator.testSetCurrentFile(filePath);
@@ -502,7 +502,7 @@ describe('BaseValidator config integration', () => {
       // Inline disable should take priority
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-file claude-md-size-error -->\n'
+        '<!-- claude-code-lint-disable-file claude-md-size-error -->\n'
       );
 
       validator.testSetCurrentFile(filePath);

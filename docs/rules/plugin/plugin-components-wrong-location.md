@@ -131,7 +131,7 @@ To move components to the correct location:
 8. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

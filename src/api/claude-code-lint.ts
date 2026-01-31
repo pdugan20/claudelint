@@ -5,11 +5,11 @@
  * projects programmatically. It handles configuration, file discovery, validation
  * orchestration, and result formatting.
  *
- * @module api/claudelint
+ * @module api/claude-code-lint
  *
  * @example
  * ```typescript
- * import { ClaudeLint } from 'claudelint';
+ * import { ClaudeLint } from 'claude-code-lint';
  *
  * const linter = new ClaudeLint({
  *   fix: true,
@@ -146,7 +146,7 @@ export class ClaudeLint {
 
       // Caching
       cache: options.cache ?? false,
-      cacheLocation: options.cacheLocation ?? '.claudelint-cache',
+      cacheLocation: options.cacheLocation ?? '.claude-code-lint-cache',
       cacheStrategy: options.cacheStrategy ?? 'metadata',
 
       // Callbacks
@@ -267,7 +267,7 @@ export class ClaudeLint {
     }
 
     // Create a temporary file to validate
-    const tmpDir = join(tmpdir(), 'claudelint-linttext');
+    const tmpDir = join(tmpdir(), 'claude-code-lint-linttext');
     const tmpFile = join(tmpDir, `${randomBytes(16).toString('hex')}.tmp`);
 
     try {
@@ -576,13 +576,13 @@ export class ClaudeLint {
   }
 
   /**
-   * Get the claudelint version
+   * Get the claude-code-lint version
    *
    * @returns Version string
    *
    * @example
    * ```typescript
-   * console.log(`Using claudelint ${ClaudeLint.getVersion()}`);
+   * console.log(`Using claude-code-lint ${ClaudeLint.getVersion()}`);
    * ```
    */
   static getVersion(): string {

@@ -7,7 +7,7 @@
 
 ## Overview
 
-This project adds a comprehensive programmatic API to claudelint, enabling developers to integrate linting capabilities directly into their applications, build tools, and automation workflows.
+This project adds a comprehensive programmatic API to claude-code-lint, enabling developers to integrate linting capabilities directly into their applications, build tools, and automation workflows.
 
 ## Project Documents
 
@@ -57,7 +57,7 @@ This project adds a comprehensive programmatic API to claudelint, enabling devel
 ### For Reviewers
 
 - [Technical Approach](./PROPOSAL.md#decision-hybrid-class-based--functional-api)
-- [API Surface](./API_DESIGN.md#main-claudelint-class)
+- [API Surface](./API_DESIGN.md#main-claude-code-lint-class)
 - [Type Definitions](./API_DESIGN.md#type-definitions)
 - [Examples](./API_DESIGN.md#examples)
 
@@ -85,11 +85,11 @@ Following ESLint/Prettier patterns, only stable public APIs are exported.
 
 ```typescript
 // Main programmatic API
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // Type definitions and utilities
-import { loadFormatter, findConfigFile } from 'claudelint';
-import type { LintResult, LintMessage } from 'claudelint';
+import { loadFormatter, findConfigFile } from 'claude-code-lint';
+import type { LintResult, LintMessage } from 'claude-code-lint';
 ```
 
 Internal validators are NOT exported - use the ClaudeLint class instead.
@@ -165,7 +165,7 @@ See [TASK_TRACKER.md](./TASK_TRACKER.md) for detailed task status.
 ### Class-Based API
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   fix: true,
@@ -183,7 +183,7 @@ console.log(formatter.format(results));
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md'], { fix: true });
 const output = await formatResults(results, 'json');
@@ -201,7 +201,7 @@ See [API_DESIGN.md](./API_DESIGN.md) for complete API reference.
 npm test -- tests/api/
 
 # Specific phase
-npm test -- tests/api/claudelint.test.ts
+npm test -- tests/api/claude-code-lint.test.ts
 
 # With coverage
 npm test -- --coverage tests/api/

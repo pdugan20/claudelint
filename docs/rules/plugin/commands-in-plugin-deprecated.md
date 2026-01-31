@@ -129,7 +129,7 @@ To migrate from commands to skills:
 6. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

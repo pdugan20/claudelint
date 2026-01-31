@@ -67,7 +67,7 @@ To resolve case-sensitive filename collisions:
 4. **Verify no collisions remain**:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 Tip: Use descriptive names that differentiate the files by content, not just by case.

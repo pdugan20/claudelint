@@ -23,7 +23,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '1.0.0',
-    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-events.md',
+    docUrl: 'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/agents/agent-events.md',
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

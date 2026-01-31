@@ -1,18 +1,18 @@
 # Custom Rules Guide
 
-claudelint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements.
+claude-code-lint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements.
 
 ## Quick Start
 
-1. Create a `.claudelint/rules/` directory in your project root
+1. Create a `.claude-code-lint/rules/` directory in your project root
 2. Add a custom rule file (`.js` or `.ts`)
 3. Export a `rule` object that implements the Rule interface
-4. Run `claudelint check-all` to load and execute your custom rules
+4. Run `claude-code-lint check-all` to load and execute your custom rules
 
 Example custom rule:
 
 ```javascript
-// .claudelint/rules/no-profanity.js
+// .claude-code-lint/rules/no-profanity.js
 module.exports.rule = {
   meta: {
     id: 'no-profanity',
@@ -42,11 +42,11 @@ module.exports.rule = {
 
 ## Directory Structure
 
-Custom rules are automatically discovered in the `.claudelint/rules/` directory:
+Custom rules are automatically discovered in the `.claude-code-lint/rules/` directory:
 
 ```text
 your-project/
-├── .claudelint/
+├── .claude-code-lint/
 │   └── rules/
 │       ├── team-rule.js
 │       ├── project-rule.js
@@ -117,7 +117,7 @@ interface Violation {
 ### Example 1: Enforce Maximum File Size
 
 ```javascript
-// .claudelint/rules/max-file-size.js
+// .claude-code-lint/rules/max-file-size.js
 module.exports.rule = {
   meta: {
     id: 'max-file-size',
@@ -143,7 +143,7 @@ module.exports.rule = {
 ### Example 2: Require Specific Heading
 
 ```javascript
-// .claudelint/rules/require-overview.js
+// .claude-code-lint/rules/require-overview.js
 module.exports.rule = {
   meta: {
     id: 'require-overview',
@@ -170,7 +170,7 @@ module.exports.rule = {
 ### Example 3: Pattern Matching
 
 ```javascript
-// .claudelint/rules/no-absolute-paths.js
+// .claude-code-lint/rules/no-absolute-paths.js
 module.exports.rule = {
   meta: {
     id: 'no-absolute-paths',
@@ -215,7 +215,7 @@ interface AutoFix {
 ### Example: Auto-Fix Trailing Whitespace
 
 ```javascript
-// .claudelint/rules/no-trailing-whitespace.js
+// .claude-code-lint/rules/no-trailing-whitespace.js
 module.exports.rule = {
   meta: {
     id: 'no-trailing-whitespace',
@@ -263,14 +263,14 @@ module.exports.rule = {
 
 ### Using Auto-Fix
 
-Run claudelint with the `--fix` flag to apply automatic fixes:
+Run claude-code-lint with the `--fix` flag to apply automatic fixes:
 
 ```bash
 # Preview fixes (dry-run)
-claudelint check-all --fix --dry-run
+claude-code-lint check-all --fix --dry-run
 
 # Apply fixes
-claudelint check-all --fix
+claude-code-lint check-all --fix
 ```
 
 ### Best Practices for Auto-Fix
@@ -284,7 +284,7 @@ claudelint check-all --fix
 ### Example: Pattern Replacement Fix
 
 ```javascript
-// .claudelint/rules/use-correct-term.js
+// .claude-code-lint/rules/use-correct-term.js
 module.exports.rule = {
   meta: {
     id: 'use-correct-term',
@@ -348,9 +348,9 @@ Severity levels:
 
 ## Loading Behavior
 
-Custom rules are loaded automatically when you run `claudelint check-all`:
+Custom rules are loaded automatically when you run `claude-code-lint check-all`:
 
-1. claudelint searches for `.claudelint/rules/` in the project root
+1. claude-code-lint searches for `.claude-code-lint/rules/` in the project root
 2. All `.js` and `.ts` files are discovered recursively
 3. Each file is loaded and validated
 4. Rules are registered with the rule registry
@@ -361,7 +361,7 @@ Custom rules are loaded automatically when you run `claudelint check-all`:
 If a custom rule fails to load, you'll see an error message:
 
 ```text
-Failed to load custom rule: .claudelint/rules/broken-rule.js
+Failed to load custom rule: .claude-code-lint/rules/broken-rule.js
 Error: Rule does not implement Rule interface (must have meta and validate)
 ```
 
@@ -437,7 +437,7 @@ validate: async (context) => {
 Create test cases for your custom rules:
 
 ```javascript
-// .claudelint/rules/__tests__/no-profanity.test.js
+// .claude-code-lint/rules/__tests__/no-profanity.test.js
 const { rule } = require('../no-profanity');
 
 describe('no-profanity rule', () => {
@@ -465,7 +465,7 @@ describe('no-profanity rule', () => {
 
 **Solutions:**
 
-- Verify file is in `.claudelint/rules/` directory
+- Verify file is in `.claude-code-lint/rules/` directory
 - Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`, etc.)
 - Ensure `module.exports.rule` is used (not ES6 `export`)
 - Check for syntax errors in the rule file
@@ -490,7 +490,7 @@ describe('no-profanity rule', () => {
 - If using TypeScript, add type annotations:
 
 ```typescript
-import type { ValidationContext } from 'claudelint';
+import type { ValidationContext } from 'claude-code-lint';
 
 module.exports.rule = {
   // ...
@@ -513,19 +513,19 @@ module.exports.rule = {
 
 ### Helper Functions Not Found
 
-**Problem:** `Cannot find module 'claudelint/utils'`
+**Problem:** `Cannot find module 'claude-code-lint/utils'`
 
 **Solutions:**
 
-- Use `require('claudelint/utils')` not `import`
-- For `.ts` files, import types separately: `import type { RuleContext } from 'claudelint'`
+- Use `require('claude-code-lint/utils')` not `import`
+- For `.ts` files, import types separately: `import type { RuleContext } from 'claude-code-lint'`
 - Ensure you're using the helpers within the `validate` function
 - Check that helpers are exported from your rule file
 
 Example:
 
 ```javascript
-const { hasHeading, extractFrontmatter } = require('claudelint/utils');
+const { hasHeading, extractFrontmatter } = require('claude-code-lint/utils');
 
 module.exports.rule = {
   validate: async (context) => {
@@ -631,7 +631,7 @@ Example:
 
 ```javascript
 const { join, dirname } = require('path');
-const { fileExists } = require('claudelint/utils');
+const { fileExists } = require('claude-code-lint/utils');
 
 const dir = dirname(context.filePath);
 const targetFile = join(dir, '../README.md');
@@ -714,7 +714,7 @@ validate: async (context) => {
 
 ```javascript
 // test-my-rule.js
-const { rule } = require('./.claudelint/rules/my-rule');
+const { rule } = require('./.claude-code-lint/rules/my-rule');
 
 const mockContext = {
   filePath: './test.md',
@@ -729,13 +729,13 @@ rule.validate(mockContext);
 1. Check file is being validated:
 
 ```bash
-claudelint check-all --verbose
+claude-code-lint check-all --verbose
 ```
 
 1. Verify rule loads successfully:
 
 ```javascript
-const { CustomRuleLoader } = require('claudelint/utils');
+const { CustomRuleLoader } = require('claude-code-lint/utils');
 const loader = new CustomRuleLoader();
 loader.loadCustomRules('.').then(results => {
   console.log(results);
@@ -744,7 +744,7 @@ loader.loadCustomRules('.').then(results => {
 
 ## Helper Library
 
-claudelint provides utility functions to simplify common validation tasks. Import them in your custom rules:
+claude-code-lint provides utility functions to simplify common validation tasks. Import them in your custom rules:
 
 ```javascript
 const {
@@ -759,7 +759,7 @@ const {
   parseJSON,
   parseYAML,
   findLinesMatching,
-} = require('claudelint/utils');
+} = require('claude-code-lint/utils');
 ```
 
 ### Heading Functions
@@ -1003,7 +1003,7 @@ if (context.filePath.endsWith('.yml') || context.filePath.endsWith('.yaml')) {
 ### Complete Example Using Helpers
 
 ```javascript
-// .claudelint/rules/skill-quality.js
+// .claude-code-lint/rules/skill-quality.js
 const {
   extractFrontmatter,
   validateSemver,
@@ -1011,7 +1011,7 @@ const {
   extractHeadings,
   countOccurrences,
   findLinesMatching,
-} = require('claudelint/utils');
+} = require('claude-code-lint/utils');
 
 module.exports.rule = {
   meta: {
@@ -1142,9 +1142,9 @@ validate: async (context) => {
 
 ## Further Reading
 
-- [Architecture Documentation](./architecture.md) - How custom rules fit into claudelint
+- [Architecture Documentation](./architecture.md) - How custom rules fit into claude-code-lint
 - [Built-in Rules](./rules/) - Examples of rule implementations
-- [Contributing Guide](../CONTRIBUTING.md) - How to contribute rules to claudelint
+- [Contributing Guide](../CONTRIBUTING.md) - How to contribute rules to claude-code-lint
 
 ## Support
 
@@ -1152,4 +1152,4 @@ If you encounter issues with custom rules:
 
 1. Check the [Troubleshooting](#troubleshooting) section
 2. Review example rules in `tests/fixtures/custom-rules/`
-3. Open an issue on [GitHub](https://github.com/pdugan20/claudelint/issues)
+3. Open an issue on [GitHub](https://github.com/pdugan20/claude-code-lint/issues)

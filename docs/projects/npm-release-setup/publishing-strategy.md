@@ -1,6 +1,6 @@
 # Publishing Strategy
 
-Complete strategy for publishing claudelint to npm, from beta to stable releases.
+Complete strategy for publishing claude-code-lint to npm, from beta to stable releases.
 
 ## Overview
 
@@ -14,13 +14,13 @@ Publishing workflow:
 
 ### What are Dist Tags?
 
-Dist tags are labels that point to specific versions. When users run `npm install claudelint`, npm uses the version tagged as `latest`.
+Dist tags are labels that point to specific versions. When users run `npm install claude-code-lint`, npm uses the version tagged as `latest`.
 
 ### Default Tags
 
-- `latest` - Default for `npm install claudelint` (stable releases only)
-- `beta` - For beta testing: `npm install claudelint@beta`
-- `rc` - For release candidates: `npm install claudelint@rc`
+- `latest` - Default for `npm install claude-code-lint` (stable releases only)
+- `beta` - For beta testing: `npm install claude-code-lint@beta`
+- `rc` - For release candidates: `npm install claude-code-lint@rc`
 - `next` - For development builds (optional)
 - `alpha` - For alpha testing (optional)
 
@@ -31,12 +31,12 @@ Without proper tags, even beta versions become the default install:
 ```bash
 # BAD: Publish beta without tag
 npm publish
-# Users get: npm install claudelint → 0.2.0-beta.0 (WRONG!)
+# Users get: npm install claude-code-lint → 0.2.0-beta.0 (WRONG!)
 
 # GOOD: Publish beta with tag
 npm publish --tag beta
-# Users get: npm install claudelint → (latest stable)
-# Beta users: npm install claudelint@beta → 0.2.0-beta.0 (CORRECT)
+# Users get: npm install claude-code-lint → (latest stable)
+# Beta users: npm install claude-code-lint@beta → 0.2.0-beta.0 (CORRECT)
 ```
 
 ## First Beta Release (0.2.0-beta.0)
@@ -44,7 +44,7 @@ npm publish --tag beta
 ### Pre-publish Checklist
 
 - [ ] Version synced across all files
-- [ ] Package name migrated to `claudelint`
+- [ ] Package name migrated to `claude-code-lint`
 - [ ] Build succeeds: `npm run build`
 - [ ] Tests pass: `npm test`
 - [ ] Linting passes: `npm run lint`
@@ -59,9 +59,9 @@ npm publish --tag beta
 Add to top of README.md:
 
 ```markdown
-> **Beta Release**: claudelint is currently in beta testing (v0.2.0-beta.x).
+> **Beta Release**: claude-code-lint is currently in beta testing (v0.2.0-beta.x).
 > The API may change before the stable 1.0.0 release. Please report issues
-> at [github.com/pdugan20/claudelint/issues](https://github.com/pdugan20/claudelint/issues).
+> at [github.com/pdugan20/claude-code-lint/issues](https://github.com/pdugan20/claude-code-lint/issues).
 ```
 
 ### Publishing Steps
@@ -80,27 +80,27 @@ npm run build
 
 # 4. Pack and test locally
 npm pack
-# Creates: claudelint-0.2.0-beta.0.tgz
+# Creates: claude-code-lint-0.2.0-beta.0.tgz
 
 # Install globally from tarball
-npm install -g ./claudelint-0.2.0-beta.0.tgz
+npm install -g ./claude-code-lint-0.2.0-beta.0.tgz
 
 # Test CLI
-claudelint --version
-claudelint --help
-claudelint check-all
+claude-code-lint --version
+claude-code-lint --help
+claude-code-lint check-all
 
 # Uninstall test version
-npm uninstall -g claudelint
+npm uninstall -g claude-code-lint
 
 # 5. Publish to npm with beta tag
 npm publish --tag beta --access public
 
 # 6. Verify on npm
-npm view claudelint
+npm view claude-code-lint
 
 # Should show:
-# name: claudelint
+# name: claude-code-lint
 # version: 0.2.0-beta.0
 # dist-tags:
 #   beta: 0.2.0-beta.0
@@ -110,32 +110,32 @@ npm view claudelint
 
 ```bash
 # Test installation from npm
-npm install -g claudelint@beta
+npm install -g claude-code-lint@beta
 
 # Verify version
-claudelint --version
+claude-code-lint --version
 # Should show: 0.2.0-beta.0
 
 # Test basic functionality
 cd /tmp
-mkdir test-claudelint
-cd test-claudelint
-claudelint init
-claudelint check-all
+mkdir test-claude-code-lint
+cd test-claude-code-lint
+claude-code-lint init
+claude-code-lint check-all
 
 # Check package page
-open https://www.npmjs.com/package/claudelint
+open https://www.npmjs.com/package/claude-code-lint
 ```
 
 ### What Users See
 
 ```bash
 # Default install (no stable version yet)
-npm install claudelint
+npm install claude-code-lint
 # Error: No version tagged as 'latest'
 
 # Beta install (correct way)
-npm install claudelint@beta
+npm install claude-code-lint@beta
 # Installs: 0.2.0-beta.0
 ```
 
@@ -265,7 +265,7 @@ npm publish --access public
 
 ```bash
 # After publishing 0.2.0, verify latest tag
-npm view claudelint dist-tags
+npm view claude-code-lint dist-tags
 
 # Should show:
 # latest: 0.2.0
@@ -286,15 +286,15 @@ npm view claudelint dist-tags
 
 ```bash
 # Default install now works
-npm install claudelint
+npm install claude-code-lint
 # Installs: 0.2.0 (stable)
 
 # Beta users can stay on beta
-npm install claudelint@beta
+npm install claude-code-lint@beta
 # Installs: 0.2.0-beta.5 (last beta)
 
 # Or upgrade to stable
-npm install claudelint@latest
+npm install claude-code-lint@latest
 # Installs: 0.2.0 (stable)
 ```
 
@@ -406,11 +406,11 @@ npm publish --access restricted
 
 ```bash
 # Unpublish specific version
-npm unpublish claudelint@0.2.0-beta.0
+npm unpublish claude-code-lint@0.2.0-beta.0
 
 # NEVER unpublish stable versions
 # Instead, deprecate:
-npm deprecate claudelint@0.2.0 "Critical bug, upgrade to 0.2.1"
+npm deprecate claude-code-lint@0.2.0 "Critical bug, upgrade to 0.2.1"
 ```
 
 ## Deprecation
@@ -419,10 +419,10 @@ Mark old versions as deprecated:
 
 ```bash
 # Deprecate single version
-npm deprecate claudelint@0.1.0 "Upgrade to 0.2.0 or later"
+npm deprecate claude-code-lint@0.1.0 "Upgrade to 0.2.0 or later"
 
 # Deprecate range
-npm deprecate claudelint@"< 0.2.0" "Upgrade to 0.2.0 or later"
+npm deprecate claude-code-lint@"< 0.2.0" "Upgrade to 0.2.0 or later"
 ```
 
 ## Version Lifecycle
@@ -472,11 +472,11 @@ Users can't install because no stable version exists:
 
 ```bash
 # They see:
-npm install claudelint
+npm install claude-code-lint
 # Error: No version published with tag 'latest'
 
 # Solution: Direct them to beta
-npm install claudelint@beta
+npm install claude-code-lint@beta
 ```
 
 ### Published wrong tag
@@ -486,18 +486,18 @@ npm install claudelint@beta
 npm publish  # Should have used --tag beta
 
 # Fix: Move latest tag back
-npm dist-tag add claudelint@0.1.9 latest
-npm dist-tag add claudelint@0.2.0-beta.0 beta
+npm dist-tag add claude-code-lint@0.1.9 latest
+npm dist-tag add claude-code-lint@0.2.0-beta.0 beta
 ```
 
 ### Need to unpublish
 
 ```bash
 # Within 72 hours
-npm unpublish claudelint@0.2.0-beta.0
+npm unpublish claude-code-lint@0.2.0-beta.0
 
 # After 72 hours: can't unpublish, must deprecate
-npm deprecate claudelint@0.2.0-beta.0 "Do not use, broken build"
+npm deprecate claude-code-lint@0.2.0-beta.0 "Do not use, broken build"
 ```
 
 ## Checklist Templates

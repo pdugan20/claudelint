@@ -15,11 +15,11 @@ export function registerCacheClearCommand(program: Command): void {
   program
     .command('cache-clear')
     .description('Clear validation cache')
-    .option('--cache-location <path>', 'Cache directory', '.claudelint-cache')
+    .option('--cache-location <path>', 'Cache directory', '.claude-code-lint-cache')
     .action((options: { cacheLocation?: string }) => {
       const cache = new ValidationCache({
         enabled: true,
-        location: options.cacheLocation || '.claudelint-cache',
+        location: options.cacheLocation || '.claude-code-lint-cache',
         strategy: 'content',
       });
 

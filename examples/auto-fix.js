@@ -8,7 +8,7 @@
  * - Writing fixes to disk
  */
 
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 
 async function basicAutoFix() {
   console.log('=== Basic Auto-Fix Example ===\n');

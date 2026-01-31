@@ -8,7 +8,7 @@
  * - Exporting to various formats (markdown, CSV, HTML)
  */
 
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 const { writeFileSync } = require('fs');
 
 // Custom formatter: Summary

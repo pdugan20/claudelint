@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate Claude Code Skills
 
-Runs `claudelint validate-skills` to validate Claude Code skill directories.
+Runs `claude-code-lint validate-skills` to validate Claude Code skill directories.
 
 ## Usage
 
 ```bash
-claudelint validate-skills
+claude-code-lint validate-skills
 ```
 
 ## Options
@@ -29,13 +29,13 @@ claudelint validate-skills
 Validate all skills:
 
 ```bash
-claudelint validate-skills
+claude-code-lint validate-skills
 ```
 
 Validate specific skill:
 
 ```bash
-claudelint validate-skills --skill my-skill
+claude-code-lint validate-skills --skill my-skill
 ```
 
 ## What Gets Validated

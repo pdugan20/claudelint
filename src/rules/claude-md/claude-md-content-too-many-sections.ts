@@ -30,7 +30,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-content-too-many-sections.md',
+      'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/claude-md/claude-md-content-too-many-sections.md',
     schema: z.object({
       maxSections: z.number().positive().int().optional(),
     }),

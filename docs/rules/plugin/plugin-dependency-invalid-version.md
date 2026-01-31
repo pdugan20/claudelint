@@ -98,7 +98,7 @@ To fix invalid dependency versions:
 6. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

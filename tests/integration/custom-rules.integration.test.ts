@@ -25,7 +25,7 @@ describe('Custom Rules Integration', () => {
   });
 
   it('should load custom rules and register them with RuleRegistry', async () => {
-    const rulesDir = join(testDir, '.claudelint/rules');
+    const rulesDir = join(testDir, '.claude-code-lint/rules');
     mkdirSync(rulesDir, { recursive: true });
 
     // Create a custom rule
@@ -72,7 +72,7 @@ describe('Custom Rules Integration', () => {
   });
 
   it('should load multiple custom rules from subdirectories', async () => {
-    const rulesDir = join(testDir, '.claudelint/rules');
+    const rulesDir = join(testDir, '.claude-code-lint/rules');
     const teamDir = join(rulesDir, 'team');
     const projectDir = join(rulesDir, 'project');
 
@@ -154,7 +154,7 @@ describe('Custom Rules Integration', () => {
   });
 
   it('should handle mix of valid and invalid rules gracefully', async () => {
-    const rulesDir = join(testDir, '.claudelint/rules');
+    const rulesDir = join(testDir, '.claude-code-lint/rules');
     mkdirSync(rulesDir, { recursive: true });
 
     // Valid rule
@@ -259,7 +259,7 @@ describe('Custom Rules Integration', () => {
   });
 
   it('should not load rules when disabled', async () => {
-    const rulesDir = join(testDir, '.claudelint/rules');
+    const rulesDir = join(testDir, '.claude-code-lint/rules');
     mkdirSync(rulesDir, { recursive: true });
 
     writeFileSync(
@@ -289,7 +289,7 @@ describe('Custom Rules Integration', () => {
   });
 
   it('should filter out non-rule files correctly', async () => {
-    const rulesDir = join(testDir, '.claudelint/rules');
+    const rulesDir = join(testDir, '.claude-code-lint/rules');
     mkdirSync(rulesDir, { recursive: true });
 
     // Create various non-rule files

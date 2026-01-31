@@ -53,7 +53,7 @@
 
 ### 1.2 ClaudeLint Class Structure
 
-- [x] **Task 1.2.1:** Create `src/api/claudelint.ts` skeleton
+- [x] **Task 1.2.1:** Create `src/api/claude-code-lint.ts` skeleton
   - Completed: 2026-01-30
   - [x] Define class structure
   - [x] Add constructor with options
@@ -342,7 +342,7 @@
 
 - [x] **Task 3.4.2:** Implement `getVersion()`
   - Completed: 2026-01-30 (Phase 1)
-  - [x] Return claudelint version
+  - [x] Return claude-code-lint version
   - [x] Read from package.json
   - [x] Make static method
 
@@ -361,7 +361,7 @@
   - [x] Quick start guide
   - [x] Link to detailed docs
 
-- [x] **Task 4.1.2:** Create `docs/api/claudelint-class.md`
+- [x] **Task 4.1.2:** Create `docs/api/claude-code-lint-class.md`
   - Completed: 2026-01-30
   - [x] Constructor documentation
   - [x] Method documentation
@@ -432,7 +432,7 @@
 - [x] **Task 4.4.1:** Achieve >90% test coverage
   - Completed: 2026-01-30
   - [x] Add missing test cases (API modules have comprehensive tests)
-  - [x] Test edge cases (covered in claudelint.test.ts and functions.test.ts)
+  - [x] Test edge cases (covered in claude-code-lint.test.ts and functions.test.ts)
   - [x] Test error conditions (error handling tested throughout)
   - Note: API modules (tests/api/) have >90% coverage with 65 passing tests
 

@@ -35,7 +35,7 @@ Test individual methods and functions in isolation.
 **Example:**
 
 ```typescript
-// tests/api/claudelint.test.ts
+// tests/api/claude-code-lint.test.ts
 describe('ClaudeLint', () => {
   describe('constructor', () => {
     it('should initialize with default options', () => {
@@ -185,7 +185,7 @@ Verify TypeScript type definitions and inference.
 ```typescript
 // tests/types/api.test-d.ts
 import { expectType, expectError } from 'tsd';
-import { ClaudeLint, LintResult, LintMessage } from 'claudelint';
+import { ClaudeLint, LintResult, LintMessage } from 'claude-code-lint';
 
 // Constructor types
 expectType<ClaudeLint>(new ClaudeLint());
@@ -227,7 +227,7 @@ Ensure existing functionality still works.
 describe('CLI Regression', () => {
   it('should produce same output with new API', async () => {
     // Run CLI command
-    const cliOutput = execSync('claudelint check-all').toString();
+    const cliOutput = execSync('claude-code-lint check-all').toString();
 
     // Run via API
     const linter = new ClaudeLint();
@@ -263,7 +263,7 @@ describe('API Performance', () => {
 
     // Benchmark CLI
     const cliStart = Date.now();
-    execSync(`claudelint check-all ${files.join(' ')}`);
+    execSync(`claude-code-lint check-all ${files.join(' ')}`);
     const cliTime = Date.now() - cliStart;
 
     // Benchmark API
@@ -396,7 +396,7 @@ npm test -- tests/api/
 npm test -- --coverage tests/api/
 
 # Run specific test file
-npm test -- tests/api/claudelint.test.ts
+npm test -- tests/api/claude-code-lint.test.ts
 
 # Watch mode
 npm test -- --watch tests/api/

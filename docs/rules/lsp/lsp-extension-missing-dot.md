@@ -93,7 +93,7 @@ To fix extension mapping errors:
 1. **Verify configuration**:
 
 ```bash
-claudelint check-lsp
+claude-code-lint check-lsp
 ```
 
 1. **Test file detection**:

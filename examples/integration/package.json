@@ -1,7 +1,7 @@
 {
   "name": "my-claude-project",
   "version": "1.0.0",
-  "description": "Example showing claudelint with complementary tools (all 3 tiers)",
+  "description": "Example showing claude-code-lint with complementary tools (all 3 tiers)",
   "scripts": {
     "// --- Project-wide linting ---": "",
     "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore CLAUDE.md --ignore .claude",
@@ -9,9 +9,9 @@
     "format": "prettier --write '**/*.{md,json,yaml}'",
     "format:check": "prettier --check '**/*.{md,json,yaml}'",
     "// --- Claude-specific linting (Tier 1: Critical) ---": "",
-    "lint:claude": "claudelint check-all",
-    "format:claude": "claudelint format --fix",
-    "format:claude:check": "claudelint format --check",
+    "lint:claude": "claude-code-lint check-all",
+    "format:claude": "claude-code-lint format --fix",
+    "format:claude:check": "claude-code-lint format --check",
     "// --- Tier 2: Recommended ---": "",
     "format:shell": "shfmt -w .claude/**/*.sh .claude/hooks/*",
     "format:shell:check": "shfmt -d .claude/**/*.sh .claude/hooks/*",
@@ -23,14 +23,14 @@
     "lint:python:claude": "ruff check .claude/skills/**/*.py",
     "// --- Composite commands ---": "",
     "validate:claude": "npm run lint:claude && npm run format:claude:check",
-    "validate:claude:verbose": "claudelint check-all --verbose",
+    "validate:claude:verbose": "claude-code-lint check-all --verbose",
     "validate:all": "npm run lint:md && npm run format:check && npm run validate:claude",
     "format:all": "npm run format && npm run format:claude && npm run format:shell",
     "precommit": "npm run validate:all"
   },
   "devDependencies": {
     "// Tier 1: Critical": "",
-    "claudelint": "^0.2.0-beta.0",
+    "claude-code-lint": "^0.2.0-beta.0",
     "markdownlint-cli": "^0.39.0",
     "prettier": "^3.1.0",
     "// Tier 2: Recommended": "",

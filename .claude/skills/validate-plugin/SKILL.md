@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate Plugin Manifests
 
-Runs `claudelint validate-plugin` to validate `.claude-plugin/plugin.json` files.
+Runs `claude-code-lint validate-plugin` to validate `.claude-plugin/plugin.json` files.
 
 ## Usage
 
 ```bash
-claudelint validate-plugin
+claude-code-lint validate-plugin
 ```
 
 ## Options
@@ -34,8 +34,8 @@ claudelint validate-plugin
 ## Examples
 
 ```bash
-claudelint validate-plugin
-claudelint validate-plugin --path /path/to/plugin.json
+claude-code-lint validate-plugin
+claude-code-lint validate-plugin --path /path/to/plugin.json
 ```
 
 ## See Also

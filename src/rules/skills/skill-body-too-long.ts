@@ -29,7 +29,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-body-too-long.md',
+      'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/skills/skill-body-too-long.md',
     schema: z.object({
       maxLines: z.number().positive().int().optional(),
     }),

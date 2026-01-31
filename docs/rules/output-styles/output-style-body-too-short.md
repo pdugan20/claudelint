@@ -139,7 +139,7 @@ You might disable this rule if you intentionally use very minimal output styles 
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-body-too-short.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-body-too-short.test.ts)
-- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-body-too-short.md)
+- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-body-too-short.md)
 
 ## Version
 

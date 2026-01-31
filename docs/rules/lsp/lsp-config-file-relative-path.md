@@ -108,7 +108,7 @@ To fix implicit relative paths:
 1. **Verify configuration**:
 
 ```bash
-claudelint check-lsp
+claude-code-lint check-lsp
 ```
 
 ## Options

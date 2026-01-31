@@ -1,24 +1,24 @@
 # Getting Started
 
-This guide will help you set up claudelint in your Claude Code project.
+This guide will help you set up claude-code-lint in your Claude Code project.
 
 ## Installation
 
 ### Global Installation
 
 ````bash
-npm install -g claudelint
+npm install -g claude-code-lint
 ```text
 ### Project Installation
 
 ```bash
-npm install --save-dev claudelint
+npm install --save-dev claude-code-lint
 ```text
 ### As Claude Code Plugin
 
 ```bash
-/plugin marketplace add pdugan20/claudelint
-/plugin install claudelint
+/plugin marketplace add pdugan20/claude-code-lint
+/plugin install claude-code-lint
 ```text
 ## Quick Start
 
@@ -27,12 +27,12 @@ npm install --save-dev claudelint
 Run the interactive init wizard:
 
 ```bash
-claudelint init
+claude-code-lint init
 ```text
 Or use defaults (non-interactive):
 
 ```bash
-claudelint init --yes
+claude-code-lint init --yes
 ```text
 This creates:
 
@@ -44,14 +44,14 @@ This creates:
 
 ```bash
 # Validate everything
-claudelint check-all
+claude-code-lint check-all
 
 # Or use npm script (if added by init)
 npm run lint:claude
 ```text
 ### 3. Review Results
 
-claudelint will show validation results with:
+claude-code-lint will show validation results with:
 
 - ✓ Success indicators
 - ✗ Errors (exit code 1)
@@ -116,8 +116,8 @@ See [Configuration](configuration.md) for all options.
 ### List Available Rules
 
 ```bash
-claudelint list-rules
-claudelint list-rules --category Skills
+claude-code-lint list-rules
+claude-code-lint list-rules --category Skills
 ```text
 ## Common Workflows
 
@@ -125,13 +125,13 @@ claudelint list-rules --category Skills
 
 ```bash
 # Run validation
-claudelint check-all
+claude-code-lint check-all
 
 # Run with verbose output
-claudelint check-all --verbose
+claude-code-lint check-all --verbose
 
 # Fail on any issues (warnings or errors)
-claudelint check-all --strict
+claude-code-lint check-all --strict
 ```text
 ### CI/CD Integration
 
@@ -147,8 +147,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g claudelint
-      - run: claudelint check-all
+      - run: npm install -g claude-code-lint
+      - run: claude-code-lint check-all
 ```text
 ### Pre-commit Hook
 
@@ -157,9 +157,9 @@ jobs:
 repos:
   - repo: local
     hooks:
-      - id: claudelint
+      - id: claude-code-lint
         name: Validate Claude Configuration
-        entry: npx claudelint check-all
+        entry: npx claude-code-lint check-all
         language: node
         pass_filenames: false
         files: '^(CLAUDE\.md|\.claude/)'
@@ -169,8 +169,8 @@ repos:
 ```json
 {
   "scripts": {
-    "lint:claude": "claudelint check-all",
-    "lint:claude:fix": "claudelint format --fix",
+    "lint:claude": "claude-code-lint check-all",
+    "lint:claude:fix": "claude-code-lint format --fix",
     "lint:all": "npm run lint:claude && npm run lint:md",
     "precommit": "npm run lint:claude"
   }
@@ -190,25 +190,25 @@ repos:
 
 ```bash
 # If globally installed
-which claudelint
+which claude-code-lint
 
 # If locally installed
-npx claudelint check-all
+npx claude-code-lint check-all
 
 # Or use full path
-./node_modules/.bin/claudelint check-all
+./node_modules/.bin/claude-code-lint check-all
 ```text
 ### Config File Not Found
 
-claudelint searches for config starting from current directory:
+claude-code-lint searches for config starting from current directory:
 
 ```bash
 # Specify config explicitly
-claudelint check-all --config /path/to/.claudelintrc.json
+claude-code-lint check-all --config /path/to/.claudelintrc.json
 
 # Or cd to project root
 cd /path/to/project
-claudelint check-all
+claude-code-lint check-all
 ```text
 ### Too Many Warnings
 
@@ -216,7 +216,7 @@ Configure rules or use `--max-warnings`:
 
 ```bash
 # Allow up to 10 warnings
-claudelint check-all --max-warnings 10
+claude-code-lint check-all --max-warnings 10
 
 # Or disable specific rules in .claudelintrc.json
 {
@@ -230,7 +230,7 @@ claudelint check-all --max-warnings 10
 Use inline disable comments:
 
 ```markdown
-<!-- claudelint-disable-next-line import-missing -->
+<!-- claude-code-lint-disable-next-line import-missing -->
 @import non-existent-file.md
 ```text
 See [Configuration](configuration.md#inline-disable-comments) for more options.
@@ -238,7 +238,7 @@ See [Configuration](configuration.md#inline-disable-comments) for more options.
 ## Getting Help
 
 - **Documentation**: [docs/](.)
-- **Issues**: [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
+- **Issues**: [GitHub Issues](https://github.com/pdugan20/claude-code-lint/issues)
 - **Examples**: [examples/](../examples/)
 - **Changelog**: [CHANGELOG.md](../CHANGELOG.md)
 ````

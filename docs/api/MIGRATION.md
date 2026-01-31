@@ -17,13 +17,13 @@ Guide for migrating from CLI to programmatic API usage, or integrating ClaudeLin
 **CLI:**
 
 ```bash
-claudelint check-all
+claude-code-lint check-all
 ```
 
 **Programmatic API:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md', '!node_modules/**']);
@@ -37,7 +37,7 @@ if (hasErrors) {
 Or using the functional API:
 
 ```typescript
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 const results = await lint(['**/*.md', '!node_modules/**']);
 const hasErrors = results.some(r => r.errorCount > 0);
@@ -49,13 +49,13 @@ process.exit(hasErrors ? 1 : 0);
 **CLI:**
 
 ```bash
-claudelint check-all --fix
+claude-code-lint check-all --fix
 ```
 
 **Programmatic API:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['**/*.md', '!node_modules/**']);
@@ -67,7 +67,7 @@ await ClaudeLint.outputFixes(results);
 Or using the functional API:
 
 ```typescript
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 const results = await lint(['**/*.md', '!node_modules/**'], { fix: true });
 
@@ -80,13 +80,13 @@ const results = await lint(['**/*.md', '!node_modules/**'], { fix: true });
 **CLI:**
 
 ```bash
-claudelint check-all --format json
+claude-code-lint check-all --format json
 ```
 
 **Programmatic API:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md', '!node_modules/**']);
@@ -99,7 +99,7 @@ console.log(output);
 Or using the functional API:
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md', '!node_modules/**']);
 const output = await formatResults(results, 'json');
@@ -111,14 +111,14 @@ console.log(output);
 **CLI:**
 
 ```bash
-claudelint check-all --config custom.json
+claude-code-lint check-all --config custom.json
 ```
 
 **Programmatic API:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
-import { loadConfig } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
+import { loadConfig } from 'claude-code-lint';
 
 // Load from file
 const config = loadConfig('custom.json');
@@ -143,7 +143,7 @@ Uses `.claudelintignore` file or config `ignorePatterns`.
 **Programmatic API:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   config: {
@@ -177,8 +177,8 @@ Replace CLI commands with programmatic scripts:
 ```json
 {
   "scripts": {
-    "lint": "claudelint check-all",
-    "lint:fix": "claudelint check-all --fix"
+    "lint": "claude-code-lint check-all",
+    "lint:fix": "claude-code-lint check-all --fix"
   }
 }
 ```
@@ -196,7 +196,7 @@ Replace CLI commands with programmatic scripts:
 
 ```javascript
 // scripts/validate.js
-const { lint, formatResults, ClaudeLint } = require('claudelint');
+const { lint, formatResults, ClaudeLint } = require('claude-code-lint');
 
 async function main() {
   const shouldFix = process.argv.includes('--fix');
@@ -225,7 +225,7 @@ main();
 
 ```bash
 #!/bin/bash
-claudelint check-all
+claude-code-lint check-all
 ```
 
 **After (husky/pre-commit):**
@@ -238,7 +238,7 @@ node scripts/pre-commit.js
 ```javascript
 // scripts/pre-commit.js
 const { execSync } = require('child_process');
-const { lint, formatResults } = require('claudelint');
+const { lint, formatResults } = require('claude-code-lint');
 
 async function main() {
   // Get staged .md files
@@ -272,7 +272,7 @@ main();
 
 ```yaml
 - name: Lint
-  run: claudelint check-all
+  run: claude-code-lint check-all
 ```
 
 **After:**
@@ -284,7 +284,7 @@ main();
 
 ```javascript
 // scripts/ci-lint.js
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 const { writeFileSync } = require('fs');
 
 async function main() {
@@ -341,7 +341,7 @@ Internal implementation details may change between versions. Only use the export
 **Good:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -351,7 +351,7 @@ const results = await linter.lintFiles(['**/*.md']);
 
 ```typescript
 // Don't do this - SkillsValidator is not part of public API
-import { SkillsValidator } from 'claudelint/dist/validators/skills';
+import { SkillsValidator } from 'claude-code-lint/dist/validators/skills';
 ```
 
 ### Stability Guarantees
@@ -368,7 +368,7 @@ Choose the API that matches your complexity needs:
 **Simple tasks:** Use functional API
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
 const output = await formatResults(results);
@@ -378,7 +378,7 @@ console.log(output);
 **Complex workflows:** Use class-based API
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   fix: (msg) => msg.ruleId?.includes('format'),
@@ -396,7 +396,7 @@ console.log(formatter.format(results));
 Always handle errors appropriately:
 
 ```typescript
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 async function validate() {
   try {
@@ -422,11 +422,11 @@ async function validate() {
 Enable caching for repeated linting operations:
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   cache: true,
-  cacheLocation: '.claudelint-cache',
+  cacheLocation: '.claude-code-lint-cache',
   cacheStrategy: 'content',
 });
 ```
@@ -436,7 +436,7 @@ const linter = new ClaudeLint({
 Load configuration explicitly for better control:
 
 ```typescript
-import { ClaudeLint, loadConfig } from 'claudelint';
+import { ClaudeLint, loadConfig } from 'claude-code-lint';
 
 // Load from file
 const config = loadConfig('.claudelintrc.json');
@@ -458,8 +458,8 @@ const linter = new ClaudeLint({ config });
 Create a plugin for your build tool:
 
 ```javascript
-// webpack-plugin-claudelint.js
-const { ClaudeLint } = require('claudelint');
+// webpack-plugin-claude-code-lint.js
+const { ClaudeLint } = require('claude-code-lint');
 
 class ClaudeLintPlugin {
   constructor(options = {}) {
@@ -496,7 +496,7 @@ Create a custom reporting tool:
 
 ```javascript
 // reporter.js
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 const { writeFileSync } = require('fs');
 
 class ValidationReporter {
@@ -539,7 +539,7 @@ Integrate validation into tests:
 
 ```javascript
 // test/validation.test.js
-const { lint } = require('claudelint');
+const { lint } = require('claude-code-lint');
 
 describe('Documentation Validation', () => {
   it('should have valid CLAUDE.md files', async () => {
@@ -561,6 +561,6 @@ describe('Documentation Validation', () => {
 ## See Also
 
 - [API Documentation](./README.md) - Complete API reference
-- [ClaudeLint Class](./claudelint-class.md) - Detailed class documentation
+- [ClaudeLint Class](./claude-code-lint-class.md) - Detailed class documentation
 - [Functional API](./functional-api.md) - Functional API reference
 - [Examples](../../examples/) - Complete usage examples

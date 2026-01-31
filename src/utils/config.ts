@@ -23,7 +23,7 @@ export interface ConfigOverride {
 }
 
 /**
- * Complete claudelint configuration
+ * Complete claude-code-lint configuration
  */
 export interface ClaudeLintConfig {
   /** Rule configurations (rule-id -> config) */
@@ -52,7 +52,7 @@ export function findConfigFile(startDir: string): string | null {
     '.claudelintrc.json',
     '.claudelintrc.yaml',
     '.claudelintrc.yml',
-    'claudelint.config.js',
+    'claude-code-lint.config.js',
     'package.json',
   ];
 
@@ -63,7 +63,7 @@ export function findConfigFile(startDir: string): string | null {
     for (const configName of configNames) {
       const configPath = join(currentDir, configName);
       if (existsSync(configPath)) {
-        // If package.json, check if it has claudelint config
+        // If package.json, check if it has claude-code-lint config
         if (configName === 'package.json') {
           try {
             const pkg = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
@@ -166,7 +166,7 @@ export function validateConfig(config: ClaudeLintConfig): ConfigValidationError[
     for (const ruleId of Object.keys(config.rules)) {
       if (!RuleRegistry.exists(ruleId)) {
         errors.push({
-          message: `Unknown rule: '${ruleId}'. Run 'claudelint list-rules' to see available rules.`,
+          message: `Unknown rule: '${ruleId}'. Run 'claude-code-lint list-rules' to see available rules.`,
           ruleId,
           severity: 'error',
         });

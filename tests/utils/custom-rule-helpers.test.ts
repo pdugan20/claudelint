@@ -131,7 +131,7 @@ describe('custom-rule-helpers', () => {
     let testDir: string;
 
     beforeEach(() => {
-      testDir = join(tmpdir(), `claudelint-test-${Date.now()}`);
+      testDir = join(tmpdir(), `claude-code-lint-test-${Date.now()}`);
       mkdirSync(testDir, { recursive: true });
     });
 

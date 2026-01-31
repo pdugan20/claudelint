@@ -6,13 +6,13 @@
 
 ## Executive Summary
 
-Add a comprehensive programmatic API to claudelint, enabling developers to integrate linting capabilities directly into their applications, build tools, and automation workflows. This proposal follows modern Node.js API design patterns while maintaining compatibility with existing CLI functionality.
+Add a comprehensive programmatic API to claude-code-lint, enabling developers to integrate linting capabilities directly into their applications, build tools, and automation workflows. This proposal follows modern Node.js API design patterns while maintaining compatibility with existing CLI functionality.
 
 ## Problem Statement
 
-Currently, claudelint is primarily used as a CLI tool. Developers who want to:
+Currently, claude-code-lint is primarily used as a CLI tool. Developers who want to:
 
-- Integrate claudelint into build pipelines programmatically
+- Integrate claude-code-lint into build pipelines programmatically
 - Create custom tooling that includes validation
 - Build editor extensions or IDE integrations
 - Automate complex validation workflows
@@ -43,7 +43,7 @@ After extensive research into modern API design patterns (ESLint, Prettier, Zod,
 
 **Rationale:**
 
-- claudelint is a CLI/build tool where bundle size is irrelevant
+- claude-code-lint is a CLI/build tool where bundle size is irrelevant
 - ESLint uses class-based API - users expect similar patterns
 - Complex state management (configuration, caching, file discovery)
 - Multiple related operations on a single instance (typical workflow)
@@ -63,12 +63,12 @@ After extensive research into modern API design patterns (ESLint, Prettier, Zod,
 ### Main Class
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   fix: true,
   cache: true,
-  cacheLocation: '.claudelint-cache',
+  cacheLocation: '.claude-code-lint-cache',
   config: { /* custom config */ }
 });
 
@@ -80,7 +80,7 @@ console.log(formatter.format(results));
 ### Functional Utilities
 
 ```typescript
-import { lint, resolveConfig, formatResults } from 'claudelint';
+import { lint, resolveConfig, formatResults } from 'claude-code-lint';
 
 // Simple one-off lint
 const results = await lint(['CLAUDE.md'], { fix: true });
@@ -97,7 +97,7 @@ const output = await formatResults(results, 'json');
 ```
 src/
 ├── api/
-│   ├── claudelint.ts       # Main ClaudeLint class
+│   ├── claude-code-lint.ts       # Main ClaudeLint class
 │   ├── functions.ts        # Functional API utilities
 │   ├── types.ts            # Shared API types
 │   ├── formatter.ts        # Formatter interface/loading
@@ -244,19 +244,19 @@ Following **ESLint and Prettier patterns**, we export only stable, documented pu
 
 ```typescript
 // Main programmatic API class
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // Type definitions
 import type {
   LintResult, LintMessage, ClaudeLintOptions,
   Formatter, RuleMetadata
-} from 'claudelint';
+} from 'claude-code-lint';
 
 // Formatter utilities
-import { loadFormatter, BaseFormatter } from 'claudelint';
+import { loadFormatter, BaseFormatter } from 'claude-code-lint';
 
 // Configuration utilities
-import { findConfigFile, loadConfig } from 'claudelint';
+import { findConfigFile, loadConfig } from 'claude-code-lint';
 ```
 
 ### What's NOT Exported (Internal Implementation)
@@ -273,13 +273,13 @@ const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
 ```
 
-**Note:** Since claudelint v0.1.0 is unreleased, we have complete freedom to design the API correctly from the start, following industry-standard patterns without concern for breaking changes.
+**Note:** Since claude-code-lint v0.1.0 is unreleased, we have complete freedom to design the API correctly from the start, following industry-standard patterns without concern for breaking changes.
 
 ## Alternative Approaches Considered
 
 ### 1. Purely Functional API (like Prettier)
 
-**Rejected** - Doesn't fit claudelint's use case:
+**Rejected** - Doesn't fit claude-code-lint's use case:
 
 - Complex state management (config, cache, file discovery)
 - Multiple operations on same files (lint → fix → format)

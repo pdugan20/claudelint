@@ -1,7 +1,7 @@
 /**
  * Message builder for converting validation messages to LintMessage format
  *
- * This module provides utilities to convert claudelint's internal ValidationError
+ * This module provides utilities to convert claude-code-lint's internal ValidationError
  * and ValidationWarning formats to the standardized LintMessage format used by the
  * programmatic API.
  *
@@ -121,7 +121,7 @@ export function createFileReadError(filePath: string, error: Error): LintMessage
     severity: 'error',
     message: `Failed to read file: ${error.message}`,
     line: 1,
-    explanation: `claudelint could not read the file at ${filePath}. This may be due to permissions, encoding issues, or the file not existing.`,
+    explanation: `claude-code-lint could not read the file at ${filePath}. This may be due to permissions, encoding issues, or the file not existing.`,
   };
 }
 
@@ -151,7 +151,7 @@ export function createParseError(filePath: string, error: Error, line?: number):
     severity: 'error',
     message: `Parse error: ${error.message}`,
     line: line || 1,
-    explanation: `claudelint could not parse the file at ${filePath}. Please check that the file is valid and properly formatted.`,
+    explanation: `claude-code-lint could not parse the file at ${filePath}. Please check that the file is valid and properly formatted.`,
   };
 }
 
@@ -211,7 +211,7 @@ export function createInternalError(error: Error, filePath: string, ruleId?: str
     severity: 'error',
     message: `Internal error: ${error.message}`,
     line: 1,
-    explanation: `An unexpected error occurred while validating ${filePath}. This is likely a bug in claudelint. Please report this issue.`,
+    explanation: `An unexpected error occurred while validating ${filePath}. This is likely a bug in claude-code-lint. Please report this issue.`,
   };
 }
 

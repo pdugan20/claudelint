@@ -116,7 +116,7 @@ To resolve circular dependency errors:
 4. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

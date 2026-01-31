@@ -7,7 +7,7 @@
  * Demonstrates: fileExists, findLinesMatching helpers
  */
 
-const { fileExists, findLinesMatching } = require('claudelint/utils');
+const { fileExists, findLinesMatching } = require('claude-code-lint/utils');
 const { join, dirname } = require('path');
 
 module.exports.rule = {

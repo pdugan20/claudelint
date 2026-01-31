@@ -9,7 +9,7 @@ import { tmpdir } from 'os';
 /**
  * Create a temporary test directory
  */
-export async function createTestDir(prefix = 'claudelint-test'): Promise<string> {
+export async function createTestDir(prefix = 'claude-code-lint-test'): Promise<string> {
   const testDir = join(tmpdir(), `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
   await mkdir(testDir, { recursive: true });
   return testDir;
@@ -28,7 +28,7 @@ export async function cleanupTestDir(testDir: string): Promise<void> {
  *   const { getTestDir } = setupTestDir();
  *   // Use getTestDir() in your tests
  */
-export function setupTestDir(prefix = 'claudelint-test'): {
+export function setupTestDir(prefix = 'claude-code-lint-test'): {
   getTestDir: () => string;
 } {
   let testDir: string;

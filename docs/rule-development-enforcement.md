@@ -1,6 +1,6 @@
 # Rule Development Enforcement
 
-This document defines the requirements and automated checks for rule development in claudelint.
+This document defines the requirements and automated checks for rule development in claude-code-lint.
 
 ## Documentation Requirements
 

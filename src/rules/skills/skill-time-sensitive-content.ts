@@ -31,7 +31,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-time-sensitive-content.md',
+      'https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/skills/skill-time-sensitive-content.md',
   },
 
   validate: (context) => {

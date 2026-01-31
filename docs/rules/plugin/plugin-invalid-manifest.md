@@ -116,7 +116,7 @@ To fix invalid marketplace.json:
 6. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

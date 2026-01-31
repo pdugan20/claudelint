@@ -130,7 +130,7 @@ You might disable this rule if your output styles are self-explanatory from thei
 
 - [Rule Implementation](../../src/rules/output-styles/output-style-missing-examples.ts)
 - [Rule Tests](../../tests/rules/output-styles/output-style-missing-examples.test.ts)
-- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-missing-examples.md)
+- [Documentation](https://github.com/pdugan20/claude-code-lint/blob/main/docs/rules/output-styles/output-style-missing-examples.md)
 
 ## Version
 

@@ -22,7 +22,7 @@
 Validate all markdown files in a project.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function validateProject() {
   const linter = new ClaudeLint();
@@ -44,7 +44,7 @@ validateProject();
 Quick validation with functional API.
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['CLAUDE.md']);
 console.log(await formatResults(results, 'stylish'));
@@ -55,7 +55,7 @@ console.log(await formatResults(results, 'stylish'));
 Lint text without filesystem access.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 
@@ -84,7 +84,7 @@ for (const msg of results[0].messages) {
 Fix issues and write changes to disk.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function fixProject() {
   const linter = new ClaudeLint({ fix: true });
@@ -111,7 +111,7 @@ fixProject();
 See what would be fixed without modifying files.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['skills/**/*.sh']);
@@ -132,7 +132,7 @@ for (const [filePath, content] of fixed) {
 Only fix specific rules.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   fix: (message) => {
@@ -190,7 +190,7 @@ module.exports = {
 };
 
 // Usage
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -204,7 +204,7 @@ console.log(formatter.format(results));
 Generate JSON report for tooling.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import { writeFileSync } from 'fs';
 
 const linter = new ClaudeLint();
@@ -229,8 +229,8 @@ console.log('Report written to lint-report.json');
 Integrate into webpack build.
 
 ```typescript
-// webpack-claudelint-plugin.js
-const { ClaudeLint } = require('claudelint');
+// webpack-claude-code-lint-plugin.js
+const { ClaudeLint } = require('claude-code-lint');
 
 class ClaudeLintPlugin {
   constructor(options = {}) {
@@ -239,7 +239,7 @@ class ClaudeLintPlugin {
 
   apply(compiler) {
     compiler.hooks.beforeCompile.tapPromise('ClaudeLintPlugin', async () => {
-      console.log('Running claudelint...');
+      console.log('Running claude-code-lint...');
 
       const linter = new ClaudeLint({
         cache: true,
@@ -264,7 +264,7 @@ class ClaudeLintPlugin {
 module.exports = ClaudeLintPlugin;
 
 // webpack.config.js
-const ClaudeLintPlugin = require('./webpack-claudelint-plugin');
+const ClaudeLintPlugin = require('./webpack-claude-code-lint-plugin');
 
 module.exports = {
   // ... other config
@@ -282,12 +282,12 @@ module.exports = {
 Integrate into rollup build.
 
 ```typescript
-// rollup-plugin-claudelint.js
-import { ClaudeLint } from 'claudelint';
+// rollup-plugin-claude-code-lint.js
+import { ClaudeLint } from 'claude-code-lint';
 
-export default function claudelint(options = {}) {
+export default function claude-code-lint(options = {}) {
   return {
-    name: 'claudelint',
+    name: 'claude-code-lint',
     async buildStart() {
       const linter = new ClaudeLint(options);
       const results = await linter.lintFiles(['**/*.md']);
@@ -306,12 +306,12 @@ export default function claudelint(options = {}) {
 }
 
 // rollup.config.js
-import claudelint from './rollup-plugin-claudelint';
+import claude-code-lint from './rollup-plugin-claude-code-lint';
 
 export default {
   // ... other config
   plugins: [
-    claudelint({ throwOnError: true })
+    claude-code-lint({ throwOnError: true })
   ]
 };
 ```
@@ -322,7 +322,7 @@ Create custom npm script with advanced features.
 
 ```typescript
 // scripts/validate.js
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import { writeFileSync } from 'fs';
 
 async function validate() {
@@ -393,13 +393,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run claudelint
+      - name: Run claude-code-lint
         run: node scripts/ci-lint.js
 ```
 
 ```typescript
 // scripts/ci-lint.js
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function lint() {
   const linter = new ClaudeLint({
@@ -459,7 +459,7 @@ lint:
 
 ```typescript
 // scripts/gitlab-lint.js
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import { writeFileSync, mkdirSync } from 'fs';
 
 async function lint() {
@@ -500,18 +500,18 @@ lint();
 
 ### Example 14: VS Code Extension
 
-Build VS Code extension with claudelint.
+Build VS Code extension with claude-code-lint.
 
 ```typescript
 // extension.ts
 import * as vscode from 'vscode';
-import { ClaudeLint, LintMessage } from 'claudelint';
+import { ClaudeLint, LintMessage } from 'claude-code-lint';
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 let linter: ClaudeLint;
 
 export function activate(context: vscode.ExtensionContext) {
-  diagnosticCollection = vscode.languages.createDiagnosticCollection('claudelint');
+  diagnosticCollection = vscode.languages.createDiagnosticCollection('claude-code-lint');
   linter = new ClaudeLint();
 
   // Lint on save
@@ -526,7 +526,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Lint current file command
   context.subscriptions.push(
-    vscode.commands.registerCommand('claudelint.lintFile', () => {
+    vscode.commands.registerCommand('claude-code-lint.lintFile', () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         lintDocument(editor.document);
@@ -536,7 +536,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Fix current file command
   context.subscriptions.push(
-    vscode.commands.registerCommand('claudelint.fixFile', async () => {
+    vscode.commands.registerCommand('claude-code-lint.fixFile', async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor) {
         await fixDocument(editor.document);
@@ -597,7 +597,7 @@ function createDiagnostic(message: LintMessage): vscode.Diagnostic {
   );
 
   diagnostic.code = message.ruleId;
-  diagnostic.source = 'claudelint';
+  diagnostic.source = 'claude-code-lint';
 
   return diagnostic;
 }
@@ -617,7 +617,7 @@ export function deactivate() {
 Show detailed progress during validation.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import ora from 'ora';
 
 async function validateWithProgress() {
@@ -656,7 +656,7 @@ validateWithProgress();
 Only validate changed files.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import { execSync } from 'child_process';
 
 async function validateChanged() {
@@ -690,7 +690,7 @@ validateChanged();
 Validate multiple projects in parallel.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function validateProjects() {
   const projects = [
@@ -731,7 +731,7 @@ validateProjects();
 Only run specific rules.
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   ruleFilter: (ruleId) => {

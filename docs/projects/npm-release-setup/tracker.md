@@ -1,6 +1,6 @@
 # NPM Release Setup - Progress Tracker
 
-Project to set up professional npm versioning, release automation, and package name migration from `claudelint` to `claudelint`.
+Project to set up professional npm versioning, release automation, and package name migration from `claude-code-lint` to `claude-code-lint`.
 
 **Status:** In Progress
 **Start Date:** 2026-01-30
@@ -68,8 +68,8 @@ Project to set up professional npm versioning, release automation, and package n
 ### 3.1 Create Migration Script
 
 - [x] Create `scripts/migrate-package-name.ts`
-- [x] Script finds all `claudelint` references (180 found)
-- [x] Script replaces with `claudelint`
+- [x] Script finds all `claude-code-lint` references (180 found)
+- [x] Script replaces with `claude-code-lint`
 - [x] Script updates package.json name field
 - [x] Script updates README badges
 - [x] Script updates all documentation
@@ -133,7 +133,7 @@ Project to set up professional npm versioning, release automation, and package n
 ### 5.1 Execute Migration
 
 - [x] Run package name migration script
-- [x] Verify all references updated to `claudelint` (183 occurrences in 39 files)
+- [x] Verify all references updated to `claude-code-lint` (183 occurrences in 39 files)
 - [x] Commit name migration changes
 - [x] Create git tag: `v0.2.0-beta.0`
 

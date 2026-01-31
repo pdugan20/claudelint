@@ -5,9 +5,9 @@
 
 ## Overview
 
-This guide helps you adopt claudelint's programmatic API. Whether you're upgrading from CLI-only usage, building custom integrations, or starting fresh, this guide covers common usage scenarios.
+This guide helps you adopt claude-code-lint's programmatic API. Whether you're upgrading from CLI-only usage, building custom integrations, or starting fresh, this guide covers common usage scenarios.
 
-**Note:** claudelint follows ESLint/Prettier patterns by exporting only stable, documented public APIs. The ClaudeLint class is the recommended way to integrate claudelint programmatically.
+**Note:** claude-code-lint follows ESLint/Prettier patterns by exporting only stable, documented public APIs. The ClaudeLint class is the recommended way to integrate claude-code-lint programmatically.
 
 ---
 
@@ -16,13 +16,13 @@ This guide helps you adopt claudelint's programmatic API. Whether you're upgradi
 ### Before (CLI Only)
 
 ```bash
-claudelint check-all
+claude-code-lint check-all
 ```
 
 ### After (Programmatic API)
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -41,7 +41,7 @@ console.log(formatter.format(results));
 
 ```bash
 #!/bin/bash
-claudelint check-all --fix
+claude-code-lint check-all --fix
 if [ $? -ne 0 ]; then
   echo "Linting failed"
   exit 1
@@ -51,7 +51,7 @@ fi
 **After:** Using API in Node.js
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function validate() {
   const linter = new ClaudeLint({ fix: true });
@@ -100,7 +100,7 @@ done
 **After:** Using ClaudeLint API
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function validateSkills() {
   const linter = new ClaudeLint({
@@ -146,7 +146,7 @@ module.exports = {
       apply(compiler) {
         compiler.hooks.beforeCompile.tap('ClaudeLint', () => {
           try {
-            execSync('claudelint check-all', { stdio: 'inherit' });
+            execSync('claude-code-lint check-all', { stdio: 'inherit' });
           } catch (error) {
             throw new Error('Linting failed');
           }
@@ -161,7 +161,7 @@ module.exports = {
 
 ```typescript
 // webpack.config.js
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 
 module.exports = {
   plugins: [
@@ -199,23 +199,23 @@ module.exports = {
 
 ```yaml
 # .github/workflows/lint.yml
-- name: Run claudelint
+- name: Run claude-code-lint
   run: |
-    npm install -g claudelint
-    claudelint check-all
+    npm install -g claude-code-lint
+    claude-code-lint check-all
 ```
 
 **After:** Custom script with API
 
 ```yaml
 # .github/workflows/lint.yml
-- name: Run claudelint
+- name: Run claude-code-lint
   run: node scripts/lint.js
 ```
 
 ```typescript
 // scripts/lint.js
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 async function lint() {
   const linter = new ClaudeLint({
@@ -262,11 +262,11 @@ lint();
 ```typescript
 // extension.ts
 import * as vscode from 'vscode';
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 export function activate(context: vscode.ExtensionContext) {
   const linter = new ClaudeLint();
-  const diagnosticCollection = vscode.languages.createDiagnosticCollection('claudelint');
+  const diagnosticCollection = vscode.languages.createDiagnosticCollection('claude-code-lint');
 
   // Lint on save
   vscode.workspace.onDidSaveTextDocument(async (document) => {
@@ -311,13 +311,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 ## Public API Exports
 
-claudelint follows ESLint and Prettier patterns by exporting only stable, documented public APIs.
+claude-code-lint follows ESLint and Prettier patterns by exporting only stable, documented public APIs.
 
 ### What's Exported (Stable Public API)
 
 ```typescript
 // Main programmatic API class
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // Type definitions
 import type {
@@ -325,13 +325,13 @@ import type {
   LintMessage,
   ClaudeLintOptions,
   Formatter
-} from 'claudelint';
+} from 'claude-code-lint';
 
 // Formatter utilities
-import { loadFormatter, BaseFormatter } from 'claudelint';
+import { loadFormatter, BaseFormatter } from 'claude-code-lint';
 
 // Configuration utilities
-import { findConfigFile, loadConfig } from 'claudelint';
+import { findConfigFile, loadConfig } from 'claude-code-lint';
 ```
 
 ### What's NOT Exported (Internal Implementation)
@@ -352,7 +352,7 @@ const results = await linter.lintFiles(['**/*.md']);
 
 ```typescript
 // Quick validation with functional API
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 const results = await lint(['CLAUDE.md']);
 console.log(`Errors: ${results[0].errorCount}`);
@@ -446,7 +446,7 @@ If you're familiar with ESLint's API:
 | `loadFormatter(name)` | `loadFormatter(name)` | Same method |
 | `ESLint.outputFixes()` | `ClaudeLint.outputFixes()` | Same static method |
 
-**Design Philosophy:** claudelint's API intentionally mirrors ESLint for familiarity.
+**Design Philosophy:** claude-code-lint's API intentionally mirrors ESLint for familiarity.
 
 ---
 
@@ -461,7 +461,7 @@ import {
   LintMessage,
   ClaudeLintOptions,
   Formatter
-} from 'claudelint';
+} from 'claude-code-lint';
 
 // Fully typed
 const linter: ClaudeLint = new ClaudeLint();
@@ -492,7 +492,7 @@ const results = await linter.lintFiles(['**/*.md']);
 // Enable caching for repeated runs
 const linter = new ClaudeLint({
   cache: true,
-  cacheLocation: '.claudelint-cache'
+  cacheLocation: '.claude-code-lint-cache'
 });
 
 // First run: slow (validates all files)
@@ -535,10 +535,10 @@ Verify API produces same results as CLI:
 
 ```typescript
 import { execSync } from 'child_process';
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // CLI output
-const cliOutput = execSync('claudelint check-all', { encoding: 'utf8' });
+const cliOutput = execSync('claude-code-lint check-all', { encoding: 'utf8' });
 
 // API output
 const linter = new ClaudeLint();
@@ -598,7 +598,7 @@ const linter = new ClaudeLint({
 ```typescript
 const linter = new ClaudeLint({
   cache: true,
-  cacheLocation: '.claudelint-cache'
+  cacheLocation: '.claude-code-lint-cache'
 });
 ```
 
@@ -609,7 +609,7 @@ const linter = new ClaudeLint({
 **Solution:** Import types explicitly
 
 ```typescript
-import type { LintResult, LintMessage } from 'claudelint';
+import type { LintResult, LintMessage } from 'claude-code-lint';
 ```
 
 ### Issue: File paths not resolving
@@ -630,8 +630,8 @@ const linter = new ClaudeLint({
 
 - **Documentation:** [API Reference](./API_DESIGN.md)
 - **Examples:** `examples/` directory
-- **Issues:** [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/pdugan20/claudelint/discussions)
+- **Issues:** [GitHub Issues](https://github.com/pdugan20/claude-code-lint/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/pdugan20/claude-code-lint/discussions)
 
 ---
 
@@ -648,7 +648,7 @@ We want to hear about your migration experience! Please:
 
 ## Next Steps
 
-1. [x] Install claudelint v0.2.0+
+1. [x] Install claude-code-lint v0.2.0+
 2. [x] Try the Quick Start example
 3. [x] Read the [API Design document](./API_DESIGN.md)
 4. [x] Migrate one script/integration at a time

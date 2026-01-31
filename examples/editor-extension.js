@@ -11,7 +11,7 @@
  * - Performance optimization with caching
  */
 
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 
 /**
  * Language Server Pattern
@@ -22,7 +22,7 @@ class ClaudeLintLanguageServer {
     // Create linter instance with caching for performance
     this.linter = new ClaudeLint({
       cache: true,
-      cacheLocation: '.claudelint-cache',
+      cacheLocation: '.claude-code-lint-cache',
       cwd: process.cwd(),
     });
 
@@ -67,7 +67,7 @@ class ClaudeLintLanguageServer {
 
         // Message details
         message: msg.message,
-        source: 'claudelint',
+        source: 'claude-code-lint',
         code: msg.ruleId,
 
         // Additional metadata
@@ -134,7 +134,7 @@ class ClaudeLintLanguageServer {
                 start: { line: diagnostic.range.start.line, character: 0 },
                 end: { line: diagnostic.range.start.line, character: 0 },
               },
-              newText: `<!-- claudelint-disable-next-line ${diagnostic.code} -->\n`,
+              newText: `<!-- claude-code-lint-disable-next-line ${diagnostic.code} -->\n`,
             }],
           },
         },
@@ -186,16 +186,16 @@ class VSCodeExtension {
   registerCommands(context) {
     const commands = {
       // Validate current file
-      'claudelint.validateFile': () => this.validateActiveDocument(),
+      'claude-code-lint.validateFile': () => this.validateActiveDocument(),
 
       // Validate workspace
-      'claudelint.validateWorkspace': () => this.validateWorkspace(),
+      'claude-code-lint.validateWorkspace': () => this.validateWorkspace(),
 
       // Fix all auto-fixable issues
-      'claudelint.fixAll': () => this.fixAllIssues(),
+      'claude-code-lint.fixAll': () => this.fixAllIssues(),
 
       // Clear diagnostics
-      'claudelint.clearDiagnostics': () => this.clearAllDiagnostics(),
+      'claude-code-lint.clearDiagnostics': () => this.clearAllDiagnostics(),
     };
 
     for (const [command, handler] of Object.entries(commands)) {
@@ -242,7 +242,7 @@ class VSCodeExtension {
         },
         severity: msg.severity === 'error' ? 'Error' : 'Warning',
         message: msg.message,
-        source: 'claudelint',
+        source: 'claude-code-lint',
         code: msg.ruleId,
       }));
 
@@ -282,7 +282,7 @@ class VSCodeExtension {
           },
           severity: msg.severity === 'error' ? 'Error' : 'Warning',
           message: msg.message,
-          source: 'claudelint',
+          source: 'claude-code-lint',
         }));
 
         this.diagnosticCollection.set(result.filePath, diagnostics);
@@ -483,17 +483,17 @@ function showEditorConfig() {
   const config = {
     // VS Code settings.json
     vscode: {
-      'claudelint.enable': true,
-      'claudelint.run': 'onSave',  // or 'onType'
-      'claudelint.autoFix': true,
-      'claudelint.configFile': '.claudelintrc.json',
+      'claude-code-lint.enable': true,
+      'claude-code-lint.run': 'onSave',  // or 'onType'
+      'claude-code-lint.autoFix': true,
+      'claude-code-lint.configFile': '.claudelintrc.json',
     },
 
     // Sublime Text settings
     sublime: {
       'linters': {
-        'claudelint': {
-          'executable': 'claudelint',
+        'claude-code-lint': {
+          'executable': 'claude-code-lint',
           'args': ['--format', 'json'],
           'selector': 'text.html.markdown',
         },

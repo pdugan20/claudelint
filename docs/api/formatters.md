@@ -15,7 +15,7 @@ Human-readable output with colors and formatting. Best for terminal display.
 **Usage:**
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -136,7 +136,7 @@ await writeFile('lint-report.xml', output);
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="claudelint" tests="2" failures="2">
+<testsuites name="claude-code-lint" tests="2" failures="2">
   <testsuite name="CLAUDE.md" tests="2" failures="2">
     <testcase name="claude-md-size-error" classname="CLAUDE.md">
       <failure message="File size exceeds 30,000 characters">
@@ -164,7 +164,7 @@ await writeFile('lint-report.xml', output);
 ### Class API
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -181,7 +181,7 @@ const customOutput = custom.format(results);
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
 
@@ -302,7 +302,7 @@ Use TypeScript for type safety:
 
 ```typescript
 // formatters/markdown.ts
-import { Formatter, LintResult } from 'claudelint';
+import { Formatter, LintResult } from 'claude-code-lint';
 
 const markdownFormatter: Formatter = {
   format(results: LintResult[]): string {
@@ -545,7 +545,7 @@ module.exports = {
 Generate multiple report formats:
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 import { writeFile } from 'fs/promises';
 
 const linter = new ClaudeLint();
@@ -573,7 +573,7 @@ await writeFile('lint-report.html', html.format(results));
 Use different formatters based on environment:
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
 
@@ -585,7 +585,7 @@ console.log(output);
 
 ## See Also
 
-- [ClaudeLint Class](./claudelint-class.md) - Main API documentation
+- [ClaudeLint Class](./claude-code-lint-class.md) - Main API documentation
 - [Functional API](./functional-api.md) - Stateless functions
 - [Types](./types.md) - TypeScript type reference
 - [Examples](../../examples/) - Complete usage examples

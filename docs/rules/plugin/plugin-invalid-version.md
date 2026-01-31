@@ -112,7 +112,7 @@ To fix invalid version numbers:
 7. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

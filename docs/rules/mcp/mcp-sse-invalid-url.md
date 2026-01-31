@@ -228,7 +228,7 @@ To resolve invalid URL errors:
 7. **Run validation**:
 
    ```bash
-   claudelint check-mcp
+   claude-code-lint check-mcp
    ```
 
 ## Options

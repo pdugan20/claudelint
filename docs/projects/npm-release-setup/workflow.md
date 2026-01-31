@@ -1,6 +1,6 @@
 # Release Workflow
 
-Day-to-day release workflow and checklists for claudelint.
+Day-to-day release workflow and checklists for claude-code-lint.
 
 ## Overview
 
@@ -40,9 +40,9 @@ npm run release:beta
 npm publish --tag beta --access public
 
 # 9. Verify
-npm view claudelint
-npm install -g claudelint@beta
-claudelint --version
+npm view claude-code-lint
+npm install -g claude-code-lint@beta
+claude-code-lint --version
 
 # 10. Create GitHub release
 # Tag: v0.2.0-beta.0
@@ -99,7 +99,7 @@ npm run release:beta
 npm publish --tag beta --access public
 
 # 6. Verify
-npm view claudelint dist-tags
+npm view claude-code-lint dist-tags
 # beta should point to new version
 ```
 
@@ -207,12 +207,12 @@ npm run release
 npm publish --access public
 
 # 6. Verify latest tag
-npm view claudelint dist-tags
+npm view claude-code-lint dist-tags
 # latest: 0.2.0
 
 # 7. Test installation
-npm install -g claudelint
-claudelint --version
+npm install -g claude-code-lint
+claude-code-lint --version
 # Should show: 0.2.0
 
 # 8. Create GitHub release
@@ -265,7 +265,7 @@ npm run release:patch
 npm publish --access public
 
 # 5. Verify latest tag
-npm view claudelint dist-tags
+npm view claude-code-lint dist-tags
 # latest: 0.2.1
 
 # 6. Create GitHub release
@@ -503,14 +503,14 @@ npm run check:version-sync
 **Within 72 hours:**
 
 ```bash
-npm unpublish claudelint@0.2.0-beta.0
+npm unpublish claude-code-lint@0.2.0-beta.0
 ```
 
 **After 72 hours:**
 
 ```bash
 # Can't unpublish, must deprecate
-npm deprecate claudelint@0.2.0-beta.0 "Critical bug, do not use"
+npm deprecate claude-code-lint@0.2.0-beta.0 "Critical bug, do not use"
 
 # Publish fixed version immediately
 npm version patch
@@ -524,8 +524,8 @@ npm publish --access public
 npm publish  # Should have been: npm publish --tag beta
 
 # Fix: Move tags
-npm dist-tag add claudelint@0.2.4 latest    # Restore previous stable
-npm dist-tag add claudelint@0.3.0-beta.0 beta  # Move beta to beta tag
+npm dist-tag add claude-code-lint@0.2.4 latest    # Restore previous stable
+npm dist-tag add claude-code-lint@0.3.0-beta.0 beta  # Move beta to beta tag
 ```
 
 ### Lost NPM Access
@@ -537,7 +537,7 @@ npm login
 
 # 3. Verify access
 npm whoami
-npm owner ls claudelint
+npm owner ls claude-code-lint
 ```
 
 ## Automation
@@ -585,7 +585,7 @@ jobs:
 
 1. **Always test locally first**: `npm pack` and install the tarball
 2. **Use dry run**: `npm run release:dry` to preview changes
-3. **Check dist-tags**: `npm view claudelint dist-tags` after publishing
+3. **Check dist-tags**: `npm view claude-code-lint dist-tags` after publishing
 4. **Verify installation**: Install from npm after publishing
 5. **Keep CHANGELOG current**: Update as you develop, not at release time
 6. **Tag git commits**: release-it does this automatically

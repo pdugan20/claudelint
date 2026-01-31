@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate Hooks
 
-Runs `claudelint validate-hooks` to validate `.claude/hooks/hooks.json` files.
+Runs `claude-code-lint validate-hooks` to validate `.claude/hooks/hooks.json` files.
 
 ## Usage
 
 ```bash
-claudelint validate-hooks
+claude-code-lint validate-hooks
 ```
 
 ## Options
@@ -34,8 +34,8 @@ claudelint validate-hooks
 ## Examples
 
 ```bash
-claudelint validate-hooks
-claudelint validate-hooks --path /path/to/hooks.json
+claude-code-lint validate-hooks
+claude-code-lint validate-hooks --path /path/to/hooks.json
 ```
 
 ## See Also

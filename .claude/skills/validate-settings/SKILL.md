@@ -9,12 +9,12 @@ allowed-tools:
 
 # Validate Settings
 
-Runs `claudelint validate-settings` to validate `.claude/settings.json` and `.claude/settings.local.json` files.
+Runs `claude-code-lint validate-settings` to validate `.claude/settings.json` and `.claude/settings.local.json` files.
 
 ## Usage
 
 ```bash
-claudelint validate-settings
+claude-code-lint validate-settings
 ```
 
 ## Options
@@ -34,8 +34,8 @@ claudelint validate-settings
 ## Examples
 
 ```bash
-claudelint validate-settings
-claudelint validate-settings --path /path/to/settings.json
+claude-code-lint validate-settings
+claude-code-lint validate-settings --path /path/to/settings.json
 ```
 
 ## See Also

@@ -1,4 +1,4 @@
-# claudelint Examples
+# claude-code-lint Examples
 
 Copy-pastable configurations for common use cases.
 
@@ -18,7 +18,7 @@ Minimal, permissive configuration for getting started or migrating existing proj
 # Copy to your project
 cp examples/basic/.claudelintrc.json .
 cp examples/basic/.claudelintignore .
-claudelint check-all
+claude-code-lint check-all
 ```
 
 ### Strict Configuration
@@ -35,7 +35,7 @@ Zero-tolerance configuration for maximum code quality.
 ```bash
 # Copy to your project
 cp examples/strict/.claudelintrc.json .
-claudelint check-all --strict
+claude-code-lint check-all --strict
 ```
 
 ### Integration Examples
@@ -105,13 +105,13 @@ Use **[integration/](./integration/)** setup.
 ```bash
 # 1. Initialize with basic config
 cp examples/basic/.claudelintrc.json .
-claudelint init --yes
+claude-code-lint init --yes
 
 # 2. Run validation
-claudelint check-all
+claude-code-lint check-all
 
 # 3. Auto-fix issues
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # 4. Fix remaining issues manually
 
@@ -123,7 +123,7 @@ claudelint check-all --fix
 
 ```bash
 # Use strict mode in CI
-claudelint check-all --strict --format json
+claude-code-lint check-all --strict --format json
 ```
 
 ### Pre-commit Workflow

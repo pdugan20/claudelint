@@ -7,7 +7,7 @@
  * Demonstrates: countOccurrences helper
  */
 
-const { countOccurrences } = require('claudelint/utils');
+const { countOccurrences } = require('claude-code-lint/utils');
 
 module.exports.rule = {
   meta: {

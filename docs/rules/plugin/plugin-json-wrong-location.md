@@ -132,7 +132,7 @@ To move plugin.json to the correct location:
 7. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

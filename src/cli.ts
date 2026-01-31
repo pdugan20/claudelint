@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * claudelint CLI - Main entry point
+ * claude-code-lint CLI - Main entry point
  *
  * This file is intentionally kept small (~200 lines) following ESLint/Prettier patterns.
  * Command implementations are in src/cli/commands/
@@ -33,7 +33,7 @@ const program = new Command();
 
 // Program metadata
 program
-  .name('claudelint')
+  .name('claude-code-lint')
   .description('A comprehensive linter for Claude Code projects')
   .version(version);
 

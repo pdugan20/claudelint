@@ -258,7 +258,7 @@ interface ClaudeLintOptions {
 **Caching:**
 
 - `cache` - Enable result caching
-- `cacheLocation` - Cache directory (default: '.claudelint-cache')
+- `cacheLocation` - Cache directory (default: '.claude-code-lint-cache')
 - `cacheStrategy` - Cache invalidation strategy
 
 **Progress Callbacks:**
@@ -688,7 +688,7 @@ import {
   LintResult,
   LintMessage,
   RuleMetadata,
-} from 'claudelint';
+} from 'claude-code-lint';
 
 const options: ClaudeLintOptions = {
   fix: (message: LintMessage): boolean => {
@@ -708,7 +708,7 @@ const rules: Map<string, RuleMetadata> = linter.getRules();
 ### Type Assertions
 
 ```typescript
-import { LintResult } from 'claudelint';
+import { LintResult } from 'claude-code-lint';
 
 const results = await linter.lintFiles(['**/*.md']);
 
@@ -725,6 +725,6 @@ const customResults = results as CustomResult[];
 
 ## See Also
 
-- [ClaudeLint Class](./claudelint-class.md) - Class API documentation
+- [ClaudeLint Class](./claude-code-lint-class.md) - Class API documentation
 - [Functional API](./functional-api.md) - Function API documentation
 - [Examples](../../examples/) - Usage examples with types

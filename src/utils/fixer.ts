@@ -1,5 +1,5 @@
 /**
- * Auto-fix functionality for claudelint
+ * Auto-fix functionality for claude-code-lint
  *
  * Applies automatic fixes to resolve validation issues.
  */

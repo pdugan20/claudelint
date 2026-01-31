@@ -7,7 +7,7 @@
  * Demonstrates: extractFrontmatter, validateSemver, hasHeading helpers
  */
 
-const { extractFrontmatter, validateSemver, hasHeading } = require('claudelint/utils');
+const { extractFrontmatter, validateSemver, hasHeading } = require('claude-code-lint/utils');
 
 module.exports.rule = {
   meta: {

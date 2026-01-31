@@ -4,7 +4,7 @@
  * Basic tests for Phase 1 implementation of the programmatic API
  */
 
-import { ClaudeLint } from '../../src/api/claudelint';
+import { ClaudeLint } from '../../src/api/claude-code-lint';
 import { LintResult } from '../../src/api/types';
 import { writeFileSync, mkdirSync, rmSync } from 'fs';
 import { join } from 'path';

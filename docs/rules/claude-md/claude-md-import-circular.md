@@ -100,7 +100,7 @@ To resolve circular import dependencies:
 4. **Verify the fix**:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 The key principle: imports should form a directed acyclic graph (DAG), not a cycle.

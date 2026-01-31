@@ -141,7 +141,7 @@ To fix transport configuration errors:
 1. **Verify configuration**:
 
 ```bash
-claudelint check-lsp
+claude-code-lint check-lsp
 ```
 
 ## Options

@@ -5,9 +5,9 @@
  * in Claude Code configuration files.
  *
  * Usage:
- * 1. Copy this file to .claudelint/rules/ in your project
+ * 1. Copy this file to .claude-code-lint/rules/ in your project
  * 2. Customize the patterns array to match your security requirements
- * 3. Run claudelint check-all to validate your files
+ * 3. Run claude-code-lint check-all to validate your files
  */
 
 module.exports.rule = {

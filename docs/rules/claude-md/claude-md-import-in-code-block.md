@@ -79,7 +79,7 @@ To move import statements out of code blocks:
 4. **Verify all imports are processed**:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 Remember: Import statements must be outside code blocks to be processed by Claude Code.

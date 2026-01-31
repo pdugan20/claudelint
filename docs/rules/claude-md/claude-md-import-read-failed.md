@@ -167,7 +167,7 @@ To resolve file read failures:
    cat .claude/rules/file.md
 
    # Run validation
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 ## Options

@@ -1,6 +1,6 @@
 # Rule Options Development Guide
 
-This guide explains how to add configurable options to claudelint rules.
+This guide explains how to add configurable options to claude-code-lint rules.
 
 ## Quick Start
 

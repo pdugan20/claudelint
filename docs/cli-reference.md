@@ -1,6 +1,6 @@
 # CLI Reference
 
-Complete reference for all claudelint commands, options, and usage patterns.
+Complete reference for all claude-code-lint commands, options, and usage patterns.
 
 ## Table of Contents
 
@@ -38,7 +38,7 @@ Run all validators on your Claude Code project. This is the primary command you'
 **Usage:**
 
 ```bash
-claudelint check-all [options]
+claude-code-lint check-all [options]
 ```
 
 **Options:**
@@ -57,7 +57,7 @@ claudelint check-all [options]
 | `--fix-type <type>` | Fix `errors`, `warnings`, or `all` | `all` |
 | `--cache` | Enable validation caching | `true` |
 | `--no-cache` | Disable validation caching | - |
-| `--cache-location <path>` | Cache directory location | `.claudelint-cache` |
+| `--cache-location <path>` | Cache directory location | `.claude-code-lint-cache` |
 | `--color` | Force color output | Auto-detect |
 | `--no-color` | Disable color output | - |
 | `--debug-config` | Show configuration loading debug info | `false` |
@@ -68,49 +68,49 @@ claudelint check-all [options]
 
 ```bash
 # Basic validation
-claudelint check-all
+claude-code-lint check-all
 
 # Verbose output with timing
-claudelint check-all --verbose
+claude-code-lint check-all --verbose
 
 # Strict mode (fail on any warnings)
-claudelint check-all --strict
+claude-code-lint check-all --strict
 
 # Limit warnings to 5
-claudelint check-all --max-warnings 5
+claude-code-lint check-all --max-warnings 5
 
 # JSON output (for CI/CD)
-claudelint check-all --format json
+claude-code-lint check-all --format json
 
 # Compact output (one line per issue)
-claudelint check-all --format compact
+claude-code-lint check-all --format compact
 
 # Show detailed explanations
-claudelint check-all --explain
+claude-code-lint check-all --explain
 
 # Preview auto-fixes
-claudelint check-all --fix-dry-run
+claude-code-lint check-all --fix-dry-run
 
 # Apply auto-fixes
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Fix only errors
-claudelint check-all --fix --fix-type errors
+claude-code-lint check-all --fix --fix-type errors
 
 # Custom config file
-claudelint check-all --config custom.json
+claude-code-lint check-all --config custom.json
 
 # Disable caching
-claudelint check-all --no-cache
+claude-code-lint check-all --no-cache
 
 # Debug config loading
-claudelint check-all --debug-config
+claude-code-lint check-all --debug-config
 
 # Show rule documentation URLs
-claudelint check-all --show-docs-url
+claude-code-lint check-all --show-docs-url
 
 # Combine flags
-claudelint check-all --strict --max-warnings 0 --format json
+claude-code-lint check-all --strict --max-warnings 0 --format json
 ```
 
 **Exit Codes:**
@@ -123,12 +123,12 @@ claudelint check-all --strict --max-warnings 0 --format json
 
 ### init
 
-Initialize claudelint configuration for your project. Interactive wizard that detects your project structure and generates appropriate config files.
+Initialize claude-code-lint configuration for your project. Interactive wizard that detects your project structure and generates appropriate config files.
 
 **Usage:**
 
 ```bash
-claudelint init [options]
+claude-code-lint init [options]
 ```
 
 **Options:**
@@ -141,10 +141,10 @@ claudelint init [options]
 
 ```bash
 # Interactive setup (recommended)
-claudelint init
+claude-code-lint init
 
 # Non-interactive with defaults
-claudelint init --yes
+claude-code-lint init --yes
 ```
 
 **What it creates:**
@@ -159,12 +159,12 @@ claudelint init --yes
 
 ### print-config
 
-Display the resolved configuration that claudelint is using. Useful for debugging config file loading and cascading.
+Display the resolved configuration that claude-code-lint is using. Useful for debugging config file loading and cascading.
 
 **Usage:**
 
 ```bash
-claudelint print-config [options]
+claude-code-lint print-config [options]
 ```
 
 **Options:**
@@ -178,13 +178,13 @@ claudelint print-config [options]
 
 ```bash
 # Print config as JSON
-claudelint print-config
+claude-code-lint print-config
 
 # Print config as table
-claudelint print-config --format table
+claude-code-lint print-config --format table
 
 # Print specific config file
-claudelint print-config --config custom.json
+claude-code-lint print-config --config custom.json
 ```
 
 ---
@@ -196,7 +196,7 @@ Show the effective configuration for a specific file. Takes into account config 
 **Usage:**
 
 ```bash
-claudelint resolve-config <file> [options]
+claude-code-lint resolve-config <file> [options]
 ```
 
 **Arguments:**
@@ -214,25 +214,25 @@ claudelint resolve-config <file> [options]
 
 ```bash
 # Resolve config for CLAUDE.md
-claudelint resolve-config .claude/CLAUDE.md
+claude-code-lint resolve-config .claude/CLAUDE.md
 
 # Resolve config for a skill
-claudelint resolve-config .claude/skills/test/test.sh
+claude-code-lint resolve-config .claude/skills/test/test.sh
 
 # Table format
-claudelint resolve-config .claude/CLAUDE.md --format table
+claude-code-lint resolve-config .claude/CLAUDE.md --format table
 ```
 
 ---
 
 ### validate-config
 
-Validate a configuration file against the claudelint schema. Checks for unknown rules, invalid options, and schema violations.
+Validate a configuration file against the claude-code-lint schema. Checks for unknown rules, invalid options, and schema violations.
 
 **Usage:**
 
 ```bash
-claudelint validate-config [options]
+claude-code-lint validate-config [options]
 ```
 
 **Options:**
@@ -245,10 +245,10 @@ claudelint validate-config [options]
 
 ```bash
 # Validate default config
-claudelint validate-config
+claude-code-lint validate-config
 
 # Validate specific config
-claudelint validate-config --config custom.json
+claude-code-lint validate-config --config custom.json
 ```
 
 ---
@@ -262,7 +262,7 @@ List all available validation rules with their metadata (severity, category, fix
 **Usage:**
 
 ```bash
-claudelint list-rules [options]
+claude-code-lint list-rules [options]
 ```
 
 **Options:**
@@ -276,16 +276,16 @@ claudelint list-rules [options]
 
 ```bash
 # List all rules
-claudelint list-rules
+claude-code-lint list-rules
 
 # List only Skills rules
-claudelint list-rules --category Skills
+claude-code-lint list-rules --category Skills
 
 # JSON output
-claudelint list-rules --format json
+claude-code-lint list-rules --format json
 
 # Filter and output as JSON
-claudelint list-rules --category CLAUDE.md --format json
+claude-code-lint list-rules --category CLAUDE.md --format json
 ```
 
 **Output includes:**
@@ -303,33 +303,33 @@ claudelint list-rules --category CLAUDE.md --format json
 
 ### cache-clear
 
-Clear the validation cache. Use this if you're seeing stale validation results or after upgrading claudelint.
+Clear the validation cache. Use this if you're seeing stale validation results or after upgrading claude-code-lint.
 
 **Usage:**
 
 ```bash
-claudelint cache-clear [options]
+claude-code-lint cache-clear [options]
 ```
 
 **Options:**
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--cache-location <path>` | Cache directory to clear | `.claudelint-cache` |
+| `--cache-location <path>` | Cache directory to clear | `.claude-code-lint-cache` |
 
 **Examples:**
 
 ```bash
 # Clear default cache
-claudelint cache-clear
+claude-code-lint cache-clear
 
 # Clear custom cache location
-claudelint cache-clear --cache-location /tmp/my-cache
+claude-code-lint cache-clear --cache-location /tmp/my-cache
 ```
 
 **When to use:**
 
-- After upgrading claudelint
+- After upgrading claude-code-lint
 - After changing rules or config
 - If seeing stale validation results
 - Before CI/CD runs (optional)
@@ -347,7 +347,7 @@ Validate CLAUDE.md files only.
 **Usage:**
 
 ```bash
-claudelint check-claude-md [options]
+claude-code-lint check-claude-md [options]
 ```
 
 **Options:**
@@ -357,7 +357,7 @@ Same as `check-all` but only runs CLAUDE.md validator.
 **Example:**
 
 ```bash
-claudelint check-claude-md --verbose
+claude-code-lint check-claude-md --verbose
 ```
 
 ---
@@ -369,7 +369,7 @@ Validate Claude Code skills only.
 **Usage:**
 
 ```bash
-claudelint validate-skills [options]
+claude-code-lint validate-skills [options]
 ```
 
 **Options:**
@@ -379,7 +379,7 @@ Same as `check-all` but only runs skills validator.
 **Example:**
 
 ```bash
-claudelint validate-skills --fix
+claude-code-lint validate-skills --fix
 ```
 
 ---
@@ -391,7 +391,7 @@ Validate settings.json files only.
 **Usage:**
 
 ```bash
-claudelint validate-settings [options]
+claude-code-lint validate-settings [options]
 ```
 
 **Options:**
@@ -401,7 +401,7 @@ Same as `check-all` but only runs settings validator.
 **Example:**
 
 ```bash
-claudelint validate-settings
+claude-code-lint validate-settings
 ```
 
 ---
@@ -413,7 +413,7 @@ Validate hooks.json files only.
 **Usage:**
 
 ```bash
-claudelint validate-hooks [options]
+claude-code-lint validate-hooks [options]
 ```
 
 **Options:**
@@ -423,7 +423,7 @@ Same as `check-all` but only runs hooks validator.
 **Example:**
 
 ```bash
-claudelint validate-hooks
+claude-code-lint validate-hooks
 ```
 
 ---
@@ -435,7 +435,7 @@ Validate MCP server configuration files only.
 **Usage:**
 
 ```bash
-claudelint validate-mcp [options]
+claude-code-lint validate-mcp [options]
 ```
 
 **Options:**
@@ -445,7 +445,7 @@ Same as `check-all` but only runs MCP validator.
 **Example:**
 
 ```bash
-claudelint validate-mcp
+claude-code-lint validate-mcp
 ```
 
 ---
@@ -457,7 +457,7 @@ Validate plugin manifest files only.
 **Usage:**
 
 ```bash
-claudelint validate-plugin [options]
+claude-code-lint validate-plugin [options]
 ```
 
 **Options:**
@@ -467,7 +467,7 @@ Same as `check-all` but only runs plugin validator.
 **Example:**
 
 ```bash
-claudelint validate-plugin
+claude-code-lint validate-plugin
 ```
 
 ---
@@ -481,7 +481,7 @@ Format Claude Code files using markdownlint, prettier, and shellcheck.
 **Usage:**
 
 ```bash
-claudelint format [options]
+claude-code-lint format [options]
 ```
 
 **Options:**
@@ -494,17 +494,17 @@ claudelint format [options]
 
 ```bash
 # Preview formatting issues
-claudelint format
+claude-code-lint format
 
 # Apply formatting
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 ---
 
 ## Exit Codes
 
-claudelint uses standard POSIX exit codes:
+claude-code-lint uses standard POSIX exit codes:
 
 | Exit Code | Meaning | When It Happens |
 |-----------|---------|-----------------|
@@ -540,35 +540,35 @@ claudelint uses standard POSIX exit codes:
 **Initial setup:**
 
 ```bash
-# Install claudelint
-npm install -g claudelint
+# Install claude-code-lint
+npm install -g claude-code-lint
 
 # Initialize project
 cd my-claude-project
-claudelint init
+claude-code-lint init
 
 # Run validation
-claudelint check-all
+claude-code-lint check-all
 ```
 
 **Daily development:**
 
 ```bash
 # Quick check
-claudelint check-all
+claude-code-lint check-all
 
 # With auto-fix
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Check specific validator
-claudelint validate-skills
+claude-code-lint validate-skills
 ```
 
 **Pre-commit validation:**
 
 ```bash
 # Fast validation without cache
-claudelint check-all --no-cache --strict
+claude-code-lint check-all --no-cache --strict
 ```
 
 ### CI/CD Integration
@@ -577,21 +577,21 @@ claudelint check-all --no-cache --strict
 
 ```bash
 # Fail on any issues, JSON output
-claudelint check-all --strict --format json
+claude-code-lint check-all --strict --format json
 ```
 
 **GitLab CI:**
 
 ```bash
 # Limit warnings, compact output
-claudelint check-all --max-warnings 10 --format compact
+claude-code-lint check-all --max-warnings 10 --format compact
 ```
 
 **Jenkins:**
 
 ```bash
 # Verbose output for debugging
-claudelint check-all --verbose --format json
+claude-code-lint check-all --verbose --format json
 ```
 
 ### Advanced Usage
@@ -600,77 +600,77 @@ claudelint check-all --verbose --format json
 
 ```bash
 # See what config is loaded
-claudelint print-config
+claude-code-lint print-config
 
 # See config for specific file
-claudelint resolve-config .claude/skills/test/test.sh
+claude-code-lint resolve-config .claude/skills/test/test.sh
 
 # Debug config loading process
-claudelint check-all --debug-config
+claude-code-lint check-all --debug-config
 
 # Validate config file
-claudelint validate-config
+claude-code-lint validate-config
 ```
 
 **Performance optimization:**
 
 ```bash
 # First run (creates cache)
-claudelint check-all
+claude-code-lint check-all
 
 # Subsequent runs (uses cache, ~2.4x faster)
-claudelint check-all
+claude-code-lint check-all
 
 # Clear cache if needed
-claudelint cache-clear
+claude-code-lint cache-clear
 
 # Disable cache temporarily
-claudelint check-all --no-cache
+claude-code-lint check-all --no-cache
 ```
 
 **Auto-fixing:**
 
 ```bash
 # Preview all fixes
-claudelint check-all --fix-dry-run
+claude-code-lint check-all --fix-dry-run
 
 # Apply all fixes
-claudelint check-all --fix
+claude-code-lint check-all --fix
 
 # Fix only errors, not warnings
-claudelint check-all --fix --fix-type errors
+claude-code-lint check-all --fix --fix-type errors
 
 # Fix only warnings
-claudelint check-all --fix --fix-type warnings
+claude-code-lint check-all --fix --fix-type warnings
 ```
 
 **Custom configurations:**
 
 ```bash
 # Use different config file
-claudelint check-all --config strict.json
+claude-code-lint check-all --config strict.json
 
 # Override cache location
-claudelint check-all --cache-location /tmp/cache
+claude-code-lint check-all --cache-location /tmp/cache
 
 # Combine with other flags
-claudelint check-all --config strict.json --strict --max-warnings 0
+claude-code-lint check-all --config strict.json --strict --max-warnings 0
 ```
 
 ### Rule Exploration
 
 ```bash
 # List all available rules
-claudelint list-rules
+claude-code-lint list-rules
 
 # See only Skills rules
-claudelint list-rules --category Skills
+claude-code-lint list-rules --category Skills
 
 # Get JSON for scripting
-claudelint list-rules --format json | jq '.[] | select(.fixable == true)'
+claude-code-lint list-rules --format json | jq '.[] | select(.fixable == true)'
 
 # Find all error-level rules
-claudelint list-rules --format json | jq '.[] | select(.severity == "error")'
+claude-code-lint list-rules --format json | jq '.[] | select(.severity == "error")'
 ```
 
 ### Output Formats
@@ -678,19 +678,19 @@ claudelint list-rules --format json | jq '.[] | select(.severity == "error")'
 **Stylish (default) - Human-readable:**
 
 ```bash
-claudelint check-all
+claude-code-lint check-all
 ```
 
 **JSON - For CI/CD and scripting:**
 
 ```bash
-claudelint check-all --format json | jq '.'
+claude-code-lint check-all --format json | jq '.'
 ```
 
 **Compact - One line per issue:**
 
 ```bash
-claudelint check-all --format compact
+claude-code-lint check-all --format compact
 ```
 
 ### Error Handling
@@ -698,26 +698,26 @@ claudelint check-all --format compact
 **Exit on any issues:**
 
 ```bash
-claudelint check-all --strict
+claude-code-lint check-all --strict
 echo $?  # 1 if any issues, 0 if clean
 ```
 
 **Treat warnings as errors:**
 
 ```bash
-claudelint check-all --warnings-as-errors
+claude-code-lint check-all --warnings-as-errors
 ```
 
 **Limit warnings:**
 
 ```bash
-claudelint check-all --max-warnings 5
+claude-code-lint check-all --max-warnings 5
 ```
 
 **Combine for zero-tolerance:**
 
 ```bash
-claudelint check-all --strict --max-warnings 0 --warnings-as-errors
+claude-code-lint check-all --strict --max-warnings 0 --warnings-as-errors
 ```
 
 ---
@@ -730,8 +730,8 @@ claudelint check-all --strict --max-warnings 0 --warnings-as-errors
 #!/bin/bash
 # .git/hooks/pre-commit
 
-# Run claudelint with strict mode
-claudelint check-all --strict --no-cache
+# Run claude-code-lint with strict mode
+claude-code-lint check-all --strict --no-cache
 
 # Exit with same code
 exit $?
@@ -742,10 +742,10 @@ exit $?
 ```json
 {
   "scripts": {
-    "lint": "claudelint check-all",
-    "lint:fix": "claudelint check-all --fix",
-    "lint:strict": "claudelint check-all --strict",
-    "lint:ci": "claudelint check-all --format json --strict"
+    "lint": "claude-code-lint check-all",
+    "lint:fix": "claude-code-lint check-all --fix",
+    "lint:strict": "claude-code-lint check-all --strict",
+    "lint:ci": "claude-code-lint check-all --format json --strict"
   }
 }
 ```
@@ -756,13 +756,13 @@ exit $?
 .PHONY: lint lint-fix lint-strict
 
 lint:
- claudelint check-all
+ claude-code-lint check-all
 
 lint-fix:
- claudelint check-all --fix
+ claude-code-lint check-all --fix
 
 lint-strict:
- claudelint check-all --strict --max-warnings 0
+ claude-code-lint check-all --strict --max-warnings 0
 ```
 
 ---
@@ -773,12 +773,12 @@ lint-strict:
 
 - **Use caching**: Default behavior, provides ~2.4x speedup
 - **Run validators in parallel**: Automatic, provides ~3.5x speedup
-- **Clear cache after upgrades**: `claudelint cache-clear`
+- **Clear cache after upgrades**: `claude-code-lint cache-clear`
 - **Use `--fast` mode**: Skip expensive checks in development
 
 ### Configuration
 
-- **Start with defaults**: Use `claudelint init --yes`
+- **Start with defaults**: Use `claude-code-lint init --yes`
 - **Gradually enable rules**: Start permissive, tighten over time
 - **Use `.claudelintignore`**: Exclude generated files, dependencies
 - **Document custom rules**: Add comments to config file
@@ -805,33 +805,33 @@ lint-strict:
 
 ```bash
 # Debug config loading
-claudelint check-all --debug-config
+claude-code-lint check-all --debug-config
 
 # Validate config file
-claudelint validate-config
+claude-code-lint validate-config
 
 # Print resolved config
-claudelint print-config
+claude-code-lint print-config
 ```
 
 ### Stale validation results
 
 ```bash
 # Clear cache
-claudelint cache-clear
+claude-code-lint cache-clear
 
 # Run without cache
-claudelint check-all --no-cache
+claude-code-lint check-all --no-cache
 ```
 
 ### Unexpected exit codes
 
 ```bash
 # Check what's causing failures
-claudelint check-all --verbose
+claude-code-lint check-all --verbose
 
 # See exit code directly
-claudelint check-all
+claude-code-lint check-all
 echo $?
 ```
 
@@ -839,14 +839,14 @@ echo $?
 
 ```bash
 # Check if cache is being used
-claudelint check-all --verbose
+claude-code-lint check-all --verbose
 
 # Clear and rebuild cache
-claudelint cache-clear
-claudelint check-all
+claude-code-lint cache-clear
+claude-code-lint check-all
 
 # Use fast mode
-claudelint check-all --fast
+claude-code-lint check-all --fast
 ```
 
 ---

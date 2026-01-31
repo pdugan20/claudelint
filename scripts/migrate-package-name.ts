@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 
-const OLD_NAME = '@pdugan20/claudelint';
-const NEW_NAME = 'claudelint';
+const OLD_NAME = 'claude-code-lint';
+const NEW_NAME = 'claude-code-lint';
 
 interface MigrationResult {
   file: string;
@@ -109,7 +109,7 @@ async function migratePackageName(
     console.log('\nNext steps:');
     console.log('1. Review changes: git diff');
     console.log('2. Test build: npm run build');
-    console.log('3. Test installation: npm pack && npm install -g claudelint-*.tgz');
+    console.log('3. Test installation: npm pack && npm install -g claude-code-lint-*.tgz');
     console.log('4. Commit: git add . && git commit -m "chore: migrate to unscoped package name"');
   }
 

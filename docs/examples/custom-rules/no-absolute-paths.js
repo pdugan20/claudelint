@@ -7,7 +7,7 @@
  * Demonstrates: matchesPattern, findLinesMatching helpers
  */
 
-const { matchesPattern, findLinesMatching } = require('claudelint/utils');
+const { matchesPattern, findLinesMatching } = require('claude-code-lint/utils');
 
 module.exports.rule = {
   meta: {

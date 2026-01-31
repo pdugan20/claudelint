@@ -1,10 +1,10 @@
 {
-  "name": "claudelint-marketplace",
-  "description": "Official marketplace for the claudelint plugin",
+  "name": "claude-code-lint-marketplace",
+  "description": "Official marketplace for the claude-code-lint plugin",
   "version": "0.2.0-beta.0",
   "plugins": [
     {
-      "name": "claudelint",
+      "name": "claude-code-lint",
       "description": "A comprehensive linter for Claude Code projects",
       "source": {
         "type": "local",

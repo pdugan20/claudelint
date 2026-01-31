@@ -1,6 +1,6 @@
 # Hooks Integration
 
-claudelint provides hooks that can automatically validate your Claude Code project at key moments in your workflow.
+claude-code-lint provides hooks that can automatically validate your Claude Code project at key moments in your workflow.
 
 ## SessionStart Hook
 
@@ -16,7 +16,7 @@ Create `.claude/hooks/hooks.json` in your project:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-all --format compact",
+      "command": "claude-code-lint check-all --format compact",
       "description": "Validate Claude Code project files at session start"
     }
   ]
@@ -26,7 +26,7 @@ Create `.claude/hooks/hooks.json` in your project:
 
 When you start a Claude Code session, the hook will:
 
-1. Run `claudelint check-all` automatically
+1. Run `claude-code-lint check-all` automatically
 2. Show a compact summary of errors and warnings
 3. Complete in ~20-120ms depending on project size
 
@@ -37,7 +37,7 @@ Choose the format that works best for you:
 **Compact format (recommended for hooks):**
 
 ```json
-"command": "claudelint check-all --format compact"
+"command": "claude-code-lint check-all --format compact"
 ```text
 Output:
 
@@ -48,19 +48,19 @@ Output:
 **Stylish format (more detailed):**
 
 ```json
-"command": "claudelint check-all --format stylish"
+"command": "claude-code-lint check-all --format stylish"
 ```text
 **JSON format (for programmatic parsing):**
 
 ```json
-"command": "claudelint check-all --format json"
+"command": "claude-code-lint check-all --format json"
 ```text
 ### Silent Mode
 
 If you only want to see errors (suppress warnings):
 
 ```json
-"command": "claudelint check-all --format compact 2>&1 | grep -E '^.*Error:'"
+"command": "claude-code-lint check-all --format compact 2>&1 | grep -E '^.*Error:'"
 ```text
 Or configure rules in `.claudelintrc.json` to turn off specific warnings.
 
@@ -97,7 +97,7 @@ Run all validators with compact output:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-all --format compact"
+      "command": "claude-code-lint check-all --format compact"
     }
   ]
 }
@@ -112,7 +112,7 @@ Show detailed explanations for any issues:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-all --explain"
+      "command": "claude-code-lint check-all --explain"
     }
   ]
 }
@@ -127,7 +127,7 @@ Treat warnings as errors:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-all --warnings-as-errors"
+      "command": "claude-code-lint check-all --warnings-as-errors"
     }
   ]
 }
@@ -142,7 +142,7 @@ Only validate CLAUDE.md files:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-claude-md"
+      "command": "claude-code-lint check-claude-md"
     }
   ]
 }
@@ -157,12 +157,12 @@ Run validation and formatting:
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint check-all --format compact"
+      "command": "claude-code-lint check-all --format compact"
     },
     {
       "event": "session-start",
       "type": "command",
-      "command": "claudelint format --check"
+      "command": "claude-code-lint format --check"
     }
   ]
 }
@@ -179,13 +179,13 @@ Run validation and formatting:
 
 ### Hook doesn't run
 
-- Check that `claudelint` is installed globally or in your project
+- Check that `claude-code-lint` is installed globally or in your project
 - Verify the command works when run manually
 - Check hook syntax in `.claude/hooks/hooks.json`
 
 ### Hook is too slow
 
-- Use `--fast` mode: `claudelint check-all --fast`
+- Use `--fast` mode: `claude-code-lint check-all --fast`
 - Disable expensive checks in `.claudelintrc.json`
 - Use `.claudelintignore` to skip large directories
 

@@ -4,9 +4,9 @@ Complete guide to formatting and linting Claude-specific files using industry-st
 
 ## Philosophy
 
-claudelint follows the **complementary tools pattern** where each tool does one thing well:
+claude-code-lint follows the **complementary tools pattern** where each tool does one thing well:
 
-- **claudelint** - Claude-specific configuration validation
+- **claude-code-lint** - Claude-specific configuration validation
 - **markdownlint** - Generic markdown structure
 - **prettier** - Code formatting
 - **shellcheck** - Shell script linting
@@ -25,24 +25,24 @@ All configs are **scoped** to Claude files only (`.claude/`, `CLAUDE.md`) to avo
 | Python                | `.claude/skills/**/*.py`             | ruff                | black      | 3    |
 | JavaScript/TypeScript | `.claude/skills/**/*.{js,ts}`        | eslint              | prettier   | 3    |
 
-## Using `claudelint format`
+## Using `claude-code-lint format`
 
-The simplest way to format Claude files is with the built-in `claudelint format` command.
+The simplest way to format Claude files is with the built-in `claude-code-lint format` command.
 
 **Installation:**
 
 ```bash
-npm install --save-dev claudelint
+npm install --save-dev claude-code-lint
 ```
 
 **Usage:**
 
 ```bash
 # Check formatting (no changes)
-claudelint format --check
+claude-code-lint format --check
 
 # Fix formatting issues
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 **What it runs:**
@@ -85,7 +85,7 @@ Create `.markdownlint.json`:
 }
 ```
 
-`claudelint format` will automatically use this config.
+`claude-code-lint format` will automatically use this config.
 
 **Recommended rules for Claude files:**
 
@@ -113,7 +113,7 @@ Create `.prettierrc.json`:
 }
 ```
 
-`claudelint format` will automatically use this config.
+`claude-code-lint format` will automatically use this config.
 
 **Recommended settings for Claude files:**
 
@@ -372,9 +372,9 @@ Add these to your `package.json` for easy access:
 ```json
 {
   "scripts": {
-    "lint:claude": "claudelint check-all",
-    "format:claude": "claudelint format --fix",
-    "format:claude:check": "claudelint format --check"
+    "lint:claude": "claude-code-lint check-all",
+    "format:claude": "claude-code-lint format --fix",
+    "format:claude:check": "claude-code-lint format --check"
   }
 }
 ```
@@ -396,14 +396,14 @@ Here's a complete setup using all Tier 1 tools:
 // package.json
 {
   "scripts": {
-    "lint:claude": "claudelint check-all",
-    "format:claude": "claudelint format --fix",
-    "format:claude:check": "claudelint format --check",
+    "lint:claude": "claude-code-lint check-all",
+    "format:claude": "claude-code-lint format --fix",
+    "format:claude:check": "claude-code-lint format --check",
     "validate:claude": "npm run lint:claude && npm run format:claude:check",
     "validate:all": "npm run lint && npm run validate:claude"
   },
   "devDependencies": {
-    "claudelint": "^0.2.0-beta.0",
+    "claude-code-lint": "^0.2.0-beta.0",
     "markdownlint-cli": "^0.39.0",
     "prettier": "^3.1.0"
   }
@@ -448,16 +448,16 @@ repos:
   # Claude-specific validation and formatting
   - repo: local
     hooks:
-      - id: claudelint
+      - id: claude-code-lint
         name: Validate Claude configuration
-        entry: npx claudelint check-all
+        entry: npx claude-code-lint check-all
         language: node
         pass_filenames: false
         files: '^(CLAUDE\.md|\.claude/)'
 
-      - id: claudelint-format
+      - id: claude-code-lint-format
         name: Format Claude files
-        entry: npx claudelint format --check
+        entry: npx claude-code-lint format --check
         language: node
         pass_filenames: false
         files: '^(CLAUDE\.md|\.claude/)'
@@ -469,19 +469,19 @@ repos:
 
 If you already have markdownlint or prettier configs for your project, you might worry about conflicts with Claude files.
 
-### Solution: Use claudelint format
+### Solution: Use claude-code-lint format
 
-The `claudelint format` command automatically scopes to Claude files only:
+The `claude-code-lint format` command automatically scopes to Claude files only:
 
 ```bash
 # Format your project files (uses your configs)
 npm run format
 
 # Format Claude files (uses .markdownlint.json and .prettierrc.json)
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
-**Result:** Zero conflicts! The `claudelint format` command only touches:
+**Result:** Zero conflicts! The `claude-code-lint format` command only touches:
 
 - `CLAUDE.md`
 - `.claude/**/*.md`
@@ -504,18 +504,18 @@ Exclude Claude files from your project-wide linting:
 }
 ```
 
-Then use `claudelint format` for Claude files.
+Then use `claude-code-lint format` for Claude files.
 
 ### "Prettier formats differently in .claude/"
 
-Make sure you're using `claudelint format` for Claude files, not your project's prettier command:
+Make sure you're using `claude-code-lint format` for Claude files, not your project's prettier command:
 
 ```bash
 # Wrong: Uses project prettier config on Claude files
 prettier --write '**/*.md'
 
 # Right: Uses .prettierrc.json for Claude files only
-claudelint format --fix
+claude-code-lint format --fix
 ```
 
 ### "ShellCheck isn't finding my scripts"

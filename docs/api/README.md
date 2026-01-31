@@ -15,7 +15,7 @@ All APIs follow established patterns from ESLint and Prettier, ensuring familiar
 ## Installation
 
 ```bash
-npm install claudelint
+npm install claude-code-lint
 ```
 
 ## Quick Start
@@ -25,7 +25,7 @@ npm install claudelint
 The `ClaudeLint` class provides the most control and is ideal for complex workflows:
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // Create linter instance
 const linter = new ClaudeLint({
@@ -50,7 +50,7 @@ await ClaudeLint.outputFixes(results);
 For simpler use cases, use the stateless functional API:
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 // Lint files
 const results = await lint(['**/*.md'], { fix: true });
@@ -65,7 +65,7 @@ console.log(output);
 Lint text without requiring files on disk:
 
 ```typescript
-import { lintText } from 'claudelint';
+import { lintText } from 'claude-code-lint';
 
 const code = '# CLAUDE.md\n\nMy instructions';
 const results = await lintText(code, { filePath: 'CLAUDE.md' });
@@ -75,7 +75,7 @@ const results = await lintText(code, { filePath: 'CLAUDE.md' });
 
 ### Core APIs
 
-- **[ClaudeLint Class](./claudelint-class.md)** - Full class-based API reference
+- **[ClaudeLint Class](./claude-code-lint-class.md)** - Full class-based API reference
 - **[Functional API](./functional-api.md)** - Stateless function reference
 - **[Formatters](./formatters.md)** - Built-in and custom formatter guide
 - **[Types](./types.md)** - TypeScript type definitions
@@ -89,7 +89,7 @@ const results = await lintText(code, { filePath: 'CLAUDE.md' });
 ### Build Tool Integration
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 async function validateClaudeFiles() {
   const results = await lint(['**/*.md']);
@@ -106,7 +106,7 @@ async function validateClaudeFiles() {
 ### Editor Extension
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint();
 
@@ -127,7 +127,7 @@ async function lintDocument(document) {
 ### CI/CD Pipeline
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 const linter = new ClaudeLint({
   cwd: process.cwd(),
@@ -186,7 +186,7 @@ Complete examples are available in the [examples directory](../../examples/):
 
 ## Next Steps
 
-- Read the [ClaudeLint Class reference](./claudelint-class.md) for detailed API documentation
+- Read the [ClaudeLint Class reference](./claude-code-lint-class.md) for detailed API documentation
 - Explore the [Functional API](./functional-api.md) for simpler use cases
 - Review [TypeScript types](./types.md) for type-safe integration
 - Check out [example integrations](../../examples/) for common patterns

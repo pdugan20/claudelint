@@ -1,6 +1,6 @@
 # Deployment Guide
 
-Comprehensive guide for deploying claudelint VitePress documentation.
+Comprehensive guide for deploying claude-code-lint VitePress documentation.
 
 ## Deployment Options Comparison
 
@@ -93,7 +93,7 @@ Update `docs/.vitepress/config.ts`:
 
 ```typescript
 export default defineConfig({
-  base: '/claudelint/', // For project pages (user.github.io/claudelint/)
+  base: '/claude-code-lint/', // For project pages (user.github.io/claude-code-lint/)
   // OR
   base: '/', // For custom domain or user pages
 })
@@ -109,8 +109,8 @@ git push origin main
 
 Site will be live at:
 
-- Project pages: `https://pdugan20.github.io/claudelint/`
-- Custom domain: `https://docs.claudelint.dev` (see below)
+- Project pages: `https://pdugan20.github.io/claude-code-lint/`
+- Custom domain: `https://docs.claude-code-lint.dev` (see below)
 
 ### Custom Domain Setup
 
@@ -119,14 +119,14 @@ Site will be live at:
 Create `docs/public/CNAME`:
 
 ```text
-docs.claudelint.dev
+docs.claude-code-lint.dev
 ```
 
 **Step 2: Configure DNS**
 
 Add these DNS records at your domain provider:
 
-For subdomain (docs.claudelint.dev):
+For subdomain (docs.claude-code-lint.dev):
 
 ```text
 Type: CNAME
@@ -135,7 +135,7 @@ Value: pdugan20.github.io
 TTL: 3600
 ```
 
-For apex domain (claudelint.dev):
+For apex domain (claude-code-lint.dev):
 
 ```text
 Type: A
@@ -167,7 +167,7 @@ Value: 185.199.111.153
 export default defineConfig({
   base: '/',
   sitemap: {
-    hostname: 'https://docs.claudelint.dev'
+    hostname: 'https://docs.claude-code-lint.dev'
   }
 })
 ```
@@ -207,7 +207,7 @@ Click "Deploy" - site will be live in ~1 minute.
 ### Custom Domain
 
 1. Go to Project Settings → Domains
-2. Add domain: `docs.claudelint.dev`
+2. Add domain: `docs.claude-code-lint.dev`
 3. Follow DNS configuration instructions
 4. Vercel provides automatic HTTPS
 
@@ -408,7 +408,7 @@ All platforms automatically compress with Brotli/Gzip.
 **Verify compression**:
 
 ```bash
-curl -H "Accept-Encoding: br,gzip" -I https://docs.claudelint.dev
+curl -H "Accept-Encoding: br,gzip" -I https://docs.claude-code-lint.dev
 # Look for: Content-Encoding: br
 ```
 
@@ -475,7 +475,7 @@ export default defineConfig({
   head: [
     ['script', {
       defer: true,
-      'data-domain': 'docs.claudelint.dev',
+      'data-domain': 'docs.claude-code-lint.dev',
       src: 'https://plausible.io/js/script.js'
     }]
   ]
@@ -493,7 +493,7 @@ export default defineConfig({
 **Setup**:
 
 1. Create account
-2. Add monitor: `https://docs.claudelint.dev`
+2. Add monitor: `https://docs.claude-code-lint.dev`
 3. Set check interval: 5 minutes
 4. Configure alerts (email, Slack)
 
@@ -663,7 +663,7 @@ All platforms provide automatic HTTPS. Enforce it:
 
 **Solution**: Check base URL in config.ts matches deployment:
 
-- GitHub Pages (project): `base: '/claudelint/'`
+- GitHub Pages (project): `base: '/claude-code-lint/'`
 - Custom domain: `base: '/'`
 
 ### Broken Links

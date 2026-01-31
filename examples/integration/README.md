@@ -1,12 +1,12 @@
 # Integration Examples
 
-This directory contains example configurations for using claudelint with complementary tools across all 3 tiers.
+This directory contains example configurations for using claude-code-lint with complementary tools across all 3 tiers.
 
 ## Philosophy
 
-claudelint follows the **separation of concerns** pattern used by successful linter ecosystems:
+claude-code-lint follows the **separation of concerns** pattern used by successful linter ecosystems:
 
-- **claudelint** - Claude-specific configuration validation
+- **claude-code-lint** - Claude-specific configuration validation
 - **markdownlint** - Generic markdown structure
 - **prettier** - Code formatting and whitespace
 - **shellcheck** - Shell script bug detection
@@ -45,10 +45,10 @@ Each tool does one thing well, and they work together without conflicts.
 
 ```bash
 # Install all tools
-npm install --save-dev claudelint markdownlint-cli prettier
+npm install --save-dev claude-code-lint markdownlint-cli prettier
 
 # Or globally
-npm install -g claudelint markdownlint-cli prettier
+npm install -g claude-code-lint markdownlint-cli prettier
 ```
 
 ### Copy Configuration Files
@@ -69,7 +69,7 @@ Add the validation scripts to your `package.json`:
   "scripts": {
     "lint:md": "markdownlint '**/*.md' --ignore node_modules",
     "format:check": "prettier --check '**/*.{md,json,yaml}'",
-    "validate:claude": "claudelint check-all",
+    "validate:claude": "claude-code-lint check-all",
     "validate:all": "npm run lint:md && npm run format:check && npm run validate:claude"
   }
 }
@@ -87,7 +87,7 @@ This runs:
 
 1. markdownlint - Checks generic markdown rules (H1 headings, blank lines, etc.)
 2. prettier - Checks formatting and whitespace
-3. claudelint - Validates Claude-specific configuration
+3. claude-code-lint - Validates Claude-specific configuration
 
 ### Fix Issues
 
@@ -98,7 +98,7 @@ npm run lint:md:fix
 # Fix code formatting
 npm run format
 
-# claudelint doesn't auto-fix (linter-only)
+# claude-code-lint doesn't auto-fix (linter-only)
 # Follow error messages to fix manually
 ```
 
@@ -161,7 +161,7 @@ validate:
 - Quote style
 - Markdown prose wrapping
 
-### claudelint
+### claude-code-lint
 
 - CLAUDE.md file size limits (Claude context constraints)
 - `@import` syntax and file existence

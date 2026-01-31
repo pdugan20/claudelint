@@ -153,7 +153,7 @@ To add a required name field:
 6. **Run validation**:
 
    ```bash
-   claudelint check-plugin
+   claude-code-lint check-plugin
    ```
 
 ## Options

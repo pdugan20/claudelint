@@ -53,7 +53,7 @@ Pick a rule → Read implementation guide → Write code → Test → Update tra
 **Duration**: 2-3 days
 **Priority**: CRITICAL - Must complete before any rule implementation
 
-Refactor claudelint to match industry standards (ESLint/Prettier model):
+Refactor claude-code-lint to match industry standards (ESLint/Prettier model):
 
 - Move shellcheck, markdownlint, pylint to main linting command
 - Keep only Prettier in format command
@@ -278,7 +278,7 @@ A: Yes! Some new rules should replace/enhance existing ones (e.g., E6 replaces l
 
 ## Related Projects
 
-- Main project: [claude-lint](https://github.com/pdugan20/claudelint)
+- Main project: [claude-lint](https://github.com/pdugan20/claude-code-lint)
 - Rules reference: [../RULES-REFERENCE.md](../RULES-REFERENCE.md)
 - Anthropic skills: [github.com/anthropics/skills](https://github.com/anthropics/skills)
 

@@ -1,7 +1,7 @@
 /**
  * Rule Registry
  *
- * Central registry for all validation rules in claudelint.
+ * Central registry for all validation rules in claude-code-lint.
  * Stores full Rule objects (metadata + validate function) for execution.
  * Provides category-based discovery for validator auto-execution.
  */

@@ -1,7 +1,7 @@
 /**
  * Interactive Init Wizard
  *
- * Guides users through setting up claudelint configuration.
+ * Guides users through setting up claude-code-lint configuration.
  */
 
 import inquirer from 'inquirer';
@@ -53,7 +53,7 @@ export class InitWizard {
    * Run the init wizard
    */
   async run(options: { yes?: boolean } = {}): Promise<void> {
-    logger.section('Welcome to claudelint configuration wizard!');
+    logger.section('Welcome to claude-code-lint configuration wizard!');
 
     // Detect project structure
     const projectInfo = this.detectProject();
@@ -123,8 +123,8 @@ export class InitWizard {
     return {
       hasShellCheck: isShellCheckAvailable(),
       shellCheckVersion: getShellCheckVersion(),
-      hasPrettier: true, // Bundled with claudelint
-      hasMarkdownlint: true, // Bundled with claudelint
+      hasPrettier: true, // Bundled with claude-code-lint
+      hasMarkdownlint: true, // Bundled with claude-code-lint
     };
   }
 
@@ -331,8 +331,8 @@ export class InitWizard {
 
       // Add scripts if they don't exist
       const scriptsToAdd: Record<string, string> = {
-        'lint:claude': 'claudelint check-all',
-        'lint:claude:fix': 'claudelint format --fix',
+        'lint:claude': 'claude-code-lint check-all',
+        'lint:claude:fix': 'claude-code-lint format --fix',
       };
 
       let added = false;
@@ -361,10 +361,10 @@ export class InitWizard {
     logger.log(chalk.bold('Next steps:'));
     logger.newline();
     logger.detail('1. Review .claudelintrc.json and customize rules');
-    logger.detail('2. Run validation: claudelint check-all');
-    logger.detail('3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.detail('2. Run validation: claude-code-lint check-all');
+    logger.detail('3. See docs: https://github.com/pdugan20/claude-code-lint#readme');
     logger.newline();
-    logger.info('Tip: Use "claudelint list-rules" to see all available rules');
+    logger.info('Tip: Use "claude-code-lint list-rules" to see all available rules');
     logger.newline();
   }
 }

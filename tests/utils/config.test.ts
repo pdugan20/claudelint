@@ -34,7 +34,7 @@ describe('Configuration utilities', () => {
       expect(found).toBeNull();
     });
 
-    it('should find claudelint config in package.json', async () => {
+    it('should find claude-code-lint config in package.json', async () => {
       const testDir = getTestDir();
       const pkgPath = join(testDir, 'package.json');
       await writeFile(

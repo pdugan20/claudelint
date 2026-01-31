@@ -1,10 +1,10 @@
 # VitePress Documentation Project
 
-Create a modern, fast documentation website for claudelint using VitePress.
+Create a modern, fast documentation website for claude-code-lint using VitePress.
 
 ## Project Overview
 
-**Goal**: Build and deploy a professional documentation website at docs.claudelint.dev
+**Goal**: Build and deploy a professional documentation website at docs.claude-code-lint.dev
 **Framework**: VitePress (Vue-powered static site generator)
 **Timeline**: 2-3 weeks
 **Hosting**: GitHub Pages / Vercel / Cloudflare Pages
@@ -102,7 +102,7 @@ Deployment configuration and CI/CD:
 ## Site Structure
 
 ```text
-docs.claudelint.dev/
+docs.claude-code-lint.dev/
 ├── /                          # Homepage
 ├── /guide/
 │   ├── /getting-started       # Quick start guide
@@ -207,10 +207,10 @@ See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task l
 - **Why VitePress over Docusaurus?** Faster, simpler, better for TypeScript projects
 - **Can we use React components?** No, VitePress is Vue-based. Use Vue components.
 - **What about versioning?** Start with single version, add versioning in Phase 6
-- **Custom domain?** Yes, docs.claudelint.dev (configure in Phase 5)
+- **Custom domain?** Yes, docs.claude-code-lint.dev (configure in Phase 5)
 
 ## Related Documents
 
 - [Launch Plan](../../launch.md) - Overall project launch strategy
-- [Architecture](../../architecture.md) - claudelint system architecture
+- [Architecture](../../architecture.md) - claude-code-lint system architecture
 - [Contributing](../../../CONTRIBUTING.md) - Contribution guidelines

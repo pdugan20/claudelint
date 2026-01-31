@@ -8,7 +8,7 @@
  * - Checking for errors and warnings
  */
 
-const { ClaudeLint } = require('claudelint');
+const { ClaudeLint } = require('claude-code-lint');
 
 async function main() {
   console.log('ClaudeLint Basic Usage Example\n');

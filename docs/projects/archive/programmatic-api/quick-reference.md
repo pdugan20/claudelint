@@ -30,13 +30,13 @@
 ### Class-Based API
 
 ```typescript
-import { ClaudeLint } from 'claudelint';
+import { ClaudeLint } from 'claude-code-lint';
 
 // Create instance
 const linter = new ClaudeLint({
   fix: true,
   cache: true,
-  cacheLocation: '.claudelint-cache',
+  cacheLocation: '.claude-code-lint-cache',
   onProgress: (file, idx, total) => { }
 });
 
@@ -59,7 +59,7 @@ ClaudeLint.getVersion()
 ### Functional API
 
 ```typescript
-import { lint, lintText, resolveConfig, formatResults } from 'claudelint';
+import { lint, lintText, resolveConfig, formatResults } from 'claude-code-lint';
 
 await lint(['**/*.md'], { fix: true })
 await lintText(code, { filePath: 'test.md' })
@@ -99,7 +99,7 @@ interface LintMessage {
 - **Tasks:** 12
 - **Focus:** Core class structure, type definitions, basic lintFiles()
 - **Key Deliverables:**
-  - `src/api/claudelint.ts`
+  - `src/api/claude-code-lint.ts`
   - `src/api/types.ts`
   - `src/api/result-builder.ts`
 
@@ -273,7 +273,7 @@ npm test -- tests/performance/
 ```
 src/
 ├── api/
-│   ├── claudelint.ts       # Main ClaudeLint class
+│   ├── claude-code-lint.ts       # Main ClaudeLint class
 │   ├── types.ts            # Type definitions
 │   ├── functions.ts        # Functional API
 │   ├── formatter.ts        # Formatter interface

@@ -84,7 +84,7 @@ To resolve circular symlink errors:
 6. **Run validation**:
 
    ```bash
-   claudelint check-claude-md
+   claude-code-lint check-claude-md
    ```
 
 Tip: Prefer relative imports over symlinks when possible for clearer file relationships.

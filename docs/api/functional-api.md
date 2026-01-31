@@ -20,7 +20,7 @@ The functional API provides lightweight wrappers around the ClaudeLint class for
 - Custom progress tracking
 - Advanced configuration with overrides
 
-For complex workflows, use the [ClaudeLint class](./claudelint-class.md) instead.
+For complex workflows, use the [ClaudeLint class](./claude-code-lint-class.md) instead.
 
 ## Functions
 
@@ -42,7 +42,7 @@ function lint(patterns: string[], options?: LintOptions): Promise<LintResult[]>
 **Example:**
 
 ```typescript
-import { lint } from 'claudelint';
+import { lint } from 'claude-code-lint';
 
 // Basic usage
 const results = await lint(['**/*.md']);
@@ -86,7 +86,7 @@ function lintText(code: string, options?: LintTextOptions): Promise<LintResult[]
 **Example:**
 
 ```typescript
-import { lintText } from 'claudelint';
+import { lintText } from 'claude-code-lint';
 
 const code = `
 # CLAUDE.md
@@ -139,7 +139,7 @@ function resolveConfig(filePath: string, options?: ConfigOptions): Promise<Claud
 **Example:**
 
 ```typescript
-import { resolveConfig } from 'claudelint';
+import { resolveConfig } from 'claude-code-lint';
 
 // Get config for specific file
 const config = await resolveConfig('skills/test/SKILL.md');
@@ -185,7 +185,7 @@ function formatResults(
 **Example:**
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
 
@@ -234,7 +234,7 @@ function getFileInfo(filePath: string, options?: FileInfoOptions): Promise<FileI
 **Example:**
 
 ```typescript
-import { getFileInfo } from 'claudelint';
+import { getFileInfo } from 'claude-code-lint';
 
 const info = await getFileInfo('CLAUDE.md');
 
@@ -270,7 +270,7 @@ interface FileInfoOptions {
 Simple build validation:
 
 ```typescript
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 async function validateProject() {
   console.log('Validating Claude Code files...');
@@ -296,7 +296,7 @@ Validate staged files:
 
 ```typescript
 import { execSync } from 'child_process';
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 async function validateStaged() {
   // Get staged .md files
@@ -333,7 +333,7 @@ Validate and generate reports:
 
 ```typescript
 import { writeFile } from 'fs/promises';
-import { lint, formatResults } from 'claudelint';
+import { lint, formatResults } from 'claude-code-lint';
 
 async function ciValidation() {
   const results = await lint(['**/*.md']);
@@ -363,7 +363,7 @@ ciValidation();
 Validate dynamic content:
 
 ```typescript
-import { lintText } from 'claudelint';
+import { lintText } from 'claude-code-lint';
 
 async function validateGeneratedContent(content: string) {
   const results = await lintText(content, {
@@ -393,7 +393,7 @@ const isValid = await validateGeneratedContent(aiContent);
 Check effective configuration:
 
 ```typescript
-import { resolveConfig, getFileInfo } from 'claudelint';
+import { resolveConfig, getFileInfo } from 'claude-code-lint';
 
 async function inspectFile(filePath: string) {
   const [config, info] = await Promise.all([
@@ -469,7 +469,7 @@ await ClaudeLint.outputFixes(results);
 All functions are fully typed:
 
 ```typescript
-import { lint, formatResults, LintResult } from 'claudelint';
+import { lint, formatResults, LintResult } from 'claude-code-lint';
 
 async function example() {
   // Type inference
@@ -488,7 +488,7 @@ async function example() {
 
 ## See Also
 
-- [ClaudeLint Class](./claudelint-class.md) - Full class API
+- [ClaudeLint Class](./claude-code-lint-class.md) - Full class API
 - [Types](./types.md) - TypeScript type reference
 - [Formatters](./formatters.md) - Formatter documentation
 - [Examples](../../examples/) - Complete examples

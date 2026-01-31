@@ -1,16 +1,16 @@
 # Configuration
 
-claudelint supports configuration through multiple methods, allowing you to customize linting rules and behavior for your project.
+claude-code-lint supports configuration through multiple methods, allowing you to customize linting rules and behavior for your project.
 
 ## Configuration Files
 
-claudelint will automatically search for configuration files in the following order:
+claude-code-lint will automatically search for configuration files in the following order:
 
 1. `.claudelintrc.json` - JSON configuration file
 2. `.claudelintrc.yaml` - YAML configuration file (not yet supported)
 3. `.claudelintrc.yml` - YAML configuration file (not yet supported)
-4. `claudelint.config.js` - JavaScript configuration file (not yet supported)
-5. `package.json` - Configuration in the `claudelint` field
+4. `claude-code-lint.config.js` - JavaScript configuration file (not yet supported)
+5. `package.json` - Configuration in the `claude-code-lint` field
 
 The search starts in the current directory and walks up the directory tree until a configuration file is found or the root is reached.
 
@@ -152,7 +152,7 @@ Report when inline disable comments don't suppress any violations:
 }
 ```
 
-When enabled, claudelint warns about:
+When enabled, claude-code-lint warns about:
 
 - Disable directives that don't match any violations
 - Directives for rules that don't trigger in that location
@@ -161,7 +161,7 @@ When enabled, claudelint warns about:
 **Example:**
 
 ```markdown
-<!-- claudelint-disable-next-line size-error -->
+<!-- claude-code-lint-disable-next-line size-error -->
 
 Normal line with no violation - will warn about unused disable
 ```
@@ -180,27 +180,27 @@ Disable specific rules inline using HTML comments:
 
 ```markdown
 <!-- Disable for entire file -->
-<!-- claudelint-disable-file import-missing -->
+<!-- claude-code-lint-disable-file import-missing -->
 
 <!-- Disable for next line -->
-<!-- claudelint-disable-next-line import-missing -->
+<!-- claude-code-lint-disable-next-line import-missing -->
 
 @import non-existent-file.md
 
 <!-- Disable all rules for a block -->
-<!-- claudelint-disable -->
+<!-- claude-code-lint-disable -->
 
 Content here is not validated
 
-<!-- claudelint-enable -->
+<!-- claude-code-lint-enable -->
 ```
 
 **Supported directives:**
 
-- `claudelint-disable-file [rule-id]` - Disable entire file
-- `claudelint-disable-next-line [rule-id]` - Disable next line
-- `claudelint-disable-line [rule-id]` - Disable current line
-- `claudelint-disable [rule-id]` / `claudelint-enable [rule-id]` - Disable range
+- `claude-code-lint-disable-file [rule-id]` - Disable entire file
+- `claude-code-lint-disable-next-line [rule-id]` - Disable next line
+- `claude-code-lint-disable-line [rule-id]` - Disable current line
+- `claude-code-lint-disable [rule-id]` / `claude-code-lint-enable [rule-id]` - Disable range
 
 **Rule ID is optional** - omit to disable all rules.
 
@@ -222,21 +222,21 @@ The CLI `--max-warnings` option overrides this config value:
 
 ```bash
 # Override config maxWarnings with CLI option
-claudelint check-all --max-warnings 5
+claude-code-lint check-all --max-warnings 5
 
 # Allow unlimited warnings (ignores config)
-claudelint check-all --max-warnings 0
+claude-code-lint check-all --max-warnings 0
 ```
 
 ## package.json Configuration
 
-You can also configure claudelint in your `package.json`:
+You can also configure claude-code-lint in your `package.json`:
 
 ```json
 {
   "name": "my-project",
   "version": "1.0.0",
-  "claudelint": {
+  "claude-code-lint": {
     "rules": {
       "size-warning": "off"
     }
@@ -285,34 +285,34 @@ Configuration can be overridden with CLI options:
 
 ```bash
 # Specify config file
-claudelint check-all --config .claudelintrc.custom.json
+claude-code-lint check-all --config .claudelintrc.custom.json
 
 # Override output options
-claudelint check-all --verbose --format json
+claude-code-lint check-all --verbose --format json
 
 # Color control
-claudelint check-all --color
-claudelint check-all --no-color
+claude-code-lint check-all --color
+claude-code-lint check-all --no-color
 
 # Explain violations
-claudelint check-all --explain
+claude-code-lint check-all --explain
 
 # Treat warnings as errors
-claudelint check-all --warnings-as-errors
+claude-code-lint check-all --warnings-as-errors
 
 # Strict mode (fail on any issue)
-claudelint check-all --strict
+claude-code-lint check-all --strict
 
 # Max warnings threshold
-claudelint check-all --max-warnings 10
+claude-code-lint check-all --max-warnings 10
 
 # Debug configuration loading
-claudelint check-all --debug-config
+claude-code-lint check-all --debug-config
 ```
 
 ## Debugging Commands
 
-claudelint provides several commands to help debug configuration issues:
+claude-code-lint provides several commands to help debug configuration issues:
 
 ### print-config
 
@@ -320,13 +320,13 @@ Print the resolved configuration:
 
 ```bash
 # Print as JSON
-claudelint print-config
+claude-code-lint print-config
 
 # Print as human-readable table
-claudelint print-config --format table
+claude-code-lint print-config --format table
 
 # Print specific config file
-claudelint print-config --config /path/to/.claudelintrc.json
+claude-code-lint print-config --config /path/to/.claudelintrc.json
 ```
 
 ### validate-config
@@ -335,10 +335,10 @@ Validate configuration file for errors:
 
 ```bash
 # Validate config in current directory
-claudelint validate-config
+claude-code-lint validate-config
 
 # Validate specific config file
-claudelint validate-config --config /path/to/.claudelintrc.json
+claude-code-lint validate-config --config /path/to/.claudelintrc.json
 ```
 
 Checks for:
@@ -354,10 +354,10 @@ Show effective configuration for a specific file:
 
 ```bash
 # Show config for a file
-claudelint resolve-config CLAUDE.md
+claude-code-lint resolve-config CLAUDE.md
 
 # Show as table
-claudelint resolve-config .claude/skills/test/SKILL.md --format table
+claude-code-lint resolve-config .claude/skills/test/SKILL.md --format table
 ```
 
 Useful for debugging file-specific overrides.
@@ -399,7 +399,7 @@ Complete example `.claudelintrc.json`:
 
 ## Hierarchical Configuration
 
-claudelint searches for configuration files starting from the current directory and walking up the directory tree. This allows for:
+claude-code-lint searches for configuration files starting from the current directory and walking up the directory tree. This allows for:
 
 - Project-level configuration in the project root
 - Repository-level configuration in monorepo roots

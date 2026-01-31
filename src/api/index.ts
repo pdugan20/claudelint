@@ -1,7 +1,7 @@
 /**
- * claudelint programmatic API
+ * claude-code-lint programmatic API
  *
- * This module provides the main programmatic API for claudelint, including
+ * This module provides the main programmatic API for claude-code-lint, including
  * the ClaudeLint class, functional utilities, and all type definitions.
  *
  * @module api
@@ -9,7 +9,7 @@
  * @example
  * ```typescript
  * // Class-based API
- * import { ClaudeLint } from 'claudelint';
+ * import { ClaudeLint } from 'claude-code-lint';
  *
  * const linter = new ClaudeLint({ fix: true });
  * const results = await linter.lintFiles(['**\/*.md']);
@@ -18,7 +18,7 @@
  * @example
  * ```typescript
  * // Functional API
- * import { lint, formatResults } from 'claudelint';
+ * import { lint, formatResults } from 'claude-code-lint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * const output = await formatResults(results, 'stylish');
@@ -55,7 +55,7 @@ export { loadFormatter, isBuiltinFormatter, BaseFormatter, BUILTIN_FORMATTERS } 
 export type { BuiltinFormatterName } from './formatter';
 
 // Main ClaudeLint class
-export { ClaudeLint } from './claudelint';
+export { ClaudeLint } from './claude-code-lint';
 
 // Functional API
 export { lint, lintText, resolveConfig, formatResults, getFileInfo } from './functions';
