@@ -97,7 +97,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g @pdugan20/claudelint
+      - run: npm install -g claudelint
       - run: claudelint check-all --strict
 ```
 

@@ -185,7 +185,7 @@ Verify TypeScript type definitions and inference.
 ```typescript
 // tests/types/api.test-d.ts
 import { expectType, expectError } from 'tsd';
-import { ClaudeLint, LintResult, LintMessage } from '@pdugan20/claudelint';
+import { ClaudeLint, LintResult, LintMessage } from 'claudelint';
 
 // Constructor types
 expectType<ClaudeLint>(new ClaudeLint());

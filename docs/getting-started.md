@@ -7,12 +7,12 @@ This guide will help you set up claudelint in your Claude Code project.
 ### Global Installation
 
 ````bash
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 ```text
 ### Project Installation
 
 ```bash
-npm install --save-dev @pdugan20/claudelint
+npm install --save-dev claudelint
 ```text
 ### As Claude Code Plugin
 
@@ -147,7 +147,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g @pdugan20/claudelint
+      - run: npm install -g claudelint
       - run: claudelint check-all
 ```text
 ### Pre-commit Hook

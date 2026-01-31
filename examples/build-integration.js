@@ -9,7 +9,7 @@
  * - Multiple output formats for different consumers
  */
 
-const { ClaudeLint } = require('@pdugan20/claudelint');
+const { ClaudeLint } = require('claudelint');
 const { writeFileSync } = require('fs');
 const { join } = require('path');
 

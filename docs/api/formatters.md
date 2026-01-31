@@ -15,7 +15,7 @@ Human-readable output with colors and formatting. Best for terminal display.
 **Usage:**
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -164,7 +164,7 @@ await writeFile('lint-report.xml', output);
 ### Class API
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -181,7 +181,7 @@ const customOutput = custom.format(results);
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md']);
 
@@ -302,7 +302,7 @@ Use TypeScript for type safety:
 
 ```typescript
 // formatters/markdown.ts
-import { Formatter, LintResult } from '@pdugan20/claudelint';
+import { Formatter, LintResult } from 'claudelint';
 
 const markdownFormatter: Formatter = {
   format(results: LintResult[]): string {
@@ -545,7 +545,7 @@ module.exports = {
 Generate multiple report formats:
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import { writeFile } from 'fs/promises';
 
 const linter = new ClaudeLint();
@@ -573,7 +573,7 @@ await writeFile('lint-report.html', html.format(results));
 Use different formatters based on environment:
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md']);
 

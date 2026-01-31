@@ -1,5 +1,5 @@
 {
-  "name": "@pdugan20/claudelint",
+  "name": "claudelint",
   "version": "0.2.0-beta.0",
   "description": "Comprehensive linter and programmatic API for Claude Code projects - validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more",
   "main": "dist/index.js",

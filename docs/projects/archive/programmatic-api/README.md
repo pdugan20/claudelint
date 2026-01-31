@@ -85,11 +85,11 @@ Following ESLint/Prettier patterns, only stable public APIs are exported.
 
 ```typescript
 // Main programmatic API
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // Type definitions and utilities
-import { loadFormatter, findConfigFile } from '@pdugan20/claudelint';
-import type { LintResult, LintMessage } from '@pdugan20/claudelint';
+import { loadFormatter, findConfigFile } from 'claudelint';
+import type { LintResult, LintMessage } from 'claudelint';
 ```
 
 Internal validators are NOT exported - use the ClaudeLint class instead.
@@ -165,7 +165,7 @@ See [TASK_TRACKER.md](./TASK_TRACKER.md) for detailed task status.
 ### Class-Based API
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   fix: true,
@@ -183,7 +183,7 @@ console.log(formatter.format(results));
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md'], { fix: true });
 const output = await formatResults(results, 'json');

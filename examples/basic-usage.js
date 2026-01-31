@@ -8,7 +8,7 @@
  * - Checking for errors and warnings
  */
 
-const { ClaudeLint } = require('@pdugan20/claudelint');
+const { ClaudeLint } = require('claudelint');
 
 async function main() {
   console.log('ClaudeLint Basic Usage Example\n');

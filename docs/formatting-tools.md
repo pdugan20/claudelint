@@ -32,7 +32,7 @@ The simplest way to format Claude files is with the built-in `claudelint format`
 **Installation:**
 
 ```bash
-npm install --save-dev @pdugan20/claudelint
+npm install --save-dev claudelint
 ```
 
 **Usage:**
@@ -403,7 +403,7 @@ Here's a complete setup using all Tier 1 tools:
     "validate:all": "npm run lint && npm run validate:claude"
   },
   "devDependencies": {
-    "@pdugan20/claudelint": "^0.2.0-beta.0",
+    "claudelint": "^0.2.0-beta.0",
     "markdownlint-cli": "^0.39.0",
     "prettier": "^3.1.0"
   }

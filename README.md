@@ -1,7 +1,7 @@
 # claudelint
 
 [![CI Status](https://github.com/pdugan20/claudelint/workflows/CI/badge.svg)](https://github.com/pdugan20/claudelint/actions)
-[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/@pdugan20/claudelint)
+[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/claudelint)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A comprehensive linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
@@ -21,15 +21,15 @@ This is a beta release (v0.2.0-beta.0). The package is fully functional but bein
 
 ```bash
 # Install the beta version
-npm install -g @pdugan20/claudelint@beta
+npm install -g claudelint@beta
 
 # Or for project use
-npm install --save-dev @pdugan20/claudelint@beta
+npm install --save-dev claudelint@beta
 ```
 
 **Known Limitations:**
 
-- Package name will change from `@pdugan20/claudelint` to `claudelint` in stable release
+- Package name will change from `claudelint` to `claudelint` in stable release
 - Some documentation still references the old package name
 - Migration guide will be provided when stable releases
 
@@ -37,7 +37,7 @@ npm install --save-dev @pdugan20/claudelint@beta
 
 ```bash
 # Install globally
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 
 # Initialize configuration (interactive)
 claudelint init
@@ -60,7 +60,7 @@ claudelint check-all
 Use ClaudeLint programmatically in your Node.js applications, build tools, or editor extensions:
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['**/*.md']);
@@ -76,7 +76,7 @@ if (hasErrors) {
 **Or use the functional API for simpler tasks:**
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md'], { fix: true });
 const output = await formatResults(results, 'stylish');
@@ -207,7 +207,7 @@ For complete validation, use claudelint with complementary tools:
 
 ```bash
 # Install all tools
-npm install --save-dev @pdugan20/claudelint markdownlint-cli prettier
+npm install --save-dev claudelint markdownlint-cli prettier
 
 # Run validation
 markdownlint '**/*.md'              # Generic markdown rules
@@ -339,10 +339,10 @@ See [examples/integration/](examples/integration/) for complete working examples
 
 ```bash
 # Global installation
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 
 # Project installation
-npm install --save-dev @pdugan20/claudelint
+npm install --save-dev claudelint
 ```text
 After installation, run the init wizard to set up your project:
 
@@ -541,13 +541,13 @@ Recommended setup with complementary tools:
 
 ```bash
 # Global install
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 
 # Or use npx
 npx claudelint check-all
 
 # Or project install
-npm install --save-dev @pdugan20/claudelint
+npm install --save-dev claudelint
 ./node_modules/.bin/claudelint check-all
 ```text
 **Problem**: Permission denied when installing globally
@@ -556,13 +556,13 @@ npm install --save-dev @pdugan20/claudelint
 
 ```bash
 # Use sudo (macOS/Linux)
-sudo npm install -g @pdugan20/claudelint
+sudo npm install -g claudelint
 
 # Or configure npm to install without sudo
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 export PATH=~/.npm-global/bin:$PATH
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 ```text
 ### Exit Code Changes (v1.0 Breaking Change)
 

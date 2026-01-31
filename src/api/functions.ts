@@ -23,7 +23,7 @@ import type { Formatter } from './types';
  *
  * @example
  * ```typescript
- * import { lint } from '@pdugan20/claudelint';
+ * import { lint } from 'claudelint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * console.log(`Found ${results.length} files`);
@@ -43,7 +43,7 @@ export async function lint(patterns: string[], options?: LintOptions): Promise<L
  *
  * @example
  * ```typescript
- * import { lintText } from '@pdugan20/claudelint';
+ * import { lintText } from 'claudelint';
  *
  * const code = '# CLAUDE.md\\n\\nSome content';
  * const results = await lintText(code, { filePath: 'CLAUDE.md' });
@@ -63,7 +63,7 @@ export async function lintText(code: string, options?: LintTextOptions): Promise
  *
  * @example
  * ```typescript
- * import { resolveConfig } from '@pdugan20/claudelint';
+ * import { resolveConfig } from 'claudelint';
  *
  * const config = await resolveConfig('skills/test/SKILL.md');
  * console.log(config.rules);
@@ -87,7 +87,7 @@ export async function resolveConfig(
  *
  * @example
  * ```typescript
- * import { lint, formatResults } from '@pdugan20/claudelint';
+ * import { lint, formatResults } from 'claudelint';
  *
  * const results = await lint(['**\/*.md']);
  * const output = await formatResults(results, 'stylish');
@@ -113,7 +113,7 @@ export async function formatResults(
  *
  * @example
  * ```typescript
- * import { getFileInfo } from '@pdugan20/claudelint';
+ * import { getFileInfo } from 'claudelint';
  *
  * const info = await getFileInfo('test.md');
  * console.log(`Ignored: ${info.ignored}`);

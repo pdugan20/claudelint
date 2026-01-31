@@ -266,7 +266,7 @@ If validation returns errors:
 If you get permission errors:
 
 1. Check `claudelint` is installed: `which claudelint`
-2. Install globally if needed: `npm install -g @pdugan20/claudelint`
+2. Install globally if needed: `npm install -g claudelint`
 3. Check PATH includes npm global bin directory
 
 ### Hook Doesn't Run

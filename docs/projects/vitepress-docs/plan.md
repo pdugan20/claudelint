@@ -140,7 +140,7 @@ export default defineConfig({
     // Social links
     socialLinks: [
       { icon: 'github', link: 'https://github.com/pdugan20/claudelint' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/@pdugan20/claudelint' }
+      { icon: 'npm', link: 'https://www.npmjs.com/package/claudelint' }
     ],
 
     // Edit link
@@ -224,7 +224,7 @@ features:
 
 ```bash
 # Install globally
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 
 # Initialize configuration
 claudelint init
@@ -351,9 +351,9 @@ interface Props {
 
 ```vue
 <CodeTabs :tabs="[
-  { label: 'npm', code: 'npm install -g @pdugan20/claudelint' },
-  { label: 'yarn', code: 'yarn global add @pdugan20/claudelint' },
-  { label: 'pnpm', code: 'pnpm add -g @pdugan20/claudelint' }
+  { label: 'npm', code: 'npm install -g claudelint' },
+  { label: 'yarn', code: 'yarn global add claudelint' },
+  { label: 'pnpm', code: 'pnpm add -g claudelint' }
 ]" />
 ```
 
@@ -512,15 +512,15 @@ Add code groups:
 ```markdown
 ::: code-group
 ```bash [npm]
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 ```
 
 ```bash [yarn]
-yarn global add @pdugan20/claudelint
+yarn global add claudelint
 ```
 
 ```bash [pnpm]
-pnpm add -g @pdugan20/claudelint
+pnpm add -g claudelint
 ```
 
 :::

@@ -541,7 +541,7 @@ claudelint uses standard POSIX exit codes:
 
 ```bash
 # Install claudelint
-npm install -g @pdugan20/claudelint
+npm install -g claudelint
 
 # Initialize project
 cd my-claude-project

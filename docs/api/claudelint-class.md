@@ -37,7 +37,7 @@ Creates a new ClaudeLint instance with optional configuration.
 **Example:**
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   fix: true,

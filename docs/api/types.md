@@ -688,7 +688,7 @@ import {
   LintResult,
   LintMessage,
   RuleMetadata,
-} from '@pdugan20/claudelint';
+} from 'claudelint';
 
 const options: ClaudeLintOptions = {
   fix: (message: LintMessage): boolean => {
@@ -708,7 +708,7 @@ const rules: Map<string, RuleMetadata> = linter.getRules();
 ### Type Assertions
 
 ```typescript
-import { LintResult } from '@pdugan20/claudelint';
+import { LintResult } from 'claudelint';
 
 const results = await linter.lintFiles(['**/*.md']);
 

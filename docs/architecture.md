@@ -1552,7 +1552,7 @@ Plugins can use the composition framework to create custom validators:
 
 ```typescript
 // claudelint-plugin-custom/validators/custom.ts
-import { compose, required, regex } from '@pdugan20/claudelint/composition';
+import { compose, required, regex } from 'claudelint/composition';
 
 const validateProjectId = compose(
   required(),

@@ -42,7 +42,7 @@ function lint(patterns: string[], options?: LintOptions): Promise<LintResult[]>
 **Example:**
 
 ```typescript
-import { lint } from '@pdugan20/claudelint';
+import { lint } from 'claudelint';
 
 // Basic usage
 const results = await lint(['**/*.md']);
@@ -86,7 +86,7 @@ function lintText(code: string, options?: LintTextOptions): Promise<LintResult[]
 **Example:**
 
 ```typescript
-import { lintText } from '@pdugan20/claudelint';
+import { lintText } from 'claudelint';
 
 const code = `
 # CLAUDE.md
@@ -139,7 +139,7 @@ function resolveConfig(filePath: string, options?: ConfigOptions): Promise<Claud
 **Example:**
 
 ```typescript
-import { resolveConfig } from '@pdugan20/claudelint';
+import { resolveConfig } from 'claudelint';
 
 // Get config for specific file
 const config = await resolveConfig('skills/test/SKILL.md');
@@ -185,7 +185,7 @@ function formatResults(
 **Example:**
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md']);
 
@@ -234,7 +234,7 @@ function getFileInfo(filePath: string, options?: FileInfoOptions): Promise<FileI
 **Example:**
 
 ```typescript
-import { getFileInfo } from '@pdugan20/claudelint';
+import { getFileInfo } from 'claudelint';
 
 const info = await getFileInfo('CLAUDE.md');
 
@@ -270,7 +270,7 @@ interface FileInfoOptions {
 Simple build validation:
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 async function validateProject() {
   console.log('Validating Claude Code files...');
@@ -296,7 +296,7 @@ Validate staged files:
 
 ```typescript
 import { execSync } from 'child_process';
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 async function validateStaged() {
   // Get staged .md files
@@ -333,7 +333,7 @@ Validate and generate reports:
 
 ```typescript
 import { writeFile } from 'fs/promises';
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 async function ciValidation() {
   const results = await lint(['**/*.md']);
@@ -363,7 +363,7 @@ ciValidation();
 Validate dynamic content:
 
 ```typescript
-import { lintText } from '@pdugan20/claudelint';
+import { lintText } from 'claudelint';
 
 async function validateGeneratedContent(content: string) {
   const results = await lintText(content, {
@@ -393,7 +393,7 @@ const isValid = await validateGeneratedContent(aiContent);
 Check effective configuration:
 
 ```typescript
-import { resolveConfig, getFileInfo } from '@pdugan20/claudelint';
+import { resolveConfig, getFileInfo } from 'claudelint';
 
 async function inspectFile(filePath: string) {
   const [config, info] = await Promise.all([
@@ -469,7 +469,7 @@ await ClaudeLint.outputFixes(results);
 All functions are fully typed:
 
 ```typescript
-import { lint, formatResults, LintResult } from '@pdugan20/claudelint';
+import { lint, formatResults, LintResult } from 'claudelint';
 
 async function example() {
   // Type inference

@@ -30,7 +30,7 @@
 ### Class-Based API
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // Create instance
 const linter = new ClaudeLint({
@@ -59,7 +59,7 @@ ClaudeLint.getVersion()
 ### Functional API
 
 ```typescript
-import { lint, lintText, resolveConfig, formatResults } from '@pdugan20/claudelint';
+import { lint, lintText, resolveConfig, formatResults } from 'claudelint';
 
 await lint(['**/*.md'], { fix: true })
 await lintText(code, { filePath: 'test.md' })

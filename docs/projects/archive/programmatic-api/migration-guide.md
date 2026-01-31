@@ -22,7 +22,7 @@ claudelint check-all
 ### After (Programmatic API)
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -51,7 +51,7 @@ fi
 **After:** Using API in Node.js
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function validate() {
   const linter = new ClaudeLint({ fix: true });
@@ -100,7 +100,7 @@ done
 **After:** Using ClaudeLint API
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function validateSkills() {
   const linter = new ClaudeLint({
@@ -161,7 +161,7 @@ module.exports = {
 
 ```typescript
 // webpack.config.js
-const { ClaudeLint } = require('@pdugan20/claudelint');
+const { ClaudeLint } = require('claudelint');
 
 module.exports = {
   plugins: [
@@ -201,7 +201,7 @@ module.exports = {
 # .github/workflows/lint.yml
 - name: Run claudelint
   run: |
-    npm install -g @pdugan20/claudelint
+    npm install -g claudelint
     claudelint check-all
 ```
 
@@ -215,7 +215,7 @@ module.exports = {
 
 ```typescript
 // scripts/lint.js
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function lint() {
   const linter = new ClaudeLint({
@@ -262,7 +262,7 @@ lint();
 ```typescript
 // extension.ts
 import * as vscode from 'vscode';
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 export function activate(context: vscode.ExtensionContext) {
   const linter = new ClaudeLint();
@@ -317,7 +317,7 @@ claudelint follows ESLint and Prettier patterns by exporting only stable, docume
 
 ```typescript
 // Main programmatic API class
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // Type definitions
 import type {
@@ -325,13 +325,13 @@ import type {
   LintMessage,
   ClaudeLintOptions,
   Formatter
-} from '@pdugan20/claudelint';
+} from 'claudelint';
 
 // Formatter utilities
-import { loadFormatter, BaseFormatter } from '@pdugan20/claudelint';
+import { loadFormatter, BaseFormatter } from 'claudelint';
 
 // Configuration utilities
-import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
+import { findConfigFile, loadConfig } from 'claudelint';
 ```
 
 ### What's NOT Exported (Internal Implementation)
@@ -352,7 +352,7 @@ const results = await linter.lintFiles(['**/*.md']);
 
 ```typescript
 // Quick validation with functional API
-import { lint } from '@pdugan20/claudelint';
+import { lint } from 'claudelint';
 
 const results = await lint(['CLAUDE.md']);
 console.log(`Errors: ${results[0].errorCount}`);
@@ -461,7 +461,7 @@ import {
   LintMessage,
   ClaudeLintOptions,
   Formatter
-} from '@pdugan20/claudelint';
+} from 'claudelint';
 
 // Fully typed
 const linter: ClaudeLint = new ClaudeLint();
@@ -535,7 +535,7 @@ Verify API produces same results as CLI:
 
 ```typescript
 import { execSync } from 'child_process';
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // CLI output
 const cliOutput = execSync('claudelint check-all', { encoding: 'utf8' });
@@ -609,7 +609,7 @@ const linter = new ClaudeLint({
 **Solution:** Import types explicitly
 
 ```typescript
-import type { LintResult, LintMessage } from '@pdugan20/claudelint';
+import type { LintResult, LintMessage } from 'claudelint';
 ```
 
 ### Issue: File paths not resolving

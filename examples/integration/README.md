@@ -45,10 +45,10 @@ Each tool does one thing well, and they work together without conflicts.
 
 ```bash
 # Install all tools
-npm install --save-dev @pdugan20/claudelint markdownlint-cli prettier
+npm install --save-dev claudelint markdownlint-cli prettier
 
 # Or globally
-npm install -g @pdugan20/claudelint markdownlint-cli prettier
+npm install -g claudelint markdownlint-cli prettier
 ```
 
 ### Copy Configuration Files

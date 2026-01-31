@@ -1,6 +1,6 @@
 # NPM Release Setup - Progress Tracker
 
-Project to set up professional npm versioning, release automation, and package name migration from `@pdugan20/claudelint` to `claudelint`.
+Project to set up professional npm versioning, release automation, and package name migration from `claudelint` to `claudelint`.
 
 **Status:** In Progress
 **Start Date:** 2026-01-30
@@ -68,7 +68,7 @@ Project to set up professional npm versioning, release automation, and package n
 ### 3.1 Create Migration Script
 
 - [x] Create `scripts/migrate-package-name.ts`
-- [x] Script finds all `@pdugan20/claudelint` references (180 found)
+- [x] Script finds all `claudelint` references (180 found)
 - [x] Script replaces with `claudelint`
 - [x] Script updates package.json name field
 - [x] Script updates README badges

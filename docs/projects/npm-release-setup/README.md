@@ -12,7 +12,7 @@ Project to establish professional npm package versioning, release automation, an
 ## Current Status
 
 **Phase:** Not Started
-**Package Name:** `@pdugan20/claudelint` (scoped) → `claudelint` (unscoped)
+**Package Name:** `claudelint` (scoped) → `claudelint` (unscoped)
 **Current Version:** 0.2.0
 **Target Version:** 0.2.0-beta.0
 
@@ -93,7 +93,7 @@ Create scripts to sync version numbers across all files.
 
 ### Phase 3: Package Name Migration [Not Started]
 
-Migrate from `@pdugan20/claudelint` to `claudelint`.
+Migrate from `claudelint` to `claudelint`.
 
 **Documents:** [tracker.md](./tracker.md#phase-3-package-name-migration), [package-name-migration.md](./package-name-migration.md)
 
@@ -139,8 +139,8 @@ Establish release cadence and automation for future releases.
 
 ### Why unscoped package?
 
-- Shorter, more memorable name (`claudelint` vs `@pdugan20/claudelint`)
-- Easier to install (`npm i claudelint` vs `npm i @pdugan20/claudelint`)
+- Shorter, more memorable name (`claudelint` vs `claudelint`)
+- Easier to install (`npm i claudelint` vs `npm i claudelint`)
 - More discoverable on npm
 - Professional appearance
 

@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "// Tier 1: Critical": "",
-    "@pdugan20/claudelint": "^0.2.0-beta.0",
+    "claudelint": "^0.2.0-beta.0",
     "markdownlint-cli": "^0.39.0",
     "prettier": "^3.1.0",
     "// Tier 2: Recommended": "",

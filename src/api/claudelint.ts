@@ -9,7 +9,7 @@
  *
  * @example
  * ```typescript
- * import { ClaudeLint } from '@pdugan20/claudelint';
+ * import { ClaudeLint } from 'claudelint';
  *
  * const linter = new ClaudeLint({
  *   fix: true,

@@ -15,7 +15,7 @@ All APIs follow established patterns from ESLint and Prettier, ensuring familiar
 ## Installation
 
 ```bash
-npm install @pdugan20/claudelint
+npm install claudelint
 ```
 
 ## Quick Start
@@ -25,7 +25,7 @@ npm install @pdugan20/claudelint
 The `ClaudeLint` class provides the most control and is ideal for complex workflows:
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // Create linter instance
 const linter = new ClaudeLint({
@@ -50,7 +50,7 @@ await ClaudeLint.outputFixes(results);
 For simpler use cases, use the stateless functional API:
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 // Lint files
 const results = await lint(['**/*.md'], { fix: true });
@@ -65,7 +65,7 @@ console.log(output);
 Lint text without requiring files on disk:
 
 ```typescript
-import { lintText } from '@pdugan20/claudelint';
+import { lintText } from 'claudelint';
 
 const code = '# CLAUDE.md\n\nMy instructions';
 const results = await lintText(code, { filePath: 'CLAUDE.md' });
@@ -89,7 +89,7 @@ const results = await lintText(code, { filePath: 'CLAUDE.md' });
 ### Build Tool Integration
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 async function validateClaudeFiles() {
   const results = await lint(['**/*.md']);
@@ -106,7 +106,7 @@ async function validateClaudeFiles() {
 ### Editor Extension
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 
@@ -127,7 +127,7 @@ async function lintDocument(document) {
 ### CI/CD Pipeline
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   cwd: process.cwd(),

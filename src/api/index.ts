@@ -9,7 +9,7 @@
  * @example
  * ```typescript
  * // Class-based API
- * import { ClaudeLint } from '@pdugan20/claudelint';
+ * import { ClaudeLint } from 'claudelint';
  *
  * const linter = new ClaudeLint({ fix: true });
  * const results = await linter.lintFiles(['**\/*.md']);
@@ -18,7 +18,7 @@
  * @example
  * ```typescript
  * // Functional API
- * import { lint, formatResults } from '@pdugan20/claudelint';
+ * import { lint, formatResults } from 'claudelint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * const output = await formatResults(results, 'stylish');

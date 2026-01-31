@@ -358,7 +358,7 @@ Convenience functions for simple, stateless operations.
 Shorthand for creating a linter and running lintFiles.
 
 ```typescript
-import { lint } from '@pdugan20/claudelint';
+import { lint } from 'claudelint';
 
 const results = await lint(['**/*.md'], {
   fix: true,
@@ -378,7 +378,7 @@ const results = await linter.lintFiles(patterns);
 Shorthand for linting text.
 
 ```typescript
-import { lintText } from '@pdugan20/claudelint';
+import { lintText } from 'claudelint';
 
 const results = await lintText(code, {
   filePath: 'CLAUDE.md',
@@ -391,7 +391,7 @@ const results = await lintText(code, {
 Resolves configuration for a file path.
 
 ```typescript
-import { resolveConfig } from '@pdugan20/claudelint';
+import { resolveConfig } from 'claudelint';
 
 const config = await resolveConfig('./skills/my-skill/SKILL.md');
 console.log(config?.rules);
@@ -412,7 +412,7 @@ console.log(config?.rules);
 Formats results using a built-in or custom formatter.
 
 ```typescript
-import { formatResults } from '@pdugan20/claudelint';
+import { formatResults } from 'claudelint';
 
 const output = await formatResults(results, 'json');
 console.log(output);
@@ -432,7 +432,7 @@ console.log(output);
 Gets information about a file without linting it.
 
 ```typescript
-import { getFileInfo } from '@pdugan20/claudelint';
+import { getFileInfo } from 'claudelint';
 
 const info = await getFileInfo('CLAUDE.md');
 console.log(`Ignored: ${info.ignored}`);
@@ -895,7 +895,7 @@ try {
 ### Basic Usage
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -911,7 +911,7 @@ process.exit(hasErrors ? 1 : 0);
 ### Auto-Fix Workflow
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['skills/**/*.sh']);
@@ -928,7 +928,7 @@ console.log('Fixes applied!');
 ### Build Integration
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function validateProject() {
   const linter = new ClaudeLint({
@@ -957,7 +957,7 @@ validateProject();
 ### Custom Formatter
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -976,7 +976,7 @@ for (const result of results) {
 ### Functional API
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 // Quick validation
 const results = await lint(['CLAUDE.md'], { fix: true });

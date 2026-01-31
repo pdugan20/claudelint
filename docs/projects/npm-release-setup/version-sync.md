@@ -55,7 +55,7 @@ These should always match package.json:
    ```json
    {
      "devDependencies": {
-       "@pdugan20/claudelint": "^0.1.0"  // ← Must sync
+       "claudelint": "^0.1.0"  // ← Must sync
      }
    }
    ```

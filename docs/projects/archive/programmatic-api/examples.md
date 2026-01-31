@@ -22,7 +22,7 @@
 Validate all markdown files in a project.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function validateProject() {
   const linter = new ClaudeLint();
@@ -44,7 +44,7 @@ validateProject();
 Quick validation with functional API.
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['CLAUDE.md']);
 console.log(await formatResults(results, 'stylish'));
@@ -55,7 +55,7 @@ console.log(await formatResults(results, 'stylish'));
 Lint text without filesystem access.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 
@@ -84,7 +84,7 @@ for (const msg of results[0].messages) {
 Fix issues and write changes to disk.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function fixProject() {
   const linter = new ClaudeLint({ fix: true });
@@ -111,7 +111,7 @@ fixProject();
 See what would be fixed without modifying files.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['skills/**/*.sh']);
@@ -132,7 +132,7 @@ for (const [filePath, content] of fixed) {
 Only fix specific rules.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   fix: (message) => {
@@ -190,7 +190,7 @@ module.exports = {
 };
 
 // Usage
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint();
 const results = await linter.lintFiles(['**/*.md']);
@@ -204,7 +204,7 @@ console.log(formatter.format(results));
 Generate JSON report for tooling.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import { writeFileSync } from 'fs';
 
 const linter = new ClaudeLint();
@@ -230,7 +230,7 @@ Integrate into webpack build.
 
 ```typescript
 // webpack-claudelint-plugin.js
-const { ClaudeLint } = require('@pdugan20/claudelint');
+const { ClaudeLint } = require('claudelint');
 
 class ClaudeLintPlugin {
   constructor(options = {}) {
@@ -283,7 +283,7 @@ Integrate into rollup build.
 
 ```typescript
 // rollup-plugin-claudelint.js
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 export default function claudelint(options = {}) {
   return {
@@ -322,7 +322,7 @@ Create custom npm script with advanced features.
 
 ```typescript
 // scripts/validate.js
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import { writeFileSync } from 'fs';
 
 async function validate() {
@@ -399,7 +399,7 @@ jobs:
 
 ```typescript
 // scripts/ci-lint.js
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function lint() {
   const linter = new ClaudeLint({
@@ -459,7 +459,7 @@ lint:
 
 ```typescript
 // scripts/gitlab-lint.js
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import { writeFileSync, mkdirSync } from 'fs';
 
 async function lint() {
@@ -505,7 +505,7 @@ Build VS Code extension with claudelint.
 ```typescript
 // extension.ts
 import * as vscode from 'vscode';
-import { ClaudeLint, LintMessage } from '@pdugan20/claudelint';
+import { ClaudeLint, LintMessage } from 'claudelint';
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 let linter: ClaudeLint;
@@ -617,7 +617,7 @@ export function deactivate() {
 Show detailed progress during validation.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import ora from 'ora';
 
 async function validateWithProgress() {
@@ -656,7 +656,7 @@ validateWithProgress();
 Only validate changed files.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 import { execSync } from 'child_process';
 
 async function validateChanged() {
@@ -690,7 +690,7 @@ validateChanged();
 Validate multiple projects in parallel.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 async function validateProjects() {
   const projects = [
@@ -731,7 +731,7 @@ validateProjects();
 Only run specific rules.
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   ruleFilter: (ruleId) => {

@@ -23,7 +23,7 @@
  *
  * @example
  * ```typescript
- * import { ClaudeLint } from '@pdugan20/claudelint';
+ * import { ClaudeLint } from 'claudelint';
  *
  * const linter = new ClaudeLint({ fix: true });
  * const results = await linter.lintFiles(['**\/*.md']);
@@ -68,7 +68,7 @@ export type {
  *
  * @example
  * ```typescript
- * import { loadFormatter } from '@pdugan20/claudelint';
+ * import { loadFormatter } from 'claudelint';
  *
  * const formatter = await loadFormatter('stylish');
  * ```
@@ -90,7 +90,7 @@ export type { BuiltinFormatterName } from './api/formatter';
  *
  * @example
  * ```typescript
- * import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
+ * import { findConfigFile, loadConfig } from 'claudelint';
  *
  * const configPath = await findConfigFile(process.cwd());
  * const config = loadConfig(configPath);
@@ -108,7 +108,7 @@ export { findConfigFile, loadConfig } from './utils/config';
  *
  * @example
  * ```typescript
- * import { lint, formatResults } from '@pdugan20/claudelint';
+ * import { lint, formatResults } from 'claudelint';
  *
  * const results = await lint(['**\/*.md'], { fix: true });
  * const output = await formatResults(results, 'stylish');

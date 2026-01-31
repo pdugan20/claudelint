@@ -11,7 +11,7 @@
  * - Performance optimization with caching
  */
 
-const { ClaudeLint } = require('@pdugan20/claudelint');
+const { ClaudeLint } = require('claudelint');
 
 /**
  * Language Server Pattern

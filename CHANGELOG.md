@@ -20,7 +20,7 @@ Complete programmatic API for integrating ClaudeLint into Node.js applications, 
 **Class-based API:**
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['**/*.md']);
@@ -30,7 +30,7 @@ await ClaudeLint.outputFixes(results);
 **Functional API:**
 
 ```typescript
-import { lint, formatResults } from '@pdugan20/claudelint';
+import { lint, formatResults } from 'claudelint';
 
 const results = await lint(['**/*.md'], { fix: true });
 const output = await formatResults(results, 'stylish');

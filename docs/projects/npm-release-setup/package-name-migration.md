@@ -1,10 +1,10 @@
 # Package Name Migration Guide
 
-Complete guide for migrating from `@pdugan20/claudelint` (scoped) to `claudelint` (unscoped).
+Complete guide for migrating from `claudelint` (scoped) to `claudelint` (unscoped).
 
 ## Overview
 
-**Current:** `@pdugan20/claudelint`
+**Current:** `claudelint`
 **Target:** `claudelint`
 
 **References to update:** 140+ across codebase
@@ -80,7 +80,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 
-const OLD_NAME = '@pdugan20/claudelint';
+const OLD_NAME = 'claudelint';
 const NEW_NAME = 'claudelint';
 
 interface MigrationResult {
@@ -217,7 +217,7 @@ npm run migrate:name:dry
 # ==============================================================
 # DRY RUN - No files will be modified
 # ==============================================================
-# Migrating: @pdugan20/claudelint → claudelint
+# Migrating: claudelint → claudelint
 #
 #   README.md (11 occurrences)
 #   package.json (1 occurrence)
@@ -240,7 +240,7 @@ npm run migrate:name
 # ==============================================================
 # LIVE RUN - Files will be modified
 # ==============================================================
-# Migrating: @pdugan20/claudelint → claudelint
+# Migrating: claudelint → claudelint
 #
 # ✓ README.md (11 occurrences)
 # ✓ package.json (1 occurrence)
@@ -264,7 +264,7 @@ npm run migrate:name
 git diff
 
 # 2. Check for any missed references
-grep -r "@pdugan20/claudelint" . --exclude-dir=node_modules --exclude-dir=dist
+grep -r "claudelint" . --exclude-dir=node_modules --exclude-dir=dist
 
 # 3. Verify package.json
 cat package.json | grep "name"
@@ -294,7 +294,7 @@ node -e "const { ClaudeLint } = require('claudelint'); console.log('OK')"
 Before:
 
 ```markdown
-[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/@pdugan20/claudelint)
+[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/claudelint)
 ```
 
 After:
@@ -308,7 +308,7 @@ After:
 Before:
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 ```
 
 After:
@@ -322,8 +322,8 @@ import { ClaudeLint } from 'claudelint';
 Before:
 
 ```bash
-npm install -g @pdugan20/claudelint
-npm install --save-dev @pdugan20/claudelint
+npm install -g claudelint
+npm install --save-dev claudelint
 ```
 
 After:
@@ -340,7 +340,7 @@ Before (examples/integration/package.json):
 ```json
 {
   "devDependencies": {
-    "@pdugan20/claudelint": "^0.2.0"
+    "claudelint": "^0.2.0"
   }
 }
 ```
@@ -419,19 +419,19 @@ If we ever need to migrate from published scoped package:
 
 ```bash
 # Deprecate old scoped package
-npm deprecate @pdugan20/claudelint "Package has moved to 'claudelint' (unscoped)"
+npm deprecate claudelint "Package has moved to 'claudelint' (unscoped)"
 ```
 
 ### Migration Guide for Users
 
 ```markdown
-## Migration from @pdugan20/claudelint to claudelint
+## Migration from claudelint to claudelint
 
 The package has moved to an unscoped name for easier installation.
 
 ### Uninstall old package
 
-npm uninstall @pdugan20/claudelint
+npm uninstall claudelint
 
 ### Install new package
 
@@ -439,7 +439,7 @@ npm install claudelint
 
 ### Update imports
 
--import { ClaudeLint } from '@pdugan20/claudelint';
+-import { ClaudeLint } from 'claudelint';
 +import { ClaudeLint } from 'claudelint';
 ```
 

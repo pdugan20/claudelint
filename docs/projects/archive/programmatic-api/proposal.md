@@ -63,7 +63,7 @@ After extensive research into modern API design patterns (ESLint, Prettier, Zod,
 ### Main Class
 
 ```typescript
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 const linter = new ClaudeLint({
   fix: true,
@@ -80,7 +80,7 @@ console.log(formatter.format(results));
 ### Functional Utilities
 
 ```typescript
-import { lint, resolveConfig, formatResults } from '@pdugan20/claudelint';
+import { lint, resolveConfig, formatResults } from 'claudelint';
 
 // Simple one-off lint
 const results = await lint(['CLAUDE.md'], { fix: true });
@@ -244,19 +244,19 @@ Following **ESLint and Prettier patterns**, we export only stable, documented pu
 
 ```typescript
 // Main programmatic API class
-import { ClaudeLint } from '@pdugan20/claudelint';
+import { ClaudeLint } from 'claudelint';
 
 // Type definitions
 import type {
   LintResult, LintMessage, ClaudeLintOptions,
   Formatter, RuleMetadata
-} from '@pdugan20/claudelint';
+} from 'claudelint';
 
 // Formatter utilities
-import { loadFormatter, BaseFormatter } from '@pdugan20/claudelint';
+import { loadFormatter, BaseFormatter } from 'claudelint';
 
 // Configuration utilities
-import { findConfigFile, loadConfig } from '@pdugan20/claudelint';
+import { findConfigFile, loadConfig } from 'claudelint';
 ```
 
 ### What's NOT Exported (Internal Implementation)
