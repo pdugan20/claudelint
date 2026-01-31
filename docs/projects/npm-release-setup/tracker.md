@@ -132,14 +132,14 @@ Project to set up professional npm versioning, release automation, and package n
 
 ### 5.1 Execute Migration
 
-- [ ] Run package name migration script
-- [ ] Verify all references updated to `claudelint`
-- [ ] Commit name migration changes
-- [ ] Create git tag: `v0.2.0-beta.0`
+- [x] Run package name migration script
+- [x] Verify all references updated to `claudelint` (183 occurrences in 39 files)
+- [x] Commit name migration changes
+- [x] Create git tag: `v0.2.0-beta.0`
 
 ### 5.2 Publish Beta
 
-- [ ] Verify npm login: `npm whoami`
+- [ ] Verify npm login: `npm whoami` (USER ACTION REQUIRED)
 - [ ] Dry run: `npm publish --dry-run --tag beta --access public`
 - [ ] Review dry-run output
 - [ ] Publish: `npm publish --tag beta --access public`
