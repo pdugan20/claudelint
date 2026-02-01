@@ -6,194 +6,252 @@ Comprehensive guide for deploying claudelint VitePress documentation.
 
 | Platform | Pros | Cons | Best For |
 |----------|------|------|----------|
-| **GitHub Pages** | Free, simple, good performance | Limited to static sites | Open source projects |
-| **Vercel** | Fastest edge network, PR previews | Commercial platform | Production sites |
+| **Vercel** | Fastest edge network, PR previews, auto-deploy | Commercial platform (free for OSS) | Production sites (RECOMMENDED) |
+| **GitHub Pages** | Free, simple, good performance | No PR previews, slower than Vercel | Simple static sites |
 | **Netlify** | Great DX, forms, redirects | Slower than Vercel | Feature-rich sites |
 | **Cloudflare Pages** | Global CDN, unlimited bandwidth | Newer platform | High-traffic sites |
 
-**Recommendation**: Start with **GitHub Pages** (free, simple), upgrade to **Vercel** if needed.
+**Recommendation**: **Vercel** for automatic PR previews and fastest global performance.
 
 ---
 
-## Option 1: GitHub Pages (Recommended)
+## Option 1: Vercel (Recommended)
+
+### Why Vercel
+
+**Key Advantages:**
+
+- [x] **Fastest global CDN** - 275+ edge locations worldwide
+- [x] **Automatic PR previews** - Every PR gets a unique preview URL
+- [x] **Zero configuration** - Auto-detects VitePress settings
+- [x] **Free for open source** - No cost for public repos
+- [x] **Built-in analytics** - Track page views without third-party scripts
+- [x] **Excellent DX** - Deploy in seconds with git push
 
 ### Setup
 
-**Step 1: Create deployment workflow**
+**Step 1: Connect Repository**
 
-Create `.github/workflows/deploy.yml`:
+1. Go to <https://vercel.com>
+2. Sign in with GitHub
+3. Click "Add New Project"
+4. Import `pdugan20/claudelint` repository
+5. Vercel auto-detects VitePress framework
 
-```yaml
-name: Deploy VitePress site to Pages
+**Step 2: Configure Build Settings**
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+Vercel should auto-detect these settings (verify):
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # For lastUpdated feature
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build with VitePress
-        run: npm run docs:build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/.vitepress/dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+```text
+Framework Preset: VitePress
+Root Directory: ./
+Build Command: npm run docs:build
+Output Directory: website/.vitepress/dist
+Install Command: npm install
+Node Version: 20.x
 ```
 
-### Expected Build Times
+**Step 3: Add package.json Scripts**
 
-Based on VitePress performance characteristics:
+Ensure these scripts exist:
 
-- **Cold build**: 10-20 seconds for 50 pages
-- **Incremental builds**: 5-10 seconds
-- **CI/CD total time**: ~2-3 minutes (including npm install)
-
-**Compare to Docusaurus**:
-
-- Similar-sized sites: 30-60 seconds cold build
-- Large sites with versioning: Up to 26 minutes
-
-**GitHub Actions Budget**:
-
-- Free tier: 2,000 minutes/month
-- Expected usage: ~100 builds/month × 3 min = 300 minutes
-- **Well within limits**
-
-**Step 2: Configure repository**
-
-1. Go to repo Settings → Pages
-2. Source: GitHub Actions
-3. Save
-
-**Step 3: Configure VitePress base URL**
-
-Update `docs/.vitepress/config.ts`:
-
-```typescript
-export default defineConfig({
-  base: '/claudelint/', // For project pages (user.github.io/claudelint/)
-  // OR
-  base: '/', // For custom domain or user pages
-})
+```json
+{
+  "scripts": {
+    "docs:generate": "tsx scripts/generate-rule-docs.ts",
+    "docs:dev": "npm run docs:generate && vitepress dev website",
+    "docs:build": "npm run docs:generate && vitepress build website",
+    "docs:preview": "vitepress preview website"
+  }
+}
 ```
 
-**Step 4: Push to GitHub**
+**Step 4: Deploy**
 
-```bash
-git add .
-git commit -m "Add VitePress deployment workflow"
-git push origin main
-```
-
-Site will be live at:
-
-- Project pages: `https://pdugan20.github.io/claudelint/`
-- Custom domain: `https://docs.claudelint.dev` (see below)
+1. Click "Deploy"
+2. Wait ~1-2 minutes
+3. Site live at: `https://claudelint.vercel.app`
 
 ### Custom Domain Setup
 
-**Step 1: Add CNAME file**
+**Step 1: Add Domain in Vercel**
 
-Create `docs/public/CNAME`:
-
-```text
-docs.claudelint.dev
-```
+1. Go to Project Settings → Domains
+2. Click "Add Domain"
+3. Enter: `docs.claudelint.dev`
 
 **Step 2: Configure DNS**
 
-Add these DNS records at your domain provider:
-
-For subdomain (docs.claudelint.dev):
+At your domain provider (Cloudflare, Namecheap, etc.), add:
 
 ```text
 Type: CNAME
 Name: docs
-Value: pdugan20.github.io
-TTL: 3600
+Value: cname.vercel-dns.com
+TTL: Auto / 3600
 ```
 
-For apex domain (claudelint.dev):
+**Step 3: Verify**
+
+- Vercel automatically provisions SSL certificate
+- HTTPS enabled by default
+- DNS propagation: 5-30 minutes
+- Site live at: `https://docs.claudelint.dev`
+
+### PR Preview Deployments
+
+**How It Works:**
+
+1. Developer creates PR with docs changes
+2. Vercel automatically:
+   - Detects the PR
+   - Builds the preview
+   - Comments on PR with preview URL
+3. Reviewers can see exact changes before merging
+4. Preview URL format: `claudelint-git-{branch}-{user}.vercel.app`
+
+**Example PR Comment:**
 
 ```text
-Type: A
-Name: @
-Value: 185.199.108.153
----
-Type: A
-Name: @
-Value: 185.199.109.153
----
-Type: A
-Name: @
-Value: 185.199.110.153
----
-Type: A
-Name: @
-Value: 185.199.111.153
+[x] Preview deployment ready!
+
+ Inspect: https://vercel.com/...
+ Preview: https://claudelint-git-update-docs-pdugan20.vercel.app
 ```
 
-**Step 3: Enable HTTPS**
+**No Configuration Needed** - Works automatically for all PRs.
 
-1. Go to repo Settings → Pages
-2. Check "Enforce HTTPS"
-3. Wait for certificate provisioning (~15 min)
+### Environment Variables (Optional)
 
-**Step 4: Update config**
+If you need analytics or other services:
+
+1. Go to Project Settings → Environment Variables
+2. Add variables (e.g., `VITE_GA_ID` for Google Analytics)
+3. Redeploy to apply
+
+### Vercel Configuration File (Optional)
+
+Create `vercel.json` for advanced settings:
+
+```json
+{
+  "buildCommand": "npm run docs:build",
+  "outputDirectory": "website/.vitepress/dist",
+  "installCommand": "npm install",
+  "framework": "vitepress",
+
+  "cleanUrls": true,
+  "trailingSlash": false,
+
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+
+  "redirects": [
+    {
+      "source": "/docs/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    }
+  ]
+}
+```
+
+### Build Performance
+
+**Expected Times:**
+
+- **First build**: 30-60 seconds (includes npm install)
+- **Incremental builds**: 10-20 seconds (with cache)
+- **Rule doc generation**: <1 second (105 rules)
+- **VitePress build**: 5-10 seconds (155 pages)
+
+**Vercel Free Tier Limits:**
+
+- Build time: 6000 minutes/month (we'll use ~100 minutes)
+- Bandwidth: 100GB/month (docs typically <1GB)
+- Deployments: Unlimited
+
+### Monitoring & Analytics
+
+**Built-in Vercel Analytics:**
+
+1. Go to Project → Analytics
+2. Enable Vercel Analytics (free)
+3. See real-time visitor data, page views
+4. Privacy-friendly (no cookies)
+
+**Custom Analytics (Optional):**
+
+Add Google Analytics or Plausible in `website/.vitepress/config.ts`:
 
 ```typescript
 export default defineConfig({
-  base: '/',
-  sitemap: {
-    hostname: 'https://docs.claudelint.dev'
-  }
+  head: [
+    ['script', {
+      defer: true,
+      'data-domain': 'docs.claudelint.dev',
+      src: 'https://plausible.io/js/script.js'
+    }]
+  ]
 })
 ```
 
 ---
 
-## Option 2: Vercel
+## Option 2: GitHub Pages (Alternative)
+
+If you prefer GitHub Pages:
+
+**Pros:**
+- Free forever
+- Simple setup
+- Good for open source projects
+
+**Cons:**
+- No automatic PR previews
+- Slower than Vercel's edge network
+- Manual CNAME configuration
+
+**Setup:**
+
+1. Create `.github/workflows/deploy.yml` (see full example in previous version)
+2. Configure repo Settings → Pages → Source: GitHub Actions
+3. Push to deploy
+4. Site live at `pdugan20.github.io/claudelint/`
+
+For custom domain, add `website/public/CNAME` with `docs.claudelint.dev` and configure DNS.
+
+See [archived deployment guide](https://github.com/pdugan20/claudelint/blob/main/docs/projects/vitepress-docs/deployment.md#github-pages-full-guide) for complete GitHub Pages setup.
+
+---
+
+## Option 3: Netlify
 
 ### Setup
 
@@ -271,7 +329,7 @@ Vercel automatically creates preview deployments for PRs:
 
 ---
 
-## Option 3: Netlify
+## Option 3: Netlify (Alternative)
 
 ### Setup
 

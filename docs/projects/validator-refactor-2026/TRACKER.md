@@ -1,0 +1,675 @@
+# Validator Refactoring Project Tracker
+
+**Last Updated:** 2026-02-01
+**Overall Progress:** 0% (0/38 tasks completed)
+
+## Phase Overview
+
+| Phase | Status | Tasks | Completed | Progress | Est. Time | Actual Time |
+|-------|--------|-------|-----------|----------|-----------|-------------|
+| Phase 1: Foundation | NOT STARTED Not Started | 7 | 0/7 | 0% | 1.5 hours | - |
+| Phase 2: Standardization | NOT STARTED Not Started | 11 | 0/11 | 0% | 1.5 hours | - |
+| Phase 3: Documentation | NOT STARTED Not Started | 8 | 0/8 | 0% | 1 hour | - |
+| Phase 4: Validation | NOT STARTED Not Started | 12 | 0/12 | 0% | 1 hour | - |
+| **TOTAL** | NOT STARTED Not Started | **38** | **0/38** | **0%** | **5 hours** | - |
+
+---
+
+## Phase 1: Foundation (Remove Dead Code & Rename)
+
+**Goal:** Delete composition framework, rename validators, simplify SchemaValidator
+**Status:** NOT STARTED Not Started
+**Estimated Time:** 1.5 hours
+
+### 1.1 Pre-Flight Checks
+
+- [ ] **Task 1.1.1:** Review composition framework usage
+  - **Action:** Search codebase for `from '../composition` and `from './composition`
+  - **Expected:** Should only find usage in `json-config-base.ts`
+  - **Command:** `grep -r "composition" src/ --include="*.ts"`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.1.2:** Create backup branch
+  - **Action:** `git checkout -b validator-refactor-backup`
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.1.3:** Run baseline tests
+  - **Action:** `npm test` and document results
+  - **Expected:** All tests passing
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.2 Delete Composition Framework
+
+- [ ] **Task 1.2.1:** Remove composition imports from json-config-base.ts
+  - **Action:** Delete lines 9-10 in `src/validators/json-config-base.ts`
+  - **File:** `src/validators/json-config-base.ts`
+  - **Lines:** Remove `import { ValidationContext } from '../composition/types';` and `import { readJSON, zodSchema } from '../composition/json-validators';`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.2.2:** Delete composition folder
+  - **Action:** `rm -rf src/composition`
+  - **Expected:** Removes 6 files, ~733 lines
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.2.3:** Verify no broken imports
+  - **Action:** `npm run build`
+  - **Expected:** Build succeeds (after completing 1.3)
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.3 Simplify SchemaValidator
+
+- [ ] **Task 1.3.1:** Replace validateFile() method in json-config-base.ts
+  - **Action:** Replace lines 68-101 with new implementation (see IMPLEMENTATION-GUIDE.md)
+  - **File:** `src/validators/json-config-base.ts`
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.3.2:** Remove mergeSchemaValidationResult() method
+  - **Action:** Delete method (no longer needed)
+  - **File:** `src/validators/json-config-base.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.3.3:** Update imports (remove ValidationContext)
+  - **Action:** Clean up unused imports at top of file
+  - **File:** `src/validators/json-config-base.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.3.4:** Test build after simplification
+  - **Action:** `npm run build`
+  - **Expected:** Build succeeds
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.4 Rename Base Classes
+
+- [ ] **Task 1.4.1:** Rename base.ts → file-validator.ts
+  - **Action:** `git mv src/validators/base.ts src/validators/file-validator.ts`
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.4.2:** Rename class BaseValidator → FileValidator
+  - **Action:** Update class name and all references in file-validator.ts
+  - **File:** `src/validators/file-validator.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.4.3:** Rename json-config-base.ts → schema-validator.ts
+  - **Action:** `git mv src/validators/json-config-base.ts src/validators/schema-validator.ts`
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.4.4:** Rename class JSONConfigValidator → SchemaValidator
+  - **Action:** Update class name and references in schema-validator.ts
+  - **File:** `src/validators/schema-validator.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.4.5:** Update exports in src/validators/index.ts
+  - **Action:** Update export statements to use new names
+  - **File:** `src/validators/index.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.5 Rename validateConfig Method
+
+- [ ] **Task 1.5.1:** Rename abstract method in SchemaValidator
+  - **Action:** Change `validateConfig` → `validateSemantics`
+  - **File:** `src/validators/schema-validator.ts`
+  - **Line:** ~119
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.5.2:** Update call in validateFile()
+  - **Action:** Update method call to use new name
+  - **File:** `src/validators/schema-validator.ts`
+  - **Owner:**
+  - **Time:** 1 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.6 Update Validator Implementations
+
+- [ ] **Task 1.6.1:** Update ClaudeMdValidator (FileValidator)
+  - **Action:** Change `extends BaseValidator` → `extends FileValidator`
+  - **File:** `src/validators/claude-md.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.2:** Update SkillsValidator (FileValidator)
+  - **Action:** Change import and extends clause
+  - **File:** `src/validators/skills.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.3:** Update AgentsValidator (FileValidator)
+  - **Action:** Change import and extends clause
+  - **File:** `src/validators/agents.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.4:** Update OutputStylesValidator (FileValidator)
+  - **Action:** Change import and extends clause
+  - **File:** `src/validators/output-styles.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.5:** Update CommandsValidator (FileValidator)
+  - **Action:** Change import and extends clause
+  - **File:** `src/validators/commands.ts`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.6:** Update MCPValidator (SchemaValidator)
+  - **Action:** Change `extends JSONConfigValidator` → `extends SchemaValidator`, rename `validateConfig` → `validateSemantics`
+  - **File:** `src/validators/mcp.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.7:** Update SettingsValidator (SchemaValidator)
+  - **Action:** Change extends clause and method name
+  - **File:** `src/validators/settings.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.8:** Update HooksValidator (SchemaValidator)
+  - **Action:** Change extends clause and method name
+  - **File:** `src/validators/hooks.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.9:** Update PluginValidator (SchemaValidator)
+  - **Action:** Change extends clause and method name
+  - **File:** `src/validators/plugin.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.6.10:** Update LSPValidator (SchemaValidator)
+  - **Action:** Change extends clause and method name
+  - **File:** `src/validators/lsp.ts`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+### 1.7 Phase 1 Validation
+
+- [ ] **Task 1.7.1:** Build project
+  - **Action:** `npm run build`
+  - **Expected:** Build succeeds with no errors
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.7.2:** Run test suite
+  - **Action:** `npm test`
+  - **Expected:** All tests pass
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.7.3:** Update test imports
+  - **Action:** Update any test files that import BaseValidator or JSONConfigValidator
+  - **Command:** `grep -r "BaseValidator\|JSONConfigValidator" tests/`
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 1.7.4:** Commit Phase 1 changes
+  - **Action:** `git add . && git commit -m "refactor: Phase 1 - Remove composition framework and rename validators"`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+---
+
+## Phase 2: Standardization (Consistent Patterns)
+
+**Goal:** Ensure all validators use consistent patterns, add JSDoc
+**Status:** NOT STARTED Not Started
+**Estimated Time:** 1.5 hours
+
+### 2.1 Audit Rule Execution
+
+- [ ] **Task 2.1.1:** Search for manual executeRule usage
+  - **Action:** `grep -n "executeRule(" src/validators/*.ts`
+  - **Expected:** Find any validators using manual rule imports
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.1.2:** Document current patterns
+  - **Action:** List which validators use which pattern in MIGRATION-NOTES.md
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 2.2 Migrate to Category-Based Execution
+
+- [ ] **Task 2.2.1:** Review ClaudeMdValidator
+  - **Action:** Verify it uses `executeRulesForCategory('CLAUDE.md', ...)`
+  - **File:** `src/validators/claude-md.ts`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.2.2:** Review SkillsValidator
+  - **Action:** Verify category-based execution
+  - **File:** `src/validators/skills.ts`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.2.3:** Review AgentsValidator
+  - **Action:** Verify category-based execution
+  - **File:** `src/validators/agents.ts`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.2.4:** Review remaining validators
+  - **Action:** Check all other validators for consistent pattern
+  - **Owner:**
+  - **Time:** 15 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.2.5:** Refactor any inconsistent patterns
+  - **Action:** Update validators to use executeRulesForCategory
+  - **Owner:**
+  - **Time:** 20 min
+  - **Completed:**
+  - **Notes:**
+
+### 2.3 Add JSDoc to FileValidator
+
+- [ ] **Task 2.3.1:** Add class-level JSDoc
+  - **Action:** Add comprehensive JSDoc with examples (see IMPLEMENTATION-GUIDE.md)
+  - **File:** `src/validators/file-validator.ts`
+  - **Lines:** Above class declaration
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.3.2:** Document key methods
+  - **Action:** Add JSDoc to executeRulesForCategory, setCurrentFile, report
+  - **File:** `src/validators/file-validator.ts`
+  - **Owner:**
+  - **Time:** 15 min
+  - **Completed:**
+  - **Notes:**
+
+### 2.4 Add JSDoc to SchemaValidator
+
+- [ ] **Task 2.4.1:** Add class-level JSDoc
+  - **Action:** Add comprehensive JSDoc with examples
+  - **File:** `src/validators/schema-validator.ts`
+  - **Lines:** Above class declaration
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.4.2:** Document abstract methods
+  - **Action:** Add JSDoc to getSchema, findConfigFiles, validateSemantics
+  - **File:** `src/validators/schema-validator.ts`
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 2.5 Phase 2 Validation
+
+- [ ] **Task 2.5.1:** Build project
+  - **Action:** `npm run build`
+  - **Expected:** Build succeeds
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.5.2:** Run tests
+  - **Action:** `npm test`
+  - **Expected:** All tests pass
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 2.5.3:** Commit Phase 2 changes
+  - **Action:** `git add . && git commit -m "refactor: Phase 2 - Standardize patterns and add JSDoc"`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+---
+
+## Phase 3: Documentation
+
+**Goal:** Create comprehensive architecture documentation
+**Status:** NOT STARTED Not Started
+**Estimated Time:** 1 hour
+
+### 3.1 Create Validation Architecture Doc
+
+- [ ] **Task 3.1.1:** Create validation-architecture.md
+  - **Action:** Create file with full content (see IMPLEMENTATION-GUIDE.md)
+  - **File:** `docs/validation-architecture.md`
+  - **Owner:**
+  - **Time:** 30 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 3.1.2:** Add diagrams/flowcharts
+  - **Action:** Add decision flowchart for validator selection
+  - **File:** `docs/validation-architecture.md`
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 3.2 Update Existing Documentation
+
+- [ ] **Task 3.2.1:** Update docs/architecture.md
+  - **Action:** Replace references to BaseValidator/JSONConfigValidator
+  - **File:** `docs/architecture.md`
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 3.2.2:** Update docs/rule-development.md
+  - **Action:** Update validator examples with new names
+  - **File:** `docs/rule-development.md`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 3.2.3:** Update docs/custom-rules.md
+  - **Action:** Update any validator references
+  - **File:** `docs/custom-rules.md`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+### 3.3 Update README and Contributing Docs
+
+- [ ] **Task 3.3.1:** Update main README.md if needed
+  - **Action:** Check for validator references and update
+  - **File:** `README.md`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 3.3.2:** Update CONTRIBUTING.md if exists
+  - **Action:** Update validator creation guidance
+  - **File:** `CONTRIBUTING.md`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+### 3.4 Phase 3 Validation
+
+- [ ] **Task 3.4.1:** Review all documentation links
+  - **Action:** Ensure all internal links work
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 3.4.2:** Commit Phase 3 changes
+  - **Action:** `git add . && git commit -m "docs: Phase 3 - Add validation architecture documentation"`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+---
+
+## Phase 4: Validation & Cleanup
+
+**Goal:** Thorough testing, changelog updates, final validation
+**Status:** NOT STARTED Not Started
+**Estimated Time:** 1 hour
+
+### 4.1 Test Suite Validation
+
+- [ ] **Task 4.1.1:** Run full test suite
+  - **Action:** `npm test -- --coverage`
+  - **Expected:** All tests pass, coverage maintained
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.1.2:** Run linter
+  - **Action:** `npm run lint`
+  - **Expected:** No errors
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.1.3:** Run type checker
+  - **Action:** `npm run type-check` (or `tsc --noEmit`)
+  - **Expected:** No type errors
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.1.4:** Build project
+  - **Action:** `npm run build`
+  - **Expected:** Clean build
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+### 4.2 Integration Testing
+
+- [ ] **Task 4.2.1:** Test on claudelint codebase itself
+  - **Action:** Run `npm run claudelint` on this project
+  - **Expected:** All validations work correctly
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.2.2:** Test all validator categories
+  - **Action:** Verify each validator type works (CLAUDE.md, Skills, MCP, etc.)
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.2.3:** Test with sample projects
+  - **Action:** Run against external Claude Code projects if available
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 4.3 Update Changelog
+
+- [ ] **Task 4.3.1:** Document breaking changes in CHANGELOG.md
+  - **Action:** Add entry for validator renaming (internal API only)
+  - **File:** `CHANGELOG.md`
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.3.2:** Document improvements
+  - **Action:** List code reduction, clarity improvements
+  - **File:** `CHANGELOG.md`
+  - **Owner:**
+  - **Time:** 3 min
+  - **Completed:**
+  - **Notes:**
+
+### 4.4 Update Migration Guide
+
+- [ ] **Task 4.4.1:** Create migration guide for plugin developers
+  - **Action:** Document how to update custom validators
+  - **File:** `docs/MIGRATION-GUIDE.md` or in validation-architecture.md
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 4.5 Code Review Prep
+
+- [ ] **Task 4.5.1:** Self-review all changes
+  - **Action:** Review diff, check for any issues
+  - **Command:** `git diff main...HEAD`
+  - **Owner:**
+  - **Time:** 15 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.5.2:** Create PR description
+  - **Action:** Write comprehensive PR description with before/after
+  - **Owner:**
+  - **Time:** 10 min
+  - **Completed:**
+  - **Notes:**
+
+### 4.6 Final Validation
+
+- [ ] **Task 4.6.1:** Verify line count reduction
+  - **Action:** Count lines removed vs added
+  - **Command:** `git diff --stat main...HEAD`
+  - **Expected:** ~733 lines removed
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.6.2:** Check for any TODO comments added
+  - **Action:** Search for TODO/FIXME in changed files
+  - **Command:** `git diff main...HEAD | grep -i "TODO\|FIXME"`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.6.3:** Final commit
+  - **Action:** `git add . && git commit -m "chore: Phase 4 - Testing, changelog, and final validation"`
+  - **Owner:**
+  - **Time:** 2 min
+  - **Completed:**
+  - **Notes:**
+
+- [ ] **Task 4.6.4:** Push and create PR
+  - **Action:** Push branch and create pull request
+  - **Owner:**
+  - **Time:** 5 min
+  - **Completed:**
+  - **Notes:**
+
+---
+
+## Post-Completion Checklist
+
+- [ ] All 38 tasks completed
+- [ ] 733+ lines of code removed
+- [ ] All tests passing
+- [ ] Documentation complete
+- [ ] PR created and reviewed
+- [ ] Changes merged to main
+- [ ] Archive this project to docs/projects/archive/
+
+---
+
+## Notes & Blockers
+
+### Blockers
+*Document any blockers here as they arise*
+
+### Decisions Made
+*Document any deviation from the original plan*
+
+### Lessons Learned
+*Capture insights for future refactoring projects*
+
+---
+
+**How to use this tracker:**
+1. Mark tasks complete by changing `- [ ]` to `- [x]`
+2. Fill in Owner, Completed date, and Notes as you go
+3. Update phase status emoji: NOT STARTED Not Started → IN PROGRESS In Progress → COMPLETE Complete
+4. Update progress percentages at top of document
+5. Commit tracker updates regularly to track progress

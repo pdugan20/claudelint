@@ -28,11 +28,20 @@ Comprehensive plan for building claudelint documentation website with VitePress.
 
 ## Architecture
 
-### Directory Structure
+### Directory Structure (Monorepo)
 
 ```text
 claude-lint/
-├── docs/                          # VitePress root
+├── src/                          # Source code
+│   └── validators/
+│       └── */rules/*.ts          # Rule implementations WITH doc metadata
+│
+├── docs/                         # Keep for GitHub browsing
+│   ├── README.md
+│   ├── getting-started.md
+│   └── architecture.md
+│
+├── website/                      # VitePress site (NEW)
 │   ├── .vitepress/
 │   │   ├── config.ts             # VitePress configuration
 │   │   ├── theme/
@@ -42,36 +51,112 @@ claude-lint/
 │   │   │       ├── FeatureGrid.vue
 │   │   │       ├── CodeTabs.vue
 │   │   │       ├── RuleCard.vue
-│   │   │       └── ...
-│   │   └── cache/                # Build cache (gitignored)
+│   │   │       ├── RuleExplorer.vue
+│   │   │       └── ConfigGenerator.vue
+│   │   └── plugins/
+│   │       └── rule-generator.ts # Auto-generates rule pages
 │   ├── public/                   # Static assets
 │   │   ├── logo.svg
 │   │   ├── favicon.ico
-│   │   └── images/
+│   │   └── og-image.png
 │   ├── index.md                  # Homepage
-│   ├── guide/
+│   ├── guide/                    # Hand-written guides (8 pages)
 │   │   ├── getting-started.md
-│   │   ├── installation.md
+│   │   ├── why-claudelint.md
 │   │   ├── configuration.md
-│   │   └── cli.md
-│   ├── validators/
-│   │   ├── index.md
+│   │   └── cli-reference.md
+│   ├── validators/               # Hand-written validator overviews (11 pages)
+│   │   ├── overview.md
 │   │   ├── claude-md.md
-│   │   └── ...
-│   ├── rules/
-│   │   ├── index.md
-│   │   └── ...
-│   ├── examples/
-│   │   └── ...
-│   └── development/
-│       └── ...
+│   │   └── skills.md
+│   ├── rules/                    # AUTO-GENERATED (105 pages - don't edit!)
+│   │   ├── overview.md           # Hand-written index
+│   │   ├── claude-md/
+│   │   │   ├── size-error.md     # Generated from src/
+│   │   │   └── *.md
+│   │   ├── skills/
+│   │   │   └── *.md
+│   │   └── */
+│   │       └── *.md
+│   ├── integrations/             # Hand-written integration guides (9 pages)
+│   │   ├── overview.md
+│   │   ├── npm-scripts.md
+│   │   ├── pre-commit.md
+│   │   └── github-actions.md
+│   ├── api/                      # Hand-written API docs (7 pages)
+│   │   ├── overview.md
+│   │   ├── claudelint-class.md
+│   │   └── functional-api.md
+│   ├── development/              # Hand-written dev guides (8 pages)
+│   │   ├── overview.md
+│   │   ├── custom-rules.md
+│   │   └── architecture.md
+│   └── reference/                # Hand-written reference (5 pages)
+│       ├── cheatsheet.md
+│       └── glossary.md
+│
+├── scripts/
+│   ├── generate-rule-docs.ts    # Rule doc generator
+│   ├── generators/
+│   │   └── rule-page.ts         # Page template generator
+│   └── sync-docs.ts             # Manual doc sync (Phase 1)
+│
 ├── package.json                  # Add docs scripts
 └── README.md                     # Link to docs site
 ```
 
+**Total Pages:** ~155
+
+- Hand-written: ~50 pages (guides, validators, integrations, API, development)
+- Auto-generated: 105 pages (rules)
+- Total build size: <200KB gzipped
+
+### Auto-Generation System
+
+claudelint uses **metadata-driven documentation**. Rule docs are auto-generated from TypeScript metadata in the rule source files.
+
+**How it works:**
+
+1. **Metadata in code**: Each rule has a `docs` property with examples, options, descriptions
+2. **Type-safe**: TypeScript enforces documentation schema
+3. **Auto-generate**: Script reads metadata and generates markdown
+4. **Single source of truth**: Docs always match code
+
+**Example:**
+
+```typescript
+// src/validators/skills/rules/skill-name.ts
+export const skillNameRule: Rule = {
+  meta: {
+    name: 'skill-name',
+    severity: 'error',
+    docs: {
+      summary: 'Skill name is required in frontmatter',
+      details: 'Detailed explanation...',
+      examples: {
+        incorrect: [{ code: '...', description: '...' }],
+        correct: [{ code: '...', description: '...' }],
+      },
+      options: { /* JSON schema */ },
+      relatedRules: ['skill-description'],
+    },
+  },
+  validate(context) { /* ... */ },
+};
+```
+
+**Build process:**
+
+```bash
+npm run docs:generate  # Reads src/, generates website/rules/
+npm run docs:build     # Builds VitePress site
+```
+
+See [auto-generation-guide.md](./auto-generation-guide.md) for complete details.
+
 ### Configuration File
 
-**docs/.vitepress/config.ts** - Main configuration:
+**website/.vitepress/config.ts** - Main configuration:
 
 ```typescript
 import { defineConfig } from 'vitepress'
@@ -568,95 +653,99 @@ pnpm add -g claudelint
 
 ## Deployment Strategy
 
-### Option 1: GitHub Pages (Recommended)
+### Vercel (Recommended)
 
-**Pros**:
+**Why Vercel:**
 
-- Free hosting
-- Automatic HTTPS
-- Good performance
-- Simple CI/CD
+- [x] Fastest edge network (global CDN)
+- [x] Automatic PR preview deployments
+- [x] Zero configuration (auto-detects VitePress)
+- [x] Free for open source
+- [x] Built-in analytics
+- [x] Excellent DX
 
-**Setup**:
+**Setup:**
 
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy VitePress site to Pages
+1. **Connect repository**
+   - Go to <https://vercel.com>
+   - Click "Import Project"
+   - Connect GitHub repo (pdugan20/claudelint)
+   - Vercel auto-detects VitePress
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+2. **Verify build settings** (should auto-detect):
+   ```text
+   Framework Preset: VitePress
+   Root Directory: ./
+   Build Command: npm run docs:build
+   Output Directory: website/.vitepress/dist
+   Install Command: npm install
+   ```
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+3. **Add build script** to package.json:
+   ```json
+   {
+     "scripts": {
+       "docs:generate": "tsx scripts/generate-rule-docs.ts",
+       "docs:dev": "npm run docs:generate && vitepress dev website",
+       "docs:build": "npm run docs:generate && vitepress build website",
+       "docs:preview": "vitepress preview website"
+     }
+   }
+   ```
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+4. **Deploy**
+   - Click "Deploy"
+   - Site live in ~1 minute
+   - Preview URL: `claudelint.vercel.app`
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+**Custom Domain:**
 
-      - name: Install dependencies
-        run: npm ci
+1. Go to Project Settings → Domains
+2. Add domain: `docs.claudelint.dev`
+3. Add DNS record at domain provider:
+   ```text
+   Type: CNAME
+   Name: docs
+   Value: cname.vercel-dns.com
+   ```
+4. Vercel provides automatic HTTPS
 
-      - name: Build with VitePress
-        run: npm run docs:build
+**PR Preview Deployments:**
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/.vitepress/dist
+Every pull request gets an automatic preview deployment:
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+- Unique URL for each PR
+- Comment with preview link added to PR automatically
+- Perfect for reviewing docs changes before merging
+- No configuration needed
+
+**Vercel Configuration (Optional):**
+
+Create `vercel.json` for advanced config:
+
+```json
+{
+  "buildCommand": "npm run docs:build",
+  "outputDirectory": "website/.vitepress/dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
 ```
 
-**Custom Domain**:
+### Alternative: GitHub Pages
 
-1. Add `docs/public/CNAME` with `docs.claudelint.dev`
-2. Configure DNS: `CNAME docs.claudelint.dev -> pdugan20.github.io`
-3. Enable HTTPS in GitHub Pages settings
-
-### Option 2: Vercel
-
-**Pros**:
-
-- Fastest edge network
-- Automatic previews for PRs
-- Great analytics
-- Zero config
-
-**Setup**:
-
-1. Connect GitHub repo at vercel.com
-2. Auto-detected VitePress settings
-3. Deploy
-
-**Build settings**:
-
-- Framework: VitePress
-- Build command: `npm run docs:build`
-- Output directory: `docs/.vitepress/dist`
-
-### Option 3: Netlify
+If you prefer GitHub Pages instead:
 
 **Pros**:
 
@@ -678,6 +767,129 @@ jobs:
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+```
+
+---
+
+## Information Architecture
+
+Based on analysis of ESLint and Prettier documentation structures. See [information-architecture.md](./information-architecture.md) for complete details.
+
+### Main Navigation (6 sections)
+
+```text
+Guide | Validators | Rules | Integrations | API | Development
+```
+
+### Site Structure (~155 pages)
+
+```text
+/guide/                    8 pages (getting started, config, CLI, troubleshooting)
+/validators/              11 pages (overview + 10 validators)
+/rules/                  106 pages (overview + 105 rules - AUTO-GENERATED)
+/integrations/             9 pages (npm, pre-commit, GitHub Actions, Claude plugin)
+/api/                      7 pages (programmatic API documentation)
+/development/              8 pages (custom rules, architecture, contributing)
+/reference/                5 pages (cheatsheet, glossary, rule index)
+```
+
+**Comparison to similar tools:**
+
+- **Prettier**: ~24 pages (simple formatter, no rules)
+- **claudelint**: ~155 pages (comprehensive linter)
+- **ESLint**: ~364 pages (284 rules vs our 105)
+
+claudelint is **43% the size of ESLint**, appropriate for our rule count.
+
+### Content Mapping
+
+Existing docs → New structure:
+
+```text
+docs/getting-started.md         → /guide/getting-started
+docs/configuration.md           → /guide/configuration
+docs/cli-reference.md           → /guide/cli-reference
+docs/troubleshooting.md         → /guide/troubleshooting
+
+docs/validation-reference.md    → Split into /validators/* pages
+
+docs/rules/**/*.md              → /rules/**/* (AUTO-GENERATED from code)
+
+docs/formatting-tools.md        → /integrations/formatting-tools
+docs/hooks.md                   → /integrations/claude-code-hooks
+docs/plugin-usage.md            → /integrations/claude-code-plugin
+
+docs/api/**/*.md                → /api/**/* (keep structure)
+
+docs/custom-rules.md            → /development/custom-rules
+docs/rule-development.md        → /development/rule-development
+docs/architecture.md            → /development/architecture
+CONTRIBUTING.md                 → /development/contributing
+
+docs/glossary.md                → /reference/glossary
+docs/file-naming-conventions.md → /reference/file-naming
+```
+
+---
+
+## Migration Phases
+
+### Phase 1: Manual Sync (Week 1)
+
+Start with manual doc copying to get site up quickly:
+
+```bash
+# Quick start
+npm install -D vitepress
+mkdir website
+node scripts/sync-docs.js  # Copies docs/ → website/
+npm run docs:dev
+```
+
+**Goal:** VitePress site running with existing docs.
+
+### Phase 2: Gradual Metadata Addition (Weeks 2-4)
+
+Add `docs` metadata to rules incrementally:
+
+```typescript
+// Priority 1: Most commonly violated rules (10 rules)
+// Priority 2: Auto-fixable rules (3 rules)
+// Priority 3: All remaining rules (92 rules)
+
+// Each PR: Add metadata to 5-10 rules
+```
+
+**Goal:** 25% by end of week 2, 100% by end of week 4.
+
+### Phase 3: Full Auto-Generation (Week 5+)
+
+Once all rules have metadata:
+
+```bash
+npm run docs:generate  # 100% auto-generated
+npm run docs:build     # Deploy to Vercel
+```
+
+**Goal:** Eliminate docs/ folder, single source of truth.
+
+---
+
+## Package.json Scripts
+
+```json
+{
+  "scripts": {
+    "docs:generate": "tsx scripts/generate-rule-docs.ts",
+    "docs:dev": "npm run docs:generate && vitepress dev website",
+    "docs:build": "npm run docs:generate && vitepress build website",
+    "docs:preview": "vitepress preview website"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0",
+    "vue": "^3.3.0"
+  }
+}
 ```
 
 ---
@@ -812,54 +1024,50 @@ Add to homepage:
 
 ## Timeline & Milestones
 
-### Week 1: Foundation
+### Week 1: VitePress Setup + Manual Sync
 
-**Days 1-2: Setup**
+**Phase 1: Quick Start**
 
-- Install VitePress
-- Configure basic structure
-- Set up theme and navigation
-- **Deliverable**: Dev server running
+- Day 1-2: Install VitePress, configure structure
+- Day 3-4: Copy existing docs (manual sync)
+- Day 5: Create homepage, test navigation
+- **Deliverable**: VitePress site running with existing content
 
-**Days 3-5: Content Migration**
+**Milestone:** Dev server at `localhost:5173` with all existing docs browsable
 
-- Migrate all markdown docs
-- Update links and frontmatter
-- Create homepage
-- **Deliverable**: All content accessible
+### Week 2-4: Metadata Migration
 
-### Week 2: Enhancement
+**Phase 2: Gradual Auto-Generation**
 
-**Days 1-3: Components**
+- Week 2: Add metadata to 25% of rules (Priority 1: common violations)
+- Week 3: Add metadata to 50% of rules (Priority 2: auto-fixable)
+- Week 4: Add metadata to 100% of rules (Priority 3: all remaining)
+- **Deliverable**: All 105 rules have TypeScript metadata
 
-- Build custom Vue components
-- Add interactive features
-- Polish design
-- **Deliverable**: Enhanced UX
+**Milestone:** 100% auto-generated rule docs, docs/ folder can be removed
 
-**Days 4-5: Features**
+### Week 5: Custom Components
 
-- Set up search
-- Add diagrams
-- Configure SEO
-- **Deliverable**: Full-featured site
+**Phase 3: Enhanced UX**
 
-### Week 3: Launch
+- Day 1-2: Build RuleExplorer, RuleCard components
+- Day 3-4: Build ConfigGenerator component
+- Day 5: Build interactive features
+- **Deliverable**: Enhanced documentation with Vue components
 
-**Days 1-2: Deployment**
+**Milestone:** Interactive rule browsing and config generation
 
-- Set up CI/CD
-- Deploy to production
-- Configure custom domain
-- **Deliverable**: Live site
+### Week 6: Deployment & Polish
 
-**Days 3-5: Polish**
+**Phase 4: Launch**
 
-- Accessibility audit
-- Performance optimization
-- Final testing
-- Announcement
+- Day 1: Deploy to Vercel
+- Day 2: Configure custom domain (docs.claudelint.dev)
+- Day 3-4: Accessibility audit, performance optimization
+- Day 5: Final testing, announcement
 - **Deliverable**: Production launch
+
+**Milestone:** Live at docs.claudelint.dev with 95+ Lighthouse score
 
 ---
 

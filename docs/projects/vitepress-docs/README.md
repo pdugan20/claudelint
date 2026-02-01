@@ -6,8 +6,34 @@ Create a modern, fast documentation website for claudelint using VitePress.
 
 **Goal**: Build and deploy a professional documentation website at docs.claudelint.dev
 **Framework**: VitePress (Vue-powered static site generator)
-**Timeline**: 2-3 weeks
-**Hosting**: GitHub Pages / Vercel / Cloudflare Pages
+**Timeline**: 6 weeks (phased approach)
+**Hosting**: Vercel (automatic PR previews, global CDN)
+**Approach**: Monorepo with auto-generated rule docs
+
+## Key Decisions
+
+### Architecture: Monorepo
+
+- [x] **website/** folder in claudelint repo (not separate repo)
+- [x] **Auto-generate** rule docs from TypeScript metadata
+- [x] **Single source of truth**: Rule docs live with code
+- [x] **Phased migration**: Manual → gradual → full auto-generation
+
+### Deployment: Vercel
+
+- [x] **Automatic PR previews** for every pull request
+- [x] **Global CDN** for fastest performance worldwide
+- [x] **Zero configuration** - auto-detects VitePress
+- [x] **Free for open source** projects
+
+### Information Architecture
+
+- [x] **~155 pages** total documentation
+- [x] **105 rule pages** auto-generated from code
+- [x] **6 main sections**: Guide, Validators, Rules, Integrations, API, Development
+- [x] **Hybrid approach**: ESLint's depth + Prettier's simplicity
+
+See [information-architecture.md](./information-architecture.md) and [auto-generation-guide.md](./auto-generation-guide.md) for complete details.
 
 ## Why VitePress?
 
@@ -58,18 +84,38 @@ Phase-by-phase task tracking with checkboxes:
 - Phase 5: Deployment
 - Phase 6: Polish & Launch
 
-### [PLAN.md](./PLAN.md)
+### [plan.md](./plan.md)
 
 Comprehensive implementation plan covering:
 
-- Architecture decisions
-- File structure
-- Content organization
+- Monorepo architecture (website/ folder)
+- Auto-generation system
+- VitePress configuration
 - Custom components
-- Deployment strategy
-- Migration guide
+- Vercel deployment strategy
+- Phased migration approach
 
-### [DESIGN.md](./DESIGN.md)
+### [information-architecture.md](./information-architecture.md)
+
+Site structure and navigation:
+
+- Analysis of ESLint and Prettier docs
+- Proposed 6-section structure
+- Content mapping (existing → new)
+- ~155 pages breakdown
+- Page templates and patterns
+
+### [auto-generation-guide.md](./auto-generation-guide.md)
+
+Rule documentation auto-generation:
+
+- Metadata-driven approach
+- TypeScript type definitions
+- Generation scripts and templates
+- Phased migration strategy
+- Developer workflow
+
+### [design.md](./design.md)
 
 Design system and branding:
 
@@ -79,31 +125,51 @@ Design system and branding:
 - Layout patterns
 - Accessibility considerations
 
-### [DEPLOYMENT.md](./DEPLOYMENT.md)
+### [deployment.md](./deployment.md)
 
-Deployment configuration and CI/CD:
+Deployment configuration:
 
-- GitHub Pages setup
-- Alternative hosting options
-- CI/CD pipeline
+- Vercel setup (primary)
+- GitHub Pages (alternative)
 - Custom domain configuration
 - Performance optimization
+- PR preview deployments
 
 ## Quick Stats
 
-### Content to Migrate
+### Documentation Scale
 
-- **Existing Docs**: 20+ markdown files
-- **Rule Docs**: 27+ individual rule pages
-- **Examples**: 3 example projects
-- **Guides**: Getting started, configuration, development
+- **Total Pages**: ~155 pages
+- **Auto-Generated**: 105 rule pages (from TypeScript metadata)
+- **Hand-Written**: ~50 pages (guides, validators, API, development)
+- **Build Size**: <200KB gzipped
+- **Build Time**: <30 seconds for full site
+
+### Content Organization
+
+- **/guide/**: 8 pages (getting started, config, CLI, troubleshooting)
+- **/validators/**: 11 pages (overview + 10 validators)
+- **/rules/**: 106 pages (overview + 105 auto-generated rules)
+- **/integrations/**: 9 pages (npm, pre-commit, GitHub Actions, Claude plugin)
+- **/api/**: 7 pages (programmatic API docs)
+- **/development/**: 8 pages (custom rules, architecture, contributing)
+- **/reference/**: 5 pages (cheatsheet, glossary, rule index)
+
+### Comparison to Similar Tools
+
+- **Prettier**: ~24 pages (simple formatter)
+- **claudelint**: ~155 pages (comprehensive linter) ← You are here
+- **ESLint**: ~364 pages (284 rules)
+
+claudelint is **43% the size of ESLint**, appropriate for our 105 rules.
 
 ### Features to Implement
 
-- **Core Features**: 8 essential features
+- **Auto-Generation**: Rule docs from TypeScript metadata
 - **Interactive Components**: 5 custom Vue components
-- **Navigation**: Multi-level sidebar, navbar, search
+- **Navigation**: Multi-level sidebar, navbar, local search
 - **Enhancements**: Dark mode, syntax highlighting, mobile-responsive
+- **PR Previews**: Automatic deployment previews on Vercel
 
 ## Key Features
 
@@ -201,9 +267,17 @@ npm run docs:preview
 
 **Phase**: Planning
 **Progress**: 0/6 phases complete
-**Next Phase**: Setup & Configuration
+**Next Step**: Validate VitePress (Pre-Phase)
 
-See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task list.
+**Phases:**
+
+1. Week 1: VitePress Setup + Manual Sync
+2. Week 2: Metadata Foundation (25% of rules)
+3. Weeks 3-4: Metadata Completion (100% of rules)
+4. Week 5: Custom Components + Enhanced Features
+5. Week 6: Deployment & Launch
+
+See [implementation-tracker.md](./implementation-tracker.md) for detailed task list.
 
 ## Success Criteria
 
@@ -249,9 +323,11 @@ See [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md) for detailed task l
 
 ## Timeline
 
-- **Week 1**: Setup, configuration, basic structure
-- **Week 2**: Content migration, custom components
-- **Week 3**: Deployment, polish, launch
+- **Week 1**: VitePress setup, manual doc sync
+- **Week 2**: Auto-generation infrastructure, add metadata to 25% of rules
+- **Weeks 3-4**: Complete metadata for all 105 rules
+- **Week 5**: Custom Vue components, interactive features
+- **Week 6**: Deploy to Vercel, performance optimization, launch
 
 ## Vue Components: What You Need to Know
 
