@@ -124,12 +124,12 @@ For plugin developers with custom validators:
 | Document | Purpose |
 |----------|---------|
 | [README.md](./README.md) | Project overview |
-| [TRACKER.md](./TRACKER.md) | Task tracking (update as you go!) |
-| [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md) | Detailed implementation steps |
-| [ARCHITECTURE-CHANGES.md](./ARCHITECTURE-CHANGES.md) | Before/after comparison |
-| [MIGRATION-NOTES.md](./MIGRATION-NOTES.md) | Track deviations and decisions |
-| [TESTING-PLAN.md](./TESTING-PLAN.md) | Testing strategy |
-| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | This document |
+| [tracker.md](./tracker.md) | Task tracking (update as you go!) |
+| [implementation-guide.md](./implementation-guide.md) | Detailed implementation steps |
+| [architecture-changes.md](./architecture-changes.md) | Before/after comparison |
+| [migration-notes.md](./migration-notes.md) | Track deviations and decisions |
+| [testing-plan.md](./testing-plan.md) | Testing strategy |
+| [quick-reference.md](./quick-reference.md) | This document |
 
 ## Key Metrics
 
@@ -143,7 +143,7 @@ For plugin developers with custom validators:
 
 ## Success Criteria
 
-[x] All 38 tasks in TRACKER.md complete
+[x] All 38 tasks in tracker.md complete
 [x] 733+ lines removed
 [x] All tests passing
 [x] Documentation complete
@@ -152,9 +152,9 @@ For plugin developers with custom validators:
 ## Quick Start
 
 1. Read [README.md](./README.md)
-2. Review [TRACKER.md](./TRACKER.md)
-3. Follow [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md)
-4. Mark tasks complete in TRACKER.md
-5. Document deviations in MIGRATION-NOTES.md
-6. Test using [TESTING-PLAN.md](./TESTING-PLAN.md)
+2. Review [tracker.md](./tracker.md)
+3. Follow [implementation-guide.md](./implementation-guide.md)
+4. Mark tasks complete in tracker.md
+5. Document deviations in migration-notes.md
+6. Test using [testing-plan.md](./testing-plan.md)
 7. Celebrate! 

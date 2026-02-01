@@ -73,7 +73,7 @@ claudelint is:
 
 ## Project Documents
 
-### [IMPLEMENTATION-TRACKER.md](./IMPLEMENTATION-TRACKER.md)
+### [implementation-tracker.md](./implementation-tracker.md)
 
 Phase-by-phase task tracking with checkboxes:
 

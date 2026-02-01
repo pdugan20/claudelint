@@ -45,18 +45,18 @@ The current validator architecture has several issues:
 
 ## Project Documents
 
-- [**TRACKER.md**](./TRACKER.md) - Task checklist with phase tracking
-- [**IMPLEMENTATION-GUIDE.md**](./IMPLEMENTATION-GUIDE.md) - Detailed implementation steps
-- [**ARCHITECTURE-CHANGES.md**](./ARCHITECTURE-CHANGES.md) - Before/after architecture comparison
-- [**MIGRATION-NOTES.md**](./MIGRATION-NOTES.md) - Notes for updating code
-- [**TESTING-PLAN.md**](./TESTING-PLAN.md) - How to validate changes
+- [**tracker.md**](./tracker.md) - Task checklist with phase tracking
+- [**implementation-guide.md**](./implementation-guide.md) - Detailed implementation steps
+- [**architecture-changes.md**](./architecture-changes.md) - Before/after architecture comparison
+- [**migration-notes.md**](./migration-notes.md) - Notes for updating code
+- [**testing-plan.md**](./testing-plan.md) - How to validate changes
 
 ## Quick Start
 
-1. Review [TRACKER.md](./TRACKER.md) for current status
-2. Read [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md) for detailed steps
+1. Review [tracker.md](./tracker.md) for current status
+2. Read [implementation-guide.md](./implementation-guide.md) for detailed steps
 3. Follow phases in order (don't skip)
-4. Mark tasks complete in TRACKER.md as you go
+4. Mark tasks complete in tracker.md as you go
 5. Run tests after each phase
 
 ## Project Timeline
@@ -92,6 +92,6 @@ If issues arise:
 
 ## Communication
 
-- Update TRACKER.md daily with progress
-- Document any deviations in MIGRATION-NOTES.md
+- Update tracker.md daily with progress
+- Document any deviations in migration-notes.md
 - Log issues in GitHub issues if blockers arise

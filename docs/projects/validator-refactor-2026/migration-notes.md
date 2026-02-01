@@ -7,7 +7,7 @@ This document tracks deviations from the original plan, decisions made during im
 ### Initial Setup
 
 - [ ] Project created in `docs/projects/validator-refactor-2026/`
-- [ ] TRACKER.md initialized with 38 tasks
+- [ ] tracker.md initialized with 38 tasks
 - [ ] Team assigned (if applicable)
 
 ---
@@ -308,10 +308,10 @@ npm run build && npm test
 
 ### Related Documents
 
-- [TRACKER.md](./TRACKER.md) - Task tracking
-- [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md) - Detailed steps
-- [ARCHITECTURE-CHANGES.md](./ARCHITECTURE-CHANGES.md) - Before/after comparison
-- [TESTING-PLAN.md](./TESTING-PLAN.md) - Testing strategy
+- [tracker.md](./tracker.md) - Task tracking
+- [implementation-guide.md](./implementation-guide.md) - Detailed steps
+- [architecture-changes.md](./architecture-changes.md) - Before/after comparison
+- [testing-plan.md](./testing-plan.md) - Testing strategy
 
 ---
 

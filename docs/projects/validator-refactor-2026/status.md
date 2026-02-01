@@ -43,7 +43,7 @@
 ### 2026-02-01
 - [x] Project created
 - [x] Documentation scaffolding complete
-- [x] TRACKER.md initialized with 38 tasks
+- [x] tracker.md initialized with 38 tasks
 - [x] All supporting documents created
 
 ### Next Session
@@ -85,12 +85,12 @@
 ## Quick Links
 
 - [Project README](./README.md)
-- [Task Tracker](./TRACKER.md)  Update this as you work!
-- [Implementation Guide](./IMPLEMENTATION-GUIDE.md)
-- [Architecture Changes](./ARCHITECTURE-CHANGES.md)
-- [Testing Plan](./TESTING-PLAN.md)
-- [Migration Notes](./MIGRATION-NOTES.md)
-- [Quick Reference](./QUICK-REFERENCE.md)
+- [Task Tracker](./tracker.md)  Update this as you work!
+- [Implementation Guide](./implementation-guide.md)
+- [Architecture Changes](./architecture-changes.md)
+- [Testing Plan](./testing-plan.md)
+- [Migration Notes](./migration-notes.md)
+- [Quick Reference](./quick-reference.md)
 
 ---
 
@@ -138,9 +138,9 @@ Sun Feb 7: Final review & PR
 ## Notes
 
 ### Important Reminders
-- Update TRACKER.md after completing each task
-- Update this STATUS.md at least daily
-- Document deviations in MIGRATION-NOTES.md
+- Update tracker.md after completing each task
+- Update this status.md at least daily
+- Document deviations in migration-notes.md
 - Test after each phase before proceeding
 
 ### Context

@@ -515,7 +515,7 @@ protected abstract validateSemantics(filePath: string, config: z.infer<T>): Prom
 
 **File:** `docs/validation-architecture.md`
 
-See the complete content in ARCHITECTURE-CHANGES.md section "New Documentation".
+See the complete content in architecture-changes.md section "New Documentation".
 
 **Key sections to include:**
 

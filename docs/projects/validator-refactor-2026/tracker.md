@@ -77,7 +77,7 @@
 ### 1.3 Simplify SchemaValidator
 
 - [ ] **Task 1.3.1:** Replace validateFile() method in json-config-base.ts
-  - **Action:** Replace lines 68-101 with new implementation (see IMPLEMENTATION-GUIDE.md)
+  - **Action:** Replace lines 68-101 with new implementation (see implementation-guide.md)
   - **File:** `src/validators/json-config-base.ts`
   - **Owner:**
   - **Time:** 10 min
@@ -301,7 +301,7 @@
   - **Notes:**
 
 - [ ] **Task 2.1.2:** Document current patterns
-  - **Action:** List which validators use which pattern in MIGRATION-NOTES.md
+  - **Action:** List which validators use which pattern in migration-notes.md
   - **Owner:**
   - **Time:** 10 min
   - **Completed:**
@@ -350,7 +350,7 @@
 ### 2.3 Add JSDoc to FileValidator
 
 - [ ] **Task 2.3.1:** Add class-level JSDoc
-  - **Action:** Add comprehensive JSDoc with examples (see IMPLEMENTATION-GUIDE.md)
+  - **Action:** Add comprehensive JSDoc with examples (see implementation-guide.md)
   - **File:** `src/validators/file-validator.ts`
   - **Lines:** Above class declaration
   - **Owner:**
@@ -421,7 +421,7 @@
 ### 3.1 Create Validation Architecture Doc
 
 - [ ] **Task 3.1.1:** Create validation-architecture.md
-  - **Action:** Create file with full content (see IMPLEMENTATION-GUIDE.md)
+  - **Action:** Create file with full content (see implementation-guide.md)
   - **File:** `docs/validation-architecture.md`
   - **Owner:**
   - **Time:** 30 min
@@ -584,7 +584,7 @@
 
 - [ ] **Task 4.4.1:** Create migration guide for plugin developers
   - **Action:** Document how to update custom validators
-  - **File:** `docs/MIGRATION-GUIDE.md` or in validation-architecture.md
+  - **File:** `docs/migration-guide.md` or in validation-architecture.md
   - **Owner:**
   - **Time:** 10 min
   - **Completed:**
