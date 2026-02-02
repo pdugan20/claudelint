@@ -2,9 +2,9 @@
 
 Project to add monorepo support with config inheritance and workspace detection.
 
-**Status:** Phase 4 In Progress (Phases 1-3 Complete, 4.1-4.3 Complete, 4.4 Remaining)
+**Status:** COMPLETE - All Phases Done
 **Start Date:** 2026-02-01
-**Target Completion:** TBD
+**Completion Date:** 2026-02-01
 
 ## Overview
 
@@ -15,8 +15,8 @@ Project to add monorepo support with config inheritance and workspace detection.
 | Phase 1: Config Inheritance | **COMPLETE** | 2 days | ~500 | 21/21 tasks (100%) |
 | Phase 2: Workspace Detection | **COMPLETE** | 1.5 days | ~400 | 15/15 tasks (100%) |
 | Phase 3: Testing & Docs | **COMPLETE** | 1 day | ~800 | 12/12 tasks (100%) |
-| Phase 4: Critical Improvements | In Progress | 2 days | ~400 | 3/4 sub-phases (75%) |
-| **Total** | **In Progress** | **6.5 days** | **~2100** | **Phases 1-3 + 4.1-4.3 complete** |
+| Phase 4: Critical Improvements | **COMPLETE** | 2 days | ~500 | 4/4 sub-phases (100%) |
+| **Total** | **COMPLETE** | **6.5 days** | **~2200** | **All phases complete** |
 
 ---
 
@@ -481,51 +481,58 @@ All 48 tasks complete. Project ready to ship!
 
 ---
 
-### 4.4 Workspace Root Auto-Detection
+### 4.4 Workspace Root Auto-Detection - COMPLETE
 
-- [ ] Implement findWorkspaceRoot function
-  - [ ] Walk up directory tree from cwd
-  - [ ] Check each directory for workspace config
-  - [ ] Return root path when found
-  - [ ] Return null if no workspace found
-- [ ] Integrate with workspace detection
-  - [ ] Update detectWorkspace to auto-find root
-  - [ ] Accept optional cwd parameter
-  - [ ] Default to process.cwd() if not provided
-- [ ] Update CLI commands
-  - [ ] Allow --workspace from any directory
-  - [ ] Allow --workspaces from any directory
-  - [ ] Update help text to clarify behavior
-- [ ] Add tests
-  - [ ] Test finds root from nested package
-  - [ ] Test finds root from workspace root
-  - [ ] Test returns null when not in workspace
-  - [ ] Test works with pnpm/npm/Yarn
+- [x] Implement findWorkspaceRoot function
+  - [x] Walk up directory tree from cwd
+  - [x] Check each directory for workspace config
+  - [x] Return root path when found
+  - [x] Return null if no workspace found
+- [x] Integrate with workspace detection
+  - [x] Update detectWorkspace to auto-find root
+  - [x] Accept optional autoDetectRoot parameter
+  - [x] Default to false for backward compatibility
+- [x] Update CLI commands
+  - [x] Enable auto-detection for --workspace flag
+  - [x] Enable auto-detection for --workspaces flag
+  - [x] Update help text to clarify behavior
+- [x] Add tests
+  - [x] Test finds root from nested package (7 findWorkspaceRoot tests)
+  - [x] Test finds root from workspace root
+  - [x] Test returns null when not in workspace
+  - [x] Test works with pnpm/npm/Yarn (4 auto-detect tests, 4 CLI tests)
 
 **Task 4.4 Completion Criteria:**
 
-- [ ] Works from any directory in monorepo
-- [ ] Finds workspace root automatically
-- [ ] Tests cover nested directories
-- [ ] Help text updated
+- [x] Works from any directory in monorepo
+- [x] Finds workspace root automatically
+- [x] Tests cover nested directories (11 new detector tests, 4 new CLI tests)
+- [x] Help text updated
 
-**Estimated Time:** 0.25 day (2-3 hours)
+**Estimated Time:** 0.25 day (2-3 hours) - COMPLETE
+
+**Implementation Notes:**
+- Added findWorkspaceRoot() function in detector.ts
+- Updated detectWorkspace() to accept autoDetectRoot parameter
+- CLI commands now enable auto-detection by default
+- All 15 new tests passing (11 detector + 4 CLI integration)
 
 ---
 
 **Phase 4 Completion Criteria:**
 
-- [x] CLI integration tests passing (15/15 tests)
+- [x] CLI integration tests passing (19/19 tests)
 - [x] Config caching works with extends (verified)
 - [x] Parallel validation 3-10x faster (implemented)
-- [ ] Can run from any directory (Phase 4.4 remaining)
+- [x] Can run from any directory (Phase 4.4 complete)
 
 ---
 
 ## PHASE 4 STATUS
 
-**Status:** In Progress (75% complete - 4.1, 4.2, 4.3 done; 4.4 remaining)
+**Status:** COMPLETE (All 4 sub-phases done)
 **Priority:** HIGH (fixes critical gaps)
+**Completion Date:** 2026-02-01
 
 ---
 

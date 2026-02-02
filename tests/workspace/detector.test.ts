@@ -5,7 +5,7 @@
 import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { detectWorkspace } from '../../src/utils/workspace/detector';
+import { detectWorkspace, findWorkspaceRoot } from '../../src/utils/workspace/detector';
 
 describe('detectWorkspace', () => {
   let tempDir: string;
@@ -291,6 +291,167 @@ describe('detectWorkspace', () => {
       const workspace = await detectWorkspace(tempDir);
 
       expect(workspace).toBeNull();
+    });
+  });
+
+  describe('findWorkspaceRoot', () => {
+    it('finds root from nested package directory', async () => {
+      // Create workspace structure
+      writeFileSync(
+        join(tempDir, 'pnpm-workspace.yaml'),
+        'packages:\n  - "packages/*"\n'
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'app-1'));
+
+      // Start from nested directory
+      const root = await findWorkspaceRoot(join(tempDir, 'packages', 'app-1'));
+
+      expect(root).toBe(tempDir);
+    });
+
+    it('finds root from workspace root itself', async () => {
+      writeFileSync(
+        join(tempDir, 'pnpm-workspace.yaml'),
+        'packages:\n  - "packages/*"\n'
+      );
+
+      const root = await findWorkspaceRoot(tempDir);
+
+      expect(root).toBe(tempDir);
+    });
+
+    it('returns null when not in workspace', async () => {
+      // No workspace config files
+      const root = await findWorkspaceRoot(tempDir);
+
+      expect(root).toBeNull();
+    });
+
+    it('works with npm workspaces', async () => {
+      writeFileSync(
+        join(tempDir, 'package.json'),
+        JSON.stringify({
+          workspaces: ['packages/*'],
+        })
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'lib-1'));
+
+      const root = await findWorkspaceRoot(join(tempDir, 'packages', 'lib-1'));
+
+      expect(root).toBe(tempDir);
+    });
+
+    it('works with Yarn workspaces', async () => {
+      writeFileSync(
+        join(tempDir, 'package.json'),
+        JSON.stringify({
+          workspaces: {
+            packages: ['apps/*'],
+          },
+        })
+      );
+      mkdirSync(join(tempDir, 'apps'));
+      mkdirSync(join(tempDir, 'apps', 'web'));
+
+      const root = await findWorkspaceRoot(join(tempDir, 'apps', 'web'));
+
+      expect(root).toBe(tempDir);
+    });
+
+    it('stops at file system root', async () => {
+      // This should walk up to root and return null
+      const root = await findWorkspaceRoot(tempDir);
+
+      expect(root).toBeNull();
+    });
+
+    it('handles deeply nested directories', async () => {
+      writeFileSync(
+        join(tempDir, 'pnpm-workspace.yaml'),
+        'packages:\n  - "packages/*"\n'
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'app-1'));
+      mkdirSync(join(tempDir, 'packages', 'app-1', 'src'));
+      mkdirSync(join(tempDir, 'packages', 'app-1', 'src', 'components'));
+
+      const root = await findWorkspaceRoot(
+        join(tempDir, 'packages', 'app-1', 'src', 'components')
+      );
+
+      expect(root).toBe(tempDir);
+    });
+  });
+
+  describe('auto-detect workspace root', () => {
+    it('auto-detects root when enabled', async () => {
+      // Create workspace
+      writeFileSync(
+        join(tempDir, 'pnpm-workspace.yaml'),
+        'packages:\n  - "packages/*"\n'
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'app-1'));
+
+      // Detect from nested directory with auto-detect enabled
+      const workspace = await detectWorkspace(
+        join(tempDir, 'packages', 'app-1'),
+        true
+      );
+
+      expect(workspace).not.toBeNull();
+      expect(workspace?.root).toBe(tempDir);
+      expect(workspace?.packageManager).toBe('pnpm');
+    });
+
+    it('does not auto-detect when disabled', async () => {
+      // Create workspace
+      writeFileSync(
+        join(tempDir, 'pnpm-workspace.yaml'),
+        'packages:\n  - "packages/*"\n'
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'app-1'));
+
+      // Detect from nested directory without auto-detect
+      const workspace = await detectWorkspace(
+        join(tempDir, 'packages', 'app-1'),
+        false
+      );
+
+      // Should not find workspace (nested dir has no config)
+      expect(workspace).toBeNull();
+    });
+
+    it('returns null when no workspace in tree', async () => {
+      // No workspace config anywhere
+      mkdirSync(join(tempDir, 'some-dir'));
+
+      const workspace = await detectWorkspace(join(tempDir, 'some-dir'), true);
+
+      expect(workspace).toBeNull();
+    });
+
+    it('works with npm workspaces from nested dir', async () => {
+      writeFileSync(
+        join(tempDir, 'package.json'),
+        JSON.stringify({
+          workspaces: ['packages/*'],
+        })
+      );
+      mkdirSync(join(tempDir, 'packages'));
+      mkdirSync(join(tempDir, 'packages', 'lib-1'));
+
+      const workspace = await detectWorkspace(
+        join(tempDir, 'packages', 'lib-1'),
+        true
+      );
+
+      expect(workspace).not.toBeNull();
+      expect(workspace?.root).toBe(tempDir);
+      expect(workspace?.packageManager).toBe('npm');
     });
   });
 });

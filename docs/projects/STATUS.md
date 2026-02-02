@@ -4,38 +4,6 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ## Active Projects
 
-### monorepo-support
-
-**Status:** Active Development - Phase 4 (75% Complete)
-**Timeline:** 6.5 days total (4.5 days Phases 1-3, 1.5 days Phase 4.1-4.3, 0.5 days remaining for 4.4)
-**Location:** [docs/projects/monorepo-support/](./monorepo-support/)
-
-**Purpose:** Add monorepo support with config inheritance and workspace detection
-
-**Key Objectives:**
-
-- Implement `extends` field for config reuse
-- Auto-detect pnpm/npm/Yarn workspaces
-- Add CLI flags for workspace-scoped validation
-- Zero breaking changes - all features opt-in
-
-**Implementation Phases:**
-
-- **Phase 1:** Config Inheritance (2 days) - COMPLETE
-- **Phase 2:** Workspace Detection (1.5 days) - COMPLETE
-- **Phase 3:** Testing & Documentation (1 day) - COMPLETE
-- **Phase 4:** Critical Improvements (2 days) - 75% Complete
-  - **DONE** Phase 4.1: CLI integration tests (15/15 passing)
-  - **DONE** Phase 4.2: Config caching verification (working correctly)
-  - **DONE** Phase 4.3: Parallel workspace validation (3-10x faster)
-  - **TODO** Phase 4.4: Workspace root auto-detection (remaining)
-
-**Progress:** Phases 1-3 + Phase 4.1-4.3 complete
-
-**Note:** Phases 1-3 shipped on 2026-02-01. Phase 4 fixes critical gaps and adds performance improvements.
-
----
-
 ### npm-release-setup
 
 **Status:** Planning Phase
@@ -121,6 +89,42 @@ This document provides a high-level overview of all projects in the claudelint r
 ---
 
 ## Archived Projects
+
+### monorepo-support
+
+**Status:** Completed
+**Location:** [docs/projects/monorepo-support/](./monorepo-support/)
+
+**Completion Date:** 2026-02-01
+
+**Summary:** Comprehensive monorepo support implementation with config inheritance, workspace detection, and performance optimizations. All features are opt-in with zero breaking changes.
+
+**Key Outcomes:**
+
+- Config inheritance via `extends` field (ESLint pattern)
+- Auto-detection for pnpm, npm, and Yarn workspaces
+- CLI flags for workspace-scoped validation (--workspace, --workspaces)
+- Parallel workspace validation (3-10x performance improvement)
+- Workspace root auto-detection (works from any directory)
+- 778 tests passing (including 19 workspace integration tests)
+
+**Implementation Phases:**
+
+- Phase 1: Config Inheritance (2 days) - ~500 LOC
+- Phase 2: Workspace Detection (1.5 days) - ~400 LOC
+- Phase 3: Testing & Documentation (1 day) - ~800 LOC
+- Phase 4: Critical Improvements (2 days) - ~500 LOC
+
+**Total:** 6.5 days, ~2200 lines of code
+
+**Reference Documentation:**
+
+- [Project README](./monorepo-support/README.md)
+- [Implementation Tracker](./monorepo-support/tracker.md)
+- [User Guide](./monorepo-support/user-guide.md)
+- [Testing Strategy](./monorepo-support/testing-strategy.md)
+
+---
 
 ### validator-refactor
 

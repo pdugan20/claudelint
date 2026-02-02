@@ -5,7 +5,7 @@
  */
 
 import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { load as parseYaml } from 'js-yaml';
 import { glob } from 'glob';
 
@@ -24,31 +24,100 @@ export interface WorkspaceInfo {
 }
 
 /**
+ * Find workspace root by walking up directory tree
+ *
+ * Starts from the given directory and walks up the directory tree
+ * looking for workspace configuration files (pnpm-workspace.yaml or
+ * package.json with workspaces field).
+ *
+ * @param startDir - Directory to start searching from (defaults to process.cwd())
+ * @returns Absolute path to workspace root, or null if no workspace found
+ *
+ * @example
+ * ```typescript
+ * const root = await findWorkspaceRoot('/path/to/monorepo/packages/app-1');
+ * // Returns: '/path/to/monorepo'
+ * ```
+ */
+export async function findWorkspaceRoot(startDir: string = process.cwd()): Promise<string | null> {
+  let currentDir = startDir;
+  const root = dirname(startDir).split('/')[0] + '/'; // File system root (e.g., '/')
+
+  while (currentDir !== root && currentDir !== dirname(currentDir)) {
+    // Check for pnpm workspace
+    if (existsSync(join(currentDir, 'pnpm-workspace.yaml'))) {
+      return currentDir;
+    }
+
+    // Check for npm/Yarn workspace
+    const packageJsonPath = join(currentDir, 'package.json');
+    if (existsSync(packageJsonPath)) {
+      try {
+        const content = readFileSync(packageJsonPath, 'utf-8');
+        const pkg = JSON.parse(content) as {
+          workspaces?: string[] | { packages?: string[] };
+        };
+
+        if (pkg.workspaces) {
+          return currentDir;
+        }
+      } catch {
+        // Ignore parse errors - invalid package.json doesn't mean no workspace
+      }
+    }
+
+    // Move up one directory
+    currentDir = dirname(currentDir);
+  }
+
+  // No workspace found
+  return null;
+}
+
+/**
  * Detect workspace configuration from current directory
  *
  * Checks for pnpm-workspace.yaml and package.json workspaces.
  * Returns null if no workspace configuration is found.
  *
+ * If autoDetectRoot is true, will walk up the directory tree to find
+ * the workspace root automatically. Otherwise, only checks the given directory.
+ *
  * @param cwd - Directory to search from (defaults to process.cwd())
+ * @param autoDetectRoot - Whether to auto-detect workspace root (defaults to false)
  * @returns WorkspaceInfo if workspace found, null otherwise
  *
  * @example
  * ```typescript
+ * // Detect from specific directory
  * const workspace = await detectWorkspace('/path/to/monorepo');
- * if (workspace) {
- *   console.log(`Found ${workspace.packages.length} packages`);
- * }
+ *
+ * // Auto-detect root from nested directory
+ * const workspace = await detectWorkspace('/path/to/monorepo/packages/app-1', true);
  * ```
  */
-export async function detectWorkspace(cwd: string = process.cwd()): Promise<WorkspaceInfo | null> {
+export async function detectWorkspace(
+  cwd: string = process.cwd(),
+  autoDetectRoot: boolean = false
+): Promise<WorkspaceInfo | null> {
+  // Auto-detect workspace root if requested
+  let searchDir = cwd;
+  if (autoDetectRoot) {
+    const root = await findWorkspaceRoot(cwd);
+    if (!root) {
+      return null;
+    }
+    searchDir = root;
+  }
+
   // Try pnpm first
-  const pnpmWorkspace = await detectPnpmWorkspace(cwd);
+  const pnpmWorkspace = await detectPnpmWorkspace(searchDir);
   if (pnpmWorkspace) {
     return pnpmWorkspace;
   }
 
   // Try npm/Yarn workspaces
-  const npmWorkspace = await detectNpmWorkspace(cwd);
+  const npmWorkspace = await detectNpmWorkspace(searchDir);
   if (npmWorkspace) {
     return npmWorkspace;
   }

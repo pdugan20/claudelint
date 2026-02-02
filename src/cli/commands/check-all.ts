@@ -43,8 +43,8 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fix-dry-run', 'Preview fixes without applying them')
     .option('--fix-type <type>', 'Fix errors, warnings, or all', 'all')
     .option('--show-docs-url', 'Show documentation URLs for rules')
-    .option('--workspace <name>', 'Validate specific workspace package by name')
-    .option('--workspaces', 'Validate all workspace packages')
+    .option('--workspace <name>', 'Validate specific workspace package by name (works from any directory)')
+    .option('--workspaces', 'Validate all workspace packages (works from any directory)')
     .action(
       async (options: {
         verbose?: boolean;
@@ -193,11 +193,12 @@ export function registerCheckAllCommand(program: Command): void {
 
           // Handle workspace-scoped validation
           if (options.workspace || options.workspaces) {
-            const workspace = await detectWorkspace(process.cwd());
+            // Auto-detect workspace root from current directory
+            const workspace = await detectWorkspace(process.cwd(), true);
 
             if (!workspace) {
               logger.newline();
-              logger.error('No workspace detected in current directory.');
+              logger.error('No workspace detected in current directory or parent directories.');
               logger.error('Workspace detection supports pnpm-workspace.yaml and package.json workspaces.');
               logger.newline();
               logger.error('Please run this command from a monorepo root directory.');

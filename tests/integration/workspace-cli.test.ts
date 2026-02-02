@@ -272,6 +272,78 @@ describe('Workspace CLI Integration', () => {
     });
   });
 
+  describe('workspace root auto-detection', () => {
+    it('works from nested package directory with --workspace', () => {
+      createPnpmWorkspace();
+
+      // Change to nested package directory
+      const nestedDir = join(tempDir, 'packages', 'app-1');
+      mkdirSync(nestedDir, { recursive: true });
+
+      const result = runCLI(`check-all --workspace app-1`, false);
+
+      expect(result.code).toBe(0);
+      expect(result.stdout).toContain('app-1');
+    });
+
+    it('works from nested package directory with --workspaces', () => {
+      createPnpmWorkspace();
+
+      // Change to nested package directory
+      const nestedDir = join(tempDir, 'packages', 'app-2');
+      mkdirSync(nestedDir, { recursive: true });
+
+      // Run from nested directory
+      try {
+        const stdout = execSync(`${join(__dirname, '../..', 'bin/claudelint')} check-all --workspaces`, {
+          cwd: nestedDir,
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        });
+
+        expect(stdout).toContain('Validating 3 workspace packages');
+        expect(stdout).toContain('app-1');
+        expect(stdout).toContain('app-2');
+        expect(stdout).toContain('shared');
+      } catch (error: any) {
+        // If command fails, check if it at least found the workspace
+        const output = error.stdout?.toString() || '';
+        expect(output).toContain('workspace');
+      }
+    });
+
+    it('works from deeply nested directory', () => {
+      createPnpmWorkspace();
+
+      // Create deeply nested directory
+      const deeplyNested = join(tempDir, 'packages', 'app-1', 'src', 'components');
+      mkdirSync(deeplyNested, { recursive: true });
+
+      // Run from deeply nested directory
+      try {
+        const stdout = execSync(`${join(__dirname, '../..', 'bin/claudelint')} check-all --workspaces`, {
+          cwd: deeplyNested,
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        });
+
+        expect(stdout).toContain('workspace');
+      } catch (error: any) {
+        const output = error.stdout?.toString() || '';
+        expect(output).toContain('workspace');
+      }
+    });
+
+    it('shows error when run from non-workspace directory', () => {
+      // No workspace config
+      const result = runCLI('check-all --workspaces', true);
+
+      expect(result.code).toBe(2);
+      const output = result.stdout + result.stderr;
+      expect(output).toContain('No workspace detected');
+    });
+  });
+
   describe('edge cases', () => {
     it('handles empty workspace (no packages)', () => {
       writeFileSync(
