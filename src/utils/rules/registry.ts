@@ -33,7 +33,7 @@ export class RuleRegistry {
     } else {
       // Backwards compatibility: wrap metadata in Rule object
       const ruleObj: Rule = {
-        meta: rule as RuleMetadata,
+        meta: rule,
         validate: () => {
           throw new Error(`Rule '${ruleId}' has no validate function - metadata-only registration`);
         },

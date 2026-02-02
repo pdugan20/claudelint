@@ -82,7 +82,7 @@ export const rule: Rule = {
           });
         }
       }
-    } catch (error) {
+    } catch {
       // Silently ignore directory read errors
     }
   },

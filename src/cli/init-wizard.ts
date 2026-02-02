@@ -350,7 +350,7 @@ export class InitWizard {
         logger.warn('npm scripts already exist, skipping...');
       }
     } catch (error) {
-      logger.error(`Failed to update package.json: ${error}`);
+      logger.error(`Failed to update package.json: ${String(error)}`);
     }
   }
 

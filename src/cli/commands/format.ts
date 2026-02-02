@@ -59,7 +59,7 @@ export function registerFormatCommand(program: Command): void {
           logger.error(`Markdownlint found issues in ${result.filesWithErrors.length} file(s)`);
           logger.newline();
         }
-      } catch (error) {
+      } catch {
         logger.warn('Markdownlint check failed');
         logger.newline();
       }
@@ -92,7 +92,7 @@ export function registerFormatCommand(program: Command): void {
           logger.error(`Prettier found issues in ${result.errors.length} file(s)`);
           logger.newline();
         }
-      } catch (error) {
+      } catch {
         logger.warn('Prettier check failed');
         logger.newline();
       }

@@ -83,7 +83,7 @@ export class CustomRuleLoader {
       await Promise.resolve();
 
       // Import the rule file
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const ruleModule = require(filePath) as { rule?: Rule };
 
       // Validate exports 'rule'

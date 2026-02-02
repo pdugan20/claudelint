@@ -53,9 +53,8 @@ export async function checkMarkdownlint(
     try {
       const configContent = readFileSync(configPath, 'utf-8');
       config = JSON.parse(configContent);
-    } catch (error) {
+    } catch {
       // If config file is invalid, fall back to defaults
-      console.warn(`Warning: Could not parse .markdownlint.json, using defaults`);
     }
   }
 

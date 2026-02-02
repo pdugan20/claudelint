@@ -28,7 +28,7 @@ export function registerCacheClearCommand(program: Command): void {
         logger.success('Cache cleared successfully');
         process.exit(0);
       } catch (error) {
-        logger.error(`Failed to clear cache: ${error}`);
+        logger.error(`Failed to clear cache: ${String(error)}`);
         process.exit(1);
       }
     });

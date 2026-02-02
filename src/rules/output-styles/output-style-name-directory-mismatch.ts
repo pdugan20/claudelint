@@ -42,7 +42,7 @@ export const rule: Rule = {
 
     if (frontmatter.name !== dirName) {
       context.report({
-        message: `Output style name "${frontmatter.name}" does not match directory name "${dirName}"`,
+        message: `Output style name "${String(frontmatter.name)}" does not match directory name "${dirName}"`,
       });
     }
   },

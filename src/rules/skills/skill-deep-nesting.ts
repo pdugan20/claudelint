@@ -37,7 +37,7 @@ async function getMaxDirectoryDepth(dir: string, currentDepth = 0): Promise<numb
     );
 
     return Math.max(...depths);
-  } catch (error) {
+  } catch {
     return currentDepth;
   }
 }
@@ -85,7 +85,7 @@ export const rule: Rule = {
             `Consider flattening the directory structure.`,
         });
       }
-    } catch (error) {
+    } catch {
       // Silently ignore directory read errors
     }
   },

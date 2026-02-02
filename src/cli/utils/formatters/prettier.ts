@@ -45,7 +45,7 @@ export async function checkPrettier(patterns: string[]): Promise<PrettierResult>
       } else {
         errors.push(file);
       }
-    } catch (error) {
+    } catch {
       // Skip files that Prettier can't parse
       // (e.g., binary files, unsupported formats)
       continue;
@@ -89,7 +89,7 @@ export async function formatPrettier(patterns: string[]): Promise<PrettierResult
         writeFileSync(file, formattedText, 'utf-8');
         formatted.push(file);
       }
-    } catch (error) {
+    } catch {
       // Track files that failed to format
       errors.push(file);
     }

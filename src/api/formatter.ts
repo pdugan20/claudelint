@@ -61,21 +61,24 @@ export async function loadFormatter(
  */
 async function loadBuiltinFormatter(name: BuiltinFormatterName): Promise<Formatter> {
   switch (name) {
-    case 'stylish':
+    case 'stylish': {
       const { StylishFormatter } = await import('./formatters/stylish');
       return new StylishFormatter();
+    }
 
-    case 'json':
+    case 'json': {
       const { JsonFormatter } = await import('./formatters/json');
       return new JsonFormatter();
+    }
 
-    case 'compact':
+    case 'compact': {
       const { CompactFormatter } = await import('./formatters/compact');
       return new CompactFormatter();
+    }
 
     default:
       // TypeScript ensures this is unreachable
-      throw new Error(`Unknown built-in formatter: ${name}`);
+      throw new Error(`Unknown built-in formatter: ${String(name)}`);
   }
 }
 

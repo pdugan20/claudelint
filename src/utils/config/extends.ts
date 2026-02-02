@@ -48,7 +48,7 @@ export function resolveConfigPath(extendsValue: string, fromDir: string): string
   try {
     // Try to resolve as a module
     return require.resolve(extendsValue, { paths: [fromDir] });
-  } catch (error) {
+  } catch {
     throw new ConfigError(
       `Extended config package not found: ${extendsValue}\n` +
         `Make sure the package is installed: npm install --save-dev ${extendsValue}\n` +

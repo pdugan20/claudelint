@@ -42,7 +42,7 @@ export const rule: Rule = {
 
     if (frontmatter.name !== dirName) {
       context.report({
-        message: `Agent name "${frontmatter.name}" does not match directory name "${dirName}"`,
+        message: `Agent name "${String(frontmatter.name)}" does not match directory name "${dirName}"`,
       });
     }
   },

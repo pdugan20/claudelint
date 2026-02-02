@@ -286,7 +286,7 @@ export class ClaudeLint {
       // Clean up temporary file
       try {
         unlinkSync(tmpFile);
-      } catch (error) {
+      } catch {
         // Ignore cleanup errors
       }
     }

@@ -93,6 +93,6 @@ export const LSPConfigSchema = z.object({
 });
 
 export type LSPConfig = z.infer<typeof LSPConfigSchema>;
-export type LSPServerInline = z.infer<typeof LSPServerInlineSchema>;
-export type LSPServerFile = z.infer<typeof LSPServerFileSchema>;
+export type LSPServerInline = z.infer<typeof _LSPServerInlineSchema>;
+export type LSPServerFile = z.infer<typeof _LSPServerFileSchema>;
 export type LSPServer = z.infer<typeof LSPServerSchema>;

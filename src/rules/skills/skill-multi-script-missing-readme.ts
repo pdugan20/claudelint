@@ -79,7 +79,7 @@ export const rule: Rule = {
           });
         }
       }
-    } catch (error) {
+    } catch {
       // Intentionally ignore directory read errors
       // This is an optional documentation check - if we can't read the directory,
       // we skip this check rather than failing validation

@@ -72,7 +72,7 @@ export const rule: Rule = {
             `Consider organizing scripts into subdirectories like: bin/, lib/, tests/`,
         });
       }
-    } catch (error) {
+    } catch {
       // Silently ignore directory read errors
     }
   },

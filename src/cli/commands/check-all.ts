@@ -302,7 +302,7 @@ export function registerCheckAllCommand(program: Command): void {
               // Display results for each package in original order
               let totalWorkspaceErrors = 0;
               let totalWorkspaceWarnings = 0;
-              let failedPackages: string[] = [];
+              const failedPackages: string[] = [];
 
               for (const pkgResult of packageResults) {
                 logger.section(`Package: ${pkgResult.packageName}`);
