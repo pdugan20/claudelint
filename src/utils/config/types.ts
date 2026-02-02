@@ -148,15 +148,9 @@ export function mergeConfig(
   return {
     // extends is NOT merged - it's resolved before merging
     rules: { ...defaults.rules, ...userConfig.rules },
-    overrides: [
-      ...(defaults.overrides || []),
-      ...(userConfig.overrides || []),
-    ],
+    overrides: [...(defaults.overrides || []), ...(userConfig.overrides || [])],
     ignorePatterns: [
-      ...new Set([
-        ...(defaults.ignorePatterns || []),
-        ...(userConfig.ignorePatterns || []),
-      ]),
+      ...new Set([...(defaults.ignorePatterns || []), ...(userConfig.ignorePatterns || [])]),
     ],
     output: { ...defaults.output, ...userConfig.output },
     reportUnusedDisableDirectives:

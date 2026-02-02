@@ -11,49 +11,45 @@ describe('settings-permission-invalid-rule', () => {
   it('should pass validation tests', async () => {
     await ruleTester.run('settings-permission-invalid-rule', rule, {
       valid: [
-        // Valid inline pattern
+        // Valid Tool format
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash(*.sh)',
-                action: 'allow',
-              },
-            ],
+            permissions: {
+              allow: ['Bash', 'Read', 'Write'],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
-        // Valid separate pattern field
+        // Valid Tool(pattern) format
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                pattern: '*.sh',
-                action: 'allow',
-              },
-            ],
+            permissions: {
+              deny: ['Bash(curl *)', 'Read(.env)'],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
-        // No pattern at all
+        // Valid complex patterns
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                action: 'allow',
-              },
-            ],
+            permissions: {
+              allow: [
+                'Bash(npm run *)',
+                'Read(~/Documents/*.pdf)',
+                'WebFetch(domain:example.com)',
+              ],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
         // Not a settings.json file
         {
-          content: JSON.stringify({ permissions: [] }),
+          content: JSON.stringify({
+            permissions: { allow: ['Invalid((()'] },
+          }),
           filePath: '/test/config.json',
         },
 
@@ -65,40 +61,84 @@ describe('settings-permission-invalid-rule', () => {
       ],
 
       invalid: [
-        // Both inline pattern and separate pattern field
+        // Unmatched opening parenthesis
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash(*.sh)',
-                pattern: '*.py',
-                action: 'allow',
-              },
-            ],
+            permissions: {
+              allow: ['Bash(npm run'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'both inline pattern',
+              message: 'Unmatched parentheses',
             },
           ],
         },
 
-        // Inline pattern with extra pattern field
+        // Unmatched closing parenthesis
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Read(/tmp/*)',
-                pattern: '/var/*',
-                action: 'deny',
-              },
-            ],
+            permissions: {
+              deny: ['Read)test)'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'both inline pattern',
+              message: 'Unmatched parentheses',
+            },
+          ],
+        },
+
+        // Empty permission rule
+        {
+          content: JSON.stringify({
+            permissions: {
+              ask: [''],
+            },
+          }),
+          filePath: '/test/settings.json',
+          errors: [
+            {
+              message: 'Empty permission rule',
+            },
+          ],
+        },
+
+        // Invalid format with multiple unmatched parens
+        {
+          content: JSON.stringify({
+            permissions: {
+              allow: ['Bash((test)'],
+            },
+          }),
+          filePath: '/test/settings.json',
+          errors: [
+            {
+              message: 'Unmatched parentheses',
+            },
+          ],
+        },
+
+        // Multiple invalid rules
+        {
+          content: JSON.stringify({
+            permissions: {
+              allow: ['Bash(npm run', 'Read)file)'],
+              deny: [''],
+            },
+          }),
+          filePath: '/test/settings.json',
+          errors: [
+            {
+              message: 'Unmatched parentheses',
+            },
+            {
+              message: 'Unmatched parentheses',
+            },
+            {
+              message: 'Empty permission rule',
             },
           ],
         },

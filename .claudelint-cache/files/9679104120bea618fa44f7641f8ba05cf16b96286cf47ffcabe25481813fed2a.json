@@ -1,11 +1,5 @@
 {
-  "valid": false,
-  "errors": [
-    {
-      "message": "permissions: Expected array, received object",
-      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/settings.local.json",
-      "severity": "error"
-    }
-  ],
+  "valid": true,
+  "errors": [],
   "warnings": []
 }

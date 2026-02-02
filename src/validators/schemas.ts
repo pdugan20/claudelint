@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { ModelNames, HookTypes, PermissionActions } from '../schemas/constants';
+import { ModelNames, HookTypes } from '../schemas/constants';
 import { semver } from '../schemas/refinements';
 
 /**
@@ -37,14 +37,22 @@ export const HookSchema = z.object({
 });
 
 /**
- * Permission rule schema for settings
- * Note: tool uses z.string() instead of ToolNames enum to allow wildcards
- * and provide custom validation with warnings for unknown tools
+ * Permissions schema for settings
+ * Based on official Claude Code schema: https://json.schemastore.org/claude-code-settings.json
+ *
+ * Permission rules use Tool(pattern) syntax:
+ * - "Bash" - matches all bash commands
+ * - "Bash(npm run *)" - matches npm run with wildcard
+ * - "Read(./.env)" - matches specific file
+ * - "WebFetch(domain:example.com)" - matches specific domain
  */
-export const PermissionRuleSchema = z.object({
-  tool: z.string(),
-  action: PermissionActions,
-  pattern: z.string().optional(),
+export const PermissionsSchema = z.object({
+  allow: z.array(z.string()).optional(),
+  deny: z.array(z.string()).optional(),
+  ask: z.array(z.string()).optional(),
+  defaultMode: z.enum(['acceptEdits', 'bypassPermissions', 'default', 'plan']).optional(),
+  disableBypassPermissionsMode: z.enum(['disable']).optional(),
+  additionalDirectories: z.array(z.string()).optional(),
 });
 
 /**
@@ -86,7 +94,7 @@ export const MarketplaceConfigSchema = z.object({
  * Complete settings schema
  */
 export const SettingsSchema = z.object({
-  permissions: z.array(PermissionRuleSchema).optional(),
+  permissions: PermissionsSchema.optional(),
   env: z.record(z.string()).optional(),
   model: ModelNames.optional(),
   apiKeyHelper: z.string().optional(),

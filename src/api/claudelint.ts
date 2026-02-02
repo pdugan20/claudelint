@@ -22,13 +22,7 @@
  * ```
  */
 
-import {
-  ClaudeLintOptions,
-  LintResult,
-  LintTextOptions,
-  Formatter,
-  LintMessage,
-} from './types';
+import { ClaudeLintOptions, LintResult, LintTextOptions, Formatter, LintMessage } from './types';
 import { RuleMetadata } from '../types/rule';
 import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
 import { loadFormatter as loadFormatterUtil } from './formatter';

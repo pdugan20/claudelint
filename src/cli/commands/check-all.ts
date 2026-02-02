@@ -43,7 +43,10 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fix-dry-run', 'Preview fixes without applying them')
     .option('--fix-type <type>', 'Fix errors, warnings, or all', 'all')
     .option('--show-docs-url', 'Show documentation URLs for rules')
-    .option('--workspace <name>', 'Validate specific workspace package by name (works from any directory)')
+    .option(
+      '--workspace <name>',
+      'Validate specific workspace package by name (works from any directory)'
+    )
     .option('--workspaces', 'Validate all workspace packages (works from any directory)')
     .action(
       async (options: {
@@ -199,7 +202,9 @@ export function registerCheckAllCommand(program: Command): void {
             if (!workspace) {
               logger.newline();
               logger.error('No workspace detected in current directory or parent directories.');
-              logger.error('Workspace detection supports pnpm-workspace.yaml and package.json workspaces.');
+              logger.error(
+                'Workspace detection supports pnpm-workspace.yaml and package.json workspaces.'
+              );
               logger.newline();
               logger.error('Please run this command from a monorepo root directory.');
               process.exit(2);
@@ -207,8 +212,8 @@ export function registerCheckAllCommand(program: Command): void {
 
             if (options.workspace) {
               // Validate specific package
-              const packagePath = workspace.packages.find((pkg) =>
-                basename(pkg) === options.workspace
+              const packagePath = workspace.packages.find(
+                (pkg) => basename(pkg) === options.workspace
               );
 
               if (!packagePath) {
@@ -317,7 +322,10 @@ export function registerCheckAllCommand(program: Command): void {
                   totalWorkspaceErrors += pkgResult.errors;
                   totalWorkspaceWarnings += pkgResult.warnings;
 
-                  if (pkgResult.errors > 0 || (pkgResult.warnings > 0 && options.warningsAsErrors)) {
+                  if (
+                    pkgResult.errors > 0 ||
+                    (pkgResult.warnings > 0 && options.warningsAsErrors)
+                  ) {
                     failedPackages.push(pkgResult.packageName);
                   }
                 }

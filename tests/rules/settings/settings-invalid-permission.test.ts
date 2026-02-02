@@ -11,48 +11,61 @@ describe('settings-invalid-permission', () => {
   it('should pass validation tests', async () => {
     await ruleTester.run('settings-invalid-permission', rule, {
       valid: [
-        // Valid 'allow' action
+        // Valid tool names in allow
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                action: 'allow',
-              },
-            ],
+            permissions: {
+              allow: ['Bash', 'Read', 'Write'],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
-        // Valid 'deny' action
+        // Valid tool names in deny
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Read',
-                action: 'deny',
-              },
-            ],
+            permissions: {
+              deny: ['Bash(curl *)', 'WebFetch'],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
-        // Valid 'ask' action
+        // Valid tool names in ask
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Write',
-                action: 'ask',
-              },
-            ],
+            permissions: {
+              ask: ['Write', 'Edit'],
+            },
+          }),
+          filePath: '/test/settings.json',
+        },
+
+        // Valid MCP server reference
+        {
+          content: JSON.stringify({
+            permissions: {
+              allow: ['mcp__myserver'],
+            },
+          }),
+          filePath: '/test/settings.json',
+        },
+
+        // Valid tool with pattern
+        {
+          content: JSON.stringify({
+            permissions: {
+              allow: ['Bash(npm run *)'],
+            },
           }),
           filePath: '/test/settings.json',
         },
 
         // Not a settings.json file
         {
-          content: JSON.stringify({ permissions: [] }),
+          content: JSON.stringify({
+            permissions: { allow: ['InvalidTool'] },
+          }),
           filePath: '/test/config.json',
         },
 
@@ -64,81 +77,66 @@ describe('settings-invalid-permission', () => {
       ],
 
       invalid: [
-        // Invalid action: 'reject'
+        // Invalid tool name in allow
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                action: 'reject',
-              },
-            ],
+            permissions: {
+              allow: ['InvalidTool'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'Invalid permission action',
+              message: 'Invalid tool name',
             },
           ],
         },
 
-        // Invalid action: 'accept'
+        // Invalid tool name in deny
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Read',
-                action: 'accept',
-              },
-            ],
+            permissions: {
+              deny: ['FakeTool(pattern)'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'Invalid permission action',
+              message: 'Invalid tool name',
             },
           ],
         },
 
-        // Invalid action: random string
+        // Invalid tool name in ask
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Write',
-                action: 'maybe',
-              },
-            ],
+            permissions: {
+              ask: ['NotARealTool'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'Invalid permission action',
+              message: 'Invalid tool name',
             },
           ],
         },
 
-        // Multiple invalid actions
+        // Multiple invalid tool names
         {
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                action: 'enable',
-              },
-              {
-                tool: 'Read',
-                action: 'disable',
-              },
-            ],
+            permissions: {
+              allow: ['Bash', 'InvalidTool1'],
+              deny: ['BadTool'],
+            },
           }),
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'Invalid permission action',
+              message: 'Invalid tool name',
             },
             {
-              message: 'Invalid permission action',
+              message: 'Invalid tool name',
             },
           ],
         },

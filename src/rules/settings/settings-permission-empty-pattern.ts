@@ -67,19 +67,27 @@ export const rule: Rule = {
       return;
     }
 
-    // Validate each permission rule
-    for (const rule of config.permissions) {
-      // Parse Tool(pattern) syntax if present
-      const toolPatternMatch = rule.tool.match(/^([^(]+)\(([^)]*)\)$/);
+    // Check all permission arrays (allow, deny, ask)
+    const arrays = [
+      { name: 'allow', rules: config.permissions.allow || [] },
+      { name: 'deny', rules: config.permissions.deny || [] },
+      { name: 'ask', rules: config.permissions.ask || [] },
+    ];
 
-      if (toolPatternMatch) {
-        const inlinePattern = toolPatternMatch[2].trim();
+    for (const { name, rules } of arrays) {
+      for (const ruleString of rules) {
+        // Parse Tool(pattern) syntax if present
+        const toolPatternMatch = ruleString.match(/^([^(]+)\(([^)]*)\)$/);
 
-        // Warn if inline pattern is empty
-        if (inlinePattern.length === 0) {
-          context.report({
-            message: `Empty inline pattern in Tool(pattern) syntax: ${rule.tool}`,
-          });
+        if (toolPatternMatch) {
+          const inlinePattern = toolPatternMatch[2].trim();
+
+          // Warn if inline pattern is empty
+          if (inlinePattern.length === 0) {
+            context.report({
+              message: `Empty inline pattern in permissions.${name}: "${ruleString}". Use "${toolPatternMatch[1]}" instead of "${ruleString}"`,
+            });
+          }
         }
       }
     }

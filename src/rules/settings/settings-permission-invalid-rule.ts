@@ -2,6 +2,16 @@
  * Rule: settings-permission-invalid-rule
  *
  * Validates Tool(pattern) syntax in permission rules.
+ *
+ * Valid formats:
+ * - "Tool" - matches all uses of tool
+ * - "Tool(pattern)" - matches specific pattern
+ *
+ * Examples:
+ * - "Bash" - all bash commands
+ * - "Bash(npm run *)" - npm run with wildcard
+ * - "Read(~/.zshrc)" - specific file
+ * - "WebFetch(domain:example.com)" - specific domain
  */
 
 import { Rule } from '../../types/rule';
@@ -9,6 +19,41 @@ import { SettingsSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type SettingsConfig = z.infer<typeof SettingsSchema>;
+
+/**
+ * Check if permission rule has valid syntax
+ */
+function hasValidSyntax(rule: string): { valid: boolean; error?: string } {
+  // Check for unmatched parentheses
+  const openCount = (rule.match(/\(/g) || []).length;
+  const closeCount = (rule.match(/\)/g) || []).length;
+
+  if (openCount !== closeCount) {
+    return {
+      valid: false,
+      error: 'Unmatched parentheses',
+    };
+  }
+
+  // Check for empty tool name
+  if (rule.trim().length === 0) {
+    return {
+      valid: false,
+      error: 'Empty permission rule',
+    };
+  }
+
+  // Check for valid format: Tool or Tool(pattern)
+  const validFormat = /^[^()]+$|^[^()]+\([^)]*\)$/;
+  if (!validFormat.test(rule)) {
+    return {
+      valid: false,
+      error: 'Invalid format. Use "Tool" or "Tool(pattern)"',
+    };
+  }
+
+  return { valid: true };
+}
 
 /**
  * Validates Tool(pattern) syntax in permission rules
@@ -46,21 +91,19 @@ export const rule: Rule = {
       return;
     }
 
-    // Validate each permission rule
-    for (const rule of config.permissions) {
-      // Parse Tool(pattern) syntax if present
-      const toolPatternMatch = rule.tool.match(/^([^(]+)\(([^)]*)\)$/);
+    // Check all permission arrays (allow, deny, ask)
+    const arrays = [
+      { name: 'allow', rules: config.permissions.allow || [] },
+      { name: 'deny', rules: config.permissions.deny || [] },
+      { name: 'ask', rules: config.permissions.ask || [] },
+    ];
 
-      if (toolPatternMatch) {
-        const toolName = toolPatternMatch[1].trim();
-        const inlinePattern = toolPatternMatch[2].trim();
-
-        // Check if both inline pattern and separate pattern field are specified
-        if (inlinePattern && rule.pattern) {
+    for (const { name, rules } of arrays) {
+      for (const ruleString of rules) {
+        const validation = hasValidSyntax(ruleString);
+        if (!validation.valid) {
           context.report({
-            message:
-              `Permission rule has both inline pattern "${inlinePattern}" in tool field and separate pattern field "${rule.pattern}". ` +
-              `Use only one format: either "tool": "${toolName}(${inlinePattern})" OR "tool": "${toolName}", "pattern": "${rule.pattern}"`,
+            message: `Invalid syntax in permissions.${name}: "${ruleString}". ${validation.error}`,
           });
         }
       }

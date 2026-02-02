@@ -14,16 +14,9 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash(*.sh)',
-                prompt: 'run shell scripts',
-              },
-              {
-                tool: 'Read(src/**)',
-                prompt: 'read source files',
-              },
-            ],
+            permissions: {
+              allow: ['Bash(*.sh)', 'Read(src/**)'],
+            },
           }),
         },
       ],
@@ -37,12 +30,9 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash',
-                prompt: 'run bash commands',
-              },
-            ],
+            permissions: {
+              allow: ['Bash', 'Read', 'Write'],
+            },
           }),
         },
       ],
@@ -57,14 +47,11 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash()',
-                prompt: 'run bash commands',
-              },
-            ],
+            permissions: {
+              allow: ['Bash()'],
+            },
           }),
-          errors: [{ message: 'Empty inline pattern in Tool(pattern) syntax: Bash()' }],
+          errors: [{ message: 'Empty inline pattern' }],
         },
       ],
     });
@@ -77,14 +64,34 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Read(   )',
-                prompt: 'read files',
-              },
-            ],
+            permissions: {
+              deny: ['Read(   )'],
+            },
           }),
-          errors: [{ message: 'Empty inline pattern in Tool(pattern) syntax: Read(   )' }],
+          errors: [{ message: 'Empty inline pattern' }],
+        },
+      ],
+    });
+  });
+
+  it('should warn for multiple empty patterns', async () => {
+    await ruleTester.run('settings-permission-empty-pattern', rule, {
+      valid: [],
+      invalid: [
+        {
+          filePath: '/test/.claude/settings.json',
+          content: JSON.stringify({
+            permissions: {
+              allow: ['Bash()'],
+              deny: ['Read()'],
+              ask: ['Write()'],
+            },
+          }),
+          errors: [
+            { message: 'Empty inline pattern' },
+            { message: 'Empty inline pattern' },
+            { message: 'Empty inline pattern' },
+          ],
         },
       ],
     });
@@ -96,16 +103,9 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash()',
-                prompt: 'run bash commands',
-              },
-              {
-                tool: 'Read()',
-                prompt: 'read files',
-              },
-            ],
+            permissions: {
+              allow: ['Bash()', 'Read()'],
+            },
           }),
           options: { allowEmpty: true },
         },
@@ -121,15 +121,12 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Write()',
-                prompt: 'write files',
-              },
-            ],
+            permissions: {
+              ask: ['Write()'],
+            },
           }),
           options: { allowEmpty: false },
-          errors: [{ message: 'Empty inline pattern in Tool(pattern) syntax: Write()' }],
+          errors: [{ message: 'Empty inline pattern' }],
         },
       ],
     });
@@ -141,12 +138,9 @@ describe('settings-permission-empty-pattern', () => {
         {
           filePath: '/test/random.json',
           content: JSON.stringify({
-            permissions: [
-              {
-                tool: 'Bash()',
-                prompt: 'run bash',
-              },
-            ],
+            permissions: {
+              allow: ['Bash()'],
+            },
           }),
         },
       ],
@@ -166,7 +160,7 @@ describe('settings-permission-empty-pattern', () => {
     });
   });
 
-  it('should pass when no permissions array', async () => {
+  it('should pass when no permissions object', async () => {
     await ruleTester.run('settings-permission-empty-pattern', rule, {
       valid: [
         {

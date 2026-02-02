@@ -18,12 +18,9 @@ describe('SettingsValidator', () => {
   describe('Orchestration', () => {
     it('should validate valid settings', async () => {
       const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'Write',
-            action: 'ask',
-          },
-        ],
+        permissions: {
+          ask: ['Write'],
+        },
       });
 
       const validator = new SettingsValidator({ path: filePath });
@@ -60,16 +57,10 @@ describe('SettingsValidator', () => {
 
     it('should aggregate results from complex settings', async () => {
       const filePath = await createSettingsFile({
-        permissions: [
-          {
-            tool: 'Write',
-            action: 'ask',
-          },
-          {
-            tool: 'Bash',
-            action: 'allow',
-          },
-        ],
+        permissions: {
+          ask: ['Write'],
+          allow: ['Bash'],
+        },
         hooks: [
           {
             event: 'PreToolUse',

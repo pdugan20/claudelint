@@ -86,7 +86,7 @@ async function checkSymlinkCycle(filePath: string, maxDepth: number): Promise<bo
     visited.add(currentPath);
 
     // Follow symlink chain
-     
+
     while (true) {
       const linkStats = await lstat(currentPath);
 

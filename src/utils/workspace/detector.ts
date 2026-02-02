@@ -207,9 +207,7 @@ async function detectNpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
     } else if (pkg.workspaces.packages && Array.isArray(pkg.workspaces.packages)) {
       workspacePatterns = pkg.workspaces.packages;
     } else {
-      console.warn(
-        'Warning: package.json workspaces must be an array or { packages: [...] }'
-      );
+      console.warn('Warning: package.json workspaces must be an array or { packages: [...] }');
       return null;
     }
 

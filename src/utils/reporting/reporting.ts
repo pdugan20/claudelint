@@ -1,5 +1,9 @@
 import chalk from 'chalk';
-import { ValidationError, ValidationWarning, ValidationResult } from '../../validators/file-validator';
+import {
+  ValidationError,
+  ValidationWarning,
+  ValidationResult,
+} from '../../validators/file-validator';
 import { ProgressIndicator } from './progress';
 import { ValidationCache } from '../cache';
 import { ConfigError } from '../config/resolver';

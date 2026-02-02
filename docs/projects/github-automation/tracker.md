@@ -12,13 +12,14 @@ This document tracks the multi-phase project to improve GitHub automation, updat
 | # | Task | Status | Priority | Notes |
 |---|------|--------|----------|-------|
 | 1 | Research .github folder patterns | [COMPLETE] Complete | High | See [prettier-eslint-research.md](./prettier-eslint-research.md) |
-| 2 | Update all out-of-date packages | [COMPLETE] Complete | High | 777/780 tests passing, 5 security vulns fixed |
+| 2 | Update all out-of-date packages | [COMPLETE] Complete | High | 778/780 tests passing, 5 security vulns fixed |
 | 3 | Setup and configure Dependabot | [COMPLETE] Complete | High | Enhanced with grouping, labels, commit prefixes |
 | 4 | Add appropriate badges to README | [COMPLETE] Complete | Medium | Added 5 new badges (downloads, coverage, node, size, stars) |
 | 5 | Setup codecov and configure coverage exemptions | [COMPLETE] Complete | High | .codecov.yml created with exemptions and targets |
 | 6 | Configure GitHub branch protection and contributor workflow | [COMPLETE] Complete | High | Templates created, docs written. Needs GitHub repo setup |
 | 7 | Create GitHub repository and push code | [PENDING] Pending | High | Push to GitHub, then run label script |
-| 8 | Fix 175 TypeScript-ESLint violations | [PENDING] Pending | **CRITICAL** | Must fix immediately after commit - see Task 8 below |
+| 8 | Fix 171 TypeScript-ESLint violations | [COMPLETE] Complete | High | All type safety errors fixed, tests passing |
+| 9 | Fix Settings schema to match official Claude Code format | [IN PROGRESS] In Progress | **CRITICAL** | Schema was completely wrong - see Task 9 below |
 
 ## Task Details
 
@@ -549,11 +550,11 @@ Following industry best practices:
 
 ## Summary
 
-### Completed (6 of 7 tasks)
+### Completed (7 of 8 tasks)
 
 [COMPLETE] **Research:** Analyzed prettier and eslint .github setups, documented best practices
 
-[COMPLETE] **Packages:** Updated 14 major packages, fixed 5 security vulnerabilities, 777/780 tests passing
+[COMPLETE] **Packages:** Updated 14 major packages, fixed 5 security vulnerabilities, 778/780 tests passing
 
 [COMPLETE] **Dependabot:** Enhanced config with grouping, labels, commit prefixes, scheduled updates
 
@@ -562,6 +563,8 @@ Following industry best practices:
 [COMPLETE] **Codecov:** Complete configuration with 80% target, exemptions, component tracking
 
 [COMPLETE] **GitHub Templates:** Created 5 issue templates, PR template, CODEOWNERS, SECURITY.md, branch protection docs
+
+[COMPLETE] **TypeScript-ESLint:** Fixed all 171 type safety violations across 4 phases, 0 errors remaining
 
 [PENDING] **GitHub Setup:** Need to push to GitHub and run label script (54 labels ready)
 
@@ -613,35 +616,147 @@ Following industry best practices:
 
 **Last Updated:** 2026-02-01
 **Next Review:** After GitHub repository setup
-**Status:** 85% Complete (6/7 core tasks done)
+**Status:** 87.5% Complete (7/8 core tasks done)
 
-### Task 8: Fix 175 TypeScript-ESLint type safety violations [CRITICAL - NEXT]
+### Task 8: Fix 171 TypeScript-ESLint type safety violations [COMPLETE]
 
-**Status:** Pending (MUST be fixed immediately after initial commit)
+**Status:** Complete
 
 **Background:**
 
-TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 175 violations represent real bugs.
+TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171 violations represented real type safety issues.
 
-**Violation Categories:**
-- Unsafe any assignments (~60)
-- Unsafe member access (~45)  
-- Unsafe function calls (~25)
-- Unused error variables (~15)
-- require() imports (~10)
-- Missing await (~5)
-- Other (~15)
+**What We Fixed:**
 
-**Files:** ~40 files in src/api, src/cli, src/rules, src/schemas, src/utils, src/validators
+**Phase 1: Quick Wins (24 errors fixed, 171→147)**
+- Removed unused error variables in catch blocks
+- Fixed duplicate catch blocks
+- Wrapped case statements in braces for proper scoping
+- Removed unused variables with `_` prefix
 
-**Fix Plan:** (est. 2 hours total)
-1. Phase 1: Unused vars, empty interfaces (30min)
-2. Phase 2: Convert require() to import() (15min)
-3. Phase 3: Fix unsafe any with proper types (45min)
-4. Phase 4: Fix async/await issues (15min)
-5. Verify: lint + tests + build all pass
+**Phase 2: Dynamic Imports (30 errors fixed, 147→117)**
+- Added type assertions for all require() calls
+- Fixed typeof import assertions for Node.js modules
+- Properly typed dynamic imports
 
-**ESLint 9 Setup:**
-Using compatibility layer (@eslint/eslintrc) to keep existing .eslintrc.json rules while using ESLint 9.
+**Phase 3: Runtime Type Validation (73 errors fixed, 117→44)**
+- Created type-guards.ts with helper functions (isObject, hasProperty, isString)
+- Fixed all LSP rules (8 files) with proper type guards
+- Fixed all MCP rules (10 files) with runtime validation
+- Fixed Plugin and Settings rules (5 files)
+- Changed from typed interfaces to unknown + runtime validation for true type safety
+
+**Phase 4: Final Cleanup (44 errors fixed, 44→0)**
+- Changed safeParseJSON return type from any to unknown
+- Fixed base-to-string errors with isString() checks
+- Converted all remaining require() to ES6 imports
+- Made ClaudeLint.findConfigFile() synchronous (was async with dummy await)
+- Fixed formatter.ts to use isFormatter() type guard
+- Fixed empty LintOptions interface to type alias
+
+**Additional Fixes:**
+- Fixed RuleMetadata type mismatch (API vs canonical type)
+- Removed unused @ts-expect-error directive
+- Fixed CLI test for check-claude-md command
+
+**Results:**
+- ESLint errors: 171 → 0 ✓
+- Test suites: 146/146 passing ✓
+- Tests: 778/780 passing, 2 skipped ✓
+- All TypeScript compilation errors resolved ✓
+
+**Completed:** 2026-02-01
+
+---
+
+### Task 9: Fix Settings Schema to Match Official Claude Code Format [IN PROGRESS]
+
+**Status:** In Progress (CRITICAL - Schema was completely wrong)
+
+**Discovery:**
+
+While investigating validation errors in `.claude/settings.local.json`, discovered that our entire settings schema was designed based on assumptions rather than Claude Code's official format.
+
+**The Problem:**
+
+**Our wrong schema:**
+```typescript
+permissions: Array<{
+  tool: string,
+  action: PermissionActions,
+  pattern?: string
+}>
+```
+
+**Official Claude Code schema (from https://json.schemastore.org/claude-code-settings.json):**
+```typescript
+permissions: {
+  allow?: string[],
+  deny?: string[],
+  ask?: string[],
+  defaultMode?: "acceptEdits" | "bypassPermissions" | "default" | "plan",
+  disableBypassPermissionsMode?: "disable",
+  additionalDirectories?: string[]
+}
+```
+
+**What's Wrong:**
+
+1. ✗ Permissions is an **object**, not an array
+2. ✗ Has `allow`, `deny`, `ask` arrays, not `action` field
+3. ✗ Rules are **strings** like `"Bash(npm run *)"`, not objects
+4. ✗ Missing `defaultMode`, `disableBypassPermissionsMode`, `additionalDirectories`
+
+**Impact:**
+
+- [X] **All settings validation is broken** - validating wrong format
+- [X] **3 permission rules are useless** - checking non-existent structure
+- [X] **Tests are testing wrong format** - all permission tests need rewrite
+- [X] **Documentation is wrong** - examples show wrong format
+- [ ] **Users not affected yet** - package hasn't been published to npm
+
+**Files to Fix:**
+
+1. **Schema Definition**
+   - [ ] `src/validators/schemas.ts` - Update `SettingsSchema` and `PermissionRuleSchema`
+
+2. **Validation Rules (3 files)**
+   - [ ] `src/rules/settings/settings-invalid-permission.ts` - Validate tool names and action arrays
+   - [ ] `src/rules/settings/settings-permission-empty-pattern.ts` - Validate Tool(pattern) syntax
+   - [ ] `src/rules/settings/settings-permission-invalid-rule.ts` - Validate rule format
+
+3. **Tests (3 files)**
+   - [ ] `tests/rules/settings/settings-invalid-permission.test.ts`
+   - [ ] `tests/rules/settings/settings-permission-empty-pattern.test.ts`
+   - [ ] `tests/rules/settings/settings-permission-invalid-rule.test.ts`
+
+4. **Documentation (3 files)**
+   - [ ] `docs/rules/settings/settings-invalid-permission.md`
+   - [ ] `docs/rules/settings/settings-permission-empty-pattern.md`
+   - [ ] `docs/rules/settings/settings-permission-invalid-rule.md`
+
+**Fix Plan:**
+
+**Phase 1: Update Schema (15 min)**
+- Reference official schema: https://json.schemastore.org/claude-code-settings.json
+- Update `PermissionRuleSchema` → `PermissionsSchema`
+- Add all fields: allow, deny, ask, defaultMode, disableBypassPermissionsMode, additionalDirectories
+
+**Phase 2: Fix Validation Rules (30 min)**
+- `settings-invalid-permission` → validate allow/deny/ask arrays exist and have valid strings
+- `settings-permission-empty-pattern` → validate Tool(pattern) syntax in rule strings
+- `settings-permission-invalid-rule` → validate tool names are valid (Bash, Read, Write, etc.)
+
+**Phase 3: Update Tests (20 min)**
+- Rewrite all permission rule tests with correct format
+- Add tests for new fields (defaultMode, additionalDirectories)
+
+**Phase 4: Fix Documentation (15 min)**
+- Update all 3 rule docs with correct examples
+- Reference official Claude Code docs
+
+**Total Estimated Time:** 80 minutes (1.5 hours)
+
+**Started:** 2026-02-01
 
 ---
