@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -32,18 +33,13 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.extensionMapping) {
+    if (!hasProperty(config, 'extensionMapping') || !isObject(config.extensionMapping)) {
       return; // No extension mapping or invalid JSON
     }
 
-    const extensionMapping = config.extensionMapping;
-    if (typeof extensionMapping !== 'object') {
-      return;
-    }
-
     // Check each language ID
-    for (const [extension, languageId] of Object.entries(extensionMapping)) {
-      if (typeof languageId !== 'string' || languageId.trim().length === 0) {
+    for (const [extension, languageId] of Object.entries(config.extensionMapping)) {
+      if (!isString(languageId) || languageId.trim().length === 0) {
         context.report({
           message: `Language ID for extension "${extension}" cannot be empty.`,
         });

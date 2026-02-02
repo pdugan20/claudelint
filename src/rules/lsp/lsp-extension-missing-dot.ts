@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -32,17 +33,12 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.extensionMapping) {
+    if (!hasProperty(config, 'extensionMapping') || !isObject(config.extensionMapping)) {
       return; // No extension mapping or invalid JSON
     }
 
-    const extensionMapping = config.extensionMapping;
-    if (typeof extensionMapping !== 'object') {
-      return;
-    }
-
     // Check each extension
-    for (const extension of Object.keys(extensionMapping)) {
+    for (const extension of Object.keys(config.extensionMapping)) {
       if (!extension.startsWith('.')) {
         context.report({
           message: `Extension "${extension}" must start with a dot (e.g., ".ts").`,

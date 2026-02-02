@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 const VALID_TRANSPORTS = ['stdio', 'socket'];
 
@@ -34,22 +35,22 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.servers) {
+    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
       return; // Invalid JSON handled by schema validation
     }
 
     // Check each server with transport specified
     for (const [serverName, serverConfig] of Object.entries(config.servers)) {
-      if (!serverConfig || typeof serverConfig !== 'object') {
+      if (!isObject(serverConfig)) {
         continue;
       }
 
-      const transport = (serverConfig as any).transport;
-      if (!transport) {
+      if (!hasProperty(serverConfig, 'transport')) {
         continue; // No transport specified is OK (defaults to stdio)
       }
 
-      if (!VALID_TRANSPORTS.includes(transport)) {
+      const transport = serverConfig.transport;
+      if (isString(transport) && !VALID_TRANSPORTS.includes(transport)) {
         context.report({
           message: `Invalid transport type "${transport}" for server "${serverName}". Must be "stdio" or "socket".`,
         });

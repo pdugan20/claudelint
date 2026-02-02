@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -32,25 +33,24 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.servers) {
+    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
       return; // Invalid JSON handled by schema validation
     }
 
     // Check each server with configFile specified
     for (const [serverName, serverConfig] of Object.entries(config.servers)) {
-      if (!serverConfig || typeof serverConfig !== 'object') {
+      if (!isObject(serverConfig)) {
         continue;
       }
 
-      const configFile = (serverConfig as any).configFile;
-      if (!configFile || typeof configFile !== 'string') {
+      if (!hasProperty(serverConfig, 'configFile') || !isString(serverConfig.configFile)) {
         continue;
       }
 
       // Warn if path doesn't start with / or .
-      if (!configFile.startsWith('/') && !configFile.startsWith('.')) {
+      if (!serverConfig.configFile.startsWith('/') && !serverConfig.configFile.startsWith('.')) {
         context.report({
-          message: `LSP server "${serverName}" configFile "${configFile}" uses relative path. Consider using absolute or explicit relative path (./...).`,
+          message: `LSP server "${serverName}" configFile "${serverConfig.configFile}" uses relative path. Consider using absolute or explicit relative path (./...).`,
         });
       }
     }

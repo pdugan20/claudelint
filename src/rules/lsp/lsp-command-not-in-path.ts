@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -32,23 +33,22 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.servers) {
+    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
       return; // Invalid JSON handled by schema validation
     }
 
     // Check each server with inline command
     for (const [serverName, serverConfig] of Object.entries(config.servers)) {
-      if (!serverConfig || typeof serverConfig !== 'object') {
+      if (!isObject(serverConfig)) {
         continue;
       }
 
-      const command = (serverConfig as any).command;
-      if (!command || typeof command !== 'string') {
+      if (!hasProperty(serverConfig, 'command') || !isString(serverConfig.command)) {
         continue;
       }
 
       // Extract command name (first part before space)
-      const commandName = command.split(' ')[0];
+      const commandName = serverConfig.command.split(' ')[0];
 
       // Warn if command doesn't start with / or ./
       if (!commandName.startsWith('/') && !commandName.startsWith('./')) {

@@ -12,6 +12,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isObject } from '../../utils/type-guards';
 import { z } from 'zod';
 
 /**
@@ -53,7 +54,7 @@ export const rule: Rule = {
     const minLength = ruleOptions?.minLength ?? 2;
 
     const config = safeParseJSON(fileContent);
-    if (!config || !config.servers) {
+    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
       return; // Invalid JSON handled by schema validation
     }
 
