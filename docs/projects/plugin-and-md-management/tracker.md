@@ -36,14 +36,27 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 - [ ] **Task 1.1**: Fix package.json files array bug
   - [ ] Change `"skills"` to `".claude"` in files array
   - [ ] Verify `.claude-plugin` is included
-  - [ ] Test local npm pack to verify files included
   - [ ] **Critical**: Without this fix, npm users get ZERO skills
+
+  **Verification Steps:**
+  1. Before fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/skills/"` (should be empty)
+  2. Make change in package.json
+  3. After fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/skills/"` (should list all skills)
+  4. Verify other files still included: `tar -tzf claude-code-lint-*.tgz | grep -E "(dist|bin|\.claude-plugin)"`
+  5. Test install: `npm install -g ./claude-code-lint-*.tgz && ls ~/.npm/lib/node_modules/claude-code-lint/.claude/skills/`
+  6. Clean up: `rm claude-code-lint-*.tgz && npm uninstall -g claude-code-lint`
 
 - [ ] **Task 1.2**: Create `.claude-plugin/plugin.json` manifest
   - [ ] Add required `name` field: "claudelint"
   - [ ] Add metadata (version, description, author)
   - [ ] No custom paths needed (use defaults)
-  - [ ] Validate JSON syntax
+
+  **Verification Steps:**
+  1. Create `.claude-plugin/plugin.json` with minimal required fields
+  2. Validate JSON syntax: `cat .claude-plugin/plugin.json | jq .` (should output formatted JSON)
+  3. Verify required field: `jq -r '.name' .claude-plugin/plugin.json` (should output "claudelint")
+  4. Verify in npm pack: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "plugin.json"` (should see it)
+  5. Clean up: `rm claude-code-lint-*.tgz`
 
 - [ ] **Task 1.3**: Rename generic skills to specific names
   - [ ] Rename `validate-agents-md` → `validate-cc-md` (validates CLAUDE.md files)
@@ -53,27 +66,104 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   - [ ] Update any cross-references in other skills
   - [ ] Update documentation
 
+  **Verification Steps (repeat for each skill):**
+
+  For validate-agents-md → validate-cc-md:
+  1. Before: `ls .claude/skills/validate-agents-md/SKILL.md` (should exist)
+  2. Rename directory: `mv .claude/skills/validate-agents-md .claude/skills/validate-cc-md`
+  3. Update frontmatter: Edit SKILL.md, change `name: validate-agents-md` to `name: validate-cc-md`
+  4. Update description to mention "CLAUDE.md" not "agents"
+  5. After: `ls .claude/skills/validate-agents-md` (should fail), `ls .claude/skills/validate-cc-md/SKILL.md` (should exist)
+  6. Verify frontmatter: `grep "^name: validate-cc-md" .claude/skills/validate-cc-md/SKILL.md`
+
+  For validate → validate-all:
+  1. Before: `ls .claude/skills/validate/SKILL.md`
+  2. Rename: `mv .claude/skills/validate .claude/skills/validate-all`
+  3. Update SKILL.md name field
+  4. After: Verify old dir gone, new dir exists, frontmatter correct
+
+  For format → format-cc:
+  1. Before: `ls .claude/skills/format/SKILL.md`
+  2. Rename: `mv .claude/skills/format .claude/skills/format-cc`
+  3. Update SKILL.md name field
+  4. After: Verify old dir gone, new dir exists, frontmatter correct
+
+  Check for stale references:
+  ```bash
+  grep -r "validate\"" .claude/skills/  # should find nothing with old name
+  grep -r "format\"" .claude/skills/   # should find nothing with old name
+  grep -r "validate-agents-md" docs/  # should find nothing
+  ```
+
 - [ ] **Task 1.4**: Update E10 validation rule
-  - [ ] Edit `src/rules/skills/overly-generic-name.ts` (or create if doesn't exist)
-  - [ ] Add single-word verb detection: "format", "validate", "test", "build", etc.
+  - [ ] Locate rule file: Check if `src/rules/skills/overly-generic-name.ts` exists
+  - [ ] Add single-word verb detection: "format", "validate", "test", "build", "deploy"
   - [ ] Flag names that are only a verb without specificity
   - [ ] Add tests for new validation
   - [ ] Update rule documentation
 
+  **Verification Steps:**
+  1. Find the rule: `find src -name "*generic*name*"`
+  2. Write test first (should fail initially):
+     ```typescript
+     it('should flag single-word verb names', () => {
+       const result = validateSkill({ name: 'format' });
+       expect(result).toContainWarning('overly-generic-name');
+     });
+     ```
+  3. Run test: `npm test -- --testNamePattern="overly-generic-name"` (should fail)
+  4. Update rule to detect single-word verbs (format, validate, test, build, deploy)
+  5. Run test again: `npm test -- --testNamePattern="overly-generic-name"` (should pass)
+  6. Test on BEFORE renaming our skills:
+     ```bash
+     # Should flag these (before we rename them)
+     claudelint validate-skills --path .claude/skills/validate 2>&1 | grep "generic"
+     claudelint validate-skills --path .claude/skills/format 2>&1 | grep "generic"
+     # Should NOT flag these
+     claudelint validate-skills --path .claude/skills/validate-hooks 2>&1 | grep "generic" && echo "FAIL" || echo "PASS"
+     ```
+  7. Run full test suite: `npm test`
+
 - [ ] **Task 1.5**: Test plugin installation locally
-  - [ ] Test: `claude /plugin install --source .`
-  - [ ] Verify skills accessible with new names:
-    - `/claudelint:validate-all`
-    - `/claudelint:validate-cc-md`
-    - `/claudelint:format-cc`
-    - `/claudelint:optimize-cc-md`
+  - [ ] Test local plugin installation
+  - [ ] Verify all skills accessible with namespaces
+  - [ ] Verify old skill names don't work
   - [ ] Test skill invocation works
+
+  **Verification Steps:**
+  1. Build package: `npm pack`
+  2. Install as plugin: `claude /plugin install --source .`
+  3. In Claude Code session, verify skills are listed: `/skills` (should show claudelint:* skills)
+  4. Test each renamed skill namespace:
+     ```
+     /claudelint:validate-all
+     /claudelint:format-cc
+     /claudelint:validate-cc-md
+     ```
+  5. Verify old names DON'T trigger:
+     ```
+     /claudelint:validate  # should not be found
+     /claudelint:format    # should not be found
+     /claudelint:validate-agents-md  # should not be found
+     ```
+  6. Test skill execution: Run `/claudelint:validate-all` and verify it actually executes
+  7. Uninstall: `claude /plugin uninstall claudelint`
+  8. Reinstall to ensure clean state: `claude /plugin install --source .`
+  9. Clean up: `rm claude-code-lint-*.tgz`
 
 - [ ] **Task 1.6**: Update README and documentation
   - [ ] Add plugin installation section
   - [ ] Document skill namespace usage
   - [ ] Add comparison: npm CLI vs plugin
   - [ ] Update naming guidance with new rules
+
+  **Verification Steps:**
+  1. Check main README has plugin installation section: `grep -A5 "plugin install" README.md`
+  2. Verify all skill names updated in README: `grep "validate-all\|format-cc\|validate-cc-md" README.md`
+  3. Check no old skill names remain: `grep -E "^/validate\"|^/format\"" README.md` (should be empty)
+  4. Verify skill docs updated: Check `.claude/skills/*/SKILL.md` files have correct names
+  5. Run markdownlint: `npm run lint:md` (should pass)
+  6. Run full lint: `npm run lint` (should pass)
 
 ### Acceptance Criteria
 
@@ -84,6 +174,59 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 - [ ] Plugin installable locally
 - [ ] Skills accessible via `/claudelint:` namespace with new names
 - [ ] Documentation updated with new naming guidance
+
+### End-to-End Integration Test
+
+**Run this complete test after all Phase 1 tasks:**
+
+```bash
+#!/bin/bash
+set -e
+
+echo "=== Phase 1 Integration Test ==="
+
+echo "1. Testing package.json fix..."
+npm pack
+tar -tzf claude-code-lint-*.tgz | grep ".claude/skills/validate-all" || { echo "FAIL: skills not in package"; exit 1; }
+
+echo "2. Testing plugin.json..."
+tar -tzf claude-code-lint-*.tgz | grep "plugin.json" || { echo "FAIL: plugin.json not in package"; exit 1; }
+cat .claude-plugin/plugin.json | jq . > /dev/null || { echo "FAIL: invalid JSON"; exit 1; }
+
+echo "3. Testing skill renames..."
+[ ! -d .claude/skills/validate ] || { echo "FAIL: old validate dir still exists"; exit 1; }
+[ ! -d .claude/skills/format ] || { echo "FAIL: old format dir still exists"; exit 1; }
+[ ! -d .claude/skills/validate-agents-md ] || { echo "FAIL: old validate-agents-md dir still exists"; exit 1; }
+[ -d .claude/skills/validate-all ] || { echo "FAIL: validate-all dir missing"; exit 1; }
+[ -d .claude/skills/format-cc ] || { echo "FAIL: format-cc dir missing"; exit 1; }
+[ -d .claude/skills/validate-cc-md ] || { echo "FAIL: validate-cc-md dir missing"; exit 1; }
+
+echo "4. Testing E10 rule..."
+npm test -- --testNamePattern="overly-generic-name" || { echo "FAIL: E10 tests failed"; exit 1; }
+
+echo "5. Testing frontmatter updates..."
+grep "^name: validate-all" .claude/skills/validate-all/SKILL.md || { echo "FAIL: validate-all frontmatter"; exit 1; }
+grep "^name: format-cc" .claude/skills/format-cc/SKILL.md || { echo "FAIL: format-cc frontmatter"; exit 1; }
+grep "^name: validate-cc-md" .claude/skills/validate-cc-md/SKILL.md || { echo "FAIL: validate-cc-md frontmatter"; exit 1; }
+
+echo "6. Running full test suite..."
+npm test || { echo "FAIL: test suite failed"; exit 1; }
+
+echo "7. Running linters..."
+npm run lint || { echo "FAIL: linting failed"; exit 1; }
+
+echo ""
+echo "=== All Phase 1 Integration Tests PASSED ==="
+echo ""
+echo "Manual verification still needed:"
+echo "  - Install plugin: claude /plugin install --source ."
+echo "  - Test skills: /claudelint:validate-all, /claudelint:format-cc, /claudelint:validate-cc-md"
+echo "  - Verify old names don't work: /claudelint:validate, /claudelint:format"
+
+rm claude-code-lint-*.tgz
+```
+
+Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
 
 ## Phase 2: Create optimize-cc-md Skill
 
