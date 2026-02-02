@@ -141,6 +141,36 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ---
 
+### validator-refactor-2026
+
+**Status:** Completed
+**Location:** [docs/projects/archive/validator-refactor-2026/](./archive/validator-refactor-2026/)
+
+**Completion Date:** 2026-02-01
+
+**Summary:** Comprehensive validator architecture refactoring to improve clarity, reduce code complexity, and enhance maintainability.
+
+**Key Outcomes:**
+
+- Removed 1,263 lines of code (deleted 733-line unused composition framework)
+- Renamed validators for clarity: BaseValidator → FileValidator, JSONConfigValidator → SchemaValidator
+- Simplified SchemaValidator with direct JSON parsing + Zod validation
+- Added comprehensive JSDoc documentation to both base validator classes
+- Created complete validation-architecture.md guide (510 lines)
+- All 10 validators use consistent category-based rule execution pattern
+- Updated all documentation with new validator names
+
+**Impact:** Internal refactoring only - no changes required for end users or .claudelintrc.json files
+
+**Reference Documentation:**
+
+- [Project Tracker](./archive/validator-refactor-2026/tracker.md)
+- [Architecture Changes](./archive/validator-refactor-2026/architecture-changes.md)
+- [Implementation Guide](./archive/validator-refactor-2026/implementation-guide.md)
+- [Validation Architecture Guide](../../validation-architecture.md)
+
+---
+
 ### programmatic-api
 
 **Status:** Completed and Superseded
@@ -227,6 +257,7 @@ Projects that have achieved their objectives. Completed projects are:
 **Archived Projects:**
 
 - [validator-refactor Summary](./archive/validator-refactor/patterns.md)
+- [validator-refactor-2026 Summary](./archive/validator-refactor-2026/tracker.md)
 - [programmatic-api Summary](./archive/programmatic-api/README.md)
 
 **Main Documentation:**
@@ -237,4 +268,4 @@ Projects that have achieved their objectives. Completed projects are:
 
 ---
 
-**Last Updated:** 2026-01-31
+**Last Updated:** 2026-02-01
