@@ -13,6 +13,8 @@ import { CustomRuleLoader } from '../../utils/rules/loader';
 import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/rules/fixer';
 import { logger } from '../utils/logger';
+import { detectWorkspace } from '../../utils/workspace/detector';
+import { basename } from 'path';
 
 /**
  * Register the check-all command
@@ -22,7 +24,7 @@ import { logger } from '../utils/logger';
 export function registerCheckAllCommand(program: Command): void {
   program
     .command('check-all')
-    .description('Run all validators')
+    .description('Run all validators (supports monorepo workspaces)')
     .option('-v, --verbose', 'Verbose output')
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('--strict', 'Exit with error on any issues (errors, warnings, or info)')
@@ -41,6 +43,8 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fix-dry-run', 'Preview fixes without applying them')
     .option('--fix-type <type>', 'Fix errors, warnings, or all', 'all')
     .option('--show-docs-url', 'Show documentation URLs for rules')
+    .option('--workspace <name>', 'Validate specific workspace package by name')
+    .option('--workspaces', 'Validate all workspace packages')
     .action(
       async (options: {
         verbose?: boolean;
@@ -59,6 +63,8 @@ export function registerCheckAllCommand(program: Command): void {
         fixDryRun?: boolean;
         fixType?: 'errors' | 'warnings' | 'all';
         showDocsUrl?: boolean;
+        workspace?: string;
+        workspaces?: boolean;
       }) => {
         const startTime = Date.now();
         try {
@@ -184,6 +190,132 @@ export function registerCheckAllCommand(program: Command): void {
             color: options.color !== undefined ? options.color : mergedConfig.output?.color,
             showDocsUrl: options.showDocsUrl,
           });
+
+          // Handle workspace-scoped validation
+          if (options.workspace || options.workspaces) {
+            const workspace = await detectWorkspace(process.cwd());
+
+            if (!workspace) {
+              logger.newline();
+              logger.error('No workspace detected in current directory.');
+              logger.error('Workspace detection supports pnpm-workspace.yaml and package.json workspaces.');
+              logger.newline();
+              logger.error('Please run this command from a monorepo root directory.');
+              process.exit(2);
+            }
+
+            if (options.workspace) {
+              // Validate specific package
+              const packagePath = workspace.packages.find((pkg) =>
+                basename(pkg) === options.workspace
+              );
+
+              if (!packagePath) {
+                logger.newline();
+                logger.error(`Workspace package not found: ${options.workspace}`);
+                logger.newline();
+                logger.log('Available packages:');
+                workspace.packages.forEach((pkg) => {
+                  logger.detail(`- ${basename(pkg)}`);
+                });
+                process.exit(2);
+              }
+
+              logger.info(`Validating workspace package: ${options.workspace}`);
+              logger.newline();
+
+              // Change to package directory for validation
+              process.chdir(packagePath);
+            } else if (options.workspaces) {
+              // Validate all packages
+              logger.info(`Validating ${workspace.packages.length} workspace packages`);
+              logger.newline();
+
+              // Prepare validator options with config
+              const validatorOptions = {
+                ...options,
+                config: mergedConfig,
+              };
+
+              let totalWorkspaceErrors = 0;
+              let totalWorkspaceWarnings = 0;
+              let failedPackages: string[] = [];
+
+              for (const packagePath of workspace.packages) {
+                const packageName = basename(packagePath);
+                logger.section(`Package: ${packageName}`);
+
+                try {
+                  // Save original cwd
+                  const originalCwd = process.cwd();
+
+                  // Change to package directory
+                  process.chdir(packagePath);
+
+                  // Run validators for this package
+                  const enabledValidators = ValidatorRegistry.getAllMetadata().filter(
+                    (m) => m.enabled
+                  );
+
+                  const results = await Promise.all(
+                    enabledValidators.map((metadata) =>
+                      reporter.runValidator(
+                        metadata.name,
+                        () => ValidatorRegistry.create(metadata.id, validatorOptions).validate(),
+                        null, // No cache for workspace validation
+                        mergedConfig
+                      )
+                    )
+                  );
+
+                  reporter.reportParallelResults(results);
+
+                  // Aggregate results
+                  let packageErrors = 0;
+                  let packageWarnings = 0;
+                  for (const { result } of results) {
+                    packageErrors += result.errors.length;
+                    packageWarnings += result.warnings.length;
+                  }
+
+                  totalWorkspaceErrors += packageErrors;
+                  totalWorkspaceWarnings += packageWarnings;
+
+                  if (packageErrors > 0 || (packageWarnings > 0 && options.warningsAsErrors)) {
+                    failedPackages.push(packageName);
+                  }
+
+                  // Restore cwd
+                  process.chdir(originalCwd);
+                } catch (error) {
+                  logger.error(
+                    `Failed to validate package: ${error instanceof Error ? error.message : String(error)}`
+                  );
+                  failedPackages.push(packageName);
+                }
+
+                logger.newline();
+              }
+
+              // Overall workspace summary
+              logger.section('Workspace Summary');
+              logger.log(`Total packages: ${workspace.packages.length}`);
+              logger.log(`Failed packages: ${failedPackages.length}`);
+              logger.log(`Total errors: ${totalWorkspaceErrors}`);
+              logger.log(`Total warnings: ${totalWorkspaceWarnings}`);
+
+              if (failedPackages.length > 0) {
+                logger.newline();
+                logger.error('Failed packages:');
+                failedPackages.forEach((pkg) => {
+                  logger.detail(`- ${pkg}`);
+                });
+                process.exit(1);
+              } else {
+                process.exit(0);
+              }
+            }
+          }
 
           let totalErrors = 0;
           let totalWarnings = 0;

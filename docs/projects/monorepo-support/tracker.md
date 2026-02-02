@@ -13,9 +13,9 @@ Project to add monorepo support with config inheritance and workspace detection.
 | Phase | Status | Duration | LOC | Completion |
 |-------|--------|----------|-----|------------|
 | Phase 1: Config Inheritance | **COMPLETE** | 2 days | ~500 | 21/21 tasks (100%) |
-| Phase 2: Workspace Detection | Not Started | 1.5 days | ~400 | 0/15 tasks |
+| Phase 2: Workspace Detection | **COMPLETE** | 1.5 days | ~400 | 15/15 tasks (100%) |
 | Phase 3: Testing & Docs | Not Started | 1 day | ~800 | 0/12 tasks |
-| **Total** | **In Progress** | **4.5 days** | **~1700** | **21/48 tasks (44%)** |
+| **Total** | **In Progress** | **4.5 days** | **~1700** | **36/48 tasks (75%)** |
 
 ---
 
@@ -167,94 +167,108 @@ All 22 unit tests passing. Ready to ship!
 
 ### 2.1 Workspace Detection Implementation
 
-- [ ] Create `src/utils/workspace/detector.ts`
-  - [ ] Define `WorkspaceInfo` interface
-  - [ ] Export `detectWorkspace()` function
-  - [ ] Add proper TypeScript types
-- [ ] Implement `detectWorkspace()` function
-  - [ ] Accept `cwd` parameter
-  - [ ] Return `WorkspaceInfo | null`
-  - [ ] Check for workspace root indicators
-- [ ] Add pnpm-workspace.yaml detection
-  - [ ] Check if `pnpm-workspace.yaml` exists
-  - [ ] Parse YAML with `js-yaml`
-  - [ ] Extract `packages` array
-  - [ ] Handle malformed YAML gracefully
-  - [ ] Set `packageManager: 'pnpm'`
-- [ ] Add npm/Yarn workspaces detection
-  - [ ] Check if `package.json` exists
-  - [ ] Parse JSON
-  - [ ] Extract `workspaces` field (array or object format)
-  - [ ] Handle both formats: `["packages/*"]` and `{ packages: [...] }`
-  - [ ] Detect package manager (pnpm-lock.yaml, yarn.lock, or npm)
-- [ ] Implement glob expansion for workspace patterns
-  - [ ] Create `expandWorkspaceGlobs()` helper
-  - [ ] Use existing `glob` library
-  - [ ] Expand patterns to package directories
-  - [ ] Filter for directories only
-  - [ ] Deduplicate results
-  - [ ] Return absolute paths
-- [ ] Add package manager detection
-  - [ ] Create `detectPackageManager()` helper
-  - [ ] Check for pnpm-lock.yaml
-  - [ ] Check for yarn.lock
-  - [ ] Default to npm
-  - [ ] Return `'pnpm' | 'yarn' | 'npm'`
+- [x] Create `src/utils/workspace/detector.ts`
+  - [x] Define `WorkspaceInfo` interface
+  - [x] Export `detectWorkspace()` function
+  - [x] Add proper TypeScript types
+- [x] Implement `detectWorkspace()` function
+  - [x] Accept `cwd` parameter
+  - [x] Return `WorkspaceInfo | null`
+  - [x] Check for workspace root indicators
+- [x] Add pnpm-workspace.yaml detection
+  - [x] Check if `pnpm-workspace.yaml` exists
+  - [x] Parse YAML with `js-yaml`
+  - [x] Extract `packages` array
+  - [x] Handle malformed YAML gracefully
+  - [x] Set `packageManager: 'pnpm'`
+- [x] Add npm/Yarn workspaces detection
+  - [x] Check if `package.json` exists
+  - [x] Parse JSON
+  - [x] Extract `workspaces` field (array or object format)
+  - [x] Handle both formats: `["packages/*"]` and `{ packages: [...] }`
+  - [x] Detect package manager (pnpm-lock.yaml, yarn.lock, or npm)
+- [x] Implement glob expansion for workspace patterns
+  - [x] Create `expandWorkspaceGlobs()` helper
+  - [x] Use existing `glob` library
+  - [x] Expand patterns to package directories
+  - [x] Filter for directories only
+  - [x] Deduplicate results
+  - [x] Return absolute paths
+- [x] Add package manager detection
+  - [x] Create `detectPackageManager()` helper
+  - [x] Check for pnpm-lock.yaml
+  - [x] Check for yarn.lock
+  - [x] Default to npm
+  - [x] Return `'pnpm' | 'yarn' | 'npm'`
 
 **Task 2.1 Completion Criteria:**
 
-- [ ] Workspace detection implemented
-- [ ] Supports pnpm, npm, Yarn
-- [ ] Glob patterns expanded correctly
-- [ ] Package manager detected
+- [x] Workspace detection implemented
+- [x] Supports pnpm, npm, Yarn
+- [x] Glob patterns expanded correctly
+- [x] Package manager detected
 
-**Estimated Time:** 1 day (8 hours)
+**Estimated Time:** 1 day (8 hours) - COMPLETE
 
 ---
 
 ### 2.2 CLI Integration
 
-- [ ] Add CLI flags to `check-all` command
-  - [ ] Add `--workspace <name>` option
-  - [ ] Add `--workspaces` boolean flag
-  - [ ] Document flags in help text
-- [ ] Implement `--workspace <name>` logic
-  - [ ] Detect workspace with `detectWorkspace()`
-  - [ ] Error if no workspace found
-  - [ ] Find package by name
-  - [ ] Error if package not found
-  - [ ] Run validation with package as `cwd`
-  - [ ] Display package name in output
-- [ ] Implement `--workspaces` logic
-  - [ ] Detect workspace
-  - [ ] Error if no workspace found
-  - [ ] Iterate over all packages
-  - [ ] Run validation for each package independently
-  - [ ] Display results per package
-  - [ ] Aggregate exit codes (fail if any package fails)
-- [ ] Update CLI help and documentation
-  - [ ] Add examples to `--help` output
-  - [ ] Update README.md with workspace examples
-  - [ ] Add troubleshooting section
+- [x] Add CLI flags to `check-all` command
+  - [x] Add `--workspace <name>` option
+  - [x] Add `--workspaces` boolean flag
+  - [x] Document flags in help text
+- [x] Implement `--workspace <name>` logic
+  - [x] Detect workspace with `detectWorkspace()`
+  - [x] Error if no workspace found
+  - [x] Find package by name
+  - [x] Error if package not found
+  - [x] Run validation with package as `cwd`
+  - [x] Display package name in output
+- [x] Implement `--workspaces` logic
+  - [x] Detect workspace
+  - [x] Error if no workspace found
+  - [x] Iterate over all packages
+  - [x] Run validation for each package independently
+  - [x] Display results per package
+  - [x] Aggregate exit codes (fail if any package fails)
+- [x] Update CLI help and documentation
+  - [x] Add examples to `--help` output
+  - [x] Update README.md with workspace examples
+  - [x] Add troubleshooting section
 
 **Task 2.2 Completion Criteria:**
 
-- [ ] CLI flags working
-- [ ] Error messages helpful
-- [ ] Help documentation updated
-- [ ] Examples provided
+- [x] CLI flags working
+- [x] Error messages helpful
+- [x] Help documentation updated
+- [x] Examples provided
 
-**Estimated Time:** 0.5 day (4 hours)
+**Estimated Time:** 0.5 day (4 hours) - COMPLETE
 
 ---
 
 **Phase 2 Completion Criteria:**
 
-- [ ] All 15 tasks complete
-- [ ] Workspace detection functional
-- [ ] CLI flags working
-- [ ] Supports pnpm, npm, Yarn
-- [ ] Error handling robust
+- [x] All 15 tasks complete
+- [x] Workspace detection functional
+- [x] CLI flags working
+- [x] Supports pnpm, npm, Yarn
+- [x] Error handling robust
+
+---
+
+## PHASE 2 COMPLETE
+
+Workspace detection is fully implemented and tested. The CLI now supports:
+- Detecting pnpm, npm, and Yarn workspaces automatically
+- --workspace <name> flag to validate a specific package
+- --workspaces flag to validate all packages in the workspace
+- Helpful error messages when workspace is not found
+- Package manager detection from lock files
+- Glob pattern expansion for workspace patterns
+
+All 17 unit tests passing for workspace detector. Ready for Phase 3!
 
 ---
 
@@ -396,15 +410,15 @@ All 22 unit tests passing. Ready to ship!
 ## Progress Summary
 
 **Total Tasks:** 48
-**Completed:** 21
+**Completed:** 36
 **In Progress:** 0
-**Remaining:** 27
-**Overall Progress:** 44% (21/48)
+**Remaining:** 12
+**Overall Progress:** 75% (36/48)
 
 ### By Phase
 
 - **Phase 1:** 21/21 tasks (100%) - COMPLETE
-- **Phase 2:** 0/15 tasks (0%)
+- **Phase 2:** 15/15 tasks (100%) - COMPLETE
 - **Phase 3:** 0/12 tasks (0%)
 
 ---
@@ -453,9 +467,11 @@ All 22 unit tests passing. Ready to ship!
   - Status: **COMPLETE**
   - Completion Date: 2026-02-01
   - Notes: All 21 tasks done, 22/22 tests passing
-- [ ] **M2:** Phase 2 Complete - Workspace detection working
+- [x] **M2:** Phase 2 Complete - Workspace detection working
   - Target: End of Day 3.5
-  - Status: Not Started
+  - Status: **COMPLETE**
+  - Completion Date: 2026-02-01
+  - Notes: All 15 tasks done, 17/17 tests passing
 - [ ] **M3:** Phase 3 Complete - Testing and docs done
   - Target: End of Day 4.5
   - Status: Not Started
