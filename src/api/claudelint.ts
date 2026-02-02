@@ -27,9 +27,9 @@ import {
   LintResult,
   LintTextOptions,
   Formatter,
-  RuleMetadata,
   LintMessage,
 } from './types';
+import { RuleMetadata } from '../types/rule';
 import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
@@ -37,7 +37,6 @@ import { resolve } from 'path';
 import { minimatch } from 'minimatch';
 import { RuleRegistry } from '../utils/rules/registry';
 import { buildLintMessage } from './message-builder';
-// @ts-expect-error - JSON import without assertions for Node.js compatibility
 import packageJson from '../../package.json';
 
 /**

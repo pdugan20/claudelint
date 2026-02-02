@@ -217,9 +217,9 @@ describe('CLI Integration Tests', () => {
 
   describe('specific validator commands', () => {
     it('should run check-claude-md command', async () => {
-      const claudePath = await claudeMd(testProjectDir).withMinimalContent().build();
+      await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} check-claude-md ${claudePath}`, {
+      const result = execSync(`${claudelintBin} check-claude-md`, {
         cwd: testProjectDir,
         encoding: 'utf-8',
       });
