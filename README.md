@@ -25,11 +25,11 @@ This is a beta release (v0.2.0-beta.0). The package is fully functional but bein
 **Installation:**
 
 ```bash
-# Install the beta version
-npm install -g claude-code-lint@beta
-
-# Or for project use
+# Install in your project (recommended)
 npm install --save-dev claude-code-lint@beta
+
+# Or globally
+npm install -g claude-code-lint@beta
 ```
 
 **Known Limitations:**
@@ -40,61 +40,64 @@ npm install --save-dev claude-code-lint@beta
 
 ## Quick Start
 
+### CLI Installation (for CI/CD, automation, pre-commit hooks)
+
 ```bash
-# Install globally
-npm install -g claude-code-lint
+# Install in your project (recommended)
+npm install --save-dev claude-code-lint
 
 # Initialize configuration (interactive)
-claudelint init
+npx claudelint init
 
 # Or use defaults (non-interactive)
-claudelint init --yes
+npx claudelint init --yes
 
 # Validate your project
-claudelint check-all
+npx claudelint check-all
 ```
 
-**As Claude Code plugin:**
+### Plugin Installation (for interactive Claude Code sessions)
 
 ```bash
-/plugin marketplace add pdugan20/claudelint
-/plugin install claudelint
+# Install from GitHub
+/plugin install github:pdugan20/claudelint
+
+# Or install locally for development
+/plugin install --source /path/to/claudelint
+
+# Use skills with namespace
+/claudelint:validate-all
+/claudelint:validate-cc-md
+/claudelint:format-cc
 ```
+
+**Available Skills:**
+
+- `validate-all` - Comprehensive validation of all project files
+- `validate-cc-md` - Validate CLAUDE.md files
+- `validate-skills` - Validate skill structure and content
+- `validate-settings` - Validate settings.json files
+- `validate-hooks` - Validate hooks.json configuration
+- `validate-mcp` - Validate MCP server configuration
+- `validate-plugin` - Validate plugin.json manifest
+- `format-cc` - Format Claude Code files
+
+## Installation Methods Comparison
+
+| Feature          | npm Package                               | Claude Code Plugin                           |
+| ---------------- | ----------------------------------------- | -------------------------------------------- |
+| **Use Case**     | CI/CD, automation, scripts                | Interactive Claude sessions                  |
+| **Installation** | `npm install --save-dev claude-code-lint` | `/plugin install github:pdugan20/claudelint` |
+| **CLI Commands** | Yes - All commands available              | Yes - Available if npm installed in repo     |
+| **Skills**       | No - Not available                        | Yes - All 8 skills via `/claudelint:*`       |
+| **Updates**      | `npm update -g`                           | `/plugin update claudelint`                  |
+| **Best For**     | Automated workflows                       | Claude helping you fix issues                |
 
 ## Monorepo Support
 
-claudelint provides full support for monorepo projects with workspace detection and configuration inheritance.
+claudelint supports monorepo projects with workspace detection, configuration inheritance, and per-package validation. Supports pnpm, npm, and Yarn workspaces.
 
-### Config Inheritance
-
-Share configuration across packages using the `extends` field:
-
-```json
-{
-  "extends": "../.claudelintrc.json",
-  "rules": {
-    "claude-md-size-error": "warn"
-  }
-}
-```
-
-### Workspace Validation
-
-Validate specific packages or all packages in your monorepo:
-
-```bash
-claudelint check-all --workspace my-package
-
-claudelint check-all --workspaces
-```
-
-### Supported Package Managers
-
-- pnpm (pnpm-workspace.yaml)
-- npm (package.json workspaces)
-- Yarn (package.json workspaces)
-
-See [Monorepo documentation](docs/monorepo.md) for complete guide and examples.
+See [Monorepo documentation](docs/monorepo.md) for complete guide.
 
 ## Programmatic API
 
@@ -162,101 +165,16 @@ See [Programmatic API documentation](docs/api/README.md) for complete reference.
 
 ## Performance
 
-claudelint is optimized for speed without sacrificing thoroughness:
-
-### Benchmarks
+claudelint is optimized for speed with parallel validation (~3.5x speedup) and smart caching (~2.4x speedup on warm cache). Typical projects validate in <200ms.
 
 ```bash
-# First run (cold cache)
-time claudelint check-all
-# ~204ms total
-
-# Subsequent runs (warm cache)
-time claudelint check-all
-# ~84ms total (~2.4x faster)
-```
-
-### Optimization Techniques
-
-- **Parallel Validation** (~3.5x speedup)
-  - All validators run concurrently using `Promise.all`
-  - Independent validation = no blocking
-  - Typical speedup: 63ms sequential → 18ms parallel
-
-- **Smart Caching** (~2.4x speedup on warm cache)
-  - mtime-based invalidation (changes detected automatically)
-  - Version-aware (cache cleared on upgrade)
-  - Cache location: `.claudelint-cache/` (configurable)
-
-- **Fast Execution**
-  - Typical project: <200ms total
-  - Large projects (100+ files): <500ms
-  - CI environments: Parallel + no cache overhead
-
-### Cache Management
-
-```bash
-# Cache is automatic (enabled by default)
-claudelint check-all
-
-# Clear cache if needed (after upgrade, config changes)
+# Clear cache if needed
 claudelint cache-clear
-
-# Disable cache temporarily
-claudelint check-all --no-cache
-
-# Custom cache location
-claudelint check-all --cache-location /tmp/cache
 ```
 
-## Philosophy: Complementary Tools
+## Philosophy
 
-claudelint follows the **separation of concerns** pattern used by ESLint and Prettier. It focuses exclusively on Claude-specific validation and works alongside existing tools:
-
-- **claudelint** - Claude configuration validation (this tool)
-- **markdownlint** - Generic markdown structure and formatting
-- **prettier** - Code formatting and whitespace
-
-This approach ensures:
-
-- **Clear responsibility** - Each tool does one thing well
-- **User control** - Configure tools independently
-- **Performance** - Specialized tools are faster
-- **No conflicts** - Tools complement rather than compete
-
-### What claudelint Validates
-
-**In scope (Claude-specific):**
-
-- CLAUDE.md file size limits (10MB context window constraint)
-- `@import` syntax and referenced file existence
-- Skill frontmatter schema (name, description, usage)
-- Settings JSON schema and permission rules
-- Hook event names and script references
-- MCP server configuration and commands
-- Plugin manifest and file cross-references
-
-**Out of scope (use existing tools):**
-
-- Generic markdown formatting (use markdownlint)
-- Code formatting and whitespace (use prettier)
-- Spelling and grammar (use Vale or similar)
-
-### Recommended Setup
-
-For complete validation, use claudelint with complementary tools:
-
-```bash
-# Install all tools
-npm install --save-dev claude-code-lint markdownlint-cli prettier
-
-# Run validation
-markdownlint '**/*.md'              # Generic markdown rules
-prettier --check '**/*.{md,json}'   # Formatting
-claudelint check-all                # Claude-specific validation
-```
-
-See [Formatting Tools](#formatting-tools) below for the complete ecosystem.
+claudelint focuses exclusively on Claude Code validation and works alongside existing tools like markdownlint (generic markdown) and prettier (code formatting). This separation of concerns ensures clear responsibility, better performance, and no conflicts between tools.
 
 ## Dependencies
 
@@ -283,78 +201,17 @@ These system-level tools enhance claudelint but aren't required:
 
 claudelint detects and uses ShellCheck automatically if available. The `claudelint format` command will show helpful install instructions if ShellCheck is missing.
 
-## Formatting Tools
+## Creating Skills
 
-claudelint provides **shareable configs** for formatting Claude-specific files. These configs use **scoped overrides** to avoid conflicts with your existing project formatters.
+When creating custom Claude Code skills, avoid generic names that trigger on unrelated queries. Use specific, descriptive names like `validate-all` instead of `validate`, or `format-cc` instead of `format`.
 
-### Why Shareable Configs?
+claudelint enforces these best practices through the `skill-overly-generic-name` rule.
 
-Following industry standards (like `eslint-config-airbnb`), we provide configs that:
+See [Skill Naming Guidelines](docs/skill-naming.md) for complete naming patterns and examples.
 
-- Apply ONLY to Claude files (`.claude/`, `CLAUDE.md`)
-- Don't conflict with your existing formatting setup
-- Stay updated when you upgrade packages
-- Can be customized per-project
+## Formatting
 
-### Three Tiers of Tools
-
-#### Tier 1: Bundled with claudelint
-
-**1. Prettier & Markdownlint** (bundled)
-
-These tools are included automatically when you install claudelint. No separate installation needed.
-
-```bash
-# Check formatting
-claudelint format --check
-
-# Fix formatting issues
-claudelint format --fix
-```
-
-**2. ShellCheck** (optional)
-
-Lints shell scripts in skills and hooks (finds bugs, security issues). Install separately:
-
-```bash
-# macOS
-brew install shellcheck
-
-# Linux
-apt install shellcheck
-```
-
-Once installed, `claudelint format` will automatically detect and use ShellCheck.
-
-#### Tier 2: Recommended (Should Have)
-
-##### 4. shfmt
-
-Formats shell scripts consistently.
-
-```bash
-npm install --save-dev shfmt
-```
-
-##### 5. ESLint for JSON/YAML
-
-Advanced JSON/YAML linting (key ordering, duplicate detection).
-
-```bash
-npm install --save-dev eslint eslint-plugin-jsonc eslint-plugin-yml
-```
-
-#### Tier 3: Optional (Nice to Have)
-
-**6. Vale** - Prose quality for documentation
-**7. black + ruff** - Python skill linting/formatting
-**8. TypeScript/ESLint** - JavaScript/TypeScript skill linting
-
-See [docs/formatting-tools.md](docs/formatting-tools.md) for complete setup guides.
-
-### Quick Start: Format Command
-
-For convenience, use the `claudelint format` command (automatically scoped to Claude files):
+claudelint bundles Prettier and Markdownlint for formatting Claude-specific files. ShellCheck (optional) lints shell scripts.
 
 ```bash
 # Check formatting
@@ -364,38 +221,30 @@ claudelint format --check
 claudelint format --fix
 ```
 
-This runs markdownlint, prettier, and shellcheck on ONLY your Claude files.
+claudelint detects and uses ShellCheck automatically if available. The `claudelint format` command will show helpful install instructions if ShellCheck is missing.
 
-### No Conflicts Guarantee
-
-All configs use **scoped targeting** (Prettier overrides, separate commands) so they:
-
-- Apply ONLY to `.claude/` and `CLAUDE.md`
-- Don't affect your existing project formatting
-- Can coexist with your markdownlint/prettier/eslint configs
-
-See [examples/integration/](examples/integration/) for complete working examples.
+See [Formatting Tools documentation](docs/formatting-tools.md) for complete setup guide including ShellCheck, shfmt, and other optional tools.
 
 ## Installation
 
 ### As NPM Package
 
 ```bash
-# Global installation
-npm install -g claude-code-lint
-
-# Project installation
+# Project installation (recommended)
 npm install --save-dev claude-code-lint
+
+# Or globally
+npm install -g claude-code-lint
 ```
 
 After installation, run the init wizard to set up your project:
 
 ```bash
 # Interactive setup
-claudelint init
+npx claudelint init
 
 # Or use defaults (non-interactive, good for CI/scripts)
-claudelint init --yes
+npx claudelint init --yes
 ```
 
 This creates `.claudelintrc.json` (config), `.claudelintignore` (ignore patterns), and optionally adds npm scripts to `package.json`.
@@ -483,14 +332,22 @@ Progress indicators automatically detect CI environments (GitHub Actions, GitLab
 
 ### As Claude Code Skill
 
+After installing as a plugin, use skills with the `claudelint:` namespace:
+
 ```bash
 # Validate everything
-/validate
+/claudelint:validate-all
 
 # Validate specific components
-/validate-agents-md
-/validate-skills
-/validate-settings
+/claudelint:validate-cc-md    # CLAUDE.md files
+/claudelint:validate-skills   # Skill structure
+/claudelint:validate-settings # settings.json
+/claudelint:validate-hooks    # hooks.json
+/claudelint:validate-mcp      # MCP servers
+/claudelint:validate-plugin   # plugin.json
+
+# Format Claude Code files
+/claudelint:format-cc
 ```
 
 ### As Claude Code Hook
@@ -596,159 +453,14 @@ See [docs/projects/](docs/projects/) for complete project documentation.
 
 ## Troubleshooting
 
-### Installation Issues
+**Common issues:**
 
-**Problem**: `claudelint: command not found`
+- **Command not found**: Use `npx claude-code-lint` or install with `npm install --save-dev claude-code-lint`
+- **Plugin skills don't appear**: Ensure npm package is installed, then `/plugin install --source ./node_modules/claude-code-lint`
+- **Too many warnings**: Configure rules in `.claudelintrc.json`
+- **Slow validation**: Add ignore patterns to `.claudelintignore`
 
-**Solution**:
-
-```bash
-# Global install
-npm install -g claude-code-lint
-
-# Or use npx
-npx claude-code-lint check-all
-
-# Or project install
-npm install --save-dev claude-code-lint
-./node_modules/.bin/claudelint check-all
-```
-
-**Problem**: Permission denied when installing globally
-
-**Solution**:
-
-```bash
-# Use sudo (macOS/Linux)
-sudo npm install -g claude-code-lint
-
-# Or configure npm to install without sudo
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH
-npm install -g claude-code-lint
-```
-
-### Exit Code Changes (v1.0 Breaking Change)
-
-**Problem**: CI scripts expecting exit code 2 for errors
-
-**What Changed**:
-
-- **Before v1.0**: Exit 2 for errors, exit 1 for warnings
-- **After v1.0**: Exit 1 for any linting issues (errors OR warnings), exit 0 for success, exit 2 only for fatal errors (crashes, invalid config)
-
-**Why**: Follows POSIX standard and industry conventions (ESLint, markdownlint, prettier all use this pattern)
-
-**Migration**:
-
-```bash
-# Most CI systems check for non-zero exit, so no changes needed
-claudelint check-all || exit 1
-
-# If you were specifically checking for exit code 2:
-# Before: if [ $? -eq 2 ]; then ...
-# After:  if [ $? -eq 1 ]; then ...
-```
-
-### Validation Errors
-
-**Problem**: Too many warnings
-
-**Solution**: Configure rules in `.claudelintrc.json`:
-
-```json
-{
-  "rules": {
-    "skill-missing-changelog": "off",
-    "size-warning": "off"
-  }
-}
-```
-
-**Problem**: False positive errors
-
-**Solution**: Use inline disable comments:
-
-```markdown
-<!-- claudelint-disable-next-line import-missing -->
-
-@import non-existent-file.md
-```
-
-**Problem**: Want detailed explanation of errors
-
-**Solution**: Use the `--explain` flag:
-
-```bash
-claudelint check-all --explain
-```
-
-### Plugin Issues
-
-**Problem**: Plugin skills don't appear in Claude Code
-
-**Solution**:
-
-1. Check plugin is installed: `/plugin list`
-2. Reinstall: `/plugin uninstall claudelint` then `/plugin install claudelint`
-3. Restart Claude Code session
-
-**Problem**: Hook doesn't run at session start
-
-**Solution**:
-
-1. Verify `.claude/hooks/hooks.json` exists
-2. Validate: `claudelint validate-hooks`
-3. Check event name is `"SessionStart"` (capital S)
-4. Test command manually first
-
-### Performance Issues
-
-**Problem**: Validation is slow
-
-**Solution**:
-
-1. Use `.claudelintignore` to skip large directories:
-
-   ```text
-   node_modules/
-   dist/
-   coverage/
-   ```
-
-2. Use `--fast` mode: `claudelint check-all --fast`
-3. Check timing: `claudelint check-all --verbose`
-
-### Configuration Issues
-
-**Problem**: Config file not found
-
-**Solution**:
-
-- claudelint searches for config files starting from current directory
-- Supported files: `.claudelintrc.json`, `package.json` (with `claudelint` key)
-- Specify config: `claudelint check-all --config /path/to/config.json`
-
-**Problem**: Rules not being applied
-
-**Solution**:
-
-- Verify config syntax: `cat .claudelintrc.json | jq`
-- Check rule names match exactly (e.g., `size-error` not `sizeError`)
-- Use `--verbose` to see which config file is loaded
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the [documentation](docs/)
-2. Search [existing issues](https://github.com/pdugan20/claudelint/issues)
-3. Open a [new issue](https://github.com/pdugan20/claudelint/issues/new) with:
-   - Command you ran
-   - Error message
-   - OS and Node version
-   - Output of `claudelint check-all --verbose`
+See [Troubleshooting Guide](docs/troubleshooting.md) for complete solutions to installation, validation, plugin, performance, and configuration issues.
 
 ## License
 

@@ -22,6 +22,7 @@ import { registerConfigCommands } from './cli/commands/config-commands';
 import { registerFormatCommand } from './cli/commands/format';
 import { registerListRulesCommand } from './cli/commands/list-rules';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
+import { registerInstallPluginCommand } from './cli/commands/install-plugin';
 
 // Read version from package.json
 const packageJsonPath = join(__dirname, '../package.json');
@@ -53,6 +54,7 @@ registerConfigCommands(program);
 registerFormatCommand(program);
 registerListRulesCommand(program);
 registerCacheClearCommand(program);
+registerInstallPluginCommand(program);
 
 // Parse command line arguments
 program.parse();

@@ -361,8 +361,16 @@ export class InitWizard {
     logger.log(chalk.bold('Next steps:'));
     logger.newline();
     logger.detail('1. Review .claudelintrc.json and customize rules');
-    logger.detail('2. Run validation: claudelint check-all');
+    logger.detail('2. Run validation: npx claudelint check-all');
     logger.detail('3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.newline();
+    logger.log(chalk.bold('To enable interactive skills in Claude Code:'));
+    logger.newline();
+    logger.detail('Run in your Claude Code session:');
+    logger.detail(chalk.cyan('  /plugin install --source ./node_modules/claude-code-lint'));
+    logger.newline();
+    logger.detail('Or use the helper command:');
+    logger.detail(chalk.cyan('  npx claudelint install-plugin'));
     logger.newline();
     logger.info('Tip: Use "claudelint list-rules" to see all available rules');
     logger.newline();

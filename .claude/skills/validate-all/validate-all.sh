@@ -1,10 +1,19 @@
 #!/bin/bash
 # Run comprehensive claudelint validation
-
 set -e
 
-# Parse arguments
-ARGS=("$@")
+# Check dependencies
+if ! command -v npx &> /dev/null; then
+    echo "Error: npx not found"
+    echo "Install Node.js from: https://nodejs.org"
+    exit 1
+fi
 
-# Run claudelint check-all with provided arguments
-claudelint check-all "${ARGS[@]}"
+if ! npx --no-install claude-code-lint --version &> /dev/null; then
+    echo "Error: claude-code-lint not installed"
+    echo "Install: npm install --save-dev claude-code-lint"
+    exit 1
+fi
+
+# Run claudelint check-all
+npx claude-code-lint check-all "$@"
