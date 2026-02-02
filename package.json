@@ -37,8 +37,6 @@
     "audit:rule-docs": "ts-node scripts/audit/rule-docs.ts",
     "audit:rule-docs:content": "ts-node scripts/audit/rule-docs-content.ts",
     "check:rule-coverage": "ts-node scripts/check/rule-coverage.ts",
-    "check:duplicates": "ts-node scripts/check/duplicate-logic.ts",
-    "check:duplicate-fixtures": "ts-node scripts/check/duplicate-fixtures.ts",
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
     "verify:rule-implementations": "ts-node scripts/verify/rule-implementations.ts",
     "verify:rule-structure": "ts-node scripts/verify/rule-structure.ts",

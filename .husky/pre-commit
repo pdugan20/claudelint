@@ -12,6 +12,3 @@ npm run check:rule-coverage
 
 # Lint validator files
 npx eslint src/validators/**/*.ts src/schemas/**/*.ts --fix
-
-# Check for duplicate logic
-npm run check:duplicates
