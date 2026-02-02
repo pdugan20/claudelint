@@ -135,17 +135,69 @@ interface DisabledRule {
 }
 
 /**
- * Base class for all validators providing common validation functionality
+ * Base validator class for text-based and markdown file validation
+ *
+ * FileValidator provides the foundation for validating text/markdown files like
+ * CLAUDE.md, SKILL.md, AGENT.md, and OUTPUT_STYLE.md. It handles:
+ * - Issue collection and aggregation
+ * - Rule execution via category-based auto-discovery
+ * - Inline disable comment parsing (claudelint-disable, etc.)
+ * - Config-based rule enabling/disabling and severity overrides
+ * - Severity classification (error vs warning)
+ *
+ * ## When to Use
+ *
+ * Extend FileValidator when validating:
+ * - Text or markdown content
+ * - Files that may contain inline disable comments
+ * - Content that requires custom parsing beyond JSON schema validation
+ *
+ * ## Architecture
+ *
+ * Validators extending FileValidator typically:
+ * 1. Read file content
+ * 2. Parse inline disable comments with `parseDisableComments()`
+ * 3. Optionally validate frontmatter with schema utilities
+ * 4. Execute rules with `executeRulesForCategory()`
+ * 5. Return aggregated results with `getResult()`
+ *
+ * ## Rule Execution
+ *
+ * FileValidator uses category-based rule auto-discovery. Rules are automatically
+ * registered with RuleRegistry by category (e.g., 'CLAUDE.md', 'Skills', 'Agents').
+ * Call `executeRulesForCategory()` to run all rules for a category without manual imports.
+ *
+ * ## Examples
+ *
+ * Validators extending FileValidator:
+ * - ClaudeMdValidator - Validates CLAUDE.md files
+ * - SkillsValidator - Validates SKILL.md files and scripts
+ * - AgentsValidator - Validates AGENT.md files
+ * - OutputStylesValidator - Validates OUTPUT_STYLE.md files
+ * - CommandsValidator - Validates deprecated commands
  *
  * @example
  * ```typescript
  * class MyValidator extends FileValidator {
  *   async validate(): Promise<ValidationResult> {
- *     this.report('Error message', 'file.md', 10, 'rule-id');
+ *     const files = await this.findFiles();
+ *
+ *     for (const file of files) {
+ *       const content = await readFileContent(file);
+ *
+ *       // Parse disable comments
+ *       this.parseDisableComments(file, content);
+ *
+ *       // Execute all rules for this category
+ *       await this.executeRulesForCategory('MyCategory', file, content);
+ *     }
+ *
  *     return this.getResult();
  *   }
  * }
  * ```
+ *
+ * @see SchemaValidator for JSON config file validation
  */
 export abstract class FileValidator {
   protected options: BaseValidatorOptions;
