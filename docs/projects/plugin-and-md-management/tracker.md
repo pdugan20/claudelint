@@ -123,7 +123,30 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   grep -r "validate-agents-md" docs/  # should find nothing
   ```
 
-- [ ] **Task 1.4**: Update E10 validation rule
+- [ ] **Task 1.4**: Fix plugin.json schema to match official Claude Code spec
+  - [ ] Update PluginManifestSchema in src/validators/schemas.ts
+  - [ ] Fix `author` field: string → object with {name, email?, url?}
+  - [ ] Fix `description`: required → optional
+  - [ ] Add missing fields: homepage, keywords, outputStyles, lspServers
+  - [ ] Fix path fields: array → string|array (skills, agents, commands)
+  - [ ] Fix config fields: array → string|object (hooks, mcpServers)
+  - [ ] Remove undocumented `dependencies` field
+  - [ ] Update .claude-plugin/plugin.json to match new schema
+  - [ ] Add tests for new schema fields
+  - [ ] Update plugin validation rule docs
+
+  **Verification Steps:**
+  1. Compare current schema with official docs: https://code.claude.com/docs/en/plugins-reference#complete-schema
+  2. Update schema in src/validators/schemas.ts
+  3. Validate our plugin.json: `cat .claude-plugin/plugin.json | jq .` (should pass)
+  4. Run tests: `npm test -- plugin` (should pass)
+  5. Test schema validation catches errors:
+     ```bash
+     echo '{"name": "test", "author": "string"}' > /tmp/test-plugin.json
+     claudelint check-plugin --path /tmp/test-plugin.json  # should warn about author being string
+     ```
+
+- [ ] **Task 1.6**: Update E10 validation rule
   - [ ] Locate rule file: Check if `src/rules/skills/overly-generic-name.ts` exists
   - [ ] Add single-word verb detection: "format", "validate", "test", "build", "deploy"
   - [ ] Flag names that are only a verb without specificity
@@ -152,7 +175,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
      ```
   7. Run full test suite: `npm test`
 
-- [ ] **Task 1.5**: Test plugin installation locally
+- [ ] **Task 1.7**: Test plugin installation locally
   - [ ] Test local plugin installation
   - [ ] Verify all skills accessible with namespaces
   - [ ] Verify old skill names don't work
@@ -179,7 +202,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   8. Reinstall to ensure clean state: `claude /plugin install --source .`
   9. Clean up: `rm claude-code-lint-*.tgz`
 
-- [ ] **Task 1.6**: Update README and documentation
+- [ ] **Task 1.8**: Update README and documentation
   - [ ] Add plugin installation section
   - [ ] Document skill namespace usage
   - [ ] Add comparison: npm CLI vs plugin
