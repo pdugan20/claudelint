@@ -1,6 +1,6 @@
 # Plugin & CLAUDE.md Management Project
 
-**Status**: Planning
+**Status**: In Progress (Phase 1: 83% complete)
 **Priority**: High
 **Last Updated**: 2026-02-02
 
@@ -99,11 +99,13 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 
 ## Success Metrics
 
-- [ ] Package.json bug fixed - npm users get skills
-- [ ] Users can install as plugin: `claude /plugin install github:pdugan20/claudelint`
-- [ ] All skills work with `/claudelint:` namespace
-- [ ] Generic skills renamed (validate-all, format-cc, validate-cc-md)
-- [ ] E10 rule updated to flag single-word verbs
+- [x] Package.json bug fixed - npm users get CLI only (skills via plugin install)
+- [x] Plugin.json created at repository root
+- [x] All skills work with `/claudelint:` namespace
+- [x] Generic skills renamed (validate-all, format-cc, validate-cc-md)
+- [x] E10 rule created to flag single-word verbs (skill-overly-generic-name)
+- [x] Plugin.json schema fixed to match official spec (deleted 2 invalid rules)
+- [ ] Plugin tested locally with Claude Code
 - [ ] optimize-cc-md skill catches common CLAUDE.md issues
 - [ ] Documentation covers both distribution methods
 - [ ] No more generic skill names that cause triggering issues
@@ -216,15 +218,24 @@ Researched `/init` command implementation:
 **Impact**: npm users get ZERO skills currently
 **Fix**: Change to `".claude"` in files array
 
-## Next Steps
+## Phase Status
 
-1. **Phase 1**: Fix package.json bug and create plugin.json (1 day)
+1. **Phase 1**: Fix package.json bug and create plugin.json - **83% COMPLETE** (5/6 tasks done)
+   - [x] Fixed package.json files array
+   - [x] Created plugin.json manifest
+   - [x] Renamed 3 generic skills
+   - [x] Fixed plugin.json schema (aligned with official spec)
+   - [x] Created E10 rule (skill-overly-generic-name)
+   - [ ] Test plugin locally
+   - [ ] Update documentation
 2. **Phase 2**: Schema & constant verification system (9-14 days) **NEW - CRITICAL**
+   - Includes Phase 2.6: Rule Deprecation System
 3. **Phase 3**: Build optimize-cc-md skill (3-4 days)
 4. **Phase 4**: Update documentation (1-2 days)
 5. **Phase 5**: Test and release (1 day)
 
-**Total: 15-22 days**
+**Current Status**: Phase 1 nearly complete, 2 tasks remaining (test locally, docs)
+**Total Estimated**: 15-22 days
 
 See [tracker.md](./tracker.md) for detailed task breakdown.
 
