@@ -1,9 +1,9 @@
 import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
 import { findSettingsFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
-import { SettingsSchema, HookSchema } from './schemas';
+import { SettingsSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
-import { validateHook as validateHookHelper } from '../utils/validators/helpers';
+import { validateSettingsHooks } from '../utils/validators/helpers';
 
 // Auto-register all rules
 import '../rules';
@@ -40,20 +40,12 @@ export class SettingsValidator extends SchemaValidator<typeof SettingsSchema> {
     // Execute ALL Settings rules via category-based discovery
     await this.executeRulesForCategory('Settings', filePath, content);
 
-    // Keep additional validation not covered by registered rules
-    // Validate hooks
+    // Validate hooks (settings.json uses object format with event keys)
     if (settings.hooks) {
-      for (const hook of settings.hooks) {
-        this.validateHook(filePath, hook);
+      const issues = validateSettingsHooks(settings.hooks);
+      for (const issue of issues) {
+        this.report(issue.message, filePath, undefined, issue.ruleId);
       }
-    }
-  }
-
-  private validateHook(filePath: string, hook: z.infer<typeof HookSchema>): void {
-    // Use shared validation utility for common checks
-    const issues = validateHookHelper(hook);
-    for (const issue of issues) {
-      this.report(issue.message, filePath, undefined, issue.ruleId);
     }
   }
 }

@@ -15,7 +15,7 @@ export const MatcherSchema = z.object({
 });
 
 /**
- * Hook schema (used in both settings and hooks validators)
+ * Hook schema for hooks.json files (array format with event field)
  * Note: event uses z.string() instead of HookEvents enum to provide
  * custom validation with warnings for unknown events
  * Note: command/prompt/agent mutual exclusivity is validated in validation-helpers.ts
@@ -34,6 +34,46 @@ export const HookSchema = z.object({
       2: z.string().optional(),
     })
     .optional(),
+});
+
+/**
+ * Individual hook schema for settings.json (command or prompt type)
+ * Based on official schema: https://json.schemastore.org/claude-code-settings.json
+ */
+export const SettingsHookSchema = z.object({
+  type: z.enum(['command', 'prompt']),
+  command: z.string().optional(),
+  prompt: z.string().optional(),
+  timeout: z.number().optional(),
+});
+
+/**
+ * Hook matcher schema for settings.json
+ * Contains optional matcher pattern and array of hooks
+ */
+export const SettingsHookMatcherSchema = z.object({
+  matcher: z.string().optional(),
+  hooks: z.array(SettingsHookSchema),
+});
+
+/**
+ * Hooks schema for settings.json (object format with event names as keys)
+ * Based on official schema: https://json.schemastore.org/claude-code-settings.json
+ */
+export const SettingsHooksSchema = z.object({
+  PreToolUse: z.array(SettingsHookMatcherSchema).optional(),
+  PostToolUse: z.array(SettingsHookMatcherSchema).optional(),
+  PostToolUseFailure: z.array(SettingsHookMatcherSchema).optional(),
+  PermissionRequest: z.array(SettingsHookMatcherSchema).optional(),
+  Notification: z.array(SettingsHookMatcherSchema).optional(),
+  UserPromptSubmit: z.array(SettingsHookMatcherSchema).optional(),
+  Stop: z.array(SettingsHookMatcherSchema).optional(),
+  SubagentStart: z.array(SettingsHookMatcherSchema).optional(),
+  SubagentStop: z.array(SettingsHookMatcherSchema).optional(),
+  PreCompact: z.array(SettingsHookMatcherSchema).optional(),
+  Setup: z.array(SettingsHookMatcherSchema).optional(),
+  SessionStart: z.array(SettingsHookMatcherSchema).optional(),
+  SessionEnd: z.array(SettingsHookMatcherSchema).optional(),
 });
 
 /**
@@ -92,13 +132,15 @@ export const MarketplaceConfigSchema = z.object({
 
 /**
  * Complete settings schema
+ * Based on official schema: https://json.schemastore.org/claude-code-settings.json
+ * Verify sync with: npm run check:schema-sync
  */
 export const SettingsSchema = z.object({
   permissions: PermissionsSchema.optional(),
   env: z.record(z.string()).optional(),
   model: ModelNames.optional(),
   apiKeyHelper: z.string().optional(),
-  hooks: z.array(HookSchema).optional(),
+  hooks: SettingsHooksSchema.optional(),
   attribution: AttributionSchema.optional(),
   statusLine: z.string().optional(),
   outputStyle: z.string().optional(),

@@ -61,13 +61,18 @@ describe('SettingsValidator', () => {
           ask: ['Write'],
           allow: ['Bash'],
         },
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-            command: 'echo test',
-          },
-        ],
+        hooks: {
+          PreToolUse: [
+            {
+              hooks: [
+                {
+                  type: 'command',
+                  command: 'echo test',
+                },
+              ],
+            },
+          ],
+        },
         env: {
           API_KEY: '${SECRET_KEY}',
         },
