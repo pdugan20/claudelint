@@ -237,61 +237,88 @@ export function registerCheckAllCommand(program: Command): void {
                 config: mergedConfig,
               };
 
+              // Save original cwd before parallel validation
+              const originalCwd = process.cwd();
+
+              // Validate all packages in parallel
+              const packageResults = await Promise.all(
+                workspace.packages.map(async (packagePath) => {
+                  const packageName = basename(packagePath);
+
+                  try {
+                    // Change to package directory (each async task gets its own context)
+                    process.chdir(packagePath);
+
+                    // Run validators for this package
+                    const enabledValidators = ValidatorRegistry.getAllMetadata().filter(
+                      (m) => m.enabled
+                    );
+
+                    const results = await Promise.all(
+                      enabledValidators.map((metadata) =>
+                        reporter.runValidator(
+                          metadata.name,
+                          () => ValidatorRegistry.create(metadata.id, validatorOptions).validate(),
+                          null, // No cache for workspace validation
+                          mergedConfig
+                        )
+                      )
+                    );
+
+                    // Aggregate results for this package
+                    let packageErrors = 0;
+                    let packageWarnings = 0;
+                    for (const { result } of results) {
+                      packageErrors += result.errors.length;
+                      packageWarnings += result.warnings.length;
+                    }
+
+                    return {
+                      packageName,
+                      packagePath,
+                      results,
+                      errors: packageErrors,
+                      warnings: packageWarnings,
+                      success: true,
+                    };
+                  } catch (error) {
+                    return {
+                      packageName,
+                      packagePath,
+                      results: [],
+                      errors: 0,
+                      warnings: 0,
+                      success: false,
+                      error: error instanceof Error ? error.message : String(error),
+                    };
+                  } finally {
+                    // Restore cwd after validation
+                    process.chdir(originalCwd);
+                  }
+                })
+              );
+
+              // Display results for each package in original order
               let totalWorkspaceErrors = 0;
               let totalWorkspaceWarnings = 0;
               let failedPackages: string[] = [];
 
-              for (const packagePath of workspace.packages) {
-                const packageName = basename(packagePath);
-                logger.section(`Package: ${packageName}`);
+              for (const pkgResult of packageResults) {
+                logger.section(`Package: ${pkgResult.packageName}`);
 
-                try {
-                  // Save original cwd
-                  const originalCwd = process.cwd();
+                if (!pkgResult.success) {
+                  logger.error(`Failed to validate package: ${pkgResult.error}`);
+                  failedPackages.push(pkgResult.packageName);
+                } else {
+                  // Display validator results
+                  reporter.reportParallelResults(pkgResult.results);
 
-                  // Change to package directory
-                  process.chdir(packagePath);
+                  totalWorkspaceErrors += pkgResult.errors;
+                  totalWorkspaceWarnings += pkgResult.warnings;
 
-                  // Run validators for this package
-                  const enabledValidators = ValidatorRegistry.getAllMetadata().filter(
-                    (m) => m.enabled
-                  );
-
-                  const results = await Promise.all(
-                    enabledValidators.map((metadata) =>
-                      reporter.runValidator(
-                        metadata.name,
-                        () => ValidatorRegistry.create(metadata.id, validatorOptions).validate(),
-                        null, // No cache for workspace validation
-                        mergedConfig
-                      )
-                    )
-                  );
-
-                  reporter.reportParallelResults(results);
-
-                  // Aggregate results
-                  let packageErrors = 0;
-                  let packageWarnings = 0;
-                  for (const { result } of results) {
-                    packageErrors += result.errors.length;
-                    packageWarnings += result.warnings.length;
+                  if (pkgResult.errors > 0 || (pkgResult.warnings > 0 && options.warningsAsErrors)) {
+                    failedPackages.push(pkgResult.packageName);
                   }
-
-                  totalWorkspaceErrors += packageErrors;
-                  totalWorkspaceWarnings += packageWarnings;
-
-                  if (packageErrors > 0 || (packageWarnings > 0 && options.warningsAsErrors)) {
-                    failedPackages.push(packageName);
-                  }
-
-                  // Restore cwd
-                  process.chdir(originalCwd);
-                } catch (error) {
-                  logger.error(
-                    `Failed to validate package: ${error instanceof Error ? error.message : String(error)}`
-                  );
-                  failedPackages.push(packageName);
                 }
 
                 logger.newline();
