@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
+import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
 import { findLspFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { LSPConfigSchema } from '../schemas/lsp-config.schema';
@@ -9,14 +9,14 @@ import '../rules';
 
 /**
  * Options specific to LSP validator
- * Extends JSONConfigValidatorOptions with no additional options
+ * Extends SchemaValidatorOptions with no additional options
  */
-export type LSPValidatorOptions = JSONConfigValidatorOptions;
+export type LSPValidatorOptions = SchemaValidatorOptions;
 
 /**
  * Validates LSP (Language Server Protocol) configuration files
  */
-export class LSPValidator extends JSONConfigValidator<typeof LSPConfigSchema> {
+export class LSPValidator extends SchemaValidator<typeof LSPConfigSchema> {
   protected findConfigFiles(basePath: string): Promise<string[]> {
     return findLspFiles(basePath);
   }
@@ -29,7 +29,7 @@ export class LSPValidator extends JSONConfigValidator<typeof LSPConfigSchema> {
     return 'No lsp.json files found';
   }
 
-  protected async validateConfig(
+  protected async validateSemantics(
     filePath: string,
     config: z.infer<typeof LSPConfigSchema>
   ): Promise<void> {

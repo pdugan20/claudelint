@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -17,7 +17,7 @@ export interface CommandsValidatorOptions extends BaseValidatorOptions {}
  * - Warns about commands in plugin.json
  * - Suggests migration path to skills
  */
-export class CommandsValidator extends BaseValidator {
+export class CommandsValidator extends FileValidator {
   private basePath: string;
 
   constructor(options: CommandsValidatorOptions = {}) {

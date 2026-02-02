@@ -3,29 +3,28 @@
  * Handles common pattern of finding, parsing, and validating JSON against Zod schemas
  */
 
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { fileExists } from '../utils/filesystem/files';
 import { z } from 'zod';
-import { ValidationContext } from '../composition/types';
-import { readJSON, zodSchema } from '../composition/json-validators';
+import { promises as fs } from 'fs';
 
 /**
- * Options for JSON configuration validators
+ * Options for schema-based validators
  * Same as BaseValidatorOptions with no additional options
  */
-export type JSONConfigValidatorOptions = BaseValidatorOptions;
+export type SchemaValidatorOptions = BaseValidatorOptions;
 
 /**
  * Abstract base class for JSON configuration validators
  * Subclasses must implement:
  * - findConfigFiles(): Find relevant config files in the project
  * - getSchema(): Return the Zod schema for validation
- * - validateConfig(): Perform additional validation beyond schema
+ * - validateSemantics(): Perform additional validation beyond schema
  */
-export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValidator {
+export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator {
   protected basePath: string;
 
-  constructor(options: JSONConfigValidatorOptions = {}) {
+  constructor(options: SchemaValidatorOptions = {}) {
     super(options);
     this.basePath = options.path || process.cwd();
   }
@@ -63,40 +62,49 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
 
   /**
    * Validate a single JSON configuration file
-   * Uses composition framework to read, parse, and validate against schema
+   *
+   * Process:
+   * 1. Read file content
+   * 2. Parse JSON (report syntax errors)
+   * 3. Validate against Zod schema (report structure errors)
+   * 4. Run custom semantic validation
+   *
+   * @param filePath - Path to the JSON file to validate
    */
   private async validateFile(filePath: string): Promise<void> {
-    // Create validation context
-    const context: ValidationContext = {
-      filePath,
-      options: this.options,
-      state: new Map(),
-    };
+    try {
+      // Step 1: Read file
+      const content = await fs.readFile(filePath, 'utf-8');
 
-    // Step 1: Read and parse JSON
-    const readValidator = readJSON<z.infer<T>>();
-    const readResult = await readValidator(filePath, context);
-
-    // Merge read errors/warnings into validator result
-    this.mergeSchemaValidationResult(readResult);
-
-    if (!readResult.valid) {
-      return;
-    }
-
-    // Step 2: Validate against schema
-    const schemaValidator = zodSchema(this.getSchema());
-    const schemaResult = await schemaValidator(null, context);
-
-    // Merge schema validation errors/warnings into validator result
-    this.mergeSchemaValidationResult(schemaResult);
-
-    // If validation passed, run custom validation
-    if (schemaResult.valid) {
-      const config = context.state?.get('validatedData') as z.infer<T>;
-      if (config) {
-        await this.validateConfig(filePath, config);
+      // Step 2: Parse JSON
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(content);
+      } catch (parseError) {
+        const message = parseError instanceof Error ? parseError.message : String(parseError);
+        this.report(`Invalid JSON syntax: ${message}`, filePath);
+        return;
       }
+
+      // Step 3: Validate against Zod schema
+      const schema = this.getSchema();
+      const result = schema.safeParse(parsed);
+
+      if (!result.success) {
+        // Report all schema validation errors
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
+          this.report(`${path}${issue.message}`, filePath);
+        });
+        return;
+      }
+
+      // Step 4: Run custom semantic validation
+      // This receives the parsed, validated config object
+      await this.validateSemantics(filePath, result.data as z.TypeOf<T>);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.report(`Error validating file: ${message}`, filePath);
     }
   }
 
@@ -116,7 +124,7 @@ export abstract class JSONConfigValidator<T extends z.ZodType> extends BaseValid
    * Perform additional validation beyond schema validation
    * Must be implemented by subclasses
    */
-  protected abstract validateConfig(filePath: string, config: z.infer<T>): Promise<void>;
+  protected abstract validateSemantics(filePath: string, config: z.infer<T>): Promise<void>;
 
   /**
    * Get the warning message to display when no config files are found

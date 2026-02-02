@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
+import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
 import { findSettingsFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { SettingsSchema, HookSchema } from './schemas';
@@ -10,14 +10,14 @@ import '../rules';
 
 /**
  * Options specific to Settings validator
- * Extends JSONConfigValidatorOptions with no additional options
+ * Extends SchemaValidatorOptions with no additional options
  */
-export type SettingsValidatorOptions = JSONConfigValidatorOptions;
+export type SettingsValidatorOptions = SchemaValidatorOptions;
 
 /**
  * Validates Claude Code settings.json files
  */
-export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema> {
+export class SettingsValidator extends SchemaValidator<typeof SettingsSchema> {
   protected findConfigFiles(basePath: string): Promise<string[]> {
     return findSettingsFiles(basePath);
   }
@@ -30,7 +30,7 @@ export class SettingsValidator extends JSONConfigValidator<typeof SettingsSchema
     return 'No settings.json files found';
   }
 
-  protected async validateConfig(
+  protected async validateSemantics(
     filePath: string,
     settings: z.infer<typeof SettingsSchema>
   ): Promise<void> {

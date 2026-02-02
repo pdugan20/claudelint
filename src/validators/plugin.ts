@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
+import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
 import { findPluginManifests, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { PluginManifestSchema } from './schemas';
@@ -9,14 +9,14 @@ import '../rules';
 
 /**
  * Options specific to Plugin validator
- * Extends JSONConfigValidatorOptions with no additional options
+ * Extends SchemaValidatorOptions with no additional options
  */
-export type PluginValidatorOptions = JSONConfigValidatorOptions;
+export type PluginValidatorOptions = SchemaValidatorOptions;
 
 /**
  * Validates Claude Code plugin manifests (plugin.json)
  */
-export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSchema> {
+export class PluginValidator extends SchemaValidator<typeof PluginManifestSchema> {
   protected findConfigFiles(basePath: string): Promise<string[]> {
     return findPluginManifests(basePath);
   }
@@ -29,7 +29,7 @@ export class PluginValidator extends JSONConfigValidator<typeof PluginManifestSc
     return 'No plugin.json files found';
   }
 
-  protected async validateConfig(
+  protected async validateSemantics(
     filePath: string,
     _plugin: z.infer<typeof PluginManifestSchema>
   ): Promise<void> {

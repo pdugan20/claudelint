@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
@@ -18,7 +18,7 @@ export interface ClaudeMdValidatorOptions extends BaseValidatorOptions {
 /**
  * Validates CLAUDE.md files for size, format, and structure
  */
-export class ClaudeMdValidator extends BaseValidator {
+export class ClaudeMdValidator extends FileValidator {
   private basePath: string;
 
   constructor(options: ClaudeMdValidatorOptions = {}) {

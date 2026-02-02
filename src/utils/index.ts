@@ -10,4 +10,4 @@ export * from './formats/schema';
 export * from './validators';
 
 // Export AutoFix for custom rules
-export { AutoFix } from '../validators/base';
+export { AutoFix } from '../validators/file-validator';

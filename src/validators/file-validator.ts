@@ -139,7 +139,7 @@ interface DisabledRule {
  *
  * @example
  * ```typescript
- * class MyValidator extends BaseValidator {
+ * class MyValidator extends FileValidator {
  *   async validate(): Promise<ValidationResult> {
  *     this.report('Error message', 'file.md', 10, 'rule-id');
  *     return this.getResult();
@@ -147,7 +147,7 @@ interface DisabledRule {
  * }
  * ```
  */
-export abstract class BaseValidator {
+export abstract class FileValidator {
   protected options: BaseValidatorOptions;
   protected issues: ValidationIssue[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
@@ -659,7 +659,7 @@ export abstract class BaseValidator {
         howToFix?: string;
         autoFix?: AutoFix;
       }) => {
-        // Report issue using existing BaseValidator.report()
+        // Report issue using existing FileValidator.report()
         this.report(issue.message, filePath, issue.line, rule.meta.id, {
           fix: issue.fix,
           explanation: issue.explanation,

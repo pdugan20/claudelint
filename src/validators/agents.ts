@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { findAgentDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
@@ -22,7 +22,7 @@ export interface AgentsValidatorOptions extends BaseValidatorOptions {
 /**
  * Validates Claude Code agents for structure and frontmatter
  */
-export class AgentsValidator extends BaseValidator {
+export class AgentsValidator extends FileValidator {
   private basePath: string;
   private specificAgent?: string;
 

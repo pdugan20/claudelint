@@ -1,11 +1,11 @@
-import { BaseValidator, ValidationResult } from '../../src/validators/base';
+import { FileValidator, ValidationResult } from '../../src/validators/file-validator';
 import { RuleRegistry } from '../../src/utils/rules/registry';
 import { ClaudeLintConfig } from '../../src/utils/config/types';
 import { RuleId } from '../../src/rules/rule-ids';
 import { z } from 'zod';
 
 // Create a minimal test validator for testing BaseValidator methods
-class TestValidator extends BaseValidator {
+class TestValidator extends FileValidator {
   validate(): Promise<ValidationResult> {
     return Promise.resolve(this.getResult());
   }

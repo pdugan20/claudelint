@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { findSkillDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
@@ -21,7 +21,7 @@ export interface SkillsValidatorOptions extends BaseValidatorOptions {
 /**
  * Validates Claude Code skills for structure and frontmatter
  */
-export class SkillsValidator extends BaseValidator {
+export class SkillsValidator extends FileValidator {
   private basePath: string;
   private specificSkill?: string;
 

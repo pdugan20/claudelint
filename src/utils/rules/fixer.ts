@@ -6,7 +6,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { createTwoFilesPatch } from 'diff';
-import { AutoFix } from '../../validators/base';
+import { AutoFix } from '../../validators/file-validator';
 
 export interface FixerOptions {
   /** Run in dry-run mode (don't actually modify files) */

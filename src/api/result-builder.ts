@@ -8,7 +8,7 @@
  */
 
 import { LintResult, LintMessage } from './types';
-import { ValidationResult } from '../validators/base';
+import { ValidationResult } from '../validators/file-validator';
 import { buildLintMessage } from './message-builder';
 
 /**

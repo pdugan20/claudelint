@@ -754,8 +754,8 @@ export class ClaudeLint {
    */
   private getApplicableValidators(
     _filePath: string,
-    allValidators: import('../validators/base').BaseValidator[]
-  ): import('../validators/base').BaseValidator[] {
+    allValidators: import('../validators/file-validator').FileValidator[]
+  ): import('../validators/file-validator').FileValidator[] {
     // For Phase 1, we'll run all validators
     // In Phase 2, we'll add logic to filter based on file patterns and config
     return allValidators;
@@ -863,10 +863,10 @@ export class ClaudeLint {
    */
   private applyFixes(
     source: string,
-    validationResult: import('../validators/base').ValidationResult
+    validationResult: import('../validators/file-validator').ValidationResult
   ): string | undefined {
     // Collect all AutoFix objects from errors and warnings
-    const autoFixes: import('../validators/base').AutoFix[] = [];
+    const autoFixes: import('../validators/file-validator').AutoFix[] = [];
 
     for (const error of validationResult.errors) {
       if (error.autoFix) {
@@ -919,10 +919,10 @@ export class ClaudeLint {
    * Merge multiple ValidationResult objects into one
    */
   private mergeValidationResults(
-    results: import('../validators/base').ValidationResult[]
-  ): import('../validators/base').ValidationResult {
-    const mergedErrors: import('../validators/base').ValidationError[] = [];
-    const mergedWarnings: import('../validators/base').ValidationWarning[] = [];
+    results: import('../validators/file-validator').ValidationResult[]
+  ): import('../validators/file-validator').ValidationResult {
+    const mergedErrors: import('../validators/file-validator').ValidationError[] = [];
+    const mergedWarnings: import('../validators/file-validator').ValidationWarning[] = [];
     let allValid = true;
 
     for (const result of results) {

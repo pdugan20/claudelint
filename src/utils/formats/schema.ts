@@ -2,7 +2,7 @@
  * Utilities for converting Zod validation results to ValidationResult format
  */
 import { z } from 'zod';
-import { ValidationResult, ValidationError } from '../../validators/base';
+import { ValidationResult, ValidationError } from '../../validators/file-validator';
 import { RuleId, isRuleId } from '../../rules/rule-ids';
 import { extractFrontmatter } from './markdown';
 

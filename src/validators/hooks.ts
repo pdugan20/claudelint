@@ -1,4 +1,4 @@
-import { JSONConfigValidator, JSONConfigValidatorOptions } from './json-config-base';
+import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
 import { findHooksFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { HooksConfigSchema } from './schemas';
@@ -10,14 +10,14 @@ import '../rules';
 
 /**
  * Options specific to Hooks validator
- * Extends JSONConfigValidatorOptions with no additional options
+ * Extends SchemaValidatorOptions with no additional options
  */
-export type HooksValidatorOptions = JSONConfigValidatorOptions;
+export type HooksValidatorOptions = SchemaValidatorOptions;
 
 /**
  * Validates Claude Code hooks.json files
  */
-export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema> {
+export class HooksValidator extends SchemaValidator<typeof HooksConfigSchema> {
   protected findConfigFiles(basePath: string): Promise<string[]> {
     return findHooksFiles(basePath);
   }
@@ -30,7 +30,7 @@ export class HooksValidator extends JSONConfigValidator<typeof HooksConfigSchema
     return 'No hooks.json files found';
   }
 
-  protected async validateConfig(
+  protected async validateSemantics(
     filePath: string,
     config: z.infer<typeof HooksConfigSchema>
   ): Promise<void> {

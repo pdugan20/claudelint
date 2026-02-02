@@ -16,7 +16,7 @@ import {
   statSync,
 } from 'fs';
 import { join } from 'path';
-import { ValidationResult } from '../validators/base';
+import { ValidationResult } from '../validators/file-validator';
 
 export interface CacheOptions {
   /** Enable caching (default: true) */

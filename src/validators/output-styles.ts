@@ -1,4 +1,4 @@
-import { BaseValidator, ValidationResult, BaseValidatorOptions } from './base';
+import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { findOutputStyleDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
@@ -19,7 +19,7 @@ export interface OutputStylesValidatorOptions extends BaseValidatorOptions {
 /**
  * Validates Claude Code output styles for structure and frontmatter
  */
-export class OutputStylesValidator extends BaseValidator {
+export class OutputStylesValidator extends FileValidator {
   private basePath: string;
   private specificOutputStyle?: string;
 

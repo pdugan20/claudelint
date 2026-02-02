@@ -3,7 +3,7 @@
  * Provides centralized validator registration and discovery
  */
 
-import { BaseValidator, BaseValidatorOptions } from '../../validators/base';
+import { FileValidator, BaseValidatorOptions } from '../../validators/file-validator';
 
 /**
  * Metadata describing a validator
@@ -24,7 +24,7 @@ export interface ValidatorMetadata {
 /**
  * Factory function that creates a validator instance
  */
-export type ValidatorFactory = (options?: BaseValidatorOptions) => BaseValidator;
+export type ValidatorFactory = (options?: BaseValidatorOptions) => FileValidator;
 
 /**
  * Validator registration entry
@@ -62,7 +62,7 @@ export class ValidatorRegistry {
    * @returns Validator instance
    * @throws Error if validator ID is not found
    */
-  static create(id: string, options?: BaseValidatorOptions): BaseValidator {
+  static create(id: string, options?: BaseValidatorOptions): FileValidator {
     const registration = this.validators.get(id);
     if (!registration) {
       throw new Error(`Validator with id "${id}" is not registered`);
@@ -75,7 +75,7 @@ export class ValidatorRegistry {
    *
    * @returns Array of validator instances
    */
-  static getAll(options?: BaseValidatorOptions): BaseValidator[] {
+  static getAll(options?: BaseValidatorOptions): FileValidator[] {
     return Array.from(this.validators.values()).map((reg) => reg.factory(options));
   }
 
@@ -84,7 +84,7 @@ export class ValidatorRegistry {
    *
    * @returns Array of enabled validator instances
    */
-  static getEnabled(options?: BaseValidatorOptions): BaseValidator[] {
+  static getEnabled(options?: BaseValidatorOptions): FileValidator[] {
     return Array.from(this.validators.values())
       .filter((reg) => reg.metadata.enabled)
       .map((reg) => reg.factory(options));

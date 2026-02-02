@@ -1,6 +1,6 @@
 // Validator exports
 // Import all validators to trigger self-registration with ValidatorRegistry
-export * from './base';
+export * from './file-validator';
 export * from './claude-md';
 export * from './skills';
 export * from './agents';

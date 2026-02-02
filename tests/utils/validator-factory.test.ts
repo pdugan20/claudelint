@@ -1,8 +1,8 @@
 import { ValidatorRegistry, ValidatorMetadata } from '../../src/utils/validators/factory';
-import { BaseValidator, ValidationResult } from '../../src/validators/base';
+import { FileValidator, ValidationResult } from '../../src/validators/file-validator';
 
 // Mock validator for testing
-class MockValidator extends BaseValidator {
+class MockValidator extends FileValidator {
   async validate(): Promise<ValidationResult> {
     return this.getResult();
   }

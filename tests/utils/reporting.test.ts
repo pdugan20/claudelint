@@ -1,5 +1,5 @@
 import { Reporter } from '../../src/utils/reporting/reporting';
-import { ValidationResult } from '../../src/validators/base';
+import { ValidationResult } from '../../src/validators/file-validator';
 
 describe('Reporter', () => {
   let reporter: Reporter;

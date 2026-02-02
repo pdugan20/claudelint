@@ -9,7 +9,7 @@
  */
 
 import { LintMessage, FixInfo } from './types';
-import { ValidationError, ValidationWarning, AutoFix } from '../validators/base';
+import { ValidationError, ValidationWarning, AutoFix } from '../validators/file-validator';
 
 /**
  * Build a LintMessage from a ValidationError or ValidationWarning
