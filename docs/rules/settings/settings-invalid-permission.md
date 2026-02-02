@@ -112,7 +112,8 @@ Never disable this rule. Invalid permissions cause settings to be ignored, fallb
 
 - [Rule Implementation](../../src/rules/settings/settings-invalid-permission.ts)
 - [Rule Tests](../../tests/rules/settings/settings-invalid-permission.test.ts)
-- [Permissions Documentation](https://github.com/anthropics/claude-code)
+- [Claude Code Settings Documentation](https://code.claude.com/docs/en/settings)
+- [Official Settings JSON Schema](https://json.schemastore.org/claude-code-settings.json)
 - [Glob Pattern Syntax](https://github.com/isaacs/node-glob#glob-primer)
 
 ## Version

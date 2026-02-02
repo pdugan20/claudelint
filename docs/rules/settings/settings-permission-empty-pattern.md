@@ -150,6 +150,8 @@ This rule helps maintain clean, clear permission syntax. There's no good reason 
 
 - [Rule Implementation](../../src/rules/settings/settings-permission-empty-pattern.ts)
 - [Rule Tests](../../tests/rules/settings/settings-permission-empty-pattern.test.ts)
+- [Claude Code Settings Documentation](https://code.claude.com/docs/en/settings)
+- [Official Settings JSON Schema](https://json.schemastore.org/claude-code-settings.json)
 
 ## Version
 
