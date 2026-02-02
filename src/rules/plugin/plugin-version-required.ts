@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -38,8 +39,8 @@ export const rule: Rule = {
 
     // Check if version is missing or empty
     if (
-      !plugin.version ||
-      typeof plugin.version !== 'string' ||
+      !hasProperty(plugin, 'version') ||
+      !isString(plugin.version) ||
       plugin.version.trim().length === 0
     ) {
       context.report({

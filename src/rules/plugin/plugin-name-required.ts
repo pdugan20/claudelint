@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -37,7 +38,7 @@ export const rule: Rule = {
     }
 
     // Check if name is missing or empty
-    if (!plugin.name || typeof plugin.name !== 'string' || plugin.name.trim().length === 0) {
+    if (!hasProperty(plugin, 'name') || !isString(plugin.name) || plugin.name.trim().length === 0) {
       context.report({
         message: 'Plugin name is required and cannot be empty',
       });

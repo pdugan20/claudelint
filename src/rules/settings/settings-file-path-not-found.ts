@@ -11,6 +11,7 @@ import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
 import { fileExists } from '../../utils/filesystem/files';
 import { hasVariableExpansion } from '../../utils/validators/helpers';
+import { hasProperty, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -39,12 +40,12 @@ export const rule: Rule = {
     }
 
     // Validate apiKeyHelper path if present
-    if (settings.apiKeyHelper && typeof settings.apiKeyHelper === 'string') {
+    if (hasProperty(settings, 'apiKeyHelper') && isString(settings.apiKeyHelper)) {
       await validateFilePath(context, settings.apiKeyHelper, 'apiKeyHelper');
     }
 
     // Validate outputStyle path if present
-    if (settings.outputStyle && typeof settings.outputStyle === 'string') {
+    if (hasProperty(settings, 'outputStyle') && isString(settings.outputStyle)) {
       await validateFilePath(context, settings.outputStyle, 'outputStyle');
     }
   },

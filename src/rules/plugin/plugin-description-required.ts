@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
+import { hasProperty, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -38,8 +39,8 @@ export const rule: Rule = {
 
     // Check if description is missing or empty
     if (
-      !plugin.description ||
-      typeof plugin.description !== 'string' ||
+      !hasProperty(plugin, 'description') ||
+      !isString(plugin.description) ||
       plugin.description.trim().length === 0
     ) {
       context.report({
