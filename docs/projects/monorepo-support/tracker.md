@@ -15,7 +15,8 @@ Project to add monorepo support with config inheritance and workspace detection.
 | Phase 1: Config Inheritance | **COMPLETE** | 2 days | ~500 | 21/21 tasks (100%) |
 | Phase 2: Workspace Detection | **COMPLETE** | 1.5 days | ~400 | 15/15 tasks (100%) |
 | Phase 3: Testing & Docs | **COMPLETE** | 1 day | ~800 | 12/12 tasks (100%) |
-| **Total** | **COMPLETE** | **4.5 days** | **~1700** | **48/48 tasks (100%)** |
+| Phase 4: Critical Improvements | Not Started | 2 days | ~400 | 0/11 tasks |
+| **Total** | **In Progress** | **6.5 days** | **~2100** | **48/59 tasks (81%)** |
 
 ---
 
@@ -378,6 +379,149 @@ All 48 tasks complete. Project ready to ship!
 
 ---
 
+## Phase 4: Critical Improvements
+
+**Goal:** Fix critical gaps and add high-impact performance/UX improvements
+
+**Timeline:** 2 days
+**Lines of Code:** ~400
+**Dependencies:** Phases 1, 2, 3 complete
+
+### 4.1 CLI Integration Tests (Critical Gap)
+
+- [ ] Create test fixtures for workspace CLI tests
+  - [ ] Create fixture pnpm monorepo with 3 packages
+  - [ ] Create fixture with validation errors in specific packages
+  - [ ] Create fixture with no workspace configuration
+- [ ] Test --workspace flag
+  - [ ] Test validating specific package by name
+  - [ ] Test error when package not found
+  - [ ] Test displays available packages on error
+  - [ ] Test error when no workspace detected
+  - [ ] Test changes to package directory for validation
+- [ ] Test --workspaces flag
+  - [ ] Test validates all packages
+  - [ ] Test aggregates errors across packages
+  - [ ] Test aggregates warnings across packages
+  - [ ] Test exit code is 1 when any package fails
+  - [ ] Test exit code is 0 when all packages pass
+  - [ ] Test workspace summary output
+
+**Task 4.1 Completion Criteria:**
+
+- [ ] All CLI workspace tests passing
+- [ ] Edge cases covered (missing packages, no workspace, etc.)
+- [ ] Error messages validated
+
+**Estimated Time:** 0.25 day (2-3 hours)
+
+---
+
+### 4.2 Config Caching with Extends
+
+- [ ] Update cache schema to track config dependencies
+  - [ ] Add configDeps field to CacheEntry
+  - [ ] Store all extended config paths in chain
+  - [ ] Store mtime for each config in chain
+- [ ] Implement cache invalidation logic
+  - [ ] Check mtime of all configs in dependency chain
+  - [ ] Invalidate if any config in chain changed
+  - [ ] Invalidate if config chain structure changed
+- [ ] Add tests for cache invalidation
+  - [ ] Test cache valid when no configs changed
+  - [ ] Test cache invalid when root config changed
+  - [ ] Test cache invalid when child config changed
+  - [ ] Test cache invalid when extended config changed
+  - [ ] Test cache valid when unrelated files changed
+
+**Task 4.2 Completion Criteria:**
+
+- [ ] Cache tracks all extended configs
+- [ ] Cache invalidates when any config in chain changes
+- [ ] Tests verify correct invalidation behavior
+- [ ] No performance regression
+
+**Estimated Time:** 1 day (8 hours)
+
+---
+
+### 4.3 Parallel Workspace Validation
+
+- [ ] Refactor --workspaces to use parallel validation
+  - [ ] Replace sequential for loop with Promise.all
+  - [ ] Buffer output per package
+  - [ ] Display buffered output after each package completes
+  - [ ] Preserve package order in output
+- [ ] Add concurrency limit option
+  - [ ] Add --max-concurrency flag (default: CPU cores)
+  - [ ] Implement concurrency pool
+  - [ ] Test with many packages (10+)
+- [ ] Test parallel validation
+  - [ ] Test validates packages in parallel
+  - [ ] Test output not interleaved
+  - [ ] Test exit codes still aggregate correctly
+  - [ ] Test performance improvement (benchmark)
+
+**Task 4.3 Completion Criteria:**
+
+- [ ] Packages validated in parallel
+- [ ] Output clean (no interleaving)
+- [ ] 3-10x performance improvement for 10+ packages
+- [ ] Concurrency limit prevents resource exhaustion
+
+**Estimated Time:** 0.5 day (4-6 hours)
+
+---
+
+### 4.4 Workspace Root Auto-Detection
+
+- [ ] Implement findWorkspaceRoot function
+  - [ ] Walk up directory tree from cwd
+  - [ ] Check each directory for workspace config
+  - [ ] Return root path when found
+  - [ ] Return null if no workspace found
+- [ ] Integrate with workspace detection
+  - [ ] Update detectWorkspace to auto-find root
+  - [ ] Accept optional cwd parameter
+  - [ ] Default to process.cwd() if not provided
+- [ ] Update CLI commands
+  - [ ] Allow --workspace from any directory
+  - [ ] Allow --workspaces from any directory
+  - [ ] Update help text to clarify behavior
+- [ ] Add tests
+  - [ ] Test finds root from nested package
+  - [ ] Test finds root from workspace root
+  - [ ] Test returns null when not in workspace
+  - [ ] Test works with pnpm/npm/Yarn
+
+**Task 4.4 Completion Criteria:**
+
+- [ ] Works from any directory in monorepo
+- [ ] Finds workspace root automatically
+- [ ] Tests cover nested directories
+- [ ] Help text updated
+
+**Estimated Time:** 0.25 day (2-3 hours)
+
+---
+
+**Phase 4 Completion Criteria:**
+
+- [ ] All 11 tasks complete
+- [ ] CLI integration tests passing
+- [ ] Config caching works with extends
+- [ ] Parallel validation 3-10x faster
+- [ ] Can run from any directory
+
+---
+
+## PHASE 4 STATUS
+
+**Status:** Not Started
+**Priority:** HIGH (fixes critical gaps)
+
+---
+
 ## Overall Completion Criteria
 
 ### Functional Requirements
@@ -423,17 +567,18 @@ All 48 tasks complete. Project ready to ship!
 
 ## Progress Summary
 
-**Total Tasks:** 48
+**Total Tasks:** 59
 **Completed:** 48
 **In Progress:** 0
-**Remaining:** 0
-**Overall Progress:** 100% (48/48)
+**Remaining:** 11
+**Overall Progress:** 81% (48/59)
 
 ### By Phase
 
 - **Phase 1:** 21/21 tasks (100%) - COMPLETE
 - **Phase 2:** 15/15 tasks (100%) - COMPLETE
 - **Phase 3:** 12/12 tasks (100%) - COMPLETE
+- **Phase 4:** 0/11 tasks (0%) - Not Started
 
 ---
 
@@ -491,9 +636,14 @@ All 48 tasks complete. Project ready to ship!
   - Status: **COMPLETE**
   - Completion Date: 2026-02-01
   - Notes: All 12 tasks done, comprehensive documentation and examples
-- [ ] **M4:** Ship Phase 1 (optional: can ship before Phase 2)
+- [x] **M4:** Ship Phases 1-3 (core functionality)
+  - Target: 2026-02-01
+  - Status: **COMPLETE**
+  - Completion Date: 2026-02-01
+  - Notes: Core monorepo support shipped
+- [ ] **M5:** Phase 4 Complete - Critical improvements done
   - Target: TBD
-  - Status: Ready (can ship now!)
+  - Status: Not Started
 
 ---
 
