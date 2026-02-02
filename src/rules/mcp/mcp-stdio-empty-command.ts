@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -27,27 +28,33 @@ export const rule: Rule = {
       return;
     }
 
-    let config: {
-      mcpServers?: Record<string, { transport?: { type?: string; command?: string } }>;
-    };
+    let config: unknown;
     try {
       config = JSON.parse(fileContent);
     } catch {
       return;
     }
 
-    if (!config.mcpServers) {
+    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
       return;
     }
 
     for (const server of Object.values(config.mcpServers)) {
-      if (server.transport?.type === 'stdio') {
-        const command = server.transport.command;
-        if (!command || command.trim().length === 0) {
-          context.report({
-            message: 'MCP stdio transport command cannot be empty',
-          });
-        }
+      if (!isObject(server)) continue;
+      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
+      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'stdio') continue;
+
+      if (!hasProperty(server.transport, 'command') || !isString(server.transport.command)) {
+        context.report({
+          message: 'MCP stdio transport command cannot be empty',
+        });
+        continue;
+      }
+
+      if (server.transport.command.trim().length === 0) {
+        context.report({
+          message: 'MCP stdio transport command cannot be empty',
+        });
       }
     }
   },

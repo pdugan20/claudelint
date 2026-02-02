@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { hasProperty, isObject } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -27,21 +28,23 @@ export const rule: Rule = {
       return;
     }
 
-    let config: {
-      mcpServers?: Record<string, { transport?: { type?: string } }>;
-    };
+    let config: unknown;
     try {
       config = JSON.parse(fileContent);
     } catch {
       return;
     }
 
-    if (!config.mcpServers) {
+    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
       return;
     }
 
     for (const server of Object.values(config.mcpServers)) {
-      if (server.transport?.type === 'sse') {
+      if (!isObject(server)) continue;
+      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
+      if (!hasProperty(server.transport, 'type')) continue;
+
+      if (server.transport.type === 'sse') {
         context.report({
           message:
             'SSE transport is deprecated. Consider using HTTP or WebSocket transport instead.',

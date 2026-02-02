@@ -6,6 +6,7 @@
 
 import { Rule } from '../../types/rule';
 import { formatError } from '../../utils/validators/helpers';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -28,35 +29,36 @@ export const rule: Rule = {
       return;
     }
 
-    let config: {
-      mcpServers?: Record<string, { transport?: { type?: string; url?: string } }>;
-    };
+    let config: unknown;
     try {
       config = JSON.parse(fileContent);
     } catch {
       return;
     }
 
-    if (!config.mcpServers) {
+    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
       return;
     }
 
     for (const server of Object.values(config.mcpServers)) {
-      if (server.transport?.type === 'websocket' && server.transport.url) {
-        const url = server.transport.url;
+      if (!isObject(server)) continue;
+      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
+      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'websocket') continue;
+      if (!hasProperty(server.transport, 'url') || !isString(server.transport.url)) continue;
 
-        // Skip validation if URL contains variable expansion
-        if (url.includes('${') || url.includes('$')) {
-          continue;
-        }
+      const url = server.transport.url;
 
-        try {
-          new URL(url);
-        } catch (error) {
-          context.report({
-            message: `Invalid URL in WebSocket transport: ${formatError(error)}`,
-          });
-        }
+      // Skip validation if URL contains variable expansion
+      if (url.includes('${') || url.includes('$')) {
+        continue;
+      }
+
+      try {
+        new URL(url);
+      } catch (error) {
+        context.report({
+          message: `Invalid URL in WebSocket transport: ${formatError(error)}`,
+        });
       }
     }
   },

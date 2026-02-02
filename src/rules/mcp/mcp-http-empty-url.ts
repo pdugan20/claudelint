@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -26,27 +27,33 @@ export const rule: Rule = {
       return;
     }
 
-    let config: {
-      mcpServers?: Record<string, { transport?: { type?: string; url?: string } }>;
-    };
+    let config: unknown;
     try {
       config = JSON.parse(fileContent);
     } catch {
       return;
     }
 
-    if (!config.mcpServers) {
+    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
       return;
     }
 
     for (const server of Object.values(config.mcpServers)) {
-      if (server.transport?.type === 'http') {
-        const url = server.transport.url;
-        if (!url || url.trim().length === 0) {
-          context.report({
-            message: 'MCP HTTP transport URL cannot be empty',
-          });
-        }
+      if (!isObject(server)) continue;
+      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
+      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'http') continue;
+
+      if (!hasProperty(server.transport, 'url') || !isString(server.transport.url)) {
+        context.report({
+          message: 'MCP HTTP transport URL cannot be empty',
+        });
+        continue;
+      }
+
+      if (server.transport.url.trim().length === 0) {
+        context.report({
+          message: 'MCP HTTP transport URL cannot be empty',
+        });
       }
     }
   },

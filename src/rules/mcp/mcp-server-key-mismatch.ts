@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -27,19 +28,22 @@ export const rule: Rule = {
       return;
     }
 
-    let config: { mcpServers?: Record<string, { name?: string }> };
+    let config: unknown;
     try {
       config = JSON.parse(fileContent);
     } catch {
       return;
     }
 
-    if (!config.mcpServers) {
+    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
       return;
     }
 
     for (const [serverKey, server] of Object.entries(config.mcpServers)) {
-      if (server.name && server.name !== serverKey) {
+      if (!isObject(server)) continue;
+      if (!hasProperty(server, 'name') || !isString(server.name)) continue;
+
+      if (server.name !== serverKey) {
         context.report({
           message: `Server key "${serverKey}" does not match server name "${server.name}"`,
         });
