@@ -223,6 +223,7 @@ docs.claudelint.dev/
 │   ├── /pre-commit                # Pre-commit hooks
 │   ├── /github-actions            # GitHub Actions CI
 │   ├── /gitlab-ci                 # GitLab CI
+│   ├── /monorepos                 # Monorepo setup (NEW - Feb 2026)
 │   ├── /claude-code-plugin        # As Claude Code plugin
 │   ├── /claude-code-hooks         # SessionStart hooks
 │   ├── /vscode                    # VS Code integration (future)
@@ -299,6 +300,7 @@ docs/rules/index.md               →     /rules/overview
 docs/formatting-tools.md          →     /integrations/formatting-tools
 docs/hooks.md                     →     /integrations/claude-code-hooks
 docs/plugin-usage.md              →     /integrations/claude-code-plugin
+docs/projects/archive/monorepo-support/user-guide.md → /integrations/monorepos (NEW)
 (new integration guides)          →     /integrations/*
 
 docs/api/README.md                →     /api/overview

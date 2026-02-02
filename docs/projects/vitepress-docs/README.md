@@ -102,7 +102,7 @@ Site structure and navigation:
 - Analysis of ESLint and Prettier docs
 - Proposed 6-section structure
 - Content mapping (existing → new)
-- ~155 pages breakdown
+- ~157 pages breakdown
 - Page templates and patterns
 
 ### [auto-generation-guide.md](./auto-generation-guide.md)
@@ -139,9 +139,9 @@ Deployment configuration:
 
 ### Documentation Scale
 
-- **Total Pages**: ~155 pages
+- **Total Pages**: ~157 pages
 - **Auto-Generated**: 105 rule pages (from TypeScript metadata)
-- **Hand-Written**: ~50 pages (guides, validators, API, development)
+- **Hand-Written**: ~52 pages (guides, validators, API, development)
 - **Build Size**: <200KB gzipped
 - **Build Time**: <30 seconds for full site
 
@@ -150,18 +150,24 @@ Deployment configuration:
 - **/guide/**: 8 pages (getting started, config, CLI, troubleshooting)
 - **/validators/**: 11 pages (overview + 10 validators)
 - **/rules/**: 106 pages (overview + 105 auto-generated rules)
-- **/integrations/**: 9 pages (npm, pre-commit, GitHub Actions, Claude plugin)
+- **/integrations/**: 10 pages (npm, pre-commit, GitHub Actions, Claude plugin, **monorepos**)
 - **/api/**: 7 pages (programmatic API docs)
 - **/development/**: 8 pages (custom rules, architecture, contributing)
-- **/reference/**: 5 pages (cheatsheet, glossary, rule index)
+- **/reference/**: 6 pages (cheatsheet, glossary, rule index, exit codes, file naming)
 
 ### Comparison to Similar Tools
 
 - **Prettier**: ~24 pages (simple formatter)
-- **claudelint**: ~155 pages (comprehensive linter) ← You are here
+- **claudelint**: ~157 pages (comprehensive linter) ← You are here
 - **ESLint**: ~364 pages (284 rules)
 
 claudelint is **43% the size of ESLint**, appropriate for our 105 rules.
+
+### Recent Feature Additions (Feb 2026)
+
+- **Monorepo Support** - Config inheritance with `extends`, workspace detection, 3-10x faster validation
+- **Simplified Architecture** - Removed composition framework, renamed validators (FileValidator, SchemaValidator)
+- **Performance** - Parallel workspace validation for large monorepos
 
 ### Features to Implement
 

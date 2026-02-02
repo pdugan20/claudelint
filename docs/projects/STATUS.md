@@ -93,7 +93,7 @@ This document provides a high-level overview of all projects in the claudelint r
 ### monorepo-support
 
 **Status:** Completed
-**Location:** [docs/projects/monorepo-support/](./monorepo-support/)
+**Location:** [docs/projects/archive/monorepo-support/](./archive/monorepo-support/)
 
 **Completion Date:** 2026-02-01
 
@@ -119,10 +119,10 @@ This document provides a high-level overview of all projects in the claudelint r
 
 **Reference Documentation:**
 
-- [Project README](./monorepo-support/README.md)
-- [Implementation Tracker](./monorepo-support/tracker.md)
-- [User Guide](./monorepo-support/user-guide.md)
-- [Testing Strategy](./monorepo-support/testing-strategy.md)
+- [Project README](./archive/monorepo-support/README.md)
+- [Implementation Tracker](./archive/monorepo-support/tracker.md)
+- [User Guide](./archive/monorepo-support/user-guide.md)
+- [Testing Strategy](./archive/monorepo-support/testing-strategy.md)
 
 ---
 

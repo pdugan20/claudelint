@@ -100,13 +100,14 @@ claudelint check-all --workspaces
 ## Project Structure
 
 ```
-docs/projects/monorepo-support/
+docs/projects/archive/monorepo-support/
 ├── README.md                      # This file
-├── tracker.md                     # Progress tracker (START HERE)
+├── tracker.md                     # Progress tracker
 ├── config-inheritance.md          # extends implementation
 ├── workspace-detection.md         # Workspace detection
 ├── testing-strategy.md            # Test plan
-└── user-guide.md                  # User documentation
+├── user-guide.md                  # User documentation
+└── future-enhancements.md         # Future improvement ideas
 ```
 
 ## Implementation Phases

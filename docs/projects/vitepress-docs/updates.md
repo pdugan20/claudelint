@@ -273,3 +273,192 @@ The proposal now:
 
 **Total additions**: ~150 lines of critical context and clarifications
 **Total changes**: 4 files updated with research-backed improvements
+
+---
+
+## February 2026 Feature Updates
+
+### Monorepo Support Added (2026-02-01)
+
+**Major new feature**: Full monorepo support with config inheritance and workspace detection.
+
+#### New Features to Document
+
+1. **Config Inheritance**
+   - `extends` field in `.claudelintrc.json`
+   - Relative paths: `"extends": "../../.claudelintrc.json"`
+   - npm packages: `"extends": "@company/claudelint-config"`
+   - Multiple extends: `"extends": ["base", "overrides"]"`
+   - Circular dependency detection
+
+2. **Workspace Detection**
+   - Auto-detects pnpm workspaces (`pnpm-workspace.yaml`)
+   - Auto-detects npm/Yarn workspaces (`package.json#workspaces`)
+   - Glob pattern expansion to package directories
+   - Workspace root auto-detection (works from any subdirectory)
+
+3. **New CLI Flags**
+   - `--workspace <name>` - Validate specific workspace package
+   - `--workspaces` - Validate all workspace packages independently
+   - Works with auto-detection (no need to be at workspace root)
+
+4. **Performance Improvements**
+   - Parallel workspace validation
+   - 3-10x faster for monorepos
+   - Maintains single-repo performance
+
+#### Impact on VitePress Docs
+
+**New Pages:**
+- `/integrations/monorepos` - Complete monorepo setup guide (source: `docs/projects/archive/monorepo-support/user-guide.md`)
+
+**Pages to Update:**
+- `/guide/configuration` - Add `extends` field documentation
+- `/guide/cli-reference` - Document `--workspace` and `--workspaces` flags
+- `/development/architecture` - Simplify (validator refactoring)
+- `index.md` (homepage) - Add monorepo support to features
+
+**Stats Updates:**
+- Total pages: ~155 → ~157 pages (+2)
+- Features: Add "Monorepo Support" with config inheritance
+- Performance: Add "3-10x faster for monorepos"
+
+**Completed:**
+- Updated `information-architecture.md` with `/integrations/monorepos` section
+- Updated content mapping for monorepo user guide
+
+**References:**
+- Monorepo project: `docs/projects/archive/monorepo-support/`
+- Git commits: fec2302 (workspace root), faa9fe8 (parallel), ceb4e53 (extends)
+
+### Validator Refactoring (2026-02-01)
+
+**Architecture simplification**: Removed composition framework, renamed validators.
+
+#### Changes Made
+
+1. **Removed Composition Framework**
+   - Deleted 733 lines of unused code
+   - Simplified validator architecture
+   - No impact on functionality
+
+2. **Renamed Classes**
+   - `BaseValidator` → `FileValidator` (text/markdown validators)
+   - `JSONConfigValidator` → `SchemaValidator` (JSON config validators)
+   - `validateConfig()` method → `validateSemantics()`
+
+#### Impact on VitePress Docs
+
+**Pages to Update:**
+- `/development/architecture` - Simplify validator class diagram, use new names
+- `/development/validator-guide` - Use `FileValidator` and `SchemaValidator`
+- `/development/custom-rules` - Update examples with new class names
+
+**No user-facing changes** - purely internal refactoring
+
+**Completed:**
+- Documented changes in UPDATES.md
+
+**References:**
+- Validator refactor project: `docs/projects/archive/validator-refactor-2026/`
+- Git commit: 94bc1c8
+
+## Updated Implementation Plan
+
+### Phase 1 Content Migration - Add Monorepo Guide
+
+When migrating content in Phase 1, include:
+
+```text
+Content to migrate:
+- docs/getting-started.md → website/guide/getting-started.md
+- docs/configuration.md → website/guide/configuration.md
+  + ADD: extends field documentation
+- docs/cli-reference.md → website/guide/cli-reference.md
+  + ADD: --workspace, --workspaces flags
+- docs/projects/archive/monorepo-support/user-guide.md → website/integrations/monorepos.md (NEW)
+```
+
+### Phase 2 Architecture Updates
+
+When updating architecture documentation:
+
+```text
+Architecture simplifications:
+- Remove composition framework section (deleted code)
+- Update class names:
+  - BaseValidator → FileValidator
+  - JSONConfigValidator → SchemaValidator
+- Simplify validator diagram
+```
+
+## Content Outline: Monorepo Integration Guide
+
+**Page**: `/integrations/monorepos.md`
+
+**Source**: `docs/projects/archive/monorepo-support/user-guide.md`
+
+**Sections:**
+
+1. **Introduction**
+   - What is monorepo support?
+   - Why use config inheritance?
+   - Supported package managers (pnpm, npm, Yarn)
+
+2. **Config Inheritance**
+   - `extends` field syntax
+   - Relative paths vs npm packages
+   - Multiple extends
+   - Merge order
+   - Circular dependency prevention
+
+3. **Workspace Detection**
+   - Automatic workspace detection
+   - Supported workspace configurations
+   - Workspace root auto-detection
+
+4. **CLI Usage**
+   - `--workspace <name>` - validate single package
+   - `--workspaces` - validate all packages
+   - Working from subdirectories
+
+5. **Examples**
+   - Basic pnpm monorepo
+   - npm workspaces
+   - Yarn workspaces
+   - Complex inheritance scenarios
+
+6. **Performance**
+   - Parallel validation
+   - 3-10x speedup for large monorepos
+   - Config caching
+
+7. **Migration**
+   - Moving from single-repo to monorepo
+   - Extracting shared config
+   - Testing workspace validation
+
+## Files Modified (Feb 2026)
+
+- `docs/projects/vitepress-docs/information-architecture.md` - Added `/integrations/monorepos`, updated page count
+- `docs/projects/vitepress-docs/UPDATES.md` - This file, added Feb 2026 updates
+
+## Next Steps
+
+1. **Phase 1 Implementation** (when ready)
+   - Include monorepo user guide in content migration
+   - Map `user-guide.md` → `website/integrations/monorepos.md`
+   - Update config and CLI reference pages with new features
+
+2. **Phase 2 Architecture Updates**
+   - Simplify architecture documentation
+   - Use new validator class names
+   - Remove composition framework references
+
+3. **Homepage Updates**
+   - Add "Monorepo Support" to features
+   - Update performance stats ("3-10x faster for monorepos")
+
+4. **Stats Updates**
+   - Total pages: ~157 (was ~155)
+   - Integrations section: 10 pages (was 9)
