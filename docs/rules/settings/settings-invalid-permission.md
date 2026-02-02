@@ -5,40 +5,40 @@
 **Validator**: Settings
 **Category**: Schema Validation
 
-Permission rules must use valid action values
+Permission rules must use valid tool names
 
 ## Rule Details
 
-Permission rules control which tools Claude Code can use and under what conditions. Each permission rule must have a valid tool name from the available tools, a valid action (`allow`, `ask`, or `deny`), and if a pattern is specified, it must be non-empty.
+Permission rules control which tools Claude Code can use and under what conditions. Each permission rule must specify a valid tool name from the available Claude Code tools. Rules can optionally include patterns using the `Tool(pattern)` syntax.
 
-This rule detects invalid actions (e.g., "grant", "permit"), invalid tool names (e.g., "ShellCommand"), and empty pattern strings. Permissions control access to file operations, shell commands, web access, and other tools. Invalid permission rules fall back to default permissions and may create security vulnerabilities.
+This rule detects invalid tool names (e.g., "ShellCommand", "InvalidTool"). Permissions control access to file operations, shell commands, web access, and other tools. Invalid tool names cause settings to be ignored and may create security vulnerabilities.
+
+Valid tool names include:
+
+- `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep`
+- `Task`, `Skill`, `TodoWrite`, `ExitPlanMode`, `KillShell`
+- `WebFetch`, `WebSearch`, `NotebookEdit`
+- `mcp__*` (MCP server tools, e.g., `mcp__myserver`)
 
 ### Incorrect
 
-Invalid action:
+Invalid tool name:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "grant"
-    }
-  ]
+  "permissions": {
+    "allow": ["InvalidTool", "ShellCommand"]
+  }
 }
 ```
 
-Empty pattern:
+Invalid tool with pattern:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow",
-      "pattern": ""
-    }
-  ]
+  "permissions": {
+    "deny": ["FakeTool(pattern)"]
+  }
 }
 ```
 
@@ -48,71 +48,50 @@ Valid permission rules:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow",
-      "pattern": "npm *"
-    },
-    {
-      "tool": "Write",
-      "action": "ask",
-      "pattern": "src/**/*.ts"
-    },
-    {
-      "tool": "Read",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read(src/**/*.ts)", "Write"],
+    "deny": ["Bash(rm -rf *)", "WebFetch"],
+    "ask": ["Write(*.config.json)", "Edit"]
+  }
 }
 ```
 
-With deny rules:
+With MCP server tools:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow"
-    },
-    {
-      "tool": "Bash",
-      "action": "deny",
-      "pattern": "rm -rf *"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash", "Read", "mcp__myserver"]
+  }
 }
 ```
 
 ## How To Fix
 
-To resolve invalid permission errors:
+To resolve invalid tool name errors:
 
-1. **Invalid action** - Change to one of the 3 valid actions:
-   - `"allow"` - Permit the tool use without prompting
-   - `"ask"` - Prompt the user before allowing
-   - `"deny"` - Block the tool use entirely
+1. **Check the tool name spelling**:
+   - Use exact capitalization: `Bash`, not `bash` or `BASH`
+   - Use official names: `Read`, not `ReadFile`
 
-2. **Empty pattern** - Either:
-   - Remove the empty pattern field entirely (allows all uses of the tool)
-   - Add a valid glob pattern: `"pattern": "npm *"`, `"pattern": "src/**/*.ts"`, etc.
-
-3. **Invalid tool name** - Use valid Claude Code tool names:
+2. **Use valid Claude Code tool names**:
    - Common tools: `Bash`, `Read`, `Write`, `Edit`, `WebSearch`, `WebFetch`
-   - Check the tool registry for the complete list
+   - Task tools: `Task`, `Skill`, `TodoWrite`, `ExitPlanMode`
+   - Search tools: `Glob`, `Grep`
+   - MCP tools: `mcp__servername` (prefix with `mcp__`)
+
+3. **Verify pattern syntax**:
+   - Valid: `"Bash(npm run *)"` - tool name with pattern
+   - Valid: `"Read"` - tool name without pattern
+   - Invalid: `"InvalidTool(pattern)"` - nonexistent tool
 
 Example fix:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow",
-      "pattern": "npm *"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read", "Write"]
+  }
 }
 ```
 

@@ -11,7 +11,7 @@ Tool(pattern) syntax should not have empty patterns
 
 When using inline `Tool(pattern)` syntax in permission rules, the pattern should not be empty. Empty patterns `Tool()` suggest incomplete configuration and don't provide any filtering benefit over using just the tool name.
 
-This rule detects permission rules with empty inline patterns. Empty patterns make the syntax more confusing without adding functionality, since `Bash()` is equivalent to `Bash` but less clear.
+This rule detects permission rules with empty inline patterns in the `allow`, `deny`, or `ask` arrays. Empty patterns make the syntax more confusing without adding functionality, since `"Bash()"` is equivalent to `"Bash"` but less clear.
 
 ### Incorrect
 
@@ -19,12 +19,9 @@ Empty inline pattern:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash()",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash()"]
+  }
 }
 ```
 
@@ -32,16 +29,21 @@ Multiple rules with empty patterns:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Read()",
-      "action": "allow"
-    },
-    {
-      "tool": "Write()",
-      "action": "ask"
-    }
-  ]
+  "permissions": {
+    "allow": ["Read()"],
+    "deny": ["Write()"],
+    "ask": ["Edit()"]
+  }
+}
+```
+
+Empty pattern with whitespace:
+
+```json
+{
+  "permissions": {
+    "deny": ["Bash(   )"]
+  }
 }
 ```
 
@@ -51,39 +53,30 @@ Remove empty parentheses:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash", "Read", "Write"]
+  }
 }
 ```
 
-Add a pattern:
+Add a pattern to filter specific commands:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash(npm *)",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read(src/**/*.ts)"]
+  }
 }
 ```
 
-Use separate pattern field:
+Mix of tools with and without patterns:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "pattern": "npm *",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read", "Write(*.json)"],
+    "deny": ["Bash(rm -rf *)"]
+  }
 }
 ```
 
@@ -91,24 +84,23 @@ Use separate pattern field:
 
 To fix empty inline patterns:
 
-1. **Remove the empty parentheses**: `"tool": "Bash()"` → `"tool": "Bash"`
-
-2. **Or add a pattern** if you want to filter:
+1. **Remove the empty parentheses**: `"Bash()"` → `"Bash"`
 
    ```json
    {
-     "tool": "Bash(npm *)",
-     "action": "allow"
+     "permissions": {
+       "allow": ["Bash", "Read"]
+     }
    }
    ```
 
-3. **Or use separate pattern field** for clarity:
+2. **Or add a pattern** if you want to filter specific operations:
 
    ```json
    {
-     "tool": "Bash",
-     "pattern": "npm *",
-     "action": "allow"
+     "permissions": {
+       "allow": ["Bash(npm run *)", "Read(src/**)"]
+     }
    }
    ```
 

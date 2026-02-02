@@ -9,70 +9,89 @@ Permission rules must use valid Tool(pattern) syntax
 
 ## Rule Details
 
-This rule triggers when permission rules in settings.json have syntax errors or conflicting pattern specifications. Permission rules can specify patterns in two ways: inline `Tool(pattern)` syntax or separate `pattern` field, but not both.
+This rule validates the syntax of permission rules in settings.json. Permission rules are strings that specify tools and optional patterns using `Tool` or `Tool(pattern)` syntax.
 
 The rule validates:
 
-- **Pattern conflict**: Cannot specify both inline pattern and separate pattern field
-- **Empty inline pattern**: `Tool()` with empty parentheses is likely a mistake
+- **Unmatched parentheses**: Every opening `(` must have a matching closing `)`
+- **Empty rules**: Permission rules cannot be empty strings
+- **Invalid format**: Rules must use valid `Tool` or `Tool(pattern)` format
 
-Conflicting patterns create ambiguity about which pattern should be enforced. Empty inline patterns suggest incomplete configuration.
+Syntax errors in permission rules cause undefined behavior and may prevent security policies from being enforced correctly.
 
 ### Incorrect
 
-settings.json with conflicting patterns:
+settings.json with unmatched opening parenthesis:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash(npm test)",
-      "pattern": "npm.*",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run"]
+  }
 }
 ```
 
-settings.json with empty inline pattern:
+settings.json with unmatched closing parenthesis:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash()",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "deny": ["Read)test)"]
+  }
+}
+```
+
+settings.json with empty rule:
+
+```json
+{
+  "permissions": {
+    "ask": [""]
+  }
+}
+```
+
+settings.json with multiple unmatched parens:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash((test)"]
+  }
 }
 ```
 
 ### Correct
 
-settings.json with inline pattern only:
+settings.json with valid Tool syntax:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash(npm test)",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash", "Read", "Write"]
+  }
 }
 ```
 
-Or with separate pattern field:
+settings.json with valid Tool(pattern) syntax:
 
 ```json
 {
-  "permissions": [
-    {
-      "tool": "Bash",
-      "pattern": "npm test",
-      "action": "allow"
-    }
-  ]
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read(src/**/*.ts)"],
+    "deny": ["Bash(rm -rf *)", "WebFetch(domain:untrusted.com)"]
+  }
+}
+```
+
+Mixed valid formats:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm run *)", "Read", "Write(*.json)"],
+    "ask": ["Edit"]
+  }
 }
 ```
 
@@ -80,18 +99,21 @@ Or with separate pattern field:
 
 To resolve permission rule syntax errors:
 
-1. **Conflicting patterns** - Choose one format:
-   - **Option A**: Use inline pattern only: `"tool": "Bash(npm test)"`
-   - **Option B**: Use separate pattern field: `"tool": "Bash", "pattern": "npm test"`
-   - Remove either the inline pattern or the separate `pattern` field
+1. **Unmatched parentheses** - Ensure every `(` has a matching `)`:
+   - Wrong: `"Bash(npm run"`
+   - Right: `"Bash(npm run *)"`
+   - Wrong: `"Read)test)"`
+   - Right: `"Read(test)"`
 
-2. **Empty inline pattern** - Either:
-   - Remove the empty parentheses: `"tool": "Bash()"`  → `"tool": "Bash"`
-   - Add a pattern: `"tool": "Bash()"` → `"tool": "Bash(npm *)"`
+2. **Empty rules** - Remove empty strings from the arrays:
+   - Wrong: `"ask": ["Write", ""]`
+   - Right: `"ask": ["Write"]`
 
-3. **Verify your choice**:
-   - Inline format is more concise for simple patterns
-   - Separate field may be clearer for complex patterns with special characters
+3. **Verify syntax**:
+   - Valid: `"Bash"` - tool name only
+   - Valid: `"Bash(npm run *)"` - tool with pattern
+   - Invalid: `"Bash(npm run"` - missing closing paren
+   - Invalid: `"Bash((test)"` - unmatched opening paren
 
 ## Options
 
