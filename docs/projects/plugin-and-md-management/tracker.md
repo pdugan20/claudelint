@@ -74,10 +74,10 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   5. Test CLI install: `npm install -g ./claude-code-lint-*.tgz && claudelint --version`
   6. Clean up: `rm claude-code-lint-*.tgz && npm uninstall -g claude-code-lint`
 
-- [ ] **Task 1.2**: Create `.claude-plugin/plugin.json` manifest
-  - [ ] Add required `name` field: "claudelint"
-  - [ ] Add metadata (version, description, author)
-  - [ ] No custom paths needed (use defaults)
+- [x] **Task 1.2**: Create `.claude-plugin/plugin.json` manifest
+  - [x] Add required `name` field: "claudelint"
+  - [x] Add metadata (version, description, author)
+  - [x] No custom paths needed (use defaults)
 
   **Verification Steps:**
   1. Create `.claude-plugin/plugin.json` with minimal required fields

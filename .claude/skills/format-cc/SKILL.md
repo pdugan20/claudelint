@@ -1,5 +1,5 @@
 ---
-name: format
+name: format-cc
 description: Format Claude Code files with markdownlint, prettier, and shellcheck
 version: 1.0.0
 allowed-tools:
@@ -207,5 +207,5 @@ claudelint check-all
 
 ## See Also
 
-- [validate](../validate/SKILL.md) - Validate Claude files
+- [validate-all](../validate-all/SKILL.md) - Validate Claude files
 - [Formatting Tools Documentation](../../docs/formatting-tools.md) - Complete formatting guide

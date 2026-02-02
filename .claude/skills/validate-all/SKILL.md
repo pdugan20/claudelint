@@ -1,5 +1,5 @@
 ---
-name: validate
+name: validate-all
 description: Run comprehensive claudelint validation on all Claude Code project files
 version: 1.0.0
 allowed-tools:
@@ -133,7 +133,7 @@ claudelint check-all --warnings-as-errors
 
 ## See Also
 
-- [validate-agents-md](../validate-agents-md/SKILL.md) - Validate only CLAUDE.md files
+- [validate-cc-md](../validate-cc-md/SKILL.md) - Validate only CLAUDE.md files
 - [validate-skills](../validate-skills/SKILL.md) - Validate only skills
 - [validate-settings](../validate-settings/SKILL.md) - Validate only settings
-- [format](../format/SKILL.md) - Format Claude files with prettier/markdownlint
+- [format-cc](../format-cc/SKILL.md) - Format Claude files with prettier/markdownlint

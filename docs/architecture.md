@@ -424,11 +424,15 @@ claudelint/
 │   ├── validation-reference.md  # Validation categories reference
 │   ├── contributing-rules.md    # Rule development guide
 │   └── ...                  # Other documentation
-├── skills/                  # Claude Code skills
+├── .claude/skills/          # Claude Code skills
 │   ├── validate-all/
-│   ├── validate-agents-md/
+│   ├── validate-cc-md/
 │   ├── validate-skills/
-│   └── validate-settings/
+│   ├── validate-settings/
+│   ├── validate-hooks/
+│   ├── validate-mcp/
+│   ├── validate-plugin/
+│   └── format-cc/
 ├── hooks/                   # Claude Code hooks
 │   └── hooks.json
 ├── src/                     # Source code

@@ -1,5 +1,5 @@
 ---
-name: validate-agents-md
+name: validate-cc-md
 description: Validate CLAUDE.md files for size, imports, and structure
 version: 1.0.0
 allowed-tools:
@@ -117,5 +117,5 @@ Or disable for a single line:
 
 ## See Also
 
-- [validate](../validate/SKILL.md) - Run all validators
-- [format](../format/SKILL.md) - Format markdown files with markdownlint/prettier
+- [validate-all](../validate-all/SKILL.md) - Run all validators
+- [format-cc](../format-cc/SKILL.md) - Format markdown files with markdownlint/prettier

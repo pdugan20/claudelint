@@ -26,12 +26,12 @@ This makes all 8 claudelint skills available as slash commands in your Claude Co
 
 Once installed, you can use these slash commands:
 
-### `/validate` - Comprehensive Validation
+### `/validate-all` - Comprehensive Validation
 
 Run all validators on your entire project:
 
 ```bash
-/validate
+/validate-all
 ```
 
 This checks:
@@ -46,18 +46,18 @@ This checks:
 **Options:**
 
 ```bash
-/validate --verbose
-/validate --explain
-/validate --warnings-as-errors
-/validate --format json
+/validate-all --verbose
+/validate-all --explain
+/validate-all --warnings-as-errors
+/validate-all --format json
 ```
 
-### `/validate-agents-md` - CLAUDE.md Validation
+### `/validate-all-cc-md` - CLAUDE.md Validation
 
 Validate only CLAUDE.md files:
 
 ```bash
-/validate-agents-md
+/validate-all-cc-md
 ```
 
 Checks:
@@ -70,16 +70,16 @@ Checks:
 **Options:**
 
 ```bash
-/validate-agents-md --path /path/to/CLAUDE.md
-/validate-agents-md --explain
+/validate-all-cc-md --path /path/to/CLAUDE.md
+/validate-all-cc-md --explain
 ```
 
-### `/validate-skills` - Skills Validation
+### `/validate-all-skills` - Skills Validation
 
 Validate Claude Code skills:
 
 ```bash
-/validate-skills
+/validate-all-skills
 ```
 
 Checks:
@@ -92,16 +92,16 @@ Checks:
 **Options:**
 
 ```bash
-/validate-skills --skill my-skill
-/validate-skills --verbose
+/validate-all-skills --skill my-skill
+/validate-all-skills --verbose
 ```
 
-### `/validate-settings` - Settings Validation
+### `/validate-all-settings` - Settings Validation
 
 Validate settings.json:
 
 ```bash
-/validate-settings
+/validate-all-settings
 ```
 
 Checks:
@@ -111,12 +111,12 @@ Checks:
 - Environment variables
 - Model configuration
 
-### `/validate-hooks` - Hooks Validation
+### `/validate-all-hooks` - Hooks Validation
 
 Validate hooks.json:
 
 ```bash
-/validate-hooks
+/validate-all-hooks
 ```
 
 Checks:
@@ -125,12 +125,12 @@ Checks:
 - Command scripts
 - Matcher configuration
 
-### `/validate-mcp` - MCP Server Validation
+### `/validate-all-mcp` - MCP Server Validation
 
 Validate .mcp.json configuration:
 
 ```bash
-/validate-mcp
+/validate-all-mcp
 ```
 
 Checks:
@@ -140,12 +140,12 @@ Checks:
 - Variable expansion patterns
 - Environment variables
 
-### `/validate-plugin` - Plugin Manifest Validation
+### `/validate-all-plugin` - Plugin Manifest Validation
 
 Validate plugin.json:
 
 ```bash
-/validate-plugin
+/validate-all-plugin
 ```
 
 Checks:
@@ -154,12 +154,12 @@ Checks:
 - Semantic versioning
 - Skill/agent/hook references
 
-### `/format` - Format Claude Files
+### `/format-cc` - Format Claude Files
 
 Auto-format Claude Code files:
 
 ```bash
-/format
+/format-cc
 ```
 
 Runs:
@@ -171,9 +171,9 @@ Runs:
 **Options:**
 
 ```bash
-/format --check    # Check without making changes
-/format --fix      # Fix issues (default)
-/format --verbose  # Show detailed output
+/format-cc --check    # Check without making changes
+/format-cc --fix      # Fix issues (default)
+/format-cc --verbose  # Show detailed output
 ```
 
 ## Typical Workflows
@@ -183,7 +183,7 @@ Runs:
 Start a session and immediately check your project:
 
 ```bash
-/validate
+/validate-all
 ```
 
 ### Fix Formatting Issues
@@ -191,8 +191,8 @@ Start a session and immediately check your project:
 Before committing changes:
 
 ```bash
-/format
-/validate
+/format-cc
+/validate-all
 ```
 
 ### Debug Specific Component
@@ -200,7 +200,7 @@ Before committing changes:
 If you're working on skills:
 
 ```bash
-/validate-skills --verbose --explain
+/validate-all-skills --verbose --explain
 ```
 
 ### Strict Mode for CI
@@ -208,7 +208,7 @@ If you're working on skills:
 Treat all warnings as errors:
 
 ```bash
-/validate --warnings-as-errors --format json
+/validate-all --warnings-as-errors --format json
 ```
 
 ## Configuration
@@ -274,7 +274,7 @@ If you get permission errors:
 If SessionStart hook isn't triggering:
 
 1. Verify `.claude/hooks/hooks.json` exists
-2. Validate hook config: `/validate-hooks`
+2. Validate hook config: `/validate-all-hooks`
 3. Check command syntax: `"claudelint check-all --format compact"`
 4. Test command manually first
 
@@ -282,7 +282,7 @@ If SessionStart hook isn't triggering:
 
 If validation is slow:
 
-1. Use `--fast` mode: `/validate --fast`
+1. Use `--fast` mode: `/validate-all --fast`
 2. Add large directories to `.claudelintignore`
 3. Disable expensive rules in `.claudelintrc.json`
 4. Check timing with `--verbose` flag
@@ -301,26 +301,26 @@ If you get warnings/errors that shouldn't apply:
 ### Before Committing
 
 ```bash
-/format
-/validate --warnings-as-errors
+/format-cc
+/validate-all --warnings-as-errors
 ```
 
 ### While Developing
 
 ```bash
-/validate-skills --skill my-skill --explain
+/validate-all-skills --skill my-skill --explain
 ```
 
 ### For CI/CD
 
 ```bash
-/validate --format json > validation-results.json
+/validate-all --format json > validation-results.json
 ```
 
 ### Quick Status Check
 
 ```bash
-/validate --format compact
+/validate-all --format compact
 ```
 
 ## Performance
