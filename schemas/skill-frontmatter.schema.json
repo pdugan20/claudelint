@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/skill-frontmatter.schema.json",
+  "title": "Claude Code Skill Frontmatter",
+  "description": "Schema for SKILL.md frontmatter in Claude Code skills. Source: https://code.claude.com/docs/en/skills#frontmatter-reference",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Display name for the skill. If omitted, uses directory name. Lowercase letters, numbers, and hyphens only (max 64 characters).",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "description": {
+      "type": "string",
+      "description": "What the skill does and when to use it. Claude uses this to decide when to apply the skill. If omitted, uses the first paragraph of markdown content. Recommended to include.",
+      "minLength": 10
+    },
+    "argument-hint": {
+      "type": "string",
+      "description": "Hint shown during autocomplete to indicate expected arguments. Example: '[issue-number]' or '[filename] [format]'."
+    },
+    "disable-model-invocation": {
+      "type": "boolean",
+      "description": "Set to true to prevent Claude from automatically loading this skill. Use for workflows you want to trigger manually with /name. Default: false.",
+      "default": false
+    },
+    "user-invocable": {
+      "type": "boolean",
+      "description": "Set to false to hide from the / menu. Use for background knowledge users shouldn't invoke directly. Default: true.",
+      "default": true
+    },
+    "allowed-tools": {
+      "type": "array",
+      "description": "Tools Claude can use without asking permission when this skill is active.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Bash",
+          "Read",
+          "Write",
+          "Edit",
+          "Glob",
+          "Grep",
+          "Task",
+          "WebFetch",
+          "WebSearch",
+          "LSP",
+          "AskUserQuestion",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Skill",
+          "TaskCreate",
+          "TaskUpdate",
+          "TaskGet",
+          "TaskList",
+          "TaskOutput",
+          "TaskStop",
+          "NotebookEdit"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "disallowed-tools": {
+      "type": "array",
+      "description": "Tools Claude cannot use when this skill is active. Mutually exclusive with allowed-tools.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Bash",
+          "Read",
+          "Write",
+          "Edit",
+          "Glob",
+          "Grep",
+          "Task",
+          "WebFetch",
+          "WebSearch",
+          "LSP",
+          "AskUserQuestion",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Skill",
+          "TaskCreate",
+          "TaskUpdate",
+          "TaskGet",
+          "TaskList",
+          "TaskOutput",
+          "TaskStop",
+          "NotebookEdit"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "model": {
+      "type": "string",
+      "description": "Model to use when this skill is active.",
+      "enum": ["sonnet", "opus", "haiku", "inherit"]
+    },
+    "context": {
+      "type": "string",
+      "description": "Set to 'fork' to run in a forked subagent context, 'inline' for inline execution, or 'auto' to let Claude decide.",
+      "enum": ["fork", "inline", "auto"]
+    },
+    "agent": {
+      "type": "string",
+      "description": "Which subagent type to use when context is 'fork'. Options include built-in agents (Explore, Plan, general-purpose) or custom subagent names."
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version (MAJOR.MINOR.PATCH) for the skill.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags for categorizing and discovering skills.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Other skills or tools this skill depends on.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hooks": {
+      "type": "array",
+      "description": "Hooks scoped to this skill's lifecycle. See https://code.claude.com/docs/en/hooks#hooks-in-skills-and-agents for configuration format.",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "not": {
+    "allOf": [
+      {
+        "required": ["allowed-tools", "disallowed-tools"]
+      }
+    ]
+  },
+  "if": {
+    "properties": {
+      "context": {
+        "const": "fork"
+      }
+    },
+    "required": ["context"]
+  },
+  "then": {
+    "required": ["agent"]
+  },
+  "additionalProperties": false
+}

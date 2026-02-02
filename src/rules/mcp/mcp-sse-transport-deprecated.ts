@@ -41,10 +41,9 @@ export const rule: Rule = {
 
     for (const server of Object.values(config.mcpServers)) {
       if (!isObject(server)) continue;
-      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
-      if (!hasProperty(server.transport, 'type')) continue;
+      if (!hasProperty(server, 'type')) continue;
 
-      if (server.transport.type === 'sse') {
+      if (server.type === 'sse') {
         context.report({
           message:
             'SSE transport is deprecated. Consider using HTTP or WebSocket transport instead.',

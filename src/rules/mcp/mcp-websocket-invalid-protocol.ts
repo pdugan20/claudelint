@@ -41,11 +41,10 @@ export const rule: Rule = {
 
     for (const server of Object.values(config.mcpServers)) {
       if (!isObject(server)) continue;
-      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
-      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'websocket') continue;
-      if (!hasProperty(server.transport, 'url') || !isString(server.transport.url)) continue;
+      if (!hasProperty(server, 'type') || server.type !== 'websocket') continue;
+      if (!hasProperty(server, 'url') || !isString(server.url)) continue;
 
-      const url = server.transport.url;
+      const url = server.url;
 
       // Skip validation if URL contains variable expansion
       if (url.includes('${') || url.includes('$')) {

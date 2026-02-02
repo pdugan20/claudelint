@@ -1,12 +1,9 @@
 /**
  * Tests for mcp-stdio-empty-command rule
  */
-
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
 import { rule } from '../../../src/rules/mcp/mcp-stdio-empty-command';
-
 const ruleTester = new ClaudeLintRuleTester();
-
 describe('mcp-stdio-empty-command', () => {
   it('should pass validation tests', async () => {
     await ruleTester.run('mcp-stdio-empty-command', rule, {
@@ -16,73 +13,59 @@ describe('mcp-stdio-empty-command', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: 'node',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',
         },
-
         // Valid stdio command with args
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: 'node server.js',
                 },
-              },
             },
           }),
           filePath: 'config.mcp.json',
         },
-
         // Non-stdio transport (should be ignored)
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'sse',
                   url: 'http://localhost:3000',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',
         },
-
         // Not an MCP file (should be ignored)
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: '',
                 },
-              },
             },
           }),
           filePath: 'package.json',
         },
       ],
-
       invalid: [
         // Empty command
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: '',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',
@@ -92,17 +75,14 @@ describe('mcp-stdio-empty-command', () => {
             },
           ],
         },
-
         // Whitespace-only command
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: '   ',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',
@@ -112,16 +92,13 @@ describe('mcp-stdio-empty-command', () => {
             },
           ],
         },
-
         // Missing command field
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',
@@ -131,23 +108,18 @@ describe('mcp-stdio-empty-command', () => {
             },
           ],
         },
-
         // Multiple servers with empty commands
         {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                transport: {
                   type: 'stdio',
                   command: '',
                 },
-              },
               server2: {
-                transport: {
                   type: 'stdio',
                   command: '  ',
                 },
-              },
             },
           }),
           filePath: 'test.mcp.json',

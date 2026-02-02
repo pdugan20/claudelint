@@ -216,10 +216,8 @@ describe('Test Fixtures', () => {
 
       const content = JSON.parse(await readFile(path, 'utf-8'));
       expect(content.mcpServers['test-server']).toBeDefined();
-      expect(content.mcpServers['test-server'].name).toBe('test-server');
-      expect(content.mcpServers['test-server'].transport).toBeDefined();
-      expect(content.mcpServers['test-server'].transport.type).toBe('stdio');
-      expect(content.mcpServers['test-server'].transport.command).toBe('node');
+      expect(content.mcpServers['test-server'].type).toBe('stdio');
+      expect(content.mcpServers['test-server'].command).toBe('node');
     });
 
     it('should create MCP config with complete settings', async () => {
@@ -230,8 +228,8 @@ describe('Test Fixtures', () => {
       const content = JSON.parse(await readFile(path, 'utf-8'));
       expect(content.mcpServers['test-server']).toBeDefined();
       expect(content.mcpServers['another-server']).toBeDefined();
-      expect(content.mcpServers['test-server'].transport.env).toBeDefined();
-      expect(content.mcpServers['test-server'].transport.env.NODE_ENV).toBe('test');
+      expect(content.mcpServers['test-server'].env).toBeDefined();
+      expect(content.mcpServers['test-server'].env.NODE_ENV).toBe('test');
     });
 
     it('should support adding custom servers', async () => {

@@ -73,12 +73,10 @@ export const rule: Rule = {
       return;
     }
 
-    // Validate each server's transport
+    // Validate each server (transport fields are now flat on the server)
     if (config.mcpServers) {
       for (const [, server] of Object.entries(config.mcpServers)) {
-        if (server.transport) {
-          validateTransport(context, server.transport);
-        }
+        validateTransport(context, server);
       }
     }
   },
@@ -86,28 +84,28 @@ export const rule: Rule = {
 
 function validateTransport(
   context: Parameters<Rule['validate']>[0],
-  transport: MCPTransport
+  server: MCPTransport
 ): void {
   // Validate stdio transport
-  if (transport.type === 'stdio') {
-    if (transport.command) {
-      validateVariableExpansion(context, transport.command, 'command');
+  if (server.type === 'stdio' || ('command' in server && server.command)) {
+    if (server.command) {
+      validateVariableExpansion(context, server.command, 'command');
     }
-    if (transport.args) {
-      for (const arg of transport.args) {
+    if (server.args) {
+      for (const arg of server.args) {
         validateVariableExpansion(context, arg, 'argument');
       }
     }
   }
 
   // Validate URL-based transports
-  if ('url' in transport && transport.url) {
-    validateVariableExpansion(context, transport.url, 'URL');
+  if ('url' in server && server.url) {
+    validateVariableExpansion(context, server.url, 'URL');
   }
 
   // Validate environment variables
-  if (transport.env) {
-    for (const [key, value] of Object.entries(transport.env)) {
+  if (server.env) {
+    for (const [key, value] of Object.entries(server.env)) {
       // Check for empty values
       if (!value || value.trim().length === 0) {
         context.report({

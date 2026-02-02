@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/hooks-config.schema.json",
+  "title": "Claude Code Hooks Configuration",
+  "description": "Schema for hooks.json files that define lifecycle event handlers in Claude Code projects. Based on https://code.claude.com/docs/en/hooks",
+  "type": "object",
+  "required": ["hooks"],
+  "properties": {
+    "hooks": {
+      "type": "array",
+      "description": "Array of hook definitions for lifecycle events",
+      "items": {
+        "type": "object",
+        "required": ["event", "type"],
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "The lifecycle event to hook into",
+            "enum": [
+              "SessionStart",
+              "UserPromptSubmit",
+              "PreToolUse",
+              "PermissionRequest",
+              "PostToolUse",
+              "PostToolUseFailure",
+              "Notification",
+              "SubagentStart",
+              "SubagentStop",
+              "Stop",
+              "PreCompact",
+              "SessionEnd",
+              "Setup"
+            ]
+          },
+          "matcher": {
+            "type": "object",
+            "description": "Optional pattern matching for filtering when the hook fires",
+            "properties": {
+              "tool": {
+                "type": "string",
+                "description": "Tool name to match (e.g., 'Bash', 'Read', 'Write')"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern to match against tool parameters"
+              }
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of hook handler",
+            "enum": ["command", "prompt", "agent"]
+          },
+          "command": {
+            "type": "string",
+            "description": "Shell command to execute (required if type is 'command')"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Prompt text to inject (required if type is 'prompt')"
+          },
+          "agent": {
+            "type": "string",
+            "description": "Agent type to invoke (required if type is 'agent')"
+          },
+          "exitCodeHandling": {
+            "type": "object",
+            "description": "Map exit codes to actions (block/allow/warn)",
+            "properties": {
+              "0": {
+                "type": "string",
+                "enum": ["block", "allow", "warn"]
+              },
+              "1": {
+                "type": "string",
+                "enum": ["block", "allow", "warn"]
+              },
+              "2": {
+                "type": "string",
+                "enum": ["block", "allow", "warn"]
+              }
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": ["block", "allow", "warn"]
+            }
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in milliseconds (default: 30000)",
+            "minimum": 0,
+            "maximum": 600000,
+            "default": 30000
+          },
+          "async": {
+            "type": "boolean",
+            "description": "Whether to run the hook asynchronously without blocking",
+            "default": false
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "type": { "const": "command" } }
+            },
+            "then": {
+              "required": ["command"]
+            }
+          },
+          {
+            "if": {
+              "properties": { "type": { "const": "prompt" } }
+            },
+            "then": {
+              "required": ["prompt"]
+            }
+          },
+          {
+            "if": {
+              "properties": { "type": { "const": "agent" } }
+            },
+            "then": {
+              "required": ["agent"]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

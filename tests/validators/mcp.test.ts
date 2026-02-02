@@ -20,12 +20,9 @@ describe('MCPValidator', () => {
       const filePath = await createMCPFile({
         mcpServers: {
           myServer: {
-            name: 'myServer',
-            transport: {
-              type: 'stdio',
-              command: 'node',
-              args: ['server.js'],
-            },
+            type: 'stdio',
+            command: 'node',
+            args: ['server.js'],
           },
         },
       });
@@ -54,20 +51,14 @@ describe('MCPValidator', () => {
       const filePath = await createMCPFile({
         mcpServers: {
           server1: {
-            name: 'server1',
-            transport: {
-              type: 'stdio',
-              command: 'node',
-              args: ['server1.js'],
-            },
+            type: 'stdio',
+            command: 'node',
+            args: ['server1.js'],
           },
           server2: {
-            name: 'server2',
-            transport: {
-              type: 'stdio',
-              command: 'node',
-              args: ['server2.js'],
-            },
+            type: 'stdio',
+            command: 'node',
+            args: ['server2.js'],
           },
         },
       });

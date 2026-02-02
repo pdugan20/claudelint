@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/plugin-manifest.schema.json",
+  "title": "Claude Code Plugin Manifest",
+  "description": "Schema for plugin.json manifest files in Claude Code plugins. Source: https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique plugin identifier (kebab-case, no spaces). Used as skill namespace prefix.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version (MAJOR.MINOR.PATCH)",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief explanation of plugin purpose. Shown in plugin manager."
+    },
+    "author": {
+      "description": "Author information (string or object)",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Author name as string"
+        },
+        {
+          "type": "object",
+          "description": "Structured author information",
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Author name"
+            },
+            "email": {
+              "type": "string",
+              "description": "Author email address",
+              "format": "email"
+            },
+            "url": {
+              "type": "string",
+              "description": "Author website or profile URL",
+              "format": "uri"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "homepage": {
+      "type": "string",
+      "description": "Plugin documentation URL",
+      "format": "uri"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Source code repository URL",
+      "format": "uri"
+    },
+    "license": {
+      "type": "string",
+      "description": "License identifier (e.g., MIT, Apache-2.0)"
+    },
+    "keywords": {
+      "type": "array",
+      "description": "Discovery tags for marketplace search",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "commands": {
+      "description": "Additional command files/directories (supplements default commands/ directory)",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to command file or directory",
+          "pattern": "^\\.\\/.*"
+        },
+        {
+          "type": "array",
+          "description": "Array of command file/directory paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "agents": {
+      "description": "Additional agent files/directories (supplements default agents/ directory)",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to agent file or directory",
+          "pattern": "^\\.\\/.*"
+        },
+        {
+          "type": "array",
+          "description": "Array of agent file/directory paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "skills": {
+      "description": "Additional skill directories (supplements default skills/ directory)",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to skills directory",
+          "pattern": "^\\.\\/.*"
+        },
+        {
+          "type": "array",
+          "description": "Array of skill directory paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "hooks": {
+      "description": "Hook configuration: path to hooks.json or inline hook config object",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to hooks configuration file",
+          "pattern": "^\\.\\/.*\\.json$"
+        },
+        {
+          "type": "object",
+          "description": "Inline hooks configuration (see hooks schema for structure)"
+        }
+      ]
+    },
+    "mcpServers": {
+      "description": "MCP server configuration: path to .mcp.json or inline MCP config object",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to MCP configuration file",
+          "pattern": "^\\.\\/.*\\.json$"
+        },
+        {
+          "type": "object",
+          "description": "Inline MCP servers configuration (see MCP schema for structure)"
+        }
+      ]
+    },
+    "outputStyles": {
+      "description": "Additional output style files/directories",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to output style file or directory",
+          "pattern": "^\\.\\/.*"
+        },
+        {
+          "type": "array",
+          "description": "Array of output style file/directory paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "lspServers": {
+      "description": "LSP server configuration: path to .lsp.json or inline LSP config object",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Path to LSP configuration file",
+          "pattern": "^\\.\\/.*\\.json$"
+        },
+        {
+          "type": "object",
+          "description": "Inline LSP servers configuration (see LSP schema for structure)"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

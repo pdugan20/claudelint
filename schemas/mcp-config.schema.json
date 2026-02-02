@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/mcp-config.schema.json",
+  "title": "Claude Code MCP Configuration",
+  "description": "Schema for .mcp.json files that configure Model Context Protocol servers. Source: https://code.claude.com/docs/en/mcp",
+  "type": "object",
+  "required": ["mcpServers"],
+  "properties": {
+    "mcpServers": {
+      "type": "object",
+      "description": "Map of MCP server configurations with server names as keys",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Stdio Transport",
+            "description": "Local MCP server running as a subprocess",
+            "required": ["command"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "stdio"
+              },
+              "command": {
+                "type": "string",
+                "description": "Executable command to run"
+              },
+              "args": {
+                "type": "array",
+                "description": "Command-line arguments",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables for the server process",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "HTTP Transport",
+            "description": "Remote MCP server via HTTP",
+            "required": ["type", "url"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "http"
+              },
+              "url": {
+                "type": "string",
+                "description": "HTTP endpoint URL",
+                "format": "uri"
+              },
+              "headers": {
+                "type": "object",
+                "description": "HTTP headers (e.g., Authorization)",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "SSE Transport (Deprecated)",
+            "description": "Remote MCP server via Server-Sent Events",
+            "required": ["type", "url"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "sse"
+              },
+              "url": {
+                "type": "string",
+                "description": "SSE endpoint URL",
+                "format": "uri"
+              },
+              "headers": {
+                "type": "object",
+                "description": "HTTP headers (e.g., Authorization)",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "WebSocket Transport",
+            "description": "Remote MCP server via WebSocket",
+            "required": ["type", "url"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "websocket"
+              },
+              "url": {
+                "type": "string",
+                "description": "WebSocket URL (ws:// or wss://)",
+                "format": "uri",
+                "pattern": "^wss?://"
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

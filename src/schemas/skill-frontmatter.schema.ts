@@ -1,10 +1,12 @@
 /**
  * Skill frontmatter schema
+ * Based on official spec: https://code.claude.com/docs/en/skills#frontmatter-reference
  */
 
 import { z } from 'zod';
 import { ModelNames, ContextModes } from './constants';
 import { noXMLTags, thirdPerson, lowercaseHyphens, semver, noReservedWords } from './refinements';
+import { HookSchema } from '../validators/schemas';
 
 /**
  * Base skill frontmatter schema without cross-field validations
@@ -20,6 +22,12 @@ export const SkillFrontmatterSchema = z.object({
     .min(10, 'Description must be at least 10 characters')
     .refine(noXMLTags().check, { message: noXMLTags().message })
     .refine(thirdPerson().check, { message: thirdPerson().message }),
+
+  'argument-hint': z.string().optional(),
+
+  'disable-model-invocation': z.boolean().optional(),
+
+  'user-invocable': z.boolean().optional(),
 
   version: semver().optional(),
 
@@ -38,6 +46,8 @@ export const SkillFrontmatterSchema = z.object({
   tags: z.array(z.string()).optional(),
 
   dependencies: z.array(z.string()).optional(),
+
+  hooks: z.array(HookSchema).optional(),
 });
 
 /**

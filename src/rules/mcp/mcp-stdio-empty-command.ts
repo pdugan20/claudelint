@@ -41,17 +41,19 @@ export const rule: Rule = {
 
     for (const server of Object.values(config.mcpServers)) {
       if (!isObject(server)) continue;
-      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
-      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'stdio') continue;
 
-      if (!hasProperty(server.transport, 'command') || !isString(server.transport.command)) {
+      // Check if this is a stdio transport (has type: 'stdio' or has command field)
+      const isStdio = (hasProperty(server, 'type') && server.type === 'stdio') || hasProperty(server, 'command');
+      if (!isStdio) continue;
+
+      if (!hasProperty(server, 'command') || !isString(server.command)) {
         context.report({
           message: 'MCP stdio transport command cannot be empty',
         });
         continue;
       }
 
-      if (server.transport.command.trim().length === 0) {
+      if (server.command.trim().length === 0) {
         context.report({
           message: 'MCP stdio transport command cannot be empty',
         });

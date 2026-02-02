@@ -430,6 +430,41 @@ Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
 
 ## Phase 2: Schema & Constant Verification System
 
+**Status Update (2026-02-02)**: Pivoted to dual-schema verification approach after discovering drift.
+
+### Verification Approach: Dual-Schema System
+
+**Problem**: Official Claude Code specs exist as prose docs, not machine-readable schemas.
+
+**Solution**: Maintain two types of schemas that validate each other:
+
+1. **Manual Reference JSON Schemas** (`schemas/*.schema.json`)
+   - Encode "what official docs say" as test fixtures
+   - Created by human reading official docs
+   - Hosted on GitHub raw URLs
+   - Purpose: Reference implementation to detect drift
+
+2. **Implementation Zod Schemas** (`src/schemas/*.ts`)
+   - Runtime validation in claudelint
+   - Can be stricter than official specs (extra validations OK)
+   - Cannot be looser (missing fields BAD)
+   - Purpose: Actual validation logic
+
+**Verification Flow**:
+```
+Official Docs → Manual JSON Schema → Generate from Zod → Compare → Fix Drift
+```
+
+**Drift Found (4/4 schemas = 100%)**:
+- PluginManifestSchema: [CLEAN] Clean
+- SkillFrontmatterSchema: Minor drift - missing 4 fields (FIXED)
+- HooksConfigSchema: Minor drift - missing 2 fields (FIXED)
+- MCPConfigSchema: **CRITICAL drift** - entire structure wrong (FIXED + 13 rules updated)
+
+**See**: [Schema Verification Workflow](./schema-verification-workflow.md)
+
+## Phase 2: Schema & Constant Verification System
+
 **Status**: Not Started
 **Duration**: 9-14 days
 **Dependencies**: Phase 1 complete
@@ -454,35 +489,55 @@ Systematic verification of all schemas and constants against official Claude Cod
 
 ### Tasks
 
-#### Phase 2.1: Foundation (1-2 days)
+#### Phase 2.1: Create Manual Reference Schemas (3-4 days)
 
-- [ ] **Task 2.1.1**: Create unified truth registry
-  - [ ] Create `src/schemas/truth-registry.ts`
-  - [ ] Define TruthSource interface
-  - [ ] Migrate data from schema-registry.ts
-  - [ ] Add constants from constants-audit.md
-  - [ ] Add query helper functions
+**Current Work**: Creating manual JSON Schemas from official docs to detect drift.
 
-- [ ] **Task 2.1.2**: Generate status dashboard
-  - [ ] Create script to auto-generate `docs/truth-registry-status.md`
-  - [ ] Show summary statistics
-  - [ ] List sources by status
-  - [ ] Show next actions
+**Completed**:
+- [x] **Task 2.1.1**: Schema inventory (identified 9 schemas needing verification)
+- [x] **Task 2.1.2**: PluginManifestSchema reference created
+- [x] **Task 2.1.3**: SkillFrontmatterSchema reference created (FOUND DRIFT - 4 missing fields)
+- [x] **Task 2.1.4**: Fix SkillFrontmatterSchema drift (added 4 missing fields to Zod)
+- [x] **Task 2.1.5**: HooksConfigSchema reference (FOUND DRIFT - 2 missing fields: timeout, async)
+- [x] **Task 2.1.6**: MCPConfigSchema reference (CRITICAL DRIFT - wrong structure, required complete restructure + 13 rule fixes)
 
-#### Phase 2.2: Automated Verification (2-3 days)
+**In Progress**:
+- [ ] **Task 2.1.7**: LSPConfigSchema reference
+- [ ] **Task 2.1.8**: AgentFrontmatterSchema reference
+- [ ] **Task 2.1.9**: OutputStyleFrontmatterSchema reference
+- [ ] **Task 2.1.10**: ClaudeMdFrontmatterSchema reference
 
-- [ ] **Task 2.2.1**: Extract schema-sync into framework
-  - [ ] Create `scripts/verify/schema-sync-framework.ts`
-  - [ ] Support multiple JSON Schema URLs
+**Acceptance Criteria**:
+- All 8 manual reference schemas created in `schemas/` directory
+- Each schema documented with official source URL
+- All drift between Zod and official specs fixed
+- Schemas hosted on GitHub raw URLs
 
-- [ ] **Task 2.2.2**: Add verify commands
-  - [ ] `npm run verify:schemas`
-  - [ ] `npm run verify:truth`
-  - [ ] `npm run verify:status`
+#### Phase 2.2: Build Automated Comparison (2-3 days)
 
-- [ ] **Task 2.2.3**: CI/CD integration
-  - [ ] Create `.github/workflows/verify-truth.yml`
-  - [ ] Run weekly for drift detection
+**Goal**: Generate JSON Schema from Zod and compare to manual reference schemas.
+
+- [ ] **Task 2.2.1**: Install zod-to-json-schema
+  - [ ] Add `zod-to-json-schema` dependency
+  - [ ] Create wrapper script to generate from all Zod schemas
+
+- [ ] **Task 2.2.2**: Build schema comparison tool
+  - [ ] Create `scripts/verify/compare-schemas.ts`
+  - [ ] Compare manual reference vs generated schemas
+  - [ ] Report drift (missing fields, wrong types, etc.)
+  - [ ] Allow Zod to be stricter (extra validations OK)
+  - [ ] Reject Zod being looser (missing fields BAD)
+
+- [ ] **Task 2.2.3**: Update schema-sync script
+  - [ ] Fetch manual reference schemas from GitHub
+  - [ ] Generate JSON Schema from each Zod schema
+  - [ ] Run comparison for all 8 schemas
+  - [ ] Exit non-zero if drift detected
+
+- [ ] **Task 2.2.4**: CI/CD integration
+  - [ ] Update `.github/workflows/ci.yml` schema-sync job
+  - [ ] Run on every PR and push
+  - [ ] Cache schema fetches to reduce API calls
 
 #### Phase 2.3: Hybrid Verification (3-4 days)
 

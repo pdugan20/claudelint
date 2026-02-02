@@ -41,17 +41,16 @@ export const rule: Rule = {
 
     for (const server of Object.values(config.mcpServers)) {
       if (!isObject(server)) continue;
-      if (!hasProperty(server, 'transport') || !isObject(server.transport)) continue;
-      if (!hasProperty(server.transport, 'type') || server.transport.type !== 'websocket') continue;
+      if (!hasProperty(server, 'type') || server.type !== 'websocket') continue;
 
-      if (!hasProperty(server.transport, 'url') || !isString(server.transport.url)) {
+      if (!hasProperty(server, 'url') || !isString(server.url)) {
         context.report({
           message: 'MCP WebSocket transport URL cannot be empty',
         });
         continue;
       }
 
-      if (server.transport.url.trim().length === 0) {
+      if (server.url.trim().length === 0) {
         context.report({
           message: 'MCP WebSocket transport URL cannot be empty',
         });

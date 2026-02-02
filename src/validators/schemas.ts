@@ -34,6 +34,8 @@ export const HookSchema = z.object({
       2: z.string().optional(),
     })
     .optional(),
+  timeout: z.number().min(0).max(600000).optional(),
+  async: z.boolean().optional(),
 });
 
 /**
@@ -159,25 +161,29 @@ export const HooksConfigSchema = z.object({
 
 /**
  * MCP stdio transport schema
+ * For local servers running as subprocesses
  */
 export const MCPStdioTransportSchema = z.object({
-  type: z.literal('stdio'),
+  type: z.literal('stdio').optional(), // Optional since stdio is default when command is present
   command: z.string(),
   args: z.array(z.string()).optional(),
   env: z.record(z.string()).optional(),
 });
 
 /**
- * MCP SSE transport schema
+ * MCP SSE transport schema (deprecated)
+ * For remote servers using Server-Sent Events
  */
 export const MCPSSETransportSchema = z.object({
   type: z.literal('sse'),
   url: z.string(),
+  headers: z.record(z.string()).optional(),
   env: z.record(z.string()).optional(),
 });
 
 /**
  * MCP HTTP transport schema
+ * For remote servers using HTTP
  */
 export const MCPHTTPTransportSchema = z.object({
   type: z.literal('http'),
@@ -188,6 +194,7 @@ export const MCPHTTPTransportSchema = z.object({
 
 /**
  * MCP WebSocket transport schema
+ * For remote servers using WebSocket
  */
 export const MCPWebSocketTransportSchema = z.object({
   type: z.literal('websocket'),
@@ -196,20 +203,18 @@ export const MCPWebSocketTransportSchema = z.object({
 });
 
 /**
- * MCP server schema
+ * MCP server configuration (discriminated union based on transport type)
+ * Server name is the key in mcpServers object, not a field
  */
-export const MCPServerSchema = z.object({
-  name: z.string(),
-  transport: z.union([
-    MCPStdioTransportSchema,
-    MCPSSETransportSchema,
-    MCPHTTPTransportSchema,
-    MCPWebSocketTransportSchema,
-  ]),
-});
+export const MCPServerSchema = z.discriminatedUnion('type', [
+  MCPHTTPTransportSchema,
+  MCPSSETransportSchema,
+  MCPWebSocketTransportSchema,
+]).or(MCPStdioTransportSchema); // Stdio is special since type is optional
 
 /**
  * MCP config schema (.mcp.json)
+ * Based on https://code.claude.com/docs/en/mcp
  */
 export const MCPConfigSchema = z.object({
   mcpServers: z.record(MCPServerSchema),

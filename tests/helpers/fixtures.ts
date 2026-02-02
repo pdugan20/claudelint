@@ -391,12 +391,9 @@ export class MCPBuilder {
   withMinimalConfig(): this {
     this.mcpServers = {
       'test-server': {
-        name: 'test-server',
-        transport: {
-          type: 'stdio',
-          command: 'node',
-          args: ['server.js'],
-        },
+        type: 'stdio',
+        command: 'node',
+        args: ['server.js'],
       },
     };
     return this;
@@ -408,23 +405,17 @@ export class MCPBuilder {
   withCompleteConfig(): this {
     this.mcpServers = {
       'test-server': {
-        name: 'test-server',
-        transport: {
-          type: 'stdio',
-          command: 'node',
-          args: ['server.js'],
-          env: {
-            NODE_ENV: 'test',
-          },
+        type: 'stdio',
+        command: 'node',
+        args: ['server.js'],
+        env: {
+          NODE_ENV: 'test',
         },
       },
       'another-server': {
-        name: 'another-server',
-        transport: {
-          type: 'stdio',
-          command: 'python',
-          args: ['-m', 'server'],
-        },
+        type: 'stdio',
+        command: 'python',
+        args: ['-m', 'server'],
       },
     };
     return this;
