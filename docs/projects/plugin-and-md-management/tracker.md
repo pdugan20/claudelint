@@ -34,16 +34,44 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 ### Tasks
 
 - [ ] **Task 1.1**: Fix package.json files array bug
-  - [ ] Change `"skills"` to `".claude"` in files array
-  - [ ] Verify `.claude-plugin` is included
-  - [ ] **Critical**: Without this fix, npm users get ZERO skills
+  - [ ] Remove invalid `"skills"` entry (directory doesn't exist)
+  - [ ] Remove `".claude"` (only needed for plugin install from GitHub, not npm)
+  - [ ] npm package should be CLI-only: `["dist", "bin", "README.md", "LICENSE"]`
+  - [ ] **Understanding**: npm and plugin are SEPARATE distribution channels
+
+  **Distribution Model Clarification:**
+
+  We have TWO separate distribution channels:
+
+  1. **npm package** (CLI only):
+     ```bash
+     npm install -g claude-code-lint
+     claudelint validate  # CLI works
+     ```
+     - Users get CLI tool
+     - Skills NOT accessible in Claude Code
+     - No need to include `.claude/` directory
+
+  2. **Claude Code plugin** (skills only):
+     ```bash
+     claude /plugin install github:pdugan20/claudelint
+     ```
+     - Claude Code clones from GitHub
+     - Reads `.claude/skills/` from Git repo
+     - Skills available: `/claudelint:validate-all`
+     - npm package is irrelevant
 
   **Verification Steps:**
-  1. Before fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/skills/"` (should be empty)
-  2. Make change in package.json
-  3. After fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/skills/"` (should list all skills)
-  4. Verify other files still included: `tar -tzf claude-code-lint-*.tgz | grep -E "(dist|bin|\.claude-plugin)"`
-  5. Test install: `npm install -g ./claude-code-lint-*.tgz && ls ~/.npm/lib/node_modules/claude-code-lint/.claude/skills/`
+  1. Before fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/"` (should be empty or shouldn't exist)
+  2. Make change: Remove `"skills"` and `".claude"` from files array
+  3. After fix: Verify only CLI files included:
+     ```bash
+     npm pack
+     tar -tzf claude-code-lint-*.tgz | grep -E "^package/(dist|bin|README|LICENSE)" | head -10
+     tar -tzf claude-code-lint-*.tgz | grep "\.claude" # should be empty
+     ```
+  4. Verify package is smaller (no skills bloat)
+  5. Test CLI install: `npm install -g ./claude-code-lint-*.tgz && claudelint --version`
   6. Clean up: `rm claude-code-lint-*.tgz && npm uninstall -g claude-code-lint`
 
 - [ ] **Task 1.2**: Create `.claude-plugin/plugin.json` manifest

@@ -159,25 +159,38 @@ claude /plugin install github:pdugan20/claudelint
 
 ## Installation Flow
 
-### As Plugin
+**CRITICAL UNDERSTANDING**: Plugin install and npm install are SEPARATE channels.
+
+### As Plugin (for Skills)
 
 ```bash
-# Install from GitHub
+# Install from GitHub - Claude Code clones the repo
 claude /plugin install github:pdugan20/claudelint
 
 # Or local install for testing
 claude /plugin install --source /path/to/claude-lint
 ```
 
-### As npm Package
+**What happens:**
+1. Claude Code clones/copies the repository
+2. Reads `.claude/skills/` from the Git repo
+3. Skills become available with `/claudelint:` namespace
+4. npm package is NOT involved
+
+### As npm Package (for CLI)
 
 ```bash
-# Global install
+# Global install - only gets CLI tool
 npm install -g claude-code-lint
-
-# Skills NOT automatically available
-# User would need to manually copy to ~/.claude/skills/
 ```
+
+**What happens:**
+1. npm installs package from registry
+2. Only `dist/`, `bin/`, `README.md`, `LICENSE` included
+3. CLI works: `claudelint validate`
+4. Skills NOT accessible in Claude Code (that requires plugin install)
+
+**Important:** `.claude/` directory is NOT in npm package - it's only in the Git repo for plugin installation.
 
 ## Validation
 
@@ -223,24 +236,41 @@ claude /skills
 }
 ```
 
-### 2. Verify package.json includes .claude-plugin
+### 2. Update package.json files array (CLI only)
 
 **File**: `package.json`
 
+**Current (WRONG):**
 ```json
 {
   "files": [
     "dist",
     "bin",
-    ".claude-plugin",  // **Good** Already included
-    "skills",          // **Warning**  Should this be .claude/skills?
+    ".claude-plugin",  // Not needed in npm - plugin install uses GitHub
+    "skills",          // WRONG - directory doesn't exist
     "README.md",
     "LICENSE"
   ]
 }
 ```
 
-**Question**: Is `"skills"` correct or should it be `.claude/skills/`?
+**Correct (CLI only):**
+```json
+{
+  "files": [
+    "dist",           // Compiled CLI code
+    "bin",            // Binary wrapper
+    "README.md",
+    "LICENSE"
+  ]
+}
+```
+
+**Why remove `.claude-plugin` and `skills`?**
+- Plugin install clones from **GitHub**, not npm
+- npm package is **CLI-only**
+- Including `.claude/` in npm package is unnecessary bloat
+- Skills are only accessible via plugin install from Git repo
 
 ### 3. Update .npmignore if exists
 

@@ -110,13 +110,20 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 
 ## Distribution Strategy
 
-### Option A: As Plugin (Recommended)
+**IMPORTANT**: We have TWO SEPARATE distribution channels:
+
+### For Skills (Claude Code Plugin) - Recommended for Interactive Use
 
 ```bash
 claude /plugin install github:pdugan20/claudelint
 ```
 
-Skills available immediately:
+**What happens:**
+- Claude Code clones repo from GitHub
+- Reads `.claude/skills/` from Git repo (not npm)
+- Skills immediately available with namespace
+
+**Skills available:**
 - `/claudelint:validate-all` (renamed from validate)
 - `/claudelint:format-cc` (renamed from format)
 - `/claudelint:validate-cc-md` (renamed from validate-agents-md)
@@ -127,20 +134,42 @@ Skills available immediately:
 - `/claudelint:validate-plugin`
 - `/claudelint:optimize-cc-md` (new)
 
-### Option B: As npm CLI Tool
+**Note:** CLI also works if user runs `npm install` in cloned repo.
+
+### For CLI Only (npm Package) - For CI/CD and Automation
 
 ```bash
 npm install -g claude-code-lint
 claudelint validate
 ```
 
-**After package.json fix**: Skills will be included in npm package at `.claude/skills/`
+**What happens:**
+- npm installs CLI tool only
+- CLI commands work: `claudelint validate`, `claudelint format`, etc.
+- Skills NOT accessible in Claude Code sessions
 
-### Dual Distribution
+**npm package contents:**
+- `dist/` - Compiled CLI code
+- `bin/` - Binary wrapper
+- `README.md`, `LICENSE`
+- **Does NOT include** `.claude/` directory (that's only in Git repo for plugin install)
 
-Ship both! Plugin manifest makes it a plugin, bin/ makes it a CLI tool.
+### Why Two Channels?
 
-**Current Bug**: npm package includes `"skills"` in files array but skills are in `.claude/skills/` - npm users get nothing!
+**Plugin install (GitHub):**
+- For interactive Claude Code sessions
+- Skills work: `/claudelint:validate-all`
+- Clone entire repo including `.claude/skills/`
+
+**npm install:**
+- For CI/CD pipelines, pre-commit hooks, automation
+- CLI only: `claudelint validate`
+- No need for skills directory
+
+### Current Bug
+
+**package.json bug:** `"files": ["skills"]` - directory doesn't exist
+**Fix:** Remove from files array - skills are only for plugin install from GitHub
 
 ## Key Research Findings
 
