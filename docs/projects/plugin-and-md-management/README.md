@@ -219,13 +219,25 @@ Researched `/init` command implementation:
 ## Next Steps
 
 1. **Phase 1**: Fix package.json bug and create plugin.json (1 day)
-2. **Phase 2**: Build optimize-cc-md skill (3-4 days)
-3. **Phase 3**: Update documentation (1-2 days)
-4. **Phase 4**: Test and release (1 day)
+2. **Phase 2**: Schema & constant verification system (9-14 days) **NEW - CRITICAL**
+3. **Phase 3**: Build optimize-cc-md skill (3-4 days)
+4. **Phase 4**: Update documentation (1-2 days)
+5. **Phase 5**: Test and release (1 day)
 
-**Total: 6-8 days**
+**Total: 15-22 days**
 
 See [tracker.md](./tracker.md) for detailed task breakdown.
+
+### Phase 2 - New Critical Work
+
+During Phase 1, discovered systematic issues with schema and constant verification:
+- **19 sources of truth** need verification (10 schemas + 9 constants)
+- **1 critical schema out of sync** (PluginManifestSchema)
+- **No automation** for most sources
+- **High risk** of validation drift
+
+**Proposal**: [Truth Registry Proposal](./truth-registry-proposal.md)
+**Details**: [Schema Audit](./schema-audit.md), [Constants Audit](./constants-audit.md)
 
 ## Related Projects
 

@@ -218,9 +218,10 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ### Acceptance Criteria
 
-- [ ] npm pack includes `.claude/` directory
-- [ ] `plugin.json` validates successfully
-- [ ] All 3 skills renamed with specific names (validate-all, validate-cc-md, format-cc)
+- [x] npm pack excludes `.claude/` directory (CLI-only)
+- [x] `plugin.json` created
+- [x] All 3 skills renamed with specific names (validate-all, validate-cc-md, format-cc)
+- [ ] Plugin.json schema fixed to match official spec
 - [ ] E10 rule updated to flag single-word verbs
 - [ ] Plugin installable locally
 - [ ] Skills accessible via `/claudelint:` namespace with new names
@@ -279,7 +280,101 @@ rm claude-code-lint-*.tgz
 
 Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
 
-## Phase 2: Create optimize-cc-md Skill
+---
+
+## Phase 2: Schema & Constant Verification System
+
+**Status**: Not Started
+**Duration**: 9-14 days
+**Dependencies**: Phase 1 complete
+**Priority**: CRITICAL (validation correctness depends on this)
+
+### Overview
+
+Systematic verification of all schemas and constants against official Claude Code sources. Implements unified truth registry with automated, hybrid, and manual verification workflows.
+
+**See**: [Truth Registry Proposal](./truth-registry-proposal.md) for full design
+
+### Discovery Summary
+
+**Found Issues**:
+- 1 schema out of sync (PluginManifestSchema - CRITICAL)
+- 1 schema verified (SettingsSchema)
+- 8 schemas need audit
+- 9 constants need verification
+- No automation for most sources
+
+**Impact**: Users get false positives/negatives, validation doesn't match Claude Code's actual behavior
+
+### Tasks
+
+#### Phase 2.1: Foundation (1-2 days)
+
+- [ ] **Task 2.1.1**: Create unified truth registry
+  - [ ] Create `src/schemas/truth-registry.ts`
+  - [ ] Define TruthSource interface
+  - [ ] Migrate data from schema-registry.ts
+  - [ ] Add constants from constants-audit.md
+  - [ ] Add query helper functions
+
+- [ ] **Task 2.1.2**: Generate status dashboard
+  - [ ] Create script to auto-generate `docs/truth-registry-status.md`
+  - [ ] Show summary statistics
+  - [ ] List sources by status
+  - [ ] Show next actions
+
+#### Phase 2.2: Automated Verification (2-3 days)
+
+- [ ] **Task 2.2.1**: Extract schema-sync into framework
+  - [ ] Create `scripts/verify/schema-sync-framework.ts`
+  - [ ] Support multiple JSON Schema URLs
+
+- [ ] **Task 2.2.2**: Add verify commands
+  - [ ] `npm run verify:schemas`
+  - [ ] `npm run verify:truth`
+  - [ ] `npm run verify:status`
+
+- [ ] **Task 2.2.3**: CI/CD integration
+  - [ ] Create `.github/workflows/verify-truth.yml`
+  - [ ] Run weekly for drift detection
+
+#### Phase 2.3: Hybrid Verification (3-4 days)
+
+- [ ] **Task 2.3.1**: Plugin manifest verification (completes Task 1.4)
+- [ ] **Task 2.3.2**: Hook events verification
+- [ ] **Task 2.3.3**: MCP config verification
+- [ ] **Task 2.3.4**: Create hybrid verification framework
+
+#### Phase 2.4: Manual Verification Support (2-3 days)
+
+- [ ] **Task 2.4.1**: Tool names manual verification
+- [ ] **Task 2.4.2**: Model names manual verification
+- [ ] **Task 2.4.3**: Manual verification tracker (expiry warnings)
+- [ ] **Task 2.4.4**: Manual verification playbook
+
+#### Phase 2.5: Integration & Documentation (1-2 days)
+
+- [ ] **Task 2.5.1**: Pre-commit hook integration
+- [ ] **Task 2.5.2**: Documentation
+- [ ] **Task 2.5.3**: Team training materials
+
+### Acceptance Criteria
+
+- [ ] All 19 sources have verification method defined
+- [ ] PluginManifestSchema fixed and verified
+- [ ] High-priority constants verified (ToolNames, ModelNames, HookEvents)
+- [ ] Automated verification runs in CI
+- [ ] Status dashboard auto-generated
+
+### Success Metrics
+
+- 0 critical sources out of sync
+- 100% of schemas have verification defined
+- CI catches drift within 1 week
+
+---
+
+## Phase 3: Create optimize-cc-md Skill
 
 **Status**: Not Started
 **Duration**: 3-4 days
