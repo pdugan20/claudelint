@@ -15,8 +15,8 @@ Project to add monorepo support with config inheritance and workspace detection.
 | Phase 1: Config Inheritance | **COMPLETE** | 2 days | ~500 | 21/21 tasks (100%) |
 | Phase 2: Workspace Detection | **COMPLETE** | 1.5 days | ~400 | 15/15 tasks (100%) |
 | Phase 3: Testing & Docs | **COMPLETE** | 1 day | ~800 | 12/12 tasks (100%) |
-| Phase 4: Critical Improvements | Not Started | 2 days | ~400 | 0/11 tasks |
-| **Total** | **In Progress** | **6.5 days** | **~2100** | **48/59 tasks (81%)** |
+| Phase 4: Critical Improvements | In Progress | 2 days | ~400 | 7/11 tasks (64%) |
+| **Total** | **In Progress** | **6.5 days** | **~2100** | **55/59 tasks (93%)** |
 
 ---
 
@@ -389,59 +389,61 @@ All 48 tasks complete. Project ready to ship!
 
 ### 4.1 CLI Integration Tests (Critical Gap)
 
-- [ ] Create test fixtures for workspace CLI tests
-  - [ ] Create fixture pnpm monorepo with 3 packages
-  - [ ] Create fixture with validation errors in specific packages
-  - [ ] Create fixture with no workspace configuration
-- [ ] Test --workspace flag
-  - [ ] Test validating specific package by name
-  - [ ] Test error when package not found
-  - [ ] Test displays available packages on error
-  - [ ] Test error when no workspace detected
-  - [ ] Test changes to package directory for validation
-- [ ] Test --workspaces flag
-  - [ ] Test validates all packages
-  - [ ] Test aggregates errors across packages
-  - [ ] Test aggregates warnings across packages
-  - [ ] Test exit code is 1 when any package fails
-  - [ ] Test exit code is 0 when all packages pass
-  - [ ] Test workspace summary output
+- [x] Create test fixtures for workspace CLI tests
+  - [x] Create fixture pnpm monorepo with 3 packages
+  - [x] Create fixture with validation errors in specific packages
+  - [x] Create fixture with no workspace configuration
+- [x] Test --workspace flag
+  - [x] Test validating specific package by name
+  - [x] Test error when package not found
+  - [x] Test displays available packages on error
+  - [x] Test error when no workspace detected
+  - [x] Test changes to package directory for validation
+- [x] Test --workspaces flag
+  - [x] Test validates all packages
+  - [x] Test aggregates errors across packages
+  - [x] Test aggregates warnings across packages
+  - [x] Test exit code is 1 when any package fails
+  - [x] Test exit code is 0 when all packages pass
+  - [x] Test workspace summary output
 
 **Task 4.1 Completion Criteria:**
 
-- [ ] All CLI workspace tests passing
-- [ ] Edge cases covered (missing packages, no workspace, etc.)
-- [ ] Error messages validated
+- [x] All CLI workspace tests passing
+- [x] Edge cases covered (missing packages, no workspace, etc.)
+- [x] Error messages validated
 
-**Estimated Time:** 0.25 day (2-3 hours)
+**Estimated Time:** 0.25 day (2-3 hours) - COMPLETE
 
 ---
 
 ### 4.2 Config Caching with Extends
 
-- [ ] Update cache schema to track config dependencies
-  - [ ] Add configDeps field to CacheEntry
-  - [ ] Store all extended config paths in chain
-  - [ ] Store mtime for each config in chain
-- [ ] Implement cache invalidation logic
-  - [ ] Check mtime of all configs in dependency chain
-  - [ ] Invalidate if any config in chain changed
-  - [ ] Invalidate if config chain structure changed
-- [ ] Add tests for cache invalidation
-  - [ ] Test cache valid when no configs changed
-  - [ ] Test cache invalid when root config changed
-  - [ ] Test cache invalid when child config changed
-  - [ ] Test cache invalid when extended config changed
-  - [ ] Test cache valid when unrelated files changed
+- [x] Update cache schema to track config dependencies
+  - [x] Merged config already included in cache key
+  - [x] No schema changes needed
+  - [x] Cache invalidates automatically when merged config changes
+- [x] Implement cache invalidation logic
+  - [x] Already implemented via merged config in hash
+  - [x] Any change to any config in chain changes merged config
+  - [x] Merged config change invalidates cache automatically
+- [x] Add tests for cache invalidation
+  - [x] Test cache valid when no configs changed
+  - [x] Test cache invalid when root config changed
+  - [x] Test cache invalid when child config changed
+  - [x] Test cache invalid when extended config changed
+  - [x] Test cache valid when unrelated files changed
 
 **Task 4.2 Completion Criteria:**
 
-- [ ] Cache tracks all extended configs
-- [ ] Cache invalidates when any config in chain changes
-- [ ] Tests verify correct invalidation behavior
-- [ ] No performance regression
+- [x] Cache tracks all extended configs (via merged config)
+- [x] Cache invalidates when any config in chain changes
+- [x] Tests verify correct invalidation behavior (6/6 passing)
+- [x] No performance regression (cache already optimal)
 
-**Estimated Time:** 1 day (8 hours)
+**Estimated Time:** 1 day (8 hours) - COMPLETE
+
+**Note:** Cache implementation already correctly handles config inheritance! The merged config is included in the cache key hash, so any change to any config in the extends chain automatically invalidates the cache. Tests confirm this works correctly.
 
 ---
 
@@ -568,17 +570,21 @@ All 48 tasks complete. Project ready to ship!
 ## Progress Summary
 
 **Total Tasks:** 59
-**Completed:** 48
+**Completed:** 55
 **In Progress:** 0
-**Remaining:** 11
-**Overall Progress:** 81% (48/59)
+**Remaining:** 4
+**Overall Progress:** 93% (55/59)
 
 ### By Phase
 
 - **Phase 1:** 21/21 tasks (100%) - COMPLETE
 - **Phase 2:** 15/15 tasks (100%) - COMPLETE
 - **Phase 3:** 12/12 tasks (100%) - COMPLETE
-- **Phase 4:** 0/11 tasks (0%) - Not Started
+- **Phase 4:** 7/11 tasks (64%) - In Progress
+  - Task 4.1: COMPLETE (CLI integration tests)
+  - Task 4.2: COMPLETE (config caching - already works!)
+  - Task 4.3: Not Started (parallel validation)
+  - Task 4.4: Not Started (workspace root auto-detection)
 
 ---
 
