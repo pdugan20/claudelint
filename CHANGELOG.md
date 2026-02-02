@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Validator Architecture Refactoring
+
+Refactored validator architecture for improved clarity and maintainability:
+
+**Breaking Changes (Internal API Only - Does NOT affect end users):**
+
+- Renamed `BaseValidator` to `FileValidator` - for text/markdown file validation
+- Renamed `JSONConfigValidator` to `SchemaValidator` - for JSON config validation
+- Renamed `validateConfig()` method to `validateSemantics()` in SchemaValidator subclasses
+
+**Code Improvements:**
+
+- Removed 733 lines of unused composition framework code
+- Simplified SchemaValidator with direct JSON parsing + Zod validation
+- Net code reduction: 1,263 lines removed
+- Added comprehensive JSDoc documentation to FileValidator and SchemaValidator
+- All 10 validators now use consistent category-based rule execution pattern
+
+**Documentation:**
+
+- Created comprehensive `docs/validation-architecture.md` guide
+- Updated all documentation with new validator names
+- Added templates for creating custom validators
+- Added decision guide for choosing validator types
+
+**Impact:** This is an internal refactoring only. No changes required for:
+- End users running claudelint CLI
+- .claudelintrc.json configuration files
+- Custom rules
+
+Plugin developers extending validators should update class names when upgrading.
+
 ## [0.2.0-beta.0] - 2026-01-30
 
 **BETA RELEASE:** This is a pre-release version for testing and feedback. The API is stable but may change based on user feedback before the final 0.2.0 release.

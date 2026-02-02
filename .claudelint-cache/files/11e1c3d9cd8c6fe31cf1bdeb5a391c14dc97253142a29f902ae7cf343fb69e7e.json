@@ -31,14 +31,14 @@
     },
     {
       "message": "Skill directory lacks CHANGELOG.md",
-      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate-settings/SKILL.md",
+      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate-plugin/SKILL.md",
       "ruleId": "skill-missing-changelog",
       "fix": "Create CHANGELOG.md",
       "severity": "warning"
     },
     {
       "message": "Skill directory lacks CHANGELOG.md",
-      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate-plugin/SKILL.md",
+      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate-settings/SKILL.md",
       "ruleId": "skill-missing-changelog",
       "fix": "Create CHANGELOG.md",
       "severity": "warning"
@@ -55,19 +55,6 @@
       "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate-hooks/SKILL.md",
       "ruleId": "skill-missing-changelog",
       "fix": "Create CHANGELOG.md",
-      "severity": "warning"
-    },
-    {
-      "message": "Skill directory lacks CHANGELOG.md",
-      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/format/SKILL.md",
-      "ruleId": "skill-missing-changelog",
-      "fix": "Create CHANGELOG.md",
-      "severity": "warning"
-    },
-    {
-      "message": "SKILL.md is large (205 lines) but lacks a table of contents. Add a TOC section to help users navigate the document.",
-      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/format/SKILL.md",
-      "ruleId": "skill-large-reference-no-toc",
       "severity": "warning"
     },
     {
@@ -93,6 +80,19 @@
     {
       "message": "SKILL.md is large (133 lines) but lacks a table of contents. Add a TOC section to help users navigate the document.",
       "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/validate/SKILL.md",
+      "ruleId": "skill-large-reference-no-toc",
+      "severity": "warning"
+    },
+    {
+      "message": "Skill directory lacks CHANGELOG.md",
+      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/format/SKILL.md",
+      "ruleId": "skill-missing-changelog",
+      "fix": "Create CHANGELOG.md",
+      "severity": "warning"
+    },
+    {
+      "message": "SKILL.md is large (205 lines) but lacks a table of contents. Add a TOC section to help users navigate the document.",
+      "file": "/Users/patdugan/Documents/GitHub/claude-lint/.claude/skills/format/SKILL.md",
       "ruleId": "skill-large-reference-no-toc",
       "severity": "warning"
     }
