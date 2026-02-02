@@ -4,6 +4,33 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ## Active Projects
 
+### monorepo-support
+
+**Status:** Planning Phase
+**Timeline:** 4-5 days
+**Location:** [docs/projects/monorepo-support/](./monorepo-support/)
+
+**Purpose:** Add monorepo support with config inheritance and workspace detection
+
+**Key Objectives:**
+
+- Implement `extends` field for config reuse
+- Auto-detect pnpm/npm/Yarn workspaces
+- Add CLI flags for workspace-scoped validation
+- Zero breaking changes - all features opt-in
+
+**Implementation Phases:**
+
+- **Phase 1:** Config Inheritance (2 days) - Core `extends` functionality
+- **Phase 2:** Workspace Detection (1.5 days) - CLI flags and detection
+- **Phase 3:** Testing & Documentation (1 day) - Comprehensive tests and guides
+
+**Progress:** 0/48 tasks complete (0%)
+
+**Note:** Phase 1 can ship independently before Phase 2
+
+---
+
 ### npm-release-setup
 
 **Status:** Planning Phase
@@ -192,6 +219,7 @@ Projects that have achieved their objectives. Completed projects are:
 
 **Active Project READMEs:**
 
+- [monorepo-support README](./monorepo-support/README.md)
 - [npm-release-setup README](./npm-release-setup/README.md)
 - [vitepress-docs README](./vitepress-docs/README.md)
 - [skills-quality-validation README](./skills-quality-validation/README.md)
