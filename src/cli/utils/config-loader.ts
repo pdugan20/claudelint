@@ -4,7 +4,8 @@
  * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
  */
 
-import { findConfigFile, loadConfig, validateConfig } from '../../utils/config/types';
+import { findConfigFile, validateConfig } from '../../utils/config/types';
+import { loadConfigWithExtends } from '../../utils/config/extends';
 import { ConfigError, validateAllRuleOptions } from '../../utils/config/resolver';
 import { ClaudeLintConfig } from '../../utils/config/types';
 import { logger } from './logger';
@@ -37,12 +38,12 @@ export function loadAndValidateConfig(options: {
       logger.info(`[Config Debug] Loading config from: ${options.config}`);
     }
     try {
-      config = loadConfig(options.config);
+      config = loadConfigWithExtends(options.config);
       if (options.verbose || options.debugConfig) {
         logger.info(`Using config file: ${options.config}`);
       }
       if (options.debugConfig) {
-        logger.info('[Config Debug] Loaded config:');
+        logger.info('[Config Debug] Loaded config (with extends resolved):');
         logger.log(JSON.stringify(config, null, 2));
       }
     } catch (error: unknown) {
@@ -60,12 +61,12 @@ export function loadAndValidateConfig(options: {
         logger.info(`[Config Debug] Found config file: ${configPath}`);
       }
       try {
-        config = loadConfig(configPath);
+        config = loadConfigWithExtends(configPath);
         if (options.verbose || options.debugConfig) {
           logger.info(`Using config file: ${configPath}`);
         }
         if (options.debugConfig) {
-          logger.info('[Config Debug] Loaded config:');
+          logger.info('[Config Debug] Loaded config (with extends resolved):');
           logger.log(JSON.stringify(config, null, 2));
         }
       } catch (error: unknown) {

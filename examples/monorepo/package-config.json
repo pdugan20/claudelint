@@ -1,0 +1,6 @@
+{
+  "extends": "./base-config.json",
+  "rules": {
+    "size-warning": "off"
+  }
+}

@@ -26,6 +26,23 @@ export interface ConfigOverride {
  * Complete claudelint configuration
  */
 export interface ClaudeLintConfig {
+  /**
+   * Extend one or more base configurations
+   *
+   * Can be:
+   * - Relative path: "./base.json" or "../../.claudelintrc.json"
+   * - Node modules package: "claudelint-config-standard" or "@acme/claudelint-config"
+   * - Array of configs (merged in order): ["./base.json", "./strict.json"]
+   *
+   * @example
+   * // Single extend
+   * { "extends": "../../.claudelintrc.json" }
+   *
+   * @example
+   * // Multiple extends
+   * { "extends": ["./base.json", "@acme/claudelint-config"] }
+   */
+  extends?: string | string[];
   /** Rule configurations (rule-id -> config) */
   rules?: Record<string, RuleConfig | 'off' | 'warn' | 'error'>;
   /** File-specific overrides */
@@ -120,15 +137,27 @@ export function loadConfig(configPath: string): ClaudeLintConfig {
 
 /**
  * Merge config with defaults
+ *
+ * Note: The 'extends' field is intentionally not merged.
+ * It should be resolved before merging configs.
  */
 export function mergeConfig(
   userConfig: ClaudeLintConfig,
   defaults: Partial<ClaudeLintConfig>
 ): ClaudeLintConfig {
   return {
+    // extends is NOT merged - it's resolved before merging
     rules: { ...defaults.rules, ...userConfig.rules },
-    overrides: userConfig.overrides || defaults.overrides || [],
-    ignorePatterns: userConfig.ignorePatterns || defaults.ignorePatterns || [],
+    overrides: [
+      ...(defaults.overrides || []),
+      ...(userConfig.overrides || []),
+    ],
+    ignorePatterns: [
+      ...new Set([
+        ...(defaults.ignorePatterns || []),
+        ...(userConfig.ignorePatterns || []),
+      ]),
+    ],
     output: { ...defaults.output, ...userConfig.output },
     reportUnusedDisableDirectives:
       userConfig.reportUnusedDisableDirectives ?? defaults.reportUnusedDisableDirectives ?? false,
@@ -160,6 +189,46 @@ export interface ConfigValidationError {
  */
 export function validateConfig(config: ClaudeLintConfig): ConfigValidationError[] {
   const errors: ConfigValidationError[] = [];
+
+  // Validate extends field
+  if (config.extends !== undefined) {
+    if (typeof config.extends === 'string') {
+      // Single extend - validate it's not empty
+      if (config.extends.trim() === '') {
+        errors.push({
+          message: `Empty string in 'extends' field. Provide a valid config path or package name.`,
+          severity: 'error',
+        });
+      }
+    } else if (Array.isArray(config.extends)) {
+      // Array of extends - validate each entry
+      if (config.extends.length === 0) {
+        errors.push({
+          message: `Empty array in 'extends' field. Provide at least one config to extend or remove the field.`,
+          severity: 'error',
+        });
+      }
+      for (let i = 0; i < config.extends.length; i++) {
+        const ext = config.extends[i];
+        if (typeof ext !== 'string') {
+          errors.push({
+            message: `Invalid extends value at index ${i}: must be a string, got ${typeof ext}`,
+            severity: 'error',
+          });
+        } else if (ext.trim() === '') {
+          errors.push({
+            message: `Empty string in 'extends' array at index ${i}`,
+            severity: 'error',
+          });
+        }
+      }
+    } else {
+      errors.push({
+        message: `Invalid 'extends' value: must be a string or array of strings, got ${typeof config.extends}`,
+        severity: 'error',
+      });
+    }
+  }
 
   // Validate rules
   if (config.rules) {
