@@ -1,0 +1,23 @@
+{
+  "name": "claudelint",
+  "version": "0.2.0-beta.1",
+  "description": "Comprehensive linter and validator for Claude Code projects",
+  "author": {
+    "name": "Pat Dugan",
+    "url": "https://github.com/pdugan20"
+  },
+  "homepage": "https://github.com/pdugan20/claudelint",
+  "repository": "https://github.com/pdugan20/claudelint",
+  "license": "MIT",
+  "keywords": [
+    "linter",
+    "validator",
+    "claude-code",
+    "quality",
+    "best-practices",
+    "skills",
+    "hooks",
+    "mcp",
+    "agents"
+  ]
+}

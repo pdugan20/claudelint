@@ -27,17 +27,17 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ## Phase 1: Critical Bug Fixes & Plugin Infrastructure
 
-**Status**: Not Started
+**Status**: In Progress
 **Duration**: 1 day
 **Dependencies**: Phase 0 complete
 
 ### Tasks
 
-- [ ] **Task 1.1**: Fix package.json files array bug
-  - [ ] Remove invalid `"skills"` entry (directory doesn't exist)
-  - [ ] Remove `".claude"` (only needed for plugin install from GitHub, not npm)
-  - [ ] npm package should be CLI-only: `["dist", "bin", "README.md", "LICENSE"]`
-  - [ ] **Understanding**: npm and plugin are SEPARATE distribution channels
+- [x] **Task 1.1**: Fix package.json files array bug
+  - [x] Remove invalid `"skills"` entry (directory doesn't exist)
+  - [x] Remove `".claude"` (only needed for plugin install from GitHub, not npm)
+  - [x] npm package should be CLI-only: `["dist", "bin", "README.md", "LICENSE"]`
+  - [x] **Understanding**: npm and plugin are SEPARATE distribution channels
 
   **Distribution Model Clarification:**
 
