@@ -27,12 +27,12 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ## Phase 1: Critical Bug Fixes & Plugin Infrastructure
 
-**Status**: In Progress (67% complete - 4/6 tasks done)
+**Status**: In Progress (83% complete - 5/6 tasks done)
 **Duration**: 1 day
 **Dependencies**: Phase 0 complete
 
-**Completed**: Tasks 1.1-1.4 (package.json fix, plugin.json creation, skill renames, schema fix)
-**Remaining**: Tasks 1.6-1.8 (E10 rule update, local testing, documentation)
+**Completed**: Tasks 1.1-1.4, 1.6 (package.json fix, plugin.json creation, skill renames, schema fix, E10 rule)
+**Remaining**: Tasks 1.7-1.8 (local testing, documentation)
 
 ### Tasks
 
@@ -157,12 +157,14 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
      claudelint check-plugin --path /tmp/test-plugin.json  # should warn about author being string
      ```
 
-- [ ] **Task 1.6**: Update E10 validation rule
-  - [ ] Locate rule file: Check if `src/rules/skills/overly-generic-name.ts` exists
-  - [ ] Add single-word verb detection: "format", "validate", "test", "build", "deploy"
-  - [ ] Flag names that are only a verb without specificity
-  - [ ] Add tests for new validation
-  - [ ] Update rule documentation
+- [x] **Task 1.6**: Update E10 validation rule
+  - [x] Create new rule file: `src/rules/skills/skill-overly-generic-name.ts`
+  - [x] Add single-word verb detection: "format", "validate", "test", "build", "deploy", "run", "execute", etc.
+  - [x] Add generic keyword detection: "helper", "utils", "tool", "manager", etc.
+  - [x] Flag names that are only a verb without specificity
+  - [x] Add comprehensive tests (valid and invalid cases)
+  - [x] Rule registered as severity 'warn'
+  - [x] All 777 tests passing
 
   **Verification Steps:**
   1. Find the rule: `find src -name "*generic*name*"`
@@ -233,7 +235,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 - [x] `plugin.json` created
 - [x] All 3 skills renamed with specific names (validate-all, validate-cc-md, format-cc)
 - [x] Plugin.json schema fixed to match official spec
-- [ ] E10 rule updated to flag single-word verbs
+- [x] E10 rule created to flag single-word verbs and generic keywords
 - [ ] Plugin installable locally
 - [ ] Skills accessible via `/claudelint:` namespace with new names
 - [ ] Documentation updated with new naming guidance
@@ -652,13 +654,13 @@ npm run migrate:config
 
 ```
 Phase 0: [██████████] 100% (Complete)
-Phase 1: [████████░░]  67% (4/6 tasks - Tasks 1.1-1.4 done, 1.6-1.8 remaining)
+Phase 1: [████████▓░]  83% (5/6 tasks - Tasks 1.1-1.4, 1.6 done, 1.7-1.8 remaining)
 Phase 2: [░░░░░░░░░░]   0% (0/6 sub-phases - includes new 2.6 deprecation system)
 Phase 3: [░░░░░░░░░░]   0% (0/5 tasks - optimize-cc-md skill)
 Phase 4: [░░░░░░░░░░]   0% (0/3 tasks - documentation)
 Phase 5: [░░░░░░░░░░]   0% (0/4 tasks - testing & release)
 
-Overall: [███░░░░░░░] 24% (Phase 0 complete + 4/6 Phase 1 tasks)
+Overall: [███░░░░░░░] 29% (Phase 0 complete + 5/6 Phase 1 tasks)
 ```
 
 ## Estimated Timeline
