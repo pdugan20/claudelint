@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "skill-missing-version": "error",
+    "skill-missing-changelog": "warn"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**"
+  ],
+  "output": {
+    "verbose": false,
+    "format": "stylish"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "extends": "../../.claudelintrc.json",
+  "rules": {
+    "skill-missing-changelog": "off"
+  }
+}

@@ -39,6 +39,7 @@ The search starts in the current directory and walks up the directory tree until
 
 ```json
 {
+  "extends": "string or array",
   "rules": {
     "rule-name": "severity"
   },
@@ -49,6 +50,49 @@ The search starts in the current directory and walks up the directory tree until
   "maxWarnings": 0
 }
 ```
+
+### Extends
+
+The `extends` field allows you to inherit configuration from other config files or npm packages.
+
+**Relative paths:**
+
+```json
+{
+  "extends": "../.claudelintrc.json",
+  "rules": {
+    "claude-md-size-error": "warn"
+  }
+}
+```
+
+**Node modules:**
+
+```json
+{
+  "extends": "@company/claudelint-config"
+}
+```
+
+**Multiple extends:**
+
+```json
+{
+  "extends": ["./base.json", "./strict.json"]
+}
+```
+
+**Merge behavior:**
+
+When extending configs, claudelint merges configurations in this order:
+
+1. Base config (first in extends array)
+2. Additional extended configs (in order)
+3. Current config (overrides everything)
+
+Rules are deep merged (child can override specific rules). Overrides and ignore patterns are concatenated. Circular dependencies are detected and prevented.
+
+See [Monorepo documentation](./monorepo.md) for detailed examples.
 
 ### Rules
 

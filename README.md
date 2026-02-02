@@ -56,6 +56,41 @@ claudelint check-all
 /plugin install claudelint
 ```
 
+## Monorepo Support
+
+claudelint provides full support for monorepo projects with workspace detection and configuration inheritance.
+
+### Config Inheritance
+
+Share configuration across packages using the `extends` field:
+
+```json
+{
+  "extends": "../.claudelintrc.json",
+  "rules": {
+    "claude-md-size-error": "warn"
+  }
+}
+```
+
+### Workspace Validation
+
+Validate specific packages or all packages in your monorepo:
+
+```bash
+claudelint check-all --workspace my-package
+
+claudelint check-all --workspaces
+```
+
+### Supported Package Managers
+
+- pnpm (pnpm-workspace.yaml)
+- npm (package.json workspaces)
+- Yarn (package.json workspaces)
+
+See [Monorepo documentation](docs/monorepo.md) for complete guide and examples.
+
 ## Programmatic API
 
 Use ClaudeLint programmatically in your Node.js applications, build tools, or editor extensions:
