@@ -41,6 +41,7 @@
     "// Tier 3: Optional": "",
     "vale": "^3.0.0",
     "black": "^24.0.0",
-    "ruff": "^0.1.0"
+    "ruff": "^0.1.0",
+    "claude-code-lint": "^0.2.0-beta.1"
   }
 }

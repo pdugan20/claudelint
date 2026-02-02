@@ -24,7 +24,7 @@ interface MarketplaceJson {
  * Sync version numbers across all project files
  */
 function syncVersions(): void {
-  const rootDir = path.resolve(__dirname, '..');
+  const rootDir = path.resolve(__dirname, '../..');
 
   // 1. Read primary version from package.json
   const packageJsonPath = path.join(rootDir, 'package.json');

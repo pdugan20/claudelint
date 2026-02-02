@@ -21,7 +21,7 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
     "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
-    "check:links": "node scripts/check-links.js",
+    "check:links": "node scripts/check/links.js",
     "check:links:all": "remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md",
     "docs:generate": "ts-node scripts/generate/rule-docs.ts",
     "generate:rule-registry": "ts-node scripts/generate/rule-registry.ts",
@@ -58,10 +58,8 @@
     "release:patch": "release-it patch",
     "release:minor": "release-it minor",
     "release:major": "release-it major",
-    "sync:versions": "ts-node scripts/sync-versions.ts",
-    "sync:versions:check": "ts-node scripts/check/version-sync.ts",
-    "migrate:name": "ts-node scripts/migrate-package-name.ts",
-    "migrate:name:dry": "ts-node scripts/migrate-package-name.ts --dry-run"
+    "sync:versions": "ts-node scripts/util/sync-versions.ts",
+    "sync:versions:check": "ts-node scripts/check/version-sync.ts"
   },
   "lint-staged": {
     "src/**/*.ts": [
