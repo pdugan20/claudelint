@@ -8,6 +8,8 @@
 
 Systematic audit of all claudelint schema validators against official Claude Code documentation to identify discrepancies and required updates.
 
+**Schema Registry**: All schemas tracked in `src/schemas/schema-registry.ts` with official URLs, verification status, and sync dates.
+
 ## Schema Validators Inventory
 
 ### In src/validators/schemas.ts
@@ -400,16 +402,26 @@ export const MarketplaceMetadataSchema = z.object({
 
 ### Official Documentation URLs
 
+**JSON Schema URLs** (machine-readable):
+- Settings Schema: https://json.schemastore.org/claude-code-settings.json
+
+**Documentation URLs** (human-readable specs):
 - Plugin Reference: https://code.claude.com/docs/en/plugins-reference
 - Skills: https://code.claude.com/docs/en/skills
-- Settings Schema: https://json.schemastore.org/claude-code-settings.json
+- Hooks: https://code.claude.com/docs/en/hooks
+- MCP: https://code.claude.com/docs/en/mcp
+- Settings: https://code.claude.com/docs/en/settings
+- Plugin Marketplaces: https://code.claude.com/docs/en/plugin-marketplaces
 - Full Docs Index: https://code.claude.com/docs/llms.txt
+
+**All URLs centralized in**: `src/schemas/schema-registry.ts`
 
 ### Internal Files
 
+- **Schema registry**: `src/schemas/schema-registry.ts` - Centralized tracking of all schemas
 - All schemas: `src/validators/schemas.ts`
 - Frontmatter schemas: `src/schemas/*.schema.ts`
-- Schema sync script: Check `npm run check:schema-sync`
+- Schema sync script: `scripts/check/schema-sync.ts` (run via `npm run check:schema-sync`)
 
 ---
 
