@@ -242,7 +242,7 @@ if (info.ignored) {
   console.log('File is ignored');
 } else {
   console.log('Validators:', info.validators);
-  // ['ClaudeMdValidator', 'BaseValidator', ...]
+  // ['ClaudeMdValidator', 'FileValidator', ...]
 }
 ```
 

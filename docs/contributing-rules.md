@@ -453,10 +453,10 @@ async validate(context: ValidationContext): Promise<ValidationResult> {
 
 ```typescript
 // src/validators/my-validator.ts
-import { BaseValidator } from './base-validator';
+import { FileValidator } from './base-validator';
 import { executeRulesForCategory } from '../utils/execute-rules';
 
-export class MyValidator extends BaseValidator {
+export class MyValidator extends FileValidator {
   constructor() {
     super({
       id: 'my-validator',

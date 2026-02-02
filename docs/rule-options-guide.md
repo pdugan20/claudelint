@@ -389,7 +389,7 @@ See complete working examples:
 
 ## API Reference
 
-### BaseValidator Methods
+### FileValidator Methods
 
 ```typescript
 protected setCurrentFile(filePath: string): void

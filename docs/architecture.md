@@ -108,7 +108,7 @@ export const rule: Rule = {
 - **10 validators** (one per category: ClaudeMdValidator, SkillsValidator, etc.)
 - **Not user-facing** - Users interact with rules, not validators
 - **Implementation detail** - Orchestrate file discovery, parsing, rule execution
-- **Extend BaseValidator** - Share common validation infrastructure
+- **Extend FileValidator** - Share common validation infrastructure
 
 **Validator Responsibilities:**
 
@@ -121,7 +121,7 @@ export const rule: Rule = {
 
 ```typescript
 // src/validators/skills.ts
-export class SkillsValidator extends BaseValidator {
+export class SkillsValidator extends FileValidator {
   async validate(): Promise<ValidationResult> {
     const files = await this.findSkillFiles();
     const rules = this.getRulesForCategory('Skills');
@@ -157,7 +157,7 @@ export class SkillsValidator extends BaseValidator {
 
 **Before Phase 5 (Validator-Centric):**
 
-- Contributors extended `BaseValidator` classes
+- Contributors extended `FileValidator` classes
 - Validators contained validation logic
 - Heavy composition patterns required
 - Plugin system exported validators
@@ -466,10 +466,10 @@ claudelint/
 
 ### Validators
 
-All validators extend a common `BaseValidator` class:
+All validators extend a common `FileValidator` class:
 
 ```typescript
-abstract class BaseValidator {
+abstract class FileValidator {
   abstract validate(): ValidationResult;
   protected reportError(message: string, location?: Location): void;
   protected reportWarning(message: string, location?: Location): void;
@@ -754,7 +754,7 @@ Target performance (Phase 7):
 
 The architecture supports:
 
-1. **Custom validators** - Extend BaseValidator for project-specific Claude rules
+1. **Custom validators** - Extend FileValidator for project-specific Claude rules
 2. **Custom rules** - Configure via `.claudelintrc`
 3. **Plugins** - Add validators via plugins (future)
 4. **Tool integration** - Use alongside markdownlint, prettier, Vale, etc.
@@ -945,7 +945,7 @@ Plugin rules can be added by third-party packages.
 Validators use the Rule Registry when reporting errors:
 
 ```typescript
-class ClaudeMdValidator extends BaseValidator {
+class ClaudeMdValidator extends FileValidator {
   validate() {
     if (fileSize > 40000) {
       // Look up rule metadata
@@ -1214,7 +1214,7 @@ class ValidatorRegistry {
     this.validators.set(metadata.id, metadata);
   }
 
-  static create(id: string, options: any): BaseValidator {
+  static create(id: string, options: any): FileValidator {
     const metadata = this.validators.get(id);
     return new metadata.constructor(options);
   }
@@ -1231,7 +1231,7 @@ Validators register themselves at module load:
 
 ```typescript
 // src/validators/claude-md.ts
-export class ClaudeMdValidator extends BaseValidator {
+export class ClaudeMdValidator extends FileValidator {
   // ... implementation ...
 }
 
@@ -1332,7 +1332,7 @@ type ComposableValidator<T> = (
 interface ValidationContext {
   filePath?: string;
   line?: number;
-  options: BaseValidatorOptions;
+  options: FileValidatorOptions;
   state?: Map<string, unknown>;
 }
 
@@ -1473,12 +1473,12 @@ const validateSettings = compose(
 );
 ```
 
-### Integration with BaseValidator
+### Integration with FileValidator
 
 Composable validators integrate seamlessly with existing validators:
 
 ```typescript
-class SkillsValidator extends BaseValidator {
+class SkillsValidator extends FileValidator {
   async validate() {
     // Use composition framework for frontmatter
     const frontmatterResult = await validateSkillFrontmatter(
@@ -1503,7 +1503,7 @@ class SkillsValidator extends BaseValidator {
 **Before (Monolithic):**
 
 ```typescript
-class SkillsValidator extends BaseValidator {
+class SkillsValidator extends FileValidator {
   private validateFrontmatter(fm: any) {
     if (!fm.name) {
       this.reportError('Missing name');
@@ -1534,7 +1534,7 @@ const validateFrontmatter = objectValidator({
   // Clear, declarative validation
 });
 
-class SkillsValidator extends BaseValidator {
+class SkillsValidator extends FileValidator {
   async validateFrontmatter(fm: any, filePath: string) {
     const result = await validateFrontmatter(fm, {
       filePath,
@@ -1559,7 +1559,7 @@ const validateProjectId = compose(
   regex(/^PROJ-\d+$/, 'Must be format PROJ-<number>')
 );
 
-export class CustomValidator extends BaseValidator {
+export class CustomValidator extends FileValidator {
   async validate() {
     const result = await validateProjectId(
       this.value,
@@ -1644,7 +1644,7 @@ import './settings';
 
 // Each validator registers itself
 // src/validators/skills.ts
-export class SkillsValidator extends BaseValidator {
+export class SkillsValidator extends FileValidator {
   // Implementation
 }
 
@@ -1716,7 +1716,7 @@ const validateSkillName = compose(
   regex(/^[a-z0-9-]+$/, 'Must be lowercase with hyphens')
 );
 
-export class SkillsValidator extends BaseValidator {
+export class SkillsValidator extends FileValidator {
   async validate() {
     const files = await this.findSkillFiles();
 
