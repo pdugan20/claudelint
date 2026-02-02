@@ -20,6 +20,7 @@ This document tracks the multi-phase project to improve GitHub automation, updat
 | 7 | Create GitHub repository and push code | [PENDING] Pending | High | Push to GitHub, then run label script |
 | 8 | Fix 171 TypeScript-ESLint violations | [COMPLETE] Complete | High | All type safety errors fixed, tests passing |
 | 9 | Fix Settings schema to match official Claude Code format | [COMPLETE] Complete | **CRITICAL** | Schema was completely wrong - fixed all files |
+| 10 | Add schema sync verification tooling | [COMPLETE] Complete | High | Prevents future schema drift from official specs |
 
 ## Task Details
 
@@ -766,5 +767,80 @@ permissions: {
 - All 19 settings rule tests passing
 - Settings schema now matches official Claude Code format from https://json.schemastore.org/claude-code-settings.json
 - `.claude/settings.local.json` now validates correctly
+
+---
+
+### Task 10: Add Schema Sync Verification Tooling [COMPLETE]
+
+**Status:** Complete
+
+**Problem:**
+
+After discovering our settings schema was completely wrong (Task 9), we need tooling to prevent this from happening again. We need a way to verify our Zod schemas match the official Claude Code schemas from schemastore.org.
+
+**Solution Implemented:**
+
+Created comprehensive schema synchronization verification system using Option C2 (Hybrid with verification script):
+
+**Components Added:**
+
+1. **Schema Sync Verification Script** (`scripts/check/schema-sync.ts`)
+   - Fetches official schema from https://json.schemastore.org/claude-code-settings.json
+   - Validates test cases against both our Zod schema and official JSON schema
+   - Reports any differences between schemas (drift detection)
+   - 8 test cases covering valid/invalid scenarios
+   - Uses ajv + ajv-formats for JSON Schema validation
+
+2. **npm Script** (`npm run check:schema-sync`)
+   - Easy command to verify schema sync
+   - Should be run before releases
+   - Exit code 1 if drift detected
+
+3. **Updated Hooks Schema**
+   - Fixed hooks format: array → object with event keys
+   - Added `SettingsHooksSchema` for settings.json hooks
+   - Kept `HookSchema` for hooks.json files (different format)
+   - Added `SettingsHookSchema` and `SettingsHookMatcherSchema`
+
+4. **Hooks Validation**
+   - Added `validateSettingsHooks()` helper function
+   - Validates event names (PreToolUse, PostToolUse, etc.)
+   - Validates hook types (command, prompt)
+   - Validates required fields for each type
+   - Validates timeout values (must be positive)
+   - Validates mutual exclusivity (can't have both command and prompt)
+
+5. **Documentation**
+   - Added schema source comments in `src/validators/schemas.ts`
+   - Links to official schema URL
+   - Instructions to run `npm run check:schema-sync`
+
+**Files Changed:**
+
+- `scripts/check/schema-sync.ts` (new)
+- `src/validators/schemas.ts` (hooks schema fix + docs)
+- `src/utils/validators/helpers.ts` (validateSettingsHooks added)
+- `src/validators/settings.ts` (hooks validation restored)
+- `tests/validators/settings.test.ts` (updated for new format)
+- `package.json` (added ajv dependencies and npm script)
+
+**Verification:**
+
+- All schema sync tests passing (8/8)
+- All settings validator tests passing (5/5)
+- All 146 test suites passing
+- Build successful with no TypeScript errors
+- Schema matches official Claude Code format
+
+**Impact:**
+
+- Prevents schema drift from happening again
+- Provides clear error messages for hooks validation
+- Consistent validation across settings.json and hooks.json
+- Can be added to CI/CD pipeline if desired
+- Run before releases to verify schemas are in sync
+
+**Started:** 2026-02-01
+**Completed:** 2026-02-01
 
 ---
