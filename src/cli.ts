@@ -25,8 +25,8 @@ import { registerCacheClearCommand } from './cli/commands/cache-clear';
 
 // Read version from package.json
 const packageJsonPath = join(__dirname, '../package.json');
-const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-const version = packageJson.version;
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as { version: string };
+const version: string = packageJson.version;
 
 // Create Commander program
 const program = new Command();

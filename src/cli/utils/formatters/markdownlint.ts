@@ -52,7 +52,7 @@ export async function checkMarkdownlint(
   if (existsSync(configPath)) {
     try {
       const configContent = readFileSync(configPath, 'utf-8');
-      config = JSON.parse(configContent);
+      config = JSON.parse(configContent) as markdownlint.Configuration;
     } catch {
       // If config file is invalid, fall back to defaults
     }

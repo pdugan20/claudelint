@@ -40,6 +40,9 @@ export interface WorkspaceInfo {
  * ```
  */
 export async function findWorkspaceRoot(startDir: string = process.cwd()): Promise<string | null> {
+  // Maintain async for API compatibility
+  await Promise.resolve();
+
   let currentDir = startDir;
   const root = dirname(startDir).split('/')[0] + '/'; // File system root (e.g., '/')
 
@@ -261,6 +264,7 @@ async function expandWorkspaceGlobs(patterns: string[], root: string): Promise<s
     // glob doesn't have onlyDirectories option, so we check manually
     const dirs = matches.filter((match) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const fs = require('fs') as typeof import('fs');
         return fs.statSync(match).isDirectory();
       } catch {

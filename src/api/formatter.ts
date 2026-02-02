@@ -95,9 +95,9 @@ async function loadCustomFormatter(filePath: string, cwd: string): Promise<Forma
   }
 
   // Import the formatter module
-  let formatterModule;
+  let formatterModule: { default?: Formatter } | Formatter;
   try {
-    formatterModule = await import(resolvedPath);
+    formatterModule = (await import(resolvedPath)) as { default?: Formatter } | Formatter;
   } catch (error) {
     throw new Error(
       `Failed to load formatter from ${resolvedPath}: ${error instanceof Error ? error.message : String(error)}`
@@ -105,10 +105,11 @@ async function loadCustomFormatter(filePath: string, cwd: string): Promise<Forma
   }
 
   // Extract formatter (handle both default and named exports)
-  const formatter = formatterModule.default || formatterModule;
+  const formatter: unknown =
+    'default' in formatterModule ? formatterModule.default : formatterModule;
 
   // Validate formatter interface
-  if (!formatter || typeof formatter.format !== 'function') {
+  if (!isFormatter(formatter)) {
     throw new Error(
       `Invalid formatter: ${resolvedPath} must export an object with a format() method`
     );

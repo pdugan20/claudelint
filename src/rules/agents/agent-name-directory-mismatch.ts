@@ -10,6 +10,7 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { extractFrontmatter } from '../../utils/formats/markdown';
 import { getParentDirectoryName } from '../../utils/filesystem/paths';
+import { isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
@@ -34,7 +35,7 @@ export const rule: Rule = {
 
     const { frontmatter } = extractFrontmatter(fileContent);
 
-    if (!frontmatter || !frontmatter.name) {
+    if (!frontmatter || !frontmatter.name || !isString(frontmatter.name)) {
       return; // Missing name handled by agent-name rule
     }
 
@@ -42,7 +43,7 @@ export const rule: Rule = {
 
     if (frontmatter.name !== dirName) {
       context.report({
-        message: `Agent name "${String(frontmatter.name)}" does not match directory name "${dirName}"`,
+        message: `Agent name "${frontmatter.name}" does not match directory name "${dirName}"`,
       });
     }
   },

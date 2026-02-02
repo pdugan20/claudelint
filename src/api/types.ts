@@ -170,9 +170,7 @@ export interface ClaudeLintOptions {
 /**
  * Options for linting files
  */
-export interface LintOptions extends ClaudeLintOptions {
-  // Inherits all ClaudeLintOptions
-}
+export type LintOptions = ClaudeLintOptions;
 
 /**
  * Options for linting text content

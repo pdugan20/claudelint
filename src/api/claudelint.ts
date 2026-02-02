@@ -34,6 +34,11 @@ import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/ty
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
+import { minimatch } from 'minimatch';
+import { RuleRegistry } from '../utils/rules/registry';
+import { buildLintMessage } from './message-builder';
+// @ts-expect-error - JSON import without assertions for Node.js compatibility
+import packageJson from '../../package.json';
 
 /**
  * Main class for linting Claude Code projects programmatically
@@ -232,6 +237,7 @@ export class ClaudeLint {
   async lintText(code: string, options: LintTextOptions = {}): Promise<LintResult[]> {
     const { writeFileSync, unlinkSync, mkdirSync } = await import('fs');
     const { tmpdir } = await import('os');
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { join } = await import('path');
     const { randomBytes } = await import('crypto');
 
@@ -354,9 +360,6 @@ export class ClaudeLint {
     }
 
     // Check if file matches any ignore pattern
-    // Use synchronous minimatch since this is a simple check
-    const minimatch = require('minimatch').minimatch as (path: string, pattern: string, options?: { dot?: boolean }) => boolean;
-
     return this.config.ignorePatterns.some((pattern) =>
       minimatch(filePath, pattern, { dot: true })
     );
@@ -406,8 +409,6 @@ export class ClaudeLint {
    * ```
    */
   getRules(): Map<string, RuleMetadata> {
-    // Import RuleRegistry using require with type assertion
-    const { RuleRegistry } = require('../utils/rules/registry') as { RuleRegistry: { getAllRules(): Array<{ meta: RuleMetadata }> } };
     const metaMap = new Map<string, RuleMetadata>();
 
     // Get all registered rules
@@ -433,8 +434,6 @@ export class ClaudeLint {
    * ```
    */
   getRulesMetaForResults(results: LintResult[]): Map<string, RuleMetadata> {
-    // Import RuleRegistry using require with type assertion
-    const { RuleRegistry } = require('../utils/rules/registry') as { RuleRegistry: { get(id: string): { meta: RuleMetadata } | undefined } };
     const metaMap = new Map<string, RuleMetadata>();
 
     // Extract unique rule IDs from all results
@@ -563,17 +562,17 @@ export class ClaudeLint {
    * Find the configuration file starting from a directory
    *
    * @param cwd - Directory to start search from
-   * @returns Promise resolving to config file path or null
+   * @returns Config file path or null
    *
    * @example
    * ```typescript
-   * const configPath = await ClaudeLint.findConfigFile(process.cwd());
+   * const configPath = ClaudeLint.findConfigFile(process.cwd());
    * if (configPath) {
    *   console.log(`Using config: ${configPath}`);
    * }
    * ```
    */
-  static async findConfigFile(cwd: string): Promise<string | null> {
+  static findConfigFile(cwd: string): string | null {
     return findConfigFile(cwd);
   }
 
@@ -588,9 +587,7 @@ export class ClaudeLint {
    * ```
    */
   static getVersion(): string {
-    // Read from package.json with type assertion
-    const packageJson = require('../../package.json') as { version: string };
-    return packageJson.version;
+    return (packageJson as { version: string }).version;
   }
 
   // Private methods
@@ -875,7 +872,6 @@ export class ClaudeLint {
         // Check if this fix should be applied (if fix is a predicate function)
         if (typeof this.options.fix === 'function') {
           // Convert to LintMessage to check predicate
-          const { buildLintMessage } = require('./message-builder') as { buildLintMessage: (error: ValidationError, severity: 'error' | 'warning') => LintMessage };
           const lintMessage = buildLintMessage(error, 'error');
           if (this.options.fix(lintMessage)) {
             autoFixes.push(error.autoFix);
@@ -891,7 +887,6 @@ export class ClaudeLint {
         // Check if this fix should be applied (if fix is a predicate function)
         if (typeof this.options.fix === 'function') {
           // Convert to LintMessage to check predicate
-          const { buildLintMessage } = require('./message-builder') as { buildLintMessage: (warning: ValidationError, severity: 'error' | 'warning') => LintMessage };
           const lintMessage = buildLintMessage(warning, 'warning');
           if (this.options.fix(lintMessage)) {
             autoFixes.push(warning.autoFix);

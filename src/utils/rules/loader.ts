@@ -83,7 +83,7 @@ export class CustomRuleLoader {
       await Promise.resolve();
 
       // Import the rule file
-
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const ruleModule = require(filePath) as { rule?: Rule; default?: { rule?: Rule } };
 
       // Handle both CJS and ESM exports
@@ -127,7 +127,7 @@ export class CustomRuleLoader {
 
       // Register rule (with type assertion since custom rule IDs aren't in the RuleId union)
       this.loadedRules.set(rule.meta.id, rule);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
       RuleRegistry.register(rule as any);
 
       return {
@@ -169,7 +169,7 @@ export class CustomRuleLoader {
           }
         }
       }
-    } catch (error) {
+    } catch {
       // Directory not accessible, skip silently
     }
 

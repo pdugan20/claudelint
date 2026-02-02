@@ -18,9 +18,9 @@
  * // Use config safely
  * if (config.servers) { ... }
  */
-export function safeParseJSON(content: string): any | null {
+export function safeParseJSON(content: string): unknown {
   try {
-    return JSON.parse(content);
+    return JSON.parse(content) as unknown;
   } catch {
     return null;
   }
