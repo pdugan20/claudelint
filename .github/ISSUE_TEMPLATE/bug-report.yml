@@ -1,0 +1,130 @@
+name: Bug Report
+description: Report a problem with claudelint
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please fill out the information below to help us reproduce and fix the issue.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched for existing issues
+          required: true
+        - label: I am using the latest version of claudelint
+          required: true
+        - label: I have read the documentation
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: claudelint version
+      description: Output of `claudelint --version` or package.json version
+      placeholder: "0.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: Output of `node --version`
+      placeholder: "v20.10.0"
+    validations:
+      required: true
+
+  - type: input
+    id: npm-version
+    attributes:
+      label: npm version
+      description: Output of `npm --version`
+      placeholder: "10.2.5"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of the bug
+      placeholder: What happened? What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Create a CLAUDE.md file with...
+        2. Run `claudelint check-all`
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened (include error messages if applicable)
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Your .claudelintrc.json or relevant configuration
+      render: json
+      placeholder: |
+        {
+          "rules": {
+            "size-error": "error"
+          }
+        }
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Log Output
+      description: Please copy and paste any relevant log output (use `--verbose` for detailed logs)
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem (screenshots, links, etc.)
+
+  - type: checkboxes
+    id: participate
+    attributes:
+      label: Participation
+      options:
+        - label: I am willing to submit a pull request to fix this issue

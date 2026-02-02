@@ -122,7 +122,7 @@ export class SkillsValidator extends FileValidator {
         // Rules filter themselves based on file type (SKILL.md vs script files)
         await this.executeRulesForCategory('Skills', scriptPath, content);
       }
-    } catch (error) {
+    } catch {
       // Intentionally ignore directory/file read errors here
       // Best practices checks are optional - if we can't read files,
       // we skip these checks rather than failing validation
@@ -144,7 +144,7 @@ export class SkillsValidator extends FileValidator {
         // Rules filter themselves based on file type (SKILL.md vs script files)
         await this.executeRulesForCategory('Skills', scriptPath, content);
       }
-    } catch (error) {
+    } catch {
       // Directory read error - ignore
     }
   }

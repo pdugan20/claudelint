@@ -1,0 +1,98 @@
+# Codecov Configuration
+# https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+        if_ci_failed: error
+
+    patch:
+      default:
+        target: 80%
+        threshold: 5%
+
+# Files and directories to ignore in coverage reports
+ignore:
+  # Test fixtures and test data
+  - "tests/fixtures/**"
+  - "tests/__temp__/**"
+  - "tests/**/*.fixture.ts"
+
+  # Generated code
+  - "src/rules/rule-ids.ts"
+  - "src/rules/index.ts"
+
+  # Scripts and tooling
+  - "scripts/**"
+  - "bin/**"
+
+  # Examples and documentation
+  - "examples/**"
+  - "docs/**"
+
+  # Type definitions
+  - "**/*.d.ts"
+
+  # Build output
+  - "dist/**"
+  - "coverage/**"
+  - "node_modules/**"
+
+  # Configuration files
+  - "*.config.js"
+  - "*.config.ts"
+  - ".eslintrc.js"
+  - "jest.config.js"
+
+comment:
+  layout: "reach,diff,flags,tree,footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+
+# GitHub Checks
+github_checks:
+  annotations: true
+
+# Flag management for different test types
+flags:
+  unittests:
+    paths:
+      - src/
+    carryforward: true
+
+# Component-based coverage tracking
+component_management:
+  individual_components:
+    - component_id: rules
+      name: Rules
+      paths:
+        - src/rules/**
+
+    - component_id: validators
+      name: Validators
+      paths:
+        - src/validators/**
+
+    - component_id: cli
+      name: CLI
+      paths:
+        - src/cli/**
+
+    - component_id: config
+      name: Configuration
+      paths:
+        - src/config/**
+
+    - component_id: schemas
+      name: Schemas
+      paths:
+        - src/schemas/**

@@ -1,0 +1,33 @@
+# Code Owners for claudelint
+# These owners will be requested for review when someone opens a pull request
+
+# Default owner for everything in the repo
+* @pdugan20
+
+# Documentation
+/docs/ @pdugan20
+*.md @pdugan20
+
+# Rules
+/src/rules/ @pdugan20
+
+# Core validators
+/src/validators/ @pdugan20
+
+# CLI
+/src/cli/ @pdugan20
+
+# Configuration and schemas
+/src/config/ @pdugan20
+/src/schemas/ @pdugan20
+
+# CI/CD and GitHub workflows
+/.github/ @pdugan20
+
+# Tests
+/tests/ @pdugan20
+
+# Package configuration
+package.json @pdugan20
+tsconfig.json @pdugan20
+.eslintrc.js @pdugan20

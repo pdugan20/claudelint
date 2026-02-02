@@ -11,9 +11,7 @@ import '../rules';
  * Options specific to CLAUDE.md validator
  * Extends BaseValidatorOptions with no additional options
  */
-export interface ClaudeMdValidatorOptions extends BaseValidatorOptions {
-  // No additional options specific to CLAUDE.md validator
-}
+export type ClaudeMdValidatorOptions = BaseValidatorOptions;
 
 /**
  * Validates CLAUDE.md files for size, format, and structure

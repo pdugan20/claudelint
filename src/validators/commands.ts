@@ -7,7 +7,7 @@ import '../rules';
 /**
  * Options specific to Commands validator
  */
-export interface CommandsValidatorOptions extends BaseValidatorOptions {}
+export type CommandsValidatorOptions = BaseValidatorOptions;
 
 /**
  * Validates deprecated Commands usage and suggests migration to Skills

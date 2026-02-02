@@ -1,8 +1,13 @@
 # claudelint
 
 [![CI Status](https://github.com/pdugan20/claudelint/workflows/CI/badge.svg)](https://github.com/pdugan20/claudelint/actions)
-[![npm version](https://badge.fury.io/js/%40pdugan20%2Fclaudelint.svg)](https://www.npmjs.com/package/claudelint)
+[![npm version](https://badge.fury.io/js/claude-code-lint.svg)](https://www.npmjs.com/package/claude-code-lint)
+[![npm downloads](https://img.shields.io/npm/dm/claude-code-lint.svg)](https://www.npmjs.com/package/claude-code-lint)
+[![codecov](https://codecov.io/gh/pdugan20/claudelint/branch/main/graph/badge.svg)](https://codecov.io/gh/pdugan20/claudelint)
+[![Node.js Version](https://img.shields.io/node/v/claude-code-lint.svg)](https://nodejs.org)
+[![Bundle Size](https://img.shields.io/bundlephobia/min/claude-code-lint.svg)](https://bundlephobia.com/package/claude-code-lint)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/pdugan20/claudelint.svg)](https://github.com/pdugan20/claudelint/stargazers)
 
 A comprehensive linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
 

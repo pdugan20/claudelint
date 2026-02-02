@@ -1,0 +1,136 @@
+name: New Rule Request
+description: Suggest a new validation rule for claudelint
+labels: ["enhancement", "new-rule", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new rule! Please provide as much detail as possible.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched for existing rule requests
+          required: true
+        - label: This rule applies to Claude Code projects specifically
+          required: true
+        - label: This rule does not duplicate existing functionality (markdownlint, prettier, etc.)
+          required: true
+
+  - type: input
+    id: rule-name
+    attributes:
+      label: Proposed Rule Name
+      description: Suggested name for the rule (e.g., "skill-missing-timeout")
+      placeholder: "category-rule-description"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Rule Category
+      description: Which validator category does this rule belong to?
+      options:
+        - CLAUDE.md
+        - Skills
+        - Settings
+        - Hooks
+        - MCP Servers
+        - LSP Servers
+        - Plugins
+        - Agents
+        - Output Styles
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested Severity
+      description: What should the default severity be?
+      options:
+        - error
+        - warn
+        - off
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Rule Description
+      description: What should this rule check for?
+      placeholder: This rule should validate that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this rule important? What problems does it prevent?
+      placeholder: This rule helps prevent...
+    validations:
+      required: true
+
+  - type: textarea
+    id: valid-examples
+    attributes:
+      label: Valid Examples
+      description: Examples of code/configuration that should PASS this rule
+      render: markdown
+      placeholder: |
+        ```yaml
+        # This should pass
+        timeout: 5000
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: invalid-examples
+    attributes:
+      label: Invalid Examples
+      description: Examples of code/configuration that should FAIL this rule
+      render: markdown
+      placeholder: |
+        ```yaml
+        # This should fail
+        # Missing timeout field
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Rule Options
+      description: Should this rule have configurable options?
+      placeholder: |
+        - maxTimeout: 10000
+        - minTimeout: 1000
+
+  - type: textarea
+    id: related
+    attributes:
+      label: Related Rules
+      description: Are there existing rules that are similar or related?
+
+  - type: checkboxes
+    id: autofix
+    attributes:
+      label: Auto-fix
+      description: Can this rule be auto-fixed?
+      options:
+        - label: This rule can be auto-fixed
+
+  - type: checkboxes
+    id: participate
+    attributes:
+      label: Participation
+      options:
+        - label: I am willing to implement this rule

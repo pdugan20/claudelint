@@ -12,7 +12,7 @@ const LSPTransportType = z.enum(['stdio', 'socket']);
 /**
  * LSP server configuration (inline)
  */
-const LSPServerInlineSchema = z.object({
+const _LSPServerInlineSchema = z.object({
   command: z.string().min(1, 'Command cannot be empty'),
   args: z.array(z.string()).optional(),
   env: z.record(z.string()).optional(),
@@ -22,7 +22,7 @@ const LSPServerInlineSchema = z.object({
 /**
  * LSP server configuration (file reference)
  */
-const LSPServerFileSchema = z.object({
+const _LSPServerFileSchema = z.object({
   configFile: z.string().min(1, 'Config file path cannot be empty'),
 });
 

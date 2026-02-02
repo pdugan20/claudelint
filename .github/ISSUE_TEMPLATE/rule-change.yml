@@ -1,0 +1,107 @@
+name: Rule Change Request
+description: Suggest changes to an existing validation rule
+labels: ["enhancement", "rule-change", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting improvements to an existing rule!
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched for existing issues about this rule
+          required: true
+        - label: I have read the rule documentation
+          required: true
+
+  - type: input
+    id: rule-name
+    attributes:
+      label: Rule Name
+      description: Which rule should be changed?
+      placeholder: "skill-missing-timeout"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: change-type
+    attributes:
+      label: Type of Change
+      options:
+        - Bug fix (rule incorrectly reports errors/warnings)
+        - Enhancement (improve existing behavior)
+        - New option (add configuration option)
+        - Severity change (change default severity level)
+        - Performance improvement
+        - Documentation update
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: What does the rule currently do?
+      placeholder: Currently, the rule...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-behavior
+    attributes:
+      label: Proposed Behavior
+      description: What should the rule do instead?
+      placeholder: The rule should...
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this change necessary or beneficial?
+      placeholder: This change would help...
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples
+      description: Provide examples that illustrate the issue or improvement
+      render: markdown
+      placeholder: |
+        **Current (incorrect):**
+        ```yaml
+        # Currently reports error
+        timeout: 5000
+        ```
+
+        **Proposed (correct):**
+        ```yaml
+        # Should not report error
+        timeout: 5000
+        ```
+
+  - type: textarea
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: Would this change break existing behavior? How would users need to adapt?
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches did you consider?
+
+  - type: checkboxes
+    id: participate
+    attributes:
+      label: Participation
+      options:
+        - label: I am willing to submit a pull request for this change
