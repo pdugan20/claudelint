@@ -261,7 +261,7 @@ async function expandWorkspaceGlobs(patterns: string[], root: string): Promise<s
     // glob doesn't have onlyDirectories option, so we check manually
     const dirs = matches.filter((match) => {
       try {
-        const fs = require('fs');
+        const fs = require('fs') as typeof import('fs');
         return fs.statSync(match).isDirectory();
       } catch {
         return false;

@@ -83,19 +83,20 @@ export class CustomRuleLoader {
       await Promise.resolve();
 
       // Import the rule file
-       
-      const ruleModule = require(filePath) as { rule?: Rule };
+
+      const ruleModule = require(filePath) as { rule?: Rule; default?: { rule?: Rule } };
+
+      // Handle both CJS and ESM exports
+      const rule = ruleModule.rule ?? ruleModule.default?.rule;
 
       // Validate exports 'rule'
-      if (!ruleModule.rule) {
+      if (!rule) {
         return {
           filePath,
           success: false,
           error: 'File must export a named "rule" object',
         };
       }
-
-      const rule = ruleModule.rule;
 
       // Validate implements Rule interface
       if (!this.isValidRule(rule)) {
