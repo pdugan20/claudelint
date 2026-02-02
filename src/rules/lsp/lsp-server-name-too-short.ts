@@ -12,7 +12,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
-import { hasProperty, isObject } from '../../utils/type-guards';
+import { isObject } from '../../utils/type-guards';
 import { z } from 'zod';
 
 /**
@@ -54,12 +54,12 @@ export const rule: Rule = {
     const minLength = ruleOptions?.minLength ?? 2;
 
     const config = safeParseJSON(fileContent);
-    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
+    if (!isObject(config)) {
       return; // Invalid JSON handled by schema validation
     }
 
-    // Check each server name
-    for (const serverName of Object.keys(config.servers)) {
+    // Check each server name (servers are top-level keys)
+    for (const serverName of Object.keys(config)) {
       if (serverName.length < minLength) {
         context.report({
           message: `LSP server name "${serverName}" is too short (${serverName.length} characters). Use descriptive names like "typescript-language-server". (minimum: ${minLength})`,

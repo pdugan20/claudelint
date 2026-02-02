@@ -14,32 +14,29 @@ describe('lsp-invalid-transport', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: 'test',
-                transport: 'stdio',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              transport: 'stdio',
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: 'test',
-                transport: 'socket',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              transport: 'socket',
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: 'test',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
         },
@@ -48,11 +45,10 @@ describe('lsp-invalid-transport', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: 'test',
-                transport: 'http',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              transport: 'http',
             },
           }),
           errors: [{ message: 'Invalid transport type "http"' }],

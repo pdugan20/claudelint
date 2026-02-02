@@ -33,12 +33,12 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
+    if (!isObject(config)) {
       return; // Invalid JSON handled by schema validation
     }
 
-    // Check each server with inline command
-    for (const [serverName, serverConfig] of Object.entries(config.servers)) {
+    // Check each server with inline command (servers are top-level keys)
+    for (const [serverName, serverConfig] of Object.entries(config)) {
       if (!isObject(serverConfig)) {
         continue;
       }

@@ -14,10 +14,12 @@ describe('lsp-language-id-not-lowercase', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': 'typescript',
-              '.js': 'javascript',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': 'typescript',
+                '.js': 'javascript',
+              },
             },
           }),
         },
@@ -26,12 +28,14 @@ describe('lsp-language-id-not-lowercase', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': 'TypeScript',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': 'TypeScript',
+              },
             },
           }),
-          errors: [{ message: 'Language ID "TypeScript" for extension ".ts" should be lowercase' }],
+          errors: [{ message: 'Language ID "TypeScript" for extension ".ts"' }],
         },
       ],
     });

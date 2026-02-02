@@ -89,10 +89,15 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 
 ### 5. LSPConfigSchema
 
-**Location**: `src/schemas/lsp-config.schema.ts` (lines 90-93)
-**Official Source**: Language Server Protocol spec + Claude Code integration
-**Status**: NEEDS VERIFICATION - NEEDS VERIFICATION
-**Verification**: Manual - based on LSP spec + Claude Code docs
+**Location**: `src/schemas/lsp-config.schema.ts` (lines 33-36)
+**Official Source**: [https://code.claude.com/docs/en/plugins-reference#lsp-servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers)
+**Status**: SYNCED - SYNCED (fixed 2026-02-02)
+**Verification**: Manual JSON Schema + auto-generated comparison
+
+**CRITICAL DRIFT FOUND**: Entire schema structure was wrong!
+- **Wrong**: Had `{ servers: {...}, extensionMapping: {...} }` structure
+- **Correct**: Flat mapping `{ "server-name": { command, extensionToLanguage, ... } }`
+- **Fixed**: Complete restructure + removed configFile field + added 7 missing fields + updated 8 rules + deprecated 2 invalid rules
 
 **Sub-schemas**:
 - `LSPServerSchema` (lines 33-77)

@@ -14,30 +14,28 @@ describe('lsp-command-not-in-path', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: '/usr/local/bin/typescript-language-server',
-              },
+            'ts-server': {
+              command: '/usr/local/bin/typescript-language-server',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: './bin/typescript-language-server',
-              },
+            'ts-server': {
+              command: './bin/typescript-language-server',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                configFile: './lsp-config.json',
-              },
+            'ts-server': {
+              command: '/usr/bin/test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              configFile: './lsp-config.json',
             },
           }),
         },
@@ -46,10 +44,9 @@ describe('lsp-command-not-in-path', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                command: 'typescript-language-server --stdio',
-              },
+            'ts-server': {
+              command: 'typescript-language-server --stdio',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
           errors: [{ message: 'should be in PATH or use absolute path' }],

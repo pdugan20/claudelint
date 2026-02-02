@@ -14,10 +14,9 @@ describe('lsp-server-name-too-short', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'typescript-language-server': {
-                command: 'typescript-language-server',
-              },
+            'typescript-language-server': {
+              command: 'typescript-language-server',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
         },
@@ -25,17 +24,16 @@ describe('lsp-server-name-too-short', () => {
           filePath: '.claude/lsp.json',
           options: { minLength: 5 },
           content: JSON.stringify({
-            servers: {
-              'ts-ls': {
-                command: 'ts-ls',
-              },
+            'ts-ls': {
+              command: 'ts-ls',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
         },
         {
           filePath: 'other.json',
           content: JSON.stringify({
-            servers: { a: { command: 'test' } },
+            a: { command: 'test', extensionToLanguage: { '.ts': 'typescript' } },
           }),
         },
       ],
@@ -43,10 +41,9 @@ describe('lsp-server-name-too-short', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              a: {
-                command: 'test',
-              },
+            a: {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
           errors: [{ message: 'server name "a" is too short' }],
@@ -55,10 +52,9 @@ describe('lsp-server-name-too-short', () => {
           filePath: '.claude/lsp.json',
           options: { minLength: 10 },
           content: JSON.stringify({
-            servers: {
-              'short': {
-                command: 'test',
-              },
+            'short': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
           errors: [{ message: 'minimum: 10' }],

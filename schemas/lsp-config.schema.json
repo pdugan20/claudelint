@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/lsp-config.schema.json",
+  "title": "Claude Code LSP Configuration",
+  "description": "Schema for .lsp.json files that configure Language Server Protocol servers. Source: https://code.claude.com/docs/en/plugins-reference#lsp-servers",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["command", "extensionToLanguage"],
+    "properties": {
+      "command": {
+        "type": "string",
+        "description": "The LSP binary to execute (must be in PATH)",
+        "minLength": 1
+      },
+      "args": {
+        "type": "array",
+        "description": "Command-line arguments for the LSP server",
+        "items": {
+          "type": "string"
+        }
+      },
+      "transport": {
+        "type": "string",
+        "description": "Communication transport type",
+        "enum": ["stdio", "socket"],
+        "default": "stdio"
+      },
+      "env": {
+        "type": "object",
+        "description": "Environment variables to set when starting the server",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "extensionToLanguage": {
+        "type": "object",
+        "description": "Maps file extensions to language identifiers",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "propertyNames": {
+          "pattern": "^\\."
+        }
+      },
+      "initializationOptions": {
+        "type": "object",
+        "description": "Options passed to the server during initialization",
+        "additionalProperties": true
+      },
+      "settings": {
+        "type": "object",
+        "description": "Settings passed via workspace/didChangeConfiguration",
+        "additionalProperties": true
+      },
+      "workspaceFolder": {
+        "type": "string",
+        "description": "Workspace folder path for the server"
+      },
+      "startupTimeout": {
+        "type": "number",
+        "description": "Max time to wait for server startup (milliseconds)",
+        "minimum": 0
+      },
+      "shutdownTimeout": {
+        "type": "number",
+        "description": "Max time to wait for graceful shutdown (milliseconds)",
+        "minimum": 0
+      },
+      "restartOnCrash": {
+        "type": "boolean",
+        "description": "Whether to automatically restart the server if it crashes",
+        "default": false
+      },
+      "maxRestarts": {
+        "type": "number",
+        "description": "Maximum number of restart attempts before giving up",
+        "minimum": 0
+      }
+    }
+  }
+}

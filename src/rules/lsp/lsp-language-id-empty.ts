@@ -33,16 +33,30 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!hasProperty(config, 'extensionMapping') || !isObject(config.extensionMapping)) {
-      return; // No extension mapping or invalid JSON
+    if (!isObject(config)) {
+      return; // Invalid JSON
     }
 
-    // Check each language ID
-    for (const [extension, languageId] of Object.entries(config.extensionMapping)) {
-      if (!isString(languageId) || languageId.trim().length === 0) {
-        context.report({
-          message: `Language ID for extension "${extension}" cannot be empty.`,
-        });
+    // Check each server's extensionToLanguage mapping
+    for (const [serverName, serverConfig] of Object.entries(config)) {
+      if (!isObject(serverConfig)) {
+        continue;
+      }
+
+      if (
+        !hasProperty(serverConfig, 'extensionToLanguage') ||
+        !isObject(serverConfig.extensionToLanguage)
+      ) {
+        continue;
+      }
+
+      // Check each language ID in this server's mapping
+      for (const [extension, languageId] of Object.entries(serverConfig.extensionToLanguage)) {
+        if (!isString(languageId) || languageId.trim().length === 0) {
+          context.report({
+            message: `Language ID for extension "${extension}" in server "${serverName}" cannot be empty.`,
+          });
+        }
       }
     }
   },

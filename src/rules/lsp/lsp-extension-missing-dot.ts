@@ -33,16 +33,30 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!hasProperty(config, 'extensionMapping') || !isObject(config.extensionMapping)) {
-      return; // No extension mapping or invalid JSON
+    if (!isObject(config)) {
+      return; // Invalid JSON
     }
 
-    // Check each extension
-    for (const extension of Object.keys(config.extensionMapping)) {
-      if (!extension.startsWith('.')) {
-        context.report({
-          message: `Extension "${extension}" must start with a dot (e.g., ".ts").`,
-        });
+    // Check each server's extensionToLanguage mapping
+    for (const [serverName, serverConfig] of Object.entries(config)) {
+      if (!isObject(serverConfig)) {
+        continue;
+      }
+
+      if (
+        !hasProperty(serverConfig, 'extensionToLanguage') ||
+        !isObject(serverConfig.extensionToLanguage)
+      ) {
+        continue;
+      }
+
+      // Check each extension in this server's mapping
+      for (const extension of Object.keys(serverConfig.extensionToLanguage)) {
+        if (!extension.startsWith('.')) {
+          context.report({
+            message: `Extension "${extension}" in server "${serverName}" must start with a dot (e.g., ".ts").`,
+          });
+        }
       }
     }
   },

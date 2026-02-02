@@ -14,20 +14,20 @@ describe('lsp-config-file-not-json', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                configFile: './config.json',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              configFile: './config.json',
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                configFile: '/absolute/path/config.json',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              configFile: '/absolute/path/config.json',
             },
           }),
         },
@@ -36,10 +36,10 @@ describe('lsp-config-file-not-json', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {
-              'ts-server': {
-                configFile: './config.yaml',
-              },
+            'ts-server': {
+              command: 'test',
+              extensionToLanguage: { '.ts': 'typescript' },
+              configFile: './config.yaml',
             },
           }),
           errors: [{ message: 'should be a JSON file' }],

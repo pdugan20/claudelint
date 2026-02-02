@@ -14,9 +14,11 @@ describe('lsp-language-id-empty', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': 'typescript',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': 'typescript',
+              },
             },
           }),
         },
@@ -25,22 +27,26 @@ describe('lsp-language-id-empty', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': '',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': '',
+              },
             },
           }),
-          errors: [{ message: 'Language ID for extension ".ts" cannot be empty' }],
+          errors: [{ message: 'Language ID for extension ".ts"' }],
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': '   ',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': '   ',
+              },
             },
           }),
-          errors: [{ message: 'Language ID for extension ".ts" cannot be empty' }],
+          errors: [{ message: 'Language ID for extension ".ts"' }],
         },
       ],
     });

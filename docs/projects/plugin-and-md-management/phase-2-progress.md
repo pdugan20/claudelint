@@ -26,7 +26,7 @@ Report differences → Fix Zod
 
 ## Progress
 
-### Completed (4/8)
+### Completed (5/8)
 
 1. **PluginManifestSchema** [COMPLETE]
    - Manual reference: `schemas/plugin-manifest.schema.json`
@@ -58,6 +58,18 @@ Report differences → Fix Zod
    - **Impact**: Required complete restructure + fixing 13 validation rules + updating all tests
    - **Severity**: CRITICAL - validators were checking against wrong structure
 
+5. **LSPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
+   - Manual reference: `schemas/lsp-config.schema.json`
+   - Source: https://code.claude.com/docs/en/plugins-reference#lsp-servers
+   - Status: Fixed - ENTIRE STRUCTURE WAS WRONG
+   - **Drift**: Schema had wrong nesting + wrong field names + missing fields:
+     - Had: `{ servers: {...}, extensionMapping: {...} }`
+     - Should be: Flat `{ "server-name": { command, extensionToLanguage, ... } }`
+     - Missing 7 fields: initializationOptions, settings, workspaceFolder, startupTimeout, shutdownTimeout, restartOnCrash, maxRestarts
+     - Extra field: configFile (doesn't exist in official spec)
+   - **Impact**: Complete restructure + updated 8 rules + deprecated 2 invalid rules + fixed all tests
+   - **Severity**: CRITICAL - validators couldn't validate real .lsp.json files
+
 ### In Progress (0/8)
 4. **MCPConfigSchema** - Awaiting docs
 5. **LSPConfigSchema** - Awaiting docs
@@ -67,7 +79,7 @@ Report differences → Fix Zod
 
 ## Key Findings
 
-### Schema Drift Detected (4/4 schemas checked had drift!)
+### Schema Drift Detected (5/5 schemas checked had drift!)
 
 **SkillFrontmatterSchema** - Missing 4 fields (FIXED):
 
@@ -95,11 +107,21 @@ Report differences → Fix Zod
 | Wrong nesting          | Transport fields should be flat, not under `transport` wrapper         |
 | Structural mismatch    | Required complete schema redesign + fixing 13 validation rules + tests |
 
-**Drift Rate**: 100% of schemas checked so far had drift (4/4). This confirms the systematic verification is absolutely necessary.
+**LSPConfigSchema** - CRITICAL structural drift (FIXED):
+
+| Issue                        | Impact                                                                     |
+|:-----------------------------|:---------------------------------------------------------------------------|
+| Wrong nesting                | Had `servers` wrapper, should be flat mapping                              |
+| Wrong field name             | Had `extensionMapping` (global), should be `extensionToLanguage` per-server|
+| Missing 7 fields             | Missing timeout, restart, workspace, initialization, and settings options  |
+| Extra field                  | Had `configFile` which doesn't exist in official spec                      |
+| Structural mismatch          | Complete redesign + updated 8 rules + deprecated 2 rules + fixed all tests |
+
+**Drift Rate**: 100% of schemas checked so far had drift (5/5). This confirms the systematic verification is absolutely necessary.
 
 **Severity Breakdown**:
 - Minor drift (missing optional fields): SkillFrontmatterSchema (4 fields), HooksConfigSchema (2 fields)
-- **CRITICAL drift (wrong structure)**: MCPConfigSchema (entire schema restructured)
+- **CRITICAL drift (wrong structure)**: MCPConfigSchema, LSPConfigSchema (both completely restructured)
 
 ## Workflow Improvements
 

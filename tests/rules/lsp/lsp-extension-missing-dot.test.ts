@@ -14,17 +14,22 @@ describe('lsp-extension-missing-dot', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              '.ts': 'typescript',
-              '.js': 'javascript',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                '.ts': 'typescript',
+                '.js': 'javascript',
+              },
             },
           }),
         },
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: { '.ts': 'typescript' },
+            },
           }),
         },
       ],
@@ -32,12 +37,14 @@ describe('lsp-extension-missing-dot', () => {
         {
           filePath: '.claude/lsp.json',
           content: JSON.stringify({
-            servers: {},
-            extensionMapping: {
-              ts: 'typescript',
+            typescript: {
+              command: 'typescript-language-server',
+              extensionToLanguage: {
+                ts: 'typescript',
+              },
             },
           }),
-          errors: [{ message: 'Extension "ts" must start with a dot' }],
+          errors: [{ message: 'Extension "ts"' }],
         },
       ],
     });

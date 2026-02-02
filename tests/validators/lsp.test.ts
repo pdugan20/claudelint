@@ -18,11 +18,13 @@ describe('LSPValidator', () => {
   describe('Orchestration', () => {
     it('should validate valid LSP configuration', async () => {
       const filePath = await createLSPFile({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
-            args: ['--stdio'],
-            transport: 'stdio',
+        typescript: {
+          command: 'typescript-language-server',
+          args: ['--stdio'],
+          transport: 'stdio',
+          extensionToLanguage: {
+            '.ts': 'typescript',
+            '.tsx': 'typescriptreact',
           },
         },
       });

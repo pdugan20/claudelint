@@ -15,11 +15,12 @@ export const rule: Rule = {
   meta: {
     id: 'lsp-config-file-relative-path',
     name: 'LSP Config File Relative Path',
-    description: 'LSP configFile should use absolute or explicit relative paths',
+    description:
+      'LSP configFile should use absolute or explicit relative paths (DEPRECATED: configFile is not in official spec)',
     category: 'LSP',
     severity: 'warn',
     fixable: false,
-    deprecated: false,
+    deprecated: true,
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-config-file-relative-path.md',
@@ -33,12 +34,12 @@ export const rule: Rule = {
     }
 
     const config = safeParseJSON(fileContent);
-    if (!hasProperty(config, 'servers') || !isObject(config.servers)) {
+    if (!isObject(config)) {
       return; // Invalid JSON handled by schema validation
     }
 
-    // Check each server with configFile specified
-    for (const [serverName, serverConfig] of Object.entries(config.servers)) {
+    // Check each server with configFile specified (servers are top-level keys)
+    for (const [serverName, serverConfig] of Object.entries(config)) {
       if (!isObject(serverConfig)) {
         continue;
       }
