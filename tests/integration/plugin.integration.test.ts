@@ -20,7 +20,7 @@ describe('Plugin Integration Tests', () => {
       const plugin = JSON.parse(readFileSync(pluginJsonPath, 'utf-8'));
       const expectedSkills = [
         'validate',
-        'validate-claude-md',
+        'validate-agents-md',
         'validate-skills',
         'validate-settings',
         'validate-hooks',
@@ -50,7 +50,7 @@ describe('Plugin Integration Tests', () => {
   describe('Skills Validation', () => {
     const skills = [
       'validate',
-      'validate-claude-md',
+      'validate-agents-md',
       'validate-skills',
       'validate-settings',
       'validate-hooks',

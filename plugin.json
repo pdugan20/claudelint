@@ -14,7 +14,7 @@
   ],
   "skills": [
     "validate",
-    "validate-claude-md",
+    "validate-agents-md",
     "validate-skills",
     "validate-settings",
     "validate-hooks",

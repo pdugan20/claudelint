@@ -42,14 +42,10 @@ Sample CHANGELOG.md content:
 ```markdown
 # Changelog
 
-All notable changes to deploy will be documented in this file.
+All notable changes to this skill will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
 
 ## [1.0.0] - 2024-01-15
 
@@ -66,21 +62,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Create a CHANGELOG.md file in your skill directory:
 
 1. Create `CHANGELOG.md` in the skill directory
-2. Use Keep a Changelog format
+2. Use Keep a Changelog format (v1.1.0)
 3. Document all notable changes
 4. Link to semantic versioning
+
+A template is available at `.claude/skills/.templates/CHANGELOG.md` that you can copy.
 
 This rule is auto-fixable and will create a CHANGELOG.md template if run with the `--fix` flag.
 
 Example creation:
 
 ```bash
+# Copy from template
+cp .claude/skills/.templates/CHANGELOG.md .claude/skills/deploy/CHANGELOG.md
+
+# Or create manually
 cat > .claude/skills/deploy/CHANGELOG.md << 'EOF'
 # Changelog
 
-All notable changes to deploy will be documented in this file.
+All notable changes to this skill will be documented in this file.
 
-## [Unreleased]
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.0] - 2024-01-15
 
@@ -107,7 +110,8 @@ Consider disabling if your skill is in very early development (pre-alpha), you u
 
 - [Rule Implementation](../../src/rules/skills/skill-missing-changelog.ts)
 - [Rule Tests](../../tests/rules/skills/skill-missing-changelog.test.ts)
-- [Keep a Changelog](https://keepachangelog.com/)
+- [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+- [CHANGELOG Template](./../../../.claude/skills/.templates/CHANGELOG.md)
 
 ## Version
 

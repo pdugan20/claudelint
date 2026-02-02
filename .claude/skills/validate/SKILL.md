@@ -133,7 +133,7 @@ claudelint check-all --warnings-as-errors
 
 ## See Also
 
-- [validate-claude-md](../validate-claude-md/SKILL.md) - Validate only CLAUDE.md files
+- [validate-agents-md](../validate-agents-md/SKILL.md) - Validate only CLAUDE.md files
 - [validate-skills](../validate-skills/SKILL.md) - Validate only skills
 - [validate-settings](../validate-settings/SKILL.md) - Validate only settings
 - [format](../format/SKILL.md) - Format Claude files with prettier/markdownlint

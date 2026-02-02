@@ -488,7 +488,7 @@ Progress indicators automatically detect CI environments (GitHub Actions, GitLab
 /validate
 
 # Validate specific components
-/validate-claude-md
+/validate-agents-md
 /validate-skills
 /validate-settings
 ```

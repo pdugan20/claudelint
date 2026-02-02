@@ -120,7 +120,6 @@ This directory contains documentation for all 105 claudelint rules.
 - [skill-description](./skills/skill-description.md) - Skill description must be at least 10 characters, written in third person, with no XML tags
 - [skill-disallowed-tools](./skills/skill-disallowed-tools.md) - Skill disallowed-tools must be an array of tool names
 - [skill-eval-usage](./skills/skill-eval-usage.md) - Script uses eval/exec which can execute arbitrary code
-- [skill-large-reference-no-toc](./skills/skill-large-reference-no-toc.md) - Large SKILL.md files should include a table of contents
 - [skill-missing-changelog](./skills/skill-missing-changelog.md) [FIXABLE] - Skill directory lacks CHANGELOG.md
 - [skill-missing-comments](./skills/skill-missing-comments.md) - Shell script lacks explanatory comments
 - [skill-missing-examples](./skills/skill-missing-examples.md) - SKILL.md lacks usage examples

@@ -426,7 +426,7 @@ claudelint/
 │   └── ...                  # Other documentation
 ├── skills/                  # Claude Code skills
 │   ├── validate-all/
-│   ├── validate-claude-md/
+│   ├── validate-agents-md/
 │   ├── validate-skills/
 │   └── validate-settings/
 ├── hooks/                   # Claude Code hooks

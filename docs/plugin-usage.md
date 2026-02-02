@@ -52,12 +52,12 @@ This checks:
 /validate --format json
 ```
 
-### `/validate-claude-md` - CLAUDE.md Validation
+### `/validate-agents-md` - CLAUDE.md Validation
 
 Validate only CLAUDE.md files:
 
 ```bash
-/validate-claude-md
+/validate-agents-md
 ```
 
 Checks:
@@ -70,8 +70,8 @@ Checks:
 **Options:**
 
 ```bash
-/validate-claude-md --path /path/to/CLAUDE.md
-/validate-claude-md --explain
+/validate-agents-md --path /path/to/CLAUDE.md
+/validate-agents-md --explain
 ```
 
 ### `/validate-skills` - Skills Validation

@@ -1,5 +1,5 @@
 ---
-name: validate-claude-md
+name: validate-agents-md
 description: Validate CLAUDE.md files for size, imports, and structure
 version: 1.0.0
 allowed-tools:

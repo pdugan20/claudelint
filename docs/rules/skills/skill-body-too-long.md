@@ -5,17 +5,17 @@
 **Validator**: Skills
 **Category**: File System
 
-SKILL.md body should not exceed 500 lines
+SKILL.md body should not exceed 400 lines
 
 ## Rule Details
 
-This rule triggers when the body content of a SKILL.md file (excluding frontmatter and title) exceeds 500 lines. Long documentation files become difficult to maintain, navigate, and understand. Users struggle to find relevant information in lengthy documents.
+This rule triggers when the body content of a SKILL.md file (excluding frontmatter) exceeds 400 lines. Long SKILL.md files contradict Anthropic's guidance on progressive disclosure. According to their official guide, SKILL.md should be kept under 5,000 words with detailed documentation moved to the `references/` directory.
 
-The rule counts only the body lines after the second frontmatter delimiter (`---`) and the H1 title. A skill with 500+ lines should be split into multiple focused files or reorganized with a clear table of contents.
+The rule counts body lines after the frontmatter delimiters (`---`). When a SKILL.md file exceeds this threshold, detailed documentation should be extracted to separate files in the `references/` directory and linked from the main SKILL.md file.
 
 ### Incorrect
 
-SKILL.md with 600 lines of content:
+SKILL.md with 500 lines of inline documentation:
 
 ```markdown
 ---
@@ -24,61 +24,75 @@ name: mega-skill
 
 # Mega Skill
 
-[... 600 lines of documentation ...]
+## Overview
+...
 
-Too much content makes it hard to navigate and maintain.
+## Detailed API Reference
+[200 lines of API documentation]
+
+## Advanced Examples
+[150 lines of examples]
+
+## Troubleshooting
+[100 lines of troubleshooting]
+
+[Total: 500+ lines - violates progressive disclosure]
 ```
 
 ### Correct
 
-SKILL.md with focused documentation:
+SKILL.md with progressive disclosure using references/:
 
 ```markdown
 ---
-name: focused-skill
+name: well-structured-skill
 ---
 
-# Focused Skill
+# Well-Structured Skill
 
 ## Overview
 
-Clear, concise documentation under 500 lines.
+Core instructions and workflow (concise, focused).
 
 ## Usage
 
-...
+Basic usage pattern here.
 
-[Total: 200 lines - easy to read and maintain]
-```
+## Additional Resources
 
-Split documentation with external references:
+For detailed information:
+- See `references/api-guide.md` for complete API reference
+- See `references/examples.md` for advanced examples
+- See `references/troubleshooting.md` for common issues
 
-```markdown
----
-name: complex-skill
----
-
-# Complex Skill
-
-## Overview
-
-Core documentation here (< 500 lines).
-
-## Additional Documentation
-
-See REFERENCE.md for detailed examples.
-See ARCHITECTURE.md for design decisions.
+[Total: ~150 lines in SKILL.md + detailed docs in references/]
 ```
 
 ## How To Fix
 
-To reduce SKILL.md body length:
+To reduce SKILL.md body length following Anthropic's progressive disclosure pattern:
 
-1. **Extract detailed examples** to separate files
-2. **Move reference material** to dedicated REFERENCE.md
-3. **Add table of contents** for remaining content
-4. **Link to external docs** for supplementary information
-5. **Remove redundant** or outdated sections
+1. **Move detailed documentation to `references/` directory**:
+   - Create `references/api-guide.md` for API documentation
+   - Create `references/examples.md` for detailed examples
+   - Create `references/troubleshooting.md` for troubleshooting guides
+
+2. **Keep SKILL.md focused on core instructions**:
+   - Main workflow steps
+   - Essential usage patterns
+   - Links to detailed references
+
+3. **Link to references from SKILL.md**:
+   ```markdown
+   For detailed API documentation, see `references/api-guide.md`
+   ```
+
+4. **Remove redundant or outdated sections**
+
+This follows Anthropic's three-level progressive disclosure system:
+- Level 1: YAML frontmatter (always loaded)
+- Level 2: SKILL.md body (loaded when skill is relevant)
+- Level 3: Linked reference files (loaded only as needed)
 
 ## Options
 
@@ -89,7 +103,7 @@ This rule has the following configuration options:
 Maximum number of lines in body content before triggering a warning. Must be a positive integer.
 
 **Type**: `number`
-**Default**: `500`
+**Default**: `400`
 
 **Schema**:
 
@@ -111,17 +125,18 @@ Maximum number of lines in body content before triggering a warning. Must be a p
 
 ## When Not To Use It
 
-Consider disabling this rule if your skill is genuinely complex and requires comprehensive inline documentation. However, most skills should be broken down into focused, digestible pieces rather than single large files.
+Consider increasing the threshold if your skill genuinely requires more inline documentation. However, Anthropic strongly recommends keeping SKILL.md concise and using the `references/` directory for detailed content.
 
 ## Related Rules
 
-- [skill-large-reference-no-toc](./skill-large-reference-no-toc.md) - Large skills should have a table of contents
 - [skill-time-sensitive-content](./skill-time-sensitive-content.md) - Avoid time-sensitive language
 
 ## Resources
 
 - [Rule Implementation](../../src/rules/skills/skill-body-too-long.ts)
 - [Rule Tests](../../tests/rules/skills/skill-body-too-long.test.ts)
+- [Anthropic Skills Guide](https://www.anthropic.com/news/building-effective-agents) - Progressive disclosure pattern
+- [Keep SKILL.md Under 5,000 Words](https://www.anthropic.com/news/building-effective-agents) - Official guidance
 
 ## Version
 

@@ -83,7 +83,6 @@
 | `skill-description` | [Implemented] | None | `minLength: number` - Minimum description length<br>`maxLength: number` - Maximum description length |
 | `skill-disallowed-tools` | [Implemented] | None | `customDisallowed: string[]` - Additional tools to disallow |
 | `skill-eval-usage` | [Implemented] | None | `allowEval: boolean` - Whether to allow eval in any context<br>`evalPatterns: string[]` - Custom eval-like patterns to detect |
-| `skill-large-reference-no-toc` | [Implemented] | `minLines: number` (default: 100) | - |
 | `skill-missing-changelog` | [Implemented] | None | `requireChangelog: boolean` - Make CHANGELOG.md mandatory |
 | `skill-missing-comments` | [Implemented] | `minLines: number` (default: 10) | - |
 | `skill-missing-examples` | [Implemented] | None | `minExamples: number` - Minimum number of examples required |
