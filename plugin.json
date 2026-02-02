@@ -13,13 +13,13 @@
     "code-quality"
   ],
   "skills": [
-    "validate",
-    "validate-agents-md",
-    "validate-skills",
-    "validate-settings",
-    "validate-hooks",
-    "validate-mcp",
-    "validate-plugin",
-    "format"
+    ".claude/skills/validate-all",
+    ".claude/skills/validate-cc-md",
+    ".claude/skills/validate-skills",
+    ".claude/skills/validate-settings",
+    ".claude/skills/validate-hooks",
+    ".claude/skills/validate-mcp",
+    ".claude/skills/validate-plugin",
+    ".claude/skills/format-cc"
   ]
 }

@@ -46,64 +46,79 @@ export const rule: Rule = {
 
     const pluginRoot = dirname(filePath);
 
-    // Validate skills references
-    if (plugin.skills) {
-      for (const skillName of plugin.skills) {
-        const skillPath = join(pluginRoot, '.claude', 'skills', skillName, 'SKILL.md');
-        if (!(await fileExists(skillPath))) {
-          context.report({
-            message: `Referenced skill not found: ${skillName} (expected at ${skillPath})`,
-          });
-        }
+    // Helper to normalize string|array to array
+    const toArray = (value: string | string[] | undefined): string[] => {
+      if (!value) return [];
+      return Array.isArray(value) ? value : [value];
+    };
+
+    // Validate skills references (string or array of paths)
+    for (const skillPath of toArray(plugin.skills)) {
+      const resolvedPath = join(pluginRoot, skillPath);
+      if (!(await fileExists(resolvedPath))) {
+        context.report({
+          message: `Referenced skill path not found: ${skillPath}`,
+        });
       }
     }
 
-    // Validate agents references
-    if (plugin.agents) {
-      for (const agentName of plugin.agents) {
-        const agentPath = join(pluginRoot, '.claude', 'agents', `${agentName}.md`);
-        if (!(await fileExists(agentPath))) {
-          context.report({
-            message: `Referenced agent not found: ${agentName} (expected at ${agentPath})`,
-          });
-        }
+    // Validate agents references (string or array of paths)
+    for (const agentPath of toArray(plugin.agents)) {
+      const resolvedPath = join(pluginRoot, agentPath);
+      if (!(await fileExists(resolvedPath))) {
+        context.report({
+          message: `Referenced agent path not found: ${agentPath}`,
+        });
       }
     }
 
-    // Validate hooks references
-    if (plugin.hooks) {
-      for (const hookName of plugin.hooks) {
-        const hookPath = join(pluginRoot, '.claude', 'hooks', `${hookName}.json`);
-        if (!(await fileExists(hookPath))) {
-          context.report({
-            message: `Referenced hook not found: ${hookName} (expected at ${hookPath})`,
-          });
-        }
+    // Validate commands references (string or array of paths)
+    for (const commandPath of toArray(plugin.commands)) {
+      const resolvedPath = join(pluginRoot, commandPath);
+      if (!(await fileExists(resolvedPath))) {
+        context.report({
+          message: `Referenced command path not found: ${commandPath}`,
+        });
       }
     }
 
-    // Validate commands references
-    if (plugin.commands) {
-      for (const commandName of plugin.commands) {
-        const commandPath = join(pluginRoot, '.claude', 'commands', `${commandName}.md`);
-        if (!(await fileExists(commandPath))) {
-          context.report({
-            message: `Referenced command not found: ${commandName} (expected at ${commandPath})`,
-          });
-        }
+    // Validate hooks reference (string path or inline object)
+    if (plugin.hooks && typeof plugin.hooks === 'string') {
+      const hooksPath = join(pluginRoot, plugin.hooks);
+      if (!(await fileExists(hooksPath))) {
+        context.report({
+          message: `Referenced hooks config not found: ${plugin.hooks}`,
+        });
       }
     }
 
-    // Validate MCP servers references
-    if (plugin.mcpServers) {
-      for (const mcpServerName of plugin.mcpServers) {
-        const mcpConfigPath = join(pluginRoot, '.mcp.json');
-        if (!(await fileExists(mcpConfigPath))) {
-          context.report({
-            message: `Referenced MCP server ${mcpServerName} but .mcp.json not found`,
-          });
-          break; // Only report once for missing .mcp.json
-        }
+    // Validate MCP servers reference (string path or inline object)
+    if (plugin.mcpServers && typeof plugin.mcpServers === 'string') {
+      const mcpPath = join(pluginRoot, plugin.mcpServers);
+      if (!(await fileExists(mcpPath))) {
+        context.report({
+          message: `Referenced MCP config not found: ${plugin.mcpServers}`,
+        });
+      }
+    }
+
+    // Validate LSP servers reference (string path or inline object)
+    if (plugin.lspServers && typeof plugin.lspServers === 'string') {
+      const lspPath = join(pluginRoot, plugin.lspServers);
+      if (!(await fileExists(lspPath))) {
+        context.report({
+          message: `Referenced LSP config not found: ${plugin.lspServers}`,
+        });
+      }
+    }
+
+    // Validate output styles references (string or array of paths)
+    for (const stylePath of toArray(plugin.outputStyles)) {
+      const resolvedPath = join(pluginRoot, stylePath);
+      if (!(await fileExists(resolvedPath))) {
+        context.report({
+          message: `Referenced output style path not found: ${stylePath}`,
+        });
       }
     }
   },

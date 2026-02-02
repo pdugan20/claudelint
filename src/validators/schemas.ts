@@ -216,21 +216,41 @@ export const MCPConfigSchema = z.object({
 });
 
 /**
+ * Plugin author schema
+ */
+export const PluginAuthorSchema = z.object({
+  name: z.string(),
+  email: z.string().optional(),
+  url: z.string().optional(),
+});
+
+/**
  * Plugin manifest schema (plugin.json)
+ * Based on official spec: https://code.claude.com/docs/en/plugins-reference#complete-schema
  */
 export const PluginManifestSchema = z.object({
+  // Required fields
   name: z.string(),
-  version: semver(),
-  description: z.string(),
-  author: z.string().optional(),
+
+  // Optional metadata
+  version: semver().optional(),
+  description: z.string().optional(),
+  author: z.union([z.string(), PluginAuthorSchema]).optional(),
+  homepage: z.string().optional(),
   repository: z.string().optional(),
   license: z.string().optional(),
-  skills: z.array(z.string()).optional(),
-  agents: z.array(z.string()).optional(),
-  hooks: z.array(z.string()).optional(),
-  commands: z.array(z.string()).optional(),
-  mcpServers: z.array(z.string()).optional(),
-  dependencies: z.record(z.string()).optional(),
+  keywords: z.array(z.string()).optional(),
+
+  // Component paths (string or array)
+  commands: z.union([z.string(), z.array(z.string())]).optional(),
+  agents: z.union([z.string(), z.array(z.string())]).optional(),
+  skills: z.union([z.string(), z.array(z.string())]).optional(),
+
+  // Config paths (string for path, object for inline config)
+  hooks: z.union([z.string(), z.record(z.unknown())]).optional(),
+  mcpServers: z.union([z.string(), z.record(z.unknown())]).optional(),
+  outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
+  lspServers: z.union([z.string(), z.record(z.unknown())]).optional(),
 });
 
 /**

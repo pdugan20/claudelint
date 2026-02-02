@@ -35,6 +35,11 @@ function analyzeRule(filePath: string): StubRule | null {
   const content = readFileSync(filePath, 'utf-8');
   const category = filePath.split('/rules/')[1]?.split('/')[0] || 'unknown';
 
+  // Skip deprecated rules
+  if (content.includes('deprecated: true')) {
+    return null;
+  }
+
   // Allow explicitly documented no-op rules (cross-reference validation)
   if (content.includes('// No-op:') && content.includes('Validation implemented in')) {
     return null;

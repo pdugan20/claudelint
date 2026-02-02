@@ -19,14 +19,14 @@ describe('Plugin Integration Tests', () => {
     it('should reference all created skills', () => {
       const plugin = JSON.parse(readFileSync(pluginJsonPath, 'utf-8'));
       const expectedSkills = [
-        'validate',
-        'validate-agents-md',
-        'validate-skills',
-        'validate-settings',
-        'validate-hooks',
-        'validate-mcp',
-        'validate-plugin',
-        'format',
+        '.claude/skills/validate-all',
+        '.claude/skills/validate-cc-md',
+        '.claude/skills/validate-skills',
+        '.claude/skills/validate-settings',
+        '.claude/skills/validate-hooks',
+        '.claude/skills/validate-mcp',
+        '.claude/skills/validate-plugin',
+        '.claude/skills/format-cc',
       ];
 
       expect(plugin.skills).toBeDefined();
@@ -49,14 +49,14 @@ describe('Plugin Integration Tests', () => {
 
   describe('Skills Validation', () => {
     const skills = [
-      'validate',
-      'validate-agents-md',
+      'validate-all',
+      'validate-cc-md',
       'validate-skills',
       'validate-settings',
       'validate-hooks',
       'validate-mcp',
       'validate-plugin',
-      'format',
+      'format-cc',
     ];
 
     skills.forEach((skillName) => {

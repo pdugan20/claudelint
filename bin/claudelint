@@ -1,3 +1,4 @@
 #!/usr/bin/env node
 
+// Wrapper to execute the compiled CLI
 require('../dist/cli.js');
