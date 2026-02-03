@@ -462,7 +462,7 @@ For each issue, provide:
 - **Impact**: Claude will try to use non-existent script
 - **Fix**: Update or remove: "./deploy.sh"
 
-```
+```text
 ```
 
 #### Step 4: Offer Automated Fixes
@@ -540,7 +540,7 @@ Issues requiring judgment:
 
 Would you like me to make any additional optimizations?
 
-```
+```text
 ```
 
 ### Error Handling
@@ -621,7 +621,7 @@ Should NOT trigger on:
 
 ### File Structure
 
-```
+```text
 .claude/skills/
 ├── workspace-config-init/
 │   ├── SKILL.md

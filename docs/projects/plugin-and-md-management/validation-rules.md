@@ -192,17 +192,17 @@ export const rule: Rule = {
 See @docs/testing.md for testing guidelines
 ```
 
-*If docs/testing.md doesn't exist*
+**If docs/testing.md doesn't exist:**
 
-****Good** Passes**:
+**Good - Passes**:
 
 ```markdown
 See @docs/testing.md for testing guidelines
 ```
 
-*When docs/testing.md exists*
+**When docs/testing.md exists:**
 
-****Good** Also valid**:
+**Good - Also valid**:
 
 ```markdown
 Personal preferences: @~/.claude/my-preferences.md
@@ -412,9 +412,9 @@ function looksLikeShellCommand(str: string): boolean {
 - Deploy: `./deploy.sh`
 ```
 
-*If deploy.sh doesn't exist or isn't executable*
+**If deploy.sh doesn't exist or isn't executable:**
 
-****Good** Passes**:
+**Good - Passes**:
 
 ```markdown
 - Run tests: `npm test`
@@ -600,6 +600,7 @@ This validates:
 - Hook commands
 - Config location
 
+```text
 ```
 
 ---
@@ -608,8 +609,7 @@ This validates:
 
 ### Test Files
 
-```
-
+```text
 tests/rules/claude-md/
 ├── file-length.test.ts
 ├── import-syntax.test.ts
@@ -621,8 +621,7 @@ tests/rules/claude-md/
 
 ### Test Fixtures
 
-```
-
+```text
 tests/fixtures/claude-md/
 ├── valid/
 │   ├── concise-150-lines.md

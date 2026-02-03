@@ -10,7 +10,7 @@ A dual-schema verification system to detect when our Zod schemas drift from offi
 
 ### The Approach
 
-```
+```text
 Official Docs (prose)
     ↓ human reads
 Manual JSON Schema (reference, in schemas/)
@@ -246,7 +246,7 @@ CI fails if drift detected
 
 ### Completed Tasks
 
-**Task 2.2.1: Install zod-to-json-schema**
+#### Task 2.2.1: Install zod-to-json-schema
 
 - Installed `zod-to-json-schema` package
 - Created `scripts/generate/json-schemas.ts` (103 lines)
@@ -255,7 +255,7 @@ CI fails if drift detected
 - Forces Draft 2020-12 compatibility
 - Added `npm run generate:json-schemas` script
 
-**Task 2.2.2: Build schema comparison tool**
+#### Task 2.2.2: Build schema comparison tool
 
 - Created `scripts/verify/compare-schemas.ts` (255 lines)
 - Compares manual reference vs generated schemas
@@ -265,7 +265,7 @@ CI fails if drift detected
 - Added `npm run verify:schemas` script
 - **Result**: All 8 schemas match! No drift detected!
 
-**Task 2.2.3: Update schema-sync script**
+#### Task 2.2.3: Update schema-sync script
 
 - Completely rewrote `scripts/check/schema-sync.ts`
 - 66% code reduction (185 lines vs 540 lines)
@@ -274,7 +274,7 @@ CI fails if drift detected
 - Shows Phase 2.1 drift history for all 8 schemas
 - Clear, actionable error messages
 
-**Task 2.2.4: CI/CD integration**
+#### Task 2.2.4: CI/CD integration
 
 - CI job already configured correctly ✓
 - Updated `.github/workflows/ci.yml` documentation

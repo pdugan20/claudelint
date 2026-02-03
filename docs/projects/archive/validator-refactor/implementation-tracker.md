@@ -365,7 +365,7 @@ After completing MCP and Claude.md validators, we discovered:
 
 ### Architectural Approach
 
-**Pattern: Schema-Delegating Rules**
+#### Pattern: Schema-Delegating Rules
 
 Instead of duplicating Zod validation logic in rules, we use a thin wrapper pattern:
 
@@ -1264,7 +1264,7 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     - Factory pattern for similar commands
   - **Target Structure:**
 
-    ```
+    ```text
     src/
       cli.ts (~200 lines)
         - Program setup and command registration
@@ -1954,6 +1954,8 @@ Tasks 2.6.1-2.6.3 originally planned to refactor validators to use base class ab
     **REQUIRED:** All CLI output must use the logger utility.
 
     ```typescript
+    ```
+
   - **Estimated Time:** 2-3 hours
   - **Dependencies:** Task 2.8.1
   - **Assigned To:** Claude

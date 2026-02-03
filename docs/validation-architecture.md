@@ -50,7 +50,7 @@ Both validators extend from the same base class, sharing common functionality fo
 
 **Architecture:**
 
-```
+```text
 FileValidator
 ├── Read file content
 ├── Parse inline disable comments
@@ -106,7 +106,7 @@ class SkillsValidator extends FileValidator {
 
 **Architecture:**
 
-```
+```text
 SchemaValidator
 ├── Read file content
 ├── Parse JSON (report syntax errors)
@@ -214,7 +214,7 @@ Choose SchemaValidator if:
 
 ### Decision Flowchart
 
-```
+```text
 Is the file JSON?
 ├─ Yes → Use SchemaValidator
 │         ├─ Define Zod schema

@@ -21,7 +21,7 @@
 
 **Want to implement a rule?** Follow this flow:
 
-```
+```text
 Pick a rule → Read implementation guide → Write code → Test → Update tracker
      ↓              ↓                       ↓           ↓          ↓
   Tracker      EASY/MEDIUM/HARD-RULES   Rule file   Tests    Tracker
@@ -124,7 +124,7 @@ See [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md#phase-0-architecture-refactor-pr
 
 ## Current Status
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │  Skills Quality Validation Progress     │
 ├─────────────────────────────────────────┤

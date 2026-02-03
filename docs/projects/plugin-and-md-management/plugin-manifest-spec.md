@@ -6,7 +6,7 @@ Create `.claude-plugin/plugin.json` to transform claudelint from an npm-only too
 
 ## File Location
 
-```
+```text
 claude-lint/
 ├── .claude-plugin/
 │   ├── plugin.json          ← CREATE THIS
@@ -317,6 +317,7 @@ claudelint validate
 
 Note: npm installation does not auto-install skills.
 
+```text
 ```
 
 ## Testing Checklist

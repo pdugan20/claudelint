@@ -292,7 +292,7 @@ describe('skill-missing-version', () => {
 
 ## File Organization
 
-```
+```text
 src/rules/
 ├── {category}/
 │   ├── {rule-id}.ts           # Rule implementation

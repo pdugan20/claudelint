@@ -359,6 +359,7 @@ claudelint check-all
 
 claudelint ensures your Claude Code projects follow best practices...
 
+```text
 ```
 
 ### Navigation Structure
@@ -561,7 +562,7 @@ interface Props {
 
 ### From Existing Docs to VitePress
 
-**Step 1: Copy markdown files**
+#### Step 1: Copy markdown files
 
 ```bash
 # Create directory structure
@@ -574,7 +575,7 @@ cp docs/architecture.md docs/development/
 # ... etc
 ```
 
-**Step 2: Add frontmatter**
+#### Step 2: Add frontmatter
 
 Convert from:
 
@@ -597,7 +598,7 @@ description: Quick start guide for claudelint
 This guide will help you...
 ```
 
-**Step 3: Update links**
+#### Step 3: Update links
 
 Convert from:
 
@@ -611,7 +612,7 @@ To:
 See [Configuration](/guide/configuration) for details.
 ```
 
-**Step 4: Enhance with VitePress features**
+#### Step 4: Enhance with VitePress features
 
 Add custom containers:
 
@@ -647,6 +648,7 @@ pnpm add -g claudelint
 
 :::
 
+```text
 ```
 
 ---
@@ -673,6 +675,7 @@ pnpm add -g claudelint
    - Vercel auto-detects VitePress
 
 2. **Verify build settings** (should auto-detect):
+
    ```text
    Framework Preset: VitePress
    Root Directory: ./
@@ -681,7 +684,7 @@ pnpm add -g claudelint
    Install Command: npm install
    ```
 
-1. **Add build script** to package.json:
+3. **Add build script** to package.json:
 
    ```json
    {
@@ -694,7 +697,7 @@ pnpm add -g claudelint
    }
    ```
 
-2. **Deploy**
+4. **Deploy**
    - Click "Deploy"
    - Site live in ~1 minute
    - Preview URL: `claudelint.vercel.app`
@@ -1029,7 +1032,7 @@ Add to homepage:
 
 ### Week 1: VitePress Setup + Manual Sync
 
-**Phase 1: Quick Start**
+#### Phase 1: Quick Start
 
 - Day 1-2: Install VitePress, configure structure
 - Day 3-4: Copy existing docs (manual sync)
@@ -1040,7 +1043,7 @@ Add to homepage:
 
 ### Week 2-4: Metadata Migration
 
-**Phase 2: Gradual Auto-Generation**
+#### Phase 2: Gradual Auto-Generation
 
 - Week 2: Add metadata to 25% of rules (Priority 1: common violations)
 - Week 3: Add metadata to 50% of rules (Priority 2: auto-fixable)
@@ -1051,7 +1054,7 @@ Add to homepage:
 
 ### Week 5: Custom Components
 
-**Phase 3: Enhanced UX**
+#### Phase 3: Enhanced UX
 
 - Day 1-2: Build RuleExplorer, RuleCard components
 - Day 3-4: Build ConfigGenerator component
@@ -1062,7 +1065,7 @@ Add to homepage:
 
 ### Week 6: Deployment & Polish
 
-**Phase 4: Launch**
+#### Phase 4: Launch
 
 - Day 1: Deploy to Vercel
 - Day 2: Configure custom domain (docs.claudelint.dev)

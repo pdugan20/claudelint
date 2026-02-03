@@ -191,7 +191,7 @@ claudelint check-all --workspace my-app
 
 Output:
 
-```
+```text
 Validating workspace package: my-app
 Path: /path/to/monorepo/packages/my-app
 
@@ -210,7 +210,7 @@ claudelint check-all --workspaces
 
 Output:
 
-```
+```text
 Found 3 workspace packages
 
 [app-1] Validating...
@@ -247,7 +247,7 @@ claudelint check-all --workspace app-1 --format json
 
 ## Example Monorepo Structure
 
-```
+```text
 my-monorepo/
 ├── pnpm-workspace.yaml          # Workspace config
 ├── .claudelintrc.json           # Root config (shared rules)
@@ -327,7 +327,7 @@ my-monorepo/
 
 ### Pattern 1: Shared Base + Per-Package Overrides
 
-```
+```text
 monorepo/
 ├── .claudelintrc.json           # Base rules for all packages
 └── packages/
@@ -341,7 +341,7 @@ monorepo/
 
 ### Pattern 2: Multiple Shared Configs
 
-```
+```text
 monorepo/
 ├── config/
 │   ├── base.json                # Common rules
@@ -357,7 +357,7 @@ monorepo/
 
 ### Pattern 3: Shareable Package
 
-```
+```text
 monorepo/
 ├── packages/
 │   ├── claudelint-config/
@@ -431,7 +431,7 @@ repos:
 
 **Problem:**
 
-```
+```text
 Extended config not found: ../../.claudelintrc.json
 Resolved to: /path/to/config.json
 ```
@@ -450,7 +450,7 @@ ls ../../.claudelintrc.json
 
 **Problem:**
 
-```
+```text
 Circular dependency detected in config extends:
   1. /path/to/a.json
   2. /path/to/b.json
@@ -465,7 +465,7 @@ Remove the circular reference. Configs should extend in one direction only.
 
 **Problem:**
 
-```
+```text
 Package "my-app" not found in workspace.
 Available packages:
   - app-1
@@ -482,7 +482,7 @@ Available packages:
 
 **Problem:**
 
-```
+```text
 No workspace detected in current directory.
 The --workspace flag requires a monorepo setup.
 ```

@@ -631,7 +631,7 @@ describe('CLI workspace flags', () => {
 
 Create fixture monorepos for testing:
 
-```
+```text
 tests/fixtures/
 ├── pnpm-monorepo/
 │   ├── pnpm-workspace.yaml

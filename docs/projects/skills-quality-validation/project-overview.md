@@ -25,7 +25,7 @@ This project implements comprehensive quality validation rules for Claude Skills
 
 ## Project Structure
 
-```
+```text
 skills-quality-validation/
 ├── README.md                                # Quick navigation and overview
 ├── PROGRESS-TRACKER.md                      # Active tracker with checkboxes

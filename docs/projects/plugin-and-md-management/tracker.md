@@ -228,7 +228,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   3. In Claude Code session, verify skills are listed: `/skills` (should show claudelint:* skills)
   4. Test each renamed skill namespace:
 
-     ```
+     ```bash
      /claudelint:validate-all
      /claudelint:format-cc
      /claudelint:validate-cc-md
@@ -236,7 +236,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
   5. Verify old names DON'T trigger:
 
-     ```
+     ```bash
      /claudelint:validate  # should not be found
      /claudelint:format    # should not be found
      /claudelint:validate-agents-md  # should not be found
@@ -479,7 +479,7 @@ Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
 
 **Verification Flow**:
 
-```
+```text
 Official Docs → Manual JSON Schema → Generate from Zod → Compare → Fix Drift
 ```
 
@@ -496,7 +496,7 @@ Official Docs → Manual JSON Schema → Generate from Zod → Compare → Fix D
 
 **See**: [Schema Verification Workflow](./schema-verification-workflow.md)
 
-## Phase 2: Schema & Constant Verification System
+## Phase 2: Full Verification System (Future Work)
 
 **Status**: Not Started
 **Duration**: 9-14 days
@@ -797,7 +797,7 @@ export const rule: Rule = {
 
 **CLI output:**
 
-```
+```text
 Warning: Rule 'example-old-rule' is deprecated
   Reason: This rule was based on an unofficial field that was removed from the spec
   Use 'example-new-rule' instead
@@ -960,7 +960,7 @@ npm run migrate:config
 
 ## Progress Summary
 
-```
+```text
 Phase 0: [██████████] 100% (Complete)
 Phase 1: [█████████░]  92% (5.5/6 tasks - Tasks 1.1-1.4, 1.6-1.7 done, 1.8 remaining)
 Phase 2: [░░░░░░░░░░]   0% (0/6 sub-phases - includes new 2.6 deprecation system)

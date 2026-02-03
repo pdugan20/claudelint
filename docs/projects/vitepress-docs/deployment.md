@@ -30,7 +30,7 @@ Comprehensive guide for deploying claudelint VitePress documentation.
 
 ### Setup
 
-**Step 1: Connect Repository**
+#### Step 1: Connect Repository
 
 1. Go to <https://vercel.com>
 2. Sign in with GitHub
@@ -38,7 +38,7 @@ Comprehensive guide for deploying claudelint VitePress documentation.
 4. Import `pdugan20/claudelint` repository
 5. Vercel auto-detects VitePress framework
 
-**Step 2: Configure Build Settings**
+#### Step 2: Configure Build Settings
 
 Vercel should auto-detect these settings (verify):
 
@@ -51,7 +51,7 @@ Install Command: npm install
 Node Version: 20.x
 ```
 
-**Step 3: Add package.json Scripts**
+#### Step 3: Add package.json Scripts
 
 Ensure these scripts exist:
 
@@ -66,7 +66,7 @@ Ensure these scripts exist:
 }
 ```
 
-**Step 4: Deploy**
+#### Step 4: Deploy
 
 1. Click "Deploy"
 2. Wait ~1-2 minutes
@@ -74,13 +74,13 @@ Ensure these scripts exist:
 
 ### Custom Domain Setup
 
-**Step 1: Add Domain in Vercel**
+#### Step 1: Add Domain in Vercel
 
 1. Go to Project Settings → Domains
 2. Click "Add Domain"
 3. Enter: `docs.claudelint.dev`
 
-**Step 2: Configure DNS**
+#### Step 2: Configure DNS
 
 At your domain provider (Cloudflare, Namecheap, etc.), add:
 
@@ -91,7 +91,7 @@ Value: cname.vercel-dns.com
 TTL: Auto / 3600
 ```
 
-**Step 3: Verify**
+#### Step 3: Verify
 
 - Vercel automatically provisions SSL certificate
 - HTTPS enabled by default
@@ -257,14 +257,14 @@ See [archived deployment guide](https://github.com/pdugan20/claudelint/blob/main
 
 ### Setup
 
-**Step 1: Import project**
+#### Step 1: Import project
 
 1. Go to <https://vercel.com>
 2. Click "Import Project"
 3. Connect GitHub repository
 4. Vercel auto-detects VitePress
 
-**Step 2: Configure build settings**
+#### Step 2: Configure build settings
 
 Vercel should auto-detect these (verify):
 
@@ -275,11 +275,11 @@ Output Directory: docs/.vitepress/dist
 Install Command: npm install
 ```
 
-**Step 3: Add environment variables (if needed)**
+#### Step 3: Add environment variables (if needed)
 
 None required for basic setup.
 
-**Step 4: Deploy**
+#### Step 4: Deploy
 
 Click "Deploy" - site will be live in ~1 minute.
 
@@ -335,7 +335,7 @@ Vercel automatically creates preview deployments for PRs:
 
 ### Setup
 
-**Step 1: Create netlify.toml**
+#### Step 1: Create netlify.toml
 
 ```toml
 [build]
@@ -371,7 +371,7 @@ Vercel automatically creates preview deployments for PRs:
   status = 200
 ```
 
-**Step 2: Connect repository**
+#### Step 2: Connect repository
 
 1. Go to <https://app.netlify.com>
 2. Click "Add new site" → "Import an existing project"
@@ -379,7 +379,7 @@ Vercel automatically creates preview deployments for PRs:
 4. Select repository
 5. Netlify auto-detects settings from netlify.toml
 
-**Step 3: Deploy**
+#### Step 3: Deploy
 
 Click "Deploy site" - live in ~2 minutes.
 
@@ -416,13 +416,13 @@ Click "Deploy site" - live in ~2 minutes.
 
 ### Setup
 
-**Step 1: Connect repository**
+#### Step 1: Connect repository
 
 1. Go to Cloudflare Dashboard → Pages
 2. Create project
 3. Connect GitHub repository
 
-**Step 2: Configure build**
+#### Step 2: Configure build
 
 ```text
 Framework preset: VitePress
@@ -430,7 +430,7 @@ Build command: npm run docs:build
 Build output directory: docs/.vitepress/dist
 ```
 
-**Step 3: Deploy**
+#### Step 3: Deploy
 
 Automatic deployment starts immediately.
 

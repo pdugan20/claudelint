@@ -33,6 +33,7 @@ Usage:
 
 The script will deploy to $ENVIRONMENT region $REGION.
 
+```text
 ```
 
 Invalid substitutions:

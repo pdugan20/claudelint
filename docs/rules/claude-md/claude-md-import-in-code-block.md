@@ -62,12 +62,13 @@ To move import statements out of code blocks:
    Import: @.claude/rules/standards.md
    ```
 
-   # After (correct)
+   After (correct):
 
    Import: @.claude/rules/standards.md
 
    Here's an example of the import syntax.
 
+   ```text
    ```
 
 3. **If showing import syntax as an example**, use inline code:

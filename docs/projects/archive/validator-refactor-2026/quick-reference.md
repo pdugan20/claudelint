@@ -13,7 +13,7 @@ One-page summary of the validator refactoring changes.
 
 ## File Renames
 
-```
+```text
 src/validators/base.ts → src/validators/file-validator.ts
 src/validators/json-config-base.ts → src/validators/schema-validator.ts
 src/composition/ → DELETED
@@ -33,7 +33,7 @@ import { SchemaValidator } from './validators/schema-validator';
 
 ## When to Use Which Validator
 
-```
+```text
 Is the file JSON?
   └─ No → Use FileValidator
        Examples: CLAUDE.md, Skills, Agents

@@ -105,6 +105,7 @@ To migrate from commands to skills:
 
    EOF
 
+   ```text
    ```
 
 4. **Update plugin.json** to use skills field:

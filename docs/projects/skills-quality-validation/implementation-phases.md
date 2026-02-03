@@ -15,7 +15,7 @@
 
 ### Day 1: Core Structural Rules (4 rules)
 
-**Morning Session (2-3 hours)**
+#### Morning Session (2-3 hours)
 
 - **E1**: `skill-readme-forbidden`
   - Effort: 30 min
@@ -27,7 +27,7 @@
   - Count executable files in skill folder
   - Deliverable: Rule + 4 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **E5**: `skill-xml-tags-anywhere`
   - Effort: 1 hour
@@ -47,7 +47,7 @@
 
 ### Day 2: Frontmatter Enhancement (4 rules)
 
-**Morning Session (2-3 hours)**
+#### Morning Session (2-3 hours)
 
 - **E2**: `skill-missing-compatibility`
   - Effort: 30 min
@@ -59,7 +59,7 @@
   - Add license field to schema
   - Deliverable: Schema update + 3 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **E9**: `skill-single-sentence-description`
   - Effort: 1 hour
@@ -79,7 +79,7 @@
 
 ### Day 3: Content Quality Basics (4 rules)
 
-**Morning Session (2-3 hours)**
+#### Morning Session (2-3 hours)
 
 - **E7**: `skill-placeholder-content`
   - Effort: 45 min
@@ -91,7 +91,7 @@
   - Check for first-person patterns in name
   - Deliverable: Rule + 4 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **E10**: `skill-overly-generic-name`
   - Effort: 1 hour
@@ -127,7 +127,7 @@
 
 #### Day 4: Trigger Phrase Validation (M1)
 
-**Full Day (6-8 hours)**
+#### Full Day (6-8 hours)
 
 - **M1**: `skill-description-trigger-phrases`
   - Effort: 6 hours
@@ -144,7 +144,7 @@
 
 #### Day 5: Description Structure & Meta-Language (M2, M3)
 
-**Morning Session (3-4 hours)**
+##### Morning Session (3-4 hours)
 
 - **M2**: `skill-description-structure`
   - Effort: 3 hours
@@ -152,7 +152,7 @@
   - Validate imperative mood
   - Deliverable: Rule + 8 tests
 
-**Afternoon Session (3-4 hours)**
+#### Afternoon Session (3-4 hours)
 
 - **M3**: `skill-description-avoid-meta`
   - Effort: 2 hours
@@ -166,7 +166,7 @@
 
 #### Day 6-7: Progressive Disclosure & Body Structure (M4, M5, M8)
 
-**Day 6 Morning (3-4 hours)**
+#### Day 6 Morning (3-4 hours)
 
 - **M4**: `skill-progressive-disclosure`
   - Effort: 4 hours
@@ -175,7 +175,7 @@
   - Dependencies: E11
   - Deliverable: Rule + 8 tests
 
-**Day 6 Afternoon (3-4 hours)**
+#### Day 6 Afternoon (3-4 hours)
 
 - **M5**: `skill-body-structure-quality`
   - Effort: 3 hours
@@ -183,7 +183,7 @@
   - Check markdown heading structure
   - Deliverable: Rule + 7 tests
 
-**Day 7 (4-5 hours)**
+#### Day 7 (4-5 hours)
 
 - **M8**: `skill-usage-section-clarity`
   - Effort: 4 hours
@@ -198,14 +198,14 @@
 
 #### Day 8: Content Quality (M6, M9)
 
-**Morning Session (3-4 hours)**
+##### Morning Session (3-4 hours)
 
 - **M6**: `skill-examples-quality`
   - Effort: 3 hours
   - Validate examples are concrete (not "your-file.txt")
   - Deliverable: Rule + 6 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **M9**: `skill-body-readability`
   - Effort: 2 hours
@@ -223,7 +223,7 @@
 
 #### Day 9: Security - Hardcoded Secrets (M13)
 
-**Full Day (6-8 hours)**
+#### Full Day (6-8 hours)
 
 - **M13**: `skill-hardcoded-secrets`
   - Effort: 6 hours
@@ -240,7 +240,7 @@
 
 #### Day 10: MCP Integration (M11)
 
-**Full Day (4-6 hours)**
+#### Full Day (4-6 hours)
 
 - **M11**: `skill-mcp-tool-qualified-name`
   - Effort: 5 hours
@@ -255,7 +255,7 @@
 
 #### Day 11: Cross-Reference & Keyword Analysis (M7, M10)
 
-**Morning Session (3-4 hours)**
+#### Morning Session (3-4 hours)
 
 - **M7**: `skill-cross-reference-validation`
   - Effort: 3 hours
@@ -264,7 +264,7 @@
   - Dependencies: E11
   - Deliverable: Rule + 6 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **M10**: `skill-keyword-density`
   - Effort: 2 hours
@@ -278,7 +278,7 @@
 
 #### Day 12-13: Documentation Quality (M12, M14, M15, M16, M17)
 
-**Day 12 Morning (3-4 hours)**
+#### Day 12 Morning (3-4 hours)
 
 - **M12**: `skill-argument-documentation`
   - Effort: 3 hours
@@ -286,14 +286,14 @@
   - Validate documentation present
   - Deliverable: Rule + 6 tests
 
-**Day 12 Afternoon (2-3 hours)**
+#### Day 12 Afternoon (2-3 hours)
 
 - **M14**: `skill-output-format-documentation`
   - Effort: 2 hours
   - Check for output documentation
   - Deliverable: Rule + 4 tests
 
-**Day 13 (4-6 hours)**
+#### Day 13 (4-6 hours)
 
 - **M15**: `skill-error-handling-documentation`
   - Effort: 2 hours
@@ -333,14 +333,14 @@
 
 #### Day 14-15: MCP Registry Integration (H1, H2)
 
-**Architecture Phase (Day 14 Morning, 3-4 hours)**
+##### Architecture Phase (Day 14 Morning, 3-4 hours)
 
 - Design MCP registry client
 - Design caching strategy
 - Design graceful degradation pattern
 - Deliverable: Architecture doc + interface definitions
 
-**Implementation (Day 14 Afternoon + Day 15, 8-10 hours)**
+##### Implementation (Day 14 Afternoon + Day 15, 8-10 hours)
 
 - **H1**: `skill-mcp-server-exists`
   - Effort: 5 hours
@@ -367,7 +367,7 @@
 
 #### Day 16: LLM Integration Architecture
 
-**Full Day (6-8 hours)**
+#### Full Day (6-8 hours)
 
 - Design Claude API client
 - Design prompt templates for evaluation
@@ -383,7 +383,7 @@
 
 #### Day 17-18: Trigger Phrase Quality (H3)
 
-**Implementation (6-8 hours)**
+#### Implementation (6-8 hours)
 
 - **H3**: `skill-trigger-phrase-quality`
   - Effort: 6 hours
@@ -399,14 +399,14 @@
 
 #### Day 19: Description & Body Quality (H4, H5)
 
-**Morning Session (3-4 hours)**
+#### Morning Session (3-4 hours)
 
 - **H4**: `skill-description-clarity`
   - Effort: 3 hours
   - LLM evaluation of clarity
   - Deliverable: Rule + 6 tests
 
-**Afternoon Session (3-4 hours)**
+#### Afternoon Session (3-4 hours)
 
 - **H5**: `skill-body-relevance`
   - Effort: 3 hours
@@ -425,7 +425,7 @@
 
 #### Day 21: External Tool Architecture
 
-**Full Day (4-6 hours)**
+#### Full Day (4-6 hours)
 
 - Design external tool wrapper pattern
 - Design graceful degradation for missing tools
@@ -439,7 +439,7 @@
 
 #### Day 22-23: Script Linting (H10, H11)
 
-**Day 22 (4-6 hours)**
+#### Day 22 (4-6 hours)
 
 - **H10**: `skill-shellcheck-validation`
   - Effort: 5 hours
@@ -448,7 +448,7 @@
   - Map to our error format
   - Deliverable: Rule + wrapper + 8 tests
 
-**Day 23 (4-6 hours)**
+#### Day 23 (4-6 hours)
 
 - **H11**: `skill-pylint-validation`
   - Effort: 5 hours
@@ -464,7 +464,7 @@
 
 #### Day 24: Markdownlint Integration (H12)
 
-**Half Day (3-4 hours)**
+#### Half Day (3-4 hours)
 
 - **H12**: `skill-markdownlint-body`
   - Effort: 3 hours
@@ -483,7 +483,7 @@
 
 #### Day 25: Complexity & Dependencies (H6, H7)
 
-**Morning Session (3-4 hours)**
+#### Morning Session (3-4 hours)
 
 - **H6**: `skill-complexity-score`
   - Effort: 3 hours
@@ -491,7 +491,7 @@
   - Count dependencies
   - Deliverable: Rule + 5 tests
 
-**Afternoon Session (3-4 hours)**
+#### Afternoon Session (3-4 hours)
 
 - **H7**: `skill-dependency-validation`
   - Effort: 3 hours
@@ -506,7 +506,7 @@
 
 #### Day 26: Performance & Testing (H8, H9)
 
-**Morning Session (2-3 hours)**
+#### Morning Session (2-3 hours)
 
 - **H8**: `skill-performance-check`
   - Effort: 2 hours
@@ -514,7 +514,7 @@
   - Warn on missing async patterns
   - Deliverable: Rule + 4 tests
 
-**Afternoon Session (2-3 hours)**
+#### Afternoon Session (2-3 hours)
 
 - **H9**: `skill-test-coverage`
   - Effort: 2 hours
@@ -528,14 +528,14 @@
 
 #### Day 27: Accessibility & i18n (H13, H14, H15)
 
-**Morning Session (2-3 hours)**
+##### Morning Session (2-3 hours)
 
 - **H13**: `skill-accessibility-check`
   - Effort: 2 hours
   - Check for screen reader friendly output
   - Deliverable: Rule + 3 tests
 
-**Afternoon Session (3-4 hours)**
+##### Afternoon Session (3-4 hours)
 
 - **H14**: `skill-internationalization`
   - Effort: 2 hours
@@ -554,7 +554,7 @@
 
 #### Day 28: Integration & Polish
 
-**Full Day (6-8 hours)**
+#### Full Day (6-8 hours)
 
 - Integration testing across all rules
 - Performance optimization

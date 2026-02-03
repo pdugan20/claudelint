@@ -191,7 +191,7 @@ Following the LSP plugin pattern (e.g., `pyright-lsp` plugin requires `pyright-l
 
 **The dependency relationship:**
 
-```
+```text
 claudelint plugin (skills) → depends on → claude-code-lint npm package (CLI binary)
 ```
 

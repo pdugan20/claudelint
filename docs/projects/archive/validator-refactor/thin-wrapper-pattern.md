@@ -40,13 +40,13 @@ export const SkillFrontmatterSchema = z.object({
 
 ### Options Considered
 
-**Option A: Full Duplication**
+#### Option A: Full Duplication
 
 - Implement rules with complete validation logic
 - Remove validation from Zod schemas
 - **Downside:** 100% duplication, maintenance nightmare
 
-**Option B: Keep Stubs**
+#### Option B: Keep Stubs
 
 - Leave stub rules as placeholders
 - Keep validation in schemas only

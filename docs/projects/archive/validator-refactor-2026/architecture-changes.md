@@ -20,7 +20,7 @@ This document details the architectural changes made during the validator refact
 
 ### Before
 
-```
+```text
 BaseValidator (abstract)
 ├── ClaudeMdValidator
 ├── SkillsValidator
@@ -37,7 +37,7 @@ BaseValidator (abstract)
 
 ### After
 
-```
+```text
 FileValidator (abstract)
 ├── ClaudeMdValidator
 ├── SkillsValidator
@@ -124,7 +124,7 @@ protected abstract validateSemantics(filePath: string, config: z.infer<T>): Prom
 
 **Before (733 lines):**
 
-```
+```text
 src/composition/
 ├── index.ts (20 lines)
 ├── types.ts (56 lines)
@@ -400,7 +400,7 @@ export const rule: Rule = {
 
 ### Validation Flow
 
-```
+```text
 User runs claudelint
        ↓
 Linter discovers validators

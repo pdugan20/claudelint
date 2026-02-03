@@ -61,7 +61,7 @@ The current validator architecture has several issues:
 
 ## Project Timeline
 
-```
+```text
 Week 1 (Feb 1-2): Phase 1 - Foundation
 Week 1 (Feb 3-4): Phase 2 - Standardization
 Week 1 (Feb 5-6): Phase 3 - Documentation

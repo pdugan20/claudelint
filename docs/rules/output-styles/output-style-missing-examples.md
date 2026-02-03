@@ -59,7 +59,7 @@ function hello() {
   console.log("Hello, world!");
 }
 
-```
+```text
 ```
 
 Examples section with H2 heading:

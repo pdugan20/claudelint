@@ -102,6 +102,7 @@ Example additions:
 claude skill-name arg1 arg2
 ```
 
+```text
 ```
 
 Or:
@@ -120,6 +121,7 @@ Advanced usage:
 ./script.sh input.txt --verbose --output result.txt
 ```
 
+```text
 ```
 
 ## Options

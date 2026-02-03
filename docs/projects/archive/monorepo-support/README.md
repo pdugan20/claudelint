@@ -99,7 +99,7 @@ claudelint check-all --workspaces
 
 ## Project Structure
 
-```
+```text
 docs/projects/archive/monorepo-support/
 ├── README.md                      # This file
 ├── tracker.md                     # Progress tracker

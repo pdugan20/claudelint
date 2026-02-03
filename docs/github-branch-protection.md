@@ -8,7 +8,7 @@ Branch protection rules help maintain code quality by requiring specific checks 
 
 ## Configuration Location
 
-**GitHub Repository → Settings → Branches → Branch protection rules**
+Navigate to: GitHub Repository → Settings → Branches → Branch protection rules
 
 ## Branch: `main`
 

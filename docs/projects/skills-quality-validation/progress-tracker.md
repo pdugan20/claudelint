@@ -17,7 +17,7 @@
 
 ## Phase 0: Architecture Refactor (PREREQUISITE)
 
-**Must complete before implementing any skill rules**
+### Must complete before implementing any skill rules
 
 ### Goal
 

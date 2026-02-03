@@ -378,19 +378,19 @@ npm run claudelint -- /tmp/hooks.json
 
 #### 6. Plugin Validator (SchemaValidator)
 
-**Test on existing plugins in test fixtures**
+Test on existing plugins in test fixtures.
 
 #### 7. LSP Validator (SchemaValidator)
 
-**Test on existing LSP configs**
+Test on existing LSP configs.
 
 #### 8. Agents Validator (FileValidator)
 
-**Test on agent directories**
+Test on agent directories.
 
 #### 9. Output Styles Validator (FileValidator)
 
-**Test on output style files**
+Test on output style files.
 
 #### 10. Commands Validator (FileValidator)
 
@@ -653,7 +653,7 @@ chmod +x test-validator-refactor.sh
 
 ## Known Issues & Workarounds
 
-*Document any known issues discovered during testing*
+Document any known issues discovered during testing.
 
 ### Issue 1
 

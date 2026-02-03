@@ -451,7 +451,7 @@ Architecture simplifications:
 - `docs/projects/vitepress-docs/information-architecture.md` - Added `/integrations/monorepos`, updated page count
 - `docs/projects/vitepress-docs/UPDATES.md` - This file, added Feb 2026 updates
 
-## Next Steps
+## Implementation Next Steps
 
 1. **Phase 1 Implementation** (when ready)
    - Include monorepo user guide in content migration

@@ -254,7 +254,7 @@ BREAKING CHANGE: API signatures changed"
 
 ### Commit Format
 
-```
+```text
 <type>[optional scope]: <description>
 
 [optional body]
@@ -298,7 +298,7 @@ export GITHUB_TOKEN=ghp_xxxxxxxxxxxxx
 
 Or use `.env` file (add to .gitignore):
 
-```
+```text
 GITHUB_TOKEN=ghp_xxxxxxxxxxxxx
 ```
 

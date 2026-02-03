@@ -1637,7 +1637,7 @@ This section demonstrates how the core architectural components (Rule Registry, 
 
 ### Full Integration Example
 
-**Step 1: Core Setup (Module Loading)**
+#### Step 1: Core Setup (Module Loading)
 
 ```typescript
 // src/validators/index.ts
@@ -1670,7 +1670,7 @@ RuleRegistry.register({
 });
 ```
 
-**Step 2: Validator Execution**
+#### Step 2: Validator Execution
 
 ```typescript
 // src/cli.ts
@@ -1706,7 +1706,7 @@ async function checkAll() {
 }
 ```
 
-**Step 3: Validator Implementation Using Composition**
+#### Step 3: Validator Implementation Using Composition
 
 ```typescript
 // src/validators/skills.ts
@@ -1750,7 +1750,7 @@ export class SkillsValidator extends FileValidator {
 }
 ```
 
-**Step 4: Result Reporting**
+#### Step 4: Result Reporting
 
 ```typescript
 // Reporter uses Rule Registry for rich error messages

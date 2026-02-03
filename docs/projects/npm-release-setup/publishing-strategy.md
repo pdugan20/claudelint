@@ -427,7 +427,7 @@ npm deprecate claudelint@"< 0.2.0" "Upgrade to 0.2.0 or later"
 
 ## Version Lifecycle
 
-```
+```text
 Development
     ↓
 0.2.0-alpha.0 (optional, internal testing)

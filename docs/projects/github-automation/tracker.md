@@ -269,7 +269,7 @@ This section tracks packages that couldn't be updated to latest versions due to 
 
 **TypeScript Errors Encountered:**
 
-```
+```text
 src/schemas/lsp-config.schema.ts(18,10): error TS2554: Expected 2-3 arguments, but got 1.
 src/schemas/lsp-config.schema.ts(38,12): error TS2554: Expected 2-3 arguments, but got 1.
 src/schemas/refinements.ts(141,6): error TS2694: Namespace has no exported member 'ZodEffects'.
@@ -310,7 +310,7 @@ src/validators/schemas.ts(90,10): error TS2554: Expected 2-3 arguments, but got 
 
 **TypeScript Errors Encountered:**
 
-```
+```text
 src/cli/utils/formatters/markdownlint.ts(49,28): error TS2694: Namespace has no exported member 'Configuration'.
 src/cli/utils/formatters/markdownlint.ts(63,32): error TS2339: Property 'sync' does not exist.
 src/cli/utils/formatters/markdownlint.ts(73,9): error TS18046: 'violations' is of type 'unknown'.
@@ -632,20 +632,20 @@ TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171
 
 **What We Fixed:**
 
-**Phase 1: Quick Wins (24 errors fixed, 171→147)**
+#### Phase 1: Quick Wins (24 errors fixed, 171→147)
 
 - Removed unused error variables in catch blocks
 - Fixed duplicate catch blocks
 - Wrapped case statements in braces for proper scoping
 - Removed unused variables with `_` prefix
 
-**Phase 2: Dynamic Imports (30 errors fixed, 147→117)**
+#### Phase 2: Dynamic Imports (30 errors fixed, 147→117)
 
 - Added type assertions for all require() calls
 - Fixed typeof import assertions for Node.js modules
 - Properly typed dynamic imports
 
-**Phase 3: Runtime Type Validation (73 errors fixed, 117→44)**
+#### Phase 3: Runtime Type Validation (73 errors fixed, 117→44)
 
 - Created type-guards.ts with helper functions (isObject, hasProperty, isString)
 - Fixed all LSP rules (8 files) with proper type guards
@@ -653,7 +653,7 @@ TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171
 - Fixed Plugin and Settings rules (5 files)
 - Changed from typed interfaces to unknown + runtime validation for true type safety
 
-**Phase 4: Final Cleanup (44 errors fixed, 44→0)**
+#### Phase 4: Final Cleanup (44 errors fixed, 44→0)
 
 - Changed safeParseJSON return type from any to unknown
 - Fixed base-to-string errors with isString() checks
@@ -749,24 +749,24 @@ permissions: {
 
 **Fix Plan:**
 
-**Phase 1: Update Schema (15 min)**
+#### Phase 1: Update Schema (15 min)
 
 - Reference official schema: <https://json.schemastore.org/claude-code-settings.json>
 - Update `PermissionRuleSchema` → `PermissionsSchema`
 - Add all fields: allow, deny, ask, defaultMode, disableBypassPermissionsMode, additionalDirectories
 
-**Phase 2: Fix Validation Rules (30 min)**
+#### Phase 2: Fix Validation Rules (30 min)
 
 - `settings-invalid-permission` → validate allow/deny/ask arrays exist and have valid strings
 - `settings-permission-empty-pattern` → validate Tool(pattern) syntax in rule strings
 - `settings-permission-invalid-rule` → validate tool names are valid (Bash, Read, Write, etc.)
 
-**Phase 3: Update Tests (20 min)**
+#### Phase 3: Update Tests (20 min)
 
 - Rewrite all permission rule tests with correct format
 - Add tests for new fields (defaultMode, additionalDirectories)
 
-**Phase 4: Fix Documentation (15 min)**
+#### Phase 4: Fix Documentation (15 min)
 
 - Update all 3 rule docs with correct examples
 - Reference official Claude Code docs

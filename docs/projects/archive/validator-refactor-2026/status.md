@@ -103,7 +103,7 @@
 
 ## Key Decisions
 
-*Document major decisions here*
+Document major decisions here.
 
 ### Decision Log
 
@@ -128,7 +128,7 @@
 
 ## Project Timeline
 
-```
+```text
 Week of Feb 1-7, 2026
 
 Mon Feb 1: Project setup & planning ✓

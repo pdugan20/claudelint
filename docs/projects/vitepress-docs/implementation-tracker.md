@@ -150,14 +150,14 @@ Track progress through each phase of VitePress documentation website implementat
 
 Add `meta.docs` to most commonly violated rules:
 
-**CLAUDE.md Rules (14 total → 4 with metadata)**
+#### CLAUDE.md Rules (14 total → 4 with metadata)
 
 - [ ] claude-md-size-error
 - [ ] claude-md-size-warning
 - [ ] claude-md-import-missing
 - [ ] claude-md-file-not-found
 
-**Skills Rules (32 total → 8 with metadata)**
+#### Skills Rules (32 total → 8 with metadata)
 
 - [ ] skill-name
 - [ ] skill-description
@@ -168,30 +168,30 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] skill-eval-usage
 - [ ] skill-path-traversal
 
-**Settings Rules (5 total → 2 with metadata)**
+#### Settings Rules (5 total → 2 with metadata)
 
 - [ ] settings-invalid-permission
 - [ ] settings-permission-invalid-rule
 
-**Hooks Rules (3 total → 2 with metadata)**
+#### Hooks Rules (3 total → 2 with metadata)
 
 - [ ] hooks-invalid-event
 - [ ] hooks-missing-script
 
-**MCP Rules (13 total → 4 with metadata)**
+#### MCP Rules (13 total → 4 with metadata)
 
 - [ ] mcp-invalid-server
 - [ ] mcp-stdio-empty-command
 - [ ] mcp-http-invalid-url
 - [ ] mcp-invalid-env-var
 
-**Plugin Rules (13 total → 3 with metadata)**
+#### Plugin Rules (13 total → 3 with metadata)
 
 - [ ] plugin-invalid-manifest
 - [ ] plugin-name-required
 - [ ] plugin-version-required
 
-**Other Validators (25 total → 3 with metadata)**
+#### Other Validators (25 total → 3 with metadata)
 
 - [ ] agent-name
 - [ ] lsp-command-not-in-path
@@ -223,7 +223,7 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Week 3: Remaining 50% (40 rules)
 
-**Priority 2: Medium-Priority Rules**
+#### Priority 2: Medium-Priority Rules
 
 - [ ] Add metadata to 20 rules (Days 1-3)
   - [ ] Mix across all validators
@@ -239,7 +239,7 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Week 4: Final 25% (39 rules)
 
-**Priority 3: Remaining Rules**
+#### Priority 3: Remaining Rules
 
 - [ ] Add metadata to remaining rules (Days 1-4)
   - [ ] Complete all CLAUDE.md rules

@@ -662,15 +662,15 @@
 
 ### Blockers
 
-*Document any blockers here as they arise*
+Document any blockers here as they arise.
 
 ### Decisions Made
 
-*Document any deviation from the original plan*
+Document any deviation from the original plan.
 
 ### Lessons Learned
 
-*Capture insights for future refactoring projects*
+Capture insights for future refactoring projects.
 
 ---
 

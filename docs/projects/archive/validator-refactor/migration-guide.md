@@ -292,6 +292,7 @@ This rule has no configuration options.
 
 See [rule source code](../../../src/rules/mcp/mcp-stdio-empty-command.ts)
 
+```text
 ```
 
 ## Common Patterns
@@ -299,6 +300,7 @@ See [rule source code](../../../src/rules/mcp/mcp-stdio-empty-command.ts)
 ### Pattern 1: Simple Condition Check
 
 **Ghost Rule:**
+
 ```typescript
 if (value.length < 50) {
   this.reportWarning('Body content is very short', filePath);

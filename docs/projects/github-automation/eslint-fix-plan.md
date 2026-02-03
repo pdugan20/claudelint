@@ -167,7 +167,7 @@ const name = frontmatter.name;  // type is {}
 
 **Goal:** Add proper typing for `context.data` in rules
 
-**Option A: Type Guards (Conservative - RECOMMENDED)**
+#### Option A: Type Guards (Conservative - RECOMMENDED)
 
 Keep `context.data` as `any` but add type guards in each rule:
 
@@ -207,7 +207,7 @@ export default {
 - Apply pattern systematically
 - **Difficulty:** 3/5 (repetitive but straightforward)
 
-**Option B: Typed Context Data (Aggressive - NOT RECOMMENDED YET)**
+#### Option B: Typed Context Data (Aggressive - NOT RECOMMENDED YET)
 
 Create specific context data types:
 

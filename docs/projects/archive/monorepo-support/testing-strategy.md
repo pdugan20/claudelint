@@ -553,7 +553,7 @@ describe('CLI workspace flags', () => {
 
 ### Fixture Structure
 
-```
+```text
 tests/fixtures/
 ├── config-inheritance/
 │   ├── single-extend/

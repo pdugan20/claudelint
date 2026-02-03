@@ -66,7 +66,7 @@ npm publish --tag beta --access public
 
 ## Project Structure
 
-```
+```text
 docs/projects/npm-release-setup/
 ├── README.md                      # This file
 ├── tracker.md                     # Progress tracker (START HERE)

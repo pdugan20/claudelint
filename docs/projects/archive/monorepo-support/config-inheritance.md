@@ -596,7 +596,7 @@ npm install --save-dev @acme/claudelint-config
 
 ### Before (Duplicated Configs)
 
-```
+```text
 monorepo/
 ├── packages/
 │   ├── app-1/
@@ -607,7 +607,7 @@ monorepo/
 
 ### After (With Extends)
 
-```
+```text
 monorepo/
 ├── .claudelintrc.json          # Shared rules
 ├── packages/

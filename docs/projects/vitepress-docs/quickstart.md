@@ -221,6 +221,7 @@ claudelint check-all
 
 claudelint ensures your Claude Code projects follow best practices and catch issues early in development.
 
+```text
 ```
 
 ### Step 6: Create Sync Script (Temporary)

@@ -137,6 +137,7 @@ about: Report an issue related to how Prettier formats code
 
 Brief explanation
 
+```text
 ```
 
 ### ESLint Approach
@@ -335,7 +336,7 @@ Fixes #
 
 #### 1. CI/CD Testing
 
-**Prettier: dev-test.yml**
+##### Prettier: dev-test.yml
 
 - Triggers: Push to main/next/version branches, all PRs
 - Platforms: Ubuntu, macOS, Windows
@@ -348,7 +349,7 @@ Fixes #
   - Upload coverage to Codecov (Ubuntu/Node 24 only)
   - Validate benchmark flags (non-Windows)
 
-**ESLint: ci.yml**
+##### ESLint: ci.yml
 
 - Triggers: Push to main, PRs to main
 - Multiple jobs:
@@ -360,7 +361,7 @@ Fixes #
 
 #### 2. Linting
 
-**Prettier: lint.yml**
+##### Prettier: lint.yml
 
 Comprehensive linting including:
 
@@ -376,7 +377,7 @@ Comprehensive linting including:
 - Knip (unused code detection)
 - File change detection
 
-**ESLint: Integrated into ci.yml verify_files job**
+##### ESLint: Integrated into ci.yml verify_files job
 
 #### 3. CodeQL Security Analysis
 
@@ -384,13 +385,13 @@ Both projects use **codeql.yml** for automated security scanning.
 
 #### 4. Stale Issue Management
 
-**Prettier: no-response.yml**
+##### Prettier: no-response.yml
 
 - Triggers: Issue comments, daily at midnight UTC
 - Closes issues labeled "status:awaiting response" after 14 days
 - Uses `lee-dohm/no-response` action
 
-**ESLint: stale.yml**
+##### ESLint: stale.yml
 
 - Triggers: Daily at 10:31 PM UTC
 - Uses reusable workflow from `eslint/workflows` repository
@@ -398,7 +399,7 @@ Both projects use **codeql.yml** for automated security scanning.
 
 #### 5. Issue Locking
 
-**Prettier: lock.yml**
+##### Prettier: lock.yml
 
 - Triggers: Daily at midnight UTC, manual dispatch
 - Locks issues (not PRs) after 90 days of inactivity
@@ -409,7 +410,7 @@ Both projects use **codeql.yml** for automated security scanning.
 
 #### 6. PR Labeling
 
-**ESLint: pr-labeler.yml**
+##### ESLint: pr-labeler.yml
 
 - Triggers: `pull_request_target` events
 - Uses `actions/labeler@v6` with `sync-labels: true`
@@ -678,7 +679,7 @@ updates:
 
 ## Code Ownership
 
-**ESLint: CODEOWNERS**
+### ESLint: CODEOWNERS
 
 ```text
 /docs/ @eslint/website-team @eslint/eslint-team
@@ -715,7 +716,7 @@ Update as team grows or when specific domain expertise develops.
 
 ## GitHub Copilot Instructions
 
-**ESLint: copilot-instructions.md**
+### ESLint: copilot-instructions.md
 
 Provides comprehensive guidance for GitHub Copilot when working in the repository:
 
@@ -845,6 +846,7 @@ export default {
 - Update documentation for new rules
 - Keep commits focused and descriptive
 
+```text
 ```
 
 ## Security Policies
