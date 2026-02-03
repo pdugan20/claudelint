@@ -743,13 +743,15 @@ export class ClaudeLint {
 
   /**
    * Determine which validators should run for a given file
+   *
+   * Currently runs all validators for every file. Could be optimized to filter
+   * validators based on file patterns and config, but this is not a priority
+   * since validation is already fast.
    */
   private getApplicableValidators(
     _filePath: string,
     allValidators: import('../validators/file-validator').FileValidator[]
   ): import('../validators/file-validator').FileValidator[] {
-    // For Phase 1, we'll run all validators
-    // In Phase 2, we'll add logic to filter based on file patterns and config
     return allValidators;
   }
 

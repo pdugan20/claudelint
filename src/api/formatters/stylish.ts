@@ -17,9 +17,6 @@ import { BaseFormatter } from '../formatter';
  */
 export class StylishFormatter extends BaseFormatter {
   format(results: LintResult[]): string {
-    // Full implementation will be in Phase 2
-    // For now, provide basic output
-
     let output = '';
     const summary = this.getSummary(results);
 

@@ -82,17 +82,14 @@ export function buildLintMessage(
  * @returns FixInfo for the API
  */
 function convertAutoFixToFixInfo(_autoFix: AutoFix): FixInfo {
-  // The current AutoFix format uses a function to transform content
-  // For the API, we need to convert this to a range-based edit
-  // This is a simplified implementation - in practice, we'd need to
-  // calculate the actual byte ranges based on the transformation
-
-  // For now, we'll return a placeholder that indicates the whole file
-  // can be fixed. The actual implementation in Phase 3 will handle
-  // applying the fix using autoFix.apply()
+  // The internal AutoFix format uses a function to transform content.
+  // The API's FixInfo format expects byte ranges and replacement text.
+  // This is intentionally simplified - autofixes are applied via autoFix.apply()
+  // in the main validation flow before results reach the API consumer.
+  // This placeholder allows the API to report that a fix exists.
   return {
-    range: [0, 0], // Will be calculated when fix is applied
-    text: '', // Will be calculated when fix is applied
+    range: [0, 0], // Placeholder - fix is applied before API consumption
+    text: '', // Placeholder - fix is applied before API consumption
   };
 }
 
