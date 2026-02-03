@@ -136,7 +136,7 @@ jobs:
         continue-on-error: true
 
   schema-sync:
-    name: Verify Schema Synchronization
+    name: Verify Schema Synchronization (Phase 2.2)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -150,8 +150,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify schemas are in sync with official specs
+      - name: Verify schemas match official Claude Code specs
         run: npm run check:schema-sync
+        # Dual-schema verification:
+        # 1. Generates JSON Schemas from Zod
+        # 2. Compares against manual reference schemas
+        # 3. Fails if drift detected
 
   build:
     name: Build
