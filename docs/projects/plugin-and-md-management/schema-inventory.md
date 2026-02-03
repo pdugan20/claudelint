@@ -171,14 +171,18 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 - 2026-02-02: Found wrong validation on description (was required + min 10 chars + third person, should be optional + any string)
 - 2026-02-02: Fixed - deleted 4 invalid rules (output-style-name, output-style-description, output-style-examples, output-style-missing-examples)
 
-### 9. ClaudeMdFrontmatterSchema
+### 9. RulesFrontmatterSchema
 
-**Location**: `src/schemas/claude-md-frontmatter.schema.ts`
-**Official Source**: Claude Code documentation (CLAUDE.md format)
-**Status**: NEEDS VERIFICATION - NEEDS VERIFICATION
-**Verification**: Manual - check if CLAUDE.md supports frontmatter
+**Location**: `src/schemas/rules-frontmatter.schema.ts`
+**Official Source**: [https://code.claude.com/docs/en/memory#path-specific-rules](https://code.claude.com/docs/en/memory#path-specific-rules)
+**Status**: CLEAN - SYNCED (verified 2026-02-02)
+**Verification**: Manual JSON Schema + auto-generated comparison
 
-**Note**: May not have official frontmatter support - needs investigation
+**Official Fields** (1 total, optional):
+- `paths`: Array of glob patterns to scope rules to specific files (optional)
+
+**Purpose**: Frontmatter for `.claude/rules/*.md` files to scope rules to specific file patterns.
+**Note**: This is NOT for the main CLAUDE.md file. Rules without `paths` apply globally.
 
 ### 10. CommandFrontmatterSchema
 

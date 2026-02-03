@@ -26,7 +26,7 @@ Report differences → Fix Zod
 
 ## Progress
 
-### Completed (7/8)
+### Completed (8/8)
 
 1. **PluginManifestSchema** [COMPLETE]
    - Manual reference: `schemas/plugin-manifest.schema.json`
@@ -92,8 +92,15 @@ Report differences → Fix Zod
    - **Impact**: Deleted 4 invalid rules (output-style-name, output-style-description, output-style-examples, output-style-missing-examples)
    - **Severity**: MAJOR - enforcing constraints that don't exist in spec
 
+8. **RulesFrontmatterSchema** [COMPLETE] (Clean - NO DRIFT)
+   - Manual reference: `schemas/rules-frontmatter.schema.json`
+   - Source: https://code.claude.com/docs/en/memory#path-specific-rules
+   - Status: Clean - schema matches official spec perfectly
+   - **Schema**: Single optional `paths` field for glob patterns
+   - **Note**: Renamed from ClaudeMdFrontmatterSchema for clarity (applies to `.claude/rules/*.md`, not main CLAUDE.md)
+   - **Impact**: No drift found, renamed for accuracy
+
 ### In Progress (0/8)
-8. **ClaudeMdFrontmatterSchema** - Awaiting docs
 
 ## Key Findings
 

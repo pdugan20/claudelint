@@ -124,16 +124,16 @@ export const SCHEMA_REGISTRY: SchemaSource[] = [
     notes: 'Plugin docs show example with description and capabilities fields',
   },
 
-  // CLAUDE.md Frontmatter
+  // Rules File Frontmatter (.claude/rules/*.md)
   {
-    schema: 'ClaudeMdFrontmatterSchema',
-    file: 'src/schemas/claude-md-frontmatter.schema.ts',
+    schema: 'RulesFrontmatterSchema',
+    file: 'src/schemas/rules-frontmatter.schema.ts',
     officialUrl: undefined,
-    sourceType: 'inferred',
-    docsUrl: 'https://code.claude.com/docs/en/best-practices#write-an-effective-claude-md',
-    lastVerified: undefined,
-    status: 'needs-audit',
-    notes: 'Need to determine if CLAUDE.md supports frontmatter, or if this is only for .claude/rules/ files',
+    sourceType: 'documented-spec',
+    docsUrl: 'https://code.claude.com/docs/en/memory#path-specific-rules',
+    lastVerified: '2026-02-02',
+    status: 'verified',
+    notes: 'Frontmatter for .claude/rules/*.md files with paths field for scoping rules to specific file patterns',
   },
 
   // Output Style Frontmatter

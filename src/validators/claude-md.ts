@@ -1,7 +1,7 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
-import { ClaudeMdFrontmatterSchema } from '../schemas/claude-md-frontmatter.schema';
+import { RulesFrontmatterSchema } from '../schemas/rules-frontmatter.schema';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -82,7 +82,7 @@ export class ClaudeMdValidator extends FileValidator {
     // Use schema-based validation
     const { data: frontmatter, result } = validateFrontmatterWithSchema(
       content,
-      ClaudeMdFrontmatterSchema,
+      RulesFrontmatterSchema,
       filePath,
       'claude-md'
     );

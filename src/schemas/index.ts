@@ -14,4 +14,4 @@ export * from './skill-frontmatter.schema';
 export * from './agent-frontmatter.schema';
 export * from './output-style-frontmatter.schema';
 export * from './lsp-config.schema';
-export * from './claude-md-frontmatter.schema';
+export * from './rules-frontmatter.schema';
