@@ -25,6 +25,7 @@
     "check:links:all": "remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md",
     "docs:generate": "ts-node scripts/generate/rule-docs.ts",
     "generate:rule-registry": "ts-node scripts/generate/rule-registry.ts",
+    "generate:json-schemas": "ts-node scripts/generate/json-schemas.ts",
     "check:emojis": "node scripts/check/emoji.js",
     "check:logger-spacing": "bash scripts/check/logger-spacing.sh",
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
@@ -143,6 +144,7 @@
     "remark-validate-links": "^13.1.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "zod-to-json-schema": "^3.25.1"
   }
 }
