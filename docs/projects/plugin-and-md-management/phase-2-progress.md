@@ -316,12 +316,43 @@ npm run check:schema-sync       # Full verification (runs in CI)
 - [x] CI/CD integration
 - [x] All 8 schemas verified with 0 drift
 
-### Phase 2.3 - Hybrid Verification (Next)
+### Phase 2.3 - COMPLETE!
 
-- [ ] Plugin manifest component verification
-- [ ] Hook events verification
-- [ ] MCP config structure verification
-- [ ] Create hybrid verification framework
+**Verification Audit**: All Phase 2.3 tasks completed via Phase 2.1/2.2 work
+
+- [x] Plugin manifest component verification
+  - All 15 fields verified against official spec
+  - Component paths (skills, agents, commands) verified
+  - Config paths (hooks, mcpServers, lspServers) verified
+  - No drift detected
+
+- [x] Hook events verification
+  - 13 hook events match official spec
+  - HookEvents constant ≡ hooks-config.schema.json enum
+  - hooks-invalid-event rule uses correct list
+  - No drift detected
+
+- [x] MCP config structure verification
+  - Transport types verified (stdio, sse, http, websocket)
+  - Flat structure verified (not nested)
+  - Server names as object keys verified
+  - No drift detected
+
+- [x] Hybrid verification framework created
+  - Manual extraction: Read docs → JSON Schema
+  - Automated generation: Zod → JSON Schema
+  - Automated comparison: Reference vs Generated
+  - CI integration: Runs on every PR
+  - **Dual-schema system IS the hybrid framework**
+
+**See**: `phase-2-3-verification.md` for complete audit
+
+### Phase 2.4 - Manual Verification Support (Next)
+
+- [ ] Tool names manual verification
+- [ ] Model names manual verification
+- [ ] Manual verification tracker
+- [ ] Manual verification playbook
 
 ## Questions Answered
 

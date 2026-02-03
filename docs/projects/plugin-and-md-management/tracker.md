@@ -579,10 +579,49 @@ None - Phase 2.1 complete!
 
 #### Phase 2.3: Hybrid Verification (3-4 days)
 
-- [ ] **Task 2.3.1**: Plugin manifest verification (completes Task 1.4)
-- [ ] **Task 2.3.2**: Hook events verification
-- [ ] **Task 2.3.3**: MCP config verification
-- [ ] **Task 2.3.4**: Create hybrid verification framework
+**Status**: COMPLETE (verified via Phase 2.1/2.2 work)
+
+**Note**: Phase 2.3 tasks were defined before implementing comprehensive dual-schema verification. All objectives met through Phase 2.1/2.2 work. See `phase-2-3-verification.md` for detailed audit.
+
+**Completed**:
+- [x] **Task 2.3.1**: Plugin manifest verification
+  - [x] PluginManifestSchema verified against official spec (no drift)
+  - [x] All 15 fields verified (name, version, description, author, etc.)
+  - [x] Component paths verified (skills, agents, commands)
+  - [x] Config paths verified (hooks, mcpServers, lspServers)
+  - [x] Union types handled (string | array | object)
+
+- [x] **Task 2.3.2**: Hook events verification
+  - [x] HookEvents constant verified (13 events match official spec)
+  - [x] hooks-config.schema.json enum verified (13 events)
+  - [x] hooks-invalid-event rule uses correct event list
+  - [x] No drift detected between constant and schema
+
+- [x] **Task 2.3.3**: MCP config verification
+  - [x] MCPConfigSchema verified against official spec (no drift)
+  - [x] Transport types verified (stdio, sse, http, websocket)
+  - [x] Flat structure verified (no `transport` wrapper)
+  - [x] Server names as object keys verified
+  - [x] 13 validation rules updated for correct structure
+
+- [x] **Task 2.3.4**: Create hybrid verification framework
+  - [x] Manual extraction process (read docs → create JSON Schema)
+  - [x] Automated generation (Zod → JSON Schema via zod-to-json-schema)
+  - [x] Automated comparison (manual reference vs generated)
+  - [x] Orchestration script (generate → compare → report)
+  - [x] CI integration (runs on every PR, blocks if drift detected)
+  - [x] Dual-schema system = hybrid verification framework
+
+**Acceptance Criteria**:
+- [x] All 3 specific verification tasks complete
+- [x] Hybrid framework implemented (dual-schema system)
+- [x] All 8 schemas verified with 0 drift
+- [x] CI runs verification on every PR
+- [x] Framework detects all drift types
+
+**Deliverables**:
+- Verification audit: `docs/projects/plugin-and-md-management/phase-2-3-verification.md`
+- Evidence: All schemas show "No drift detected" in comparison output
 
 #### Phase 2.4: Manual Verification Support (2-3 days)
 
