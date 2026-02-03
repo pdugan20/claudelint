@@ -8,6 +8,7 @@
  */
 
 import { ClaudeLintConfig } from '../utils/config/types';
+import { DeprecatedRuleUsage } from '../validators/file-validator';
 
 /**
  * Information about an automatic fix that can be applied
@@ -103,6 +104,9 @@ export interface LintResult {
     /** Time taken to validate this file in milliseconds */
     validationTime: number;
   };
+
+  /** Deprecated rules that were used during validation */
+  deprecatedRulesUsed?: DeprecatedRuleUsage[];
 }
 
 /**

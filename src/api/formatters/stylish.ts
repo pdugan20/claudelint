@@ -53,6 +53,47 @@ export class StylishFormatter extends BaseFormatter {
       output += '\nNo issues found\n';
     }
 
+    // Deprecation warnings
+    const deprecatedRules = this.collectDeprecatedRules(results);
+    if (deprecatedRules.length > 0) {
+      output += '\nDeprecated rules used:\n';
+      for (const rule of deprecatedRules) {
+        output += `  - ${rule.ruleId}: ${rule.reason}`;
+        if (rule.replacedBy && rule.replacedBy.length > 0) {
+          output += ` (use ${rule.replacedBy.join(', ')} instead)`;
+        }
+        if (rule.removeInVersion) {
+          output += ` [will be removed in ${rule.removeInVersion}]`;
+        }
+        if (rule.url) {
+          output += `\n    Migration guide: ${rule.url}`;
+        }
+        output += '\n';
+      }
+    }
+
     return output;
+  }
+
+  /**
+   * Collect all unique deprecated rules from results
+   */
+  private collectDeprecatedRules(
+    results: LintResult[]
+  ): import('../../validators/file-validator').DeprecatedRuleUsage[] {
+    const rulesMap = new Map<
+      string,
+      import('../../validators/file-validator').DeprecatedRuleUsage
+    >();
+
+    for (const result of results) {
+      if (result.deprecatedRulesUsed) {
+        for (const rule of result.deprecatedRulesUsed) {
+          rulesMap.set(rule.ruleId, rule);
+        }
+      }
+    }
+
+    return Array.from(rulesMap.values());
   }
 }

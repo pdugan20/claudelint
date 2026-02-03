@@ -21,6 +21,7 @@ import { registerValidatorCommands } from './cli/commands/validator-commands';
 import { registerConfigCommands } from './cli/commands/config-commands';
 import { registerFormatCommand } from './cli/commands/format';
 import { registerListRulesCommand } from './cli/commands/list-rules';
+import { registerCheckDeprecatedCommand } from './cli/commands/check-deprecated';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
 import { registerInstallPluginCommand } from './cli/commands/install-plugin';
 
@@ -53,6 +54,7 @@ registerConfigCommands(program);
 // Utility commands
 registerFormatCommand(program);
 registerListRulesCommand(program);
+registerCheckDeprecatedCommand(program);
 registerCacheClearCommand(program);
 registerInstallPluginCommand(program);
 

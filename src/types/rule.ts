@@ -37,6 +37,29 @@ export type RuleCategory =
 export type RuleSeverity = 'off' | 'warn' | 'error';
 
 /**
+ * Deprecation information for a rule
+ *
+ * Provides rich metadata about why a rule is deprecated and how to migrate.
+ * Modeled after ESLint's enhanced deprecation format.
+ */
+export interface DeprecationInfo {
+  /** Required: Clear explanation of why this rule is deprecated */
+  reason: string;
+
+  /** Optional: Rule ID(s) that replace this deprecated rule */
+  replacedBy?: RuleId | RuleId[];
+
+  /** Optional: Version when this rule was deprecated (semver) */
+  deprecatedSince?: string;
+
+  /** Optional: Version when this rule will be removed (semver), or null if retained indefinitely */
+  removeInVersion?: string | null;
+
+  /** Optional: URL to migration guide with detailed instructions */
+  url?: string;
+}
+
+/**
  * Metadata for a validation rule
  *
  * This replaces the manual RuleRegistry.register() calls.
@@ -61,11 +84,30 @@ export interface RuleMetadata {
   /** Whether this rule can auto-fix issues */
   fixable: boolean;
 
-  /** Whether this rule is deprecated */
-  deprecated: boolean;
-
-  /** If deprecated, list of replacement rule IDs */
-  replacedBy?: RuleId[];
+  /**
+   * Deprecation status
+   * - false/undefined: Not deprecated
+   * - true: Deprecated (simple, no details)
+   * - DeprecationInfo: Deprecated with rich metadata (reason, replacements, versions, migration guide)
+   *
+   * Use the object form (DeprecationInfo) for new deprecations to provide clear migration guidance.
+   * The boolean form is supported for backward compatibility.
+   *
+   * @example
+   * // Simple deprecation (backward compatible)
+   * deprecated: true
+   *
+   * @example
+   * // Rich deprecation (recommended)
+   * deprecated: {
+   *   reason: 'This rule validates a field that does not exist in the official spec',
+   *   replacedBy: 'new-rule-id',
+   *   deprecatedSince: '0.3.0',
+   *   removeInVersion: '1.0.0',
+   *   url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md'
+   * }
+   */
+  deprecated?: boolean | DeprecationInfo;
 
   /** Version when this rule was introduced */
   since: string;
@@ -143,7 +185,6 @@ export interface RuleContext {
  *     category: 'CLAUDE.md',
  *     severity: 'error',
  *     fixable: false,
- *     deprecated: false,
  *     since: '1.0.0',
  *     schema: z.object({
  *       maxSize: z.number().positive().int().optional()
@@ -177,6 +218,52 @@ export interface Rule {
 }
 
 /**
+ * Helper functions for working with rule deprecation
+ */
+
+/**
+ * Check if a rule is deprecated
+ */
+export function isRuleDeprecated(rule: Rule): boolean {
+  return (
+    rule.meta.deprecated === true ||
+    (typeof rule.meta.deprecated === 'object' && rule.meta.deprecated !== null)
+  );
+}
+
+/**
+ * Get deprecation info from a rule
+ * Returns DeprecationInfo or null if not deprecated
+ */
+export function getDeprecationInfo(rule: Rule): DeprecationInfo | null {
+  if (!rule.meta.deprecated) {
+    return null;
+  }
+
+  if (rule.meta.deprecated === true) {
+    // Simple boolean deprecation - return minimal info
+    return {
+      reason: 'This rule has been deprecated',
+    };
+  }
+
+  return rule.meta.deprecated;
+}
+
+/**
+ * Get replacement rule IDs for a deprecated rule
+ * Returns empty array if no replacements specified
+ */
+export function getReplacementRuleIds(rule: Rule): RuleId[] {
+  const info = getDeprecationInfo(rule);
+  if (!info || !info.replacedBy) {
+    return [];
+  }
+
+  return Array.isArray(info.replacedBy) ? info.replacedBy : [info.replacedBy];
+}
+
+/**
  * Type guard to check if a value is a valid Rule
  */
 export function isRule(value: unknown): value is Rule {
@@ -202,8 +289,6 @@ export function isRule(value: unknown): value is Rule {
     typeof (rule.meta as Record<string, unknown>).severity === 'string' &&
     'fixable' in rule.meta &&
     typeof (rule.meta as Record<string, unknown>).fixable === 'boolean' &&
-    'deprecated' in rule.meta &&
-    typeof (rule.meta as Record<string, unknown>).deprecated === 'boolean' &&
     'since' in rule.meta &&
     typeof (rule.meta as Record<string, unknown>).since === 'string' &&
     typeof rule.validate === 'function'

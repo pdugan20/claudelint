@@ -43,6 +43,8 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fix-dry-run', 'Preview fixes without applying them')
     .option('--fix-type <type>', 'Fix errors, warnings, or all', 'all')
     .option('--show-docs-url', 'Show documentation URLs for rules')
+    .option('--no-deprecated-warnings', 'Suppress warnings about deprecated rules')
+    .option('--error-on-deprecated', 'Treat usage of deprecated rules as errors')
     .option(
       '--workspace <name>',
       'Validate specific workspace package by name (works from any directory)'
@@ -66,6 +68,8 @@ export function registerCheckAllCommand(program: Command): void {
         fixDryRun?: boolean;
         fixType?: 'errors' | 'warnings' | 'all';
         showDocsUrl?: boolean;
+        deprecatedWarnings?: boolean;
+        errorOnDeprecated?: boolean;
         workspace?: string;
         workspaces?: boolean;
       }) => {
@@ -192,6 +196,8 @@ export function registerCheckAllCommand(program: Command): void {
             format: options.format || mergedConfig.output?.format,
             color: options.color !== undefined ? options.color : mergedConfig.output?.color,
             showDocsUrl: options.showDocsUrl,
+            deprecatedWarnings: options.deprecatedWarnings !== false,
+            errorOnDeprecated: options.errorOnDeprecated,
           });
 
           // Handle workspace-scoped validation
@@ -480,6 +486,17 @@ export function registerCheckAllCommand(program: Command): void {
             }
           }
 
+          // Check for deprecated rules (if errorOnDeprecated is enabled)
+          let hasDeprecatedRules = false;
+          if (options.errorOnDeprecated) {
+            for (const { result } of results) {
+              if (result.deprecatedRulesUsed && result.deprecatedRulesUsed.length > 0) {
+                hasDeprecatedRules = true;
+                break;
+              }
+            }
+          }
+
           // Check max warnings threshold
           const maxWarnings = options.maxWarnings ?? mergedConfig.maxWarnings ?? -1;
           if (maxWarnings >= 0 && totalWarnings > maxWarnings) {
@@ -489,7 +506,12 @@ export function registerCheckAllCommand(program: Command): void {
           }
 
           // Exit with appropriate code
-          if (options.strict && (totalErrors > 0 || totalWarnings > 0)) {
+          if (hasDeprecatedRules) {
+            // Deprecated rules treated as errors
+            logger.newline();
+            logger.error('Deprecated rules detected (--error-on-deprecated)');
+            process.exit(1);
+          } else if (options.strict && (totalErrors > 0 || totalWarnings > 0)) {
             // Strict mode: fail on any issue
             process.exit(1);
           } else if (totalErrors > 0 || (totalWarnings > 0 && options.warningsAsErrors)) {

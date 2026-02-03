@@ -1,54 +1,70 @@
 # Phase 2 Progress Report
 
 **Date**: 2026-02-03
-**Phase**: 2.2 - Build Automated Comparison
-**Status**: Complete (dual-schema verification system fully automated)
+**Phase**: 2.6 - Rule Deprecation System
+**Status**: Task 2.6.4 Complete (Implementation Complete)
 
 ## What We're Building
 
-A dual-schema verification system to detect when our Zod schemas drift from official Claude Code specifications.
+An ESLint-style rule deprecation system to gracefully phase out old rules while guiding users to modern replacements.
 
 ### The Approach
 
 ```text
-Official Docs (prose)
-    ↓ human reads
-Manual JSON Schema (reference, in schemas/)
-
-Our Zod Schema (implementation, in src/schemas/)
-    ↓ zod-to-json-schema
-Generated JSON Schema
-
-Compare: Manual vs Generated
+Rule Metadata
     ↓
-Report differences → Fix Zod
+deprecated: boolean | DeprecationInfo {
+    reason: string
+    replacedBy?: RuleId | RuleId[]
+    deprecatedSince?: string
+    removeInVersion?: string | null
+    url?: string
+}
+    ↓
+Validation Pipeline (FileValidator)
+    ↓ track deprecated rules
+ValidationResult { deprecatedRulesUsed }
+    ↓
+Reporter / Formatters
+    ↓ display warnings
+User sees deprecation info + migration guidance
 ```
 
 ## Progress
 
-### Completed (8/8)
+### Phase 2.6: Rule Deprecation System
 
-1. **PluginManifestSchema** [COMPLETE]
-   - Manual reference: `schemas/plugin-manifest.schema.json`
-   - Source: <https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema>
-   - Status: Zod matches official spec
-   - Fields: 15 (all present)
+#### Task 2.6.1: Research ✓
 
-2. **SkillFrontmatterSchema** [COMPLETE] (DRIFT FOUND & FIXED)
-   - Manual reference: `schemas/skill-frontmatter.schema.json`
-   - Source: <https://code.claude.com/docs/en/skills#frontmatter-reference>
-   - Status: Fixed - was missing 4 fields
-   - Fields: 14/14 present
-   - **Drift**: Missing argument-hint, disable-model-invocation, user-invocable, hooks (FIXED)
+- Studied ESLint's deprecation format evolution
+- Analyzed Prettier's deprecation lifecycle
+- Documented best practices in `docs/architecture/rule-deprecation.md`
 
-3. **HooksConfigSchema** [COMPLETE] (DRIFT FOUND & FIXED)
-   - Manual reference: `schemas/hooks-config.schema.json`
-   - Source: <https://code.claude.com/docs/en/hooks>
-   - Status: Fixed - was missing 2 fields
-   - Fields: 9/9 present in HookSchema
-   - **Drift**: Missing timeout, async fields (FIXED)
+#### Task 2.6.2: Design ✓
 
-4. **MCPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
+- Designed backward-compatible deprecation metadata
+- Created DeprecationInfo interface with rich metadata support
+- Planned helper functions and migration tooling
+
+#### Task 2.6.3: Implement Deprecation Metadata ✓
+
+- Updated `RuleMetadata.deprecated` field to support both boolean and DeprecationInfo
+- Implemented helper functions: `isRuleDeprecated()`, `getDeprecationInfo()`, `getReplacementRuleIds()`
+- Updated config validation to warn about deprecated rules
+- Created comprehensive test suite (22 tests)
+
+#### Task 2.6.4: Implement Deprecation Warnings ✓
+
+- **Tracking**: Added deprecation detection to `FileValidator.executeRule()`
+- **API**: Extended `LintResult` type with `deprecatedRulesUsed` field
+- **Output**: Updated `StylishFormatter` to display deprecation warnings
+- **CLI Flags**:
+  - `--no-deprecated-warnings`: Suppress deprecation warnings (default: show)
+  - `--error-on-deprecated`: Treat deprecated rules as errors (default: warnings only)
+- **Command**: Created `claudelint check-deprecated` to audit config files
+- **Tests**: 17 tests for tracking and formatting (all passing)
+
+1. **MCPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
    - Manual reference: `schemas/mcp-config.schema.json`
    - Source: <https://code.claude.com/docs/en/mcp>
    - Status: Fixed - ENTIRE STRUCTURE WAS WRONG
@@ -58,7 +74,7 @@ Report differences → Fix Zod
    - **Impact**: Required complete restructure + fixing 13 validation rules + updating all tests
    - **Severity**: CRITICAL - validators were checking against wrong structure
 
-5. **LSPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
+2. **LSPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
    - Manual reference: `schemas/lsp-config.schema.json`
    - Source: <https://code.claude.com/docs/en/plugins-reference#lsp-servers>
    - Status: Fixed - ENTIRE STRUCTURE WAS WRONG
@@ -70,7 +86,7 @@ Report differences → Fix Zod
    - **Impact**: Complete restructure + updated 8 rules + deprecated 2 invalid rules + fixed all tests
    - **Severity**: CRITICAL - validators couldn't validate real .lsp.json files
 
-6. **AgentFrontmatterSchema** [COMPLETE] (Minor drift - FIXED)
+3. **AgentFrontmatterSchema** [COMPLETE] (Minor drift - FIXED)
    - Manual reference: `schemas/agent-frontmatter.schema.json`
    - Source: <https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields>
    - Status: Fixed - missing 1 field + had 1 extra field
@@ -80,7 +96,7 @@ Report differences → Fix Zod
    - **Impact**: Added permissionMode enum, deleted agent-events rule and tests
    - **Severity**: Minor - one missing optional field, one extra field that should not exist
 
-7. **OutputStyleFrontmatterSchema** [COMPLETE] (MAJOR drift - FIXED)
+4. **OutputStyleFrontmatterSchema** [COMPLETE] (MAJOR drift - FIXED)
    - Manual reference: `schemas/output-style-frontmatter.schema.json`
    - Source: <https://code.claude.com/docs/en/output-styles#frontmatter>
    - Status: Fixed - completely wrong validations + missing field + extra field
@@ -92,7 +108,7 @@ Report differences → Fix Zod
    - **Impact**: Deleted 4 invalid rules (output-style-name, output-style-description, output-style-examples, output-style-missing-examples)
    - **Severity**: MAJOR - enforcing constraints that don't exist in spec
 
-8. **RulesFrontmatterSchema** [COMPLETE] (Clean - NO DRIFT)
+5. **RulesFrontmatterSchema** [COMPLETE] (Clean - NO DRIFT)
    - Manual reference: `schemas/rules-frontmatter.schema.json`
    - Source: <https://code.claude.com/docs/en/memory#path-specific-rules>
    - Status: Clean - schema matches official spec perfectly
@@ -306,7 +322,7 @@ npm run check:schema-sync       # Full verification (runs in CI)
 - [DONE] Automated system prevents future drift
 - [DONE] 66% code reduction in schema-sync script
 
-## Next Steps
+## Previous Phases (Completed)
 
 ### Phase 2.1 - COMPLETE
 
@@ -356,12 +372,29 @@ npm run check:schema-sync       # Full verification (runs in CI)
 
 **See**: `phase-2-3-verification.md` for complete audit
 
-### Phase 2.4 - Manual Verification Support (Next)
+## Next Steps
 
-- [ ] Tool names manual verification
-- [ ] Model names manual verification
-- [ ] Manual verification tracker
-- [ ] Manual verification playbook
+### Phase 2.6 - Rule Deprecation System
+
+**Status**: Tasks 2.6.1-2.6.4 COMPLETE, Tasks 2.6.5-2.6.6 remain
+
+#### Remaining Tasks
+
+**Task 2.6.5: Create Migration Tooling** - TODO
+
+- Create `scripts/migrate/update-configs.ts`
+- Implement config file scanning and replacement
+- Add `claudelint migrate` command to CLI
+- Handle 1:1, 1:many, and no-replacement cases
+- Add dry-run mode
+- Add tests
+
+**Task 2.6.6: Documentation and Examples** - TODO
+
+- Update CONTRIBUTING.md with deprecation policy
+- Create rule deprecation guide for contributors
+- Update rule creation template with deprecation examples
+- Document migration tool usage for users
 
 ## Questions Answered
 
@@ -388,6 +421,17 @@ Yes! Extra validations are fine. We can reject `<xml>` tags even if official spe
 
 ## Resources
 
+### Verification System
+
 - [Schema Verification Workflow](./schema-verification-workflow.md) - Detailed approach
 - [Schema Inventory](./schema-inventory.md) - All schemas with status
+- [VERIFICATION-SYSTEM.md](./VERIFICATION-SYSTEM.md) - Complete system documentation
+- [Verification Status Dashboard](./verification-status.md) - Auto-generated status
+
+### Rule Deprecation
+
+- [Rule Deprecation System](../../architecture/rule-deprecation.md) - Complete design and implementation plan
+
+### Project Tracking
+
 - [Tracker](./tracker.md) - Detailed task breakdown

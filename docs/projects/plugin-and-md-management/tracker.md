@@ -1,6 +1,6 @@
 # Implementation Tracker
 
-**Last Updated**: 2026-02-03 (Phase 2.2 complete)
+**Last Updated**: 2026-02-03 (Phase 2.6 in progress - research complete)
 
 Track progress across all phases. Mark tasks complete with `[x]` as you finish them.
 
@@ -692,9 +692,9 @@ None - Phase 2.1 complete!
 
 ## Phase 2.6: Rule Deprecation System (2-3 days)
 
-**Status**: Not Started
+**Status**: In Progress (Research Complete, Design Complete)
 **Duration**: 2-3 days
-**Dependencies**: Phase 2.1-2.5 in progress
+**Dependencies**: Phase 2.1-2.5 complete
 **Priority**: HIGH (enables safe rule evolution)
 
 ### Overview
@@ -703,50 +703,90 @@ Design and implement a proper rule deprecation system modeled after ESLint and P
 
 **Context**: We just deleted `plugin-dependency-invalid-version` and `plugin-circular-dependency` because they validated a field (`dependencies`) that never existed in the official plugin.json spec. This was the right call for beta, but we need a proper deprecation system for post-1.0.
 
-### Research Phase
+### Research Findings
 
-**Research ESLint's approach:**
+**ESLint's Modern Approach**:
 
-- How they mark rules as deprecated
-- How deprecated rules are reported
-- Configuration options (--report-unused-disable-directives equivalent)
-- Migration paths (replacedBy field)
-- Documentation patterns
+- Evolved from simple boolean `deprecated: true` to rich object format
+- Modern format: `deprecated: { reason, replacedBy[], deprecatedSince, availableUntil, url }`
+- Supports cross-plugin replacements with detailed metadata
+- Backward compatible (boolean still works)
+- **Key finding**: ESLint doesn't automatically warn about deprecated rules (GitHub Issue #20294)
 
-**Research Prettier's approach:**
+**Prettier's Approach**:
 
-- How they deprecate options
-- Version compatibility matrix
-- Breaking change communication
-- Migration tooling
+- Shows warnings when deprecated options are used
+- Keeps deprecated options for 1+ minor versions before removal
+- Removes in next major version
+- Unique versioning philosophy: formatting output changes aren't "breaking" (only API/CLI changes are)
+- Proposed experimental/deprecated flags for transitional periods (RFC #14527)
+
+**Our Design** (fully documented in `docs/architecture/rule-deprecation.md`):
+
+- Backward-compatible metadata: `deprecated?: boolean | DeprecationInfo`
+- `DeprecationInfo`: `{ reason, replacedBy?, deprecatedSince?, removeInVersion?, url? }`
+- Warning system with CLI flags: `--no-deprecated-warnings`, `--error-on-deprecated`
+- `claudelint migrate` command for auto-updating configs
+- Lifecycle: Deprecate (minor) → Warn for 2+ minors → Remove (major)
 
 ### Tasks
 
-- [ ] **Task 2.6.1**: Research ESLint and Prettier deprecation patterns
-  - [ ] Study ESLint's `meta.deprecated` and `meta.replacedBy` patterns
-  - [ ] Study Prettier's deprecation warnings and version policy
-  - [ ] Document findings in `docs/architecture/rule-deprecation.md`
-  - [ ] Identify best practices we want to adopt
+- [x] **Task 2.6.1**: Research ESLint and Prettier deprecation patterns
+  - [x] Study ESLint's `meta.deprecated` and `meta.replacedBy` patterns
+  - [x] Study Prettier's deprecation warnings and version policy
+  - [x] Document findings in `docs/architecture/rule-deprecation.md` (400+ lines)
+  - [x] Identify best practices we want to adopt
 
-- [ ] **Task 2.6.2**: Design deprecation system
-  - [ ] Define `meta.deprecated` field enhancement (boolean → object with reason, replacedBy, removeInVersion)
-  - [ ] Design warning/error reporting for deprecated rule usage
-  - [ ] Design config migration tool (auto-update rule IDs)
-  - [ ] Define deprecation lifecycle (warning → error → removed)
-  - [ ] Document in `docs/architecture/rule-deprecation.md`
+- [x] **Task 2.6.2**: Design deprecation system
+  - [x] Define `DeprecationInfo` interface (reason, replacedBy, deprecatedSince, removeInVersion, url)
+  - [x] Design warning format and output
+  - [x] Design CLI flags (--no-deprecated-warnings, --error-on-deprecated, check:deprecated)
+  - [x] Design config migration tool (`claudelint migrate`)
+  - [x] Define deprecation lifecycle (deprecate → warn → remove)
+  - [x] Document in `docs/architecture/rule-deprecation.md`
 
-- [ ] **Task 2.6.3**: Implement deprecation metadata
-  - [ ] Update `Rule` interface in `src/types/rule.ts`
-  - [ ] Add `DeprecationInfo` type with reason, replacedBy, removeInVersion fields
-  - [ ] Update schema validation to handle new metadata
-  - [ ] Add tests for deprecation metadata
+- [x] **Task 2.6.3**: Implement deprecation metadata
+  - [x] Added `DeprecationInfo` interface with all fields (reason, replacedBy, deprecatedSince, removeInVersion, url)
+  - [x] Updated `Rule.meta.deprecated` to support `boolean | DeprecationInfo` (backward compatible)
+  - [x] Added helper functions: `isRuleDeprecated()`, `getDeprecationInfo()`, `getReplacementRuleIds()`
+  - [x] Updated `isRule()` type guard to work with optional deprecated field
+  - [x] Updated `src/utils/config/types.ts` to use new helpers for config validation
+  - [x] Created comprehensive test suite with 22 tests (all passing)
 
-- [ ] **Task 2.6.4**: Implement deprecation warnings
-  - [ ] Add deprecation detection to rule loader
-  - [ ] Add warning formatter (show reason, replacement, version info)
-  - [ ] Add CLI flag to control deprecation warnings (--no-deprecated-rules)
-  - [ ] Add deprecation summary to output
-  - [ ] Add tests for warning output
+- [x] **Task 2.6.4**: Implement deprecation warnings
+  - [x] Add deprecation detection to rule execution pipeline
+    - Added tracking in `FileValidator.executeRule()` to detect deprecated rules
+    - Track deprecated rules in `deprecatedRulesUsed` Map during validation
+    - Convert Map to `DeprecatedRuleUsage[]` in `getResult()`
+    - Added `deprecatedRulesUsed` field to `ValidationResult`
+  - [x] Created comprehensive test suite for deprecation tracking
+    - 10 tests covering boolean/object formats, multiple rules, disabled rules, etc.
+    - All tests passing
+  - [x] Add warning formatter (show reason, replacement, version info)
+    - Added `deprecatedRulesUsed` field to `LintResult` type
+    - Updated `buildLintResult()` to pass through deprecation info
+    - Updated `mergeLintResults()` to deduplicate deprecated rules across files
+    - Updated `StylishFormatter` to display deprecation warnings at end of output
+    - Shows: rule ID, reason, replacements, removal version, migration guide URL
+    - Created 7 formatter tests - all passing
+  - [x] Add CLI flag to control deprecation warnings (--no-deprecated-warnings)
+    - Added flag to `check-all` command
+    - Updated `ReportingOptions` interface
+    - Updated `Reporter` to show/hide deprecation warnings based on flag
+    - Created `reportDeprecatedRules()` method in Reporter class
+    - Default: true (warnings shown)
+  - [x] Add CLI flag to error on deprecated rules (--error-on-deprecated)
+    - Added flag to `check-all` command
+    - Updated exit code logic to fail when deprecated rules detected
+    - Updated `Reporter.getExitCode()` to handle errorOnDeprecated
+    - Displays error message when exiting due to deprecated rules
+  - [x] Create `claudelint check-deprecated` command to list deprecated rules in config
+    - Created new command in `src/cli/commands/check-deprecated.ts`
+    - Scans config file for deprecated rules
+    - Shows detailed deprecation info for each rule
+    - Provides migration guidance
+    - Supports --format json output
+    - Exits with code 1 if deprecated rules found, 0 otherwise
 
 - [ ] **Task 2.6.5**: Create migration tooling
   - [ ] Create `scripts/migrate/update-configs.ts`

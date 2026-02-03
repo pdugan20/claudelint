@@ -88,6 +88,11 @@ export function buildLintResult(
     };
   }
 
+  // Add deprecated rules used if present
+  if (validationResult.deprecatedRulesUsed && validationResult.deprecatedRulesUsed.length > 0) {
+    result.deprecatedRulesUsed = validationResult.deprecatedRulesUsed;
+  }
+
   return result;
 }
 
@@ -178,6 +183,10 @@ export function mergeLintResults(results: LintResult[]): LintResult {
   // Merge all messages
   const allMessages: LintMessage[] = [];
   const allSuppressed: LintMessage[] = [];
+  const deprecatedRulesMap = new Map<
+    string,
+    import('../validators/file-validator').DeprecatedRuleUsage
+  >();
   let totalErrors = 0;
   let totalWarnings = 0;
   let totalFixableErrors = 0;
@@ -194,10 +203,20 @@ export function mergeLintResults(results: LintResult[]): LintResult {
     if (result.stats) {
       totalValidationTime += result.stats.validationTime;
     }
+    // Merge deprecated rules (deduplicate by ruleId)
+    if (result.deprecatedRulesUsed) {
+      for (const deprecatedRule of result.deprecatedRulesUsed) {
+        deprecatedRulesMap.set(deprecatedRule.ruleId, deprecatedRule);
+      }
+    }
   }
 
   // Use source/output from the last result (if any)
   const lastResult = results[results.length - 1];
+
+  // Convert deprecated rules map to array
+  const mergedDeprecatedRules =
+    deprecatedRulesMap.size > 0 ? Array.from(deprecatedRulesMap.values()) : undefined;
 
   return {
     filePath,
@@ -210,6 +229,7 @@ export function mergeLintResults(results: LintResult[]): LintResult {
     source: lastResult.source,
     output: lastResult.output,
     stats: totalValidationTime > 0 ? { validationTime: totalValidationTime } : undefined,
+    deprecatedRulesUsed: mergedDeprecatedRules,
   };
 }
 

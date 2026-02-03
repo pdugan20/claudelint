@@ -4,7 +4,7 @@ import * as path from 'path';
 import { ClaudeLintConfig } from '../utils/config/types';
 import { formatError } from '../utils/validators/helpers';
 import { RuleId } from '../rules/rule-ids';
-import { RuleCategory } from '../types/rule';
+import { RuleCategory, Rule, isRuleDeprecated, getDeprecationInfo } from '../types/rule';
 import { ConfigResolver } from '../utils/config/resolver';
 import { RuleRegistry } from '../utils/rules/registry';
 
@@ -95,6 +95,24 @@ export interface ValidationWarning {
 }
 
 /**
+ * Information about a deprecated rule that was used during validation
+ */
+export interface DeprecatedRuleUsage {
+  /** Rule ID of the deprecated rule */
+  ruleId: RuleId;
+  /** Reason for deprecation */
+  reason: string;
+  /** Replacement rule IDs (if any) */
+  replacedBy?: RuleId[];
+  /** Version when deprecated */
+  deprecatedSince?: string;
+  /** Version when it will be removed */
+  removeInVersion?: string | null;
+  /** URL to migration guide */
+  url?: string;
+}
+
+/**
  * Result of a validation operation containing errors and warnings
  */
 export interface ValidationResult {
@@ -104,6 +122,8 @@ export interface ValidationResult {
   errors: ValidationError[];
   /** List of validation warnings found */
   warnings: ValidationWarning[];
+  /** List of deprecated rules that were used during validation */
+  deprecatedRulesUsed?: DeprecatedRuleUsage[];
 }
 
 /**
@@ -203,6 +223,7 @@ export abstract class FileValidator {
   protected options: BaseValidatorOptions;
   protected issues: ValidationIssue[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
+  protected deprecatedRulesUsed: Map<RuleId, Rule> = new Map(); // Track deprecated rules used
 
   /** Config resolver for accessing rule configuration */
   protected configResolver?: ConfigResolver;
@@ -623,10 +644,33 @@ export abstract class FileValidator {
       }
     }
 
+    // Convert deprecated rules Map to array
+    const deprecatedRulesUsed: DeprecatedRuleUsage[] = [];
+    for (const [ruleId, rule] of this.deprecatedRulesUsed.entries()) {
+      const info = getDeprecationInfo(rule);
+      if (info) {
+        const replacedBy = info.replacedBy
+          ? Array.isArray(info.replacedBy)
+            ? info.replacedBy
+            : [info.replacedBy]
+          : undefined;
+
+        deprecatedRulesUsed.push({
+          ruleId,
+          reason: info.reason,
+          replacedBy,
+          deprecatedSince: info.deprecatedSince,
+          removeInVersion: info.removeInVersion,
+          url: info.url,
+        });
+      }
+    }
+
     return {
       valid: errors.length === 0,
       errors,
       warnings,
+      deprecatedRulesUsed: deprecatedRulesUsed.length > 0 ? deprecatedRulesUsed : undefined,
     };
   }
 
@@ -693,6 +737,12 @@ export abstract class FileValidator {
     // Check if rule is enabled in config
     if (!this.isRuleEnabledInConfig(rule.meta.id)) {
       return;
+    }
+
+    // Track if this rule is deprecated (cast to full Rule type for deprecation helpers)
+    const fullRule = rule as Rule;
+    if (isRuleDeprecated(fullRule)) {
+      this.deprecatedRulesUsed.set(rule.meta.id, fullRule);
     }
 
     // Get rule options from config (or defaults)

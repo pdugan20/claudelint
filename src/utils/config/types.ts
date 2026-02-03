@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { RuleRegistry } from '../rules/registry';
+import { isRuleDeprecated, getReplacementRuleIds } from '../../types/rule';
 
 /**
  * Configuration for a single validation rule
@@ -234,11 +235,11 @@ export function validateConfig(config: ClaudeLintConfig): ConfigValidationError[
           severity: 'error',
         });
       } else {
-        const rule = RuleRegistry.get(ruleId);
-        if (rule?.deprecated) {
-          const replacementMsg = rule.replacedBy
-            ? ` Use '${rule.replacedBy.join("', '")}' instead.`
-            : '';
+        const rule = RuleRegistry.getRule(ruleId);
+        if (rule && isRuleDeprecated(rule)) {
+          const replacements = getReplacementRuleIds(rule);
+          const replacementMsg =
+            replacements.length > 0 ? ` Use '${replacements.join("', '")}' instead.` : '';
           errors.push({
             message: `Rule '${ruleId}' is deprecated.${replacementMsg}`,
             ruleId,

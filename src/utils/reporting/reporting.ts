@@ -3,6 +3,7 @@ import {
   ValidationError,
   ValidationWarning,
   ValidationResult,
+  DeprecatedRuleUsage,
 } from '../../validators/file-validator';
 import { ProgressIndicator } from './progress';
 import { ValidationCache } from '../cache';
@@ -29,10 +30,23 @@ export interface ReportingOptions {
   color?: boolean;
   /** Show documentation URLs for rules */
   showDocsUrl?: boolean;
+  /** Show warnings about deprecated rules (default: true) */
+  deprecatedWarnings?: boolean;
+  /** Treat deprecated rule usage as errors (default: false) */
+  errorOnDeprecated?: boolean;
 }
 
 /**
  * Formats and displays validation results to the console
+ *
+ * IMPORTANT: All console output MUST use the helper methods (log, detail, subDetail, newline).
+ * Direct console.log calls with manual spacing are not allowed.
+ *
+ * Output helpers:
+ * - this.log(msg) - Plain output, no indentation
+ * - this.detail(msg) - Indented 2 spaces
+ * - this.subDetail(msg) - Indented 4 spaces (nested detail)
+ * - this.newline() - Blank line
  *
  * @example
  * ```typescript
@@ -162,7 +176,8 @@ export class Reporter {
       this.allResults.push({ validator: name, result });
 
       if (this.options.format !== 'json') {
-        console.log(`\n✓ ${name} (${duration}ms)`);
+        this.newline();
+        this.log(`✓ ${name} (${duration}ms)`);
         this.reportResult(result, name);
       }
     }
@@ -222,7 +237,9 @@ export class Reporter {
    */
   private reportStylish(result: ValidationResult, validatorName: string): void {
     if (this.options.verbose) {
-      console.log(this.colorize(chalk.blue, `\n${validatorName} Validation Results:\n`));
+      this.newline();
+      this.log(this.colorize(chalk.blue, `${validatorName} Validation Results:`));
+      this.newline();
     }
 
     // Report errors
@@ -238,10 +255,15 @@ export class Reporter {
     // Summary
     const totalIssues = result.errors.length + result.warnings.length;
     if (totalIssues === 0) {
-      console.log(this.colorize(chalk.green, '✓ All checks passed!'));
+      this.log(this.colorize(chalk.green, '✓ All checks passed!'));
     } else {
-      console.log();
+      this.newline();
       this.reportSummary(result.errors.length, result.warnings.length);
+    }
+
+    // Deprecation warnings (if enabled)
+    if (this.options.deprecatedWarnings !== false && result.deprecatedRulesUsed) {
+      this.reportDeprecatedRules(result.deprecatedRulesUsed);
     }
   }
 
@@ -272,45 +294,71 @@ export class Reporter {
   }
 
   /**
+   * Output helper - plain message
+   */
+  private log(msg: string): void {
+    console.log(msg);
+  }
+
+  /**
+   * Output helper - indented detail (2 spaces)
+   */
+  private detail(msg: string): void {
+    console.log(`  ${msg}`);
+  }
+
+  /**
+   * Output helper - nested detail (4 spaces)
+   */
+  private subDetail(msg: string): void {
+    console.log(`    ${msg}`);
+  }
+
+  /**
+   * Output helper - blank line
+   */
+  private newline(): void {
+    console.log();
+  }
+
+  /**
    * Report a single error
    */
   private reportError(error: ValidationError): void {
     const location = this.formatLocation(error.file, error.line);
     const ruleId = error.ruleId ? this.colorize(chalk.gray, `[${error.ruleId}]`) : '';
-    console.log(
-      this.colorize(chalk.red, `✗ Error: ${error.message}`) + (ruleId ? ` ${ruleId}` : '')
-    );
+    this.log(this.colorize(chalk.red, `✗ Error: ${error.message}`) + (ruleId ? ` ${ruleId}` : ''));
     if (location) {
-      console.log(this.colorize(chalk.gray, `  at: ${location}`));
+      this.detail(this.colorize(chalk.gray, `at: ${location}`));
     }
 
     // Show documentation URL if enabled and rule ID is available
     if (this.options.showDocsUrl && error.ruleId) {
       const docsUrl = this.getDocsUrl(error.ruleId);
       if (docsUrl) {
-        console.log(this.colorize(chalk.blue, `  → Docs: ${docsUrl}`));
+        this.detail(this.colorize(chalk.blue, `→ Docs: ${docsUrl}`));
       }
     }
 
     // Show detailed information if --explain is set or if info is available
     if (this.options.explain || this.options.verbose) {
       if (error.explanation) {
-        console.log(this.colorize(chalk.cyan, '  Why this matters:'));
-        console.log(this.colorize(chalk.gray, `  ${error.explanation}`));
+        this.detail(this.colorize(chalk.cyan, 'Why this matters:'));
+        this.detail(this.colorize(chalk.gray, error.explanation));
       }
       if (error.howToFix) {
-        console.log(this.colorize(chalk.cyan, '  How to fix:'));
+        this.detail(this.colorize(chalk.cyan, 'How to fix:'));
         error.howToFix.split('\n').forEach((line) => {
-          console.log(this.colorize(chalk.gray, `  ${line}`));
+          this.detail(this.colorize(chalk.gray, line));
         });
       }
       if (error.fix) {
-        console.log(this.colorize(chalk.green, '  Fix: ') + this.colorize(chalk.white, error.fix));
+        this.detail(this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, error.fix));
       }
-      console.log(); // Add spacing
+      this.newline();
     } else if (error.fix) {
       // Show quick fix even without --explain
-      console.log(this.colorize(chalk.gray, `  Fix: ${error.fix}`));
+      this.detail(this.colorize(chalk.gray, `Fix: ${error.fix}`));
     }
   }
 
@@ -320,42 +368,40 @@ export class Reporter {
   private reportWarning(warning: ValidationWarning): void {
     const location = this.formatLocation(warning.file, warning.line);
     const ruleId = warning.ruleId ? this.colorize(chalk.gray, `[${warning.ruleId}]`) : '';
-    console.log(
+    this.log(
       this.colorize(chalk.yellow, `! Warning: ${warning.message}`) + (ruleId ? ` ${ruleId}` : '')
     );
     if (location) {
-      console.log(this.colorize(chalk.gray, `  at: ${location}`));
+      this.detail(this.colorize(chalk.gray, `at: ${location}`));
     }
 
     // Show documentation URL if enabled and rule ID is available
     if (this.options.showDocsUrl && warning.ruleId) {
       const docsUrl = this.getDocsUrl(warning.ruleId);
       if (docsUrl) {
-        console.log(this.colorize(chalk.blue, `  → Docs: ${docsUrl}`));
+        this.detail(this.colorize(chalk.blue, `→ Docs: ${docsUrl}`));
       }
     }
 
     // Show detailed information if --explain is set or if info is available
     if (this.options.explain || this.options.verbose) {
       if (warning.explanation) {
-        console.log(this.colorize(chalk.cyan, '  Why this matters:'));
-        console.log(this.colorize(chalk.gray, `  ${warning.explanation}`));
+        this.detail(this.colorize(chalk.cyan, 'Why this matters:'));
+        this.detail(this.colorize(chalk.gray, warning.explanation));
       }
       if (warning.howToFix) {
-        console.log(this.colorize(chalk.cyan, '  How to fix:'));
+        this.detail(this.colorize(chalk.cyan, 'How to fix:'));
         warning.howToFix.split('\n').forEach((line) => {
-          console.log(this.colorize(chalk.gray, `  ${line}`));
+          this.detail(this.colorize(chalk.gray, line));
         });
       }
       if (warning.fix) {
-        console.log(
-          this.colorize(chalk.green, '  Fix: ') + this.colorize(chalk.white, warning.fix)
-        );
+        this.detail(this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, warning.fix));
       }
-      console.log(); // Add spacing
+      this.newline();
     } else if (warning.fix) {
       // Show quick fix even without --explain
-      console.log(this.colorize(chalk.gray, `  Fix: ${warning.fix}`));
+      this.detail(this.colorize(chalk.gray, `Fix: ${warning.fix}`));
     }
   }
 
@@ -375,7 +421,7 @@ export class Reporter {
       );
     }
 
-    console.log(parts.join(', '));
+    this.log(parts.join(', '));
   }
 
   /**
@@ -438,9 +484,56 @@ export class Reporter {
   }
 
   /**
+   * Report deprecated rules that were used during validation
+   */
+  private reportDeprecatedRules(deprecatedRules: DeprecatedRuleUsage[]): void {
+    if (deprecatedRules.length === 0) {
+      return;
+    }
+
+    this.newline();
+    this.log(this.colorize(chalk.yellow, 'Deprecated rules used:'));
+    this.newline();
+
+    for (const rule of deprecatedRules) {
+      // Main deprecation message
+      const ruleId = this.colorize(chalk.bold, rule.ruleId);
+      const reason = this.colorize(chalk.gray, rule.reason);
+      this.detail(`${ruleId}: ${reason}`);
+
+      // Replacement information
+      if (rule.replacedBy && rule.replacedBy.length > 0) {
+        const replacements = rule.replacedBy.join(', ');
+        this.subDetail(this.colorize(chalk.cyan, `Use ${replacements} instead`));
+      }
+
+      // Removal version
+      if (rule.removeInVersion) {
+        this.subDetail(this.colorize(chalk.red, `Will be removed in ${rule.removeInVersion}`));
+      }
+
+      // Migration guide
+      if (rule.url) {
+        this.subDetail(this.colorize(chalk.blue, `Migration guide: ${rule.url}`));
+      }
+
+      this.newline();
+    }
+  }
+
+  /**
    * Get appropriate exit code based on validation result
    */
   getExitCode(result: ValidationResult): number {
+    // Check if deprecated rules should be treated as errors
+    if (
+      this.options.errorOnDeprecated &&
+      result.deprecatedRulesUsed &&
+      result.deprecatedRulesUsed.length > 0
+    ) {
+      return 1; // Deprecated rules treated as errors
+    }
+
     if (result.errors.length > 0 || (result.warnings.length > 0 && this.options.warningsAsErrors)) {
       return 1; // Errors or warnings-as-errors
     }
@@ -455,7 +548,7 @@ export class Reporter {
    */
   progress(message: string): void {
     if (this.options.verbose) {
-      console.log(chalk.gray(`  ${message}`));
+      this.detail(chalk.gray(message));
     }
   }
 
@@ -464,7 +557,8 @@ export class Reporter {
    */
   section(title: string): void {
     if (this.options.verbose) {
-      console.log(chalk.blue(`\n${title}`));
+      this.newline();
+      this.log(chalk.blue(title));
     }
   }
 
@@ -473,7 +567,7 @@ export class Reporter {
    */
   success(message: string): void {
     if (this.options.verbose) {
-      console.log(chalk.green(`  ✓ ${message}`));
+      this.detail(chalk.green(`✓ ${message}`));
     }
   }
 }
