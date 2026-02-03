@@ -2,7 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/skill-frontmatter.schema.json",
   "title": "Claude Code Skill Frontmatter",
-  "description": "Schema for SKILL.md frontmatter in Claude Code skills. Source: https://code.claude.com/docs/en/skills#frontmatter-reference",
+  "description": "Schema for SKILL.md frontmatter in Claude Code skills",
+  "source": "https://code.claude.com/docs/en/skills#frontmatter-reference",
+  "sourceType": "documentation",
   "type": "object",
   "properties": {
     "name": {

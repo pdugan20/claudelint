@@ -5,13 +5,15 @@
 import { LSPConfigSchema } from '../../src/schemas/lsp-config.schema';
 
 describe('LSPConfigSchema', () => {
-  describe('inline server config', () => {
-    it('should accept valid inline server config', () => {
+  describe('server configuration', () => {
+    it('should accept valid server config', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
-            args: ['--stdio'],
+        typescript: {
+          command: 'typescript-language-server',
+          args: ['--stdio'],
+          extensionToLanguage: {
+            '.ts': 'typescript',
+            '.tsx': 'typescriptreact',
           },
         },
       });
@@ -20,12 +22,13 @@ describe('LSPConfigSchema', () => {
 
     it('should accept server with env vars', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          rust: {
-            command: 'rust-analyzer',
-            env: {
-              RUST_LOG: 'info',
-            },
+        rust: {
+          command: 'rust-analyzer',
+          extensionToLanguage: {
+            '.rs': 'rust',
+          },
+          env: {
+            RUST_LOG: 'info',
           },
         },
       });
@@ -34,11 +37,41 @@ describe('LSPConfigSchema', () => {
 
     it('should accept server with transport type', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          python: {
-            command: 'pylsp',
-            transport: 'stdio',
+        python: {
+          command: 'pylsp',
+          transport: 'stdio',
+          extensionToLanguage: {
+            '.py': 'python',
           },
+        },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept server with optional fields', () => {
+      const result = LSPConfigSchema.safeParse({
+        typescript: {
+          command: 'typescript-language-server',
+          extensionToLanguage: {
+            '.ts': 'typescript',
+          },
+          initializationOptions: {
+            preferences: {
+              quotePreference: 'single',
+            },
+          },
+          settings: {
+            typescript: {
+              format: {
+                semicolons: 'insert',
+              },
+            },
+          },
+          workspaceFolder: '/path/to/workspace',
+          startupTimeout: 5000,
+          shutdownTimeout: 2000,
+          restartOnCrash: true,
+          maxRestarts: 3,
         },
       });
       expect(result.success).toBe(true);
@@ -46,10 +79,20 @@ describe('LSPConfigSchema', () => {
 
     it('should reject empty command', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: '',
+        typescript: {
+          command: '',
+          extensionToLanguage: {
+            '.ts': 'typescript',
           },
+        },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject server without extensionToLanguage', () => {
+      const result = LSPConfigSchema.safeParse({
+        typescript: {
+          command: 'typescript-language-server',
         },
       });
       expect(result.success).toBe(false);
@@ -57,34 +100,11 @@ describe('LSPConfigSchema', () => {
 
     it('should reject invalid transport type', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          python: {
-            command: 'pylsp',
-            transport: 'http',
-          },
-        },
-      });
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('file-based server config', () => {
-    it('should accept valid file-based config', () => {
-      const result = LSPConfigSchema.safeParse({
-        servers: {
-          java: {
-            configFile: '/path/to/jdtls-config.json',
-          },
-        },
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject empty config file path', () => {
-      const result = LSPConfigSchema.safeParse({
-        servers: {
-          java: {
-            configFile: '',
+        python: {
+          command: 'pylsp',
+          transport: 'http',
+          extensionToLanguage: {
+            '.py': 'python',
           },
         },
       });
@@ -93,16 +113,16 @@ describe('LSPConfigSchema', () => {
   });
 
   describe('extension mapping', () => {
-    it('should accept valid extension mapping', () => {
+    it('should accept valid extension to language mapping', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
+        typescript: {
+          command: 'typescript-language-server',
+          extensionToLanguage: {
+            '.ts': 'typescript',
+            '.tsx': 'typescriptreact',
+            '.js': 'javascript',
+            '.jsx': 'javascriptreact',
           },
-        },
-        extensionMapping: {
-          '.ts': 'typescript',
-          '.tsx': 'typescriptreact',
         },
       });
       expect(result.success).toBe(true);
@@ -110,13 +130,11 @@ describe('LSPConfigSchema', () => {
 
     it('should reject extensions without leading dot', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
+        typescript: {
+          command: 'typescript-language-server',
+          extensionToLanguage: {
+            ts: 'typescript',
           },
-        },
-        extensionMapping: {
-          ts: 'typescript',
         },
       });
       expect(result.success).toBe(false);
@@ -124,13 +142,11 @@ describe('LSPConfigSchema', () => {
 
     it('should reject uppercase extensions', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
+        typescript: {
+          command: 'typescript-language-server',
+          extensionToLanguage: {
+            '.TS': 'typescript',
           },
-        },
-        extensionMapping: {
-          '.TS': 'typescript',
         },
       });
       expect(result.success).toBe(false);
@@ -138,55 +154,39 @@ describe('LSPConfigSchema', () => {
 
     it('should reject empty language ID', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
-          },
-        },
-        extensionMapping: {
-          '.ts': '',
-        },
-      });
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe('cross-field validation', () => {
-    it('should reject server with both command and configFile', () => {
-      const result = LSPConfigSchema.safeParse({
-        servers: {
-          hybrid: {
-            command: 'lsp-server',
-            configFile: '/path/to/config.json',
+        typescript: {
+          command: 'typescript-language-server',
+          extensionToLanguage: {
+            '.ts': '',
           },
         },
       });
       expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.issues[0].message).toContain('inline');
-      }
     });
   });
 
   describe('multiple servers', () => {
     it('should accept multiple server configurations', () => {
       const result = LSPConfigSchema.safeParse({
-        servers: {
-          typescript: {
-            command: 'typescript-language-server',
-            args: ['--stdio'],
-          },
-          rust: {
-            command: 'rust-analyzer',
-          },
-          java: {
-            configFile: '/path/to/jdtls.json',
+        typescript: {
+          command: 'typescript-language-server',
+          args: ['--stdio'],
+          extensionToLanguage: {
+            '.ts': 'typescript',
+            '.tsx': 'typescriptreact',
           },
         },
-        extensionMapping: {
-          '.ts': 'typescript',
-          '.rs': 'rust',
-          '.java': 'java',
+        rust: {
+          command: 'rust-analyzer',
+          extensionToLanguage: {
+            '.rs': 'rust',
+          },
+        },
+        python: {
+          command: 'pylsp',
+          extensionToLanguage: {
+            '.py': 'python',
+          },
         },
       });
       expect(result.success).toBe(true);

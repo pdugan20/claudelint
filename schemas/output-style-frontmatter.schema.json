@@ -2,7 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/output-style-frontmatter.schema.json",
   "title": "Claude Code Output Style Frontmatter",
-  "description": "Schema for output style frontmatter in OUTPUTSTYLE.md files. Source: https://code.claude.com/docs/en/output-styles#frontmatter",
+  "description": "Schema for output style frontmatter in OUTPUTSTYLE.md files",
+  "source": "https://code.claude.com/docs/en/output-styles#frontmatter",
+  "sourceType": "documentation",
   "type": "object",
   "properties": {
     "name": {

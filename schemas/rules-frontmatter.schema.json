@@ -2,7 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/rules-frontmatter.schema.json",
   "title": "Claude Code Rules File Frontmatter",
-  "description": "Schema for YAML frontmatter in .claude/rules/*.md files for path-scoped rules. Source: https://code.claude.com/docs/en/memory#path-specific-rules",
+  "description": "Schema for YAML frontmatter in .claude/rules/*.md files for path-scoped rules",
+  "source": "https://code.claude.com/docs/en/memory#path-specific-rules",
+  "sourceType": "documentation",
   "type": "object",
   "properties": {
     "paths": {

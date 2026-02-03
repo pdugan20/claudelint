@@ -2,7 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/plugin-manifest.schema.json",
   "title": "Claude Code Plugin Manifest",
-  "description": "Schema for plugin.json manifest files in Claude Code plugins. Source: https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema",
+  "description": "Schema for plugin.json manifest files in Claude Code plugins",
+  "source": "https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema",
+  "sourceType": "documentation",
   "type": "object",
   "required": ["name"],
   "properties": {
