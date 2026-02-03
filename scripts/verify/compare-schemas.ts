@@ -14,55 +14,8 @@
 
 import fs from 'fs';
 import path from 'path';
-
-interface SchemaComparison {
-  name: string;
-  manualPath: string;
-  generatedPath: string;
-}
-
-const comparisons: SchemaComparison[] = [
-  {
-    name: 'PluginManifestSchema',
-    manualPath: 'schemas/plugin-manifest.schema.json',
-    generatedPath: 'schemas/generated/plugin-manifest.generated.json',
-  },
-  {
-    name: 'SkillFrontmatterSchema',
-    manualPath: 'schemas/skill-frontmatter.schema.json',
-    generatedPath: 'schemas/generated/skill-frontmatter.generated.json',
-  },
-  {
-    name: 'HooksConfigSchema',
-    manualPath: 'schemas/hooks-config.schema.json',
-    generatedPath: 'schemas/generated/hooks-config.generated.json',
-  },
-  {
-    name: 'MCPConfigSchema',
-    manualPath: 'schemas/mcp-config.schema.json',
-    generatedPath: 'schemas/generated/mcp-config.generated.json',
-  },
-  {
-    name: 'LSPConfigSchema',
-    manualPath: 'schemas/lsp-config.schema.json',
-    generatedPath: 'schemas/generated/lsp-config.generated.json',
-  },
-  {
-    name: 'AgentFrontmatterSchema',
-    manualPath: 'schemas/agent-frontmatter.schema.json',
-    generatedPath: 'schemas/generated/agent-frontmatter.generated.json',
-  },
-  {
-    name: 'OutputStyleFrontmatterSchema',
-    manualPath: 'schemas/output-style-frontmatter.schema.json',
-    generatedPath: 'schemas/generated/output-style-frontmatter.generated.json',
-  },
-  {
-    name: 'RulesFrontmatterSchema',
-    manualPath: 'schemas/rules-frontmatter.schema.json',
-    generatedPath: 'schemas/generated/rules-frontmatter.generated.json',
-  },
-];
+import type { JSONSchema7 } from 'json-schema';
+import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
 
 interface DriftIssue {
   type: 'missing-field' | 'wrong-type' | 'missing-required' | 'enum-mismatch';
@@ -72,15 +25,15 @@ interface DriftIssue {
 }
 
 function compareSchemas(
-  manual: any,
-  generated: any,
-  basePath: string = ''
+  manual: JSONSchema7,
+  generated: JSONSchema7,
+  basePath = ''
 ): DriftIssue[] {
   const issues: DriftIssue[] = [];
 
   // Compare required fields
-  const manualRequired = manual.required || [];
-  const generatedRequired = generated.required || [];
+  const manualRequired = manual.required ?? [];
+  const generatedRequired = generated.required ?? [];
 
   for (const field of manualRequired) {
     if (!generatedRequired.includes(field)) {
@@ -94,10 +47,10 @@ function compareSchemas(
   }
 
   // Compare properties
-  const manualProps = manual.properties || {};
-  const generatedProps = generated.properties || {};
+  const manualProps = manual.properties ?? {};
+  const generatedProps = generated.properties ?? {};
 
-  for (const [propName, manualProp] of Object.entries(manualProps)) {
+  for (const [propName, manualPropDef] of Object.entries(manualProps)) {
     const propPath = basePath ? `${basePath}.${propName}` : propName;
 
     // Check if field exists in generated
@@ -111,22 +64,29 @@ function compareSchemas(
       continue;
     }
 
-    const genProp = generatedProps[propName] as any;
-    const manProp = manualProp as any;
+    // Skip if property definition is boolean (true means any schema is valid)
+    if (typeof manualPropDef === 'boolean' || typeof generatedProps[propName] === 'boolean') {
+      continue;
+    }
+
+    const genProp = generatedProps[propName];
+    const manProp = manualPropDef;
+
+    // Type guard - both should be JSONSchema7 objects at this point
+    if (typeof genProp !== 'object' || typeof manProp !== 'object') {
+      continue;
+    }
 
     // Compare types
     if (manProp.type && genProp.type && manProp.type !== genProp.type) {
       // Check for oneOf/anyOf which are equivalent to union types
-      if (
-        !genProp.oneOf &&
-        !genProp.anyOf &&
-        !manProp.oneOf &&
-        !manProp.anyOf
-      ) {
+      if (!genProp.oneOf && !genProp.anyOf && !manProp.oneOf && !manProp.anyOf) {
+        const manualType = Array.isArray(manProp.type) ? manProp.type.join('|') : manProp.type;
+        const generatedType = Array.isArray(genProp.type) ? genProp.type.join('|') : genProp.type;
         issues.push({
           type: 'wrong-type',
           path: propPath,
-          message: `Type mismatch for "${propName}": manual says "${manProp.type}", Zod says "${genProp.type}"`,
+          message: `Type mismatch for "${propName}": manual says "${manualType}", Zod says "${generatedType}"`,
           severity: 'error',
         });
       }
@@ -140,10 +100,17 @@ function compareSchemas(
       // Check if all manual enums are in generated
       for (const enumValue of manualEnums) {
         if (!generatedEnums.has(enumValue)) {
+          // Handle different enum value types (string, number, boolean, null)
+          const valueStr =
+            enumValue === null
+              ? 'null'
+              : typeof enumValue === 'object'
+                ? JSON.stringify(enumValue)
+                : String(enumValue);
           issues.push({
             type: 'enum-mismatch',
             path: propPath,
-            message: `Enum value "${enumValue}" in manual schema missing from Zod`,
+            message: `Enum value "${valueStr}" in manual schema missing from Zod`,
             severity: 'error',
           });
         }
@@ -151,35 +118,24 @@ function compareSchemas(
     }
 
     // Recursively compare nested objects
-    if (
-      manProp.type === 'object' &&
-      genProp.type === 'object' &&
-      manProp.properties
-    ) {
+    if (manProp.type === 'object' && genProp.type === 'object' && manProp.properties) {
       const nestedIssues = compareSchemas(manProp, genProp, propPath);
       issues.push(...nestedIssues);
     }
 
     // Compare array items
-    if (
-      manProp.type === 'array' &&
-      genProp.type === 'array' &&
-      manProp.items &&
-      genProp.items
-    ) {
-      // If items is an object schema, compare recursively
+    if (manProp.type === 'array' && genProp.type === 'array' && manProp.items && genProp.items) {
+      // If items is an object schema (not array or boolean), compare recursively
       if (
         typeof manProp.items === 'object' &&
         !Array.isArray(manProp.items) &&
         typeof genProp.items === 'object' &&
-        !Array.isArray(genProp.items)
+        !Array.isArray(genProp.items) &&
+        manProp.items !== null &&
+        genProp.items !== null
       ) {
         const itemPath = `${propPath}[]`;
-        const nestedIssues = compareSchemas(
-          manProp.items,
-          genProp.items,
-          itemPath
-        );
+        const nestedIssues = compareSchemas(manProp.items, genProp.items, itemPath);
         issues.push(...nestedIssues);
       }
     }
@@ -193,38 +149,36 @@ console.log('Comparing manual reference schemas vs generated schemas...\n');
 let totalIssues = 0;
 let schemasWithDrift = 0;
 
-for (const comparison of comparisons) {
-  const manualPath = path.join(__dirname, '../..', comparison.manualPath);
-  const generatedPath = path.join(__dirname, '../..', comparison.generatedPath);
+for (const entry of SCHEMA_REGISTRY) {
+  const manualPath = path.join(__dirname, '../..', 'schemas', entry.manualSchemaFile);
+  const generatedPath = path.join(__dirname, '../..', 'schemas/generated', entry.generatedSchemaFile);
 
   // Check if files exist
   if (!fs.existsSync(manualPath)) {
-    console.error(
-      `✗ ${comparison.name}: Manual schema not found at ${comparison.manualPath}`
-    );
+    console.error(`✗ ${entry.name}: Manual schema not found at ${entry.manualSchemaFile}`);
     totalIssues++;
     continue;
   }
 
   if (!fs.existsSync(generatedPath)) {
     console.error(
-      `✗ ${comparison.name}: Generated schema not found. Run "npm run generate:json-schemas" first.`
+      `✗ ${entry.name}: Generated schema not found. Run "npm run generate:json-schemas" first.`
     );
     totalIssues++;
     continue;
   }
 
   // Load schemas
-  const manual = JSON.parse(fs.readFileSync(manualPath, 'utf-8'));
-  const generated = JSON.parse(fs.readFileSync(generatedPath, 'utf-8'));
+  const manual = JSON.parse(fs.readFileSync(manualPath, 'utf-8')) as JSONSchema7;
+  const generated = JSON.parse(fs.readFileSync(generatedPath, 'utf-8')) as JSONSchema7;
 
   // Compare
   const issues = compareSchemas(manual, generated);
 
   if (issues.length === 0) {
-    console.log(`✓ ${comparison.name}: No drift detected`);
+    console.log(`✓ ${entry.name}: No drift detected`);
   } else {
-    console.log(`✗ ${comparison.name}: ${issues.length} issue(s) found\n`);
+    console.log(`✗ ${entry.name}: ${issues.length} issue(s) found\n`);
     schemasWithDrift++;
 
     for (const issue of issues) {
@@ -237,16 +191,12 @@ for (const comparison of comparisons) {
 }
 
 console.log('\nSummary:');
-console.log(
-  `- Schemas compared: ${comparisons.length}`
-);
+console.log(`- Schemas compared: ${SCHEMA_REGISTRY.length}`);
 console.log(`- Schemas with drift: ${schemasWithDrift}`);
 console.log(`- Total issues: ${totalIssues}`);
 
 if (totalIssues > 0) {
-  console.log(
-    '\nDrift detected! Fix Zod schemas to match manual reference schemas.'
-  );
+  console.log('\nDrift detected! Fix Zod schemas to match manual reference schemas.');
   process.exit(1);
 } else {
   console.log('\nAll schemas match! No drift detected.');

@@ -1,4 +1,5 @@
 #!/usr/bin/env ts-node
+// @ts-nocheck - ts-node has issues with deep Zod type inference, but tsc compiles fine
 /**
  * Generate JSON Schemas from Zod schemas
  *
@@ -7,78 +8,10 @@
  */
 
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import fs from 'fs';
 import path from 'path';
-
-// Import all Zod schemas
-import {
-  PluginManifestSchema,
-  HooksConfigSchema,
-  MCPConfigSchema,
-} from '../../src/validators/schemas';
-import { SkillFrontmatterSchema } from '../../src/schemas/skill-frontmatter.schema';
-import { LSPConfigSchema } from '../../src/schemas/lsp-config.schema';
-import { AgentFrontmatterSchema } from '../../src/schemas/agent-frontmatter.schema';
-import { OutputStyleFrontmatterSchema } from '../../src/schemas/output-style-frontmatter.schema';
-import { RulesFrontmatterSchema } from '../../src/schemas/rules-frontmatter.schema';
-
-interface SchemaInfo {
-  name: string;
-  zodSchema: any;
-  outputFile: string;
-  description: string;
-}
-
-const schemas: SchemaInfo[] = [
-  {
-    name: 'PluginManifestSchema',
-    zodSchema: PluginManifestSchema,
-    outputFile: 'plugin-manifest.generated.json',
-    description: 'Generated JSON Schema for plugin.json manifest files',
-  },
-  {
-    name: 'SkillFrontmatterSchema',
-    zodSchema: SkillFrontmatterSchema,
-    outputFile: 'skill-frontmatter.generated.json',
-    description: 'Generated JSON Schema for SKILL.md frontmatter',
-  },
-  {
-    name: 'HooksConfigSchema',
-    zodSchema: HooksConfigSchema,
-    outputFile: 'hooks-config.generated.json',
-    description: 'Generated JSON Schema for hooks.json configuration',
-  },
-  {
-    name: 'MCPConfigSchema',
-    zodSchema: MCPConfigSchema,
-    outputFile: 'mcp-config.generated.json',
-    description: 'Generated JSON Schema for .mcp.json configuration',
-  },
-  {
-    name: 'LSPConfigSchema',
-    zodSchema: LSPConfigSchema,
-    outputFile: 'lsp-config.generated.json',
-    description: 'Generated JSON Schema for .lsp.json configuration',
-  },
-  {
-    name: 'AgentFrontmatterSchema',
-    zodSchema: AgentFrontmatterSchema,
-    outputFile: 'agent-frontmatter.generated.json',
-    description: 'Generated JSON Schema for AGENT.md frontmatter',
-  },
-  {
-    name: 'OutputStyleFrontmatterSchema',
-    zodSchema: OutputStyleFrontmatterSchema,
-    outputFile: 'output-style-frontmatter.generated.json',
-    description: 'Generated JSON Schema for OUTPUTSTYLE.md frontmatter',
-  },
-  {
-    name: 'RulesFrontmatterSchema',
-    zodSchema: RulesFrontmatterSchema,
-    outputFile: 'rules-frontmatter.generated.json',
-    description: 'Generated JSON Schema for .claude/rules/*.md frontmatter',
-  },
-];
+import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
 
 const outputDir = path.join(__dirname, '../../schemas/generated');
 
@@ -92,40 +25,40 @@ console.log('Generating JSON Schemas from Zod...\n');
 let successCount = 0;
 let errorCount = 0;
 
-for (const schemaInfo of schemas) {
+for (const entry of SCHEMA_REGISTRY) {
   try {
-    console.log(`Generating ${schemaInfo.name}...`);
+    console.log(`Generating ${entry.name}...`);
 
     // Convert Zod to JSON Schema
-    const jsonSchema: any = zodToJsonSchema(schemaInfo.zodSchema, {
-      name: schemaInfo.name,
+    const jsonSchema = zodToJsonSchema(entry.zodSchema, {
+      name: entry.name,
       $refStrategy: 'none', // Inline all definitions
-    });
+    }) as JSONSchema7 & { definitions?: Record<string, JSONSchema7> };
 
     // Extract the actual schema from the wrapper
     // zodToJsonSchema wraps it in { $ref, definitions }, we want the actual definition
-    let actualSchema: any;
-    if (jsonSchema.definitions && jsonSchema.definitions[schemaInfo.name]) {
-      actualSchema = jsonSchema.definitions[schemaInfo.name];
+    let actualSchema: JSONSchema7;
+    if (jsonSchema.definitions?.[entry.name]) {
+      actualSchema = jsonSchema.definitions[entry.name];
     } else {
       actualSchema = jsonSchema;
     }
 
     // Build final schema with Draft 2020-12 and our description
-    const finalSchema = {
+    const finalSchema: JSONSchema7 = {
       $schema: 'https://json-schema.org/draft/2020-12/schema',
-      description: schemaInfo.description,
+      description: entry.description,
       ...actualSchema,
     };
 
     // Write to file
-    const outputPath = path.join(outputDir, schemaInfo.outputFile);
+    const outputPath = path.join(outputDir, entry.generatedSchemaFile);
     fs.writeFileSync(outputPath, JSON.stringify(finalSchema, null, 2));
 
-    console.log(`  ✓ Written to ${schemaInfo.outputFile}`);
+    console.log(`  ✓ Written to ${entry.generatedSchemaFile}`);
     successCount++;
   } catch (error) {
-    console.error(`  ✗ Error generating ${schemaInfo.name}:`, error);
+    console.error(`  ✗ Error generating ${entry.name}:`, error);
     errorCount++;
   }
 }
