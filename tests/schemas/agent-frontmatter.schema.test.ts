@@ -116,36 +116,42 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should accept valid events', () => {
+    it('should accept valid disallowedTools', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
-        events: ['PreToolUse', 'PostToolUse'],
+        disallowedTools: ['Bash', 'Edit'],
       });
       expect(result.success).toBe(true);
     });
 
-    it('should accept any string for events (validation happens in validator)', () => {
-      // Note: events uses z.array(z.string()) to allow custom validation
-      // with warnings instead of schema errors. The Agents validator validates
-      // event names and issues warnings for unknown events.
+    it('should accept valid permissionMode', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
-        events: ['InvalidEvent'],
+        permissionMode: 'acceptEdits',
       });
       expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid permissionMode', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        permissionMode: 'invalid',
+      });
+      expect(result.success).toBe(false);
     });
   });
 });
 
 describe('AgentFrontmatterWithRefinements', () => {
-  it('should reject both tools and disallowed-tools', () => {
+  it('should reject both tools and disallowedTools', () => {
     const result = AgentFrontmatterWithRefinements.safeParse({
       name: 'my-agent',
       description: 'This agent does something',
       tools: ['Bash'],
-      'disallowed-tools': ['Read'],
+      disallowedTools: ['Read'],
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -162,32 +168,11 @@ describe('AgentFrontmatterWithRefinements', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should accept disallowed-tools alone', () => {
+  it('should accept disallowedTools alone', () => {
     const result = AgentFrontmatterWithRefinements.safeParse({
       name: 'my-agent',
       description: 'This agent does something',
-      'disallowed-tools': ['Bash'],
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it('should reject events array with more than 3 items', () => {
-    const result = AgentFrontmatterWithRefinements.safeParse({
-      name: 'my-agent',
-      description: 'This agent does something',
-      events: ['PreToolUse', 'PostToolUse', 'SessionStart', 'SessionEnd'],
-    });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0].message).toContain('3');
-    }
-  });
-
-  it('should accept events array with 3 items', () => {
-    const result = AgentFrontmatterWithRefinements.safeParse({
-      name: 'my-agent',
-      description: 'This agent does something',
-      events: ['PreToolUse', 'PostToolUse', 'SessionStart'],
+      disallowedTools: ['Bash'],
     });
     expect(result.success).toBe(true);
   });

@@ -26,7 +26,7 @@ Report differences → Fix Zod
 
 ## Progress
 
-### Completed (5/8)
+### Completed (6/8)
 
 1. **PluginManifestSchema** [COMPLETE]
    - Manual reference: `schemas/plugin-manifest.schema.json`
@@ -70,10 +70,17 @@ Report differences → Fix Zod
    - **Impact**: Complete restructure + updated 8 rules + deprecated 2 invalid rules + fixed all tests
    - **Severity**: CRITICAL - validators couldn't validate real .lsp.json files
 
+6. **AgentFrontmatterSchema** [COMPLETE] (Minor drift - FIXED)
+   - Manual reference: `schemas/agent-frontmatter.schema.json`
+   - Source: https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields
+   - Status: Fixed - missing 1 field + had 1 extra field
+   - **Drift**:
+     - Missing: permissionMode (enum with 5 values)
+     - Extra: events field (doesn't exist in official spec)
+   - **Impact**: Added permissionMode enum, deleted agent-events rule and tests
+   - **Severity**: Minor - one missing optional field, one extra field that should not exist
+
 ### In Progress (0/8)
-4. **MCPConfigSchema** - Awaiting docs
-5. **LSPConfigSchema** - Awaiting docs
-6. **AgentFrontmatterSchema** - Awaiting docs
 7. **OutputStyleFrontmatterSchema** - Awaiting docs
 8. **ClaudeMdFrontmatterSchema** - Awaiting docs
 

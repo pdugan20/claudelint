@@ -133,17 +133,24 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 ### 7. AgentFrontmatterSchema
 
 **Location**: `src/schemas/agent-frontmatter.schema.ts`
-**Official Source**: [https://code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents)
-**Status**: NEEDS VERIFICATION - NEEDS VERIFICATION
-**Verification**: Manual - check against subagent docs
+**Official Source**: [https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields)
+**Status**: SYNCED - SYNCED (fixed 2026-02-02)
+**Verification**: Manual JSON Schema + auto-generated comparison
 
-**Expected Fields**:
-- `description`: Agent capabilities
-- `capabilities`: Array of capabilities
-- `model`: Model to use
-- `allowed-tools`: Permitted tools
-- `hooks`: Agent-scoped hooks
-- `skills`: Preloaded skills
+**Official Fields** (8 total):
+- `name`: Unique identifier (kebab-case, required)
+- `description`: When Claude should delegate (required)
+- `tools`: Tools the subagent can use (optional)
+- `disallowedTools`: Tools to deny (optional)
+- `model`: Model to use (sonnet/opus/haiku/inherit, optional)
+- `permissionMode`: Permission mode (default/acceptEdits/dontAsk/bypassPermissions/plan, optional)
+- `skills`: Skills to preload (optional)
+- `hooks`: Lifecycle hooks (optional)
+
+**Drift History**:
+- 2026-02-02: Found extra field 'events' (doesn't exist in official spec)
+- 2026-02-02: Found missing field 'permissionMode'
+- 2026-02-02: Fixed - deleted agent-events rule and tests, added permissionMode
 
 ### 8. OutputStyleFrontmatterSchema
 

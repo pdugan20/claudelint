@@ -1,11 +1,17 @@
 /**
  * Agent frontmatter schema
+ * Based on https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields
  */
 
 import { z } from 'zod';
 import { ModelNames } from './constants';
 import { noXMLTags, thirdPerson, lowercaseHyphens } from './refinements';
 import { HookSchema } from '../validators/schemas';
+
+/**
+ * Permission modes for agents
+ */
+const PermissionModes = z.enum(['default', 'acceptEdits', 'dontAsk', 'bypassPermissions', 'plan']);
 
 /**
  * Base agent frontmatter schema without cross-field validations
@@ -27,12 +33,11 @@ export const AgentFrontmatterSchema = z.object({
   tools: z.array(z.string()).optional(),
 
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
-  'disallowed-tools': z.array(z.string()).optional(),
+  disallowedTools: z.array(z.string()).optional(),
+
+  permissionMode: PermissionModes.optional(),
 
   skills: z.array(z.string()).optional(),
-
-  // Note: Uses z.string() instead of HookEvents to allow custom validation with warnings
-  events: z.array(z.string()).optional(),
 
   // Hooks that this agent defines
   hooks: z.array(HookSchema).optional(),
@@ -43,27 +48,15 @@ export const AgentFrontmatterSchema = z.object({
  */
 export const AgentFrontmatterWithRefinements = AgentFrontmatterSchema.refine(
   (data) => {
-    // tools and disallowed-tools are mutually exclusive
-    if (data.tools && data['disallowed-tools']) {
+    // tools and disallowedTools are mutually exclusive
+    if (data.tools && data.disallowedTools) {
       return false;
     }
     return true;
   },
   {
-    message: 'Cannot specify both tools and disallowed-tools',
+    message: 'Cannot specify both tools and disallowedTools',
     path: ['tools'],
-  }
-).refine(
-  (data) => {
-    // events can only have up to 3 items
-    if (data.events && data.events.length > 3) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'Events array cannot have more than 3 items',
-    path: ['events'],
   }
 );
 

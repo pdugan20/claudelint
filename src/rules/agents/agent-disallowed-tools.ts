@@ -1,7 +1,7 @@
 /**
  * Rule: agent-disallowed-tools
  *
- * Agent disallowed-tools must be an array of tool names
+ * Agent disallowedTools must be an array of tool names
  *
  * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape for validation
  */
@@ -14,7 +14,7 @@ export const rule: Rule = {
   meta: {
     id: 'agent-disallowed-tools',
     name: 'Agent Disallowed Tools Format',
-    description: 'Agent disallowed-tools must be an array of tool names',
+    description: 'Agent disallowedTools must be an array of tool names',
     category: 'Agents',
     severity: 'error',
     fixable: false,
@@ -26,15 +26,15 @@ export const rule: Rule = {
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);
 
-    if (!frontmatter || !frontmatter['disallowed-tools']) {
+    if (!frontmatter || !frontmatter.disallowedTools) {
       return;
     }
 
-    const disallowedToolsSchema = AgentFrontmatterSchema.shape['disallowed-tools'];
-    const result = disallowedToolsSchema.safeParse(frontmatter['disallowed-tools']);
+    const disallowedToolsSchema = AgentFrontmatterSchema.shape.disallowedTools;
+    const result = disallowedToolsSchema.safeParse(frontmatter.disallowedTools);
 
     if (!result.success) {
-      const line = getFrontmatterFieldLine(context.fileContent, 'disallowed-tools');
+      const line = getFrontmatterFieldLine(context.fileContent, 'disallowedTools');
       context.report({
         message: result.error.issues[0].message,
         line,

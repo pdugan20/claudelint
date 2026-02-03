@@ -19,9 +19,9 @@ describe('agent-tools', () => {
 
       invalid: [
         {
-          content: '---\nname: my-agent\ndescription: Test agent\ntools:\n  - Bash\ndisallowed-tools:\n  - Edit\n---\n# Agent',
+          content: '---\nname: my-agent\ndescription: Test agent\ntools:\n  - Bash\ndisallowedTools:\n  - Edit\n---\n# Agent',
           filePath: '/test/agents/AGENT.md',
-          errors: [{ message: 'both tools and disallowed-tools' }],
+          errors: [{ message: 'both tools and disallowedTools' }],
         },
       ],
     });

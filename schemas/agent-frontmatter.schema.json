@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/agent-frontmatter.schema.json",
+  "title": "Claude Code Agent Frontmatter",
+  "description": "Schema for agent frontmatter in AGENT.md files. Source: https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique identifier using lowercase letters and hyphens",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "description": {
+      "type": "string",
+      "description": "When Claude should delegate to this subagent",
+      "minLength": 10
+    },
+    "tools": {
+      "type": "array",
+      "description": "Tools the subagent can use (inherits all tools if omitted)",
+      "items": {
+        "type": "string"
+      }
+    },
+    "disallowedTools": {
+      "type": "array",
+      "description": "Tools to deny, removed from inherited or specified list",
+      "items": {
+        "type": "string"
+      }
+    },
+    "model": {
+      "type": "string",
+      "description": "Model to use: sonnet, opus, haiku, or inherit",
+      "enum": ["sonnet", "opus", "haiku", "inherit"]
+    },
+    "permissionMode": {
+      "type": "string",
+      "description": "Permission mode for the subagent",
+      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan"]
+    },
+    "skills": {
+      "type": "array",
+      "description": "Skills to load into the subagent's context at startup",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hooks": {
+      "type": "array",
+      "description": "Lifecycle hooks scoped to this subagent",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}
