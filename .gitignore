@@ -32,6 +32,7 @@ temp/
 
 # Cache
 .claude-code-lint-cache/
+.claudelint-cache/
 
 # Generated schemas (for comparison only, not committed)
 schemas/generated/

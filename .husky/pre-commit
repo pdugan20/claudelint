@@ -71,6 +71,8 @@ if [ $? -ne 0 ]; then
   echo "Build failed. Please fix TypeScript errors before committing."
   exit 1
 fi
+# Auto-stage rule files if they were regenerated during build
+git add src/rules/index.ts src/rules/rule-ids.ts 2>/dev/null || true
 echo ""
 
 # 9. Run validator tests
