@@ -1,6 +1,6 @@
 # Implementation Tracker
 
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-02-03
 
 Track progress across all phases. Mark tasks complete with `[x]` as you finish them.
 
@@ -508,15 +508,21 @@ Systematic verification of all schemas and constants against official Claude Cod
 - [x] **Task 2.1.8**: AgentFrontmatterSchema reference (Minor drift - missing permissionMode, extra events field, deleted agent-events rule)
 - [x] **Task 2.1.9**: OutputStyleFrontmatterSchema reference (MAJOR drift - all validations wrong, missing keep-coding-instructions, extra examples field, deleted 4 invalid rules)
 - [x] **Task 2.1.10**: RulesFrontmatterSchema reference (No drift - schema correct, renamed from ClaudeMdFrontmatterSchema for clarity)
+- [x] **Task 2.1.11**: Update all schemas to JSON Schema Draft 2020-12 (migrated from Draft-07)
+- [x] **Task 2.1.12**: Extract source URLs to custom properties (added `source` and `sourceType` fields to all 8 schemas for machine-readability)
+- [x] **Task 2.1.13**: Fix LSP config schema tests (updated tests to match corrected flat structure, added extensionToLanguage requirement, removed deprecated configFile tests)
 
 **In Progress**:
-None - All schemas complete!
+None - Phase 2.1 complete!
 
 **Acceptance Criteria**:
-- All 8 manual reference schemas created in `schemas/` directory
-- Each schema documented with official source URL
-- All drift between Zod and official specs fixed
-- Schemas hosted on GitHub raw URLs
+- [x] All 8 manual reference schemas created in `schemas/` directory
+- [x] Each schema documented with official source URL
+- [x] All drift between Zod and official specs fixed
+- [x] Schemas use JSON Schema Draft 2020-12
+- [x] Source URLs extracted into custom properties for machine-readability
+- [x] All schema tests passing (139 suites, 771 tests)
+- [ ] Schemas hosted on GitHub raw URLs (pending git push)
 
 #### Phase 2.2: Build Automated Comparison (2-3 days)
 

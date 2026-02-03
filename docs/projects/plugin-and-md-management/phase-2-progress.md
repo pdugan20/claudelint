@@ -1,8 +1,8 @@
 # Phase 2 Progress Report
 
-**Date**: 2026-02-02
+**Date**: 2026-02-03
 **Phase**: 2.1 - Create Manual Reference Schemas
-**Status**: In Progress (2/8 schemas complete)
+**Status**: Complete (8/8 schemas complete + Draft 2020-12 migration + source property extraction)
 
 ## What We're Building
 
@@ -142,11 +142,66 @@ Report differences → Fix Zod
 | Extra field                  | Had `configFile` which doesn't exist in official spec                      |
 | Structural mismatch          | Complete redesign + updated 8 rules + deprecated 2 rules + fixed all tests |
 
-**Drift Rate**: 100% of schemas checked so far had drift (5/5). This confirms the systematic verification is absolutely necessary.
+**AgentFrontmatterSchema** - Minor drift (FIXED):
+
+| Issue                 | Impact                                          |
+|:----------------------|:------------------------------------------------|
+| Missing permissionMode| Missing enum field for permission control       |
+| Extra events field    | Field doesn't exist in official spec            |
+| Impact                | Added permissionMode, deleted agent-events rule |
+
+**OutputStyleFrontmatterSchema** - MAJOR drift (FIXED):
+
+| Issue                        | Impact                                                      |
+|:-----------------------------|:------------------------------------------------------------|
+| Wrong name validation        | Required + kebab-case (should be optional + any string)     |
+| Wrong description validation | Required + min 10 chars (should be optional + any string)   |
+| Missing field                | keep-coding-instructions (boolean) was missing              |
+| Extra examples field         | Field doesn't exist in official spec                        |
+| Impact                       | Deleted 4 invalid rules enforcing non-existent constraints  |
+
+**RulesFrontmatterSchema** - NO DRIFT (Clean):
+
+| Status | Notes                                                                  |
+|:-------|:-----------------------------------------------------------------------|
+| Clean  | Schema matches official spec perfectly, renamed for clarity            |
+
+**Drift Rate**: 75% of schemas had drift (6/8). Only PluginManifestSchema and RulesFrontmatterSchema were clean.
 
 **Severity Breakdown**:
-- Minor drift (missing optional fields): SkillFrontmatterSchema (4 fields), HooksConfigSchema (2 fields)
-- **CRITICAL drift (wrong structure)**: MCPConfigSchema, LSPConfigSchema (both completely restructured)
+- **Clean (0 issues)**: PluginManifestSchema, RulesFrontmatterSchema
+- **Minor drift** (missing/extra optional fields): SkillFrontmatterSchema (4 fields), HooksConfigSchema (2 fields), AgentFrontmatterSchema (1 missing + 1 extra)
+- **MAJOR drift** (wrong validations): OutputStyleFrontmatterSchema (4 invalid rules deleted)
+- **CRITICAL drift** (wrong structure): MCPConfigSchema, LSPConfigSchema (both completely restructured)
+
+### Additional Schema Improvements
+
+**JSON Schema Draft 2020-12 Migration**:
+- Migrated all 8 schemas from Draft-07 to Draft 2020-12 (current stable version)
+- No breaking changes affected our simple schemas
+- Future-proofs schemas for better tooling support
+
+**Source URL Extraction**:
+- Added custom `source` and `sourceType` properties to all 8 schemas
+- Extracted documentation URLs from description fields
+- Improves machine-readability and enables automated source tracking
+- Example:
+  ```json
+  {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "Schema for hooks.json files...",
+    "source": "https://code.claude.com/docs/en/hooks",
+    "sourceType": "documentation"
+  }
+  ```
+
+**LSP Config Test Fixes**:
+- Updated all LSP config tests to match corrected flat schema structure
+- Removed `servers` wrapper (server names are now direct keys)
+- Added required `extensionToLanguage` field to all test cases
+- Removed tests for deprecated `configFile` field
+- Added tests for 7 new optional LSP server fields
+- All 139 test suites passing (771 tests)
 
 ## Workflow Improvements
 
@@ -168,20 +223,16 @@ Report differences → Fix Zod
 
 ## Next Steps
 
-### Immediate (Complete Phase 2.1)
+### Phase 2.1 - COMPLETE!
 
-1. **Fix SkillFrontmatterSchema drift** (Task #14)
-   - Add 4 missing fields to Zod schema
-   - Test validators still work
-   - Verify against manual reference
+- [x] All 8 manual reference schemas created
+- [x] All drift detected and fixed (6/8 schemas had issues)
+- [x] Migrated to JSON Schema Draft 2020-12
+- [x] Extracted source URLs to custom properties
+- [x] Fixed all LSP config tests
+- [x] All 771 tests passing
 
-2. **Continue creating manual references** (Tasks 2.1.5-2.1.10)
-   - Get official docs for each schema
-   - Extract fields, types, constraints
-   - Create JSON Schema files
-   - Fix any drift found
-
-### Soon (Phase 2.2)
+### Phase 2.2 - Build Automated Comparison (Next)
 
 3. **Install zod-to-json-schema** (Task #15)
    - Add library dependency
