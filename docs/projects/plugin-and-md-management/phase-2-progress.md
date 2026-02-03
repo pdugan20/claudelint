@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-03
 **Phase**: 2.6 - Rule Deprecation System
-**Status**: Task 2.6.4 Complete (Implementation Complete)
+**Status**: Task 2.6.5 Complete (Migration Tooling Complete)
 
 ## What We're Building
 
@@ -376,18 +376,33 @@ npm run check:schema-sync       # Full verification (runs in CI)
 
 ### Phase 2.6 - Rule Deprecation System
 
-**Status**: Tasks 2.6.1-2.6.4 COMPLETE, Tasks 2.6.5-2.6.6 remain
+**Status**: Tasks 2.6.1-2.6.5 COMPLETE, Task 2.6.6 remains
+
+#### Completed Tasks
+
+**Task 2.6.5: Create Migration Tooling** - COMPLETE
+
+- Created `src/utils/migrate/update-configs.ts` (migration logic with 150+ lines)
+- Created `src/cli/commands/migrate.ts` (CLI command with 130+ lines)
+- Implemented config file scanning and deprecated rule detection
+- Auto-replace deprecated rules with single replacements (1:1)
+- Warn about multiple replacements requiring manual intervention (1:many)
+- Warn about deprecated rules with no replacements (suggest removal)
+- Support dry-run mode with `--dry-run` flag
+- Support JSON output with `--format json`
+- Added `claudelint migrate` command to CLI
+- Comprehensive error handling and migration reports
+- 12 tests covering all scenarios (all passing)
+
+**Key Features:**
+
+- Preserves rule config (severity + options) when replacing
+- Handles package.json with claudelint field
+- Writes JSON with proper formatting and trailing newline
+- Clear migration reports with colored output
+- Exit codes: 0=success, 1=manual intervention needed, 2=error
 
 #### Remaining Tasks
-
-**Task 2.6.5: Create Migration Tooling** - TODO
-
-- Create `scripts/migrate/update-configs.ts`
-- Implement config file scanning and replacement
-- Add `claudelint migrate` command to CLI
-- Handle 1:1, 1:many, and no-replacement cases
-- Add dry-run mode
-- Add tests
 
 **Task 2.6.6: Documentation and Examples** - TODO
 

@@ -22,6 +22,7 @@ import { registerConfigCommands } from './cli/commands/config-commands';
 import { registerFormatCommand } from './cli/commands/format';
 import { registerListRulesCommand } from './cli/commands/list-rules';
 import { registerCheckDeprecatedCommand } from './cli/commands/check-deprecated';
+import { registerMigrateCommand } from './cli/commands/migrate';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
 import { registerInstallPluginCommand } from './cli/commands/install-plugin';
 
@@ -55,6 +56,7 @@ registerConfigCommands(program);
 registerFormatCommand(program);
 registerListRulesCommand(program);
 registerCheckDeprecatedCommand(program);
+registerMigrateCommand(program);
 registerCacheClearCommand(program);
 registerInstallPluginCommand(program);
 

@@ -788,12 +788,18 @@ Design and implement a proper rule deprecation system modeled after ESLint and P
     - Supports --format json output
     - Exits with code 1 if deprecated rules found, 0 otherwise
 
-- [ ] **Task 2.6.5**: Create migration tooling
-  - [ ] Create `scripts/migrate/update-configs.ts`
-  - [ ] Scan config files for deprecated rule IDs
-  - [ ] Auto-replace with replacedBy rule ID
-  - [ ] Generate migration report
-  - [ ] Add tests for migration tool
+- [x] **Task 2.6.5**: Create migration tooling
+  - [x] Create `src/utils/migrate/update-configs.ts` (migration logic)
+  - [x] Create `src/cli/commands/migrate.ts` (CLI command)
+  - [x] Scan config files for deprecated rule IDs
+  - [x] Auto-replace with replacedBy rule ID (1:1 replacements)
+  - [x] Handle multiple replacements (require manual intervention)
+  - [x] Handle no replacement (suggest removal)
+  - [x] Generate migration report with change summaries
+  - [x] Support dry-run mode (--dry-run flag)
+  - [x] Support JSON output (--format json)
+  - [x] Add `claudelint migrate` CLI command
+  - [x] Add 12 comprehensive tests (all passing)
 
 - [ ] **Task 2.6.6**: Documentation and examples
   - [ ] Document deprecation policy in CONTRIBUTING.md
