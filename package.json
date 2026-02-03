@@ -41,6 +41,7 @@
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
     "verify:rule-implementations": "ts-node scripts/verify/rule-implementations.ts",
     "verify:rule-structure": "ts-node scripts/verify/rule-structure.ts",
+    "verify:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "test:validators": "jest tests/validators --coverage",
     "test:schemas": "jest tests/schemas --coverage",
     "validate": "node bin/claudelint check-all",
