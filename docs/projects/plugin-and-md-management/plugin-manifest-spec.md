@@ -100,6 +100,7 @@ If these exist at plugin root, they're loaded automatically:
 ### When to Use Custom Paths
 
 Only specify custom paths if:
+
 1. You have skills in BOTH default location AND custom location
 2. You want to supplement defaults with additional directories
 3. Your structure differs from conventions
@@ -107,6 +108,7 @@ Only specify custom paths if:
 ### For claudelint
 
 We DON'T need to specify custom paths because:
+
 - Our skills are in `.claude/skills/` (default location)
 - Our hooks are in `.claude/hooks/hooks.json` (could be referenced but optional)
 - Everything follows conventions
@@ -172,6 +174,7 @@ claude /plugin install --source /path/to/claude-lint
 ```
 
 **What happens:**
+
 1. Claude Code clones/copies the repository
 2. Reads `.claude/skills/` from the Git repo
 3. Skills become available with `/claudelint:` namespace
@@ -185,6 +188,7 @@ npm install -g claude-code-lint
 ```
 
 **What happens:**
+
 1. npm installs package from registry
 2. Only `dist/`, `bin/`, `README.md`, `LICENSE` included
 3. CLI works: `claudelint validate`
@@ -241,6 +245,7 @@ claude /skills
 **File**: `package.json`
 
 **Current (WRONG):**
+
 ```json
 {
   "files": [
@@ -255,6 +260,7 @@ claude /skills
 ```
 
 **Correct (CLI only):**
+
 ```json
 {
   "files": [
@@ -267,6 +273,7 @@ claude /skills
 ```
 
 **Why remove `.claude-plugin` and `skills`?**
+
 - Plugin install clones from **GitHub**, not npm
 - npm package is **CLI-only**
 - Including `.claude/` in npm package is unnecessary bloat
@@ -290,6 +297,7 @@ claude /plugin install github:pdugan20/claudelint
 ```
 
 Skills available as:
+
 - `/claudelint:validate-all`
 - `/claudelint:format-cc`
 - `/claudelint:validate-cc-md`
@@ -308,6 +316,7 @@ claudelint validate
 ```
 
 Note: npm installation does not auto-install skills.
+
 ```
 
 ## Testing Checklist

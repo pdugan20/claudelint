@@ -71,6 +71,7 @@ formatter.format(results);  // unsafe call
 ```
 
 **Files Affected:**
+
 - `src/api/claudelint.ts` (8 locations)
 - `src/utils/rules/loader.ts` (1 location)
 - `src/utils/workspace/detector.ts` (1 location)
@@ -103,6 +104,7 @@ const name = frontmatter.name;  // type is {}
 ```
 
 **Files Affected:**
+
 - `src/rules/skills/skill-name-directory-mismatch.ts`
 - `src/rules/output-styles/output-style-name-directory-mismatch.ts`
 - Various agent rules
@@ -139,6 +141,7 @@ const name = frontmatter.name;  // type is {}
 **Tasks:**
 
 1. **Create formatter type definitions** (new file)
+
    ```typescript
    // src/types/formatters.ts
    export interface Formatter {
@@ -187,16 +190,19 @@ export default {
 ```
 
 **Pros:**
+
 - No breaking changes to RuleContext interface
 - Each rule validates its own data assumptions
 - Incremental fixes possible
 - Catches runtime data issues
 
 **Cons:**
+
 - More boilerplate per rule
 - Repetitive
 
 **Estimated effort:** ~97 errors across 30 files, but pattern is identical
+
 - Create helper functions for common checks
 - Apply pattern systematically
 - **Difficulty:** 3/5 (repetitive but straightforward)
@@ -214,10 +220,12 @@ interface MCPRuleContext extends RuleContext {
 ```
 
 **Pros:**
+
 - Better type safety
 - Less runtime checking needed
 
 **Cons:**
+
 - Requires changing RuleContext interface
 - Breaking change to rule API
 - All rules need updating at once
@@ -292,6 +300,7 @@ export function getMCPServers(data: unknown): Record<string, unknown> | null {
 ### Step 3: Test After Each Phase
 
 After each phase:
+
 ```bash
 npm run lint              # Check error count
 npm test                  # Ensure no regressions
@@ -302,16 +311,19 @@ git commit -m "fix: ..."  # Commit the phase
 ## Risk Assessment
 
 ### Low Risk (Phases 1, 4)
+
 - Simple mechanical changes
 - No behavior changes
 - Easy to verify
 
 ### Medium Risk (Phase 2)
+
 - Requires async/await changes
 - Dynamic imports behavior slightly different
 - Need careful testing of formatter loading
 
 ### Medium-High Risk (Phase 3)
+
 - Adding runtime type checks
 - Could expose hidden bugs (GOOD!)
 - Need comprehensive testing
@@ -357,11 +369,13 @@ After this fix:
 ## Recommendation
 
 **Proceed with phased approach:**
+
 - Do Phase 1 immediately (quick confidence builder)
 - Phase 2 in same session if time permits
 - Phases 3-4 can be done in follow-up session(s)
 
 This systematic approach:
+
 - Minimizes risk (small commits)
 - Shows progress (error count drops steadily)
 - Builds momentum (easy wins first)

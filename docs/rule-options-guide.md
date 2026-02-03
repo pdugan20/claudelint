@@ -4,7 +4,6 @@ This guide explains how to add configurable options to claudelint rules.
 
 ## Quick Start
 
-
 ### 1. Define Options Interface
 
 ```typescript

@@ -3,6 +3,7 @@
 ## **Warning** STATUS: MOSTLY ALREADY IMPLEMENTED
 
 **14 CLAUDE.md validation rules already exist in `src/rules/claude-md/`:**
+
 - claude-md-import-missing
 - claude-md-import-circular
 - claude-md-import-depth-exceeded
@@ -87,18 +88,21 @@ export const rule: Rule = {
 ### Examples
 
 ****Bad** Fails**:
+
 ```markdown
 # CLAUDE.md with 520 lines
 # (tons of content)
 ```
 
 ****Warning** Warns**:
+
 ```markdown
 # CLAUDE.md with 247 lines
 # (still a lot)
 ```
 
 ****Good** Passes**:
+
 ```markdown
 # CLAUDE.md with 145 lines
 # (concise and focused)
@@ -183,18 +187,23 @@ export const rule: Rule = {
 ### Examples
 
 ****Bad** Fails**:
+
 ```markdown
 See @docs/testing.md for testing guidelines
 ```
+
 *If docs/testing.md doesn't exist*
 
 ****Good** Passes**:
+
 ```markdown
 See @docs/testing.md for testing guidelines
 ```
+
 *When docs/testing.md exists*
 
 ****Good** Also valid**:
+
 ```markdown
 Personal preferences: @~/.claude/my-preferences.md
 ```
@@ -277,6 +286,7 @@ export const rule: Rule = {
 ### Examples
 
 ****Warning** Triggers Info**:
+
 ```markdown
 - Write clean, maintainable code
 - Use meaningful variable names
@@ -285,6 +295,7 @@ export const rule: Rule = {
 ```
 
 ****Good** Good**:
+
 ```markdown
 - Use ES modules (import/export), not CommonJS (require)
 - Prefer arrow functions for callbacks
@@ -390,17 +401,21 @@ function looksLikeShellCommand(str: string): boolean {
 ### Examples
 
 ****Bad** Fails (Dangerous)**:
+
 ```markdown
 - Clean build: `rm -rf /`
 ```
 
 ****Warning** Warns (Command not found)**:
+
 ```markdown
 - Deploy: `./deploy.sh`
 ```
+
 *If deploy.sh doesn't exist or isn't executable*
 
 ****Good** Passes**:
+
 ```markdown
 - Run tests: `npm test`
 - Build: `npm run build`
@@ -483,6 +498,7 @@ export const rule: Rule = {
 ### Examples
 
 ****Warning** Triggers Info** (if .prettierrc exists):
+
 ```markdown
 # CLAUDE.md
 - Use 2 spaces for indentation
@@ -491,6 +507,7 @@ export const rule: Rule = {
 ```
 
 ****Good** Better**:
+
 ```markdown
 # CLAUDE.md
 (No style rules - they're in .prettierrc)
@@ -576,11 +593,13 @@ claudelint validate-claude-md
 ```
 
 This validates:
+
 - File length
 - Import syntax
 - Obvious content
 - Hook commands
 - Config location
+
 ```
 
 ---
@@ -590,17 +609,20 @@ This validates:
 ### Test Files
 
 ```
+
 tests/rules/claude-md/
 ├── file-length.test.ts
 ├── import-syntax.test.ts
 ├── obvious-content.test.ts
 ├── hook-commands.test.ts
 └── config-location.test.ts
+
 ```
 
 ### Test Fixtures
 
 ```
+
 tests/fixtures/claude-md/
 ├── valid/
 │   ├── concise-150-lines.md
@@ -615,6 +637,7 @@ tests/fixtures/claude-md/
 └── configs/
     ├── .eslintrc.json
     └── .prettierrc
+
 ```
 
 ### Example Test

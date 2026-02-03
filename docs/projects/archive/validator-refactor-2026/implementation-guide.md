@@ -228,6 +228,7 @@ export class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
 ```
 
 **Files to update:**
+
 1. `src/validators/mcp.ts`
 2. `src/validators/settings.ts`
 3. `src/validators/hooks.ts`
@@ -253,6 +254,7 @@ export class ClaudeMdValidator extends FileValidator {
 ```
 
 **Files to update:**
+
 1. `src/validators/claude-md.ts`
 2. `src/validators/skills.ts`
 3. `src/validators/agents.ts`
@@ -544,6 +546,7 @@ validateConfig → validateSemantics
 ```
 
 **Files likely to need updates:**
+
 - `docs/architecture.md`
 - `docs/rule-development.md`
 - `docs/custom-rules.md`

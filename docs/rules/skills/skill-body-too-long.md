@@ -83,6 +83,7 @@ To reduce SKILL.md body length following Anthropic's progressive disclosure patt
    - Links to detailed references
 
 3. **Link to references from SKILL.md**:
+
    ```markdown
    For detailed API documentation, see `references/api-guide.md`
    ```
@@ -90,6 +91,7 @@ To reduce SKILL.md body length following Anthropic's progressive disclosure patt
 4. **Remove redundant or outdated sections**
 
 This follows Anthropic's three-level progressive disclosure system:
+
 - Level 1: YAML frontmatter (always loaded)
 - Level 2: SKILL.md body (loaded when skill is relevant)
 - Level 3: Linked reference files (loaded only as needed)

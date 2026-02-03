@@ -20,6 +20,7 @@ claudelint validates Claude Code configurations against specifications, but we h
 ### What We Track
 
 **Schemas** (10 total):
+
 - SettingsSchema (has JSON Schema URL, verified)
 - PluginManifestSchema (out of sync - CRITICAL)
 - HooksConfigSchema, MCPConfigSchema, LSPConfigSchema (need audit)
@@ -27,6 +28,7 @@ claudelint validates Claude Code configurations against specifications, but we h
 - ClaudeMdFrontmatterSchema, OutputStyleFrontmatterSchema, MarketplaceMetadataSchema (need audit)
 
 **Constants** (9 total):
+
 - ToolNames (21 tools) - no official URL
 - ModelNames (4 models) - no official URL
 - HookEvents (13 events) - documented in plugin reference
@@ -42,15 +44,15 @@ claudelint validates Claude Code configurations against specifications, but we h
 **Official Sources by Type**:
 
 1. **JSON Schema URLs** (machine-readable, ideal):
-   - Settings: https://json.schemastore.org/claude-code-settings.json
+   - Settings: <https://json.schemastore.org/claude-code-settings.json>
    - Others: None found
 
 2. **Documented Specs** (human-readable, parsable):
-   - Plugin Reference: https://code.claude.com/docs/en/plugins-reference
-   - Skills: https://code.claude.com/docs/en/skills
-   - Hooks: https://code.claude.com/docs/en/hooks
-   - MCP: https://code.claude.com/docs/en/mcp
-   - Settings: https://code.claude.com/docs/en/settings
+   - Plugin Reference: <https://code.claude.com/docs/en/plugins-reference>
+   - Skills: <https://code.claude.com/docs/en/skills>
+   - Hooks: <https://code.claude.com/docs/en/hooks>
+   - MCP: <https://code.claude.com/docs/en/mcp>
+   - Settings: <https://code.claude.com/docs/en/settings>
 
 3. **Inferred from Examples** (low confidence):
    - Code examples in documentation
@@ -218,6 +220,7 @@ export async function verifyJsonSchema(
 ```
 
 **Usage**:
+
 ```bash
 npm run verify:schemas          # All schemas
 npm run verify:schema settings  # Specific schema
@@ -228,6 +231,7 @@ npm run verify:schema settings  # Specific schema
 For schemas/constants with human-readable documentation:
 
 **Approach**:
+
 1. **Manual extraction**: Developer reads docs, extracts spec
 2. **Codify as test cases**: Create test suite that validates against spec
 3. **Automate test execution**: CI runs tests on every change
@@ -297,6 +301,7 @@ async function extractSpecFromDocs(url: string): Promise<TestCase[]> {
 For sources without official documentation:
 
 **Process**:
+
 1. **Test in Claude Code**: Create test project, try different values
 2. **Document findings**: Record what works/doesn't work
 3. **Track in registry**: Mark as manually verified with date/notes
@@ -348,6 +353,7 @@ All 21 tools verified as of 2026-02-02
 ```
 
 **Automation helper**:
+
 ```typescript
 // scripts/verify/manual-verification-tracker.ts
 
@@ -538,6 +544,7 @@ Create guides for each verification method:
 ### 5. Implementation Phases
 
 #### Phase 1: Foundation (1-2 days)
+
 - [ ] Create unified truth-registry.ts
 - [ ] Migrate existing schema-registry.ts data
 - [ ] Add constants from constants-audit.md
@@ -545,6 +552,7 @@ Create guides for each verification method:
 - [ ] Generate status dashboard
 
 #### Phase 2: Automated Verification (2-3 days)
+
 - [ ] Extract schema-sync.ts into framework
 - [ ] Add support for multiple JSON Schema URLs
 - [ ] Create verify:schemas command
@@ -552,6 +560,7 @@ Create guides for each verification method:
 - [ ] Document automated verification process
 
 #### Phase 3: Hybrid Verification (3-4 days)
+
 - [ ] Create test suites for documented specs
 - [ ] Implement PluginManifestSchema verification tests
 - [ ] Implement HookEvents verification tests
@@ -560,6 +569,7 @@ Create guides for each verification method:
 - [ ] Document hybrid verification process
 
 #### Phase 4: Manual Verification Support (2-3 days)
+
 - [ ] Create manual verification templates
 - [ ] Implement manual verification tracker
 - [ ] Create verification expiry warnings
@@ -567,6 +577,7 @@ Create guides for each verification method:
 - [ ] Set up periodic review reminders
 
 #### Phase 5: Integration (1-2 days)
+
 - [ ] Add pre-commit hooks
 - [ ] Integrate with CI/CD
 - [ ] Create status dashboard
@@ -578,6 +589,7 @@ Create guides for each verification method:
 ### 6. Success Metrics
 
 **Technical Metrics**:
+
 - 100% of schemas have verification method defined
 - 0 critical sources out of sync
 - <5% of sources need re-verification
@@ -585,6 +597,7 @@ Create guides for each verification method:
 - CI catches drift within 1 week
 
 **Process Metrics**:
+
 - Schema changes require verification (enforced by pre-commit)
 - Manual verifications don't expire
 - Documentation stays up to date (auto-generated)
@@ -593,16 +606,19 @@ Create guides for each verification method:
 ## Alternatives Considered
 
 ### Alternative 1: Manual tracking in markdown
+
 **Pros**: Simple, no code
 **Cons**: No automation, easy to forget, no enforcement
 **Decision**: Rejected - need automation
 
 ### Alternative 2: Separate schema and constant registries
+
 **Pros**: Separation of concerns
 **Cons**: Duplication, harder to see full picture
 **Decision**: Rejected - unified view is more valuable
 
 ### Alternative 3: Only track sources with JSON Schema URLs
+
 **Pros**: Easy to automate
 **Cons**: Ignores 90% of our sources
 **Decision**: Rejected - need comprehensive coverage

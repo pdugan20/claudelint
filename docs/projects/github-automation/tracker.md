@@ -444,12 +444,14 @@ Following industry best practices:
 **Steps to Complete:**
 
 1. **Option A: Repository already exists on GitHub (private/visibility issue)**
+
    ```bash
    # Just push the code
    git push -u origin main
    ```
 
 2. **Option B: Create new repository on GitHub**
+
    ```bash
    # Create repository via GitHub CLI
    gh repo create pdugan20/claudelint --public --source=. --remote=origin --push
@@ -462,6 +464,7 @@ Following industry best practices:
    ```
 
 3. **After pushing, run the label script:**
+
    ```bash
    bash scripts/setup-github-labels.sh
    ```
@@ -475,7 +478,7 @@ Following industry best practices:
    - Enable GitHub Discussions
    - Enable GitHub Issues (if not already enabled)
    - Enable GitHub Actions (should be automatic)
-   - Set up Codecov integration (https://codecov.io)
+   - Set up Codecov integration (<https://codecov.io>)
 
 **Files Ready for GitHub:**
 
@@ -630,17 +633,20 @@ TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171
 **What We Fixed:**
 
 **Phase 1: Quick Wins (24 errors fixed, 171→147)**
+
 - Removed unused error variables in catch blocks
 - Fixed duplicate catch blocks
 - Wrapped case statements in braces for proper scoping
 - Removed unused variables with `_` prefix
 
 **Phase 2: Dynamic Imports (30 errors fixed, 147→117)**
+
 - Added type assertions for all require() calls
 - Fixed typeof import assertions for Node.js modules
 - Properly typed dynamic imports
 
 **Phase 3: Runtime Type Validation (73 errors fixed, 117→44)**
+
 - Created type-guards.ts with helper functions (isObject, hasProperty, isString)
 - Fixed all LSP rules (8 files) with proper type guards
 - Fixed all MCP rules (10 files) with runtime validation
@@ -648,6 +654,7 @@ TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171
 - Changed from typed interfaces to unknown + runtime validation for true type safety
 
 **Phase 4: Final Cleanup (44 errors fixed, 44→0)**
+
 - Changed safeParseJSON return type from any to unknown
 - Fixed base-to-string errors with isString() checks
 - Converted all remaining require() to ES6 imports
@@ -656,11 +663,13 @@ TypeScript-ESLint v6 → v8 upgrade introduced stricter type checking. These 171
 - Fixed empty LintOptions interface to type alias
 
 **Additional Fixes:**
+
 - Fixed RuleMetadata type mismatch (API vs canonical type)
 - Removed unused @ts-expect-error directive
 - Fixed CLI test for check-claude-md command
 
 **Results:**
+
 - ESLint errors: 171 → 0 ✓
 - Test suites: 146/146 passing ✓
 - Tests: 778/780 passing, 2 skipped ✓
@@ -681,6 +690,7 @@ While investigating validation errors in `.claude/settings.local.json`, discover
 **The Problem:**
 
 **Our wrong schema:**
+
 ```typescript
 permissions: Array<{
   tool: string,
@@ -689,7 +699,8 @@ permissions: Array<{
 }>
 ```
 
-**Official Claude Code schema (from https://json.schemastore.org/claude-code-settings.json):**
+**Official Claude Code schema (from <https://json.schemastore.org/claude-code-settings.json>):**
+
 ```typescript
 permissions: {
   allow?: string[],
@@ -739,20 +750,24 @@ permissions: {
 **Fix Plan:**
 
 **Phase 1: Update Schema (15 min)**
-- Reference official schema: https://json.schemastore.org/claude-code-settings.json
+
+- Reference official schema: <https://json.schemastore.org/claude-code-settings.json>
 - Update `PermissionRuleSchema` → `PermissionsSchema`
 - Add all fields: allow, deny, ask, defaultMode, disableBypassPermissionsMode, additionalDirectories
 
 **Phase 2: Fix Validation Rules (30 min)**
+
 - `settings-invalid-permission` → validate allow/deny/ask arrays exist and have valid strings
 - `settings-permission-empty-pattern` → validate Tool(pattern) syntax in rule strings
 - `settings-permission-invalid-rule` → validate tool names are valid (Bash, Read, Write, etc.)
 
 **Phase 3: Update Tests (20 min)**
+
 - Rewrite all permission rule tests with correct format
 - Add tests for new fields (defaultMode, additionalDirectories)
 
 **Phase 4: Fix Documentation (15 min)**
+
 - Update all 3 rule docs with correct examples
 - Reference official Claude Code docs
 
@@ -765,7 +780,7 @@ permissions: {
 
 - All 146 test suites passing (780 tests, 2 skipped)
 - All 19 settings rule tests passing
-- Settings schema now matches official Claude Code format from https://json.schemastore.org/claude-code-settings.json
+- Settings schema now matches official Claude Code format from <https://json.schemastore.org/claude-code-settings.json>
 - `.claude/settings.local.json` now validates correctly
 
 ---
@@ -785,7 +800,7 @@ Created comprehensive schema synchronization verification system using Option C2
 **Components Added:**
 
 1. **Schema Sync Verification Script** (`scripts/check/schema-sync.ts`)
-   - Fetches official schema from https://json.schemastore.org/claude-code-settings.json
+   - Fetches official schema from <https://json.schemastore.org/claude-code-settings.json>
    - Validates test cases against both our Zod schema and official JSON schema
    - Reports any differences between schemas (drift detection)
    - 8 test cases covering valid/invalid scenarios

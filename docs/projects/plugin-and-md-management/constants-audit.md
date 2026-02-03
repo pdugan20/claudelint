@@ -13,6 +13,7 @@ Beyond schemas, we have various constants, enums, and hardcoded values that shou
 
 **File**: `src/schemas/constants.ts:11-33`
 **Current Values**:
+
 ```typescript
 export const ToolNames = z.enum([
   'Bash',
@@ -40,14 +41,16 @@ export const ToolNames = z.enum([
 ```
 
 **Official Source**: Need to find definitive list of available tools
-**Documentation**: https://code.claude.com/docs/en/tools (if exists)
+**Documentation**: <https://code.claude.com/docs/en/tools> (if exists)
 
 **Questions**:
+
 - Are there any new tools added in recent Claude Code versions?
 - Are any tools deprecated?
 - Is this list complete?
 
 **Action Items**:
+
 - [ ] Find official tool documentation
 - [ ] Verify all tools in our list exist
 - [ ] Check for missing tools
@@ -59,20 +62,23 @@ export const ToolNames = z.enum([
 
 **File**: `src/schemas/constants.ts:38`
 **Current Values**:
+
 ```typescript
 export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'inherit']);
 ```
 
 **Official Source**: Need to find official model list
-**Documentation**: https://code.claude.com/docs/en/settings (likely in model field docs)
+**Documentation**: <https://code.claude.com/docs/en/settings> (likely in model field docs)
 
 **Questions**:
+
 - Are model names lowercase? (sonnet vs Sonnet)
 - What does 'inherit' mean? (inherit from parent context?)
 - Are there version-specific models? (sonnet-3.5 vs sonnet-4?)
 - Is this list complete?
 
 **Known from Anthropic API**:
+
 - claude-opus-4-5-20251101
 - claude-sonnet-4-5-20250929
 - claude-3-7-sonnet-20250219
@@ -81,6 +87,7 @@ export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'inherit']);
 **Potential Issue**: Our enum uses simplified names (sonnet, opus, haiku) but API uses versioned IDs. Need to understand mapping.
 
 **Action Items**:
+
 - [ ] Find official model configuration documentation
 - [ ] Verify if simplified names are correct for settings.json
 - [ ] Check if version-specific models should be included
@@ -92,6 +99,7 @@ export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'inherit']);
 
 **File**: `src/schemas/constants.ts:48-62`
 **Current Values**:
+
 ```typescript
 export const HookEvents = z.enum([
   'PreToolUse',
@@ -111,18 +119,20 @@ export const HookEvents = z.enum([
 ```
 
 **Official Source**: Plugin reference documents these
-**Documentation**: https://code.claude.com/docs/en/plugins-reference#hooks
+**Documentation**: <https://code.claude.com/docs/en/plugins-reference#hooks>
 
 **From Plugin Docs**:
 Listed events: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, SessionStart, SessionEnd, PreCompact
 
 **Comparison**:
+
 - YES All plugin doc events are in our enum
 - UNKNOWN We have 'Setup' - not in plugin docs (might be in hooks docs)
 - UNKNOWN Need to verify casing is correct
 
 **Action Items**:
-- [ ] Compare with https://code.claude.com/docs/en/hooks
+
+- [ ] Compare with <https://code.claude.com/docs/en/hooks>
 - [ ] Verify 'Setup' event exists and is documented
 - [ ] Check if any events are missing
 - [ ] Verify all event names are case-sensitive correct
@@ -133,18 +143,20 @@ Listed events: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, U
 
 **File**: `src/schemas/constants.ts:67`
 **Current Values**:
+
 ```typescript
 export const HookTypes = z.enum(['command', 'prompt', 'agent']);
 ```
 
 **Official Source**: Plugin reference
-**Documentation**: https://code.claude.com/docs/en/plugins-reference#hooks
+**Documentation**: <https://code.claude.com/docs/en/plugins-reference#hooks>
 
 **From Plugin Docs**: Hook types are `command`, `prompt`, `agent`
 
 **Status**: **LIKELY VERIFIED** - Matches plugin docs exactly
 
 **Action Items**:
+
 - [ ] Double-check against hooks documentation
 - [ ] Mark as verified if confirmed
 
@@ -154,6 +166,7 @@ export const HookTypes = z.enum(['command', 'prompt', 'agent']);
 
 **File**: `src/schemas/constants.ts:72`
 **Current Values**:
+
 ```typescript
 export const ContextModes = z.enum(['fork', 'inline', 'auto']);
 ```
@@ -162,11 +175,13 @@ export const ContextModes = z.enum(['fork', 'inline', 'auto']);
 **Documentation**: Skills documentation (if exists)
 
 **Questions**:
+
 - What are context modes?
 - Are these for skills?
 - Where is this documented?
 
 **Action Items**:
+
 - [ ] Find documentation for skill context modes
 - [ ] Verify these values are correct
 - [ ] Understand what each mode does
@@ -177,6 +192,7 @@ export const ContextModes = z.enum(['fork', 'inline', 'auto']);
 
 **File**: `src/schemas/constants.ts:78`
 **Current Values**:
+
 ```typescript
 export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ```
@@ -184,18 +200,21 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 **Note in code**: "'sse' is deprecated, but still supported"
 
 **Official Source**: MCP documentation
-**Documentation**: https://code.claude.com/docs/en/mcp
+**Documentation**: <https://code.claude.com/docs/en/mcp>
 
 **From Plugin Docs LSP section**:
+
 - LSP uses `stdio` (default) or `socket`
 - Note: This might be different from MCP transports
 
 **Questions**:
+
 - Is 'sse' truly deprecated?
 - Is 'socket' missing? (LSP docs mention it)
 - Are MCP and LSP transport types the same or different?
 
 **Action Items**:
+
 - [ ] Find official MCP transport documentation
 - [ ] Verify all transport types
 - [ ] Clarify if 'socket' should be added
@@ -207,6 +226,7 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 
 **File**: `src/types/rule.ts:19-29`
 **Current Values**:
+
 ```typescript
 export type RuleCategory =
   | 'CLAUDE.md'
@@ -226,18 +246,20 @@ export type RuleCategory =
 
 **Alignment Check**:
 These categories should align with Claude Code's component types:
-- YES Skills - https://code.claude.com/docs/en/skills
-- YES Agents - https://code.claude.com/docs/en/sub-agents
-- YES Hooks - https://code.claude.com/docs/en/hooks
-- YES MCP - https://code.claude.com/docs/en/mcp
-- YES Settings - https://code.claude.com/docs/en/settings
-- YES Plugin - https://code.claude.com/docs/en/plugins
-- YES CLAUDE.md - https://code.claude.com/docs/en/best-practices
+
+- YES Skills - <https://code.claude.com/docs/en/skills>
+- YES Agents - <https://code.claude.com/docs/en/sub-agents>
+- YES Hooks - <https://code.claude.com/docs/en/hooks>
+- YES MCP - <https://code.claude.com/docs/en/mcp>
+- YES Settings - <https://code.claude.com/docs/en/settings>
+- YES Plugin - <https://code.claude.com/docs/en/plugins>
+- YES CLAUDE.md - <https://code.claude.com/docs/en/best-practices>
 - UNKNOWN Commands - Legacy? (plugin docs say use skills/ not commands/)
 - UNKNOWN OutputStyles - Need to find documentation
 - UNKNOWN LSP - Part of plugins, not standalone component?
 
 **Action Items**:
+
 - [ ] Verify all categories align with actual Claude Code components
 - [ ] Check if 'Commands' should be deprecated (plugin docs prefer skills/)
 - [ ] Find OutputStyles documentation
@@ -249,16 +271,18 @@ These categories should align with Claude Code's component types:
 
 **File**: `src/schemas/constants.ts:43`
 **Current Values**:
+
 ```typescript
 export const PermissionActions = z.enum(['allow', 'ask', 'deny']);
 ```
 
 **Official Source**: Settings schema
-**Documentation**: https://json.schemastore.org/claude-code-settings.json
+**Documentation**: <https://json.schemastore.org/claude-code-settings.json>
 
 **Status**: Likely verified via check:schema-sync, but should double-check
 
 **Action Items**:
+
 - [ ] Verify these match settings schema
 - [ ] Check if there are other permission actions
 
@@ -268,6 +292,7 @@ export const PermissionActions = z.enum(['allow', 'ask', 'deny']);
 
 **File**: `src/schemas/constants.ts:83`
 **Current Values**:
+
 ```typescript
 export const ScriptExtensions = z.enum(['.sh', '.py', '.js']);
 ```
@@ -276,10 +301,12 @@ export const ScriptExtensions = z.enum(['.sh', '.py', '.js']);
 **Documentation**: N/A - this is our validation choice
 
 **Questions**:
+
 - Should we support other script types? (.ts, .rb, etc.)
 - Is this list appropriate for hook scripts?
 
 **Action Items**:
+
 - [ ] Review if this list is complete for common hook scripts
 - [ ] Consider if we need to expand this
 
@@ -290,9 +317,10 @@ export const ScriptExtensions = z.enum(['.sh', '.py', '.js']);
 **Mentioned in Plugin Docs**: `user`, `project`, `local`, `managed`
 
 **Where Used**: Plugin installation scopes
-**Documentation**: https://code.claude.com/docs/en/discover-plugins#install-plugins
+**Documentation**: <https://code.claude.com/docs/en/discover-plugins#install-plugins>
 
 **Action Items**:
+
 - [ ] Search codebase for scope-related constants
 - [ ] Verify we're not hardcoding these values anywhere
 - [ ] If we validate scopes, ensure they match official list
@@ -306,7 +334,7 @@ export const ScriptExtensions = z.enum(['.sh', '.py', '.js']);
 **File**: `src/validators/schemas.ts:93`
 
 **Official Source**: Settings schema
-**Documentation**: https://json.schemastore.org/claude-code-settings.json
+**Documentation**: <https://json.schemastore.org/claude-code-settings.json>
 
 **Status**: Likely verified via check:schema-sync
 
@@ -331,6 +359,7 @@ export const ScriptExtensions = z.enum(['.sh', '.py', '.js']);
 ## Centralization Plan
 
 ### Option 1: Extend Schema Registry
+
 Add constants to existing `src/schemas/schema-registry.ts`:
 
 ```typescript
@@ -351,9 +380,11 @@ export const CONSTANT_REGISTRY: ConstantSource[] = [
 ```
 
 ### Option 2: Separate Constants Registry
+
 Create `src/schemas/constants-registry.ts` similar to schema-registry.ts
 
 ### Option 3: Combined Truth Registry
+
 Create `src/schemas/truth-registry.ts` that tracks both schemas and constants
 
 **Recommendation**: Option 3 - Combined registry makes it easier to see all verification needs in one place

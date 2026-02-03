@@ -16,22 +16,26 @@ Phase 2.3 tasks were defined before implementing the comprehensive dual-schema v
 ### Verification Results
 
 **Manual JSON Schema Created**: `schemas/plugin-manifest.schema.json`
-- Source: https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema
+
+- Source: <https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema>
 - Draft: 2020-12
 - Status: Created in Phase 2.1
 
 **Zod Schema**: `PluginManifestSchema` in `src/validators/schemas.ts`
+
 - Fixed in Phase 1 (Task 1.4)
 - All fields match official spec
 - Component paths verified: skills, agents, commands (string | array)
 - Config paths verified: hooks, mcpServers, lspServers (string | object)
 
 **Comparison Result** (Phase 2.2):
+
 ```text
 ✓ PluginManifestSchema: No drift detected
 ```
 
 **Fields Verified** (15 total):
+
 - [x] name (required, string, kebab-case)
 - [x] version (optional, semver pattern)
 - [x] description (optional, string)
@@ -49,6 +53,7 @@ Phase 2.3 tasks were defined before implementing the comprehensive dual-schema v
 - [x] lspServers (optional, string | object - .lsp.json path or inline)
 
 **Validation Rules Updated**:
+
 - plugin-missing-file.ts handles union types (string | array | object)
 - Deprecated 2 rules for non-existent `dependencies` field
 
@@ -63,11 +68,13 @@ Phase 2.3 tasks were defined before implementing the comprehensive dual-schema v
 ### Verification Results
 
 **Manual JSON Schema Created**: `schemas/hooks-config.schema.json`
-- Source: https://code.claude.com/docs/en/hooks
+
+- Source: <https://code.claude.com/docs/en/hooks>
 - Event enum: 13 official events
 - Status: Created in Phase 2.1
 
 **Zod Constant**: `HookEvents` in `src/schemas/constants.ts`
+
 ```typescript
 export const HookEvents = z.enum([
   'PreToolUse',
@@ -87,6 +94,7 @@ export const HookEvents = z.enum([
 ```
 
 **JSON Schema Enum** (from hooks-config.schema.json):
+
 ```json
 {
   "event": {
@@ -110,11 +118,13 @@ export const HookEvents = z.enum([
 ```
 
 **Comparison** (Phase 2.2):
+
 - Both sources: 13 events
 - All events match (order differs but sets are identical)
 - Comparison tool verified: No drift detected
 
 **Event Validation Rule**: `hooks-invalid-event.ts`
+
 - Uses `VALID_HOOK_EVENTS` constant (derived from HookEvents)
 - Validates hook event names at runtime
 - Warnings for unknown events
@@ -130,36 +140,43 @@ export const HookEvents = z.enum([
 ### Verification Results
 
 **Manual JSON Schema Created**: `schemas/mcp-config.schema.json`
-- Source: https://code.claude.com/docs/en/mcp
+
+- Source: <https://code.claude.com/docs/en/mcp>
 - Status: Created in Phase 2.1 (CRITICAL drift found and fixed)
 
 **Zod Schema**: `MCPConfigSchema` in `src/validators/schemas.ts`
+
 - Completely restructured in Phase 2.1
 - Changed from nested to flat structure
 - Transport types: stdio, sse, http, websocket
 
 **Drift Found and Fixed**:
+
 - OLD (WRONG): `{ name, transport: { type, ... } }`
 - NEW (CORRECT): `{ type, command, url, headers, ... }` (flat)
 - Impact: 13 validation rules updated
 
 **Comparison Result** (Phase 2.2):
+
 ```text
 ✓ MCPConfigSchema: No drift detected
 ```
 
 **Transport Types Verified**:
+
 ```typescript
 export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ```
 
 **Structure Verified**:
+
 - mcpServers: Record<string, MCPServerSchema>
 - Server names are object keys (not `name` field)
 - Transport fields are flat (not nested under `transport`)
 - Each transport type has correct fields (command for stdio, url for http/sse/websocket)
 
 **Validation Rules Updated** (13 total):
+
 - mcp-server-name-invalid.ts
 - mcp-server-name-too-short.ts
 - mcp-command-not-executable.ts
@@ -220,6 +237,7 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ### Framework Capabilities
 
 **What It Does**:
+
 - ✓ Combines manual extraction (reading docs) with automated verification
 - ✓ Encodes official specs as machine-readable references
 - ✓ Automatically detects drift between implementation and specs
@@ -228,6 +246,7 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 - ✓ Supports all 8 Claude Code schemas
 
 **What It Doesn't Do** (by design):
+
 - ✗ Fetch schemas from remote URLs (manual references are local)
 - ✗ Auto-fix drift (requires human review)
 - ✗ Verify runtime behavior (only schema structure)
@@ -235,16 +254,19 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ### Comparison to Original "Hybrid Verification" Concept
 
 **Original Proposal** (from truth-registry-proposal.md):
+
 1. Manual extraction: Developer reads docs, extracts spec
 2. Codify as test cases: Create test suite that validates against spec
 3. Automate test execution: CI runs tests on every change
 
 **What We Built** (Phase 2.1/2.2):
+
 1. Manual extraction: Developer reads docs, creates JSON Schema ✓
 2. Codify as schemas: JSON Schema is more precise than test cases ✓
 3. Automate comparison: CI runs generate + compare on every change ✓
 
 **Advantages of Our Approach**:
+
 - JSON Schema is machine-readable (vs. prose in test cases)
 - Comparison is comprehensive (all fields, types, enums)
 - Can detect subtle drift (wrong types, missing fields)
@@ -282,6 +304,7 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ### Evidence
 
 **Comparison Tool Results**:
+
 ```text
 ✓ PluginManifestSchema: No drift detected
 ✓ HooksConfigSchema: No drift detected
@@ -290,11 +313,13 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 ```
 
 **CI Integration**: `.github/workflows/ci.yml`
+
 - Job runs on every PR
 - Uses modernized schema-sync script
 - Fails if drift detected
 
 **Scripts Created**:
+
 - `scripts/generate/json-schemas.ts` (103 lines)
 - `scripts/verify/compare-schemas.ts` (255 lines)
 - `scripts/check/schema-sync.ts` (185 lines, 66% reduction)
@@ -304,6 +329,7 @@ export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
 **Phase 2.3 is COMPLETE via Phase 2.1/2.2 work.**
 
 The dual-schema verification system built in Phases 2.1/2.2 meets and exceeds all Phase 2.3 objectives:
+
 - All 3 specific verification tasks are complete
 - The hybrid verification framework has been implemented
 - All schemas are verified with 0 drift detected

@@ -17,10 +17,12 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual + automated via `check:schema-sync`
 
 **Known Issues**:
+
 - Previously had `dependencies` and `circularDependency` fields not in official spec (FIXED)
 - Needs regular verification against official docs
 
 **Fields**:
+
 - Required: `name`
 - Optional: `version`, `description`, `author`, `homepage`, `repository`, `license`, `keywords`
 - Component paths: `commands`, `agents`, `skills`
@@ -34,6 +36,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Automated via `check:schema-sync`
 
 **Sub-schemas**:
+
 - `PermissionsSchema` (lines 89-96)
 - `SettingsHooksSchema` (lines 63-77)
 - `AttributionSchema` (lines 101-105)
@@ -48,10 +51,12 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **Sub-schemas**:
+
 - `HookSchema` (lines 23-37) - Array format with event field (9 fields)
 - `MatcherSchema` (lines 12-15)
 
 **Hook Fields** (9 total):
+
 - `event`: Lifecycle event name
 - `matcher`: Optional pattern matching (tool, pattern)
 - `type`: Handler type (command/prompt/agent)
@@ -63,6 +68,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 - `async`: Run asynchronously
 
 **Drift History**:
+
 - 2026-02-02: Discovered missing 2 fields (timeout, async)
 - 2026-02-02: Fixed - all 9 fields now present in HookSchema
 
@@ -76,11 +82,13 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **CRITICAL DRIFT FOUND**: Entire schema structure was wrong!
+
 - **Wrong**: Had `{ name, transport: { type, ... } }` structure
 - **Correct**: Transport fields are flat `{ type, command, url, ... }`
 - **Fixed**: Complete restructure of MCPServerSchema + updated 13 validation rules
 
 **Sub-schemas**:
+
 - `MCPServerSchema` (lines 201-209)
 - `MCPStdioTransportSchema` (lines 163-168)
 - `MCPSSETransportSchema` (lines 173-177)
@@ -95,11 +103,13 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **CRITICAL DRIFT FOUND**: Entire schema structure was wrong!
+
 - **Wrong**: Had `{ servers: {...}, extensionMapping: {...} }` structure
 - **Correct**: Flat mapping `{ "server-name": { command, extensionToLanguage, ... } }`
 - **Fixed**: Complete restructure + removed configFile field + added 7 missing fields + updated 8 rules + deprecated 2 invalid rules
 
 **Sub-schemas**:
+
 - `LSPServerSchema` (lines 33-77)
 - `ExtensionMappingSchema` (lines 82-85)
 
@@ -111,6 +121,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **Official Fields** (from docs):
+
 - `name`: Skill name (kebab-case)
 - `description`: When to use the skill
 - `argument-hint`: Hint for arguments
@@ -127,6 +138,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 - `hooks`: Skill-scoped hooks
 
 **Drift History**:
+
 - 2026-02-02: Discovered missing 4 fields (argument-hint, disable-model-invocation, user-invocable, hooks)
 - 2026-02-02: Fixed - all 14 fields now present in Zod schema
 
@@ -138,6 +150,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **Official Fields** (8 total):
+
 - `name`: Unique identifier (kebab-case, required)
 - `description`: When Claude should delegate (required)
 - `tools`: Tools the subagent can use (optional)
@@ -148,6 +161,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 - `hooks`: Lifecycle hooks (optional)
 
 **Drift History**:
+
 - 2026-02-02: Found extra field 'events' (doesn't exist in official spec)
 - 2026-02-02: Found missing field 'permissionMode'
 - 2026-02-02: Fixed - deleted agent-events rule and tests, added permissionMode
@@ -160,11 +174,13 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **Official Fields** (3 total, all optional):
+
 - `name`: Name of the output style (inherits from file name if not specified)
 - `description`: Description used in /output-style UI
 - `keep-coding-instructions`: Keep coding parts of system prompt (boolean, default false)
 
 **Drift History**:
+
 - 2026-02-02: Found missing field 'keep-coding-instructions'
 - 2026-02-02: Found extra field 'examples' (doesn't exist in official spec)
 - 2026-02-02: Found wrong validation on name (was required + kebab-case, should be optional + any string)
@@ -179,6 +195,7 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 **Verification**: Manual JSON Schema + auto-generated comparison
 
 **Official Fields** (1 total, optional):
+
 - `paths`: Array of glob patterns to scope rules to specific files (optional)
 
 **Purpose**: Frontmatter for `.claude/rules/*.md` files to scope rules to specific file patterns.
@@ -204,26 +221,28 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 
 ### Medium Priority (Likely Synced, Needs Confirmation)
 
-5. **HooksConfigSchema** - Derived from Settings schema
-6. **OutputStyleFrontmatterSchema** - Limited docs available
-7. **ClaudeMdFrontmatterSchema** - Unclear if frontmatter is official
+1. **HooksConfigSchema** - Derived from Settings schema
+2. **OutputStyleFrontmatterSchema** - Limited docs available
+3. **ClaudeMdFrontmatterSchema** - Unclear if frontmatter is official
 
 ### Low Priority (Already Synced)
 
-8. **SettingsSchema** - Has official URL reference
-9. **SkillFrontmatterSchema** - Well-documented in official docs
+1. **SettingsSchema** - Has official URL reference
+2. **SkillFrontmatterSchema** - Well-documented in official docs
 
 ## Verification Approaches
 
 ### Automated Verification (Preferred)
 
 For schemas with official JSON Schema or documented specs:
+
 1. Fetch official schema/spec
 2. Compare field names, types, required/optional status
 3. Report differences
 4. Run on pre-commit hook
 
 **Applicable to**:
+
 - PluginManifestSchema
 - SettingsSchema
 - SkillFrontmatterSchema
@@ -231,12 +250,14 @@ For schemas with official JSON Schema or documented specs:
 ### Manual Verification (Required)
 
 For schemas without machine-readable specs:
+
 1. Read official documentation
 2. Manually compare fields
 3. Document in comments
 4. Schedule quarterly reviews
 
 **Applicable to**:
+
 - MCPConfigSchema
 - LSPConfigSchema
 - AgentFrontmatterSchema

@@ -681,7 +681,8 @@ pnpm add -g claudelint
    Install Command: npm install
    ```
 
-3. **Add build script** to package.json:
+1. **Add build script** to package.json:
+
    ```json
    {
      "scripts": {
@@ -693,7 +694,7 @@ pnpm add -g claudelint
    }
    ```
 
-4. **Deploy**
+2. **Deploy**
    - Click "Deploy"
    - Site live in ~1 minute
    - Preview URL: `claudelint.vercel.app`
@@ -703,11 +704,13 @@ pnpm add -g claudelint
 1. Go to Project Settings → Domains
 2. Add domain: `docs.claudelint.dev`
 3. Add DNS record at domain provider:
+
    ```text
    Type: CNAME
    Name: docs
    Value: cname.vercel-dns.com
    ```
+
 4. Vercel provides automatic HTTPS
 
 **PR Preview Deployments:**

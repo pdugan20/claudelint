@@ -143,7 +143,7 @@ Project to set up professional npm versioning, release automation, and package n
 - [x] Dry run: `npm publish --dry-run --tag beta --access public`
 - [x] Review dry-run output (769 files, 263KB compressed, 1.3MB unpacked)
 - [x] Publish: `npm publish --tag beta --access public --otp=CODE`
-- [x] Verify package on npmjs.com (https://www.npmjs.com/package/claudelint)
+- [x] Verify package on npmjs.com (<https://www.npmjs.com/package/claudelint>)
 - [x] Test installation: `npm install claude-code-lint@beta`
 - [x] Verify installed CLI works (version 0.2.0-beta.0)
 - [x] Verify installed API works (ClaudeLint class and lint function)

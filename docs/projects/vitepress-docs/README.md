@@ -348,8 +348,8 @@ See [implementation-tracker.md](./implementation-tracker.md) for detailed task l
 - **Vue 3 Composition API** required for custom components
 - Similar to React hooks if you know those
 - **Learning resources**:
-  - Vue 3 docs: https://vuejs.org
-  - VitePress components: https://vitepress.dev/guide/extending-default-theme
+  - Vue 3 docs: <https://vuejs.org>
+  - VitePress components: <https://vitepress.dev/guide/extending-default-theme>
 
 ### Realistic Time Investment
 

@@ -136,6 +136,7 @@ about: Report an issue related to how Prettier formats code
 **Why?**
 
 Brief explanation
+
 ```
 
 ### ESLint Approach
@@ -504,10 +505,10 @@ github actions:
 
 **Optional but Recommended:**
 
-7. **dependabot.yml** or **renovate.json5** - Dependency updates
-8. **release.yml** - Automated releases (if using semantic-release)
-9. **size-check.yml** - Monitor bundle size changes
-10. **docs-deploy.yml** - Deploy documentation (if applicable)
+1. **dependabot.yml** or **renovate.json5** - Dependency updates
+2. **release.yml** - Automated releases (if using semantic-release)
+3. **size-check.yml** - Monitor bundle size changes
+4. **docs-deploy.yml** - Deploy documentation (if applicable)
 
 ## Dependency Management
 
@@ -809,7 +810,7 @@ export const rules = {
 };
 ```
 
-4. Add documentation in `docs/rules/[rule-name].md`
+1. Add documentation in `docs/rules/[rule-name].md`
 
 ## File Format
 
@@ -843,6 +844,7 @@ export default {
 - Run `npm run lint` before committing
 - Update documentation for new rules
 - Keep commits focused and descriptive
+
 ```
 
 ## Security Policies
@@ -1000,32 +1002,32 @@ Configures issue template behavior and provides links to external resources.
 
 ### Secondary Priorities
 
-6. **Code Ownership**
+1. **Code Ownership**
    - CODEOWNERS file
 
-7. **PR Automation**
+2. **PR Automation**
    - pr-labeler.yml
    - labeler.yml
 
-8. **Issue Automation**
+3. **Issue Automation**
    - lock.yml (lock old issues)
    - no-response.yml (close unresponsive issues)
 
-9. **GitHub Copilot**
+4. **GitHub Copilot**
    - copilot-instructions.md (project-specific guidance)
 
-10. **Funding**
+5. **Funding**
     - FUNDING.yml (if accepting sponsorships)
 
 ### Long-term Enhancements
 
-11. **Advanced Workflows**
+1. **Advanced Workflows**
     - size-check.yml (bundle size monitoring)
     - docs-deploy.yml (documentation deployment)
     - release.yml (automated releases)
     - benchmark.yml (performance tracking)
 
-12. **Quality Gates**
+2. **Quality Gates**
     - Require passing CI before merge
     - Require code review
     - Require up-to-date branches

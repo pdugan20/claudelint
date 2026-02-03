@@ -310,24 +310,29 @@ The proposal now:
 #### Impact on VitePress Docs
 
 **New Pages:**
+
 - `/integrations/monorepos` - Complete monorepo setup guide (source: `docs/projects/archive/monorepo-support/user-guide.md`)
 
 **Pages to Update:**
+
 - `/guide/configuration` - Add `extends` field documentation
 - `/guide/cli-reference` - Document `--workspace` and `--workspaces` flags
 - `/development/architecture` - Simplify (validator refactoring)
 - `index.md` (homepage) - Add monorepo support to features
 
 **Stats Updates:**
+
 - Total pages: ~155 → ~157 pages (+2)
 - Features: Add "Monorepo Support" with config inheritance
 - Performance: Add "3-10x faster for monorepos"
 
 **Completed:**
+
 - Updated `information-architecture.md` with `/integrations/monorepos` section
 - Updated content mapping for monorepo user guide
 
 **References:**
+
 - Monorepo project: `docs/projects/archive/monorepo-support/`
 - Git commits: fec2302 (workspace root), faa9fe8 (parallel), ceb4e53 (extends)
 
@@ -350,6 +355,7 @@ The proposal now:
 #### Impact on VitePress Docs
 
 **Pages to Update:**
+
 - `/development/architecture` - Simplify validator class diagram, use new names
 - `/development/validator-guide` - Use `FileValidator` and `SchemaValidator`
 - `/development/custom-rules` - Update examples with new class names
@@ -357,9 +363,11 @@ The proposal now:
 **No user-facing changes** - purely internal refactoring
 
 **Completed:**
+
 - Documented changes in UPDATES.md
 
 **References:**
+
 - Validator refactor project: `docs/projects/archive/validator-refactor-2026/`
 - Git commit: 94bc1c8
 

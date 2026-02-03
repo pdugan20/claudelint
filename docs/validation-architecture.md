@@ -34,6 +34,7 @@ Both validators extend from the same base class, sharing common functionality fo
 **Purpose:** Validates text and markdown files with flexible, rule-based validation.
 
 **Used For:**
+
 - CLAUDE.md files
 - SKILL.md files (skill definitions)
 - AGENT.md files (agent definitions)
@@ -41,6 +42,7 @@ Both validators extend from the same base class, sharing common functionality fo
 - Shell scripts (skill implementation files)
 
 **Features:**
+
 - Inline disable comment support (`claudelint-disable`, `claudelint-disable-next-line`)
 - Category-based rule execution
 - Optional frontmatter validation with Zod schemas
@@ -88,6 +90,7 @@ class SkillsValidator extends FileValidator {
 **Purpose:** Validates JSON configuration files with strict schema validation followed by semantic rules.
 
 **Used For:**
+
 - MCP server configurations (mcp.json)
 - Settings files (settings.json)
 - Hook configurations (hooks.json)
@@ -95,6 +98,7 @@ class SkillsValidator extends FileValidator {
 - LSP configurations (lsp.json)
 
 **Features:**
+
 - Automatic JSON parsing with error reporting
 - Zod schema validation (non-configurable)
 - Semantic validation with rules (configurable)
@@ -144,12 +148,14 @@ SchemaValidator provides two distinct validation layers:
 **Purpose:** Validate JSON structure and types against Zod schema
 
 **Characteristics:**
+
 - Non-configurable (always runs)
 - Reports structural errors (missing fields, wrong types, invalid formats)
 - Stops validation if schema fails
 - Fast and deterministic
 
 **Example Errors:**
+
 - "Missing required field: name"
 - "Expected string, got number"
 - "Invalid URL format"
@@ -159,12 +165,14 @@ SchemaValidator provides two distinct validation layers:
 **Purpose:** Validate business rules, relationships, and best practices
 
 **Characteristics:**
+
 - Configurable (respects .claudelintrc.json)
 - Reports semantic issues (broken references, deprecated usage, security issues)
 - Runs after schema passes
 - Can be disabled per-rule
 
 **Example Errors:**
+
 - "Referenced file not found: ./script.sh"
 - "Environment variable \${INVALID} contains special characters"
 - "Command not found in PATH: /usr/bin/foo"
@@ -172,6 +180,7 @@ SchemaValidator provides two distinct validation layers:
 **Why Two Layers?**
 
 This separation provides:
+
 1. **Clear failure modes** - Structure errors vs business logic errors
 2. **Configurability** - Schema always enforced, rules can be customized
 3. **Type safety** - Semantic validation receives typed, validated config
@@ -182,6 +191,7 @@ This separation provides:
 ### When to Use FileValidator
 
 Choose FileValidator if:
+
 - [YES] File is text or markdown format
 - [YES] Content is human-written documentation
 - [YES] Validation is primarily rule-based
@@ -193,6 +203,7 @@ Choose FileValidator if:
 ### When to Use SchemaValidator
 
 Choose SchemaValidator if:
+
 - [YES] File is JSON format
 - [YES] Structure is strictly defined
 - [YES] Type validation is critical
@@ -505,6 +516,7 @@ async validate(): Promise<ValidationResult> {
 - **Consistent** - All validators follow same patterns
 
 For more details, see:
+
 - [Rule Development Guide](./rule-development.md)
 - [Custom Rules Guide](./custom-rules.md)
 - [Architecture Overview](./architecture.md)

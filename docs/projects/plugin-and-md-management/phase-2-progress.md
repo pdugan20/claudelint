@@ -30,27 +30,27 @@ Report differences → Fix Zod
 
 1. **PluginManifestSchema** [COMPLETE]
    - Manual reference: `schemas/plugin-manifest.schema.json`
-   - Source: https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema
+   - Source: <https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema>
    - Status: Zod matches official spec
    - Fields: 15 (all present)
 
 2. **SkillFrontmatterSchema** [COMPLETE] (DRIFT FOUND & FIXED)
    - Manual reference: `schemas/skill-frontmatter.schema.json`
-   - Source: https://code.claude.com/docs/en/skills#frontmatter-reference
+   - Source: <https://code.claude.com/docs/en/skills#frontmatter-reference>
    - Status: Fixed - was missing 4 fields
    - Fields: 14/14 present
    - **Drift**: Missing argument-hint, disable-model-invocation, user-invocable, hooks (FIXED)
 
 3. **HooksConfigSchema** [COMPLETE] (DRIFT FOUND & FIXED)
    - Manual reference: `schemas/hooks-config.schema.json`
-   - Source: https://code.claude.com/docs/en/hooks
+   - Source: <https://code.claude.com/docs/en/hooks>
    - Status: Fixed - was missing 2 fields
    - Fields: 9/9 present in HookSchema
    - **Drift**: Missing timeout, async fields (FIXED)
 
 4. **MCPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
    - Manual reference: `schemas/mcp-config.schema.json`
-   - Source: https://code.claude.com/docs/en/mcp
+   - Source: <https://code.claude.com/docs/en/mcp>
    - Status: Fixed - ENTIRE STRUCTURE WAS WRONG
    - **Drift**: Schema had completely incorrect nesting:
      - Had: `{ name, transport: { type, ... } }`
@@ -60,7 +60,7 @@ Report differences → Fix Zod
 
 5. **LSPConfigSchema** [COMPLETE] (CRITICAL DRIFT FOUND & FIXED)
    - Manual reference: `schemas/lsp-config.schema.json`
-   - Source: https://code.claude.com/docs/en/plugins-reference#lsp-servers
+   - Source: <https://code.claude.com/docs/en/plugins-reference#lsp-servers>
    - Status: Fixed - ENTIRE STRUCTURE WAS WRONG
    - **Drift**: Schema had wrong nesting + wrong field names + missing fields:
      - Had: `{ servers: {...}, extensionMapping: {...} }`
@@ -72,7 +72,7 @@ Report differences → Fix Zod
 
 6. **AgentFrontmatterSchema** [COMPLETE] (Minor drift - FIXED)
    - Manual reference: `schemas/agent-frontmatter.schema.json`
-   - Source: https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields
+   - Source: <https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields>
    - Status: Fixed - missing 1 field + had 1 extra field
    - **Drift**:
      - Missing: permissionMode (enum with 5 values)
@@ -82,7 +82,7 @@ Report differences → Fix Zod
 
 7. **OutputStyleFrontmatterSchema** [COMPLETE] (MAJOR drift - FIXED)
    - Manual reference: `schemas/output-style-frontmatter.schema.json`
-   - Source: https://code.claude.com/docs/en/output-styles#frontmatter
+   - Source: <https://code.claude.com/docs/en/output-styles#frontmatter>
    - Status: Fixed - completely wrong validations + missing field + extra field
    - **Drift**:
      - Missing: keep-coding-instructions (boolean)
@@ -94,7 +94,7 @@ Report differences → Fix Zod
 
 8. **RulesFrontmatterSchema** [COMPLETE] (Clean - NO DRIFT)
    - Manual reference: `schemas/rules-frontmatter.schema.json`
-   - Source: https://code.claude.com/docs/en/memory#path-specific-rules
+   - Source: <https://code.claude.com/docs/en/memory#path-specific-rules>
    - Status: Clean - schema matches official spec perfectly
    - **Schema**: Single optional `paths` field for glob patterns
    - **Note**: Renamed from ClaudeMdFrontmatterSchema for clarity (applies to `.claude/rules/*.md`, not main CLAUDE.md)
@@ -169,6 +169,7 @@ Report differences → Fix Zod
 **Drift Rate**: 75% of schemas had drift (6/8). Only PluginManifestSchema and RulesFrontmatterSchema were clean.
 
 **Severity Breakdown**:
+
 - **Clean (0 issues)**: PluginManifestSchema, RulesFrontmatterSchema
 - **Minor drift** (missing/extra optional fields): SkillFrontmatterSchema (4 fields), HooksConfigSchema (2 fields), AgentFrontmatterSchema (1 missing + 1 extra)
 - **MAJOR drift** (wrong validations): OutputStyleFrontmatterSchema (4 invalid rules deleted)
@@ -177,15 +178,18 @@ Report differences → Fix Zod
 ### Additional Schema Improvements
 
 **JSON Schema Draft 2020-12 Migration**:
+
 - Migrated all 8 schemas from Draft-07 to Draft 2020-12 (current stable version)
 - No breaking changes affected our simple schemas
 - Future-proofs schemas for better tooling support
 
 **Source URL Extraction**:
+
 - Added custom `source` and `sourceType` properties to all 8 schemas
 - Extracted documentation URLs from description fields
 - Improves machine-readability and enables automated source tracking
 - Example:
+
   ```json
   {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -196,6 +200,7 @@ Report differences → Fix Zod
   ```
 
 **LSP Config Test Fixes**:
+
 - Updated all LSP config tests to match corrected flat schema structure
 - Removed `servers` wrapper (server names are now direct keys)
 - Added required `extensionToLanguage` field to all test cases
@@ -242,6 +247,7 @@ CI fails if drift detected
 ### Completed Tasks
 
 **Task 2.2.1: Install zod-to-json-schema**
+
 - Installed `zod-to-json-schema` package
 - Created `scripts/generate/json-schemas.ts` (103 lines)
 - Generates JSON Schemas from all 8 Zod schemas
@@ -250,6 +256,7 @@ CI fails if drift detected
 - Added `npm run generate:json-schemas` script
 
 **Task 2.2.2: Build schema comparison tool**
+
 - Created `scripts/verify/compare-schemas.ts` (255 lines)
 - Compares manual reference vs generated schemas
 - Detects: missing fields, wrong types, enum mismatches, missing required fields
@@ -259,6 +266,7 @@ CI fails if drift detected
 - **Result**: All 8 schemas match! No drift detected!
 
 **Task 2.2.3: Update schema-sync script**
+
 - Completely rewrote `scripts/check/schema-sync.ts`
 - 66% code reduction (185 lines vs 540 lines)
 - Removed 452 lines of outdated Ajv/Zod comparison code
@@ -267,6 +275,7 @@ CI fails if drift detected
 - Clear, actionable error messages
 
 **Task 2.2.4: CI/CD integration**
+
 - CI job already configured correctly ✓
 - Updated `.github/workflows/ci.yml` documentation
 - Runs on every PR and push to main
@@ -299,7 +308,7 @@ npm run check:schema-sync       # Full verification (runs in CI)
 
 ## Next Steps
 
-### Phase 2.1 - COMPLETE!
+### Phase 2.1 - COMPLETE
 
 - [x] All 8 manual reference schemas created
 - [x] All drift detected and fixed (6/8 schemas had issues)
@@ -308,7 +317,7 @@ npm run check:schema-sync       # Full verification (runs in CI)
 - [x] Fixed all LSP config tests
 - [x] All 771 tests passing
 
-### Phase 2.2 - COMPLETE!
+### Phase 2.2 - COMPLETE
 
 - [x] Install zod-to-json-schema
 - [x] Build schema comparison tool
@@ -316,7 +325,7 @@ npm run check:schema-sync       # Full verification (runs in CI)
 - [x] CI/CD integration
 - [x] All 8 schemas verified with 0 drift
 
-### Phase 2.3 - COMPLETE!
+### Phase 2.3 - COMPLETE
 
 **Verification Audit**: All Phase 2.3 tasks completed via Phase 2.1/2.2 work
 

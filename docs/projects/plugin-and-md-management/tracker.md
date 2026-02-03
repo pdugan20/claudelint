@@ -47,6 +47,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   - **claudelint plugin** (skills) requires **claude-code-lint npm package** (CLI binary)
 
   **Primary flow (recommended):**
+
   ```bash
   # 1. Install npm package (gets CLI + skills)
   npm install --save-dev claude-code-lint
@@ -62,6 +63,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   ```
 
   **Alternative: GitHub install (for users who only want skills)**
+
   ```bash
   # Must have npm package installed FIRST (dependency)
   npm install --save-dev claude-code-lint
@@ -80,11 +82,13 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   1. Before fix: `npm pack && tar -tzf claude-code-lint-*.tgz | grep "\.claude/"` (should be empty or shouldn't exist)
   2. Make change: Remove `"skills"` and `".claude"` from files array
   3. After fix: Verify only CLI files included:
+
      ```bash
      npm pack
      tar -tzf claude-code-lint-*.tgz | grep -E "^package/(dist|bin|README|LICENSE)" | head -10
      tar -tzf claude-code-lint-*.tgz | grep "\.claude" # should be empty
      ```
+
   4. Verify package is smaller (no skills bloat)
   5. Test CLI install: `npm install -g ./claude-code-lint-*.tgz && claudelint --version`
   6. Clean up: `rm claude-code-lint-*.tgz && npm uninstall -g claude-code-lint`
@@ -134,6 +138,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   4. After: Verify old dir gone, new dir exists, frontmatter correct
 
   Check for stale references:
+
   ```bash
   grep -r "validate\"" .claude/skills/  # should find nothing with old name
   grep -r "format\"" .claude/skills/   # should find nothing with old name
@@ -159,11 +164,12 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   **Note**: Rules deprecated (not deleted yet) - see discussion about deletion vs deprecation
 
   **Verification Steps:**
-  1. Compare current schema with official docs: https://code.claude.com/docs/en/plugins-reference#complete-schema
+  1. Compare current schema with official docs: <https://code.claude.com/docs/en/plugins-reference#complete-schema>
   2. Update schema in src/validators/schemas.ts
   3. Validate our plugin.json: `cat .claude-plugin/plugin.json | jq .` (should pass)
   4. Run tests: `npm test -- plugin` (should pass)
   5. Test schema validation catches errors:
+
      ```bash
      echo '{"name": "test", "author": "string"}' > /tmp/test-plugin.json
      claudelint check-plugin --path /tmp/test-plugin.json  # should warn about author being string
@@ -181,16 +187,19 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   **Verification Steps:**
   1. Find the rule: `find src -name "*generic*name*"`
   2. Write test first (should fail initially):
+
      ```typescript
      it('should flag single-word verb names', () => {
        const result = validateSkill({ name: 'format' });
        expect(result).toContainWarning('overly-generic-name');
      });
      ```
+
   3. Run test: `npm test -- --testNamePattern="overly-generic-name"` (should fail)
   4. Update rule to detect single-word verbs (format, validate, test, build, deploy)
   5. Run test again: `npm test -- --testNamePattern="overly-generic-name"` (should pass)
   6. Test on BEFORE renaming our skills:
+
      ```bash
      # Should flag these (before we rename them)
      claudelint validate-skills --path .claude/skills/validate 2>&1 | grep "generic"
@@ -198,6 +207,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
      # Should NOT flag these
      claudelint validate-skills --path .claude/skills/validate-hooks 2>&1 | grep "generic" && echo "FAIL" || echo "PASS"
      ```
+
   7. Run full test suite: `npm test`
 
 - [x] **Task 1.7**: Test plugin installation locally
@@ -217,17 +227,21 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   2. Install as plugin: `claude /plugin install --source .`
   3. In Claude Code session, verify skills are listed: `/skills` (should show claudelint:* skills)
   4. Test each renamed skill namespace:
+
      ```
      /claudelint:validate-all
      /claudelint:format-cc
      /claudelint:validate-cc-md
      ```
+
   5. Verify old names DON'T trigger:
+
      ```
      /claudelint:validate  # should not be found
      /claudelint:format    # should not be found
      /claudelint:validate-agents-md  # should not be found
      ```
+
   6. Test skill execution: Run `/claudelint:validate-all` and verify it actually executes
   7. Uninstall: `claude /plugin uninstall claudelint`
   8. Reinstall to ensure clean state: `claude /plugin install --source .`
@@ -283,11 +297,12 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   - [x] Updated README to emphasize project install (--save-dev) over global
 
   **Context:**
-  Users discovering plugin via marketplaces (https://claudemarketplaces.com, https://skills.sh) will install plugin first without seeing README. Skills need to fail gracefully when npm package isn't installed. Also, users installing via npm need clear guidance on how to enable skills.
+  Users discovering plugin via marketplaces (<https://claudemarketplaces.com>, <https://skills.sh>) will install plugin first without seeing README. Skills need to fail gracefully when npm package isn't installed. Also, users installing via npm need clear guidance on how to enable skills.
 
   **Final Implementation:**
 
   Shared wrapper (`.claude/skills/lib/run-claudelint.sh`):
+
   ```bash
   #!/bin/bash
   # Wrapper script for running claudelint commands
@@ -311,6 +326,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   ```
 
   Individual skills (example):
+
   ```bash
   #!/bin/bash
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -324,6 +340,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
   **Verification Steps:**
   1. Test without package installed:
+
      ```bash
      # Remove package
      rm -rf node_modules/claude-code-lint
@@ -331,28 +348,38 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
      .claude/skills/validate-all/validate-all.sh
      # Should show: "Error: claude-code-lint not installed"
      ```
+
   2. Test with package installed:
+
      ```bash
      npm install --save-dev claude-code-lint
      .claude/skills/validate-all/validate-all.sh
      # Should execute successfully
      ```
+
   3. Test postinstall message:
+
      ```bash
      npm install --save-dev claude-code-lint
      # Should show plugin install instructions
      ```
+
   4. Test helper command:
+
      ```bash
      npx claudelint install-plugin
      # Should show /plugin install command
      ```
+
   5. Test init wizard:
+
      ```bash
      npx claudelint init
      # Should show plugin install in "next steps"
      ```
+
   6. Verify plugin.json description:
+
      ```bash
      jq -r '.description' plugin.json | grep "npm install"
      ```
@@ -451,11 +478,13 @@ Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
    - Purpose: Actual validation logic
 
 **Verification Flow**:
+
 ```
 Official Docs → Manual JSON Schema → Generate from Zod → Compare → Fix Drift
 ```
 
 **Drift Found (6/8 schemas had issues = 75%)**:
+
 - PluginManifestSchema: CLEAN - Clean
 - SkillFrontmatterSchema: Minor drift - missing 4 fields (FIXED)
 - HooksConfigSchema: Minor drift - missing 2 fields (FIXED)
@@ -483,6 +512,7 @@ Systematic verification of all schemas and constants against official Claude Cod
 ### Discovery Summary
 
 **Found Issues**:
+
 - 1 schema out of sync (PluginManifestSchema - CRITICAL)
 - 1 schema verified (SettingsSchema)
 - 8 schemas need audit
@@ -498,6 +528,7 @@ Systematic verification of all schemas and constants against official Claude Cod
 **Current Work**: Creating manual JSON Schemas from official docs to detect drift.
 
 **Completed**:
+
 - [x] **Task 2.1.1**: Schema inventory (identified 9 schemas needing verification)
 - [x] **Task 2.1.2**: PluginManifestSchema reference created
 - [x] **Task 2.1.3**: SkillFrontmatterSchema reference created (FOUND DRIFT - 4 missing fields)
@@ -516,6 +547,7 @@ Systematic verification of all schemas and constants against official Claude Cod
 None - Phase 2.1 complete!
 
 **Acceptance Criteria**:
+
 - [x] All 8 manual reference schemas created in `schemas/` directory
 - [x] Each schema documented with official source URL
 - [x] All drift between Zod and official specs fixed
@@ -531,6 +563,7 @@ None - Phase 2.1 complete!
 **Goal**: Generate JSON Schema from Zod and compare to manual reference schemas.
 
 **Completed**:
+
 - [x] **Task 2.2.1**: Install zod-to-json-schema
   - [x] Add `zod-to-json-schema` dependency
   - [x] Create wrapper script to generate from all Zod schemas (`scripts/generate/json-schemas.ts`)
@@ -564,6 +597,7 @@ None - Phase 2.1 complete!
   - [x] Node modules cache already configured
 
 **Acceptance Criteria**:
+
 - [x] zod-to-json-schema installed and wrapper created
 - [x] Comparison tool detects all types of drift
 - [x] Schema-sync script automated (generate + compare)
@@ -571,6 +605,7 @@ None - Phase 2.1 complete!
 - [x] All 8 schemas verified with 0 drift
 
 **Deliverables**:
+
 - `scripts/generate/json-schemas.ts` - Generate JSON Schemas from Zod
 - `scripts/verify/compare-schemas.ts` - Compare and detect drift
 - `scripts/check/schema-sync.ts` - Rewritten orchestration script
@@ -584,6 +619,7 @@ None - Phase 2.1 complete!
 **Note**: Phase 2.3 tasks were defined before implementing comprehensive dual-schema verification. All objectives met through Phase 2.1/2.2 work. See `phase-2-3-verification.md` for detailed audit.
 
 **Completed**:
+
 - [x] **Task 2.3.1**: Plugin manifest verification
   - [x] PluginManifestSchema verified against official spec (no drift)
   - [x] All 15 fields verified (name, version, description, author, etc.)
@@ -613,6 +649,7 @@ None - Phase 2.1 complete!
   - [x] Dual-schema system = hybrid verification framework
 
 **Acceptance Criteria**:
+
 - [x] All 3 specific verification tasks complete
 - [x] Hybrid framework implemented (dual-schema system)
 - [x] All 8 schemas verified with 0 drift
@@ -620,6 +657,7 @@ None - Phase 2.1 complete!
 - [x] Framework detects all drift types
 
 **Deliverables**:
+
 - Verification audit: `docs/projects/plugin-and-md-management/phase-2-3-verification.md`
 - Evidence: All schemas show "No drift detected" in comparison output
 
@@ -668,6 +706,7 @@ Design and implement a proper rule deprecation system modeled after ESLint and P
 ### Research Phase
 
 **Research ESLint's approach:**
+
 - How they mark rules as deprecated
 - How deprecated rules are reported
 - Configuration options (--report-unused-disable-directives equivalent)
@@ -675,6 +714,7 @@ Design and implement a proper rule deprecation system modeled after ESLint and P
 - Documentation patterns
 
 **Research Prettier's approach:**
+
 - How they deprecate options
 - Version compatibility matrix
 - Breaking change communication
@@ -756,6 +796,7 @@ export const rule: Rule = {
 ```
 
 **CLI output:**
+
 ```
 Warning: Rule 'example-old-rule' is deprecated
   Reason: This rule was based on an unofficial field that was removed from the spec
@@ -764,6 +805,7 @@ Warning: Rule 'example-old-rule' is deprecated
 ```
 
 **Migration tool:**
+
 ```bash
 npm run migrate:config
 # Scans .claudelintrc.json
@@ -780,6 +822,7 @@ npm run migrate:config
 **Dependencies**: Phase 1 complete
 
 **What This Skill Does**: Provides instructions for Claude to **interactively help users fix their CLAUDE.md files**. When user runs `/optimize-cc-md`, Claude reads the skill instructions and:
+
 1. Runs `claudelint check-claude-md` to get violations
 2. Reads user's CLAUDE.md file
 3. Explains violations conversationally
@@ -939,6 +982,7 @@ Overall: [███░░░░░░░] 31% (Phase 0 complete + 5.5/6 Phase 1 
 **Total**: 6.5-8.5 days (1.5 weeks)
 
 **Phase 1 breakdown**:
+
 - Package.json fix + plugin.json: 2 hours
 - Rename 3 skills: 3 hours (1 hour each)
 - Update E10 rule: 1-2 hours

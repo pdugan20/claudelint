@@ -28,6 +28,7 @@ packages:
 ```
 
 **Detection Strategy:**
+
 - Check for `pnpm-workspace.yaml` in current directory
 - Parse YAML to extract `packages` array
 - Expand glob patterns to find package directories
@@ -47,6 +48,7 @@ packages:
 ```
 
 **Detection Strategy:**
+
 - Check for `package.json` in current directory
 - Look for `workspaces` field (array format)
 - Expand glob patterns
@@ -69,6 +71,7 @@ packages:
 ```
 
 **Detection Strategy:**
+
 - Check for `package.json` in current directory
 - Look for `workspaces.packages` field (object format)
 - Also support array format (like npm)

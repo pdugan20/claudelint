@@ -182,6 +182,7 @@ Fix critical gaps and add high-impact improvements:
 **Phase 1 is sufficient for most users** - config inheritance solves 80% of monorepo pain points. Phase 2 is a convenience enhancement.
 
 **Benefits:**
+
 - Ship Phase 1 quickly for immediate value
 - Gather user feedback before Phase 2
 - Can skip Phase 2 if users don't need it
@@ -283,6 +284,7 @@ Fix critical gaps and add high-impact improvements:
 **Risk:** Circular dependencies, infinite loops, confusing merge order
 
 **Mitigation:**
+
 - Use visited set to detect cycles
 - Follow ESLint's merge order (proven)
 - Comprehensive error messages
@@ -293,6 +295,7 @@ Fix critical gaps and add high-impact improvements:
 **Risk:** Unusual workspace configurations, nested workspaces, malformed YAML
 
 **Mitigation:**
+
 - Graceful error handling
 - Clear error messages
 - Test with real-world monorepos
@@ -303,6 +306,7 @@ Fix critical gaps and add high-impact improvements:
 **Risk:** Existing users' configs break
 
 **Mitigation:**
+
 - `extends` is optional (backward compatible)
 - Existing behavior unchanged without `extends`
 - Migration guide for power users
@@ -313,6 +317,7 @@ Fix critical gaps and add high-impact improvements:
 **Risk:** Config loading slower with inheritance
 
 **Mitigation:**
+
 - Cache loaded configs
 - Only resolve extends once per file
 - Benchmark before/after

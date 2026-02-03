@@ -114,15 +114,18 @@ await Promise.all(
 ```
 
 **Benefits:**
+
 - 5-10x faster for monorepos with many packages
 - Better utilization of multi-core systems
 - Aligns with how `check-all` already parallelizes validators
 
 **Risks:**
+
 - Output interleaving (needs buffering)
 - Resource exhaustion (might need concurrency limit)
 
 **Mitigation:**
+
 - Buffer output per package, display after completion
 - Add `--max-concurrency` flag (default: CPU cores)
 
@@ -165,6 +168,7 @@ function isCacheValid(entry: CacheEntry): boolean {
 ```
 
 **Benefits:**
+
 - Maintains cache speedup (~2.4x) even with extends
 - Automatically invalidates when any config in chain changes
 - No user intervention needed
@@ -188,11 +192,13 @@ Validating workspace packages... [=========>        ] 6/10 (app-2)
 ```
 
 **Implementation:**
+
 - Use existing progress indicator infrastructure
 - Show: current/total packages, current package name
 - Hide in CI (same logic as existing progress bars)
 
 **Libraries:**
+
 - Already using `ora` for spinners
 - Could use `cli-progress` or `listr2` for multi-line progress
 
@@ -231,6 +237,7 @@ if (options.workspacePattern) {
 ```
 
 **Use cases:**
+
 - CI: validate only apps (not libs)
 - Development: validate related packages
 - Selective validation after changes
@@ -274,6 +281,7 @@ async function findWorkspaceRoot(cwd: string): Promise<string | null> {
 ```
 
 **Benefits:**
+
 - Better DX (works from any directory)
 - Matches ESLint/Prettier behavior
 - No need to remember workspace root location
@@ -308,6 +316,7 @@ claudelint check-all --workspaces --format json
 ```
 
 **Use cases:**
+
 - CI integrations
 - IDE plugins
 - Custom reporting tools
@@ -331,6 +340,7 @@ Support built-in presets:
 ```
 
 **Presets to ship:**
+
 - `claudelint:recommended` - Balanced rules for most projects
 - `claudelint:strict` - All rules as errors
 - `claudelint:minimal` - Only critical rules
@@ -366,6 +376,7 @@ function resolveConfigPath(extendsValue: string, fromDir: string): string {
 ```
 
 **Benefits:**
+
 - Quick setup for new users
 - Consistent defaults across projects
 - Easier onboarding
@@ -412,6 +423,7 @@ function loadConfigWithExtends(configPath: string): ClaudeLintConfig {
 ```
 
 **Benefits:**
+
 - Fail fast with clear errors
 - Indicates which file in chain has issue
 - Suggests fixes (typo detection)
@@ -437,6 +449,7 @@ claudelint print-config --workspace app-1
 ```
 
 **Benefits:**
+
 - Debug config inheritance issues
 - Understand what rules are active
 - See where each setting comes from
@@ -452,6 +465,7 @@ claudelint print-config --workspace app-1
 **Priority:** LOW
 
 **Security concerns:**
+
 - MITM attacks
 - Untrusted code execution
 - Cache poisoning
@@ -508,6 +522,7 @@ nx affected --target=lint
 ```
 
 **Challenges:**
+
 - Learn their APIs
 - Maintain compatibility
 - Document integration
@@ -533,34 +548,34 @@ nx affected --target=lint
 
 ### Short Term (Next Sprint)
 
-3. **Parallel workspace validation** (4-6 hours)
+1. **Parallel workspace validation** (4-6 hours)
    - High user impact for large monorepos
    - Low implementation risk
    - Natural performance win
 
-4. **Progress bar for --workspaces** (2-3 hours)
+2. **Progress bar for --workspaces** (2-3 hours)
    - Better UX for slow operations
    - Low effort, medium impact
 
-5. **Workspace root auto-detection** (6-8 hours)
+3. **Workspace root auto-detection** (6-8 hours)
    - Major UX improvement
    - Matches user expectations from other tools
 
 ### Medium Term (Gather Feedback First)
 
-6. **Preset configs** (1-2 days)
+1. **Preset configs** (1-2 days)
    - Wait for user feedback on current features
    - Ship after core is stable
 
-7. **--workspace-pattern flag** (4-6 hours)
+2. **--workspace-pattern flag** (4-6 hours)
    - Convenience feature
    - Not critical for MVP
 
 ### Long Term (If Requested)
 
-8. **Config validation improvements**
-9. **Per-package config UI**
-10. **Turborepo/Nx integration** (only if users ask)
+1. **Config validation improvements**
+2. **Per-package config UI**
+3. **Turborepo/Nx integration** (only if users ask)
 
 ---
 

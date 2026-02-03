@@ -28,8 +28,9 @@ We maintain two types of schemas that work together:
 **Hosted at**: `https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/*.schema.json`
 
 **Examples**:
-- `plugin-manifest.schema.json` - Based on https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema
-- `skill-frontmatter.schema.json` - Based on https://code.claude.com/docs/en/skills#frontmatter-reference
+
+- `plugin-manifest.schema.json` - Based on <https://code.claude.com/docs/en/plugins-reference#plugin-manifest-schema>
+- `skill-frontmatter.schema.json` - Based on <https://code.claude.com/docs/en/skills#frontmatter-reference>
 
 **Role**: Reference implementation, not source of truth
 
@@ -38,6 +39,7 @@ We maintain two types of schemas that work together:
 **Purpose**: Runtime validation in claudelint validators
 
 **Features**:
+
 - TypeScript type safety
 - Custom refinements (noXMLTags, noReservedWords, thirdPerson, etc.)
 - Can be **stricter** than official specs (extra validations OK)
@@ -84,12 +86,14 @@ const generated = zodToJsonSchema(SkillFrontmatterSchema);
 Automated comparison checks:
 
 **Field Comparison**:
+
 - PASS Same field names?
 - PASS Same types?
 - PASS Same required/optional?
 - PASS Same enum values?
 
 **Strictness Rules**:
+
 - PASS **Extra validations in Zod OK** (e.g., noXMLTags, thirdPerson)
 - FAIL **Missing fields in Zod BAD** (official spec has it, we don't)
 - FAIL **Wrong types BAD** (string vs number)

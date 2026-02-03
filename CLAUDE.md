@@ -11,11 +11,13 @@
 - Only `npm run release` should modify this file
 
 **How to update the CHANGELOG:**
+
 1. Write proper Conventional Commits (feat:, fix:, docs:, etc.)
 2. Run `npm run release` when ready to publish
 3. release-it auto-generates the CHANGELOG entry from commits
 
 **Skill CHANGELOGs are different:**
+
 - Skill-level CHANGELOG.md files (`.claude/skills/*/CHANGELOG.md`) are **manually maintained**
 - These follow Keep a Changelog format
 - These should be updated when making changes to skills
@@ -33,6 +35,7 @@ All commits must follow Conventional Commits format (enforced by commitlint):
 ```
 
 **Types:**
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -45,6 +48,7 @@ All commits must follow Conventional Commits format (enforced by commitlint):
 - `chore:` - Other changes (not in changelog)
 
 **Examples:**
+
 ```bash
 feat: add new rule for validating skill dependencies
 fix: resolve workspace detection edge case
@@ -72,6 +76,7 @@ npm run release:rc     # 0.2.0 -> 0.3.0-rc.0
 ```
 
 **What happens during release:**
+
 1. Runs lint, test, and build
 2. Analyzes commits since last release
 3. Auto-generates CHANGELOG section

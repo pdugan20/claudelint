@@ -220,6 +220,7 @@ claudelint check-all
 ## Why claudelint?
 
 claudelint ensures your Claude Code projects follow best practices and catch issues early in development.
+
 ```
 
 ### Step 6: Create Sync Script (Temporary)
@@ -540,13 +541,15 @@ Click "Deploy" and wait ~1-2 minutes. Your site will be live at `claudelint.verc
 
 1. Add domain in Vercel: `docs.claudelint.dev`
 2. Configure DNS:
+
    ```text
    Type: CNAME
    Name: docs
    Value: cname.vercel-dns.com
    ```
+
 3. Wait 5-30 minutes for DNS propagation
-4. Site live at `https://docs.claudelint.dev` 
+4. Site live at `https://docs.claudelint.dev`
 
 ## Troubleshooting
 

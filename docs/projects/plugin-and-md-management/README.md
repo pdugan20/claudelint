@@ -63,6 +63,7 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 **ALSO AVOID**: Generic names cause "wrong skill triggers" (guide p11)
 
 **Good** **Good naming patterns:**
+
 - Be specific about what the skill does
 - Use suffixes to clarify scope:
   - `-all` for comprehensive actions (`validate-all`)
@@ -71,18 +72,21 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 - Multi-word names preferred over single words
 
 **Bad** **Forbidden patterns:**
+
 - Reserved words: `claude`, `anthropic`
 - Single-word verbs: `format`, `validate`, `test`, `build`, `deploy`
 - Generic nouns only: `helper`, `utils`, `tool`, `manager`
 - Made-up terms not from docs: `workspace-config-*`
 
 **Good** **Examples:**
+
 - `validate-all` (not `validate`)
 - `format-cc` (not `format`)
 - `validate-cc-md` (not `validate-agents-md` or `claude-md-validate`)
 - `optimize-cc-md` (not `optimize`)
 
 **Bad** **Bad examples:**
+
 - `format` - Too generic, what does it format?
 - `validate` - Too generic, what does it validate?
 - `claude-md-init` - Uses reserved word "claude"
@@ -126,11 +130,13 @@ claude /plugin install github:pdugan20/claudelint
 ```
 
 **What happens:**
+
 - Claude Code clones repo from GitHub
 - Reads `.claude/skills/` from Git repo (not npm)
 - Skills immediately available with namespace
 
 **Skills available:**
+
 - `/claudelint:validate-all` (renamed from validate)
 - `/claudelint:format-cc` (renamed from format)
 - `/claudelint:validate-cc-md` (renamed from validate-agents-md)
@@ -151,11 +157,13 @@ claudelint validate
 ```
 
 **What happens:**
+
 - npm installs CLI tool only
 - CLI commands work: `claudelint validate`, `claudelint format`, etc.
 - Skills NOT accessible in Claude Code sessions
 
 **npm package contents:**
+
 - `dist/` - Compiled CLI code
 - `bin/` - Binary wrapper
 - `README.md`, `LICENSE`
@@ -164,11 +172,13 @@ claudelint validate
 ### Why Two Channels?
 
 **Plugin install (GitHub):**
+
 - For interactive Claude Code sessions
 - Skills work: `/claudelint:validate-all`
 - Clone entire repo including `.claude/skills/`
 
 **npm install:**
+
 - For CI/CD pipelines, pre-commit hooks, automation
 - CLI only: `claudelint validate`
 - No need for skills directory
@@ -180,11 +190,13 @@ claudelint validate
 Following the LSP plugin pattern (e.g., `pyright-lsp` plugin requires `pyright-langserver` binary), our plugin requires the npm CLI package:
 
 **The dependency relationship:**
+
 ```
 claudelint plugin (skills) → depends on → claude-code-lint npm package (CLI binary)
 ```
 
 **User flow via marketplace (skills.sh, claudemarketplaces.com):**
+
 1. User discovers plugin in marketplace
 2. Runs `/plugin install github:pdugan20/claudelint`
 3. Tries `/claudelint:validate-all`
@@ -192,12 +204,14 @@ claudelint plugin (skills) → depends on → claude-code-lint npm package (CLI 
 5. If npm package not installed: "Error: claudelint CLI not installed"
 
 **How we handle this:**
+
 1. **plugin.json description** documents npm dependency requirement
 2. **All skill scripts check** if `claudelint` command exists before running
 3. **Show helpful error** with installation instructions if missing
 4. **Matches LSP pattern** - users understand this model from other plugins
 
 **Example dependency check in skill scripts:**
+
 ```bash
 #!/usr/bin/env bash
 if ! command -v claudelint &> /dev/null; then
@@ -215,6 +229,7 @@ claudelint check-all "$@"
 ```
 
 **Why this is correct:**
+
 - Matches established pattern (LSP plugins require binaries)
 - Skills fail gracefully with clear instructions
 - Separates concerns: npm = CLI tool, plugin = interactive skills
@@ -230,6 +245,7 @@ claudelint check-all "$@"
 ### Generic Skill Names Cause Issues
 
 **Problem**: 3 of our skills have overly generic names (Anthropic guide p11)
+
 - `validate` - Too generic, what does it validate?
 - `format` - Too generic, what does it format?
 - `validate-agents-md` - Misleading name (validates CLAUDE.md not AGENTS.md)
@@ -237,6 +253,7 @@ claudelint check-all "$@"
 **Impact**: "Wrong skill triggers" - skills activate on unrelated queries
 
 **Solution**:
+
 - Rename to specific names: `validate-all`, `format-cc`, `validate-cc-md`
 - Update E10 rule to catch single-word verbs
 - Prevent future generic skill names
@@ -244,6 +261,7 @@ claudelint check-all "$@"
 ### CLAUDE.md Validation Already Exists
 
 **Found 14 existing rules in `src/rules/claude-md/`:**
+
 - claude-md-import-missing
 - claude-md-import-circular
 - claude-md-import-depth-exceeded
@@ -257,6 +275,7 @@ claudelint check-all "$@"
 ### /init Command is Closed-Source
 
 Researched `/init` command implementation:
+
 - **Not in public repo**: github.com/anthropics/claude-code is examples/plugins only
 - **Built into CLI binary**: Distributed via curl/Homebrew/WinGet
 - **Functionality**: Generates CLAUDE.md by analyzing project (from GitHub issues)
@@ -295,12 +314,14 @@ See [tracker.md](./tracker.md) for detailed task breakdown.
 ### Phase 2 - Schema & Constant Verification System
 
 During Phase 1, discovered systematic issues with schema and constant verification:
+
 - **19 sources of truth** need verification (10 schemas + 9 constants)
 - **2 schemas out of sync** (PluginManifestSchema fixed, SkillFrontmatterSchema drift found)
 - **No automation** for most sources
 - **High risk** of validation drift
 
 **Current Work** (as of 2026-02-02):
+
 - Creating manual reference JSON Schemas from official docs
 - Building dual-schema verification system (manual + auto-generated)
 - Already found drift: SkillFrontmatterSchema missing 4 fields

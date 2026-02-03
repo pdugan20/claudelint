@@ -157,4 +157,4 @@ For plugin developers with custom validators:
 4. Mark tasks complete in tracker.md
 5. Document deviations in migration-notes.md
 6. Test using [testing-plan.md](./testing-plan.md)
-7. Celebrate! 
+7. Celebrate!

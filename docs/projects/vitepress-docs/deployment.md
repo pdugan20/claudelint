@@ -229,11 +229,13 @@ export default defineConfig({
 If you prefer GitHub Pages:
 
 **Pros:**
+
 - Free forever
 - Simple setup
 - Good for open source projects
 
 **Cons:**
+
 - No automatic PR previews
 - Slower than Vercel's edge network
 - Manual CNAME configuration

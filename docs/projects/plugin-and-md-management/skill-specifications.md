@@ -19,16 +19,20 @@
 ### Our Naming Conventions
 
 **Pattern 1**: `-all` suffix for comprehensive actions
+
 - `validate-all` (validates all project files) - renamed from `validate`
 
 **Pattern 2**: `-cc` suffix for Claude Code-specific operations
+
 - `format-cc` (formats Claude Code files) - renamed from `format`
 
 **Pattern 3**: `-cc-md` suffix for CLAUDE.md operations
+
 - `validate-cc-md` (validates CLAUDE.md) - renamed from `validate-agents-md`
 - `optimize-cc-md` (optimizes CLAUDE.md)
 
 **Pattern 4**: Specific targets
+
 - `validate-hooks`, `validate-settings`, `validate-skills` - already specific
 
 ### Rationale
@@ -49,6 +53,7 @@
 **What it does**: When user runs `/optimize-cc-md`, Claude interactively helps them fix and improve their CLAUDE.md file.
 
 **How it works**:
+
 1. Claude runs `claudelint check-claude-md` to find violations
 2. Claude reads their CLAUDE.md file
 3. Claude explains problems in conversational language
@@ -76,6 +81,7 @@ Initialize a new CLAUDE.md file following best practices from Anthropic document
 ### Trigger Phrases
 
 Users might say:
+
 - "initialize CLAUDE.md"
 - "create a new CLAUDE.md"
 - "set up project config for Claude"
@@ -307,6 +313,7 @@ Should NOT trigger on:
 **Interactively help users optimize their CLAUDE.md files.**
 
 When invoked via `/optimize-cc-md`, this skill provides instructions for Claude to:
+
 - Run validation and identify violations
 - Read the user's CLAUDE.md file
 - Explain problems conversationally (not just dump CLI output)
@@ -320,6 +327,7 @@ This is Claude helping the user improve their file, NOT an automated script.
 ### Trigger Phrases
 
 Users might say:
+
 - "optimize my CLAUDE.md"
 - "audit my workspace config"
 - "improve my CLAUDE.md"
@@ -417,17 +425,20 @@ For each issue, provide:
 ### Example Output
 
 ```
+
 ## Audit Results
 
 ### Issues Found: 4
 
 #### 1. File Length (Warning)
+
 - **Issue**: CLAUDE.md is 247 lines (target <200)
 - **Impact**: Claude may ignore later sections
 - **Fix**: Move testing details to @docs/testing.md
 - **Savings**: ~50 lines
 
 #### 2. Duplicated Config (Warning)
+
 - **Issue**: Code style rules duplicated in .eslintrc
 - **Impact**: Wastes tokens, configs are source of truth
 - **Fix**: Remove these lines from CLAUDE.md:
@@ -437,6 +448,7 @@ For each issue, provide:
 - **Savings**: ~15 lines
 
 #### 3. Obvious Content (Info)
+
 - **Issue**: Generic advice Claude already knows
 - **Impact**: Minor token waste
 - **Fix**: Remove these lines:
@@ -445,9 +457,11 @@ For each issue, provide:
 - **Savings**: ~5 lines
 
 #### 4. Stale Information (Error)
+
 - **Issue**: References deleted deploy script
 - **Impact**: Claude will try to use non-existent script
 - **Fix**: Update or remove: "./deploy.sh"
+
 ```
 ```
 
@@ -501,6 +515,7 @@ Issues requiring judgment:
 ### Format
 
 ```
+
 ## Optimization Complete
 
 ### Changes Made
@@ -524,6 +539,7 @@ Issues requiring judgment:
 3. Consider moving architecture docs to @docs/architecture.md (32 additional lines could be saved)
 
 Would you like me to make any additional optimizations?
+
 ```
 ```
 

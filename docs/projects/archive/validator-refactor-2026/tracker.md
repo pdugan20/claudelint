@@ -661,17 +661,21 @@
 ## Notes & Blockers
 
 ### Blockers
+
 *Document any blockers here as they arise*
 
 ### Decisions Made
+
 *Document any deviation from the original plan*
 
 ### Lessons Learned
+
 *Capture insights for future refactoring projects*
 
 ---
 
 **How to use this tracker:**
+
 1. Mark tasks complete by changing `- [ ]` to `- [x]`
 2. Fill in Owner, Completed date, and Notes as you go
 3. Update phase status emoji: NOT STARTED Not Started → IN PROGRESS In Progress → COMPLETE Complete

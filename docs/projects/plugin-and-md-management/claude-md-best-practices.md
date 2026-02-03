@@ -13,6 +13,7 @@ CLAUDE.md is a special file that Claude reads at the start of every conversation
 **Rule**: Only include things Claude can't figure out by reading your code.
 
 **Good** **Good** - Things to include:
+
 - Bash commands Claude can't guess (`npm run test:integration`)
 - Code style rules that differ from defaults (ES modules vs CommonJS)
 - Testing instructions and preferred test runners
@@ -22,6 +23,7 @@ CLAUDE.md is a special file that Claude reads at the start of every conversation
 - Common gotchas or non-obvious behaviors
 
 **Bad** **Bad** - Things to exclude:
+
 - Anything Claude can figure out by reading code
 - Standard language conventions Claude already knows
 - Detailed API documentation (link to docs instead)
@@ -37,6 +39,7 @@ CLAUDE.md is a special file that Claude reads at the start of every conversation
 **Target Length**: Under 200 lines (hard limit varies, but shorter is better)
 
 **Symptoms of Bloat**:
+
 - Claude asks questions answered in CLAUDE.md
 - Claude does things explicitly forbidden in CLAUDE.md
 - Instructions seem to be ignored
@@ -152,6 +155,7 @@ Setup that's not obvious:
 #### 1. Obvious Things
 
 **Bad** Don't include:
+
 ```markdown
 # Bad - Claude already knows this
 - Write clean code
@@ -162,6 +166,7 @@ Setup that's not obvious:
 #### 2. Code That Explains Itself
 
 **Bad** Don't include:
+
 ```markdown
 # Bad - Claude can read the code
 - `src/components/` contains React components
@@ -172,6 +177,7 @@ Setup that's not obvious:
 #### 3. Standard Conventions
 
 **Bad** Don't include:
+
 ```markdown
 # Bad - These are language defaults
 - Use camelCase for JavaScript variables
@@ -182,6 +188,7 @@ Setup that's not obvious:
 #### 4. Detailed API Docs
 
 **Bad** Don't include:
+
 ```markdown
 # Bad - Link instead
 - API endpoint: POST /api/users
@@ -190,6 +197,7 @@ Setup that's not obvious:
 ```
 
 **Good** Better:
+
 ```markdown
 # Good - Link to docs
 - API documentation: @docs/api-reference.md
@@ -294,6 +302,7 @@ See @README.md for project overview and @package.json for available scripts.
 ### 1. Kitchen Sink CLAUDE.md
 
 **Bad** **Problem**:
+
 ```markdown
 # (500+ lines of everything about the project)
 ```
@@ -305,6 +314,7 @@ See @README.md for project overview and @package.json for available scripts.
 ### 2. Obvious Instructions
 
 **Bad** **Problem**:
+
 ```markdown
 - Write clean, maintainable code
 - Use meaningful variable names
@@ -318,6 +328,7 @@ See @README.md for project overview and @package.json for available scripts.
 ### 3. Duplicated Configs
 
 **Bad** **Problem**:
+
 ```markdown
 # CLAUDE.md
 - Use 2 spaces for indentation
@@ -337,6 +348,7 @@ See @README.md for project overview and @package.json for available scripts.
 ### 4. Stale Information
 
 **Bad** **Problem**:
+
 ```markdown
 - Main branch is `master`  (actually changed to `main`)
 - Deploy with `./deploy.sh` (script was deleted)
@@ -349,6 +361,7 @@ See @README.md for project overview and @package.json for available scripts.
 ### 5. File-by-File Descriptions
 
 **Bad** **Problem**:
+
 ```markdown
 - src/components/Button.tsx - Button component
 - src/components/Input.tsx - Input component

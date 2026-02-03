@@ -61,9 +61,11 @@ FileValidator (abstract)
 ### BaseValidator → FileValidator
 
 **File name change:**
+
 - `src/validators/base.ts` → `src/validators/file-validator.ts`
 
 **Class name change:**
+
 ```typescript
 // Before:
 export abstract class BaseValidator {
@@ -81,9 +83,11 @@ export abstract class FileValidator {
 ### JSONConfigValidator → SchemaValidator
 
 **File name change:**
+
 - `src/validators/json-config-base.ts` → `src/validators/schema-validator.ts`
 
 **Class name change:**
+
 ```typescript
 // Before:
 export abstract class JSONConfigValidator<T extends ZodType> extends BaseValidator {
@@ -131,6 +135,7 @@ src/composition/
 ```
 
 **After:**
+
 - [ ] Entire folder deleted
 - [x] Direct Zod validation in SchemaValidator
 
@@ -224,6 +229,7 @@ private async validateFile(filePath: string): Promise<void> {
 ```
 
 **Benefits:**
+
 - [x] Simpler, easier to understand
 - [x] No dependency on composition framework
 - [x] Better error messages
@@ -262,6 +268,7 @@ class SkillsValidator extends FileValidator {
 ```
 
 **Key points:**
+
 - Extends FileValidator
 - Reads file content as string
 - Executes category rules
@@ -302,6 +309,7 @@ class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
 ```
 
 **Key points:**
+
 - Extends SchemaValidator
 - Implements getSchema() to provide Zod schema
 - Implements findConfigFiles() for file discovery
@@ -318,6 +326,7 @@ class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
 **Purpose:** Validate JSON structure
 
 **What it checks:**
+
 - Required fields exist
 - Field types are correct
 - Enums have valid values
@@ -344,6 +353,7 @@ export const MCPConfigSchema = z.object({
 **Purpose:** Validate content and semantics
 
 **What it checks:**
+
 - Business logic
 - Cross-field validation
 - File references
@@ -480,6 +490,7 @@ protected async validateSemantics(filePath: string, config: MyConfig) { }
 **File:** `docs/validation-architecture.md`
 
 Comprehensive guide covering:
+
 - Overview of validation system
 - FileValidator vs SchemaValidator
 - Two-layer validation (schema + rules)
@@ -490,6 +501,7 @@ Comprehensive guide covering:
 ### Updated Documentation
 
 **Files updated:**
+
 - `docs/architecture.md` - Updated validator references
 - `docs/rule-development.md` - Updated examples
 - `docs/custom-rules.md` - Updated validator usage
@@ -538,6 +550,7 @@ Comprehensive guide covering:
 ### Unit Tests
 
 Updated test files:
+
 - `tests/validators/file-validator.test.ts` (was base.test.ts)
 - `tests/validators/schema-validator.test.ts` (was json-config-base.test.ts)
 - All validator-specific test files
@@ -545,6 +558,7 @@ Updated test files:
 ### Integration Tests
 
 Validated against:
+
 - [x] claudelint codebase itself
 - [x] All 10 validator categories
 - [x] Real-world Claude Code projects
@@ -553,6 +567,7 @@ Validated against:
 ### Regression Tests
 
 Ensured:
+
 - [x] No breaking changes to public API
 - [x] All existing rules work correctly
 - [x] Config resolution still functions
@@ -566,16 +581,19 @@ Ensured:
 If issues arise:
 
 1. **Immediate rollback:**
+
    ```bash
    git revert <commit-hash>
    ```
 
 2. **Restore composition framework:**
+
    ```bash
    git checkout main -- src/composition
    ```
 
 3. **Restore old validator names:**
+
    ```bash
    git checkout main -- src/validators/base.ts
    git checkout main -- src/validators/json-config-base.ts
@@ -590,9 +608,11 @@ If issues arise:
 ### Potential Enhancements
 
 1. **Category property in SchemaValidator:**
+
    ```typescript
    protected abstract category: RuleCategory;
    ```
+
    Would eliminate need for validators to manually call executeRulesForCategory.
 
 2. **Shared schema registry:**

@@ -39,6 +39,7 @@ time npm test > baseline-perf.txt
 ```
 
 **Record:**
+
 - Total test count:
 - Passing tests:
 - Coverage percentage:
@@ -114,6 +115,7 @@ npm run type-check
 ```
 
 **Expected:**
+
 - [x] All tests pass
 - [x] Build succeeds
 - [x] No lint errors
@@ -185,6 +187,7 @@ grep -r "BaseValidator\|JSONConfigValidator" docs/
 ### Phase 3 Complete Validation (Task 3.4.x)
 
 **Manual review:**
+
 - [ ] Read validation-architecture.md completely
 - [ ] Verify examples are correct
 - [ ] Test code examples compile
@@ -203,12 +206,14 @@ npm test -- --coverage
 ```
 
 **Verify:**
+
 - [ ] All tests pass
 - [ ] Coverage maintained or improved
 - [ ] No skipped tests
 - [ ] No test timeouts
 
 **Expected coverage:**
+
 - Overall: ≥80%
 - Validators: ≥90%
 - Core logic: ≥95%
@@ -485,6 +490,7 @@ npm run claudelint -- /tmp/invalid-file.json 2>&1 | tee error-output.txt
 ```
 
 **Expected:**
+
 - File path shown
 - Line numbers (if applicable)
 - Rule IDs
@@ -650,6 +656,7 @@ chmod +x test-validator-refactor.sh
 *Document any known issues discovered during testing*
 
 ### Issue 1
+
 **Description:**
 **Workaround:**
 **Tracked in:**

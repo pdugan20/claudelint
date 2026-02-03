@@ -147,6 +147,7 @@ Project to add monorepo support with config inheritance and workspace detection.
 ## PHASE 1 COMPLETE
 
 Config inheritance is fully implemented and tested. The `extends` field works with:
+
 - Relative paths (./base.json, ../../root.json)
 - Node modules packages (@acme/claudelint-config)
 - Multiple extends (array format)
@@ -262,6 +263,7 @@ All 22 unit tests passing. Ready to ship!
 ## PHASE 2 COMPLETE
 
 Workspace detection is fully implemented and tested. The CLI now supports:
+
 - Detecting pnpm, npm, and Yarn workspaces automatically
 - --workspace <name> flag to validate a specific package
 - --workspaces flag to validate all packages in the workspace
@@ -368,6 +370,7 @@ All 17 unit tests passing for workspace detector. Ready for Phase 3!
 ## PHASE 3 COMPLETE
 
 Testing and documentation are fully complete. All features are documented with:
+
 - Comprehensive user guide (docs/monorepo.md) with examples and troubleshooting
 - Functional example monorepo (examples/monorepo/) with pnpm workspace
 - Updated README.md with monorepo section
@@ -474,6 +477,7 @@ All 48 tasks complete. Project ready to ship!
 **Estimated Time:** 0.5 day (4-6 hours) - COMPLETE
 
 **Implementation Notes:**
+
 - Modified check-all.ts lines 244-324 to use Promise.all() for parallel validation
 - Results buffered in packageResults array to prevent output interleaving
 - All 15 workspace CLI integration tests passing
@@ -512,6 +516,7 @@ All 48 tasks complete. Project ready to ship!
 **Estimated Time:** 0.25 day (2-3 hours) - COMPLETE
 
 **Implementation Notes:**
+
 - Added findWorkspaceRoot() function in detector.ts
 - Updated detectWorkspace() to accept autoDetectRoot parameter
 - CLI commands now enable auto-detection by default

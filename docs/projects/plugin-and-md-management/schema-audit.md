@@ -23,18 +23,18 @@ Systematic audit of all claudelint schema validators against official Claude Cod
 
 ### In src/schemas/*.schema.ts
 
-7. **SkillFrontmatterSchema** - SKILL.md frontmatter
-8. **AgentFrontmatterSchema** - Agent markdown frontmatter
-9. **ClaudeMdFrontmatterSchema** - CLAUDE.md frontmatter
-10. **OutputStyleFrontmatterSchema** - Output style frontmatter
-11. **LSPConfigSchema** - LSP server configuration
+1. **SkillFrontmatterSchema** - SKILL.md frontmatter
+2. **AgentFrontmatterSchema** - Agent markdown frontmatter
+3. **ClaudeMdFrontmatterSchema** - CLAUDE.md frontmatter
+4. **OutputStyleFrontmatterSchema** - Output style frontmatter
+5. **LSPConfigSchema** - LSP server configuration
 
 ## Audit Results
 
 ### 1. PluginManifestSchema **CRITICAL**
 
 **File**: `src/validators/schemas.ts:221-234`
-**Official Docs**: https://code.claude.com/docs/en/plugins-reference#complete-schema
+**Official Docs**: <https://code.claude.com/docs/en/plugins-reference#complete-schema>
 
 **Current Schema (INCORRECT):**
 
@@ -76,6 +76,7 @@ export const PluginManifestSchema = z.object({
    - `dependencies`: Not in official schema (remove or verify)
 
 **Impact**:
+
 - Our own `.claude-plugin/plugin.json` is INVALID according to our schema
 - Plugin validation gives false positives/negatives
 - Users get incorrect validation results
@@ -87,7 +88,7 @@ export const PluginManifestSchema = z.object({
 ### 2. SettingsSchema
 
 **File**: `src/validators/schemas.ts:138-151`
-**Official Docs**: https://json.schemastore.org/claude-code-settings.json
+**Official Docs**: <https://json.schemastore.org/claude-code-settings.json>
 
 **Status**: **PENDING AUDIT**
 
@@ -113,7 +114,8 @@ export const SettingsSchema = z.object({
 **Note**: Schema has comment "Verify sync with: npm run check:schema-sync" - suggests we have automation for this.
 
 **Action Items**:
-- [ ] Fetch official schema from https://json.schemastore.org/claude-code-settings.json
+
+- [ ] Fetch official schema from <https://json.schemastore.org/claude-code-settings.json>
 - [ ] Compare field-by-field with our SettingsSchema
 - [ ] Check if `npm run check:schema-sync` script exists and what it does
 - [ ] Document any discrepancies
@@ -123,6 +125,7 @@ export const SettingsSchema = z.object({
 ### 3. HooksConfigSchema & SettingsHooksSchema
 
 **Files**:
+
 - `src/validators/schemas.ts:156-158` (HooksConfigSchema - array format)
 - `src/validators/schemas.ts:63-77` (SettingsHooksSchema - object format)
 
@@ -133,6 +136,7 @@ export const SettingsSchema = z.object({
 **Current Schemas:**
 
 Array format (hooks.json):
+
 ```typescript
 export const HooksConfigSchema = z.object({
   hooks: z.array(HookSchema),
@@ -140,6 +144,7 @@ export const HooksConfigSchema = z.object({
 ```
 
 Object format (settings.json):
+
 ```typescript
 export const SettingsHooksSchema = z.object({
   PreToolUse: z.array(SettingsHookMatcherSchema).optional(),
@@ -159,10 +164,12 @@ export const SettingsHooksSchema = z.object({
 ```
 
 **Known from Plugin Docs**:
+
 - Events listed in plugin docs: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, SessionStart, SessionEnd, PreCompact
 - Hook types: `command`, `prompt`, `agent`
 
 **Action Items**:
+
 - [ ] Find official hooks.json schema documentation
 - [ ] Check if plugin hooks schema differs from standalone hooks.json
 - [ ] Verify all event names match official docs
@@ -187,6 +194,7 @@ export const MCPConfigSchema = z.object({
 ```
 
 **From Plugin Docs Example**:
+
 ```json
 {
   "mcpServers": {
@@ -202,6 +210,7 @@ export const MCPConfigSchema = z.object({
 ```
 
 **Current MCPServerSchema**:
+
 ```typescript
 export const MCPServerSchema = z.object({
   name: z.string(),
@@ -215,11 +224,13 @@ export const MCPServerSchema = z.object({
 ```
 
 **Potential Issues**:
+
 - Schema requires `name` field, but example doesn't show it (name is the key in record)
 - Schema requires `transport` object, but example shows flat `command` and `args`
 - May be confusing different MCP config formats
 
 **Action Items**:
+
 - [ ] Find official MCP configuration schema
 - [ ] Check if there are multiple MCP config formats (settings.json vs .mcp.json)
 - [ ] Verify transport types and required fields
@@ -230,17 +241,19 @@ export const MCPServerSchema = z.object({
 ### 5. LSPConfigSchema
 
 **File**: `src/schemas/lsp-config.schema.ts`
-**Official Docs**: https://code.claude.com/docs/en/plugins-reference (LSP servers section)
+**Official Docs**: <https://code.claude.com/docs/en/plugins-reference> (LSP servers section)
 
 **Status**: **PENDING AUDIT**
 
 **From Plugin Docs**:
 
 Required fields:
+
 - `command` - The LSP binary to execute
 - `extensionToLanguage` - Maps file extensions to language identifiers
 
 Optional fields:
+
 - `args` - Command-line arguments
 - `transport` - Communication transport: `stdio` (default) or `socket`
 - `env` - Environment variables
@@ -253,6 +266,7 @@ Optional fields:
 - `maxRestarts` - Maximum restart attempts
 
 **Action Items**:
+
 - [ ] Read src/schemas/lsp-config.schema.ts
 - [ ] Compare with official LSP docs fields
 - [ ] Verify all required/optional fields match
@@ -263,11 +277,12 @@ Optional fields:
 ### 6. SkillFrontmatterSchema
 
 **File**: `src/schemas/skill-frontmatter.schema.ts`
-**Official Docs**: https://code.claude.com/docs/en/skills
+**Official Docs**: <https://code.claude.com/docs/en/skills>
 
 **Status**: **PENDING AUDIT**
 
 **Action Items**:
+
 - [ ] Read src/schemas/skill-frontmatter.schema.ts
 - [ ] Find official SKILL.md frontmatter documentation
 - [ ] Compare required vs optional fields
@@ -279,19 +294,21 @@ Optional fields:
 ### 7. AgentFrontmatterSchema
 
 **File**: `src/schemas/agent-frontmatter.schema.ts`
-**Official Docs**: https://code.claude.com/docs/en/plugins-reference (Agents section)
+**Official Docs**: <https://code.claude.com/docs/en/plugins-reference> (Agents section)
 
 **Status**: **PENDING AUDIT**
 
 **From Plugin Docs**:
 
 Agent frontmatter example:
+
 ```yaml
 description: What this agent specializes in
 capabilities: ["task1", "task2", "task3"]
 ```
 
 **Action Items**:
+
 - [ ] Read src/schemas/agent-frontmatter.schema.ts
 - [ ] Compare with plugin docs agent structure
 - [ ] Verify required fields
@@ -307,6 +324,7 @@ capabilities: ["task1", "task2", "task3"]
 **Status**: **PENDING AUDIT**
 
 **Action Items**:
+
 - [ ] Read src/schemas/claude-md-frontmatter.schema.ts
 - [ ] Find official CLAUDE.md frontmatter documentation (if exists)
 - [ ] Determine if CLAUDE.md even supports frontmatter
@@ -322,6 +340,7 @@ capabilities: ["task1", "task2", "task3"]
 **Status**: **PENDING AUDIT**
 
 **Action Items**:
+
 - [ ] Read src/schemas/output-style-frontmatter.schema.ts
 - [ ] Find official output style documentation
 - [ ] Verify schema matches requirements
@@ -353,6 +372,7 @@ export const MarketplaceMetadataSchema = z.object({
 ```
 
 **Action Items**:
+
 - [ ] Find official marketplace.json schema
 - [ ] Compare with our schema
 - [ ] Check if marketplace.json and plugin.json share fields
@@ -364,6 +384,7 @@ export const MarketplaceMetadataSchema = z.object({
 **Found**: Comment in SettingsSchema: "Verify sync with: npm run check:schema-sync"
 
 **Action Items**:
+
 - [ ] Check if `npm run check:schema-sync` exists in package.json
 - [ ] If exists, run it and see what it reports
 - [ ] Determine if we can extend this script to check other schemas
@@ -403,16 +424,18 @@ export const MarketplaceMetadataSchema = z.object({
 ### Official Documentation URLs
 
 **JSON Schema URLs** (machine-readable):
-- Settings Schema: https://json.schemastore.org/claude-code-settings.json
+
+- Settings Schema: <https://json.schemastore.org/claude-code-settings.json>
 
 **Documentation URLs** (human-readable specs):
-- Plugin Reference: https://code.claude.com/docs/en/plugins-reference
-- Skills: https://code.claude.com/docs/en/skills
-- Hooks: https://code.claude.com/docs/en/hooks
-- MCP: https://code.claude.com/docs/en/mcp
-- Settings: https://code.claude.com/docs/en/settings
-- Plugin Marketplaces: https://code.claude.com/docs/en/plugin-marketplaces
-- Full Docs Index: https://code.claude.com/docs/llms.txt
+
+- Plugin Reference: <https://code.claude.com/docs/en/plugins-reference>
+- Skills: <https://code.claude.com/docs/en/skills>
+- Hooks: <https://code.claude.com/docs/en/hooks>
+- MCP: <https://code.claude.com/docs/en/mcp>
+- Settings: <https://code.claude.com/docs/en/settings>
+- Plugin Marketplaces: <https://code.claude.com/docs/en/plugin-marketplaces>
+- Full Docs Index: <https://code.claude.com/docs/llms.txt>
 
 **All URLs centralized in**: `src/schemas/schema-registry.ts`
 
