@@ -26,7 +26,7 @@ Report differences → Fix Zod
 
 ## Progress
 
-### Completed (6/8)
+### Completed (7/8)
 
 1. **PluginManifestSchema** [COMPLETE]
    - Manual reference: `schemas/plugin-manifest.schema.json`
@@ -80,8 +80,19 @@ Report differences → Fix Zod
    - **Impact**: Added permissionMode enum, deleted agent-events rule and tests
    - **Severity**: Minor - one missing optional field, one extra field that should not exist
 
+7. **OutputStyleFrontmatterSchema** [COMPLETE] (MAJOR drift - FIXED)
+   - Manual reference: `schemas/output-style-frontmatter.schema.json`
+   - Source: https://code.claude.com/docs/en/output-styles#frontmatter
+   - Status: Fixed - completely wrong validations + missing field + extra field
+   - **Drift**:
+     - Missing: keep-coding-instructions (boolean)
+     - Extra: examples field (doesn't exist in official spec)
+     - Wrong: name was required + kebab-case (should be optional + any string)
+     - Wrong: description was required + min 10 chars + third person (should be optional + any string)
+   - **Impact**: Deleted 4 invalid rules (output-style-name, output-style-description, output-style-examples, output-style-missing-examples)
+   - **Severity**: MAJOR - enforcing constraints that don't exist in spec
+
 ### In Progress (0/8)
-7. **OutputStyleFrontmatterSchema** - Awaiting docs
 8. **ClaudeMdFrontmatterSchema** - Awaiting docs
 
 ## Key Findings

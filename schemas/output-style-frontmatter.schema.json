@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/output-style-frontmatter.schema.json",
+  "title": "Claude Code Output Style Frontmatter",
+  "description": "Schema for output style frontmatter in OUTPUTSTYLE.md files. Source: https://code.claude.com/docs/en/output-styles#frontmatter",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the output style (inherits from file name if not specified)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the output style, used only in the UI of /output-style"
+    },
+    "keep-coding-instructions": {
+      "type": "boolean",
+      "description": "Whether to keep the parts of Claude Code's system prompt related to coding",
+      "default": false
+    }
+  }
+}

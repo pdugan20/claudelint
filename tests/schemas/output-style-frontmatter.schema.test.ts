@@ -5,96 +5,93 @@
 import { OutputStyleFrontmatterSchema } from '../../src/schemas/output-style-frontmatter.schema';
 
 describe('OutputStyleFrontmatterSchema', () => {
-  describe('name validation', () => {
-    it('should accept valid lowercase-hyphen names', () => {
+  describe('name field', () => {
+    it('should accept any string name', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
-        description: 'Formats output as markdown table',
+        name: 'Markdown Table',
       });
       expect(result.success).toBe(true);
     });
 
-    it('should reject uppercase in name', () => {
+    it('should accept kebab-case names', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'Markdown-Table',
-        description: 'Formats output as markdown table',
+        name: 'markdown-table',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject XML tags in name', () => {
+    it('should be optional', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-<style>-table',
         description: 'Formats output as markdown table',
       });
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject names over 64 characters', () => {
-      const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'a'.repeat(65),
-        description: 'Formats output as markdown table',
-      });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
   });
 
-  describe('description validation', () => {
-    it('should accept valid third-person descriptions', () => {
+  describe('description field', () => {
+    it('should accept any string description', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
-        description: 'Formats output as markdown table',
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject descriptions under 10 characters', () => {
-      const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
         description: 'Short',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject first-person descriptions', () => {
+    it('should accept long descriptions', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
-        description: 'I format output as markdown table',
+        description: 'This is a long description that formats output as markdown table',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject second-person descriptions', () => {
+    it('should be optional', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
         name: 'markdown-table',
-        description: 'Helps you format output',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('keep-coding-instructions field', () => {
+    it('should accept true', () => {
+      const result = OutputStyleFrontmatterSchema.safeParse({
+        'keep-coding-instructions': true,
+      });
+      expect(result.success).toBe(true);
     });
 
-    it('should reject XML tags in description', () => {
+    it('should accept false', () => {
+      const result = OutputStyleFrontmatterSchema.safeParse({
+        'keep-coding-instructions': false,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should be optional', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
         name: 'markdown-table',
-        description: 'Formats output as <em>markdown</em> table',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject non-boolean values', () => {
+      const result = OutputStyleFrontmatterSchema.safeParse({
+        'keep-coding-instructions': 'yes',
       });
       expect(result.success).toBe(false);
     });
   });
 
-  describe('optional fields', () => {
-    it('should accept examples array', () => {
-      const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
-        description: 'Formats output as markdown table',
-        examples: ['Example 1', 'Example 2'],
-      });
+  describe('all fields optional', () => {
+    it('should accept empty object', () => {
+      const result = OutputStyleFrontmatterSchema.safeParse({});
       expect(result.success).toBe(true);
     });
 
-    it('should accept missing examples', () => {
+    it('should accept all fields together', () => {
       const result = OutputStyleFrontmatterSchema.safeParse({
-        name: 'markdown-table',
-        description: 'Formats output as markdown table',
+        name: 'Custom Style',
+        description: 'A custom output style',
+        'keep-coding-instructions': true,
       });
       expect(result.success).toBe(true);
     });

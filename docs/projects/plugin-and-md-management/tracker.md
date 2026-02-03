@@ -455,13 +455,14 @@ Save this as `scripts/test-phase-1.sh` and run after completing all tasks.
 Official Docs → Manual JSON Schema → Generate from Zod → Compare → Fix Drift
 ```
 
-**Drift Found (6/6 schemas = 100%)**:
+**Drift Found (7/7 schemas = 100%)**:
 - PluginManifestSchema: [CLEAN] Clean
 - SkillFrontmatterSchema: Minor drift - missing 4 fields (FIXED)
 - HooksConfigSchema: Minor drift - missing 2 fields (FIXED)
 - MCPConfigSchema: **CRITICAL drift** - entire structure wrong (FIXED + 13 rules updated)
 - LSPConfigSchema: **CRITICAL drift** - wrong structure + wrong fields + missing 7 fields (FIXED + 8 rules updated + 2 rules deprecated)
 - AgentFrontmatterSchema: Minor drift - missing permissionMode + extra events field (FIXED + deleted agent-events rule)
+- OutputStyleFrontmatterSchema: **MAJOR drift** - all validations wrong + missing/extra fields (FIXED + deleted 4 invalid rules)
 
 **See**: [Schema Verification Workflow](./schema-verification-workflow.md)
 
@@ -504,10 +505,9 @@ Systematic verification of all schemas and constants against official Claude Cod
 - [x] **Task 2.1.6**: MCPConfigSchema reference (CRITICAL DRIFT - wrong structure, required complete restructure + 13 rule fixes)
 - [x] **Task 2.1.7**: LSPConfigSchema reference (CRITICAL DRIFT - wrong structure + wrong field names + missing 7 fields + extra configFile field, updated 8 rules + deprecated 2 rules)
 - [x] **Task 2.1.8**: AgentFrontmatterSchema reference (Minor drift - missing permissionMode, extra events field, deleted agent-events rule)
+- [x] **Task 2.1.9**: OutputStyleFrontmatterSchema reference (MAJOR drift - all validations wrong, missing keep-coding-instructions, extra examples field, deleted 4 invalid rules)
 
 **In Progress**:
-- [ ] **Task 2.1.8**: AgentFrontmatterSchema reference
-- [ ] **Task 2.1.9**: OutputStyleFrontmatterSchema reference
 - [ ] **Task 2.1.10**: ClaudeMdFrontmatterSchema reference
 
 **Acceptance Criteria**:

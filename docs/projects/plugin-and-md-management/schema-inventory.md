@@ -155,15 +155,21 @@ claudelint maintains 10 major schemas that must stay synchronized with official 
 ### 8. OutputStyleFrontmatterSchema
 
 **Location**: `src/schemas/output-style-frontmatter.schema.ts`
-**Official Source**: [https://code.claude.com/docs/en/plugins-reference#output-styles](https://code.claude.com/docs/en/plugins-reference#output-styles)
-**Status**: NEEDS VERIFICATION - NEEDS VERIFICATION
-**Verification**: Manual - limited official docs
+**Official Source**: [https://code.claude.com/docs/en/output-styles#frontmatter](https://code.claude.com/docs/en/output-styles#frontmatter)
+**Status**: SYNCED - SYNCED (fixed 2026-02-02)
+**Verification**: Manual JSON Schema + auto-generated comparison
 
-**Expected Fields**:
-- `name`: Output style name
-- `description`: What the style does
-- `guidelines`: Formatting guidelines
-- `examples`: Example outputs
+**Official Fields** (3 total, all optional):
+- `name`: Name of the output style (inherits from file name if not specified)
+- `description`: Description used in /output-style UI
+- `keep-coding-instructions`: Keep coding parts of system prompt (boolean, default false)
+
+**Drift History**:
+- 2026-02-02: Found missing field 'keep-coding-instructions'
+- 2026-02-02: Found extra field 'examples' (doesn't exist in official spec)
+- 2026-02-02: Found wrong validation on name (was required + kebab-case, should be optional + any string)
+- 2026-02-02: Found wrong validation on description (was required + min 10 chars + third person, should be optional + any string)
+- 2026-02-02: Fixed - deleted 4 invalid rules (output-style-name, output-style-description, output-style-examples, output-style-missing-examples)
 
 ### 9. ClaudeMdFrontmatterSchema
 
