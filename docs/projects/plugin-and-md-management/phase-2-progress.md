@@ -2,7 +2,7 @@
 
 **Date**: 2026-02-03
 **Phase**: 2.6 - Rule Deprecation System
-**Status**: Task 2.6.5 Complete (Migration Tooling Complete)
+**Status**: Phase Complete (All 6 tasks complete)
 
 ## What We're Building
 
@@ -376,9 +376,43 @@ npm run check:schema-sync       # Full verification (runs in CI)
 
 ### Phase 2.6 - Rule Deprecation System
 
-**Status**: Tasks 2.6.1-2.6.5 COMPLETE, Task 2.6.6 remains
+**Status**: All Tasks 2.6.1-2.6.6 COMPLETE
 
 #### Completed Tasks
+
+**Task 2.6.6: Documentation and Examples** - COMPLETE
+
+- Documented deprecation policy in CONTRIBUTING.md (180+ lines)
+  - When and why to deprecate rules
+  - How to mark rules as deprecated (boolean vs DeprecationInfo)
+  - Deprecation lifecycle (deprecate → warn for 2+ minors → remove in major)
+  - Version policy and timeline
+  - Four replacement scenarios with examples
+  - User-facing commands and workflow
+  - Testing guidelines for deprecated rules
+
+- Added deprecation examples to rule-development.md
+  - New "Deprecation Field" section with comprehensive examples
+  - Example 1: Single replacement (1:1) - auto-migration supported
+  - Example 2: Multiple replacements (1:many) - manual intervention required
+  - Example 3: No replacement - suggest removal
+  - Example 4: Retained indefinitely - backward compatibility
+  - Detailed field documentation (reason, replacedBy, deprecatedSince, removeInVersion, url)
+
+- Documented migration tool in cli-reference.md
+  - Added "Deprecation Management" section
+  - `check-deprecated` command - list deprecated rules in config
+  - `migrate` command - auto-update config files
+  - How it works: 1:1 auto-replace, 1:many warn, no replacement suggest removal
+  - Detailed usage examples with output samples
+  - Exit codes and error handling
+  - Supported formats (JSON config, package.json)
+
+- Updated rule creation template
+  - Added comment in rule structure pointing to Deprecation Field section
+  - Clarified deprecated field is optional for new rules
+  - Added note in Required Fields linking to deprecation documentation
+  - Ensures new contributors understand deprecation from the start
 
 **Task 2.6.5: Create Migration Tooling** - COMPLETE
 

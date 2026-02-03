@@ -177,6 +177,171 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 7. ✓ Test the rule with `npm test`
 8. ✓ Run validation on project: `npm run validate`
 
+## Rule Deprecation Policy
+
+When a rule needs to be changed or removed, follow this deprecation policy to give users time to migrate their configurations.
+
+### When to Deprecate Rules
+
+Deprecate a rule when:
+
+- The rule validates a field that no longer exists in the official spec
+- The rule's behavior is being merged into another rule
+- The rule's validation logic is fundamentally flawed and needs a complete rewrite
+- The rule is being split into multiple focused rules
+
+**Do not deprecate** for minor fixes, bug fixes, or improved error messages - these should be updated in place.
+
+### How to Mark a Rule as Deprecated
+
+Add a `deprecated` field to the rule's metadata. Use boolean for simple cases, or `DeprecationInfo` object for full metadata:
+
+```typescript
+// Simple deprecation (boolean)
+export const rule: Rule = {
+  meta: {
+    id: 'old-rule-name',
+    name: 'Old Rule Name',
+    description: 'Description',
+    category: 'Category',
+    severity: 'warn',
+    fixable: false,
+    deprecated: true,  // Simple boolean
+    since: '0.1.0',
+  },
+  validate: async (context) => {
+    // Rule still executes but shows deprecation warning
+  },
+};
+
+// Full deprecation metadata (recommended)
+export const rule: Rule = {
+  meta: {
+    id: 'old-rule-name',
+    name: 'Old Rule Name',
+    description: 'Description',
+    category: 'Category',
+    severity: 'warn',
+    fixable: false,
+    deprecated: {
+      reason: 'This rule validates a field that was removed from the spec',
+      replacedBy: 'new-rule-name',        // Single replacement
+      // OR: replacedBy: ['rule-1', 'rule-2'],  // Multiple replacements
+      deprecatedSince: '0.3.0',
+      removeInVersion: '1.0.0',           // When it will be removed
+      // OR: removeInVersion: null,       // Retained indefinitely
+      url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
+    },
+    since: '0.1.0',
+  },
+  validate: async (context) => {
+    // Rule still executes but shows deprecation warning
+  },
+};
+```
+
+### Deprecation Lifecycle
+
+Follow this timeline for deprecating rules:
+
+1. **Deprecate (Minor Version)**
+   - Add `deprecated` metadata to the rule
+   - Rule still executes normally but shows warnings
+   - Document in CHANGELOG.md under "Deprecated" section
+   - Add migration guide (if replacedBy exists)
+
+2. **Warn (2+ Minor Versions)**
+   - Keep the rule for at least 2 minor versions after deprecation
+   - Users see warnings when they use deprecated rules
+   - `claudelint check-deprecated` shows all deprecated rules in config
+   - `claudelint migrate` can auto-update configs (1:1 replacements only)
+
+3. **Remove (Next Major Version)**
+   - Remove the rule implementation in next major version (e.g., 1.0.0)
+   - Document in CHANGELOG.md under "Breaking Changes"
+   - Add to migration guide for major version
+
+**Exception:** Rules deprecated before 1.0.0 may be removed in 1.0.0 if they validate non-existent fields.
+
+### Replacement Scenarios
+
+#### 1:1 Replacement (Single Rule)
+
+```typescript
+deprecated: {
+  reason: 'Field was renamed in official spec',
+  replacedBy: 'new-rule-name',
+}
+```
+
+Users: Run `claudelint migrate` to auto-update configs.
+
+#### 1:Many Replacement (Multiple Rules)
+
+```typescript
+deprecated: {
+  reason: 'Rule was split into multiple focused rules',
+  replacedBy: ['rule-1', 'rule-2', 'rule-3'],
+}
+```
+
+Users: Must manually update configs. `claudelint migrate` will warn about this.
+
+#### No Replacement (Removal)
+
+```typescript
+deprecated: {
+  reason: 'Field no longer exists in official spec',
+  // No replacedBy field
+}
+```
+
+Users: Remove rule from config. `claudelint migrate` will suggest removal.
+
+#### Retained Indefinitely
+
+```typescript
+deprecated: {
+  reason: 'Deprecated but kept for backward compatibility',
+  removeInVersion: null,  // Will never be removed
+}
+```
+
+Users: Can keep using but should migrate to new approach when possible.
+
+### User-Facing Commands
+
+Users can manage deprecated rules with these commands:
+
+- `claudelint check-deprecated` - List all deprecated rules in config
+- `claudelint check-all --no-deprecated-warnings` - Suppress deprecation warnings
+- `claudelint check-all --error-on-deprecated` - Treat deprecated rules as errors (CI mode)
+- `claudelint migrate` - Auto-update config files (1:1 replacements)
+- `claudelint migrate --dry-run` - Preview changes without writing
+
+### Testing Deprecated Rules
+
+Continue testing deprecated rules until removal:
+
+```typescript
+describe('old-rule-name (deprecated)', () => {
+  it('should still validate correctly', async () => {
+    // Test the rule's core functionality
+  });
+
+  it('should be marked as deprecated', () => {
+    const rule = RuleRegistry.getRule('old-rule-name');
+    expect(isRuleDeprecated(rule)).toBe(true);
+  });
+
+  it('should have replacement info', () => {
+    const rule = RuleRegistry.getRule('old-rule-name');
+    const info = getDeprecationInfo(rule);
+    expect(info?.replacedBy).toBeDefined();
+  });
+});
+```
+
 ## Submitting Pull Requests
 
 1. Push your changes to your fork:

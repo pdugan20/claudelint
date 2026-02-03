@@ -38,7 +38,7 @@ export const rule: Rule = {
     category: 'Category',
     severity: 'error',
     fixable: false,
-    deprecated: false,
+    deprecated: false,  // Optional: see "Deprecation Field" section for details
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/{category}/{rule-id}.md',
   },
@@ -68,15 +68,126 @@ export const rule: Rule = {
 - **category**: One of: `ClaudeMd`, `Skills`, `Hooks`, `MCP`, `Plugin`, `Settings`, `Commands`, `Agents`, `LSP`, `OutputStyles`
 - **severity**: `error` (must fix) or `warn` (should fix)
 - **fixable**: `true` if the rule can suggest an automatic fix
-- **deprecated**: `false` for new rules
 - **since**: Version when the rule was introduced
+
+**Note:** The `deprecated` field is optional. Set to `false` (or omit) for new rules. See the [Deprecation Field](#deprecation-field) section below for marking rules as deprecated.
 
 #### Optional Fields
 
 - **docUrl**: Link to the rule's documentation
-- **replacedBy**: Array of rule IDs that replace this deprecated rule
 - **schema**: Zod schema for rule options
 - **defaultOptions**: Default values for configurable options
+
+#### Deprecation Field
+
+The `deprecated` field marks rules that are being phased out. See [CONTRIBUTING.md](../CONTRIBUTING.md#rule-deprecation-policy) for the full deprecation policy.
+
+**Boolean format (simple):**
+
+```typescript
+export const rule: Rule = {
+  meta: {
+    id: 'old-rule',
+    // ... other fields
+    deprecated: true,  // Minimal deprecation
+  },
+  validate: async (context) => {
+    // Rule still executes
+  },
+};
+```
+
+**DeprecationInfo format (recommended):**
+
+```typescript
+export const rule: Rule = {
+  meta: {
+    id: 'old-rule',
+    // ... other fields
+    deprecated: {
+      reason: 'This rule validates a field that was removed from the spec',
+      replacedBy: 'new-rule',           // Single replacement
+      deprecatedSince: '0.3.0',
+      removeInVersion: '1.0.0',
+      url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
+    },
+  },
+  validate: async (context) => {
+    // Rule still executes
+  },
+};
+```
+
+##### Example 1: Single Replacement (1:1)
+
+When a rule is replaced by exactly one new rule:
+
+```typescript
+deprecated: {
+  reason: 'Field was renamed from "model" to "defaultModel" in official spec',
+  replacedBy: 'agent-default-model',  // Single replacement
+  deprecatedSince: '0.3.0',
+  removeInVersion: '1.0.0',
+}
+```
+
+Users can run `claudelint migrate` to auto-update configs.
+
+##### Example 2: Multiple Replacements (1:many)
+
+When a rule is split into multiple focused rules:
+
+```typescript
+deprecated: {
+  reason: 'Rule was split into three focused validation rules',
+  replacedBy: [
+    'plugin-name-required',
+    'plugin-name-format',
+    'plugin-name-length',
+  ],
+  deprecatedSince: '0.3.0',
+  removeInVersion: '1.0.0',
+  url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/plugin-validation.md',
+}
+```
+
+Users must manually update configs. `claudelint migrate` will warn.
+
+##### Example 3: No Replacement (removal)
+
+When a rule validates something that no longer exists:
+
+```typescript
+deprecated: {
+  reason: 'The "dependencies" field was removed from plugin.json spec',
+  // No replacedBy field
+  deprecatedSince: '0.2.0',
+  removeInVersion: '1.0.0',
+}
+```
+
+Users should remove the rule from their config.
+
+##### Example 4: Retained Indefinitely
+
+When a rule is deprecated but kept for compatibility:
+
+```typescript
+deprecated: {
+  reason: 'Use the newer validation approach, but this is kept for backward compatibility',
+  replacedBy: 'new-validation-rule',
+  deprecatedSince: '0.3.0',
+  removeInVersion: null,  // Never removed
+}
+```
+
+**DeprecationInfo Fields:**
+
+- **reason** (required): Why the rule is deprecated
+- **replacedBy** (optional): Rule ID(s) to use instead (string or array)
+- **deprecatedSince** (optional): Version when deprecated (semver)
+- **removeInVersion** (optional): Version when it will be removed (semver or null for "never")
+- **url** (optional): Link to migration guide
 
 ### Validation Context
 

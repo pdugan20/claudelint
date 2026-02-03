@@ -13,6 +13,9 @@ Complete reference for all claudelint commands, options, and usage patterns.
   - [validate-config](#validate-config) - Validate config file
 - [Rule Management](#rule-management)
   - [list-rules](#list-rules) - Browse available rules
+- [Deprecation Management](#deprecation-management)
+  - [check-deprecated](#check-deprecated) - Check for deprecated rules
+  - [migrate](#migrate) - Migrate deprecated rules
 - [Cache Management](#cache-management)
   - [cache-clear](#cache-clear) - Clear validation cache
 - [Individual Validators](#individual-validators)
@@ -296,6 +299,192 @@ claudelint list-rules --category CLAUDE.md --format json
 - Category
 - Severity (error, warning)
 - Fixable status
+
+---
+
+## Deprecation Management
+
+### check-deprecated
+
+Check your configuration file for deprecated rules that need to be updated or removed.
+
+**Usage:**
+
+```bash
+claudelint check-deprecated [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--config <path>` | Path to config file | Auto-detect |
+| `--format <format>` | Output format: `table` or `json` | `table` |
+
+**Examples:**
+
+```bash
+# Check current config for deprecated rules
+claudelint check-deprecated
+
+# Check specific config file
+claudelint check-deprecated --config .claudelintrc.json
+
+# JSON output for CI/CD
+claudelint check-deprecated --format json
+```
+
+**Output includes:**
+
+- Rule ID
+- Deprecation reason
+- Replacement rule(s)
+- Deprecated since version
+- Removal version (if scheduled)
+- Migration guide URL (if available)
+
+**Exit codes:**
+
+- `0` - No deprecated rules found
+- `1` - Deprecated rules found (needs attention)
+- `2` - Error (invalid config, file not found, etc.)
+
+**Example output:**
+
+```text
+Found 2 deprecated rule(s) in your configuration:
+
+plugin-dependency-invalid-version
+  Reason: The "dependencies" field was removed from plugin.json spec
+  Deprecated since: 0.2.0
+  Will be removed in: 1.0.0
+
+agent-model
+  Reason: Field was renamed to "defaultModel" in official spec
+  Use: agent-default-model
+  Deprecated since: 0.3.0
+  Will be removed in: 1.0.0
+  Migration guide: https://github.com/pdugan20/claudelint/blob/main/docs/migrations/agent-model.md
+
+Migration steps:
+  1. Update your config file to replace deprecated rules
+  2. Run validation to test the new configuration
+  3. Remove deprecated rule entries from config
+```
+
+---
+
+### migrate
+
+Automatically migrate deprecated rules in your configuration file.
+
+**Usage:**
+
+```bash
+claudelint migrate [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--config <path>` | Path to config file | Auto-detect |
+| `--dry-run` | Preview changes without writing to file | `false` |
+| `--format <format>` | Output format: `table` or `json` | `table` |
+
+**How it works:**
+
+1. **1:1 Replacement** - Auto-replaces when there's a single replacement rule
+   - Preserves rule config (severity + options)
+   - Writes changes to config file
+2. **1:Many Replacement** - Warns when there are multiple replacements
+   - Requires manual intervention
+   - Shows which rules to use
+3. **No Replacement** - Suggests removal when rule has no replacement
+   - Rule should be removed from config
+
+**Examples:**
+
+```bash
+# Preview changes (dry run)
+claudelint migrate --dry-run
+
+# Apply migrations to current config
+claudelint migrate
+
+# Migrate specific config file
+claudelint migrate --config .claudelintrc.json
+
+# JSON output for scripting
+claudelint migrate --format json
+```
+
+**Exit codes:**
+
+- `0` - Successfully migrated (or no deprecated rules found)
+- `1` - Manual intervention needed (multiple replacements)
+- `2` - Error (invalid config, file not found, etc.)
+
+**Example output (dry run):**
+
+```text
+Migration preview for: /path/to/.claudelintrc.json
+(Dry run - no changes will be written)
+
+2 rule(s) will be replaced:
+
+  agent-model → agent-default-model
+  Reason: Field was renamed to "defaultModel" in official spec
+
+  skill-naming → skill-name-format
+  Reason: Rule was renamed for clarity
+
+1 rule(s) require manual intervention:
+
+  plugin-validation
+  Reason: Rule was split into three focused rules. Split into: plugin-name-required, plugin-name-format, plugin-name-length
+
+Warnings:
+  Rule 'plugin-validation' has multiple replacements (plugin-name-required, plugin-name-format, plugin-name-length). Please update manually.
+
+Next steps:
+  1. Run without --dry-run to apply changes
+  2. Review the updated config file
+  3. Run validation to test the new configuration
+  4. Manually update rules requiring intervention
+```
+
+**Example output (applied):**
+
+```text
+Migrating config: /path/to/.claudelintrc.json
+
+2 rule(s) will be replaced:
+
+  agent-model → agent-default-model
+  Reason: Field was renamed to "defaultModel" in official spec
+
+  skill-naming → skill-name-format
+  Reason: Rule was renamed for clarity
+
+Config migrated successfully!
+
+Next steps:
+  1. Review the updated config file
+  2. Run validation to test the new configuration
+```
+
+**Supported config formats:**
+
+- `.claudelintrc.json`
+- `package.json` (with `claudelint` field)
+
+**Notes:**
+
+- Preserves JSON formatting (2-space indent)
+- Maintains trailing newline
+- Preserves rule severity and options
+- Handles extends and overrides correctly
 
 ---
 

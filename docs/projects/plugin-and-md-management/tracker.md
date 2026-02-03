@@ -801,11 +801,29 @@ Design and implement a proper rule deprecation system modeled after ESLint and P
   - [x] Add `claudelint migrate` CLI command
   - [x] Add 12 comprehensive tests (all passing)
 
-- [ ] **Task 2.6.6**: Documentation and examples
-  - [ ] Document deprecation policy in CONTRIBUTING.md
-  - [ ] Add examples of marking a rule as deprecated
-  - [ ] Document migration tool usage
-  - [ ] Update rule creation template with deprecation fields
+- [x] **Task 2.6.6**: Documentation and examples
+  - [x] Document deprecation policy in CONTRIBUTING.md
+    - Added "Rule Deprecation Policy" section (180+ lines)
+    - When to deprecate rules
+    - How to mark rules as deprecated (boolean vs DeprecationInfo)
+    - Deprecation lifecycle (deprecate → warn → remove)
+    - Replacement scenarios (1:1, 1:many, none, indefinite)
+    - User-facing commands
+    - Testing deprecated rules
+  - [x] Add examples of marking a rule as deprecated
+    - Added "Deprecation Field" section to rule-development.md
+    - 4 detailed examples: single replacement, multiple replacements, no replacement, retained indefinitely
+    - All DeprecationInfo fields documented with usage
+  - [x] Document migration tool usage
+    - Added "Deprecation Management" section to cli-reference.md
+    - Documented `check-deprecated` command (usage, options, examples, exit codes)
+    - Documented `migrate` command (usage, options, how it works, examples, exit codes)
+    - Example outputs for both commands
+  - [x] Update rule creation template with deprecation fields
+    - Updated rule structure template in rule-development.md
+    - Added comment referencing Deprecation Field section
+    - Clarified that deprecated field is optional for new rules
+    - Added note in Required Fields section pointing to deprecation docs
 
 ### Acceptance Criteria
 
