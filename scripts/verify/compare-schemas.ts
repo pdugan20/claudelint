@@ -16,6 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import type { JSONSchema7 } from 'json-schema';
 import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
+import { log } from '../util/logger';
 
 interface DriftIssue {
   type: 'missing-field' | 'wrong-type' | 'missing-required' | 'enum-mismatch';
@@ -144,7 +145,8 @@ function compareSchemas(
   return issues;
 }
 
-console.log('Comparing manual reference schemas vs generated schemas...\n');
+log.info('Comparing manual reference schemas vs generated schemas...');
+log.blank();
 
 let totalIssues = 0;
 let schemasWithDrift = 0;
@@ -155,14 +157,14 @@ for (const entry of SCHEMA_REGISTRY) {
 
   // Check if files exist
   if (!fs.existsSync(manualPath)) {
-    console.error(`✗ ${entry.name}: Manual schema not found at ${entry.manualSchemaFile}`);
+    log.fail(`${entry.name}: Manual schema not found at ${entry.manualSchemaFile}`);
     totalIssues++;
     continue;
   }
 
   if (!fs.existsSync(generatedPath)) {
-    console.error(
-      `✗ ${entry.name}: Generated schema not found. Run "npm run generate:json-schemas" first.`
+    log.fail(
+      `${entry.name}: Generated schema not found. Run "npm run generate:json-schemas" first.`
     );
     totalIssues++;
     continue;
@@ -176,29 +178,34 @@ for (const entry of SCHEMA_REGISTRY) {
   const issues = compareSchemas(manual, generated);
 
   if (issues.length === 0) {
-    console.log(`✓ ${entry.name}: No drift detected`);
+    log.pass(`${entry.name}: No drift detected`);
   } else {
-    console.log(`✗ ${entry.name}: ${issues.length} issue(s) found\n`);
+    log.fail(`${entry.name}: ${issues.length} issue(s) found`);
+    log.blank();
     schemasWithDrift++;
 
     for (const issue of issues) {
       const prefix = issue.severity === 'error' ? '  ERROR' : '  WARN';
-      console.log(`${prefix}: ${issue.message}`);
-      console.log(`         Path: ${issue.path}\n`);
+      log.info(`${prefix}: ${issue.message}`);
+      log.info(`         Path: ${issue.path}`);
+      log.blank();
       totalIssues++;
     }
   }
 }
 
-console.log('\nSummary:');
-console.log(`- Schemas compared: ${SCHEMA_REGISTRY.length}`);
-console.log(`- Schemas with drift: ${schemasWithDrift}`);
-console.log(`- Total issues: ${totalIssues}`);
+log.blank();
+log.info('Summary:');
+log.info(`- Schemas compared: ${SCHEMA_REGISTRY.length}`);
+log.info(`- Schemas with drift: ${schemasWithDrift}`);
+log.info(`- Total issues: ${totalIssues}`);
 
 if (totalIssues > 0) {
-  console.log('\nDrift detected! Fix Zod schemas to match manual reference schemas.');
+  log.blank();
+  log.info('Drift detected! Fix Zod schemas to match manual reference schemas.');
   process.exit(1);
 } else {
-  console.log('\nAll schemas match! No drift detected.');
+  log.blank();
+  log.info('All schemas match! No drift detected.');
   process.exit(0);
 }

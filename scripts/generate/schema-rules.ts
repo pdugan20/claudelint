@@ -10,6 +10,7 @@
 
 import { writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
+import { log } from '../util/logger';
 
 const rootDir = process.cwd();
 
@@ -282,7 +283,8 @@ export const rule: Rule = {
  * Main generation function
  */
 function main() {
-  console.log('Generating schema-based rule files...\n');
+  log.info('Generating schema-based rule files...');
+  log.blank();
 
   let created = 0;
   let errors = 0;
@@ -304,29 +306,32 @@ function main() {
       const content = generateRuleFile(config);
       writeFileSync(filePath, content, 'utf-8');
 
-      console.log(`[SUCCESS] Created: ${config.id}`);
+      log.bracket.success(`Created: ${config.id}`);
       created++;
     } catch (error) {
-      console.error(`[FAIL] Failed: ${config.id} - ${error}`);
+      log.bracket.fail(`Failed: ${config.id} - ${error}`);
       errors++;
     }
   }
 
-  console.log(`\n========================================`);
-  console.log(`Total: ${SCHEMA_RULES.length} rules`);
-  console.log(`Created: ${created}`);
-  console.log(`Errors: ${errors}`);
-  console.log(`========================================\n`);
+  log.blank();
+  log.divider();
+  log.info(`Total: ${SCHEMA_RULES.length} rules`);
+  log.info(`Created: ${created}`);
+  log.info(`Errors: ${errors}`);
+  log.divider();
+  log.blank();
 
   if (errors > 0) {
     process.exit(1);
   }
 
-  console.log('[SUCCESS] Schema rule generation complete!');
-  console.log('\nNext steps:');
-  console.log('1. Run: npm run generate:types');
-  console.log('2. Remove `as RuleId` from src/utils/schema-helpers.ts');
-  console.log('3. Run: npm test');
+  log.bracket.success('Schema rule generation complete!');
+  log.blank();
+  log.info('Next steps:');
+  log.info('1. Run: npm run generate:types');
+  log.info('2. Remove `as RuleId` from src/utils/schema-helpers.ts');
+  log.info('3. Run: npm test');
 }
 
 main();

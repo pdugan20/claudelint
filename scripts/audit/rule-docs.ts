@@ -14,6 +14,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { log } from '../util/logger';
 
 interface AuditIssue {
   file: string;
@@ -216,7 +217,8 @@ function main() {
   }
 
   const ruleDocs = findRuleDocs(rulesDir);
-  console.log(`Auditing ${ruleDocs.length} rule documentation files...\n`);
+  log.info(`Auditing ${ruleDocs.length} rule documentation files...`);
+  log.blank();
 
   // Audit each doc
   for (const docPath of ruleDocs) {
@@ -229,15 +231,15 @@ function main() {
   const warnings = results.filter(r => r.issues.some(i => i.severity === 'warning'));
   const clean = results.filter(r => r.issues.length === 0);
 
-  console.log('='.repeat(80));
-  console.log('AUDIT SUMMARY');
-  console.log('='.repeat(80));
-  console.log();
-  console.log(`Total docs: ${results.length}`);
-  console.log(`Clean: ${clean.length}`);
-  console.log(`With warnings: ${warnings.length}`);
-  console.log(`With errors: ${errors.length}`);
-  console.log();
+  log.divider();
+  log.bold('AUDIT SUMMARY');
+  log.divider();
+  log.blank();
+  log.info(`Total docs: ${results.length}`);
+  log.info(`Clean: ${clean.length}`);
+  log.info(`With warnings: ${warnings.length}`);
+  log.info(`With errors: ${errors.length}`);
+  log.blank();
 
   // Line count stats
   const lineCounts = results.map(r => r.lineCount);
@@ -245,34 +247,34 @@ function main() {
   const underTarget = results.filter(r => r.lineCount <= (r.complexity === 'simple' ? 120 : 250));
   const overTarget = results.filter(r => r.lineCount > (r.complexity === 'simple' ? 120 : 250));
 
-  console.log('LINE COUNT ANALYSIS:');
-  console.log(`  Average: ${Math.round(avgLines)} lines`);
-  console.log(`  Within target: ${underTarget.length} (${Math.round(underTarget.length / results.length * 100)}%)`);
-  console.log(`  Over target: ${overTarget.length} (${Math.round(overTarget.length / results.length * 100)}%)`);
-  console.log();
+  log.info('LINE COUNT ANALYSIS:');
+  log.info(`  Average: ${Math.round(avgLines)} lines`);
+  log.info(`  Within target: ${underTarget.length} (${Math.round(underTarget.length / results.length * 100)}%)`);
+  log.info(`  Over target: ${overTarget.length} (${Math.round(overTarget.length / results.length * 100)}%)`);
+  log.blank();
 
   // Metadata analysis
   const withBadges = results.filter(r => r.hasMetadataAtTop).length;
   const withTables = results.filter(r => r.hasMetadataTable).length;
   const withSourceLinks = results.filter(r => r.hasSourceLinks).length;
 
-  console.log('TEMPLATE COMPLIANCE:');
-  console.log(`  With metadata badges (new format): ${withBadges} (${Math.round(withBadges / results.length * 100)}%)`);
-  console.log(`  With metadata table (old format): ${withTables} (${Math.round(withTables / results.length * 100)}%)`);
-  console.log(`  With source code links: ${withSourceLinks} (${Math.round(withSourceLinks / results.length * 100)}%)`);
-  console.log();
+  log.info('TEMPLATE COMPLIANCE:');
+  log.info(`  With metadata badges (new format): ${withBadges} (${Math.round(withBadges / results.length * 100)}%)`);
+  log.info(`  With metadata table (old format): ${withTables} (${Math.round(withTables / results.length * 100)}%)`);
+  log.info(`  With source code links: ${withSourceLinks} (${Math.round(withSourceLinks / results.length * 100)}%)`);
+  log.blank();
 
   // Redundant sections
   const withRedundant = results.filter(r => r.redundantSections.length > 0).length;
-  console.log('REDUNDANT SECTIONS:');
-  console.log(`  Docs with redundant sections: ${withRedundant} (${Math.round(withRedundant / results.length * 100)}%)`);
-  console.log();
+  log.info('REDUNDANT SECTIONS:');
+  log.info(`  Docs with redundant sections: ${withRedundant} (${Math.round(withRedundant / results.length * 100)}%)`);
+  log.blank();
 
   // Priority list
-  console.log('='.repeat(80));
-  console.log('PRIORITY: DOCS NEEDING UPDATES');
-  console.log('='.repeat(80));
-  console.log();
+  log.divider();
+  log.bold('PRIORITY: DOCS NEEDING UPDATES');
+  log.divider();
+  log.blank();
 
   // Sort by issue severity and line count
   const prioritized = results
@@ -290,15 +292,20 @@ function main() {
 
   for (const result of prioritized) {
     const target = result.complexity === 'simple' ? 120 : 250;
-    const status = result.lineCount > target ? `[FAIL] ${result.lineCount}/${target}` : `✓ ${result.lineCount}/${target}`;
+    const status = result.lineCount > target ? `${result.lineCount}/${target}` : `${result.lineCount}/${target}`;
 
-    console.log(`${result.file} (${result.complexity}) ${status}`);
+    log.info(`${result.file} (${result.complexity}) ${status}`);
 
     for (const issue of result.issues) {
-      const icon = issue.severity === 'error' ? '  [FAIL]' : issue.severity === 'warning' ? '  [WARN] ' : '  [INFO] ';
-      console.log(`${icon} ${issue.issue}`);
+      if (issue.severity === 'error') {
+        log.bracket.fail(issue.issue);
+      } else if (issue.severity === 'warning') {
+        log.bracket.warn(issue.issue);
+      } else {
+        log.info(`  [INFO] ${issue.issue}`);
+      }
     }
-    console.log();
+    log.blank();
   }
 
   // Exit code

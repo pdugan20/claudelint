@@ -2,7 +2,7 @@ echo "Running pre-commit checks..."
 echo ""
 
 # 1. Lint-staged (ESLint + Prettier + Markdownlint on staged files only)
-echo "1/9 Running lint-staged (linting and formatting staged files)..."
+echo "1/10 Running lint-staged (linting and formatting staged files)..."
 npx lint-staged
 if [ $? -ne 0 ]; then
   echo "Lint-staged failed. Please fix the errors and try again."
@@ -11,7 +11,7 @@ fi
 echo ""
 
 # 2. Check for emojis (strict - only in headings)
-echo "2/9 Checking for emojis..."
+echo "2/10 Checking for emojis..."
 npm run check:emojis
 if [ $? -ne 0 ]; then
   echo "Emojis found in code. Please remove them before committing."
@@ -19,8 +19,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 3. Check logger spacing/formatting standards
-echo "3/9 Checking logger spacing..."
+# 3. Check logger spacing/formatting standards (CLI)
+echo "3/10 Checking logger spacing..."
 npm run check:logger-spacing
 if [ $? -ne 0 ]; then
   echo "Logger spacing violations found. Please fix them."
@@ -28,8 +28,17 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 4. Verify rule implementations exist
-echo "4/9 Verifying rule implementations..."
+# 4. Check logger usage in scripts
+echo "4/10 Checking logger usage in scripts..."
+npm run check:logger-usage
+if [ $? -ne 0 ]; then
+  echo "Logger usage violations found. Please fix them."
+  exit 1
+fi
+echo ""
+
+# 5. Verify rule implementations exist
+echo "5/10 Verifying rule implementations..."
 npm run verify:rule-implementations
 if [ $? -ne 0 ]; then
   echo "Rule implementation check failed."
@@ -37,8 +46,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 5. Check rule test coverage
-echo "5/9 Checking rule coverage..."
+# 6. Check rule test coverage
+echo "6/10 Checking rule coverage..."
 npm run check:rule-coverage
 if [ $? -ne 0 ]; then
   echo "Rule coverage check failed."
@@ -46,8 +55,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 6. Check schema sync (Zod vs JSON Schema)
-echo "6/9 Checking schema sync..."
+# 7. Check schema sync (Zod vs JSON Schema)
+echo "7/10 Checking schema sync..."
 npm run check:schema-sync
 if [ $? -ne 0 ]; then
   echo "Schema sync check failed."
@@ -55,8 +64,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 7. Build project (verify TypeScript compiles)
-echo "7/9 Building project..."
+# 8. Build project (verify TypeScript compiles)
+echo "8/10 Building project..."
 npm run build
 if [ $? -ne 0 ]; then
   echo "Build failed. Please fix TypeScript errors before committing."
@@ -64,8 +73,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 8. Run validator tests
-echo "8/9 Running validator tests..."
+# 9. Run validator tests
+echo "9/10 Running validator tests..."
 npx jest tests/validators --passWithNoTests
 if [ $? -ne 0 ]; then
   echo "Validator tests failed."
@@ -73,8 +82,8 @@ if [ $? -ne 0 ]; then
 fi
 echo ""
 
-# 9. Lint all markdown files
-echo "9/9 Linting all markdown files..."
+# 10. Lint all markdown files
+echo "10/10 Linting all markdown files..."
 npm run lint:md
 if [ $? -ne 0 ]; then
   echo "Markdownlint failed. Run 'npm run lint:md:fix' to auto-fix."

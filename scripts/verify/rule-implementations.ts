@@ -6,6 +6,7 @@
 
 import { readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
+import { log } from '../util/logger';
 
 interface StubRule {
   file: string;
@@ -87,7 +88,8 @@ function main() {
   const ruleFiles = findRuleFiles(rulesDir);
   const stubRules: StubRule[] = [];
 
-  console.log(`Analyzing ${ruleFiles.length} rule files...\n`);
+  log.info(`Analyzing ${ruleFiles.length} rule files...`);
+  log.blank();
 
   for (const ruleFile of ruleFiles) {
     const stub = analyzeRule(ruleFile);
@@ -97,11 +99,13 @@ function main() {
   }
 
   if (stubRules.length === 0) {
-    console.log('✓ All rules have implementations!\n');
+    log.pass('All rules have implementations!');
+    log.blank();
     process.exit(0);
   }
 
-  console.log(`✗ Found ${stubRules.length} stub or incomplete rules:\n`);
+  log.fail(`Found ${stubRules.length} stub or incomplete rules:`);
+  log.blank();
 
   const byCategory: Record<string, StubRule[]> = {};
   for (const stub of stubRules) {
@@ -112,12 +116,12 @@ function main() {
   }
 
   for (const [category, rules] of Object.entries(byCategory)) {
-    console.log(`  ${category.toUpperCase()}:`);
+    log.info(`  ${category.toUpperCase()}:`);
     for (const rule of rules) {
       const fileName = rule.file.split('/').pop();
-      console.log(`    - ${fileName}: ${rule.reason}`);
+      log.info(`    - ${fileName}: ${rule.reason}`);
     }
-    console.log();
+    log.blank();
   }
 
   process.exit(1);

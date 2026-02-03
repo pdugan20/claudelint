@@ -11,6 +11,7 @@
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, relative } from 'path';
 import { existsSync } from 'fs';
+import { log } from '../util/logger';
 
 interface Violation {
   file: string;
@@ -242,7 +243,8 @@ async function checkDuplicates(): Promise<void> {
  * Main execution
  */
 async function main(): Promise<void> {
-  console.log('Checking rule ID registration...\n');
+  log.info('Checking rule ID registration...');
+  log.blank();
 
   // Scan validators for used rule IDs
   await scanValidators();
@@ -263,43 +265,45 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   if (violations.length > 0) {
-    console.log(`[FAIL] Found ${violations.length} rule ID violations:\n`);
+    log.bracket.fail(`Found ${violations.length} rule ID violations:`);
+    log.blank();
     for (const violation of violations) {
       const location = violation.line ? `${violation.file}:${violation.line}` : violation.file;
-      console.log(`  ${location}`);
-      console.log(`    ${violation.issue}`);
+      log.info(`  ${location}`);
+      log.info(`    ${violation.issue}`);
       if (violation.ruleId) {
-        console.log(`    Suggestion: Add "${violation.ruleId}" to src/rules/rule-ids.ts`);
+        log.info(`    Suggestion: Add "${violation.ruleId}" to src/rules/rule-ids.ts`);
       }
-      console.log();
+      log.blank();
     }
     hasErrors = true;
   }
 
   if (warnings.length > 0) {
-    console.log(`[WARN] Found ${warnings.length} warnings:\n`);
+    log.bracket.warn(`Found ${warnings.length} warnings:`);
+    log.blank();
     for (const warning of warnings) {
-      console.log(`  ${warning.file}`);
-      console.log(`    ${warning.issue}`);
+      log.info(`  ${warning.file}`);
+      log.info(`    ${warning.issue}`);
       if (warning.ruleId) {
-        console.log(`    Consider: Remove "${warning.ruleId}" from rule-ids.ts or implement the rule`);
+        log.info(`    Consider: Remove "${warning.ruleId}" from rule-ids.ts or implement the rule`);
       }
-      console.log();
+      log.blank();
     }
   }
 
   if (!hasErrors && warnings.length === 0) {
-    console.log('[PASS] All rule IDs are properly registered');
-    console.log(`  Used rule IDs: ${usedRuleIds.size}`);
-    console.log(`  Registered rule IDs: ${registeredRuleIds.size}`);
+    log.bracket.success('All rule IDs are properly registered');
+    log.info(`  Used rule IDs: ${usedRuleIds.size}`);
+    log.info(`  Registered rule IDs: ${registeredRuleIds.size}`);
   }
 
   // Exit with error if violations found
   if (hasErrors) {
-    console.log('Fix violations before committing.');
+    log.info('Fix violations before committing.');
     process.exit(1);
   } else if (warnings.length > 0) {
-    console.log('Warnings found but allowing commit.');
+    log.info('Warnings found but allowing commit.');
     process.exit(0);
   } else {
     process.exit(0);
@@ -307,6 +311,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  console.error('Error:', error);
+  log.error(`Error: ${error}`);
   process.exit(1);
 });

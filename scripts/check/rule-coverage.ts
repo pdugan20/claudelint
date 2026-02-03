@@ -10,6 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ALL_RULE_IDS } from '../../src/rules/rule-ids';
+import { log } from '../util/logger';
 
 const rootDir = path.join(__dirname, '../..');
 const srcRulesDir = path.join(rootDir, 'src/rules');
@@ -119,41 +120,43 @@ function checkRuleCoverage(): CoverageResult {
  * Main execution
  */
 function main(): void {
-  console.log('Checking rule test coverage...\n');
+  log.info('Checking rule test coverage...');
+  log.blank();
 
   const result = checkRuleCoverage();
 
-  console.log(`Total rules: ${result.totalRules}`);
-  console.log(`Rules with tests: ${result.rulesWithTests}`);
-  console.log(
-    `Rules without tests: ${result.rulesWithoutTests.length}\n`
+  log.info(`Total rules: ${result.totalRules}`);
+  log.info(`Rules with tests: ${result.rulesWithTests}`);
+  log.info(
+    `Rules without tests: ${result.rulesWithoutTests.length}`
   );
+  log.blank();
 
   if (result.rulesWithoutTests.length > 0) {
-    console.log('Rules missing test files:');
+    log.info('Rules missing test files:');
     for (const ruleId of result.rulesWithoutTests) {
       const sourceFile = findRuleSourceFile(ruleId);
-      console.log(`  - ${ruleId}${sourceFile ? ` (${sourceFile})` : ''}`);
+      log.info(`  - ${ruleId}${sourceFile ? ` (${sourceFile})` : ''}`);
     }
-    console.log();
+    log.blank();
   }
 
   if (result.testFilesWithoutRules.length > 0) {
-    console.log('Test files without corresponding rules:');
+    log.info('Test files without corresponding rules:');
     for (const testFile of result.testFilesWithoutRules) {
-      console.log(`  - ${testFile}`);
+      log.info(`  - ${testFile}`);
     }
-    console.log();
+    log.blank();
   }
 
   if (
     result.rulesWithoutTests.length === 0 &&
     result.testFilesWithoutRules.length === 0
   ) {
-    console.log('[SUCCESS] All rules have test coverage!');
+    log.bracket.success('All rules have test coverage!');
     process.exit(0);
   } else {
-    console.log('[FAILED] Some rules are missing tests or have orphaned test files.');
+    log.bracket.fail('Some rules are missing tests or have orphaned test files.');
     process.exit(1);
   }
 }

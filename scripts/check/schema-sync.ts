@@ -13,24 +13,28 @@
  */
 
 import { execSync } from 'child_process';
-import chalk from 'chalk';
 import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
+import { log } from '../util/logger';
 
 function generateSchemas(): boolean {
-  console.log(chalk.bold('Generating JSON Schemas from Zod...\n'));
+  log.bold('Generating JSON Schemas from Zod...');
+  log.blank();
 
   try {
     execSync('npm run generate:json-schemas', { stdio: 'inherit' });
-    console.log('');
+    log.blank();
     return true;
   } catch {
-    console.error(chalk.red('\nSchema generation failed.\n'));
+    log.blank();
+    log.error('Schema generation failed.');
+    log.blank();
     return false;
   }
 }
 
 function compareSchemas(): boolean {
-  console.log(chalk.bold('Comparing schemas...\n'));
+  log.bold('Comparing schemas...');
+  log.blank();
 
   try {
     execSync('npm run verify:schemas', { stdio: 'inherit' });
@@ -42,25 +46,29 @@ function compareSchemas(): boolean {
 }
 
 function main() {
-  console.log(chalk.bold('\n=== Schema Sync Verification ===\n'));
-  console.log(chalk.gray(`Verifying ${SCHEMA_REGISTRY.length} schemas\n`));
+  log.section('=== Schema Sync Verification ===');
+  log.dim(`Verifying ${SCHEMA_REGISTRY.length} schemas`);
+  log.blank();
 
   const generationSuccess = generateSchemas();
   if (!generationSuccess) {
-    console.log(chalk.red('Cannot proceed with comparison.\n'));
+    log.error('Cannot proceed with comparison.');
+    log.blank();
     process.exit(1);
   }
 
   const comparisonSuccess = compareSchemas();
 
-  console.log(chalk.bold('\n=== Results ===\n'));
+  log.section('=== Results ===');
 
   if (comparisonSuccess) {
-    console.log(chalk.green('✓ All schemas match. No drift detected.\n'));
+    log.pass('All schemas match. No drift detected.');
+    log.blank();
     process.exit(0);
   } else {
-    console.log(chalk.red('✗ Schema drift detected.\n'));
-    console.log(chalk.yellow('Fix the issues above and run again.\n'));
+    log.fail('Schema drift detected.');
+    log.warn('Fix the issues above and run again.');
+    log.blank();
     process.exit(1);
   }
 }

@@ -12,6 +12,7 @@ import type { JSONSchema7 } from 'json-schema';
 import fs from 'fs';
 import path from 'path';
 import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
+import { log } from '../util/logger';
 
 const outputDir = path.join(__dirname, '../../schemas/generated');
 
@@ -20,14 +21,15 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-console.log('Generating JSON Schemas from Zod...\n');
+log.info('Generating JSON Schemas from Zod...');
+log.blank();
 
 let successCount = 0;
 let errorCount = 0;
 
 for (const entry of SCHEMA_REGISTRY) {
   try {
-    console.log(`Generating ${entry.name}...`);
+    log.info(`Generating ${entry.name}...`);
 
     // Convert Zod to JSON Schema
     const jsonSchema = zodToJsonSchema(entry.zodSchema, {
@@ -55,15 +57,16 @@ for (const entry of SCHEMA_REGISTRY) {
     const outputPath = path.join(outputDir, entry.generatedSchemaFile);
     fs.writeFileSync(outputPath, JSON.stringify(finalSchema, null, 2));
 
-    console.log(`  ✓ Written to ${entry.generatedSchemaFile}`);
+    log.pass(`Written to ${entry.generatedSchemaFile}`);
     successCount++;
   } catch (error) {
-    console.error(`  ✗ Error generating ${entry.name}:`, error);
+    log.fail(`Error generating ${entry.name}: ${error}`);
     errorCount++;
   }
 }
 
-console.log(`\nGeneration complete: ${successCount} succeeded, ${errorCount} failed`);
+log.blank();
+log.info(`Generation complete: ${successCount} succeeded, ${errorCount} failed`);
 
 if (errorCount > 0) {
   process.exit(1);

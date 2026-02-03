@@ -2,6 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { log } from './logger';
 
 interface PackageJson {
   version: string;
@@ -34,8 +35,9 @@ function syncVersions(): void {
   const primaryVersion = packageJson.version;
   const packageName = packageJson.name as string;
 
-  console.log(`Primary version: ${primaryVersion}`);
-  console.log(`Package name: ${packageName}\n`);
+  log.info(`Primary version: ${primaryVersion}`);
+  log.info(`Package name: ${packageName}`);
+  log.blank();
 
   let filesUpdated = 0;
 
@@ -46,7 +48,7 @@ function syncVersions(): void {
   );
 
   if (pluginJson.version !== primaryVersion) {
-    console.log(
+    log.info(
       `Updating plugin.json: ${pluginJson.version} → ${primaryVersion}`
     );
     pluginJson.version = primaryVersion;
@@ -56,7 +58,7 @@ function syncVersions(): void {
     );
     filesUpdated++;
   } else {
-    console.log('✓ plugin.json already in sync');
+    log.pass('plugin.json already in sync');
   }
 
   // 3. Update .claude-plugin/marketplace.json
@@ -70,7 +72,7 @@ function syncVersions(): void {
   );
 
   if (marketplaceJson.version !== primaryVersion) {
-    console.log(
+    log.info(
       `Updating marketplace.json: ${marketplaceJson.version} → ${primaryVersion}`
     );
     marketplaceJson.version = primaryVersion;
@@ -80,7 +82,7 @@ function syncVersions(): void {
     );
     filesUpdated++;
   } else {
-    console.log('✓ marketplace.json already in sync');
+    log.pass('marketplace.json already in sync');
   }
 
   // 4. Update examples/integration/package.json dependency
@@ -102,7 +104,7 @@ function syncVersions(): void {
   const newDepVersion = `^${primaryVersion}`;
 
   if (currentDepVersion !== newDepVersion) {
-    console.log(
+    log.info(
       `Updating integration example dependency: ${currentDepVersion} → ${newDepVersion}`
     );
     devDeps[packageName] = newDepVersion;
@@ -113,16 +115,17 @@ function syncVersions(): void {
     );
     filesUpdated++;
   } else {
-    console.log('✓ integration example dependency already in sync');
+    log.pass('integration example dependency already in sync');
   }
 
-  console.log(`\n${'='.repeat(60)}`);
+  log.blank();
+  log.divider();
   if (filesUpdated > 0) {
-    console.log(`✓ ${filesUpdated} file${filesUpdated > 1 ? 's' : ''} updated to version ${primaryVersion}`);
+    log.pass(`${filesUpdated} file${filesUpdated > 1 ? 's' : ''} updated to version ${primaryVersion}`);
   } else {
-    console.log('✓ All versions already synchronized to', primaryVersion);
+    log.pass(`All versions already synchronized to ${primaryVersion}`);
   }
-  console.log(`${'='.repeat(60)}`);
+  log.divider();
 }
 
 // Run if executed directly
@@ -130,7 +133,7 @@ if (require.main === module) {
   try {
     syncVersions();
   } catch (error) {
-    console.error('Error syncing versions:', error);
+    log.error(`Error syncing versions: ${error}`);
     process.exit(1);
   }
 }

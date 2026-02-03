@@ -13,6 +13,7 @@
 import { readdir, stat } from 'fs/promises';
 import { join, basename, dirname, relative, extname } from 'path';
 import { existsSync } from 'fs';
+import { log } from '../util/logger';
 
 interface Violation {
   file: string;
@@ -177,7 +178,7 @@ async function checkRuleDocs(): Promise<void> {
   // Get all registered rule IDs
   const ruleIdsPath = join(projectRoot, 'src', 'rules', 'rule-ids.ts');
   if (!existsSync(ruleIdsPath)) {
-    console.warn('Warning: src/rules/rule-ids.ts not found, skipping rule ID validation');
+    log.warn('Warning: src/rules/rule-ids.ts not found, skipping rule ID validation');
     return;
   }
 
@@ -283,7 +284,8 @@ async function checkTestFiles(): Promise<void> {
  * Main execution
  */
 async function main(): Promise<void> {
-  console.log('Checking file naming conventions...\n');
+  log.info('Checking file naming conventions...');
+  log.blank();
 
   await checkMainDocs();
   await checkProjectDocs();
@@ -292,26 +294,27 @@ async function main(): Promise<void> {
   await checkTestFiles();
 
   if (violations.length === 0) {
-    console.log('[PASS] All files follow naming conventions');
+    log.bracket.success('All files follow naming conventions');
     process.exit(0);
   } else {
-    console.log(`[FAIL] Found ${violations.length} naming convention violations:\n`);
+    log.bracket.fail(`Found ${violations.length} naming convention violations:`);
+    log.blank();
 
     for (const violation of violations) {
-      console.log(`  ${violation.file}`);
-      console.log(`    Issue: ${violation.issue}`);
+      log.info(`  ${violation.file}`);
+      log.info(`    Issue: ${violation.issue}`);
       if (violation.suggestion) {
-        console.log(`    Suggestion: ${violation.suggestion}`);
+        log.info(`    Suggestion: ${violation.suggestion}`);
       }
-      console.log();
+      log.blank();
     }
 
-    console.log(`\nSee docs/file-naming-conventions.md for details.`);
+    log.info('See docs/file-naming-conventions.md for details.');
     process.exit(1);
   }
 }
 
 main().catch((error) => {
-  console.error('Error:', error);
+  log.error(`Error: ${error}`);
   process.exit(1);
 });

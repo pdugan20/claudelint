@@ -15,6 +15,7 @@
 import { glob } from 'glob';
 import { writeFile } from 'fs/promises';
 import { basename, join } from 'path';
+import { log } from '../util/logger';
 
 /**
  * Generate RuleId type from discovered rule files
@@ -22,7 +23,7 @@ import { basename, join } from 'path';
 async function generateRuleIds(): Promise<void> {
   const rulesDir = join(__dirname, '../../src/rules');
 
-  console.log('Scanning for rule files in:', rulesDir);
+  log.info(`Scanning for rule files in: ${rulesDir}`);
 
   // Find all rule files (exclude tests, index, and rule-ids itself)
   const ruleFiles = await glob('**/*.ts', {
@@ -30,7 +31,7 @@ async function generateRuleIds(): Promise<void> {
     ignore: ['**/*.test.ts', '**/index.ts', '**/rule-ids.ts', '**/*.d.ts'],
   });
 
-  console.log(`Found ${ruleFiles.length} rule files`);
+  log.info(`Found ${ruleFiles.length} rule files`);
 
   // Extract rule IDs from filenames and sort
   const ruleIds = ruleFiles.map((file) => basename(file, '.ts')).sort();
@@ -42,15 +43,15 @@ async function generateRuleIds(): Promise<void> {
   const outputPath = join(rulesDir, 'rule-ids.ts');
   await writeFile(outputPath, content, 'utf-8');
 
-  console.log(`Generated ${ruleIds.length} rule IDs in ${outputPath}`);
+  log.info(`Generated ${ruleIds.length} rule IDs in ${outputPath}`);
 
   // Generate auto-registration file
   const registrationContent = generateRegistrationContent(ruleFiles);
   const registrationPath = join(rulesDir, 'index.ts');
   await writeFile(registrationPath, registrationContent, 'utf-8');
 
-  console.log(`Generated auto-registration in ${registrationPath}`);
-  console.log('Rule IDs:', ruleIds.join(', '));
+  log.info(`Generated auto-registration in ${registrationPath}`);
+  log.info(`Rule IDs: ${ruleIds.join(', ')}`);
 }
 
 /**
@@ -179,10 +180,10 @@ export function isRuleId(value: string): value is RuleId {
  */
 generateRuleIds()
   .then(() => {
-    console.log('Rule type generation complete');
+    log.info('Rule type generation complete');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('Failed to generate rule types:', error);
+    log.error(`Failed to generate rule types: ${error}`);
     process.exit(1);
   });

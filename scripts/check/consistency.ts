@@ -11,6 +11,7 @@
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, basename, dirname, relative } from 'path';
 import { existsSync } from 'fs';
+import { log } from '../util/logger';
 
 interface Violation {
   file: string;
@@ -324,7 +325,8 @@ function checkFilenameConsistency(): void {
  * Main execution
  */
 async function main(): Promise<void> {
-  console.log('Checking code/documentation consistency...\n');
+  log.info('Checking code/documentation consistency...');
+  log.blank();
 
   // Scan validators for rule usage
   await scanValidators();
@@ -341,37 +343,39 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   if (violations.length > 0) {
-    console.log(`[FAIL] Found ${violations.length} consistency violations:\n`);
+    log.bracket.fail(`Found ${violations.length} consistency violations:`);
+    log.blank();
     for (const violation of violations) {
       const location = violation.line ? `${violation.file}:${violation.line}` : violation.file;
-      console.log(`  ${location}`);
-      console.log(`    ${violation.issue}`);
+      log.info(`  ${location}`);
+      log.info(`    ${violation.issue}`);
       if (violation.suggestion) {
-        console.log(`    Suggestion: ${violation.suggestion}`);
+        log.info(`    Suggestion: ${violation.suggestion}`);
       }
-      console.log();
+      log.blank();
     }
     hasErrors = true;
   }
 
   if (warnings.length > 0) {
-    console.log(`[WARN] Found ${warnings.length} warnings:\n`);
+    log.bracket.warn(`Found ${warnings.length} warnings:`);
+    log.blank();
     for (const warning of warnings) {
-      console.log(`  ${warning.file}`);
-      console.log(`    ${warning.issue}`);
-      console.log();
+      log.info(`  ${warning.file}`);
+      log.info(`    ${warning.issue}`);
+      log.blank();
     }
   }
 
   if (!hasErrors && warnings.length === 0) {
-    console.log('[PASS] Code and documentation are consistent');
-    console.log(`  Rules with code: ${ruleIdSeverity.size}`);
-    console.log(`  Rules with docs: ${ruleDocs.size}`);
+    log.bracket.success('Code and documentation are consistent');
+    log.info(`  Rules with code: ${ruleIdSeverity.size}`);
+    log.info(`  Rules with docs: ${ruleDocs.size}`);
   }
 
   // Exit with error if violations found
   if (hasErrors) {
-    console.log('Fix violations before committing.');
+    log.info('Fix violations before committing.');
     process.exit(1);
   } else {
     process.exit(0);
@@ -379,6 +383,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  console.error('Error:', error);
+  log.error(`Error: ${error}`);
   process.exit(1);
 });

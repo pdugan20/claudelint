@@ -11,6 +11,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { log } from '../util/logger';
 
 interface RuleOptions {
   ruleId: string;
@@ -222,11 +223,13 @@ function main() {
   const rulesDir = path.join(__dirname, '../../src/rules');
   const docsDir = path.join(__dirname, '../docs/rules');
 
-  console.log('Checking rule options vs documentation...\n');
+  log.info('Checking rule options vs documentation...');
+  log.blank();
 
   // Find all rule implementations
   const ruleFiles = findRuleFiles(rulesDir);
-  console.log(`Found ${ruleFiles.length} rule implementations\n`);
+  log.info(`Found ${ruleFiles.length} rule implementations`);
+  log.blank();
 
   const allMismatches: Mismatch[] = [];
   let checked = 0;
@@ -263,17 +266,18 @@ function main() {
   }
 
   // Report results
-  console.log('='.repeat(80));
-  console.log('OPTION/DOCUMENTATION SYNC CHECK');
-  console.log('='.repeat(80));
-  console.log();
-  console.log(`Rules checked: ${checked}`);
-  console.log(`Matched: ${matched}`);
-  console.log(`With issues: ${checked - matched}`);
-  console.log();
+  log.divider();
+  log.bold('OPTION/DOCUMENTATION SYNC CHECK');
+  log.divider();
+  log.blank();
+  log.info(`Rules checked: ${checked}`);
+  log.info(`Matched: ${matched}`);
+  log.info(`With issues: ${checked - matched}`);
+  log.blank();
 
   if (allMismatches.length === 0) {
-    console.log('✓ All rule options are properly documented!\n');
+    log.pass('All rule options are properly documented!');
+    log.blank();
     process.exit(0);
   }
 
@@ -281,24 +285,28 @@ function main() {
   const errors = allMismatches.filter(m => m.severity === 'error');
   const warnings = allMismatches.filter(m => m.severity === 'warning');
 
-  console.log('='.repeat(80));
-  console.log('ISSUES FOUND');
-  console.log('='.repeat(80));
-  console.log();
+  log.divider();
+  log.bold('ISSUES FOUND');
+  log.divider();
+  log.blank();
 
   if (errors.length > 0) {
-    console.log(`ERRORS (${errors.length}):\n`);
+    log.info(`ERRORS (${errors.length}):`);
+    log.blank();
     for (const error of errors) {
-      console.log(`[FAIL] ${error.ruleId}`);
-      console.log(`       ${error.issue}\n`);
+      log.bracket.fail(error.ruleId);
+      log.info(`       ${error.issue}`);
+      log.blank();
     }
   }
 
   if (warnings.length > 0) {
-    console.log(`WARNINGS (${warnings.length}):\n`);
+    log.info(`WARNINGS (${warnings.length}):`);
+    log.blank();
     for (const warning of warnings) {
-      console.log(`[WARN] ${warning.ruleId}`);
-      console.log(`       ${warning.issue}\n`);
+      log.bracket.warn(warning.ruleId);
+      log.info(`       ${warning.issue}`);
+      log.blank();
     }
   }
 

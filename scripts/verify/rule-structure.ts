@@ -11,6 +11,7 @@
 
 import * as fs from 'fs';
 import { glob } from 'glob';
+import { log } from '../util/logger';
 
 interface RuleFile {
   id: string;
@@ -135,49 +136,50 @@ function validateRuleStructure(): ValidationResult {
 }
 
 /**
- * Format error message
+ * Print error messages
  */
-function formatErrors(result: ValidationResult): string {
-  const errors: string[] = [];
-
+function printErrors(result: ValidationResult): void {
   if (result.missingTests.length > 0) {
-    errors.push('\n[ERROR] Rules missing test files:');
+    log.blank();
+    log.bracket.error('Rules missing test files:');
     for (const rule of result.missingTests) {
-      errors.push(`   ${rule.filePath}`);
-      errors.push(`   Expected: tests/rules/${rule.category}/${rule.id}.test.ts`);
+      log.info(`   ${rule.filePath}`);
+      log.info(`   Expected: tests/rules/${rule.category}/${rule.id}.test.ts`);
     }
   }
 
   if (result.missingDocs.length > 0) {
-    errors.push('\n[ERROR] Rules missing documentation files:');
+    log.blank();
+    log.bracket.error('Rules missing documentation files:');
     for (const rule of result.missingDocs) {
-      errors.push(`   ${rule.filePath}`);
-      errors.push(`   Expected: docs/rules/${rule.category}/${rule.id}.md`);
+      log.info(`   ${rule.filePath}`);
+      log.info(`   Expected: docs/rules/${rule.category}/${rule.id}.md`);
     }
   }
 
   if (result.orphanedTests.length > 0) {
-    errors.push('\n[ERROR] Orphaned test files (no corresponding rule):');
+    log.blank();
+    log.bracket.error('Orphaned test files (no corresponding rule):');
     for (const testPath of result.orphanedTests) {
-      errors.push(`   ${testPath}`);
+      log.info(`   ${testPath}`);
     }
   }
 
   if (result.orphanedDocs.length > 0) {
-    errors.push('\n[ERROR] Orphaned documentation files (no corresponding rule):');
+    log.blank();
+    log.bracket.error('Orphaned documentation files (no corresponding rule):');
     for (const docPath of result.orphanedDocs) {
-      errors.push(`   ${docPath}`);
+      log.info(`   ${docPath}`);
     }
   }
-
-  return errors.join('\n');
 }
 
 /**
  * Main
  */
 function main(): void {
-  console.log('Checking rule structure (1:1:1 mapping)...\n');
+  log.info('Checking rule structure (1:1:1 mapping)...');
+  log.blank();
 
   const result = validateRuleStructure();
   const totalErrors =
@@ -187,19 +189,23 @@ function main(): void {
     result.orphanedDocs.length;
 
   if (totalErrors === 0) {
-    console.log('[SUCCESS] All rules have test files and documentation');
-    console.log('[SUCCESS] No orphaned test or documentation files\n');
+    log.bracket.success('All rules have test files and documentation');
+    log.bracket.success('No orphaned test or documentation files');
+    log.blank();
     process.exit(0);
   }
 
-  console.error('Rule structure validation failed:\n');
-  console.error(formatErrors(result));
-  console.error('\nSummary:');
-  console.error(`  ${result.missingTests.length} rules missing tests`);
-  console.error(`  ${result.missingDocs.length} rules missing docs`);
-  console.error(`  ${result.orphanedTests.length} orphaned test files`);
-  console.error(`  ${result.orphanedDocs.length} orphaned doc files`);
-  console.error(`\nTotal: ${totalErrors} violations\n`);
+  log.error('Rule structure validation failed:');
+  printErrors(result);
+  log.blank();
+  log.info('Summary:');
+  log.info(`  ${result.missingTests.length} rules missing tests`);
+  log.info(`  ${result.missingDocs.length} rules missing docs`);
+  log.info(`  ${result.orphanedTests.length} orphaned test files`);
+  log.info(`  ${result.orphanedDocs.length} orphaned doc files`);
+  log.blank();
+  log.info(`Total: ${totalErrors} violations`);
+  log.blank();
 
   process.exit(1);
 }

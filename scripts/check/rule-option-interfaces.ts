@@ -14,6 +14,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { log } from '../util/logger';
 
 interface RuleInfo {
   ruleId: string;
@@ -245,11 +246,13 @@ function findRuleFiles(dir: string): string[] {
 function main() {
   const rulesDir = path.join(__dirname, '../../src/rules');
 
-  console.log('Checking rule option interface naming standards...\n');
+  log.info('Checking rule option interface naming standards...');
+  log.blank();
 
   // Find all rule files
   const ruleFiles = findRuleFiles(rulesDir);
-  console.log(`Found ${ruleFiles.length} rule files\n`);
+  log.info(`Found ${ruleFiles.length} rule files`);
+  log.blank();
 
   // Parse and validate each rule
   const allIssues: Issue[] = [];
@@ -274,18 +277,19 @@ function main() {
   }
 
   // Report results
-  console.log('='.repeat(80));
-  console.log('INTERFACE NAMING STANDARDS CHECK');
-  console.log('='.repeat(80));
-  console.log();
-  console.log(`Total rules: ${ruleFiles.length}`);
-  console.log(`Rules with options: ${rulesWithOptions}`);
-  console.log(`Rules passing: ${rulesWithOptions - rulesWithIssues}`);
-  console.log(`Rules with issues: ${rulesWithIssues}`);
-  console.log();
+  log.divider();
+  log.bold('INTERFACE NAMING STANDARDS CHECK');
+  log.divider();
+  log.blank();
+  log.info(`Total rules: ${ruleFiles.length}`);
+  log.info(`Rules with options: ${rulesWithOptions}`);
+  log.info(`Rules passing: ${rulesWithOptions - rulesWithIssues}`);
+  log.info(`Rules with issues: ${rulesWithIssues}`);
+  log.blank();
 
   if (allIssues.length === 0) {
-    console.log('✓ All rule option interfaces follow naming standards!\n');
+    log.pass('All rule option interfaces follow naming standards!');
+    log.blank();
     process.exit(0);
   }
 
@@ -293,24 +297,28 @@ function main() {
   const errors = allIssues.filter(i => i.severity === 'error');
   const warnings = allIssues.filter(i => i.severity === 'warning');
 
-  console.log('='.repeat(80));
-  console.log('ISSUES FOUND');
-  console.log('='.repeat(80));
-  console.log();
+  log.divider();
+  log.bold('ISSUES FOUND');
+  log.divider();
+  log.blank();
 
   if (errors.length > 0) {
-    console.log(`ERRORS (${errors.length}):\n`);
+    log.info(`ERRORS (${errors.length}):`);
+    log.blank();
     for (const error of errors) {
-      console.log(`[FAIL] ${error.ruleId}`);
-      console.log(`       ${error.message}\n`);
+      log.bracket.fail(error.ruleId);
+      log.info(`       ${error.message}`);
+      log.blank();
     }
   }
 
   if (warnings.length > 0) {
-    console.log(`WARNINGS (${warnings.length}):\n`);
+    log.info(`WARNINGS (${warnings.length}):`);
+    log.blank();
     for (const warning of warnings) {
-      console.log(`[WARN] ${warning.ruleId}`);
-      console.log(`       ${warning.message}\n`);
+      log.bracket.warn(warning.ruleId);
+      log.info(`       ${warning.message}`);
+      log.blank();
     }
   }
 

@@ -2,6 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { log } from '../util/logger';
 
 interface PackageJson {
   version: string;
@@ -34,8 +35,9 @@ function checkVersionSync(): boolean {
   const primaryVersion = packageJson.version;
   const packageName = packageJson.name as string;
 
-  console.log(`Primary version: ${primaryVersion}`);
-  console.log(`Package name: ${packageName}\n`);
+  log.info(`Primary version: ${primaryVersion}`);
+  log.info(`Package name: ${packageName}`);
+  log.blank();
 
   let allInSync = true;
 
@@ -45,12 +47,12 @@ function checkVersionSync(): boolean {
     fs.readFileSync(pluginJsonPath, 'utf-8')
   );
   if (pluginJson.version !== primaryVersion) {
-    console.error(
-      `✗ plugin.json version mismatch: ${pluginJson.version} (expected ${primaryVersion})`
+    log.fail(
+      `plugin.json version mismatch: ${pluginJson.version} (expected ${primaryVersion})`
     );
     allInSync = false;
   } else {
-    console.log('✓ plugin.json in sync');
+    log.pass('plugin.json in sync');
   }
 
   // Check marketplace.json
@@ -63,12 +65,12 @@ function checkVersionSync(): boolean {
     fs.readFileSync(marketplaceJsonPath, 'utf-8')
   );
   if (marketplaceJson.version !== primaryVersion) {
-    console.error(
-      `✗ marketplace.json version mismatch: ${marketplaceJson.version} (expected ${primaryVersion})`
+    log.fail(
+      `marketplace.json version mismatch: ${marketplaceJson.version} (expected ${primaryVersion})`
     );
     allInSync = false;
   } else {
-    console.log('✓ marketplace.json in sync');
+    log.pass('marketplace.json in sync');
   }
 
   // Check integration example
@@ -86,21 +88,22 @@ function checkVersionSync(): boolean {
   const expectedDepVersion = `^${primaryVersion}`;
 
   if (depVersion !== expectedDepVersion) {
-    console.error(
-      `✗ integration example dependency mismatch: ${depVersion} (expected ${expectedDepVersion})`
+    log.fail(
+      `integration example dependency mismatch: ${depVersion} (expected ${expectedDepVersion})`
     );
     allInSync = false;
   } else {
-    console.log('✓ integration example dependency in sync');
+    log.pass('integration example dependency in sync');
   }
 
-  console.log();
+  log.blank();
   if (allInSync) {
-    console.log('✓ All versions are synchronized');
+    log.pass('All versions are synchronized');
     process.exit(0);
   } else {
-    console.error('✗ Version sync check failed');
-    console.error('\nRun: npm run sync:versions');
+    log.fail('Version sync check failed');
+    log.blank();
+    log.info('Run: npm run sync:versions');
     process.exit(1);
   }
 }
@@ -110,7 +113,7 @@ if (require.main === module) {
   try {
     checkVersionSync();
   } catch (error) {
-    console.error('Error checking version sync:', error);
+    log.error(`Error checking version sync: ${error}`);
     process.exit(1);
   }
 }

@@ -26,6 +26,7 @@
     "generate:json-schemas": "ts-node scripts/generate/json-schemas.ts",
     "check:emojis": "node scripts/check/emoji.js",
     "check:logger-spacing": "bash scripts/check/logger-spacing.sh",
+    "check:logger-usage": "bash scripts/check/logger-usage.sh",
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
     "check:rule-ids": "ts-node scripts/check/rule-ids.ts",
     "check:rule-docs": "ts-node scripts/check/rule-docs.ts",

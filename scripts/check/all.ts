@@ -13,6 +13,7 @@
 
 import { spawn } from 'child_process';
 import { join } from 'path';
+import { log } from '../util/logger';
 
 interface CheckResult {
   name: string;
@@ -60,68 +61,76 @@ function runScript(scriptPath: string, name: string): Promise<CheckResult> {
  * Main execution
  */
 async function main(): Promise<void> {
-  console.log('Running all validation checks...\n');
-  console.log('='.repeat(80));
-  console.log();
+  log.info('Running all validation checks...');
+  log.blank();
+  log.divider();
+  log.blank();
 
   const checks = [
-    { script: join(__dirname, 'check-file-naming.ts'), name: 'File Naming' },
-    { script: join(__dirname, 'check-rule-ids.ts'), name: 'Rule IDs' },
-    { script: join(__dirname, 'audit-rule-docs.ts'), name: 'Rule Documentation' },
-    { script: join(__dirname, 'check-consistency.ts'), name: 'Consistency' },
+    { script: join(__dirname, 'file-naming.ts'), name: 'File Naming' },
+    { script: join(__dirname, 'rule-ids.ts'), name: 'Rule IDs' },
+    { script: join(__dirname, 'rule-docs.ts'), name: 'Rule Documentation' },
+    { script: join(__dirname, 'consistency.ts'), name: 'Consistency' },
   ];
 
   // Run each check
   for (const check of checks) {
-    console.log(`\n${'='.repeat(80)}`);
-    console.log(`Running: ${check.name}`);
-    console.log('='.repeat(80));
-    console.log();
+    log.blank();
+    log.divider();
+    log.info(`Running: ${check.name}`);
+    log.divider();
+    log.blank();
 
     const result = await runScript(check.script, check.name);
     results.push(result);
 
     if (result.exitCode !== 0) {
-      console.log(`\n[FAIL] ${check.name} FAILED`);
+      log.blank();
+      log.bracket.fail(`${check.name} FAILED`);
     } else {
-      console.log(`\n[PASS] ${check.name} PASSED`);
+      log.blank();
+      log.bracket.success(`${check.name} PASSED`);
     }
   }
 
   // Print summary
-  console.log('\n' + '='.repeat(80));
-  console.log('SUMMARY');
-  console.log('='.repeat(80));
-  console.log();
+  log.blank();
+  log.divider();
+  log.bold('SUMMARY');
+  log.divider();
+  log.blank();
 
   const passed = results.filter((r) => r.exitCode === 0);
   const failed = results.filter((r) => r.exitCode !== 0);
 
   for (const result of results) {
-    const status = result.exitCode === 0 ? '[PASS]' : '[FAIL]';
-    console.log(`  ${status}  ${result.name}`);
+    if (result.exitCode === 0) {
+      log.info(`  [PASS]  ${result.name}`);
+    } else {
+      log.info(`  [FAIL]  ${result.name}`);
+    }
   }
 
-  console.log();
-  console.log(`Total: ${passed.length}/${results.length} checks passed`);
+  log.blank();
+  log.info(`Total: ${passed.length}/${results.length} checks passed`);
 
   if (failed.length > 0) {
-    console.log();
-    console.log('Failed checks:');
+    log.blank();
+    log.info('Failed checks:');
     for (const result of failed) {
-      console.log(`  - ${result.name}`);
+      log.info(`  - ${result.name}`);
     }
-    console.log();
-    console.log('Fix all violations before committing.');
+    log.blank();
+    log.info('Fix all violations before committing.');
     process.exit(1);
   } else {
-    console.log();
-    console.log('All validation checks passed!');
+    log.blank();
+    log.info('All validation checks passed!');
     process.exit(0);
   }
 }
 
 main().catch((error) => {
-  console.error('Error:', error);
+  log.error(`Error: ${error}`);
   process.exit(1);
 });

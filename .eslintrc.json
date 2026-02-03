@@ -42,6 +42,13 @@
       "rules": {
         "no-console": "error"
       }
+    },
+    {
+      "files": ["scripts/**/*.ts"],
+      "excludedFiles": ["scripts/util/logger.ts"],
+      "rules": {
+        "no-console": "error"
+      }
     }
   ]
 }

@@ -13,6 +13,7 @@
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, relative } from 'path';
 import { existsSync } from 'fs';
+import { log } from '../util/logger';
 
 interface Violation {
   file: string;
@@ -321,7 +322,8 @@ function checkOrphanedDocs(registeredRuleIds: Set<string>, ruleDocs: Map<string,
  * Main execution
  */
 async function main(): Promise<void> {
-  console.log('Checking rule documentation...\n');
+  log.info('Checking rule documentation...');
+  log.blank();
 
   // Load registered rule IDs
   const registeredRuleIds = await loadRegisteredRuleIds();
@@ -344,46 +346,50 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   if (violations.length > 0) {
-    console.log(`[FAIL] Found ${violations.length} documentation violations:\n`);
+    log.bracket.fail(`Found ${violations.length} documentation violations:`);
+    log.blank();
     for (const violation of violations) {
-      console.log(`  ${violation.file}`);
+      log.info(`  ${violation.file}`);
       if (violation.line) {
-        console.log(`    Line ${violation.line}: ${violation.issue}`);
+        log.info(`    Line ${violation.line}: ${violation.issue}`);
       } else {
-        console.log(`    ${violation.issue}`);
+        log.info(`    ${violation.issue}`);
       }
       if (violation.section) {
-        console.log(`    Section: ${violation.section}`);
+        log.info(`    Section: ${violation.section}`);
       }
-      console.log();
+      log.blank();
     }
     hasErrors = true;
   }
 
   if (warnings.length > 0) {
-    console.log(`[WARN] Found ${warnings.length} warnings:\n`);
+    log.bracket.warn(`Found ${warnings.length} warnings:`);
+    log.blank();
     for (const warning of warnings) {
-      console.log(`  ${warning.file}`);
-      console.log(`    ${warning.issue}`);
-      console.log();
+      log.info(`  ${warning.file}`);
+      log.info(`    ${warning.issue}`);
+      log.blank();
     }
   }
 
   if (!hasErrors && warnings.length === 0) {
-    console.log('[PASS] All rule documentation is complete and valid');
-    console.log(`  Documented rules: ${ruleDocs.size}`);
-    console.log(`  Registered rules: ${registeredRuleIds.size}`);
-    console.log(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
+    log.bracket.success('All rule documentation is complete and valid');
+    log.info(`  Documented rules: ${ruleDocs.size}`);
+    log.info(`  Registered rules: ${registeredRuleIds.size}`);
+    log.info(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
   } else if (!hasErrors) {
-    console.log(`\n[PASS] Documentation validation passed (with ${warnings.length} warnings)`);
-    console.log(`  Documented rules: ${ruleDocs.size}/${registeredRuleIds.size}`);
-    console.log(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
+    log.blank();
+    log.bracket.success(`Documentation validation passed (with ${warnings.length} warnings)`);
+    log.info(`  Documented rules: ${ruleDocs.size}/${registeredRuleIds.size}`);
+    log.info(`  Coverage: ${Math.round((ruleDocs.size / registeredRuleIds.size) * 100)}%`);
   }
 
   // Exit with error if violations found
   if (hasErrors) {
-    console.log('\nFix violations before committing.');
-    console.log('See docs/rule-development-enforcement.md for documentation requirements.');
+    log.blank();
+    log.info('Fix violations before committing.');
+    log.info('See docs/rule-development-enforcement.md for documentation requirements.');
     process.exit(1);
   } else {
     process.exit(0);
@@ -391,6 +397,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  console.error('Error:', error);
+  log.error(`Error: ${error}`);
   process.exit(1);
 });
