@@ -1,6 +1,6 @@
 # Implementation Tracker
 
-**Last Updated**: 2026-02-03
+**Last Updated**: 2026-02-03 (Phase 2.2 complete)
 
 Track progress across all phases. Mark tasks complete with `[x]` as you finish them.
 
@@ -526,29 +526,56 @@ None - Phase 2.1 complete!
 
 #### Phase 2.2: Build Automated Comparison (2-3 days)
 
+**Status**: COMPLETE (2026-02-03)
+
 **Goal**: Generate JSON Schema from Zod and compare to manual reference schemas.
 
-- [ ] **Task 2.2.1**: Install zod-to-json-schema
-  - [ ] Add `zod-to-json-schema` dependency
-  - [ ] Create wrapper script to generate from all Zod schemas
+**Completed**:
+- [x] **Task 2.2.1**: Install zod-to-json-schema
+  - [x] Add `zod-to-json-schema` dependency
+  - [x] Create wrapper script to generate from all Zod schemas (`scripts/generate/json-schemas.ts`)
+  - [x] Add `npm run generate:json-schemas` script
+  - [x] Extract schemas from zodToJsonSchema wrapper structure
+  - [x] Force Draft 2020-12 compatibility
 
-- [ ] **Task 2.2.2**: Build schema comparison tool
-  - [ ] Create `scripts/verify/compare-schemas.ts`
-  - [ ] Compare manual reference vs generated schemas
-  - [ ] Report drift (missing fields, wrong types, etc.)
-  - [ ] Allow Zod to be stricter (extra validations OK)
-  - [ ] Reject Zod being looser (missing fields BAD)
+- [x] **Task 2.2.2**: Build schema comparison tool
+  - [x] Create `scripts/verify/compare-schemas.ts` (255 lines)
+  - [x] Compare manual reference vs generated schemas
+  - [x] Report drift (missing fields, wrong types, enum mismatches, missing required)
+  - [x] Allow Zod to be stricter (extra validations OK)
+  - [x] Reject Zod being looser (missing fields = ERROR)
+  - [x] Add `npm run verify:schemas` script
+  - [x] All 8 schemas match - no drift detected!
 
-- [ ] **Task 2.2.3**: Update schema-sync script
-  - [ ] Fetch manual reference schemas from GitHub
-  - [ ] Generate JSON Schema from each Zod schema
-  - [ ] Run comparison for all 8 schemas
-  - [ ] Exit non-zero if drift detected
+- [x] **Task 2.2.3**: Update schema-sync script
+  - [x] Completely rewrite `scripts/check/schema-sync.ts` (66% smaller - 185 vs 540 lines)
+  - [x] Remove outdated Ajv/Zod comparison code
+  - [x] Orchestrate: generate → compare → report workflow
+  - [x] Show Phase 2.1 drift history for all 8 schemas
+  - [x] Exit non-zero if drift detected
+  - [x] Manual references already on GitHub (no fetching needed)
 
-- [ ] **Task 2.2.4**: CI/CD integration
-  - [ ] Update `.github/workflows/ci.yml` schema-sync job
-  - [ ] Run on every PR and push
-  - [ ] Cache schema fetches to reduce API calls
+- [x] **Task 2.2.4**: CI/CD integration
+  - [x] CI job already configured correctly
+  - [x] Updated `.github/workflows/ci.yml` documentation
+  - [x] Runs on every PR and push to main
+  - [x] Fails CI if drift detected
+  - [x] Included in complete-validation job dependencies
+  - [x] Node modules cache already configured
+
+**Acceptance Criteria**:
+- [x] zod-to-json-schema installed and wrapper created
+- [x] Comparison tool detects all types of drift
+- [x] Schema-sync script automated (generate + compare)
+- [x] CI runs verification on every PR
+- [x] All 8 schemas verified with 0 drift
+
+**Deliverables**:
+- `scripts/generate/json-schemas.ts` - Generate JSON Schemas from Zod
+- `scripts/verify/compare-schemas.ts` - Compare and detect drift
+- `scripts/check/schema-sync.ts` - Rewritten orchestration script
+- `schemas/generated/` - Generated schemas (gitignored)
+- 2 new npm scripts: `generate:json-schemas`, `verify:schemas`
 
 #### Phase 2.3: Hybrid Verification (3-4 days)
 
