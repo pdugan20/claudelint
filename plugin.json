@@ -20,6 +20,7 @@
     ".claude/skills/validate-hooks",
     ".claude/skills/validate-mcp",
     ".claude/skills/validate-plugin",
-    ".claude/skills/format-cc"
+    ".claude/skills/format-cc",
+    ".claude/skills/optimize-cc-md"
   ]
 }
