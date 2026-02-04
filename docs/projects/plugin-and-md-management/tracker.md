@@ -1368,10 +1368,10 @@ optimize-cc-md/
     - Actions: Scan for generic advice → Suggest removals
     - Result: Focused, project-specific config
 
-- [ ] **Task 3.7**: Add troubleshooting section
-  - [ ] Common issues when using the skill
-  - [ ] Not issues the skill helps fix (those are in examples)
-  - [ ] Example: "Skill creates @import but file path is wrong"
+- [x] **Task 3.7**: Add troubleshooting section
+  - [x] Common issues when using the skill
+  - [x] Not issues the skill helps fix (those are in examples)
+  - [x] Example: "Skill creates @import but file path is wrong"
 
 - [ ] **Task 3.8**: Test skill following Anthropic iterative methodology (manual - automated testing in Phase 5)
   - [ ] **Phase 1: Single-task iteration (Anthropic p15 pro tip)**
