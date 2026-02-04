@@ -1,54 +1,51 @@
 #!/usr/bin/env bash
 #
-# Setup for Task 2: optimize-cc-md (Phase 2 - With Skill)
+# Setup for Task 2: optimize-cc-md (With Skill Loaded)
 #
-# Creates test workspace with bloated CLAUDE.md for testing
-# the optimize-cc-md skill WITH the skill loaded.
+# Creates test workspace with realistic React + TypeScript project
+# and installs claudelint plugin for testing optimize-cc-md skill.
 #
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
 TEST_DIR="/tmp/claudelint-test-2"
 
-echo "Setting up Task 2: optimize-cc-md (Phase 2 - With Skill)"
+echo "Setting up Task 2: optimize-cc-md (With Skill Loaded)"
 echo
 
-# Clean up any existing test directory
+# Step 1: Build and pack claudelint
+source "$LIB_DIR/build-package.sh"
+
+# Step 2: Clean up any existing test directory
 if [ -d "$TEST_DIR" ]; then
   echo "Removing existing test directory..."
   rm -rf "$TEST_DIR"
 fi
 
-# Create fresh test directory
-echo "Creating test workspace: $TEST_DIR"
-mkdir -p "$TEST_DIR"
+# Step 3: Copy fixture to test directory
+echo "Copying react-typescript-bloated fixture..."
+cp -r "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated" "$TEST_DIR"
 
-# Copy bloated CLAUDE.md fixture
-echo "Copying bloated CLAUDE.md fixture..."
-cp "$REPO_ROOT/tests/fixtures/manual/bloated-realistic.md" "$TEST_DIR/CLAUDE.md"
+# Step 4: Install claudelint in test workspace
+"$LIB_DIR/install-in-workspace.sh" "$TEST_DIR" "$PACKAGE_TGZ"
 
-# Verify setup
-if [ ! -f "$TEST_DIR/CLAUDE.md" ]; then
-  echo "ERROR: Failed to copy CLAUDE.md"
-  exit 1
-fi
-
-FILE_SIZE=$(wc -c < "$TEST_DIR/CLAUDE.md")
-echo "CLAUDE.md size: $FILE_SIZE bytes"
-
+# Step 5: Verify setup
 echo
 echo "Setup complete!"
 echo
+echo "Test workspace: $TEST_DIR"
+echo "CLAUDE.md size: $(wc -c < "$TEST_DIR/CLAUDE.md") bytes"
+echo
 echo "Next steps:"
-echo "1. Verify plugin is installed: /plugin list | grep claudelint"
-echo "2. Open a NEW Claude Code session WITH plugin enabled"
-echo "3. cd $TEST_DIR"
-echo "4. Trigger the optimize-cc-md skill with:"
+echo "1. Open a NEW Claude Code session"
+echo "2. cd $TEST_DIR"
+echo "3. Trigger the optimize-cc-md skill:"
 echo "   - 'optimize my CLAUDE.md'"
-echo "   - 'fix my config, it's too long'"
-echo "   - 'help me clean up CLAUDE.md'"
-echo "5. Compare workflow to Task 1 winning approach"
-echo "6. Run: ./scripts/test/manual/verify-task-2.sh"
+echo "   - 'can you help me improve my CLAUDE.md file?'"
+echo "   - 'this config file is too long'"
+echo "4. Observe the skill behavior"
+echo "5. Run: ./scripts/test/manual/task-2-optimize-with-skill/verify.sh"
 echo

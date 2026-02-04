@@ -6,32 +6,36 @@ Automated helper scripts for manual testing of claudelint skills.
 
 ```text
 scripts/test/manual/
-├── task-1-optimize-without-skill/  # Task 1: optimize-cc-md (Without Skill Loaded)
-│   ├── setup.sh                    # Setup test workspace
-│   ├── verify.sh                   # Verify test results
-│   └── cleanup.sh                  # Clean up test workspace
-├── task-2-optimize-with-skill/     # Task 2: optimize-cc-md (With Skill Loaded)
+├── lib/                             # Shared utilities
+│   ├── build-package.sh             # Build and pack claudelint
+│   ├── install-in-workspace.sh      # Install .tgz in test workspace
+│   └── verify-structure.sh          # Common verification checks
+├── task-1-optimize-without-skill/   # Task 1: optimize-cc-md (Without Skill Loaded)
+│   ├── setup.sh                     # Setup test workspace
+│   ├── verify.sh                    # Verify test results
+│   └── cleanup.sh                   # Clean up test workspace
+├── task-2-optimize-with-skill/      # Task 2: optimize-cc-md (With Skill Loaded)
+│   ├── setup.sh                     # Uses lib/ utilities
+│   ├── verify.sh                    # Uses lib/ utilities
+│   └── cleanup.sh
+├── task-3-triggers/                 # Task 3: Trigger Phrases for All 9 Skills
 │   ├── setup.sh
 │   ├── verify.sh
 │   └── cleanup.sh
-├── task-3-triggers/            # Task 3: Trigger Phrases for All 9 Skills
+├── task-4-functional/               # Task 4: Functional Testing for Key Skills
 │   ├── setup.sh
 │   ├── verify.sh
 │   └── cleanup.sh
-├── task-4-functional/          # Task 4: Functional Testing for Key Skills
+├── task-5-quality/                  # Task 5: Quality & UX Testing
 │   ├── setup.sh
 │   ├── verify.sh
 │   └── cleanup.sh
-├── task-5-quality/             # Task 5: Quality & UX Testing
+├── task-6-install/                  # Task 6: Plugin Installation & Integration
 │   ├── setup.sh
 │   ├── verify.sh
 │   └── cleanup.sh
-├── task-6-install/             # Task 6: Plugin Installation & Integration
-│   ├── setup.sh
-│   ├── verify.sh
-│   └── cleanup.sh
-├── run-all.sh                  # Run all tasks sequentially
-└── README.md                   # This file
+├── run-all.sh                       # Run all tasks sequentially
+└── README.md                        # This file
 ```
 
 ## Usage
@@ -81,6 +85,107 @@ Test conversational quality (plain language, WHY explanations, actionable steps,
 
 **Task 6 (install):**
 Test plugin installation, skill registration, dependency detection, and package contents.
+
+## Fixture Projects
+
+Task 2 (and potentially others) use realistic fixture projects from `tests/fixtures/projects/`:
+
+### react-typescript-bloated
+
+- **Type:** React 18 + TypeScript 5.3+ project
+- **Purpose:** Test optimize-cc-md skill with realistic bloat
+- **Size:** 13,380 bytes → 2,856 bytes (78% reduction)
+- **Issues:** Generic React patterns, TypeScript style guide, testing guidelines
+- **Expected:** 3 @import files created in `.claude/rules/`
+
+### Why Fixture Projects?
+
+The optimize-cc-md skill needs a real project to analyze:
+
+- CLAUDE.md references actual code files (App.tsx, index.tsx)
+- Claude can read the codebase to determine what's generic vs specific
+- Plugin installation can be tested realistically
+- Results are meaningful and representative of actual usage
+
+See `tests/fixtures/projects/README.md` for details.
+
+## Shared Utilities
+
+The `lib/` directory contains reusable scripts:
+
+### build-package.sh
+
+Builds and packs claudelint for testing:
+
+```bash
+source lib/build-package.sh
+# Sets PACKAGE_TGZ environment variable
+```
+
+- Runs `npm run clean && npm run build`
+- Creates `.tgz` file with `npm pack`
+- Exports path as `PACKAGE_TGZ`
+
+### install-in-workspace.sh
+
+Installs claudelint in test workspace:
+
+```bash
+lib/install-in-workspace.sh <workspace-path> <package-tgz>
+```
+
+- Installs fixture dependencies (`npm install`)
+- Installs claudelint from .tgz
+- Creates `plugin.json` for plugin loading
+- Verifies installation succeeded
+
+### verify-structure.sh
+
+Common verification checks:
+
+```bash
+lib/verify-structure.sh <workspace-path>
+```
+
+- Checks CLAUDE.md exists
+- Reports file size
+- Checks for `.claude/rules/` directory
+- Counts @import files
+- Validates @import syntax
+
+## npm pack Workflow
+
+Task 2 uses `npm pack` (not `npm link`) for realistic testing:
+
+### Why npm pack?
+
+- Tests the actual .tgz package users would install
+- Respects package.json `files` property
+- Runs install hooks (preinstall, postinstall)
+- No symlink issues with build tools
+
+### Why NOT npm link?
+
+- Creates symlinks that break many tools
+- Doesn't respect `files` property
+- Skips install hooks
+- Unrealistic test scenario
+
+### How It Works
+
+```bash
+# 1. Build and pack
+npm run build
+npm pack  # Creates claude-code-lint-0.2.0-beta.1.tgz
+
+# 2. Install in test workspace
+cd /tmp/test-workspace
+npm install /path/to/claude-code-lint-*.tgz
+
+# 3. Plugin loads from node_modules
+```
+
+This is exactly how users would install the package.
 
 ## Documentation
 

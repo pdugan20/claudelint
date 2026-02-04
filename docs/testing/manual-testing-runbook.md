@@ -42,9 +42,58 @@ npm run test:skills:automated  # Should pass
 
 All tests use isolated temporary directories to avoid affecting the repo:
 
-- Test fixtures: `tests/fixtures/manual/`
+- Test fixtures: `tests/fixtures/projects/` (realistic projects)
+- Deprecated fixtures: `tests/fixtures/manual/` (old approach)
 - Test workspaces: `/tmp/claudelint-test-*`
 - Results: `docs/testing/manual-test-results/YYYY-MM-DD.md`
+
+## Understanding Fixture Projects
+
+Starting with Task 2, tests use **realistic fixture projects** instead of standalone CLAUDE.md files.
+
+### Why Fixture Projects?
+
+The optimize-cc-md skill needs a real project to analyze:
+
+- **CLAUDE.md references real code** - Can't optimize "React advice" without React code
+- **Claude reads the codebase** - Determines what's generic vs project-specific
+- **Plugin installation works** - Tests actual user workflow with npm install
+- **Results are meaningful** - Representative of real usage
+
+### Available Fixtures
+
+**react-typescript-bloated** (`tests/fixtures/projects/react-typescript-bloated/`)
+
+- React 18 + TypeScript 5.3+ project
+- Minimal but realistic (App.tsx, index.tsx)
+- Bloated CLAUDE.md: 13,380 bytes
+- Expected after optimization: 2,856 bytes (78% reduction)
+- 3 @import files created in `.expected/.claude/rules/`
+
+Each fixture includes:
+
+- Real code and dependencies
+- Bloated CLAUDE.md
+- Expected optimization outputs in `.expected/`
+- README documenting issues present
+
+See `tests/fixtures/projects/README.md` for details.
+
+### npm pack Installation
+
+Task 2 uses `npm pack` (not `npm link`) to test realistic package installation:
+
+```bash
+# Build and pack
+npm run build && npm pack
+# Creates: claude-code-lint-0.2.0-beta.1.tgz
+
+# Install in test workspace
+cd /tmp/test-workspace
+npm install /path/to/claude-code-lint-*.tgz
+```
+
+This is exactly how users install the package - tests the real experience.
 
 ## Testing Tasks
 
@@ -125,22 +174,26 @@ Checks:
 ./scripts/test/manual/cleanup-task-1.sh
 ```
 
-### Task 2: optimize-cc-md Skill (Phase 2 - With Skill)
+### Task 2: optimize-cc-md Skill (With Skill Loaded)
 
-**Objective:** Verify the skill loads correctly and matches the winning workflow from Task 1.
+**Objective:** Verify the skill works with a realistic project and produces expected optimization.
 
 **Time Estimate:** 30-45 minutes
 
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-2.sh
+./scripts/test/manual/task-2-optimize-with-skill/setup.sh
 ```
 
-This creates:
+This:
 
-- `/tmp/claudelint-test-2/` with bloated CLAUDE.md
-- Fresh directory WITH plugin enabled
+1. Builds and packs claudelint (`npm run build && npm pack`)
+2. Copies react-typescript-bloated fixture to `/tmp/claudelint-test-2/`
+3. Installs claudelint from .tgz package
+4. Creates plugin.json for plugin loading
+
+Result: Realistic React + TypeScript project with claudelint installed
 
 #### Manual Test Steps
 
@@ -148,65 +201,90 @@ This creates:
 
    ```bash
    cd /tmp/claudelint-test-2
-   # Start Claude Code with plugin enabled
+   # Start Claude Code - plugin auto-loads from plugin.json
    ```
 
 2. **Trigger the skill:**
 
    Try these trigger phrases (should load optimize-cc-md skill):
    - "optimize my CLAUDE.md"
-   - "fix my config, it's too long"
-   - "help me clean up CLAUDE.md"
+   - "can you help me improve my CLAUDE.md file? I want to ensure its under the size limit"
+   - "this config file is too long"
    - "my CLAUDE.md is bloated"
 
 3. **Observe skill execution:**
    - [ ] Skill loads automatically (check for skill name in response)
-   - [ ] Runs `claudelint check-claude-md` first
    - [ ] Reads CLAUDE.md with Read tool
-   - [ ] Explains issues conversationally (not just error dump)
-   - [ ] Identifies specific problems (generic advice, bloat, etc.)
-   - [ ] Asks what to fix first (interactive)
-   - [ ] Uses Edit tool to remove content
+   - [ ] Reads project files (App.tsx, index.tsx) to understand context
+   - [ ] Explains issues conversationally
+   - [ ] Identifies specific problems:
+     - Generic React patterns (should be @import)
+     - TypeScript style guide (should be @import)
+     - Testing guidelines (should be @import)
+   - [ ] Suggests creating @import files
+   - [ ] Creates `.claude/rules/` directory structure
+   - [ ] Uses Edit tool to update CLAUDE.md
    - [ ] Uses Write tool to create @import files
-   - [ ] References `references/` docs when helpful
    - [ ] Shows before/after comparison
 
-4. **Compare to Task 1 winning approach:**
-   - Does skill workflow match natural workflow?
-   - Are explanations clear?
-   - Does it suggest the same improvements?
-   - Is the UX better or worse than Task 1?
+4. **Verify optimization quality:**
+   - Does skill recognize project is React + TypeScript?
+   - Does it identify the right content to extract?
+   - Are @import files created with appropriate names?
+   - Is CLAUDE.md focused on project-specific content?
+   - Are explanations clear about WHY changes are needed?
 
 #### Automated Verification
 
 ```bash
-./scripts/test/manual/verify-task-2.sh
+./scripts/test/manual/task-2-optimize-with-skill/verify.sh
 ```
 
 Checks:
 
-- Skill executed (check for tool calls)
-- claudelint command ran
-- CLAUDE.md was read
-- Edit/Write tools used
-- File size reduced
-- @import files created (if applicable)
+- CLAUDE.md size reduced significantly (should be ~2,856 bytes)
+- `.claude/rules/` directory created
+- @import files exist (react-patterns.md, typescript-style.md, testing.md)
+- CLAUDE.md contains @import directives
+- Size reduction ~75-80%
+- Compares against expected outputs in fixture
 
 #### Pass Criteria
 
 - [ ] Skill triggers on appropriate prompts (90%+ success)
-- [ ] Workflow matches Task 1 winning approach
+- [ ] Reads and understands the actual project code
+- [ ] Creates @import files in `.claude/rules/`
+- [ ] Extracts generic React, TypeScript, and testing advice
+- [ ] CLAUDE.md reduced by >70%
+- [ ] Final size within ±500 bytes of expected (2,856 bytes)
+- [ ] Workflow feels natural and intuitive
 - [ ] Explanations are conversational and clear
-- [ ] Interactive experience feels natural
-- [ ] Actual file edits work correctly
-- [ ] File size reduced by >50%
-- [ ] References docs were used when helpful
 
 #### Cleanup
 
 ```bash
-./scripts/test/manual/cleanup-task-2.sh
+./scripts/test/manual/task-2-optimize-with-skill/cleanup.sh
 ```
+
+#### Troubleshooting
+
+**Plugin doesn't load:**
+
+- Check plugin.json exists in test workspace
+- Verify claudelint is in node_modules: `npm list claude-code-lint`
+- Try restarting Claude Code session
+
+**Skill doesn't trigger:**
+
+- Check for typos in trigger phrases
+- Try more explicit: "I want to optimize my CLAUDE.md file"
+- Verify plugin loaded: look for skill registration in logs
+
+**@import files not created:**
+
+- Check if skill has Write tool permission
+- Verify `.claude/rules/` directory was created
+- Check for error messages in skill execution
 
 ### Task 3: Trigger Phrases for All 9 Skills
 
