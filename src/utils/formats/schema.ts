@@ -20,14 +20,9 @@ export function zodErrorToValidationResult(
     const generatedId = ruleIdPrefix ? `${ruleIdPrefix}-${path}` : path;
 
     // Validate that the generated ID is a real rule ID
-    // If not, this indicates a missing schema-based rule file
-    if (!isRuleId(generatedId)) {
-      console.warn(
-        `Schema validation generated invalid rule ID: '${generatedId}'\n` +
-          `This indicates a missing schema-based rule file.\n` +
-          `Create: src/rules/${ruleIdPrefix}/${generatedId}.ts`
-      );
-    }
+    // If not, ruleId will be undefined (indicates missing schema-based rule file)
+    // Note: During development, if you see errors without ruleIds, create:
+    //   src/rules/${ruleIdPrefix}/${generatedId}.ts
 
     return {
       message: issue.message,

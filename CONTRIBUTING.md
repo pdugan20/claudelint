@@ -96,6 +96,66 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 - Write descriptive variable and function names
 - Use proper type guards when narrowing types
 
+### Diagnostic Collection Guidelines
+
+**IMPORTANT**: Library code MUST NOT use `console` directly.
+
+See [docs/architecture/diagnostic-system.md](docs/architecture/diagnostic-system.md) for full details.
+
+**Use DiagnosticCollector instead**:
+
+```typescript
+import { DiagnosticCollector } from '../utils/diagnostics';
+
+// In functions
+export function myFunction(
+  param: string,
+  diagnostics?: DiagnosticCollector
+): Result {
+  if (invalid) {
+    diagnostics?.warn(
+      'Invalid param',
+      'MyFunction',
+      'MY_001'
+    );
+  }
+}
+
+// In classes
+export class MyClass {
+  constructor(private diagnostics?: DiagnosticCollector) {}
+
+  myMethod() {
+    this.diagnostics?.error(
+      'Operation failed',
+      'MyClass',
+      'MY_002'
+    );
+  }
+}
+```
+
+**Why**:
+
+- Makes library testable (no console spam during tests)
+- Allows programmatic usage (consumers control output)
+- Provides structured diagnostics with source tracking
+- Follows industry standards (ESLint, TypeScript, Webpack)
+
+**Where console IS allowed**:
+
+- CLI layer only: `src/cli/utils/logger.ts`
+- Output formatting: `src/utils/reporting/`
+- Script utilities: `scripts/util/logger.ts`
+
+**Enforcement**:
+
+Library code is checked in CI and pre-commit hooks:
+
+```bash
+npm run check:logger-usage
+```
+
 ### Testing Guidelines
 
 - Write unit tests for all new validators

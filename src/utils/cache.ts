@@ -17,6 +17,7 @@ import {
 } from 'fs';
 import { join } from 'path';
 import { ValidationResult } from '../validators/file-validator';
+import { DiagnosticCollector } from './diagnostics';
 
 export interface CacheOptions {
   /** Enable caching (default: true) */
@@ -45,7 +46,10 @@ export class ValidationCache {
   private filesDir: string;
   private version: string;
 
-  constructor(options: Partial<CacheOptions> = {}) {
+  constructor(
+    options: Partial<CacheOptions> = {},
+    private diagnostics?: DiagnosticCollector
+  ) {
     this.options = {
       enabled: options.enabled ?? true,
       location: options.location || '.claudelint-cache',
@@ -119,7 +123,11 @@ export class ValidationCache {
       writeFileSync(this.indexPath, JSON.stringify(this.index, null, 2), 'utf-8');
     } catch (error) {
       // Silently fail - caching is optional
-      console.warn('Failed to save cache index:', error);
+      this.diagnostics?.warn(
+        `Failed to save cache index: ${error instanceof Error ? error.message : String(error)}`,
+        'CacheManager',
+        'CACHE_SAVE_FAILED'
+      );
     }
   }
 
@@ -221,7 +229,11 @@ export class ValidationCache {
       this.saveIndex();
     } catch (error) {
       // Silently fail - caching is optional
-      console.warn('Failed to cache result:', error);
+      this.diagnostics?.warn(
+        `Failed to cache result: ${error instanceof Error ? error.message : String(error)}`,
+        'CacheManager',
+        'CACHE_WRITE_FAILED'
+      );
     }
   }
 
@@ -234,7 +246,11 @@ export class ValidationCache {
         rmSync(this.options.location, { recursive: true, force: true });
         this.index = { version: this.version, entries: {} };
       } catch (error) {
-        console.error('Failed to clear cache:', error);
+        this.diagnostics?.error(
+          `Failed to clear cache: ${error instanceof Error ? error.message : String(error)}`,
+          'CacheManager',
+          'CACHE_CLEAR_FAILED'
+        );
         throw error;
       }
     }

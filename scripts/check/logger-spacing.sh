@@ -37,6 +37,20 @@ if grep -rn "logger\.\(log\|info\|warn\|error\|success\|section\|detail\)(['\"]\
   ERRORS=$((ERRORS + 1))
 fi
 
+# Pattern 5: Manual \n in script logger (log.*) calls in scripts/
+if grep -rn 'log\.\(info\|error\|success\|warn\|dim\|bold\).*\\n' scripts/ --include="*.ts" --exclude=logger.ts 2>/dev/null; then
+  echo "ERROR: Found log calls with manual \\n newlines in scripts/"
+  echo "Use log.blank() instead of \\n"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# Pattern 6: Hardcoded spacing in script logger calls in scripts/
+if grep -rn "log\.\(info\|error\|success\|warn\|dim\|bold\)(['\"]  " scripts/ --include="*.ts" --exclude=logger.ts 2>/dev/null; then
+  echo "ERROR: Found log calls with hardcoded 2+ spaces in scripts/"
+  echo "Use log.dim() for indented output instead"
+  ERRORS=$((ERRORS + 1))
+fi
+
 # Exceptions (allowed patterns):
 # - logger.ts itself (contains the implementation and documentation)
 # - Comments and documentation

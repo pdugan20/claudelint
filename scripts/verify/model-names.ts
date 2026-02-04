@@ -51,7 +51,8 @@ interface VerificationResult {
  * Query Claude Code CLI for valid model values for Task tool
  */
 async function fetchModelsFromCLI(): Promise<string[]> {
-  log.info('Querying Claude Code CLI for Task tool model parameter values...\n');
+  log.info('Querying Claude Code CLI for Task tool model parameter values...');
+  log.blank();
 
   try {
     // Query Claude for valid model values for the Task tool
@@ -83,27 +84,29 @@ async function fetchModelsFromCLI(): Promise<string[]> {
       throw new Error('No models found in CLI output. Claude may not have responded correctly.');
     }
 
-    log.info(`Found ${models.length} model values from Claude CLI\n`);
+    log.info(`Found ${models.length} model values from Claude CLI`);
+    log.blank();
     return models.sort();
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       log.bracket.error('Claude Code CLI not found');
-      log.dim('   Install Claude Code from: https://code.claude.com/');
+      log.dim('Install Claude Code from: https://code.claude.com/');
       process.exit(1);
     }
 
     if (error.message?.includes('ANTHROPIC_API_KEY')) {
       log.bracket.error('ANTHROPIC_API_KEY not configured');
-      log.dim('   Set your API key to use Claude Code');
+      log.dim('Set your API key to use Claude Code');
       process.exit(1);
     }
 
     log.bracket.error('Failed to query Claude CLI');
-    log.dim(`   ${error.message}`);
-    log.info('\nManual verification fallback:');
-    log.dim(`   Visit: ${DOCS_URL}`);
-    log.dim('   Review "Choose a model" section');
-    log.dim('   Compare model values against src/schemas/constants.ts manually');
+    log.dim(error.message);
+    log.blank();
+    log.info('Manual verification fallback:');
+    log.dim(`Visit: ${DOCS_URL}`);
+    log.dim('Review "Choose a model" section');
+    log.dim('Compare model values against src/schemas/constants.ts manually');
     process.exit(1);
   }
 }
@@ -145,43 +148,52 @@ async function main() {
 
     if (result.success) {
       log.pass('SUCCESS: ModelNames constant matches expected models');
-      log.info('\nNote: ModelNames is for agent/skill frontmatter only.');
+      log.blank();
+      log.info('Note: ModelNames is for agent/skill frontmatter only.');
       log.info('Settings.json uses z.string() to accept arbitrary model names.');
-      log.info(`\nDocumentation reference: ${DOCS_URL}`);
+      log.blank();
+      log.info(`Documentation reference: ${DOCS_URL}`);
       process.exit(0);
     } else {
       log.fail('FAILURE: ModelNames constant is out of sync');
 
       if (result.missing.length > 0) {
-        log.info('\nMissing from our constants (expected but not in code):');
-        result.missing.forEach(model => log.info(`  - ${model}`));
+        log.blank();
+        log.info('Missing from our constants (expected but not in code):');
+        result.missing.forEach(model => log.dim(`- ${model}`));
       }
 
       if (result.extra.length > 0) {
-        log.info('\nExtra in our constants (in code but not expected):');
-        result.extra.forEach(model => log.info(`  - ${model}`));
+        log.blank();
+        log.info('Extra in our constants (in code but not expected):');
+        result.extra.forEach(model => log.dim(`- ${model}`));
       }
 
-      log.info('\n[CLI] Claude CLI models:');
-      result.cliModels.forEach(model => log.info(`  ${model}`));
+      log.blank();
+      log.info('[CLI] Claude CLI models:');
+      result.cliModels.forEach(model => log.dim(model));
 
       if (SUPPLEMENTAL_MODELS.length > 0) {
-        log.info('\n[SUPPLEMENTAL] Supplemental models:');
-        SUPPLEMENTAL_MODELS.forEach(model => log.info(`  ${model}`));
+        log.blank();
+        log.info('[SUPPLEMENTAL] Supplemental models:');
+        SUPPLEMENTAL_MODELS.forEach(model => log.dim(model));
       }
 
-      log.info('\n[EXPECTED] Expected models (CLI + Supplemental):');
-      result.expectedModels.forEach(model => log.info(`  ${model}`));
+      log.blank();
+      log.info('[EXPECTED] Expected models (CLI + Supplemental):');
+      result.expectedModels.forEach(model => log.dim(model));
 
-      log.info('\n[CURRENT] Our models:');
-      result.ourModels.forEach(model => log.info(`  ${model}`));
+      log.blank();
+      log.info('[CURRENT] Our models:');
+      result.ourModels.forEach(model => log.dim(model));
 
-      log.info('\n[FIX] To fix:');
-      log.info('  1. Review the drift above');
-      log.info(`  2. Verify against docs: ${DOCS_URL}`);
-      log.info('  3. Update src/schemas/constants.ts ModelNames enum');
-      log.info('  4. Run tests: npm test');
-      log.info('  5. Re-run: npm run verify:model-names');
+      log.blank();
+      log.info('[FIX] To fix:');
+      log.dim('1. Review the drift above');
+      log.dim(`2. Verify against docs: ${DOCS_URL}`);
+      log.dim('3. Update src/schemas/constants.ts ModelNames enum');
+      log.dim('4. Run tests: npm test');
+      log.dim('5. Re-run: npm run verify:model-names');
 
       process.exit(1);
     }

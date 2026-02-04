@@ -49,7 +49,8 @@ interface VerificationResult {
  * Query Claude Code CLI for list of available tools
  */
 async function fetchToolsFromCLI(): Promise<string[]> {
-  log.info('Querying Claude Code CLI for available tools...\n');
+  log.info('Querying Claude Code CLI for available tools...');
+  log.blank();
 
   try {
     // Query Claude to list its tools
@@ -81,26 +82,28 @@ async function fetchToolsFromCLI(): Promise<string[]> {
       throw new Error('No tools found in CLI output. Claude may not have responded correctly.');
     }
 
-    log.info(`Found ${tools.length} tools from Claude CLI\n`);
+    log.info(`Found ${tools.length} tools from Claude CLI`);
+    log.blank();
     return tools.sort();
   } catch (error: any) {
     if (error.code === 'ENOENT') {
       log.bracket.error('Claude Code CLI not found');
-      log.dim('   Install Claude Code from: https://code.claude.com/');
+      log.dim('Install Claude Code from: https://code.claude.com/');
       process.exit(1);
     }
 
     if (error.message?.includes('ANTHROPIC_API_KEY')) {
       log.bracket.error('ANTHROPIC_API_KEY not configured');
-      log.dim('   Set your API key to use Claude Code');
+      log.dim('Set your API key to use Claude Code');
       process.exit(1);
     }
 
     log.bracket.error('Failed to query Claude CLI');
-    log.dim(`   ${error.message}`);
-    log.info('\nManual verification fallback:');
-    log.dim(`   Visit: ${DOCS_URL}`);
-    log.dim('   Compare tool names against src/schemas/constants.ts manually');
+    log.dim(error.message);
+    log.blank();
+    log.info('Manual verification fallback:');
+    log.dim(`Visit: ${DOCS_URL}`);
+    log.dim('Compare tool names against src/schemas/constants.ts manually');
     process.exit(1);
   }
 }
@@ -142,41 +145,49 @@ async function main() {
 
     if (result.success) {
       log.pass('SUCCESS: ToolNames constant matches expected tools');
-      log.info(`\nDocumentation reference: ${DOCS_URL}`);
+      log.blank();
+      log.info(`Documentation reference: ${DOCS_URL}`);
       process.exit(0);
     } else {
       log.fail('FAILURE: ToolNames constant is out of sync');
 
       if (result.missing.length > 0) {
-        log.info('\nMissing from our constants (expected but not in code):');
-        result.missing.forEach(tool => log.info(`  - ${tool}`));
+        log.blank();
+        log.info('Missing from our constants (expected but not in code):');
+        result.missing.forEach(tool => log.dim(`- ${tool}`));
       }
 
       if (result.extra.length > 0) {
-        log.info('\nExtra in our constants (in code but not expected):');
-        result.extra.forEach(tool => log.info(`  - ${tool}`));
+        log.blank();
+        log.info('Extra in our constants (in code but not expected):');
+        result.extra.forEach(tool => log.dim(`- ${tool}`));
       }
 
-      log.info('\n[CLI] Claude CLI tools:');
-      result.cliTools.forEach(tool => log.info(`  ${tool}`));
+      log.blank();
+      log.info('[CLI] Claude CLI tools:');
+      result.cliTools.forEach(tool => log.dim(tool));
 
       if (SUPPLEMENTAL_TOOLS.length > 0) {
-        log.info('\n[SUPPLEMENTAL] Supplemental tools:');
-        SUPPLEMENTAL_TOOLS.forEach(tool => log.info(`  ${tool}`));
+        log.blank();
+        log.info('[SUPPLEMENTAL] Supplemental tools:');
+        SUPPLEMENTAL_TOOLS.forEach(tool => log.dim(tool));
       }
 
-      log.info('\n[EXPECTED] Expected tools (CLI + Supplemental):');
-      result.expectedTools.forEach(tool => log.info(`  ${tool}`));
+      log.blank();
+      log.info('[EXPECTED] Expected tools (CLI + Supplemental):');
+      result.expectedTools.forEach(tool => log.dim(tool));
 
-      log.info('\n[CURRENT] Our tools:');
-      result.ourTools.forEach(tool => log.info(`  ${tool}`));
+      log.blank();
+      log.info('[CURRENT] Our tools:');
+      result.ourTools.forEach(tool => log.dim(tool));
 
-      log.info('\n[FIX] To fix:');
-      log.info('  1. Review the drift above');
-      log.info(`  2. Verify against docs: ${DOCS_URL}`);
-      log.info('  3. Update src/schemas/constants.ts ToolNames enum');
-      log.info('  4. Run tests: npm test');
-      log.info('  5. Re-run: npm run verify:tool-names');
+      log.blank();
+      log.info('[FIX] To fix:');
+      log.dim('1. Review the drift above');
+      log.dim(`2. Verify against docs: ${DOCS_URL}`);
+      log.dim('3. Update src/schemas/constants.ts ToolNames enum');
+      log.dim('4. Run tests: npm test');
+      log.dim('5. Re-run: npm run verify:tool-names');
 
       process.exit(1);
     }

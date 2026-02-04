@@ -103,7 +103,9 @@ function validateSingleRuleConfig(
  *
  * @example
  * ```typescript
- * const resolver = new ConfigResolver(config);
+ * // Create resolver (optionally pass DiagnosticCollector for warnings)
+ * const diagnostics = new DiagnosticCollector();
+ * const resolver = new ConfigResolver(config, diagnostics);
  *
  * // Check if rule is enabled for a file
  * if (resolver.isRuleEnabled('size-error', 'CLAUDE.md')) {

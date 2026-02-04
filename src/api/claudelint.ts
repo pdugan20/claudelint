@@ -695,9 +695,18 @@ export class ClaudeLint {
           try {
             return await validator.validate();
           } catch (error) {
-            // If a validator fails, log it but continue with others
-            console.error(`Validator failed for ${filePath}:`, error);
-            return { valid: true, errors: [], warnings: [] };
+            // If a validator fails, return it as an error in ValidationResult
+            return {
+              valid: false,
+              errors: [
+                {
+                  message: `Validator failed: ${error instanceof Error ? error.message : String(error)}`,
+                  file: filePath,
+                  severity: 'error' as const,
+                },
+              ],
+              warnings: [],
+            };
           }
         })
       );
@@ -797,9 +806,18 @@ export class ClaudeLint {
           try {
             return await validator.validate();
           } catch (error) {
-            // If a validator fails, log it but continue with others
-            console.error(`Validator failed for ${effectivePath}:`, error);
-            return { valid: true, errors: [], warnings: [] };
+            // If a validator fails, return it as an error in ValidationResult
+            return {
+              valid: false,
+              errors: [
+                {
+                  message: `Validator failed: ${error instanceof Error ? error.message : String(error)}`,
+                  file: effectivePath,
+                  severity: 'error' as const,
+                },
+              ],
+              warnings: [],
+            };
           }
         })
       );
