@@ -1313,11 +1313,11 @@ optimize-cc-md/
   - [x] Ensure SKILL.md stays under 5000 words (targeting <3000)
   - [x] Document design in optimize-cc-md-structure-design.md
 
-- [ ] **Task 3.2**: Create skill directory structure
-  - [ ] `.claude/skills/optimize-cc-md/`
-  - [ ] `SKILL.md` with frontmatter
-  - [ ] No README.md (forbidden in skills)
-  - [ ] Optional: `references/` for best practices examples
+- [x] **Task 3.2**: Create skill directory structure
+  - [x] `.claude/skills/optimize-cc-md/`
+  - [x] `SKILL.md` with frontmatter
+  - [x] No README.md (forbidden in skills)
+  - [x] Optional: `references/` for best practices examples
 
 - [ ] **Task 3.3**: Write SKILL.md frontmatter (following Phase 2.7 standards)
   - [ ] Name: `optimize-cc-md`
