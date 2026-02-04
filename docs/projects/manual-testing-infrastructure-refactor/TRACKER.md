@@ -635,22 +635,34 @@ None (Planning phase)
 - All MVP documentation complete
 - All scripts tested and working
 
-**Next Steps (Choose one):**
+**Relationship to Parent Project:**
 
-1. **Execute remaining manual tests** (Phase 6)
-   - Begin with Task 1 (optimize-without-skill)
-   - Test if current approach works or needs updates
-   - Expand to Tasks 3-6 as needed
+This project is a **sub-project** of `docs/projects/plugin-and-md-management/`, which broke out when we discovered the manual testing approach was fundamentally broken. The parent project has deferred manual testing tasks (Task 5.2-5.3) that depend on this infrastructure.
 
-2. **Start cleanup now** (Phase 7)
-   - Remove unused skills/ fixtures
-   - Add deprecation notices
-   - Update Task 1 to use new fixtures
-   - Clean up tests/fixtures/ directory
+**Recommended Workflow (Interleaved):**
 
-3. **Defer cleanup** (Phase 7-8)
-   - Wait until all manual tasks updated (Phase 6 complete)
-   - Then do comprehensive cleanup
-   - Finish with documentation improvements
+1. **Phase 6** (this project) - Expand infrastructure to Tasks 1, 3-6
+   - Update Task 1 to use fixture projects
+   - Evaluate Tasks 3-6 fixture needs
+   - Get complete testing infrastructure ready
 
-**Recommended:** Execute Phase 6 (remaining manual tests) before cleanup, to understand all requirements first.
+2. **Task 5.2-5.3** (parent project) - Execute all manual testing
+   - Use infrastructure built in Phase 6
+   - Test all 9 skills across 6 manual test scenarios
+   - Document results
+
+3. **Phase 7-8** (this project) - Cleanup informed by testing
+   - Remove unused/deprecated fixtures
+   - Improve documentation based on learnings
+   - Final polish
+
+4. **Task 5.4-5.5** (parent project) - Version bump and release
+
+**Why This Order:**
+
+- Phase 6 builds complete test infrastructure (prerequisite for parent Task 5.2)
+- Parent Task 5.2-5.3 uses infrastructure and reveals what works/doesn't
+- Phase 7-8 cleanup informed by actual usage (not speculation)
+- Final release after everything validated
+
+**Next Immediate Step:** Begin Phase 6.1 (evaluate Task 1 fixture needs)

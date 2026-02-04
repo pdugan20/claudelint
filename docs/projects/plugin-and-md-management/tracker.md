@@ -6,7 +6,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ## IMPORTANT NOTE: Manual Testing Deferred
 
-All manual testing tasks (Task 3.8, Phase 5 manual tests) are DEFERRED until end of project.
+All manual testing tasks (Task 3.8, Phase 5 manual tests) are DEFERRED until manual testing infrastructure complete.
 
 **Deferred Tasks**:
 
@@ -14,9 +14,16 @@ All manual testing tasks (Task 3.8, Phase 5 manual tests) are DEFERRED until end
 - Task 5.2: Manual testing protocol execution
 - Task 5.3: Integration testing
 
-**When to resume**: Before final release (after Phase 4 complete)
+**When to resume**: After infrastructure project Phase 6 complete (see below)
 
-**Why deferred**: Focus on completing content creation and documentation first, then do comprehensive manual testing pass before release.
+**Why deferred**: Original manual testing approach was broken (no project context). Created sub-project to build proper infrastructure first.
+
+**Infrastructure Project**: `docs/projects/manual-testing-infrastructure-refactor/`
+
+- **Status**: MVP complete (Task 2 infrastructure ready)
+- **Next**: Phase 6 - Expand to Tasks 1, 3-6
+- **Then**: Return here to execute Task 5.2-5.3 using that infrastructure
+- **See**: Infrastructure project TRACKER.md for workflow details
 
 ## Phase 0: Research & Planning
 
@@ -1675,6 +1682,14 @@ Requires `claude-code-lint` npm package for CLI commands.
 
 #### Task 5.2: Manual Testing Protocol (UX & Triggering)
 
+**Status**: DEFERRED - Waiting for infrastructure (Phase 6 of manual-testing-infrastructure-refactor)
+
+**Dependencies**:
+
+- Infrastructure project Phase 6 must be complete
+- Need realistic test workspaces for all 6 manual test scenarios (Tasks 1-6)
+- Task 2 infrastructure ready, Tasks 1, 3-6 need setup
+
 **Goal**: Test skill UX, triggering, and conversational quality (cannot be automated per Anthropic)
 
 **Why manual**: Per Anthropic best practices, "automated benchmarks help, but real-world testing reveals issues that synthetic tests miss"
@@ -1745,6 +1760,13 @@ Requires `claude-code-lint` npm package for CLI commands.
 **Documented in**: `docs/skill-testing.md` Section 2
 
 #### Task 5.3: Integration Testing (MANUAL)
+
+**Status**: DEFERRED - Waiting for Task 5.2 completion
+
+**Dependencies**:
+
+- Task 5.2 must be complete (uses same test workspaces)
+- Infrastructure from manual-testing-infrastructure-refactor project
 
 **Goal**: Verify plugin installation and skill loading work correctly
 

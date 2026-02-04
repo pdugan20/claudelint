@@ -2,9 +2,14 @@
 
 ## Project Overview
 
-**Status:** Planning
+**Status:** MVP Complete (Phases 0-5), Phases 6-8 Remaining
 **Created:** 2026-02-04
+**MVP Completed:** 2026-02-04
 **Priority:** High - Blocks Phase 5 manual testing completion
+
+**Parent Project:** `docs/projects/plugin-and-md-management/`
+
+This is a **sub-project** that broke out when we discovered the manual testing approach was fundamentally broken. The parent project has deferred manual testing tasks (Task 5.2-5.3) that depend on this infrastructure being complete.
 
 ## Problem Statement
 
@@ -43,22 +48,37 @@ Implement industry best practices from ESLint, TypeScript-ESLint, and other lint
 
 ## Timeline
 
-**Estimated:** 4-6 hours total
+**MVP Complete:** Phases 0-5 (4-6 hours as estimated)
 
-- Phase 1: Fixture Projects (2-3 hours)
-- Phase 2: Setup Scripts (1 hour)
-- Phase 3: Verification Scripts (0.5 hours)
-- Phase 4: Documentation (1 hour)
-- Phase 5: Testing (1 hour)
+- Phase 0: Planning (complete)
+- Phase 1: Fixture Projects (complete)
+- Phase 2: Shared Utilities (complete)
+- Phase 3: Update Task 2 (complete)
+- Phase 4: Documentation (complete)
+- Phase 5: Testing & Validation (complete)
+
+**Remaining Work:**
+
+- Phase 6: Expand to Tasks 1, 3-6 (TBD)
+- Phase 7: Fixtures Cleanup (TBD - after parent Task 5.2-5.3)
+- Phase 8: Documentation Improvements (TBD - after parent Task 5.2-5.3)
 
 ## Success Criteria
 
-- [ ] At least 2 realistic fixture projects created
-- [ ] Setup scripts use `npm pack` for installation
-- [ ] Test workspaces include real code and proper plugin installation
-- [ ] Manual testing runbook updated with new workflow
-- [ ] All 6 manual tests can be executed realistically
-- [ ] Results are repeatable across test runs
+**MVP (Complete):**
+
+- [x] Task 2 realistic fixture project created (react-typescript-bloated)
+- [x] Setup scripts use `npm pack` for installation
+- [x] Test workspace includes real code and proper plugin installation
+- [x] Manual testing runbook updated with new workflow
+- [x] Task 2 can be executed realistically
+- [x] Results are repeatable across test runs
+
+**Full Project (In Progress):**
+
+- [ ] All 6 manual tests have appropriate fixtures
+- [ ] Deprecated fixtures cleaned up
+- [ ] Documentation improved based on testing learnings
 
 ## Related Work
 
@@ -69,6 +89,13 @@ Implement industry best practices from ESLint, TypeScript-ESLint, and other lint
 
 ## Next Steps
 
-1. Review TRACKER.md for detailed task breakdown
-2. Review research-findings.md for supporting evidence
-3. Begin Phase 1: Create fixture projects
+**Recommended Workflow (Interleaved with Parent Project):**
+
+1. **Phase 6** (this project) - Expand infrastructure to Tasks 1, 3-6
+2. **Task 5.2-5.3** (parent project) - Execute all manual testing using infrastructure
+3. **Phase 7-8** (this project) - Cleanup informed by testing learnings
+4. **Task 5.4-5.5** (parent project) - Version bump and release
+
+**Immediate Next Action:** Begin Phase 6.1 (evaluate Task 1 fixture needs)
+
+**For Details:** See TRACKER.md "Next Actions" section
