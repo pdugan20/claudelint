@@ -19,18 +19,20 @@ fi
 
 # Create test workspaces
 mkdir -p "$TEST_DIR/claude-md-tests"
-mkdir -p "$TEST_DIR/optimize-test"
 mkdir -p "$TEST_DIR/fixtures"
 
 # Copy fixtures
 echo "Copying test fixtures..."
 cp -r "$REPO_ROOT/tests/fixtures/claude-md/"* "$TEST_DIR/fixtures/"
-cp "$REPO_ROOT/tests/fixtures/manual/bloated-realistic.md" "$TEST_DIR/fixtures/"
+
+# Copy react-typescript-bloated for optimize-cc-md testing
+echo "Copying react-typescript-bloated fixture for optimize test..."
+cp -r "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated" "$TEST_DIR/optimize-test"
 
 echo "Test workspaces created:"
 echo "  - $TEST_DIR/claude-md-tests (for validate-cc-md)"
-echo "  - $TEST_DIR/optimize-test (for optimize-cc-md)"
-echo "  - $TEST_DIR/fixtures (reference files)"
+echo "  - $TEST_DIR/optimize-test (for optimize-cc-md - real React+TS project)"
+echo "  - $TEST_DIR/fixtures (reference files for validate-cc-md)"
 
 echo
 echo "Next steps:"
@@ -45,10 +47,11 @@ echo "  cp ../fixtures/valid.md CLAUDE.md"
 echo "  Ask: 'validate my CLAUDE.md'"
 echo "  Then test: oversized.md, circular-import.md"
 echo
-echo "Test 4.3: optimize-cc-md"
+echo "Test 4.3: optimize-cc-md (with real React+TS project)"
 echo "  cd $TEST_DIR/optimize-test"
-echo "  cp ../fixtures/bloated-realistic.md CLAUDE.md"
+echo "  npm install (install fixture dependencies)"
 echo "  Ask: 'optimize my CLAUDE.md'"
+echo "  Note: This is a real React+TS project, not just a standalone file"
 echo
 echo "Run: ./scripts/test/manual/verify-task-4.sh when done"
 echo
