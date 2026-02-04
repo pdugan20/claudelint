@@ -1,0 +1,13 @@
+{
+  "name": "claudelint",
+  "version": "0.2.0-beta.1",
+  "description": "A comprehensive linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more. Requires: npm install --save-dev claude-code-lint",
+  "author": {
+    "name": "Pat Dugan",
+    "url": "https://github.com/pdugan20"
+  },
+  "homepage": "https://github.com/pdugan20/claudelint",
+  "repository": "https://github.com/pdugan20/claudelint",
+  "license": "MIT",
+  "keywords": ["validation", "linting", "developer-tools", "code-quality"]
+}

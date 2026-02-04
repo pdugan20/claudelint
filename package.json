@@ -37,6 +37,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"**/*.json\"",
     "check": "npm-run-all --parallel check:emojis check:logger-spacing check:logger-usage check:publint",
     "check:all": "ts-node scripts/check/all.ts",
+    "check:self": "ts-node scripts/check/self-validate.ts",
     "check:consistency": "ts-node scripts/check/consistency.ts",
     "check:constants": "npm-run-all check:tool-names check:model-names",
     "check:deadcode": "knip",
@@ -117,6 +118,8 @@
   "files": [
     "dist",
     "bin",
+    ".claude-plugin",
+    "skills",
     "README.md",
     "LICENSE"
   ],

@@ -1,5 +1,5 @@
 import { PluginValidator } from '../../src/validators/plugin';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';
 
@@ -7,7 +7,9 @@ describe('PluginValidator', () => {
   const { getTestDir } = setupTestDir();
 
   async function createPluginFile(manifest: unknown) {
-    const filePath = join(getTestDir(), 'plugin.json');
+    const pluginDir = join(getTestDir(), '.claude-plugin');
+    await mkdir(pluginDir, { recursive: true });
+    const filePath = join(pluginDir, 'plugin.json');
     await writeFile(filePath, JSON.stringify(manifest, null, 2));
     return filePath;
   }
@@ -28,7 +30,9 @@ describe('PluginValidator', () => {
     });
 
     it('should handle invalid JSON syntax', async () => {
-      const filePath = join(getTestDir(), 'plugin.json');
+      const pluginDir = join(getTestDir(), '.claude-plugin');
+      await mkdir(pluginDir, { recursive: true });
+      const filePath = join(pluginDir, 'plugin.json');
       await writeFile(filePath, '{ invalid json }');
 
       const validator = new PluginValidator({ path: filePath });

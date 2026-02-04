@@ -1,10 +1,12 @@
 /**
  * Rule: plugin-json-wrong-location
  *
- * Validates that plugin.json is at repository root, not inside .claude-plugin/
+ * Validates that plugin.json is inside .claude-plugin/ directory, not at repository root
  *
- * The plugin.json file should be at the repository root to be properly
- * discovered by Claude Code. It should not be inside the .claude-plugin/ directory.
+ * The plugin.json file must be at .claude-plugin/plugin.json to be properly
+ * discovered by Claude Code. It should not be at the repository root.
+ *
+ * Reference: https://code.claude.com/docs/en/plugins-reference#plugin-directory-structure
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -13,7 +15,7 @@ export const rule: Rule = {
   meta: {
     id: 'plugin-json-wrong-location',
     name: 'Plugin JSON Wrong Location',
-    description: 'plugin.json should be at repository root, not inside .claude-plugin/',
+    description: 'plugin.json must be in .claude-plugin/ directory, not at repository root',
     category: 'Plugin',
     severity: 'error',
     fixable: false,
@@ -30,10 +32,10 @@ export const rule: Rule = {
       return;
     }
 
-    // Check if plugin.json is inside .claude-plugin/ directory
-    if (filePath.includes('.claude-plugin/')) {
+    // Check if plugin.json is NOT inside .claude-plugin/ directory
+    if (!filePath.includes('.claude-plugin/')) {
       context.report({
-        message: 'plugin.json should be at the repository root, not inside .claude-plugin/',
+        message: 'plugin.json must be at .claude-plugin/plugin.json, not at repository root',
       });
     }
   },

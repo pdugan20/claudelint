@@ -11,7 +11,7 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const SKILLS_DIR = join(__dirname, '../../.claude/skills');
+const SKILLS_DIR = join(__dirname, '../../skills');
 const README_PATH = join(__dirname, '../../README.md');
 
 /**

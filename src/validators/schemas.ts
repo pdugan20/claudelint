@@ -236,6 +236,9 @@ export const PluginAuthorSchema = z.object({
 /**
  * Plugin manifest schema (plugin.json)
  * Based on official spec: https://code.claude.com/docs/en/plugins-reference#complete-schema
+ *
+ * Note: author must be an object with name (required), email/url (optional).
+ * String format is NOT supported by Claude Code.
  */
 export const PluginManifestSchema = z.object({
   // Required fields
@@ -244,7 +247,7 @@ export const PluginManifestSchema = z.object({
   // Optional metadata
   version: semver().optional(),
   description: z.string().optional(),
-  author: z.union([z.string(), PluginAuthorSchema]).optional(),
+  author: PluginAuthorSchema.optional(),
   homepage: z.string().optional(),
   repository: z.string().optional(),
   license: z.string().optional(),
