@@ -20,10 +20,36 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ## Key Findings
 
+### Phase 0-2 Findings
+
 - **CLAUDE.md validation already implemented**: 14 rules exist covering imports, size, sections, etc.
 - **/init is closed-source**: Built-in CLI command, not in github.com/anthropics/claude-code repo
 - **Package.json bug**: `"files": ["skills"]` should be `".claude"` - npm users get zero skills
 - **Skill naming**: Use `-cc-md` suffix (cc = Claude Code configuration)
+
+### Testing Methodology (Phase 3-5)
+
+**Critical insight**: We do NOT need a separate testing framework for our bundled skills.
+
+**Why**: This project IS claudelint - a linter for Claude Code projects that validates skills.
+
+**Approach**:
+
+1. **Automated testing = dogfooding**
+   - Use claudelint itself to validate our bundled skills
+   - Run: `claudelint validate-skills .claude/skills/`
+   - This validates structure, security, frontmatter, etc. (28+ rules)
+   - If our tool can't validate our skills, we have a tool problem
+
+2. **Manual testing = UX validation**
+   - Test trigger effectiveness (does Claude load the skill?)
+   - Test conversational quality (does Claude explain clearly?)
+   - Test real-world usage (does the skill help users?)
+   - Per Anthropic: "automated benchmarks help, but real-world testing reveals issues"
+
+**Documentation**: See `docs/skill-testing.md` for complete methodology
+
+**No framework needed**: claudelint already has 28 skill validation rules + 72 planned
 
 ## Phase 1: Critical Bug Fixes & Plugin Infrastructure
 
@@ -1373,32 +1399,57 @@ optimize-cc-md/
   - [x] Not issues the skill helps fix (those are in examples)
   - [x] Example: "Skill creates @import but file path is wrong"
 
-- [ ] **Task 3.8**: Test skill following Anthropic iterative methodology (manual - automated testing in Phase 5)
-  - [ ] **Phase 1: Single-task iteration (Anthropic p15 pro tip)**
-    - [ ] Pick ONE challenging CLAUDE.md problem (e.g., 52KB file with bloat, circular imports)
-    - [ ] Work with Claude to solve it WITHOUT the skill first
-    - [ ] Iterate conversation until perfect solution found
-    - [ ] Document the winning approach (what worked, what didn't)
-    - [ ] Verify skill instructions match the winning approach
-    - [ ] If skill doesn't match, update SKILL.md before expanding tests
-  - [ ] **Phase 2: Expanded testing**
-    - [ ] Test on bloated CLAUDE.md (>300 lines, obvious content)
-    - [ ] Test on well-optimized CLAUDE.md (should suggest minimal changes)
-    - [ ] Test on CLAUDE.md with import issues (circular, missing files)
-    - [ ] Test on CLAUDE.md with organization problems (too many sections)
-  - [ ] **Phase 3: Trigger validation**
-    - [ ] Verify trigger phrases work ("optimize my CLAUDE.md", "my config is too long")
-    - [ ] Ensure doesn't trigger on informational questions ("what is CLAUDE.md?")
-    - [ ] Test paraphrased requests ("help me fix my config", "CLAUDE.md too big")
-  - [ ] **Phase 4: Tool execution**
-    - [ ] Test actual file editing works (Edit tool creates clean diffs)
-    - [ ] Test @import file creation (Write tool creates valid files)
-    - [ ] Test references/ documents are helpful when Claude reads them
-    - [ ] Verify error handling for edge cases
-  - [ ] **Phase 5: Final checks**
-    - [ ] Verify SKILL.md stays under 3,000 words
-    - [ ] Confirm all acceptance criteria met
-    - [ ] Document any issues found for Phase 5 formal testing
+- [ ] **Task 3.8**: Test optimize-cc-md skill (manual testing following Anthropic methodology)
+
+**Note**: Full testing methodology documented in `docs/skill-testing.md`
+
+**Automated pre-checks** (run first):
+
+- [ ] Validate skill structure: `claudelint validate-skills .claude/skills/optimize-cc-md`
+- [ ] Check word count: SKILL.md should be <3,000 words
+- [ ] Verify references/ files exist and are readable
+
+**Manual testing** (Anthropic iterative methodology):
+
+- [ ] **Phase 1: Single-task iteration (Anthropic p15 pro tip)**
+  - [ ] Pick ONE challenging CLAUDE.md problem (e.g., 52KB file with bloat, circular imports)
+  - [ ] Work with Claude to solve it WITHOUT the skill first
+  - [ ] Iterate conversation until perfect solution found
+  - [ ] Document the winning approach (what worked, what didn't)
+  - [ ] Verify skill instructions match the winning approach
+  - [ ] If skill doesn't match, update SKILL.md before expanding tests
+
+- [ ] **Phase 2: Expanded functional testing**
+  - [ ] Test on bloated CLAUDE.md (>50KB, obvious content)
+  - [ ] Test on well-optimized CLAUDE.md (should suggest minimal changes)
+  - [ ] Test on CLAUDE.md with circular imports
+  - [ ] Test on CLAUDE.md with missing @import files
+  - [ ] Test on CLAUDE.md with organization problems (too many sections)
+  - [ ] Use test fixtures from `tests/fixtures/claude-md/`
+
+- [ ] **Phase 3: Trigger validation**
+  - [ ] "optimize my CLAUDE.md" → should trigger
+  - [ ] "my config is too long" → should trigger
+  - [ ] "help me fix my CLAUDE.md" → should trigger
+  - [ ] "what is CLAUDE.md?" → should NOT trigger (informational)
+  - [ ] "validate my CLAUDE.md" → should NOT trigger (different skill)
+  - [ ] Test paraphrased: "CLAUDE.md file is huge", "clean up my config"
+
+- [ ] **Phase 4: Quality & UX testing**
+  - [ ] Conversational quality: Clear explanations (not just error dump)
+  - [ ] Interactive experience: Asks before editing, shows previews
+  - [ ] Tool execution: Edit tool creates clean diffs
+  - [ ] Tool execution: Write tool creates valid @import files
+  - [ ] References usage: Claude reads references/ docs when helpful
+  - [ ] Error handling: Graceful when files missing, permission errors
+
+- [ ] **Phase 5: Document results**
+  - [ ] Document test results in `docs/testing/optimize-cc-md-test-results.md`
+  - [ ] Note any issues found
+  - [ ] Update SKILL.md if needed based on findings
+  - [ ] Confirm all Phase 3 acceptance criteria met
+
+**Time estimate**: 3-4 hours total
 
 ### Acceptance Criteria
 
@@ -1494,6 +1545,19 @@ Requires `claude-code-lint` npm package for CLI commands.
   - [ ] Require trigger phrases in descriptions
   - [ ] Require troubleshooting for complex skills
 
+- [ ] **Task 4.5**: Add skill testing infrastructure
+  - [ ] Create `scripts/test/skills/` directory
+  - [ ] Create `scripts/test/skills/validate-self.sh` (dogfood claudelint)
+  - [ ] Create `scripts/test/skills/test-cli-commands.sh` (CLI verification)
+  - [ ] Create `scripts/generate-manual-test-protocol.sh` (manual checklist generator)
+  - [ ] Add npm scripts to package.json:
+    - `test:skills:structure` - Validate skill structure
+    - `test:skills:cli` - Test CLI commands
+    - `test:skills:metadata` - Metadata consistency (Jest)
+    - `test:skills:automated` - Run all automated tests
+    - `test:skills:manual` - Print reminder about manual tests
+  - [ ] Reference `docs/skill-testing.md` for implementation details
+
 ### Acceptance Criteria
 
 - [ ] Plugin README created for GitHub users
@@ -1512,156 +1576,187 @@ Requires `claude-code-lint` npm package for CLI commands.
 **Duration**: 2-3 days
 **Dependencies**: Phase 4 complete
 
-**Testing Strategy**: Based on Anthropic Chapter 3 (p14-17) - systematic skill testing at three levels: triggering, functional, and performance.
+**Testing Strategy**: Hybrid approach combining automated structure validation with manual UX testing
+
+**Reference**: See `docs/skill-testing.md` for complete testing methodology
+
+**Key Insight**: We use **claudelint itself** to validate our bundled skills (dogfooding), not a separate testing framework.
 
 ### Tasks
 
-#### Task 5.1: Create Skill Test Suite (Anthropic p15-17)
+#### Task 5.1: Automated Testing (Dogfooding & CLI Verification)
 
-**Goal**: Systematic testing for all 9 skills (8 existing + optimize-cc-md).
+**Goal**: Validate skill structure and CLI integration using claudelint itself
 
-**Reference**: See `docs/projects/plugin-and-md-management/skill-improvement-guidelines.md` section "Testing Checklist"
+**Automated tests we CAN do**:
 
-- [ ] **5.1.1**: Create triggering test suite
-  - [ ] Create `tests/skills/triggering-tests.md` with test cases
-  - [ ] For EACH skill, define:
-    - [x] Queries that should trigger (obvious + paraphrased)
-    - [ ] Queries that should NOT trigger (unrelated)
-  - [ ] Document expected behavior
-  - [ ] Create test protocol for manual validation
+- - Skill structure validation (use claudelint itself)
+- - CLI command verification (commands exist and respond)
+- - Metadata consistency (versions match, commands referenced correctly)
+- - Test fixtures for functional testing
 
-**Example test suite for validate-cc-md**:
+**Automated tests we CANNOT do** (require manual testing):
 
-```markdown
-# validate-cc-md Triggering Tests
+- - Trigger effectiveness (does Claude load the skill?)
+- - Conversational quality (does Claude explain well?)
+- - User experience (does the skill actually help?)
 
-## Should Trigger
-- [x] "check my CLAUDE.md"
-- [x] "validate my config file"
-- [x] "why is my CLAUDE.md too long"
-- [x] "audit my CLAUDE.md"
-- [x] "fix my imports"
+**Subtasks**:
 
-## Should NOT Trigger
-- [ ] "what is CLAUDE.md?" (informational)
-- [ ] "help me write code" (unrelated)
-- [ ] "validate my Python code" (wrong domain)
+- [ ] **5.1.1**: Create self-validation script
+  - [ ] Script: `scripts/test/skills/validate-self.sh`
+  - [ ] Runs: `claudelint validate-skills .claude/skills/`
+  - [ ] Validates all 9 bundled skills meet our own standards
+  - [ ] Add to CI/CD workflow
+  - [ ] Add npm script: `npm run test:skills:structure`
 
-## Test Protocol
-1. Start new Claude Code session
-2. Enable claudelint plugin
-3. For each query above, check if skill loads
-4. Document: triggered (yes/no), time to load
-```
+- [ ] **5.1.2**: Create CLI command verification script
+  - [ ] Script: `scripts/test/skills/test-cli-commands.sh`
+  - [ ] For each skill, extract referenced claudelint command
+  - [ ] Verify command exists: `claudelint <command> --help`
+  - [ ] Test with: `--help`, `--version`, basic invocation
+  - [ ] Add npm script: `npm run test:skills:cli`
 
-- [ ] **5.1.2**: Create functional test suite
-  - [ ] Create `tests/skills/functional-tests.md`
-  - [ ] For top 4 skills (validate-all, validate-cc-md, validate-skills, optimize-cc-md):
-    - Define expected claudelint command
-    - Define expected tool usage (Bash, Read, Edit, Write)
-    - Define expected output format
-  - [ ] Create test fixtures (sample CLAUDE.md files with known issues)
-  - [ ] Document expected results
+- [ ] **5.1.3**: Create metadata consistency tests
+  - [ ] Test file: `tests/skills/metadata.test.ts`
+  - [ ] Verify skill versions match package.json
+  - [ ] Verify skill descriptions in README match SKILL.md frontmatter
+  - [ ] Verify no obsolete command names referenced
+  - [ ] Verify all skills documented in README
+  - [ ] Add npm script: `npm run test:skills:metadata`
 
-**Example for validate-cc-md**:
+- [ ] **5.1.4**: Create test fixtures
+  - [ ] Directory: `tests/fixtures/claude-md/`
+    - [ ] `valid.md` - Should pass validation
+    - [ ] `oversized.md` - >50KB file
+    - [ ] `circular-import.md` - Circular @import chain
+    - [ ] `missing-import.md` - @import to non-existent file
+    - [ ] `invalid-frontmatter.md` - Bad frontmatter
+  - [ ] Directory: `tests/fixtures/skills/`
+    - [ ] `valid/` - Well-formed skill
+    - [ ] `no-version/` - Missing version field
+    - [ ] `dangerous-command/` - Contains rm -rf
+  - [ ] Document fixture usage in `docs/skill-testing.md`
 
-```markdown
-# validate-cc-md Functional Tests
+- [ ] **5.1.5**: Add CI/CD automation
+  - [ ] Update `.github/workflows/ci.yml`
+  - [ ] Add job: Validate bundled skills
+  - [ ] Run: `npm run test:skills:structure`
+  - [ ] Run: `npm run test:skills:cli`
+  - [ ] Run: `npm run test:skills:metadata`
+  - [ ] Fail build if any test fails
 
-## Test Case 1: Oversized File
-**Fixture**: tests/fixtures/claude-md/oversized.md (51KB)
-**Expected**:
-1. Skill executes `claudelint check-claude-md`
-2. Reports "File exceeds 50KB (ERROR)"
-3. Suggests splitting into @imports
-4. Exit code: 2 (error)
+- [ ] **5.1.6**: Add npm scripts
+  - [ ] `npm run test:skills:structure` - Dogfood claudelint
+  - [ ] `npm run test:skills:cli` - Verify CLI commands
+  - [ ] `npm run test:skills:metadata` - Check consistency
+  - [ ] `npm run test:skills:automated` - Run all automated tests
+  - [ ] `npm run test:skills:manual` - Print manual test protocol reminder
 
-## Test Case 2: Missing Import
-**Fixture**: tests/fixtures/claude-md/missing-import.md
-**Expected**:
-1. Detects @import directive to non-existent file
-2. Reports "Import not found: .claude/rules/missing.md"
-3. Suggests checking path
-4. Exit code: 2 (error)
-```
+#### Task 5.2: Manual Testing Protocol (UX & Triggering)
 
-- [ ] **5.1.3**: Create performance comparison test
-  - [ ] Create `tests/skills/performance-comparison.md`
-  - [ ] Document baseline (without skills) vs with skills
-  - [ ] Track metrics (Anthropic p16):
-    - Tool calls required
-    - User messages needed
-    - Tokens consumed
-    - Task completion success rate
+**Goal**: Test skill UX, triggering, and conversational quality (cannot be automated per Anthropic)
 
-**Example comparison for validate-all**:
+**Why manual**: Per Anthropic best practices, "automated benchmarks help, but real-world testing reveals issues that synthetic tests miss"
 
-```markdown
-# validate-all Performance Comparison
+**Subtasks**:
 
-## Without Skill
-**Scenario**: User wants to validate entire project
+- [ ] **5.2.1**: Create manual test protocol documents
+  - [ ] Script: `scripts/generate-manual-test-protocol.sh`
+  - [ ] Generates checklist from SKILL.md frontmatter
+  - [ ] Output: `docs/testing/manual-test-protocol.md`
+  - [ ] Include for each skill:
+    - Trigger phrase tests (should/shouldn't trigger)
+    - Functional tests (with test fixtures)
+    - Quality tests (explanation clarity, UX)
+    - Edge case tests
+  - [ ] Reference: `docs/skill-testing.md` for templates
 
-Workflow:
-1. User: "How do I validate my Claude Code project?"
-2. Claude: "You can use claudelint. What do you want to validate?"
-3. User: "Everything"
-4. Claude: "Try running: claudelint check-all"
-5. User: *runs command manually*
+- [ ] **5.2.2**: Execute triggering tests (MANUAL - 30 min per skill)
+  - [ ] For each of 9 skills:
+    - [ ] Start fresh Claude session
+    - [ ] Test 4-5 trigger phrases (should trigger)
+    - [ ] Test 3-4 non-triggers (shouldn't trigger)
+    - [ ] Test 2-3 paraphrased requests
+  - [ ] Document results in `docs/testing/trigger-test-results.md`
+  - [ ] Target: 90%+ trigger success rate
+  - [ ] Fix descriptions if triggering fails
 
-**Metrics**:
-- User messages: 3
-- Tool calls: 0 (Claude doesn't run it)
-- Time: ~2 minutes
-- Success: Depends on user following instructions
+- [ ] **5.2.3**: Execute functional tests (MANUAL - 20 min per skill)
+  - [ ] For each skill, test with fixtures:
+    - [ ] Valid input (should pass)
+    - [ ] Invalid input (should detect issues)
+    - [ ] Edge cases (empty files, huge files, etc.)
+  - [ ] Verify Claude explains issues clearly (not just error dump)
+  - [ ] Verify correct claudelint command executed
+  - [ ] Document results in `docs/testing/functional-test-results.md`
 
-## With Skill
-**Scenario**: User wants to validate entire project
+- [ ] **5.2.4**: Execute quality tests (MANUAL - 15 min per skill)
+  - [ ] Conversational quality:
+    - [ ] Uses plain language (not jargon)
+    - [ ] Explains WHY violations matter
+    - [ ] Provides actionable next steps
+    - [ ] Shows examples when helpful
+  - [ ] Interactive experience (optimize-cc-md only):
+    - [ ] Asks before making changes
+    - [ ] Shows previews/diffs
+    - [ ] Handles user saying "no"
+  - [ ] Error handling:
+    - [ ] Graceful when claudelint missing
+    - [ ] Clear error messages
+    - [ ] Doesn't crash
+  - [ ] Document results in `docs/testing/quality-test-results.md`
 
-Workflow:
-1. User: "check my entire Claude Code project"
-2. Skill triggers automatically
-3. Claude runs: `claudelint check-all`
-4. Reports results
+- [ ] **5.2.5**: Execute performance comparison (MANUAL - 1 hour)
+  - [ ] Pick 2-3 skills: validate-all, optimize-cc-md, validate-cc-md
+  - [ ] Test scenario WITHOUT skill loaded:
+    - Count user messages needed
+    - Count tool calls
+    - Measure time to completion
+    - Note success rate
+  - [ ] Test SAME scenario WITH skill:
+    - Count metrics
+    - Compare to baseline
+  - [ ] Document improvement % for release notes
+  - [ ] Goal: Show 50%+ reduction in user effort
 
-**Metrics**:
-- User messages: 1
-- Tool calls: 1 (Bash)
-- Time: ~30 seconds
-- Success: 100% (automated execution)
+**Time estimate**: ~4.5 hours total for all 9 skills (30+20+15 min each)
 
-**Improvement**: 75% reduction in user effort, automated execution
-```
+**Documented in**: `docs/skill-testing.md` Section 2
 
-#### Task 5.2: Execute Manual Testing
+#### Task 5.3: Integration Testing (MANUAL)
 
-- [ ] **5.2.1**: Run triggering tests
-  - [ ] Test all 9 skills with queries from triggering test suite
-  - [ ] Document trigger success rate (target: 90%+)
-  - [ ] Document false positives (skill triggers when it shouldn't)
-  - [ ] Update descriptions if needed to improve triggering
+**Goal**: Verify plugin installation and skill loading work correctly
 
-- [ ] **5.2.2**: Run functional tests
-  - [ ] Test each skill executes correct commands
-  - [ ] Verify dependency checks work (npm package required)
-  - [ ] Test error messages are clear
-  - [ ] Verify examples in SKILL.md are accurate
-  - [ ] Test optimize-cc-md actually edits files correctly
+- [ ] **5.3.1**: Test local plugin installation
+  - [ ] Build package: `npm pack`
+  - [ ] Install locally: `/plugin install --source .`
+  - [ ] Verify all 9 skills load: `/skills list`
+  - [ ] Test one skill: `/claudelint:validate-all`
 
-- [ ] **5.2.3**: Run performance comparison
-  - [ ] Execute validate-all with/without skill
-  - [ ] Execute optimize-cc-md with/without skill
-  - [ ] Document improvements
-  - [ ] Use for release notes
+- [ ] **5.3.2**: Test GitHub plugin installation (after release)
+  - [ ] Install from GitHub: `/plugin install github:pdugan20/claude-code-lint`
+  - [ ] Verify skills load
+  - [ ] Test namespaced skill: `/claudelint:optimize-cc-md`
 
-#### Task 5.3: Integration Testing
+- [ ] **5.3.3**: Test dependency detection
+  - [ ] Uninstall npm package: `npm uninstall claude-code-lint`
+  - [ ] Try using skill: `/claudelint:validate-all`
+  - [ ] Verify graceful error: "claudelint not found, install: npm i -D claude-code-lint"
+  - [ ] Reinstall package: `npm i -D claude-code-lint`
 
-- [ ] Test plugin installation from local source: `/plugin install --source .`
-- [ ] Test plugin installation from GitHub (after publishing)
-- [ ] Test all skill namespaces: `/claudelint:validate-all`, `/claudelint:optimize-cc-md`, etc.
-- [ ] Verify npm pack includes .claude/ directory
-- [ ] Test dependency detection (skill fails gracefully when npm package missing)
-- [ ] Test in both Claude.ai and Claude Code
+- [ ] **5.3.4**: Test in both environments
+  - [ ] Test in Claude.ai web (plugin from GitHub)
+  - [ ] Test in Claude Code CLI (plugin from npm or local)
+
+- [ ] **5.3.5**: Verify npm package contents
+  - [ ] Run: `npm pack --dry-run`
+  - [ ] Verify `.claude/` directory included
+  - [ ] Verify all 9 SKILL.md files included
+  - [ ] Verify bin/claudelint included
+  - [ ] Check package size (should be reasonable)
+
+**Documented in**: `docs/skill-testing.md` Section 1 (Automation Opportunities)
 
 #### Task 5.4: Version Bump & Release
 
@@ -1688,17 +1783,40 @@ Workflow:
 
 ### Acceptance Criteria
 
-- [ ] All 3 test types documented (triggering, functional, performance)
-- [ ] Test fixtures created for functional tests
-- [ ] Triggering success rate >90% for all skills
+**Automated Testing**:
+
+- [ ] Skill structure validation passes (claudelint validates its own skills)
+- [ ] All CLI commands exist and respond to --help
+- [ ] Metadata consistency tests pass (versions match, no stale references)
+- [ ] Test fixtures created for manual testing
+- [ ] CI/CD runs automated tests on every PR
+- [ ] npm scripts for automated tests work
+
+**Manual Testing**:
+
+- [ ] Manual test protocol documented in `docs/skill-testing.md`
+- [ ] Triggering success rate >90% for all 9 skills
 - [ ] No false positives in triggering tests
-- [ ] All functional tests pass
-- [ ] Performance comparison shows improvement
-- [ ] Plugin installable from both GitHub and npm
-- [ ] All skills work correctly via namespace
+- [ ] Functional tests pass (skills execute correct commands)
+- [ ] Quality tests pass (Claude explains clearly, good UX)
+- [ ] Performance comparison documented (shows improvement)
+- [ ] All test results documented in `docs/testing/`
+
+**Integration**:
+
+- [ ] Plugin installable from local source
+- [ ] Plugin installable from GitHub
+- [ ] All skill namespaces work (`/claudelint:skill-name`)
+- [ ] Dependency detection works (graceful error when npm package missing)
+- [ ] npm pack includes .claude/ directory
+- [ ] Works in both Claude.ai and Claude Code CLI
+
+**Release**:
+
 - [ ] npm package published successfully
 - [ ] GitHub release created with highlights
 - [ ] CHANGELOG auto-generated correctly
+- [ ] Release notes include performance improvements
 
 ### Success Metrics (from Anthropic p9)
 

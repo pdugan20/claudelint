@@ -13,8 +13,10 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 ### Main Documents
 
 - **[tracker.md](./tracker.md)** - Central task tracker with all phases
-- **[phase-2-7-summary.md](./phase-2-7-summary.md)** - NEW: Summary of skill quality improvements
-- **[skill-improvement-guidelines.md](./skill-improvement-guidelines.md)** - NEW: Reference for improving existing skills
+- **[../../skill-testing.md](../../skill-testing.md)** - NEW: Comprehensive skill testing guide (automated + manual)
+- **[testing-approach-summary.md](./testing-approach-summary.md)** - NEW: Summary of testing methodology and why we don't need a framework
+- **[phase-2-7-summary.md](./phase-2-7-summary.md)** - Summary of skill quality improvements
+- **[skill-improvement-guidelines.md](./skill-improvement-guidelines.md)** - Reference for improving existing skills
 
 ### Supporting Documents
 
@@ -66,6 +68,48 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 
 - Document both installation methods (npm CLI vs plugin)
 - Update README with plugin installation instructions
+
+## Testing Methodology
+
+This project uses a **hybrid testing approach** combining automated structure validation with manual UX testing.
+
+### Automated Testing (Dogfooding)
+
+We use **claudelint itself** to validate our bundled skills:
+
+```bash
+# Validate our own skills using our own tool
+claudelint validate-skills .claude/skills/
+
+# This is "eating our own dog food" - if our tool can't validate
+# our skills correctly, we have a problem with the tool itself
+```
+
+**What we automate**:
+
+- - Skill structure validation (frontmatter schema, file organization)
+- - Security checks (dangerous commands, hardcoded secrets)
+- - CLI command verification (commands exist and respond)
+- - Metadata consistency (versions match, no stale references)
+
+**What we DON'T automate** (requires manual testing per Anthropic):
+
+- - Trigger effectiveness (does Claude load the skill when needed?)
+- - Conversational quality (does Claude explain things clearly?)
+- - User experience (does the skill actually help users?)
+- - Real-world edge cases (unpredictable scenarios)
+
+### Manual Testing (UX & Triggering)
+
+Following Anthropic's "Two-Claude Testing" approach:
+
+1. **Claude A** (you + Claude Code): Design and refine skill instructions
+2. **Claude B** (separate session): Test the skill in real tasks
+3. Observe and iterate based on real usage
+
+**See**: `docs/skill-testing.md` for complete testing protocol
+
+**Key insight**: Per Anthropic best practices, "automated benchmarks help, but real-world testing reveals issues that synthetic tests miss"
 
 ## Key Constraints
 

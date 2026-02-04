@@ -239,16 +239,16 @@ Indicate scope when needed:
 
 Don't use vague names:
 
-- ❌ `rules.md` - What rules?
-- ❌ `config.md` - What config?
-- ❌ `notes.md` - What notes?
-- ❌ `misc.md` - Too generic
+- BAD: `rules.md` - What rules?
+- BAD: `config.md` - What config?
+- BAD: `notes.md` - What notes?
+- BAD: `misc.md` - Too generic
 
 Use specific names:
 
-- ✅ `commit-message-format.md`
-- ✅ `code-review-checklist.md`
-- ✅ `deployment-procedure.md`
+- GOOD: `commit-message-format.md`
+- GOOD: `code-review-checklist.md`
+- GOOD: `deployment-procedure.md`
 
 ## Structuring for Maintainability
 
@@ -257,12 +257,12 @@ Use specific names:
 Each file should have one clear purpose:
 
 ```text
-✅ git-workflow.md
+GOOD: git-workflow.md
    - Commit format
    - Branch strategy
    - PR process
 
-❌ git-and-testing-and-deployment.md
+BAD: git-and-testing-and-deployment.md
    - Too many topics
    - Hard to find specific guidance
 ```
@@ -346,7 +346,7 @@ Content Claude already knows:
 ### Anti-Pattern 1: Too Many Top-Level Sections
 
 ```markdown
-❌ CLAUDE.md with 25 headings:
+BAD: CLAUDE.md with 25 headings:
 # Git
 # Testing
 # Linting
@@ -363,7 +363,7 @@ Content Claude already knows:
 ### Anti-Pattern 2: Deeply Nested Imports
 
 ```markdown
-❌ CLAUDE.md
+BAD: CLAUDE.md
   → @import .claude/rules/all-rules.md
       → @import .claude/rules/backend.md
           → @import .claude/rules/api.md
@@ -375,7 +375,7 @@ Content Claude already knows:
 ### Anti-Pattern 3: Scattered Import Files
 
 ```text
-❌ project/
+BAD: project/
    ├── rules/git.md
    ├── docs/testing.md
    ├── .claude/api-rules.md
@@ -387,7 +387,7 @@ Content Claude already knows:
 ### Anti-Pattern 4: Duplicate Content
 
 ```markdown
-❌ Same git workflow in:
+BAD: Same git workflow in:
 - CLAUDE.md
 - .claude/rules/git-workflow.md
 - .claude/rules/backend.md

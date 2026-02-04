@@ -62,7 +62,7 @@ Use for **documentation** that provides context, not **rules** that change behav
 Don't scatter imports across the project:
 
 ```text
-❌ project/
+BAD: project/
    ├── CLAUDE.md
    ├── git-rules.md         # Hard to find
    ├── docs/
@@ -360,7 +360,7 @@ File A imports B, and B imports A:
 CLAUDE.md
   → @import .claude/rules/frontend.md
       → @import .claude/rules/shared.md
-          → @import .claude/rules/frontend.md  ❌ Circular!
+          → @import .claude/rules/frontend.md  BAD: Circular!
 ```
 
 **Error:**
@@ -387,9 +387,9 @@ Shared rules go in their own file, imported by CLAUDE.md directly.
 Files imported from CLAUDE.md should NOT import each other:
 
 ```text
-✅ CLAUDE.md → frontend.md
-✅ CLAUDE.md → backend.md
-❌ frontend.md → backend.md
+GOOD: CLAUDE.md → frontend.md
+GOOD: CLAUDE.md → backend.md
+BAD: frontend.md → backend.md
 ```
 
 **3. Consolidate if needed:**
@@ -400,7 +400,7 @@ If two files need the same content, extract it:
 Before:
   frontend.md → common-utils.md
   backend.md → common-utils.md
-  common-utils.md → frontend.md  ❌ Circular!
+  common-utils.md → frontend.md  BAD: Circular!
 
 After:
   CLAUDE.md → common-utils.md
@@ -416,7 +416,7 @@ Claude Code enforces a maximum import depth of **3 levels**:
 Level 1: CLAUDE.md
 Level 2: @import .claude/rules/frontend.md
 Level 3: @import .claude/rules/shared/utils.md
-Level 4: ❌ Too deep!
+Level 4: BAD: Too deep!
 ```
 
 ### Why the Limit?
@@ -465,13 +465,13 @@ Direct imports are better than intermediaries:
 
 ```markdown
 <!-- Don't create wrapper files -->
-❌ @import .claude/rules/all-rules.md
+BAD: @import .claude/rules/all-rules.md
       (which imports everything else)
 
 <!-- Import directly -->
-✅ @import .claude/rules/git-workflow.md
-✅ @import .claude/rules/testing.md
-✅ @import .claude/rules/style-guide.md
+GOOD: @import .claude/rules/git-workflow.md
+GOOD: @import .claude/rules/testing.md
+GOOD: @import .claude/rules/style-guide.md
 ```
 
 ## Quick Reference

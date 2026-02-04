@@ -414,8 +414,8 @@ The optimize-cc-md skill requires the claudelint CLI to run validation. The skil
 1. **Incorrect path in @import:** Check that the import path matches the file location exactly:
 
    ```markdown
-   ❌ @import .claude/git-workflow.md
-   ✅ @import .claude/rules/git-workflow.md
+   BAD: @import .claude/git-workflow.md
+   GOOD: @import .claude/rules/git-workflow.md
    ```
 
 2. **File wasn't created:** Verify the file exists:
@@ -476,9 +476,9 @@ Claude will adjust recommendations based on your feedback. The skill suggests re
 1. Keep imports hierarchical - CLAUDE.md should import everything, but import files should NOT import each other:
 
    ```text
-   ✅ CLAUDE.md → git-workflow.md
-   ✅ CLAUDE.md → testing.md
-   ❌ git-workflow.md → testing.md → git-workflow.md
+   GOOD: CLAUDE.md → git-workflow.md
+   GOOD: CLAUDE.md → testing.md
+   BAD: git-workflow.md → testing.md → git-workflow.md
    ```
 
 2. If two files need shared content, extract it to a third file:
@@ -487,12 +487,12 @@ Claude will adjust recommendations based on your feedback. The skill suggests re
    Before (circular):
    git-workflow.md → shared.md
    testing.md → shared.md
-   shared.md → git-workflow.md  ❌
+   shared.md → git-workflow.md  BAD:
 
    After (hierarchical):
    CLAUDE.md → shared.md
    CLAUDE.md → git-workflow.md
-   CLAUDE.md → testing.md  ✅
+   CLAUDE.md → testing.md  GOOD:
    ```
 
 ### Skill creates too many small files
