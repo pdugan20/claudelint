@@ -338,11 +338,13 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ### Tasks
 
-- [ ] **6.1** Evaluate Task 1 (optimize-without-skill)
-  - Determine if Task 1 needs fixture project
-  - If yes, create minimal fixture or reuse react-typescript-bloated
-  - Update Task 1 scripts if needed
-  - **Acceptance:** Decision made and implemented
+- [x] **6.1** Evaluate Task 1 (optimize-without-skill)
+  - Determined Task 1 needs fixture project (same reason as Task 2)
+  - Decided to reuse react-typescript-bloated (same scenario, different conditions)
+  - Updated setup.sh to copy entire project + npm install
+  - Updated verify.sh with baseline-focused messaging
+  - Key difference from Task 2: NO plugin, NO skill (tests natural workflow)
+  - **Acceptance:** Decision made and implemented ✓
 
 - [ ] **6.2** Plan Tasks 3-6 fixture needs
   - Review each task's requirements
