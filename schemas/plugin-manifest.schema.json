@@ -23,35 +23,26 @@
       "description": "Brief explanation of plugin purpose. Shown in plugin manager."
     },
     "author": {
-      "description": "Author information (string or object)",
-      "oneOf": [
-        {
+      "type": "object",
+      "description": "Author information (object format required, string format not supported by Claude Code)",
+      "required": ["name"],
+      "properties": {
+        "name": {
           "type": "string",
-          "description": "Author name as string"
+          "description": "Author name (required)"
         },
-        {
-          "type": "object",
-          "description": "Structured author information",
-          "required": ["name"],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Author name"
-            },
-            "email": {
-              "type": "string",
-              "description": "Author email address",
-              "format": "email"
-            },
-            "url": {
-              "type": "string",
-              "description": "Author website or profile URL",
-              "format": "uri"
-            }
-          },
-          "additionalProperties": false
+        "email": {
+          "type": "string",
+          "description": "Author email address (optional)",
+          "format": "email"
+        },
+        "url": {
+          "type": "string",
+          "description": "Author website or profile URL (optional)",
+          "format": "uri"
         }
-      ]
+      },
+      "additionalProperties": false
     },
     "homepage": {
       "type": "string",
