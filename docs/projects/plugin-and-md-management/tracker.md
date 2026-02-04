@@ -1271,7 +1271,7 @@ After completing all tasks:
 
 ## Phase 3: Create optimize-cc-md Skill
 
-**Status**: Not Started
+**Status**: In Progress (Task 3.1 complete)
 **Duration**: 3-4 days
 **Dependencies**: Phase 2.7 complete (establishes quality standards)
 
@@ -1307,11 +1307,11 @@ optimize-cc-md/
 
 ### Tasks
 
-- [ ] **Task 3.1**: Design progressive disclosure structure
-  - [ ] Map out what goes in SKILL.md (core workflow)
-  - [ ] Map out what goes in references/ (detailed strategies)
-  - [ ] Ensure SKILL.md stays under 5000 words
-  - [ ] Document design in task comments
+- [x] **Task 3.1**: Design progressive disclosure structure
+  - [x] Map out what goes in SKILL.md (core workflow)
+  - [x] Map out what goes in references/ (detailed strategies)
+  - [x] Ensure SKILL.md stays under 5000 words (targeting <3000)
+  - [x] Document design in optimize-cc-md-structure-design.md
 
 - [ ] **Task 3.2**: Create skill directory structure
   - [ ] `.claude/skills/optimize-cc-md/`
