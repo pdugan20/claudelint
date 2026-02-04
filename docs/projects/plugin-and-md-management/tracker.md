@@ -1327,8 +1327,8 @@ optimize-cc-md/
   - [x] Version: 1.0.0
   - [x] Keep under 1024 characters
 
-- [ ] **Task 3.4**: Write core workflow in SKILL.md
-  - [ ] Core workflow (keep concise):
+- [x] **Task 3.4**: Write core workflow in SKILL.md
+  - [x] Core workflow (keep concise):
     - Step 1: Run `claudelint check-claude-md --explain`
     - Step 2: Read user's CLAUDE.md file with Read tool
     - Step 3: Explain violations in conversational language
@@ -1337,8 +1337,8 @@ optimize-cc-md/
     - Step 6: Use Edit tool to make changes
     - Step 7: Use Write tool to create @import files if splitting
     - Step 8: Show before/after comparison
-  - [ ] Link to references for detailed strategies
-  - [ ] Keep SKILL.md under 3,000 words (target for interactive skill)
+  - [x] Link to references for detailed strategies
+  - [x] Keep SKILL.md under 3,000 words (target for interactive skill)
 
 - [ ] **Task 3.5**: Create reference documents
   - [ ] `references/size-optimization.md`:
