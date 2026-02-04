@@ -2,6 +2,12 @@
 name: validate-skills
 description: Validate Claude Code skills for schema, naming, documentation, and security. Use when you want to "check my skill", "validate skill syntax", "why isn't my skill loading", "skill errors", or "dangerous command detected". Validates SKILL.md frontmatter, allowed-tools, file references, directory organization, and shell script security.
 version: 1.0.0
+tags:
+  - validation
+  - claude-code
+  - linting
+dependencies:
+  - npm:claude-code-lint
 allowed-tools:
   - Bash
   - Read
@@ -26,41 +32,41 @@ claudelint validate-skills
 
 ## Examples
 
-### Example 1: Fix skill naming
+### Example 1: Skill appears in slash menu but won't execute
 
-**User says**: "My skill isn't loading in Claude"
+**User says**: "I see my skill /deploy-app in the menu but when I run it, Claude says it can't find it"
 **What happens**:
 
-1. Checks if directory name matches SKILL.md `name:` field
-2. Validates kebab-case naming convention (lowercase-with-hyphens)
-3. Checks for reserved words (claude, anthropic)
-4. Shows correct name format
+1. Checks directory name is `deploy-app/` but SKILL.md has `name: deployApp`
+2. Shows mismatch: directory uses kebab-case, frontmatter uses camelCase
+3. Explains skill names must match directory name exactly
+4. Shows fix: change frontmatter to `name: deploy-app`
 
-**Result**: Skill renamed correctly and loads properly in Claude Code
+**Result**: Skill executes correctly after fixing name mismatch
 
-### Example 2: Fix tool permissions
+### Example 2: Claude won't use Bash tool even though it's needed
 
-**User says**: "Getting 'unknown tool' error"
+**User says**: "My skill script.sh needs to run bash commands but Claude says 'Tool Bash not allowed'"
 **What happens**:
 
-1. Validates `allowed-tools` array syntax
-2. Checks each tool name against valid tools list
-3. Shows correct capitalization (PascalCase: Bash, Read, Write)
-4. Suggests corrections for common mistakes
+1. Checks SKILL.md frontmatter has `allowed-tools: ["bash", "read"]`
+2. Shows tool names are case-sensitive - found lowercase "bash" instead of "Bash"
+3. Lists all valid tool names with correct capitalization
+4. Shows fix: `allowed-tools: ["Bash", "Read"]`
 
-**Result**: allowed-tools field corrected and skill has proper permissions
+**Result**: Claude can now execute bash commands in the skill
 
-### Example 3: Security review
+### Example 3: Skill validation blocks git commit with "dangerous command"
 
-**User says**: "Need to validate shell scripts are safe"
+**User says**: "Pre-commit hook is failing on my cleanup skill with 'dangerous command detected: rm -rf'"
 **What happens**:
 
-1. Scans scripts for dangerous commands (rm -rf, dd, mkfs)
-2. Checks for eval/exec usage
-3. Detects path traversal patterns
-4. Suggests safer alternatives for flagged commands
+1. Scans cleanup.sh script, finds `rm -rf $TEMP_DIR`
+2. Flags it because $TEMP_DIR could be empty or `/` (dangerous)
+3. Suggests safer alternative: validate directory first, use explicit path
+4. Shows fixed version: `[[ -n "$TEMP_DIR" && "$TEMP_DIR" != "/" ]] && rm -rf "$TEMP_DIR"`
 
-**Result**: Security issues identified and resolved before deployment
+**Result**: Skill now validates paths before deletion, commit succeeds
 
 ### Command Examples
 

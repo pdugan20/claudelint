@@ -2,6 +2,12 @@
 name: validate-all
 description: Run comprehensive claudelint validation on all Claude Code project files. Use when you want to "check everything", "run all validators", "full audit", "validate my entire project", or "what's wrong with my config". Validates CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests.
 version: 1.0.0
+tags:
+  - validation
+  - claude-code
+  - linting
+dependencies:
+  - npm:claude-code-lint
 allowed-tools:
   - Bash
   - Read
@@ -31,39 +37,41 @@ Available flags:
 
 ## Examples
 
-### Example 1: Full project audit
+### Example 1: Plugin won't load after changes
 
-**User says**: "Check everything in my project"
+**User says**: "I just updated my CLAUDE.md and added a new skill, but now my plugin isn't loading"
 **What happens**:
 
 1. Skill runs `claudelint check-all`
-2. Validates all file types: CLAUDE.md, skills, settings, hooks, MCP servers, plugins
-3. Shows summary of issues found across all validators
-4. Provides file-specific error details
+2. Finds CLAUDE.md exceeds 50KB (blocking issue)
+3. Finds new skill has wrong capitalization in allowed-tools
+4. Shows both issues need fixing before plugin will load
 
-**Result**: User gets comprehensive report of all validation issues in one command
+**Result**: User identifies why plugin broke and fixes both issues
 
-### Example 2: CI/CD integration
+### Example 2: Pre-commit validation failed
 
-**User says**: "Set up validation for my CI pipeline"
-**What happens**:
-
-1. Skill suggests adding `claudelint check-all --warnings-as-errors` to CI
-2. Explains exit codes (0 = pass, 1/2 = fail)
-3. Shows JSON output format for parsing: `--format json`
-
-**Result**: User knows how to integrate claudelint into automated workflows
-
-### Example 3: Debug multiple validation failures
-
-**User says**: "I'm getting errors from multiple validators, where do I start?"
+**User says**: "My git pre-commit hook is failing but I don't know which validator is the problem"
 **What happens**:
 
 1. Skill runs `claudelint check-all --verbose`
-2. Shows which validators failed (e.g., skills, CLAUDE.md, hooks)
-3. Suggests running individual validators for detailed output
+2. Shows validate-mcp failed: invalid transport type "sse" (deprecated)
+3. Shows validate-hooks passed, validate-skills passed, etc.
+4. Points to specific .mcp.json file and line number
 
-**Result**: User understands which areas need attention and how to debug each
+**Result**: User fixes the one failing validator (MCP config) and commit succeeds
+
+### Example 3: After npm install, verify everything still works
+
+**User says**: "I just upgraded claude-code-lint, make sure I didn't break anything"
+**What happens**:
+
+1. Skill runs `claudelint check-all`
+2. Detects new rules flagging previously-allowed patterns
+3. Shows deprecation warnings for old syntax
+4. Suggests migration path for deprecated features
+
+**Result**: User knows what needs updating after version upgrade
 
 ### Command Examples
 

@@ -2,6 +2,12 @@
 name: validate-hooks
 description: Validate Claude Code hooks.json files for schema, events, and commands. Use when you want to "check my hooks", "validate hooks.json", "hook errors", "why isn't my hook firing", or "hook event types". Validates hook events, types (command, prompt, agent), matcher patterns, and command script references.
 version: 1.0.0
+tags:
+  - validation
+  - claude-code
+  - linting
+dependencies:
+  - npm:claude-code-lint
 allowed-tools:
   - Bash
   - Read

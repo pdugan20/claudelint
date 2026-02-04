@@ -2,6 +2,12 @@
 name: validate-cc-md
 description: Validate CLAUDE.md files for size, imports, and structure. Use when you want to "check my CLAUDE.md", "audit my config", "why is my CLAUDE.md too long", "validate imports", or "fix CLAUDE.md errors". Checks file size limits (30KB warning, 50KB error), @import directives, frontmatter in .claude/rules/, and section organization.
 version: 1.0.0
+tags:
+  - validation
+  - claude-code
+  - linting
+dependencies:
+  - npm:claude-code-lint
 allowed-tools:
   - Bash
   - Read
@@ -31,41 +37,41 @@ claudelint check-claude-md
 
 ## Examples
 
-### Example 1: Fix size warnings
+### Example 1: Claude says context is too large
 
-**User says**: "My CLAUDE.md is too long"
+**User says**: "Claude keeps saying my instructions are too long and won't load them"
 **What happens**:
 
 1. Skill runs `claudelint check-claude-md`
-2. Shows file size (e.g., "35KB / 30KB warning threshold")
-3. Lists largest sections that could be split out
-4. Suggests using @import to move content to .claude/rules/
+2. Shows CLAUDE.md is 52KB (exceeds 50KB hard limit)
+3. Identifies 3 largest sections: API docs (18KB), Git workflow (12KB), Testing guide (8KB)
+4. Shows how to split: create .claude/rules/api.md and add `@import .claude/rules/api.md`
 
-**Result**: User knows which sections to move to @imports and how to structure them
+**Result**: User splits sections, CLAUDE.md now 28KB, Claude loads it successfully
 
-### Example 2: Debug missing imports
+### Example 2: Import shows "file not found" in Claude
 
-**User says**: "Why isn't my import working?"
+**User says**: "I added @import .claude/rules/testing.md but Claude says the file doesn't exist"
 **What happens**:
 
-1. Skill checks @import directive syntax
-2. Verifies target file exists at the specified path
-3. Checks for circular dependencies
-4. Shows correct path format: `@import .claude/rules/filename.md`
+1. Skill validates @import path
+2. Finds file is at `.claude/rules/tests.md` not `testing.md` (typo)
+3. Also checks .claude/rules/tests.md exists and has valid frontmatter
+4. Shows corrected import line
 
-**Result**: Import error resolved with specific fix suggestion
+**Result**: User fixes filename typo, import loads correctly
 
-### Example 3: Validate frontmatter
+### Example 3: Rules file won't apply to specific paths
 
-**User says**: "What's wrong with my .claude/rules/ file?"
+**User says**: "My .claude/rules/backend.md isn't applying when I edit backend files"
 **What happens**:
 
-1. Validates YAML frontmatter syntax
-2. Checks required `paths` field is present
-3. Ensures frontmatter is properly closed with `---`
-4. Shows example of correct frontmatter structure
+1. Skill checks frontmatter in .claude/rules/backend.md
+2. Finds `paths: "backend/*"` (string) should be `paths: ["backend/**/*"]` (array with glob)
+3. Explains paths field requires array of glob patterns
+4. Shows corrected frontmatter
 
-**Result**: Frontmatter errors fixed and file loads correctly
+**Result**: Rules now apply to backend directory correctly
 
 ### Command Examples
 
