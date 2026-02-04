@@ -1,45 +1,48 @@
 # Manual Testing Infrastructure Refactor - Tracker
 
-**Status:** Planning
+**Status:** In Progress - MVP Complete
 **Started:** 2026-02-04
+**MVP Completed:** 2026-02-04
 **Target Completion:** TBD
 
 ## Overview
 
 Track progress on refactoring manual testing infrastructure to use realistic fixture projects and proper npm package installation.
 
-**Current Phase:** Phase 0 - Planning
-**Completion:** 0/30 tasks (0%)
+**Current Phase:** Phase 6 - Remaining Tasks & Cleanup
+**MVP Status:** ✓ Complete (Phases 0-5)
+**Completion:** 25/42 tasks (60%)
 
 ## Quick Status
 
 | Phase | Tasks | Complete | Status |
 |-------|-------|----------|--------|
-| Phase 0: Planning | 2 | 0 | Not Started |
-| Phase 1: Fixture Projects | 8 | 0 | Not Started |
-| Phase 2: Shared Utilities | 3 | 0 | Not Started |
-| Phase 3: Update Task 2 | 3 | 0 | Not Started |
-| Phase 4: Documentation | 4 | 0 | Not Started |
-| Phase 5: Testing & Validation | 5 | 0 | Not Started |
-| Phase 6: Remaining Tasks | 3 | 0 | Not Started |
-| Phase 7: Cleanup | 2 | 0 | Not Started |
-| **Total** | **30** | **0** | **0%** |
+| Phase 0: Planning | 2 | 2 | ✓ Complete |
+| Phase 1: Fixture Projects | 8 | 8 | ✓ Complete |
+| Phase 2: Shared Utilities | 3 | 3 | ✓ Complete |
+| Phase 3: Update Task 2 | 3 | 3 | ✓ Complete |
+| Phase 4: Documentation | 4 | 4 | ✓ Complete |
+| Phase 5: Testing & Validation | 5 | 5 | ✓ Complete |
+| Phase 6: Remaining Tasks | 5 | 0 | In Progress |
+| Phase 7: Fixtures Cleanup | 6 | 0 | Not Started |
+| Phase 8: Documentation Improvements | 6 | 0 | Not Started |
+| **Total** | **42** | **25** | **60%** |
 
 ---
 
-## Phase 0: Planning & Review
+## Phase 0: Planning & Review ✓ COMPLETE
 
 **Goal:** Review and approve approach before implementation
 
 ### Tasks
 
-- [ ] **0.1** Review implementation plan
+- [x] **0.1** Review implementation plan
   - Read implementation-plan.md
   - Verify approach is sound
   - Identify any gaps or concerns
   - **Acceptance:** Plan approved by project owner
 
-- [ ] **0.2** Review research findings
+- [x] **0.2** Review research findings
   - Read research-findings.md
   - Verify external sources support approach
   - Confirm best practices align with project goals
@@ -47,13 +50,13 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 0 Acceptance Criteria:**
 
-- [ ] All project documentation reviewed
-- [ ] Approach validated against best practices
-- [ ] Ready to begin implementation
+- [x] All project documentation reviewed
+- [x] Approach validated against best practices
+- [x] Ready to begin implementation
 
 ---
 
-## Phase 1: Create Fixture Projects
+## Phase 1: Create Fixture Projects ✓ COMPLETE
 
 **Goal:** Create realistic test fixtures that manual tests will use
 
@@ -63,39 +66,39 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 #### 1.1 Primary Fixture Structure
 
-- [ ] **1.1.1** Create fixture directory structure
+- [x] **1.1.1** Create fixture directory structure
   - Create `tests/fixtures/projects/react-typescript-bloated/`
   - Create `tests/fixtures/projects/react-typescript-bloated/.expected/`
   - Create `tests/fixtures/projects/react-typescript-bloated/.expected/.claude/rules/`
   - **Acceptance:** Directory structure exists
 
-- [ ] **1.1.2** Create package.json
+- [x] **1.1.2** Create package.json
   - Add React and TypeScript dependencies
   - Include realistic scripts (dev, build, test, lint)
   - Mark as private fixture
   - **Acceptance:** Valid package.json, npm install works
 
-- [ ] **1.1.3** Create tsconfig.json
+- [x] **1.1.3** Create tsconfig.json
   - Configure for React + TypeScript
   - Use modern settings (ES2020, strict mode)
   - **Acceptance:** Valid TypeScript configuration
 
 #### 1.2 Fixture Source Code
 
-- [ ] **1.2.1** Create src/App.tsx
+- [x] **1.2.1** Create src/App.tsx
   - Minimal but realistic React component
   - Uses TypeScript interfaces
   - Demonstrates basic patterns
   - **Acceptance:** File exists, TypeScript compiles
 
-- [ ] **1.2.2** Create src/index.tsx
+- [x] **1.2.2** Create src/index.tsx
   - React root render
   - Imports App component
   - **Acceptance:** File exists, TypeScript compiles
 
 #### 1.3 Bloated CLAUDE.md
 
-- [ ] **1.3.1** Create bloated CLAUDE.md
+- [x] **1.3.1** Create bloated CLAUDE.md
   - Adapt from `tests/fixtures/manual/bloated-realistic.md`
   - Reference actual files (App.tsx, index.tsx)
   - Include generic React advice (~150 lines)
@@ -106,30 +109,30 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 #### 1.4 Expected Outputs
 
-- [ ] **1.4.1** Create .expected/CLAUDE.md
+- [x] **1.4.1** Create .expected/CLAUDE.md
   - Optimized version (~3KB, ~150 lines)
   - Only project-specific content
   - References to @import files
   - **Acceptance:** File exists, size ~3KB, well-optimized
 
-- [ ] **1.4.2** Create .expected/.claude/rules/react-patterns.md
+- [x] **1.4.2** Create .expected/.claude/rules/react-patterns.md
   - Generic React patterns extracted
   - 20-30 lines focused on component structure
   - **Acceptance:** File exists, content is generic React advice
 
-- [ ] **1.4.3** Create .expected/.claude/rules/typescript-style.md
+- [x] **1.4.3** Create .expected/.claude/rules/typescript-style.md
   - TypeScript style guide extracted
   - 20-30 lines on TS conventions
   - **Acceptance:** File exists, content is TS style rules
 
-- [ ] **1.4.4** Create .expected/.claude/rules/testing.md
+- [x] **1.4.4** Create .expected/.claude/rules/testing.md
   - Testing guidelines extracted
   - 20-30 lines on test structure
   - **Acceptance:** File exists, content is testing advice
 
 #### 1.5 Documentation
 
-- [ ] **1.5.1** Create fixture README.md
+- [x] **1.5.1** Create fixture README.md
   - Document purpose of fixture
   - List issues present in CLAUDE.md
   - Document expected optimization results
@@ -138,16 +141,16 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 1 Acceptance Criteria:**
 
-- [ ] Fixture directory structure complete
-- [ ] TypeScript compiles without errors (`npx tsc --noEmit`)
-- [ ] npm install works in fixture directory
-- [ ] CLAUDE.md is ~12KB with realistic bloat
-- [ ] Expected outputs created (~3KB optimized + 3 @import files)
-- [ ] Fixture README documents everything clearly
+- [x] Fixture directory structure complete
+- [x] TypeScript compiles without errors (`npx tsc --noEmit`)
+- [x] npm install works in fixture directory
+- [x] CLAUDE.md is ~12KB with realistic bloat
+- [x] Expected outputs created (~3KB optimized + 3 @import files)
+- [x] Fixture README documents everything clearly
 
 ---
 
-## Phase 2: Create Shared Utilities
+## Phase 2: Create Shared Utilities ✓ COMPLETE
 
 **Goal:** Build reusable scripts for setup/verification
 
@@ -155,10 +158,10 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ### Tasks
 
-- [ ] **2.1** Create scripts/test/manual/lib/ directory
+- [x] **2.1** Create scripts/test/manual/lib/ directory
   - **Acceptance:** Directory exists
 
-- [ ] **2.2** Create lib/build-package.sh
+- [x] **2.2** Create lib/build-package.sh
   - Runs npm run clean
   - Runs npm run build
   - Runs npm pack
@@ -166,7 +169,7 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
   - Handles errors gracefully
   - **Acceptance:** Script runs, creates .tgz, sets env var
 
-- [ ] **2.3** Create lib/install-in-workspace.sh
+- [x] **2.3** Create lib/install-in-workspace.sh
   - Takes workspace path and package .tgz as arguments
   - Runs npm install for fixture dependencies
   - Installs claudelint from .tgz
@@ -174,7 +177,7 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
   - Validates all steps completed
   - **Acceptance:** Script runs, claudelint installed, plugin.json created
 
-- [ ] **2.4** Create lib/verify-structure.sh
+- [x] **2.4** Create lib/verify-structure.sh
   - Checks CLAUDE.md exists
   - Reports file size
   - Checks for .claude/rules/ directory
@@ -184,14 +187,14 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 2 Acceptance Criteria:**
 
-- [ ] All 3 shared utility scripts created
-- [ ] Scripts have proper error handling
-- [ ] Scripts tested manually and work correctly
-- [ ] Scripts are documented with usage comments
+- [x] All 3 shared utility scripts created
+- [x] Scripts have proper error handling
+- [x] Scripts tested manually and work correctly
+- [x] Scripts are documented with usage comments
 
 ---
 
-## Phase 3: Update Task 2 Scripts
+## Phase 3: Update Task 2 Scripts ✓ COMPLETE
 
 **Goal:** Refactor Task 2 to use fixtures and npm pack
 
@@ -199,7 +202,7 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ### Tasks
 
-- [ ] **3.1** Update task-2-optimize-with-skill/setup.sh
+- [x] **3.1** Update task-2-optimize-with-skill/setup.sh
   - Source build-package.sh to create .tgz
   - Remove old bloated-realistic.md copy
   - Copy react-typescript-bloated fixture instead
@@ -207,14 +210,14 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
   - Update output messages
   - **Acceptance:** Script runs, creates realistic test workspace
 
-- [ ] **3.2** Update task-2-optimize-with-skill/verify.sh
+- [x] **3.2** Update task-2-optimize-with-skill/verify.sh
   - Use verify-structure.sh for common checks
   - Add Task 2 specific checks
   - Compare against .expected/ outputs
   - Report size differences
   - **Acceptance:** Script runs, validates optimization results
 
-- [ ] **3.3** Test Task 2 end-to-end
+- [x] **3.3** Test Task 2 end-to-end
   - Run setup.sh
   - Manually test in Claude session
   - Run verify.sh
@@ -223,15 +226,15 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 3 Acceptance Criteria:**
 
-- [ ] Task 2 setup creates realistic test workspace
-- [ ] Claudelint installed via npm pack (not symlink)
-- [ ] Manual testing produces meaningful results
-- [ ] Verification validates against expected outputs
-- [ ] Workflow is repeatable
+- [x] Task 2 setup creates realistic test workspace
+- [x] Claudelint installed via npm pack (not symlink)
+- [x] Manual testing produces meaningful results
+- [x] Verification validates against expected outputs
+- [x] Workflow is repeatable
 
 ---
 
-## Phase 4: Update Documentation
+## Phase 4: Update Documentation ✓ COMPLETE
 
 **Goal:** Update all documentation to reflect new approach
 
@@ -239,7 +242,7 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ### Tasks
 
-- [ ] **4.1** Update docs/testing/manual-testing-runbook.md
+- [x] **4.1** Update docs/testing/manual-testing-runbook.md
   - Add new section: "Understanding Fixture Projects"
   - Update Task 2 section with new workflow
   - Document npm pack installation
@@ -247,21 +250,21 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
   - Add troubleshooting for npm installation
   - **Acceptance:** Runbook accurately describes new Task 2 workflow
 
-- [ ] **4.2** Update scripts/test/manual/README.md
+- [x] **4.2** Update scripts/test/manual/README.md
   - Document fixture projects approach
   - Document shared utilities in lib/
   - Explain npm pack workflow
   - Update directory structure diagram
   - **Acceptance:** README reflects current architecture
 
-- [ ] **4.3** Create tests/fixtures/projects/README.md
+- [x] **4.3** Create tests/fixtures/projects/README.md
   - Explain purpose of fixture projects
   - Document structure expectations
   - List available fixtures
   - Link to best practices doc
   - **Acceptance:** README created, comprehensive
 
-- [ ] **4.4** Update main tracker (docs/tracker.md)
+- [x] **4.4** Update main tracker (docs/tracker.md)
   - Mark old manual testing approach as deprecated
   - Link to this refactor project
   - Update Phase 5 tasks to reflect new approach
@@ -269,14 +272,14 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 4 Acceptance Criteria:**
 
-- [ ] Manual testing runbook updated for new approach
-- [ ] All README files reflect current state
-- [ ] Documentation is clear and complete
-- [ ] No outdated information remains
+- [x] Manual testing runbook updated for new approach
+- [x] All README files reflect current state
+- [x] Documentation is clear and complete
+- [x] No outdated information remains
 
 ---
 
-## Phase 5: Testing & Validation
+## Phase 5: Testing & Validation ✓ COMPLETE
 
 **Goal:** Validate entire workflow works correctly
 
@@ -284,26 +287,26 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ### Tasks
 
-- [ ] **5.1** Test fixture project validity
+- [x] **5.1** Test fixture project validity
   - Run `cd tests/fixtures/projects/react-typescript-bloated && npm install`
   - Run `npx tsc --noEmit`
   - Verify no errors
   - **Acceptance:** Fixture is a valid TypeScript project
 
-- [ ] **5.2** Test build-package.sh
+- [x] **5.2** Test build-package.sh
   - Run script independently
   - Verify .tgz created
   - Verify PACKAGE_TGZ env var set
   - **Acceptance:** Script produces valid package
 
-- [ ] **5.3** Test install-in-workspace.sh
+- [x] **5.3** Test install-in-workspace.sh
   - Create temp directory with fixture
   - Run install script
   - Verify claudelint installed
   - Verify plugin.json created
   - **Acceptance:** Installation works correctly
 
-- [ ] **5.4** Test full Task 2 workflow
+- [x] **5.4** Test full Task 2 workflow
   - Run setup.sh from scratch
   - Open Claude in test workspace
   - Trigger optimize-cc-md skill
@@ -311,7 +314,7 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
   - Run verify.sh
   - **Acceptance:** Complete workflow successful
 
-- [ ] **5.5** Test repeatability
+- [x] **5.5** Test repeatability
   - Run cleanup.sh
   - Run setup.sh again
   - Verify identical results
@@ -319,11 +322,11 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 **Phase 5 Acceptance Criteria:**
 
-- [ ] All scripts execute without errors
-- [ ] Task 2 produces expected optimization results
-- [ ] Workflow is repeatable across runs
-- [ ] Manual testing provides meaningful validation
-- [ ] MVP (Task 2) complete and proven
+- [x] All scripts execute without errors
+- [x] Task 2 produces expected optimization results
+- [x] Workflow is repeatable across runs
+- [x] Manual testing provides meaningful validation
+- [x] MVP (Task 2) complete and proven
 
 ---
 
@@ -363,32 +366,129 @@ Track progress on refactoring manual testing infrastructure to use realistic fix
 
 ---
 
-## Phase 7: Cleanup & Finalization
+## Phase 7: Fixtures Cleanup
 
-**Goal:** Remove old approach, finalize documentation
+**Goal:** Clean up deprecated and unused fixtures, improve documentation
 
-**Dependencies:** Phase 6 complete
+**Dependencies:** Phase 6 complete (Task 1 must be updated first)
+
+**Based on:** tests/fixtures/ASSESSMENT.md findings
 
 ### Tasks
 
-- [ ] **7.1** Deprecate old fixtures
-  - Mark `tests/fixtures/manual/` as deprecated
-  - Add README pointing to new location
-  - Consider moving or archiving old files
-  - **Acceptance:** Old fixtures clearly deprecated
+- [ ] **7.1** Investigate and remove unused skills/ fixtures
+  - Check if skills/ fixtures were supposed to be used
+  - Search codebase for any references (found: 0)
+  - If truly unused, remove the directory
+  - Document decision in ASSESSMENT.md
+  - **Acceptance:** skills/ fixtures either in use or removed
 
-- [ ] **7.2** Final documentation review
-  - Review all docs for consistency
-  - Ensure no references to old approach
-  - Update any missed documentation
-  - **Acceptance:** All docs accurate and consistent
+- [ ] **7.2** Add deprecation notice to manual/README.md
+  - Add clear DEPRECATED header
+  - Point to new location (tests/fixtures/projects/)
+  - Link to migration guide
+  - Explain why it's deprecated
+  - **Acceptance:** Clear deprecation notice added
+
+- [ ] **7.3** Create claude-md/README.md
+  - Document what each fixture tests
+  - Explain naming conventions
+  - List which tests use which fixtures
+  - Add usage examples
+  - **Acceptance:** claude-md/ fixtures documented
+
+- [ ] **7.4** Update Task 1 to use projects/ fixtures
+  - Task 1 currently uses deprecated manual/ fixtures
+  - Update setup.sh to use react-typescript-bloated
+  - Update verify.sh to use new structure
+  - Test Task 1 workflow with new approach
+  - **Acceptance:** Task 1 uses projects/ fixtures successfully
+
+- [ ] **7.5** Add top-level tests/fixtures/README.md
+  - Overview of all fixture directories
+  - Explain organization strategy
+  - Link to individual fixture READMEs
+  - Document best practices for adding fixtures
+  - **Acceptance:** Top-level fixtures README created
+
+- [ ] **7.6** Remove manual/ directory
+  - Verify Task 1 no longer needs it
+  - Remove tests/fixtures/manual/ completely
+  - Update any remaining references in docs
+  - **Acceptance:** manual/ directory removed, no broken references
 
 **Phase 7 Acceptance Criteria:**
 
-- [ ] Old approach fully replaced
-- [ ] Documentation complete and accurate
-- [ ] No confusion about which approach to use
-- [ ] Ready for production manual testing
+- [ ] All unused fixtures removed or documented
+- [ ] All fixture directories have READMEs
+- [ ] Deprecated fixtures clearly marked or removed
+- [ ] Task 1 uses new fixture approach
+- [ ] No confusion about fixture organization
+- [ ] Fixtures directory follows industry best practices
+
+---
+
+## Phase 8: Documentation Improvements
+
+**Goal:** Enhance documentation quality and consistency
+
+**Dependencies:** Phase 7 complete
+
+**Based on:** ASSESSMENT.md recommendations and lessons learned
+
+### Tasks
+
+- [ ] **8.1** Review fixture documentation for consistency
+  - Check all fixture READMEs use same format
+  - Ensure naming conventions are consistent
+  - Verify all fixtures document their purpose clearly
+  - Check links between documents work correctly
+  - **Acceptance:** All fixture docs follow consistent format
+
+- [ ] **8.2** Document fixture usage patterns
+  - Add section to tests/fixtures/README.md on when to use which fixture
+  - Document the difference between claude-md/, custom-rules/, and projects/
+  - Explain fixture selection guidelines
+  - Provide decision tree for choosing fixtures
+  - **Acceptance:** Clear guidance on fixture usage
+
+- [ ] **8.3** Add examples for creating new fixtures
+  - Document process for creating new project fixtures
+  - Provide template for fixture READMEs
+  - Show example of hyper-targeted fixture
+  - Document .expected/ directory conventions
+  - **Acceptance:** Creating new fixtures is well-documented
+
+- [ ] **8.4** Update best-practices.md with lessons learned
+  - Add section on what worked well
+  - Document issues encountered and solutions
+  - Add tips for avoiding common pitfalls
+  - Include examples from MVP implementation
+  - **Acceptance:** Best practices updated with real experience
+
+- [ ] **8.5** Consolidate and organize project documentation
+  - Review all docs in docs/projects/manual-testing-infrastructure-refactor/
+  - Remove redundancy between documents
+  - Ensure clear navigation between docs
+  - Update README.md with better structure
+  - **Acceptance:** Project docs are well-organized and easy to navigate
+
+- [ ] **8.6** Final documentation review
+  - Spell check all documentation
+  - Verify all code examples work
+  - Check all links are valid
+  - Ensure markdown formatting is correct
+  - Run through complete workflow following docs
+  - **Acceptance:** All documentation polished and accurate
+
+**Phase 8 Acceptance Criteria:**
+
+- [ ] All documentation follows consistent formatting
+- [ ] No broken links or references
+- [ ] New contributors can understand fixture organization
+- [ ] Creating new fixtures is straightforward
+- [ ] Lessons learned are documented
+- [ ] Ready for long-term maintenance
 
 ---
 
@@ -497,10 +597,11 @@ None (Planning phase)
 
 **Full Project Success:**
 
-- [ ] All 30 tasks completed
+- [ ] All 42 tasks completed
 - [ ] All 6 manual tests use appropriate fixtures
 - [ ] All documentation updated
 - [ ] Old approach fully deprecated
+- [ ] All unused fixtures removed or documented
 - [ ] Can execute complete manual test suite
 - [ ] Results are consistent and reliable
 
@@ -508,24 +609,48 @@ None (Planning phase)
 
 ## Timeline
 
-**Estimated:** 5-7 hours total
+**MVP Complete:** Phase 0-5 (completed 2026-02-04)
 
-- Phase 0: 0.5 hours (review)
-- Phase 1: 2-3 hours (create fixtures)
-- Phase 2: 0.5 hours (shared utilities)
-- Phase 3: 0.5 hours (update Task 2)
-- Phase 4: 1 hour (documentation)
-- Phase 5: 1 hour (testing/validation)
-- Phase 6: Defer (Tasks 3-6 expansion)
-- Phase 7: Defer (cleanup)
+**Remaining Phases:**
 
-**MVP Target:** Phase 0-5 complete (4-6 hours)
+- Phase 6: TBD (expand to remaining manual tasks)
+- Phase 7: TBD (fixtures cleanup - 6 tasks)
+- Phase 8: TBD (documentation improvements - 6 tasks)
+
+**Notes:**
+
+- MVP took approximately 4-6 hours as estimated
+- Phase 6-8 deferred until MVP proven successful
+- Cleanup phases (7-8) can be done incrementally
 
 ---
 
 ## Next Actions
 
-1. Review this tracker with project owner
-2. Get approval to proceed
-3. Begin Phase 0.1: Review implementation plan
-4. Begin Phase 1.1.1: Create fixture directory structure
+**MVP COMPLETE** - Phases 0-5 finished and committed.
+
+**Current Status:**
+
+- Task 2 (optimize-with-skill) now uses realistic fixture approach
+- All MVP documentation complete
+- All scripts tested and working
+
+**Next Steps (Choose one):**
+
+1. **Execute remaining manual tests** (Phase 6)
+   - Begin with Task 1 (optimize-without-skill)
+   - Test if current approach works or needs updates
+   - Expand to Tasks 3-6 as needed
+
+2. **Start cleanup now** (Phase 7)
+   - Remove unused skills/ fixtures
+   - Add deprecation notices
+   - Update Task 1 to use new fixtures
+   - Clean up tests/fixtures/ directory
+
+3. **Defer cleanup** (Phase 7-8)
+   - Wait until all manual tasks updated (Phase 6 complete)
+   - Then do comprehensive cleanup
+   - Finish with documentation improvements
+
+**Recommended:** Execute Phase 6 (remaining manual tests) before cleanup, to understand all requirements first.
