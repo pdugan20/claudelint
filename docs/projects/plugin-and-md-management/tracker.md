@@ -1354,16 +1354,16 @@ optimize-cc-md/
     - When to split vs consolidate
     - Naming conventions for .claude/rules/ files
 
-- [ ] **Task 3.6**: Add examples to SKILL.md (following Phase 2.7 pattern)
-  - [ ] Example 1: Fix size violations
+- [x] **Task 3.6**: Add examples to SKILL.md (following Phase 2.7 pattern)
+  - [x] Example 1: Fix size violations
     - User says: "My CLAUDE.md is too long"
     - Actions: Validate → Identify bloat → Suggest splits
     - Result: Content moved to @imports
-  - [ ] Example 2: Create import structure
+  - [x] Example 2: Create import structure
     - User says: "Help me organize my config"
     - Actions: Analyze sections → Create .claude/rules/ files → Replace with @imports
     - Result: Well-organized, modular config
-  - [ ] Example 3: Remove obvious content
+  - [x] Example 3: Remove obvious content
     - User says: "Is my CLAUDE.md too generic?"
     - Actions: Scan for generic advice → Suggest removals
     - Result: Focused, project-specific config

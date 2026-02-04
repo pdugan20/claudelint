@@ -215,7 +215,181 @@ See `references/organization-guide.md` for structural guidance.
 
 ## Examples
 
-[Examples will be added in Task 3.6]
+### Example 1: Fix Size Violations
+
+**User says:** "My CLAUDE.md is 45KB and I'm getting warnings. How do I reduce it?"
+
+**Actions Claude takes:**
+
+1. Run validation:
+
+   ```bash
+   npx claude-code-lint check-claude-md --verbose
+   ```
+
+   Output shows: "Warning: CLAUDE.md is 45KB (threshold: 30KB)"
+
+2. Read CLAUDE.md and identify largest sections:
+   - Git workflow section: 12KB (500 lines)
+   - Testing standards: 8KB (300 lines)
+   - Generic advice blocks: 5KB scattered throughout
+
+3. Explain to user:
+   "Your file is 45KB - 15KB over the warning threshold. I found:
+   - Large git workflow section (12KB) - good candidate for @import
+   - Testing standards (8KB) - should move to .claude/rules/
+   - Generic advice (~5KB) - can be removed entirely"
+
+4. Ask user what to fix:
+   - Option 1: Split git workflow to @import
+   - Option 2: Remove all generic advice
+   - Option 3: Move testing to .claude/rules/
+
+5. User chooses: "Split git workflow and remove generic advice"
+
+6. Make changes:
+
+   ```text
+   Write(.claude/rules/git-workflow.md, content: git workflow section)
+   Edit(CLAUDE.md, old: git workflow section, new: @import .claude/rules/git-workflow.md)
+   Edit(CLAUDE.md, old: generic advice blocks, new: [removed])
+   ```
+
+7. Show results:
+
+   ```bash
+   npx claude-code-lint check-claude-md --verbose
+   ```
+
+   "Success: CLAUDE.md is now 28KB (under 30KB threshold)"
+
+**Result:** File reduced from 45KB to 28KB by splitting largest section and removing bloat.
+
+### Example 2: Create Import Structure
+
+**User says:** "My CLAUDE.md has everything in one file. Help me organize it better."
+
+**Actions Claude takes:**
+
+1. Run validation and read CLAUDE.md
+
+2. Analyze structure:
+
+   ```markdown
+   # CLAUDE.md (current)
+   - Git workflow (500 lines)
+   - Testing standards (300 lines)
+   - TypeScript rules (400 lines)
+   - API conventions (250 lines)
+   - Code style (200 lines)
+   ```
+
+3. Explain organization strategy:
+   "I see 5 distinct topics that can each become focused @import files.
+   This will make your config more maintainable and easier to update."
+
+4. Suggest structure:
+
+   ```text
+   .claude/rules/
+   ├── git-workflow.md (glob: "**/*")
+   ├── testing.md (glob: "**/*.test.ts")
+   ├── typescript.md (glob: "**/*.{ts,tsx}")
+   ├── api-conventions.md (glob: "src/api/**/*.ts")
+   └── style-guide.md (glob: "src/**/*.ts")
+   ```
+
+5. Create import files with frontmatter:
+
+   ```text
+   Write(.claude/rules/git-workflow.md)
+   Write(.claude/rules/testing.md with glob frontmatter)
+   Write(.claude/rules/typescript.md with glob frontmatter)
+   Write(.claude/rules/api-conventions.md with glob frontmatter)
+   Write(.claude/rules/style-guide.md with glob frontmatter)
+   ```
+
+6. Update CLAUDE.md:
+
+   ```markdown
+   # CLAUDE.md (after)
+
+   ## Project Overview
+   Brief project-specific context.
+
+   ## Development Workflow
+   @import .claude/rules/git-workflow.md
+   @import .claude/rules/testing.md
+
+   ## Code Standards
+   @import .claude/rules/typescript.md
+   @import .claude/rules/style-guide.md
+
+   ## Architecture
+   @import .claude/rules/api-conventions.md
+   ```
+
+7. Run validation to confirm no circular imports or depth issues
+
+**Result:** Well-organized config with 5 focused @import files, each scoped to relevant file types.
+
+### Example 3: Remove Generic Content
+
+**User says:** "Is my CLAUDE.md too generic? It feels bloated."
+
+**Actions Claude takes:**
+
+1. Run validation and read CLAUDE.md
+
+2. Scan for generic patterns:
+
+   ```text
+   Grep("always", "best practice", "should", "never")
+   ```
+
+   Found 47 instances of generic advice:
+   - "Always write clean code"
+   - "Follow best practices"
+   - "Never commit commented code"
+   - "Use meaningful variable names"
+   - "Test your code thoroughly"
+
+3. Explain to user:
+   "I found 47 generic statements that Claude already knows. These add ~5KB
+   without providing project-specific value. For example:
+
+   Generic: 'Always write clean code'
+   vs
+   Project-specific: 'Use PascalCase for React components, camelCase for hooks'"
+
+4. Show examples of what will be removed:
+
+   ```diff
+   - Always write clean, maintainable code
+   - Follow SOLID principles
+   - Use descriptive variable names
+   - Write tests for all new features
+   - Document your functions
+   + (removed - Claude already knows these principles)
+   ```
+
+5. Ask user: "Remove all 47 generic statements?"
+
+6. User confirms. Make edits:
+
+   ```text
+   Edit(CLAUDE.md, remove all generic advice blocks)
+   ```
+
+7. Show comparison:
+
+   ```text
+   Before: 38KB with generic advice
+   After: 33KB, all project-specific
+   Removed: 5KB of obvious/generic content
+   ```
+
+**Result:** Focused config with only project-specific guidance. File size reduced by 5KB.
 
 ## Troubleshooting
 
