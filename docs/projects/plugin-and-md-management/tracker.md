@@ -1319,13 +1319,13 @@ optimize-cc-md/
   - [x] No README.md (forbidden in skills)
   - [x] Optional: `references/` for best practices examples
 
-- [ ] **Task 3.3**: Write SKILL.md frontmatter (following Phase 2.7 standards)
-  - [ ] Name: `optimize-cc-md`
-  - [ ] Description with trigger phrases: "Interactively help users optimize their CLAUDE.md files. Use when you want to 'optimize my CLAUDE.md', 'fix my config', 'my CLAUDE.md is too long', 'improve organization', or 'split my CLAUDE.md'. Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure."
-  - [ ] Allowed tools: Bash, Read, Edit, Write, Grep
-  - [ ] Metadata: author, category (automation), documentation
-  - [ ] Version: 1.0.0
-  - [ ] Keep under 1024 characters
+- [x] **Task 3.3**: Write SKILL.md frontmatter (following Phase 2.7 standards)
+  - [x] Name: `optimize-cc-md`
+  - [x] Description with trigger phrases: "Interactively help users optimize their CLAUDE.md files. Use when you want to 'optimize my CLAUDE.md', 'fix my config', 'my CLAUDE.md is too long', 'improve organization', or 'split my CLAUDE.md'. Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure."
+  - [x] Allowed tools: Bash, Read, Edit, Write, Grep
+  - [x] Metadata: author, category (automation), documentation
+  - [x] Version: 1.0.0
+  - [x] Keep under 1024 characters
 
 - [ ] **Task 3.4**: Write core workflow in SKILL.md
   - [ ] Core workflow (keep concise):
