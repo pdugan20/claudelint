@@ -68,8 +68,11 @@ npx claudelint check-all
 # Use skills with namespace
 /claudelint:validate-all
 /claudelint:validate-cc-md
+/claudelint:optimize-cc-md
 /claudelint:format-cc
 ```
+
+**For plugin-only users**: See [Plugin README](.claude-plugin/README.md) for detailed plugin documentation focused on interactive Claude sessions.
 
 **Available Skills:**
 
@@ -81,6 +84,7 @@ npx claudelint check-all
 - `validate-mcp` - Validate MCP server configuration
 - `validate-plugin` - Validate plugin.json manifest
 - `format-cc` - Format Claude Code files
+- `optimize-cc-md` - Interactively optimize CLAUDE.md files (NEW)
 
 ## Installation Methods Comparison
 
@@ -89,7 +93,7 @@ npx claudelint check-all
 | **Use Case**     | CI/CD, automation, scripts                | Interactive Claude sessions                  |
 | **Installation** | `npm install --save-dev claude-code-lint` | `/plugin install github:pdugan20/claudelint` |
 | **CLI Commands** | Yes - All commands available              | Yes - Available if npm installed in repo     |
-| **Skills**       | No - Not available                        | Yes - All 8 skills via `/claudelint:*`       |
+| **Skills**       | No - Not available                        | Yes - All 9 skills via `/claudelint:*`       |
 | **Updates**      | `npm update -g`                           | `/plugin update claudelint`                  |
 | **Best For**     | Automated workflows                       | Claude helping you fix issues                |
 
@@ -346,9 +350,32 @@ After installing as a plugin, use skills with the `claudelint:` namespace:
 /claudelint:validate-mcp      # MCP servers
 /claudelint:validate-plugin   # plugin.json
 
-# Format Claude Code files
-/claudelint:format-cc
+# Optimize and format
+/claudelint:optimize-cc-md    # Interactively optimize CLAUDE.md
+/claudelint:format-cc         # Format Claude Code files
 ```
+
+Or simply ask Claude in natural language:
+
+- "Check my Claude Code project"
+- "Validate my CLAUDE.md"
+- "Help me optimize my CLAUDE.md - it's too long"
+- "Is my skill configured correctly?"
+
+**optimize-cc-md interactive workflow:**
+
+When you use `/claudelint:optimize-cc-md` or ask "optimize my CLAUDE.md", Claude will:
+
+1. Run validation to identify issues
+2. Read and analyze your CLAUDE.md
+3. Explain violations conversationally
+4. Identify bloat and suggest improvements
+5. Ask what you want to fix first
+6. Make edits with your approval (using Edit/Write tools)
+7. Create @import files to split content if needed
+8. Show before/after results
+
+This is an interactive workflow - Claude guides you through optimization.
 
 ### As Claude Code Hook
 

@@ -1495,14 +1495,14 @@ optimize-cc-md/
 
 ### Tasks
 
-- [ ] **Task 4.1**: Create plugin-specific README
-  - [ ] NOT the same as npm package README.md
-  - [ ] Create `.claude-plugin/README.md` for GitHub plugin users
-  - [ ] Focus on plugin capabilities (skill descriptions)
-  - [ ] Installation for Claude.ai users (non-npm flow)
-  - [ ] Positioning: "Focus on outcomes, not features" (Anthropic p20)
-  - [ ] Clear value proposition for plugin installation
-  - [ ] Link to npm package README for CLI users
+- [x] **Task 4.1**: Create plugin-specific README
+  - [x] NOT the same as npm package README.md
+  - [x] Create `.claude-plugin/README.md` for GitHub plugin users
+  - [x] Focus on plugin capabilities (skill descriptions)
+  - [x] Installation for Claude.ai users (non-npm flow)
+  - [x] Positioning: "Focus on outcomes, not features" (Anthropic p20)
+  - [x] Clear value proposition for plugin installation
+  - [x] Link to npm package README for CLI users
 
 **Example structure**:
 
@@ -1539,12 +1539,12 @@ Simply ask Claude to validate your files:
 Requires `claude-code-lint` npm package for CLI commands.
 ```
 
-- [ ] **Task 4.2**: Update main npm README
-  - [ ] Add optimize-cc-md to skills list
-  - [ ] Document skill namespace usage (`/claudelint:optimize-cc-md`)
-  - [ ] Update feature list
-  - [ ] Add optimize-cc-md usage example
-  - [ ] Link to plugin README for plugin-only users
+- [x] **Task 4.2**: Update main npm README
+  - [x] Add optimize-cc-md to skills list
+  - [x] Document skill namespace usage (`/claudelint:optimize-cc-md`)
+  - [x] Update feature list (9 skills instead of 8)
+  - [x] Add optimize-cc-md usage example (interactive workflow)
+  - [x] Link to plugin README for plugin-only users
 
 - [ ] **Task 4.3**: Update skill quality standards documentation
   - [ ] Create `docs/skill-development.md` or update existing
