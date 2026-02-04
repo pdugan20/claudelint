@@ -279,6 +279,86 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 7. ✓ Test the rule with `npm test`
 8. ✓ Run validation on project: `npm run validate`
 
+## Contributing Skills
+
+Skills are interactive capabilities that allow Claude to help users validate, optimize, and fix their Claude Code projects through natural conversation.
+
+### Skill Quality Standards
+
+All skills must follow Anthropic's best practices for skill development. See [docs/skill-development.md](docs/skill-development.md) for complete guide.
+
+**Required for all skills:**
+
+1. **Description with trigger phrases** - Must include what, when, triggers, and capabilities
+2. **Proper naming** - No single-word verbs, use suffixes like `-all`, `-cc`, `-cc-md`
+3. **Automated validation** - Must pass `claudelint validate-skills`
+4. **Manual testing** - Trigger phrases tested, functionality verified
+
+**Required for complex skills:**
+
+1. **Examples section** - Scenario-based examples (User says → Actions → Result)
+2. **Troubleshooting section** - For skills with >3 scripts or that edit files
+
+**Recommended:**
+
+1. **Progressive disclosure** - For skills with >3,000 words, use references/ directory
+
+### Submitting a New Skill
+
+Before submitting a PR:
+
+1. **Validate structure**:
+
+   ```bash
+   claudelint validate-skills .claude/skills/your-skill
+   ```
+
+2. **Test trigger phrases**:
+   - Start fresh Claude session
+   - Test phrases from description field
+   - Verify 90%+ trigger success rate
+
+3. **Test functionality**:
+   - Valid inputs work correctly
+   - Invalid inputs detected properly
+   - Edge cases handled
+
+4. **Update documentation**:
+   - Add to README.md skills list
+   - Add to .claude-plugin/README.md
+   - Include in PR description
+
+### Skill PR Requirements
+
+Use this template for skill PRs:
+
+```markdown
+## New Skill: skill-name
+
+**Description**: [One line]
+
+**Trigger phrases**: "phrase 1", "phrase 2", "phrase 3"
+
+**Checklist**:
+- [ ] Passes `claudelint validate-skills`
+- [ ] Trigger phrases tested (90%+ success)
+- [ ] Functionality tested with edge cases
+- [ ] Examples section included (if complex)
+- [ ] Troubleshooting section included (if needed)
+- [ ] README.md updated
+- [ ] .claude-plugin/README.md updated
+```
+
+**Review criteria:**
+
+- Follows naming conventions (no generic names like "format", "validate")
+- Description includes trigger phrases
+- Progressive disclosure used (if >3,000 words)
+- Examples follow scenario format
+- Troubleshooting addresses skill usage issues (not issues skill fixes)
+
+See [docs/skill-development.md](docs/skill-development.md) for detailed requirements and [docs/projects/plugin-and-md-management/skill-improvement-guidelines.md](docs/projects/plugin-and-md-management/skill-improvement-guidelines.md) for Anthropic best practices.
+
 ## Rule Deprecation Policy
 
 When a rule needs to be changed or removed, follow this deprecation policy to give users time to migrate their configurations.

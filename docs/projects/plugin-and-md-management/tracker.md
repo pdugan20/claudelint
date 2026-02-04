@@ -1546,20 +1546,20 @@ Requires `claude-code-lint` npm package for CLI commands.
   - [x] Add optimize-cc-md usage example (interactive workflow)
   - [x] Link to plugin README for plugin-only users
 
-- [ ] **Task 4.3**: Update skill quality standards documentation
-  - [ ] Create `docs/skill-development.md` or update existing
-  - [ ] Document trigger phrase requirements (Phase 2.7)
-  - [ ] Document troubleshooting requirements
-  - [ ] Document progressive disclosure guidelines
-  - [ ] Include examples from skill-improvement-guidelines.md
-  - [ ] Reference for future skill development
+- [x] **Task 4.3**: Update skill quality standards documentation
+  - [x] Create `docs/skill-development.md` or update existing
+  - [x] Document trigger phrase requirements (Phase 2.7)
+  - [x] Document troubleshooting requirements
+  - [x] Document progressive disclosure guidelines
+  - [x] Include examples from skill-improvement-guidelines.md
+  - [x] Reference for future skill development
 
-- [ ] **Task 4.4**: Update CONTRIBUTING.md
-  - [ ] Add skill quality standards section
-  - [ ] Link to skill-improvement-guidelines.md
-  - [ ] Document skill PR requirements
-  - [ ] Require trigger phrases in descriptions
-  - [ ] Require troubleshooting for complex skills
+- [x] **Task 4.4**: Update CONTRIBUTING.md
+  - [x] Add skill quality standards section
+  - [x] Link to skill-improvement-guidelines.md
+  - [x] Document skill PR requirements
+  - [x] Require trigger phrases in descriptions
+  - [x] Require troubleshooting for complex skills
 
 - [ ] **Task 4.5**: Add skill testing infrastructure
   - [ ] Create `scripts/test/skills/` directory
