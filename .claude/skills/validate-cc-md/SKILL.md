@@ -1,6 +1,6 @@
 ---
 name: validate-cc-md
-description: Validate CLAUDE.md files for size, imports, and structure
+description: Validate CLAUDE.md files for size, imports, and structure. Use when you want to "check my CLAUDE.md", "audit my config", "why is my CLAUDE.md too long", "validate imports", or "fix CLAUDE.md errors". Checks file size limits (30KB warning, 50KB error), @import directives, frontmatter in .claude/rules/, and section organization.
 version: 1.0.0
 allowed-tools:
   - Bash

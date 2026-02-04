@@ -1,6 +1,6 @@
 ---
 name: validate-plugin
-description: Validate Claude Code plugin manifest files
+description: Validate Claude Code plugin manifest files (plugin.json). Use when you want to "check my plugin config", "validate plugin.json", "plugin errors", or "why isn't my plugin loading". Validates JSON syntax, required fields (name, version, description), semantic versioning, and skill file references.
 version: 1.0.0
 allowed-tools:
   - Bash
