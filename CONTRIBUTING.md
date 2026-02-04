@@ -87,6 +87,8 @@ This project adheres to a Code of Conduct that all contributors are expected to 
    npm run validate
    ```
 
+**See [docs/scripts.md](docs/scripts.md) for complete npm scripts reference.**
+
 ### Code Style Guidelines
 
 - Follow TypeScript best practices
@@ -184,11 +186,11 @@ Constants like `ToolNames` and `ModelNames` must stay synchronized with Claude C
 
 ```bash
 # Verify all constants
-npm run verify:constants
+npm run check:constants
 
 # Or individually
-npm run verify:tool-names
-npm run verify:model-names
+npm run check:tool-names
+npm run check:model-names
 ```
 
 **If drift detected:**
@@ -199,7 +201,7 @@ npm run verify:model-names
    - Models: <https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields>
 3. Update `src/schemas/constants.ts` if needed
 4. Run tests: `npm test`
-5. Re-verify: `npm run verify:constants`
+5. Re-verify: `npm run check:constants`
 6. Update `docs/constants-verification.md` with new date
 
 **See also:** [docs/constants-verification.md](docs/constants-verification.md) for detailed documentation.
@@ -599,7 +601,7 @@ Include:
 1. **Verify constants are current:**
 
    ```bash
-   npm run verify:constants
+   npm run check:constants
    ```
 
    If drift detected, fix it before proceeding. See [Verifying Constants](#verifying-constants-maintainers-only) section.
@@ -681,7 +683,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Verify Constants
-        run: npm run verify:constants
+        run: npm run check:constants
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```

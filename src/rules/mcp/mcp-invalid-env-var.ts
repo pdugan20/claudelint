@@ -82,10 +82,7 @@ export const rule: Rule = {
   },
 };
 
-function validateTransport(
-  context: Parameters<Rule['validate']>[0],
-  server: MCPTransport
-): void {
+function validateTransport(context: Parameters<Rule['validate']>[0], server: MCPTransport): void {
   // Validate stdio transport
   if (server.type === 'stdio' || ('command' in server && server.command)) {
     if (server.command) {

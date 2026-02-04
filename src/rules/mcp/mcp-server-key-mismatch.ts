@@ -11,7 +11,8 @@ export const rule: Rule = {
   meta: {
     id: 'mcp-server-key-mismatch',
     name: 'MCP Server Key Mismatch',
-    description: 'Server key should match server name property (deprecated: names are now object keys)',
+    description:
+      'Server key should match server name property (deprecated: names are now object keys)',
     category: 'MCP',
     severity: 'warn',
     fixable: false,

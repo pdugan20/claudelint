@@ -43,7 +43,8 @@ export const rule: Rule = {
       if (!isObject(server)) continue;
 
       // Check if this is a stdio transport (has type: 'stdio' or has command field)
-      const isStdio = (hasProperty(server, 'type') && server.type === 'stdio') || hasProperty(server, 'command');
+      const isStdio =
+        (hasProperty(server, 'type') && server.type === 'stdio') || hasProperty(server, 'command');
       if (!isStdio) continue;
 
       if (!hasProperty(server, 'command') || !isString(server.command)) {

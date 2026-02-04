@@ -7,9 +7,5 @@
     "skill-dangerous-command": "error",
     "settings-invalid-schema": "error"
   },
-  "ignore": [
-    "**/node_modules/**",
-    "**/.git/**",
-    "**/dist/**"
-  ]
+  "ignore": ["**/node_modules/**", "**/.git/**", "**/dist/**"]
 }

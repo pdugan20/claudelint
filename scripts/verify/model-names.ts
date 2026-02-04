@@ -18,7 +18,7 @@
  * Note: ModelNames is used for agent and skill frontmatter only.
  * Settings.json accepts arbitrary model names and uses z.string().
  *
- * Usage: npm run verify:model-names
+ * Usage: npm run check:model-names
  */
 
 import { execSync } from 'child_process';
@@ -193,7 +193,7 @@ async function main() {
       log.dim(`2. Verify against docs: ${DOCS_URL}`);
       log.dim('3. Update src/schemas/constants.ts ModelNames enum');
       log.dim('4. Run tests: npm test');
-      log.dim('5. Re-run: npm run verify:model-names');
+      log.dim('5. Re-run: npm run check:model-names');
 
       process.exit(1);
     }

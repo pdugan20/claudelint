@@ -86,9 +86,7 @@ export const rule: Rule = {
     }
 
     // Check if name is ONLY generic keywords (no descriptive parts)
-    const isOnlyGeneric = nameParts.every((part) =>
-      genericKeywords.includes(part.toLowerCase())
-    );
+    const isOnlyGeneric = nameParts.every((part) => genericKeywords.includes(part.toLowerCase()));
 
     if (isOnlyGeneric) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name');

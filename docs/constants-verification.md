@@ -19,11 +19,11 @@ Both tools and models are verified by **querying the installed Claude Code CLI**
 
 ```bash
 # Verify all constants
-npm run verify:constants
+npm run check:constants
 
 # Verify individually
-npm run verify:tool-names
-npm run verify:model-names
+npm run check:tool-names
+npm run check:model-names
 ```
 
 **How it works:**
@@ -126,7 +126,7 @@ When verification detects drift:
 
 ```bash
 # Run verification to see the drift
-npm run verify:tool-names
+npm run check:tool-names
 
 # Example output:
 # Missing: TodoWrite
@@ -182,7 +182,7 @@ Ensure no rules broke from constant changes.
 ### 6. Re-verify
 
 ```bash
-npm run verify:constants
+npm run check:constants
 ```
 
 Should now exit 0 (success).
@@ -226,7 +226,7 @@ Constants verification can be added to pre-commit hooks:
 
 ```bash
 # In .husky/pre-commit or similar
-npm run verify:constants
+npm run check:constants
 ```
 
 **Trade-off**: Requires Claude Code installed locally. May slow commits.
@@ -238,7 +238,7 @@ Add to CI pipeline:
 ```yaml
 # Example GitHub Actions
 - name: Verify Constants
-  run: npm run verify:constants
+  run: npm run check:constants
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```

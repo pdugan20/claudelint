@@ -1,0 +1,63 @@
+{
+  "rules": {
+    "require-name": "error",
+    "require-version": "error",
+    "require-description": "error",
+    "require-keywords": "error",
+    "require-homepage": "error",
+    "require-bugs": "error",
+    "require-license": "error",
+    "require-author": "warning",
+    "require-repository": "error",
+    "require-engines": "error",
+    "require-scripts": "error",
+    "require-files": "error",
+
+    "valid-values-license": ["error", ["MIT"]],
+
+    "prefer-caret-version-devDependencies": "warning",
+    "prefer-absolute-version-dependencies": "off",
+
+    "no-duplicate-properties": "error",
+    "no-archive-dependencies": "error",
+    "no-git-dependencies": "error",
+
+    "name-format": "error",
+    "version-format": "error",
+    "description-format": [
+      "warning",
+      {
+        "requireCapitalFirstLetter": false,
+        "requireEndingPeriod": false
+      }
+    ],
+
+    "scripts-type": "error",
+
+    "prefer-property-order": [
+      "warning",
+      [
+        "name",
+        "version",
+        "description",
+        "main",
+        "types",
+        "bin",
+        "scripts",
+        "lint-staged",
+        "keywords",
+        "author",
+        "license",
+        "repository",
+        "bugs",
+        "homepage",
+        "engines",
+        "files",
+        "dependencies",
+        "devDependencies",
+        "peerDependencies",
+        "optionalDependencies"
+      ]
+    ]
+  }
+}

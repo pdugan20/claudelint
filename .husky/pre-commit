@@ -39,7 +39,7 @@ echo ""
 
 # 5. Verify rule implementations exist
 echo "5/10 Verifying rule implementations..."
-npm run verify:rule-implementations
+npm run check:rule-implementations
 if [ $? -ne 0 ]; then
   echo "Rule implementation check failed."
   exit 1

@@ -115,7 +115,13 @@ export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[
  * @returns Array of validation issues found
  */
 export function validateSettingsHooks(
-  hooks: Record<string, Array<{ matcher?: string; hooks: Array<{ type: string; command?: string; prompt?: string; timeout?: number }> }>>
+  hooks: Record<
+    string,
+    Array<{
+      matcher?: string;
+      hooks: Array<{ type: string; command?: string; prompt?: string; timeout?: number }>;
+    }>
+  >
 ): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 

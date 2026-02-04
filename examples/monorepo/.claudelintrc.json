@@ -5,11 +5,7 @@
     "skill-missing-version": "error",
     "skill-missing-changelog": "warn"
   },
-  "ignorePatterns": [
-    "node_modules/**",
-    "dist/**",
-    "build/**"
-  ],
+  "ignorePatterns": ["node_modules/**", "dist/**", "build/**"],
   "output": {
     "verbose": false,
     "format": "stylish"

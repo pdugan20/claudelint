@@ -37,7 +37,7 @@ function compareSchemas(): boolean {
   log.blank();
 
   try {
-    execSync('npm run verify:schemas', { stdio: 'inherit' });
+    execSync('npm run check:schemas', { stdio: 'inherit' });
     return true;
   } catch {
     // verify:schemas exits with code 1 if drift detected

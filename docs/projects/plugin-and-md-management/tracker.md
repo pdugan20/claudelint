@@ -617,7 +617,7 @@ None - Phase 2.1 complete!
   - [x] Report drift (missing fields, wrong types, enum mismatches, missing required)
   - [x] Allow Zod to be stricter (extra validations OK)
   - [x] Reject Zod being looser (missing fields = ERROR)
-  - [x] Add `npm run verify:schemas` script
+  - [x] Add `npm run check:schemas` script
   - [x] All 8 schemas match - no drift detected!
 
 - [x] **Task 2.2.3**: Update schema-sync script
@@ -780,9 +780,9 @@ None - Phase 2.1 complete!
   - No longer needed - CLI queries don't parse HTML
 
 - [x] **Task 2.4.6**: Add NPM scripts [DONE]
-  - `npm run verify:tool-names` - Queries CLI, compares tools
-  - `npm run verify:model-names` - Queries CLI, compares models
-  - `npm run verify:constants` - Runs both verifications
+  - `npm run check:tool-names` - Queries CLI, compares tools
+  - `npm run check:model-names` - Queries CLI, compares models
+  - `npm run check:constants` - Runs both verifications
   - All scripts tested and working
 
 **Key Learnings:**
@@ -797,7 +797,7 @@ None - Phase 2.1 complete!
 #### Phase 2.5: Integration & Documentation (1-2 days)
 
 - [ ] **Task 2.5.1**: Pre-commit hook integration
-  - Add `npm run verify:constants` to pre-commit hook
+  - Add `npm run check:constants` to pre-commit hook
   - Fails commit if drift detected
   - Forces manual review of constant changes
 

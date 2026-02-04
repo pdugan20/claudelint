@@ -35,10 +35,7 @@
   "overrides": [
     {
       "files": ["src/cli/**/*.ts"],
-      "excludedFiles": [
-        "src/cli/utils/logger.ts",
-        "src/utils/reporting/reporting.ts"
-      ],
+      "excludedFiles": ["src/cli/utils/logger.ts", "src/utils/reporting/reporting.ts"],
       "rules": {
         "no-console": "error"
       }

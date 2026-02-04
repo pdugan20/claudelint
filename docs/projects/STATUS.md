@@ -147,6 +147,50 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ## Archived Projects
 
+### package-json-modernization
+
+**Status:** Completed
+**Location:** [docs/projects/package-json-modernization/](./package-json-modernization/)
+
+**Completion Date:** 2026-02-04
+
+**Summary:** Comprehensive package.json modernization following 2026 best practices. Integrated validation tools, reorganized scripts following Conventional Scripts, and added automatic formatting.
+
+**Key Outcomes:**
+
+- Integrated 4 new tools: npm-package-json-lint, publint, npm-run-all2, prettier-plugin-packagejson
+- Consolidated script namespaces: verify:*and audit:* → check:*
+- Created proper aggregate scripts: lint, lint:fix, format, check, validate
+- Added pre-commit validation for package.json
+- All package.json changes now auto-formatted and validated
+- Script composition modernized with npm-run-all2 (7 aggregate scripts)
+- Zero regressions - all existing workflows functional
+
+**Implementation Phases:**
+
+- Phase 1: Tool Installation (4 tools) - 30 min
+- Phase 2: Package.json Linting Setup - 20 min
+- Phase 3: Publint Integration - 15 min
+- Phase 4: Script Namespace Consolidation (7 scripts renamed) - 30 min
+- Phase 5: Aggregate Script Creation - 45 min
+- Phase 6: npm-run-all2 Migration (2 scripts) - 15 min
+- Phase 7: Package.json Formatting - 20 min
+- Phase 8: Pre-commit Hook Updates - 10 min
+- Phase 9: Documentation & Testing - 30 min
+
+**Total:** ~3.5 hours (faster than estimated 5 days due to systematic approach)
+
+**Reference Documentation:**
+
+- [Project README](./package-json-modernization/README.md)
+- [Implementation Tracker](./package-json-modernization/tracker.md)
+- [Script Organization Guide](./package-json-modernization/script-organization.md)
+- [npm-package-json-lint Setup](./package-json-modernization/npm-package-json-lint-setup.md)
+- [Publint Setup](./package-json-modernization/publint-setup.md)
+- [Tool Integration Guide](./package-json-modernization/tool-integration.md)
+
+---
+
 ### monorepo-support
 
 **Status:** Completed
@@ -317,6 +361,7 @@ Projects that have achieved their objectives. Completed projects are:
 
 - [plugin-and-md-management README](./plugin-and-md-management/README.md)
 - [logging-architecture README](./logging-architecture/README.md)
+- [package-json-modernization README](./package-json-modernization/README.md)
 - [npm-release-setup README](./npm-release-setup/README.md)
 - [vitepress-docs README](./vitepress-docs/README.md)
 - [skills-quality-validation README](./skills-quality-validation/README.md)
@@ -335,4 +380,4 @@ Projects that have achieved their objectives. Completed projects are:
 
 ---
 
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04

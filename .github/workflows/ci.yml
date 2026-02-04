@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint:ts
 
   format:
     name: Format Check (Prettier)
@@ -114,7 +114,7 @@ jobs:
         run: npm ci
 
       - name: Verify rule implementations
-        run: npm run verify:rule-implementations
+        run: npm run check:rule-implementations
 
   verify-rule-structure:
     name: Verify Rule Structure (1:1:1 mapping)
@@ -132,7 +132,7 @@ jobs:
         run: npm ci
 
       - name: Verify rule structure
-        run: npm run verify:rule-structure
+        run: npm run check:rule-structure
         continue-on-error: true
 
   schema-sync:

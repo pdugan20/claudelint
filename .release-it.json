@@ -22,17 +22,9 @@
     "tag": null
   },
   "hooks": {
-    "before:init": [
-      "npm run lint",
-      "npm run test",
-      "npm run build"
-    ],
-    "after:bump": [
-      "npm run sync:versions"
-    ],
-    "after:release": [
-      "echo Successfully released ${name} v${version} to ${repo.repository}."
-    ]
+    "before:init": ["npm run lint", "npm run test", "npm run build"],
+    "after:bump": ["npm run sync:versions"],
+    "after:release": ["echo Successfully released ${name} v${version} to ${repo.repository}."]
   },
   "plugins": {
     "@release-it/conventional-changelog": {

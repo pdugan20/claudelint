@@ -32,11 +32,7 @@
       }
     }
   ],
-  "ignorePatterns": [
-    "**/*.generated.ts",
-    ".cache/",
-    "coverage/"
-  ],
+  "ignorePatterns": ["**/*.generated.ts", ".cache/", "coverage/"],
   "output": {
     "format": "stylish",
     "verbose": false,

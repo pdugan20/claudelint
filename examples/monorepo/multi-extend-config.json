@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "./base-config.json",
-    "./strict-config.json"
-  ],
+  "extends": ["./base-config.json", "./strict-config.json"],
   "rules": {
     "size-warning": "warn"
   }

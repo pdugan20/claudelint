@@ -15,7 +15,7 @@
  * - Claude Code CLI must be installed
  * - ANTHROPIC_API_KEY must be configured
  *
- * Usage: npm run verify:tool-names
+ * Usage: npm run check:tool-names
  */
 
 import { execSync } from 'child_process';
@@ -187,7 +187,7 @@ async function main() {
       log.dim(`2. Verify against docs: ${DOCS_URL}`);
       log.dim('3. Update src/schemas/constants.ts ToolNames enum');
       log.dim('4. Run tests: npm test');
-      log.dim('5. Re-run: npm run verify:tool-names');
+      log.dim('5. Re-run: npm run check:tool-names');
 
       process.exit(1);
     }
