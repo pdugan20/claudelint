@@ -14,6 +14,7 @@ import { ClaudeLintConfig, RuleConfig } from './types';
 import { RuleId } from '../../rules/rule-ids';
 import { RuleRegistry } from '../rules/registry';
 import { ResolvedRuleConfig } from '../rules/context';
+import { DiagnosticCollector } from '../diagnostics';
 
 /**
  * Error thrown when configuration is invalid
@@ -119,8 +120,12 @@ export class ConfigResolver {
    * Create a new configuration resolver
    *
    * @param config - The loaded configuration from .claudelintrc.json
+   * @param diagnostics - Optional diagnostic collector for warnings
    */
-  constructor(config: ClaudeLintConfig) {
+  constructor(
+    config: ClaudeLintConfig,
+    private diagnostics?: DiagnosticCollector
+  ) {
     this.config = config;
   }
 
@@ -239,8 +244,10 @@ export class ConfigResolver {
         rule.schema.parse(options);
       } catch (error) {
         // Invalid options - return null to exclude rule from resolved config
-        console.warn(
-          `Warning: Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}\nRule will be disabled.`
+        this.diagnostics?.warn(
+          `Invalid options for rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}. Rule will be disabled.`,
+          'ConfigResolver',
+          'CONFIG_INVALID_OPTIONS'
         );
         return null;
       }

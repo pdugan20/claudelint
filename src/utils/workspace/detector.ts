@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { load as parseYaml } from 'js-yaml';
 import { glob } from 'glob';
+import { DiagnosticCollector } from '../diagnostics';
 
 /**
  * Information about detected workspace
@@ -88,6 +89,7 @@ export async function findWorkspaceRoot(startDir: string = process.cwd()): Promi
  *
  * @param cwd - Directory to search from (defaults to process.cwd())
  * @param autoDetectRoot - Whether to auto-detect workspace root (defaults to false)
+ * @param diagnostics - Optional diagnostic collector for warnings
  * @returns WorkspaceInfo if workspace found, null otherwise
  *
  * @example
@@ -101,7 +103,8 @@ export async function findWorkspaceRoot(startDir: string = process.cwd()): Promi
  */
 export async function detectWorkspace(
   cwd: string = process.cwd(),
-  autoDetectRoot: boolean = false
+  autoDetectRoot: boolean = false,
+  diagnostics?: DiagnosticCollector
 ): Promise<WorkspaceInfo | null> {
   // Auto-detect workspace root if requested
   let searchDir = cwd;
@@ -114,13 +117,13 @@ export async function detectWorkspace(
   }
 
   // Try pnpm first
-  const pnpmWorkspace = await detectPnpmWorkspace(searchDir);
+  const pnpmWorkspace = await detectPnpmWorkspace(searchDir, diagnostics);
   if (pnpmWorkspace) {
     return pnpmWorkspace;
   }
 
   // Try npm/Yarn workspaces
-  const npmWorkspace = await detectNpmWorkspace(searchDir);
+  const npmWorkspace = await detectNpmWorkspace(searchDir, diagnostics);
   if (npmWorkspace) {
     return npmWorkspace;
   }
@@ -135,9 +138,13 @@ export async function detectWorkspace(
  * Checks for pnpm-workspace.yaml and parses the packages field.
  *
  * @param cwd - Directory to check
+ * @param diagnostics - Optional diagnostic collector for warnings
  * @returns WorkspaceInfo if pnpm workspace found, null otherwise
  */
-async function detectPnpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
+async function detectPnpmWorkspace(
+  cwd: string,
+  diagnostics?: DiagnosticCollector
+): Promise<WorkspaceInfo | null> {
   const workspaceFile = join(cwd, 'pnpm-workspace.yaml');
 
   if (!existsSync(workspaceFile)) {
@@ -150,7 +157,11 @@ async function detectPnpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
     const config = parseYaml(content) as { packages?: string[] };
 
     if (!config.packages || !Array.isArray(config.packages)) {
-      console.warn('Warning: pnpm-workspace.yaml must have a "packages" array');
+      diagnostics?.warn(
+        'pnpm-workspace.yaml must have a "packages" array',
+        'WorkspaceDetector',
+        'WORKSPACE_INVALID_YAML'
+      );
       return null;
     }
 
@@ -164,8 +175,10 @@ async function detectPnpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
     };
   } catch (error) {
     // Log warning but don't fail - malformed config should be non-fatal
-    console.warn(
-      `Warning: Failed to parse pnpm-workspace.yaml: ${error instanceof Error ? error.message : String(error)}`
+    diagnostics?.warn(
+      `Failed to parse pnpm-workspace.yaml: ${error instanceof Error ? error.message : String(error)}`,
+      'WorkspaceDetector',
+      'WORKSPACE_PARSE_ERROR'
     );
     return null;
   }
@@ -178,9 +191,13 @@ async function detectPnpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
  * Supports both npm array format and Yarn object format.
  *
  * @param cwd - Directory to check
+ * @param diagnostics - Optional diagnostic collector for warnings
  * @returns WorkspaceInfo if npm/Yarn workspace found, null otherwise
  */
-async function detectNpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
+async function detectNpmWorkspace(
+  cwd: string,
+  diagnostics?: DiagnosticCollector
+): Promise<WorkspaceInfo | null> {
   const packageJsonPath = join(cwd, 'package.json');
 
   if (!existsSync(packageJsonPath)) {
@@ -207,7 +224,11 @@ async function detectNpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
     } else if (pkg.workspaces.packages && Array.isArray(pkg.workspaces.packages)) {
       workspacePatterns = pkg.workspaces.packages;
     } else {
-      console.warn('Warning: package.json workspaces must be an array or { packages: [...] }');
+      diagnostics?.warn(
+        'package.json workspaces must be an array or { packages: [...] }',
+        'WorkspaceDetector',
+        'WORKSPACE_INVALID_FORMAT'
+      );
       return null;
     }
 
@@ -224,8 +245,10 @@ async function detectNpmWorkspace(cwd: string): Promise<WorkspaceInfo | null> {
     };
   } catch (error) {
     // Log warning but don't fail
-    console.warn(
-      `Warning: Failed to parse package.json workspaces: ${error instanceof Error ? error.message : String(error)}`
+    diagnostics?.warn(
+      `Failed to parse package.json workspaces: ${error instanceof Error ? error.message : String(error)}`,
+      'WorkspaceDetector',
+      'WORKSPACE_PARSE_ERROR'
     );
     return null;
   }

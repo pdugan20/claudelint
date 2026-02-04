@@ -4,6 +4,63 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ## Active Projects
 
+### plugin-and-md-management
+
+**Status:** Phase 2 In Progress (Constants Verification Complete)
+**Timeline:** 6-8 weeks
+**Location:** [docs/projects/plugin-and-md-management/](./plugin-and-md-management/)
+
+**Purpose:** Fix npm package distribution, implement plugin infrastructure, and add CLAUDE.md management skills
+
+**Key Objectives:**
+
+- Fix package.json files array bug (npm users get zero skills)
+- Create plugin.json manifest for Claude Code plugin system
+- Add interactive skills for CLAUDE.md validation and management
+- Verify ToolNames and ModelNames constants stay synchronized
+
+**Progress:** Phase 2.4 complete (Constants Verification), Phase 2.5-2.6 in progress
+
+**Current Phase:** Integrating constants verification into release process and documentation
+
+---
+
+### logging-architecture
+
+**Status:** Phase 1 Complete, Phase 2 In Progress (40% complete)
+**Timeline:** 1 day (~5 hours)
+**Location:** [docs/projects/logging-architecture/](./logging-architecture/)
+
+**Purpose:** Implement unified DiagnosticCollector system to make library code properly testable and follow industry standards
+
+**Key Objectives:**
+
+- Implement DiagnosticCollector pattern (ESLint/TypeScript approach)
+- Thread diagnostics through entire validation pipeline
+- Eliminate all direct console usage from library code (10 calls across 4 files)
+- Extend pre-commit checks to enforce policy across entire codebase
+- Fix verification scripts to follow proper logging patterns
+- Document diagnostic system for contributors
+
+**Scope:**
+
+- 1 new system (DiagnosticCollector class)
+- 4 files to create (collector, tests, index, docs)
+- 12 files to modify (validators, utils, enforcement, verification)
+- 10 console calls to remove
+- ~10 tests to update
+
+**Progress:** Phase 1 complete (3/3 tasks), Phase 2 in progress (2/5 tasks complete)
+
+**Benefits:**
+
+- Clean test output (no console spam)
+- Properly testable library code
+- Programmatic consumers can control output
+- Follows industry standards (ESLint, TypeScript, Prettier pattern)
+
+---
+
 ### npm-release-setup
 
 **Status:** Planning Phase
@@ -258,7 +315,8 @@ Projects that have achieved their objectives. Completed projects are:
 
 **Active Project READMEs:**
 
-- [monorepo-support README](./monorepo-support/README.md)
+- [plugin-and-md-management README](./plugin-and-md-management/README.md)
+- [logging-architecture README](./logging-architecture/README.md)
 - [npm-release-setup README](./npm-release-setup/README.md)
 - [vitepress-docs README](./vitepress-docs/README.md)
 - [skills-quality-validation README](./skills-quality-validation/README.md)
@@ -277,4 +335,4 @@ Projects that have achieved their objectives. Completed projects are:
 
 ---
 
-**Last Updated:** 2026-02-01
+**Last Updated:** 2026-02-03

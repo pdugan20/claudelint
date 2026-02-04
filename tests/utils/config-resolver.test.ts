@@ -2,6 +2,7 @@ import { ConfigResolver } from '../../src/utils/config/resolver';
 import { RuleRegistry } from '../../src/utils/rules/registry';
 import { ClaudeLintConfig } from '../../src/utils/config/types';
 import { RuleId } from '../../src/rules/rule-ids';
+import { DiagnosticCollector } from '../../src/utils/diagnostics';
 import { z } from 'zod';
 
 describe('ConfigResolver', () => {
@@ -363,18 +364,18 @@ describe('ConfigResolver', () => {
         },
       };
 
-      // Suppress console.warn for this test
-      const originalWarn = console.warn;
-      console.warn = jest.fn();
-
-      const resolver = new ConfigResolver(config);
+      const diagnostics = new DiagnosticCollector();
+      const resolver = new ConfigResolver(config, diagnostics);
       const resolved = resolver.resolveForFile('test.md');
 
-      // Should warn but not throw
-      expect(console.warn).toHaveBeenCalled();
+      // Should collect warning and disable rule (not throw)
+      const warnings = diagnostics.getWarnings();
+      expect(warnings.length).toBeGreaterThan(0);
+      expect(warnings[0].message).toContain('Invalid options');
+      expect(warnings[0].message).toContain('claude-md-size-warning');
+      expect(warnings[0].source).toBe('ConfigResolver');
+      expect(warnings[0].code).toBe('CONFIG_INVALID_OPTIONS');
       expect(resolved.has('claude-md-size-warning')).toBe(false);
-
-      console.warn = originalWarn;
     });
 
     it('should reject options with wrong types', () => {
@@ -389,16 +390,18 @@ describe('ConfigResolver', () => {
         },
       };
 
-      const originalWarn = console.warn;
-      console.warn = jest.fn();
-
-      const resolver = new ConfigResolver(config);
+      const diagnostics = new DiagnosticCollector();
+      const resolver = new ConfigResolver(config, diagnostics);
       const resolved = resolver.resolveForFile('test.md');
 
-      expect(console.warn).toHaveBeenCalled();
+      // Should collect warning and disable rule
+      const warnings = diagnostics.getWarnings();
+      expect(warnings.length).toBeGreaterThan(0);
+      expect(warnings[0].message).toContain('Invalid options');
+      expect(warnings[0].message).toContain('claude-md-size-warning');
+      expect(warnings[0].source).toBe('ConfigResolver');
+      expect(warnings[0].code).toBe('CONFIG_INVALID_OPTIONS');
       expect(resolved.has('claude-md-size-warning')).toBe(false);
-
-      console.warn = originalWarn;
     });
 
     it('should allow valid partial options', () => {

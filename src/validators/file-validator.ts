@@ -7,6 +7,7 @@ import { RuleId } from '../rules/rule-ids';
 import { RuleCategory, Rule, isRuleDeprecated, getDeprecationInfo } from '../types/rule';
 import { ConfigResolver } from '../utils/config/resolver';
 import { RuleRegistry } from '../utils/rules/registry';
+import { DiagnosticCollector } from '../utils/diagnostics';
 
 /**
  * Automatic fix that can be applied to resolve a validation issue
@@ -231,6 +232,9 @@ export abstract class FileValidator {
   /** Current file being validated (for config resolution) */
   protected currentFile?: string;
 
+  /** Diagnostic collector for warnings and errors from utility components */
+  protected diagnostics = new DiagnosticCollector();
+
   /**
    * Creates a new validator instance
    * @param options - Validation options
@@ -240,7 +244,7 @@ export abstract class FileValidator {
 
     // Initialize config resolver if config is provided
     if (options.config) {
-      this.configResolver = new ConfigResolver(options.config);
+      this.configResolver = new ConfigResolver(options.config, this.diagnostics);
     }
   }
 
@@ -664,6 +668,28 @@ export abstract class FileValidator {
           url: info.url,
         });
       }
+    }
+
+    // Add diagnostic warnings from utility components
+    const diagnosticWarnings = this.diagnostics.getWarnings();
+    for (const diagnostic of diagnosticWarnings) {
+      warnings.push({
+        message: `[${diagnostic.source}] ${diagnostic.message}`,
+        severity: 'warning',
+        // Include code as ruleId if available
+        ...(diagnostic.code && { ruleId: diagnostic.code as RuleId }),
+      });
+    }
+
+    // Add diagnostic errors from utility components
+    const diagnosticErrors = this.diagnostics.getErrors();
+    for (const diagnostic of diagnosticErrors) {
+      errors.push({
+        message: `[${diagnostic.source}] ${diagnostic.message}`,
+        severity: 'error',
+        // Include code as ruleId if available
+        ...(diagnostic.code && { ruleId: diagnostic.code as RuleId }),
+      });
     }
 
     return {
