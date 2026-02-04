@@ -3,6 +3,8 @@ import {
   countLines,
   extractBodyContent,
   hasMarkdownSection,
+  extractImports,
+  extractImportsWithLineNumbers,
 } from '../../src/utils/formats/markdown';
 
 describe('Markdown utilities', () => {
@@ -174,6 +176,156 @@ Guideline content`;
       const hasSection = hasMarkdownSection(body, /#{1,3}\s*fake\s*section/i);
 
       expect(hasSection).toBe(true); // Expected behavior - regex-based, not AST-based
+    });
+  });
+
+  describe('extractImports', () => {
+    it('should extract basic imports', () => {
+      const content = 'Check out @docs/guide and @api/reference';
+      const imports = extractImports(content);
+
+      expect(imports).toEqual(['docs/guide', 'api/reference']);
+    });
+
+    it('should not match @ inside inline code', () => {
+      const content = 'Never use `@ts-ignore` in your code';
+      const imports = extractImports(content);
+
+      expect(imports).toEqual([]);
+    });
+
+    it('should not match @ inside code blocks', () => {
+      const content = `Some text
+
+\`\`\`typescript
+// Avoid @ts-ignore
+import { Foo } from '@types/react';
+\`\`\`
+
+Real import: @docs/guide`;
+
+      const imports = extractImports(content);
+
+      expect(imports).toEqual(['docs/guide']);
+    });
+
+    it('should handle mixed content', () => {
+      const content = `See @docs/intro for details.
+
+Never use \`@ts-ignore\` unless necessary.
+
+\`\`\`bash
+npm install @types/node
+\`\`\`
+
+Also check @api/reference and \`@deprecated\` marker.`;
+
+      const imports = extractImports(content);
+
+      expect(imports).toEqual(['docs/intro', 'api/reference']);
+    });
+
+    it('should handle empty content', () => {
+      const imports = extractImports('');
+
+      expect(imports).toEqual([]);
+    });
+
+    it('should handle content with no imports', () => {
+      const content = 'Just some regular content with no @ symbols';
+      const imports = extractImports(content);
+
+      expect(imports).toEqual([]);
+    });
+  });
+
+  describe('extractImportsWithLineNumbers', () => {
+    it('should extract imports with correct line numbers', () => {
+      const content = `Line 1
+@docs/guide is on line 2
+Line 3
+@api/reference is on line 4`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([
+        { path: 'docs/guide', line: 2 },
+        { path: 'api/reference', line: 4 },
+      ]);
+    });
+
+    it('should not match @ inside inline code', () => {
+      const content = `Line 1
+Never use \`@ts-ignore\` on line 2
+@docs/guide is on line 3`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/guide', line: 3 }]);
+    });
+
+    it('should skip code blocks entirely', () => {
+      const content = `Line 1
+\`\`\`typescript
+@ts-ignore should not match
+import from '@types/react'
+\`\`\`
+@docs/guide is after code block`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/guide', line: 6 }]);
+    });
+
+    it('should handle multiple imports on same line', () => {
+      const content = 'See @docs/intro and @api/reference';
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([
+        { path: 'docs/intro', line: 1 },
+        { path: 'api/reference', line: 1 },
+      ]);
+    });
+
+    it('should handle complex mixed content', () => {
+      const content = `# Documentation
+
+See @docs/intro for getting started.
+
+## TypeScript
+
+Never use \`@ts-ignore\` unless necessary.
+
+\`\`\`bash
+npm install @types/node @types/react
+\`\`\`
+
+Check @api/reference for details.`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([
+        { path: 'docs/intro', line: 3 },
+        { path: 'api/reference', line: 13 },
+      ]);
+    });
+
+    it('should handle empty content', () => {
+      const imports = extractImportsWithLineNumbers('');
+
+      expect(imports).toEqual([]);
+    });
+
+    it('should handle code blocks at start of file', () => {
+      const content = `\`\`\`typescript
+@ts-ignore
+\`\`\`
+@docs/guide`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/guide', line: 4 }]);
     });
   });
 });

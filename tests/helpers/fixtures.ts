@@ -497,10 +497,12 @@ export class PluginBuilder {
 
   /**
    * Write the file and return its path
+   * Plugin manifest must be in .claude-plugin/ directory
    */
   async build(filename = 'plugin.json'): Promise<string> {
-    await mkdir(this.baseDir, { recursive: true });
-    const filePath = join(this.baseDir, filename);
+    const pluginDir = join(this.baseDir, '.claude-plugin');
+    await mkdir(pluginDir, { recursive: true });
+    const filePath = join(pluginDir, filename);
     await writeFile(filePath, JSON.stringify(this.manifest, null, 2));
     return filePath;
   }
@@ -509,8 +511,9 @@ export class PluginBuilder {
    * Write invalid JSON (for error testing)
    */
   async buildInvalid(): Promise<string> {
-    await mkdir(this.baseDir, { recursive: true });
-    const filePath = join(this.baseDir, 'plugin.json');
+    const pluginDir = join(this.baseDir, '.claude-plugin');
+    await mkdir(pluginDir, { recursive: true });
+    const filePath = join(pluginDir, 'plugin.json');
     await writeFile(filePath, '{ invalid json }');
     return filePath;
   }

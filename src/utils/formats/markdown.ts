@@ -54,11 +54,17 @@ export interface Import {
 }
 
 export function extractImports(content: string): string[] {
+  // Remove code blocks (triple backticks) to avoid matching @ inside code
+  const withoutCodeBlocks = content.replace(/```[\s\S]*?```/g, '');
+
+  // Remove inline code (single backticks) to avoid matching @ inside inline code
+  const withoutInlineCode = withoutCodeBlocks.replace(/`[^`]*`/g, '');
+
   const importRegex = /@([^\s]+)/g;
   const imports: string[] = [];
   let match;
 
-  while ((match = importRegex.exec(content)) !== null) {
+  while ((match = importRegex.exec(withoutInlineCode)) !== null) {
     imports.push(match[1]);
   }
 
@@ -68,12 +74,29 @@ export function extractImports(content: string): string[] {
 export function extractImportsWithLineNumbers(content: string): Import[] {
   const lines = content.split('\n');
   const imports: Import[] = [];
+  let inCodeBlock = false;
 
   for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Track code block boundaries (triple backticks)
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
+
+    // Skip lines inside code blocks
+    if (inCodeBlock) {
+      continue;
+    }
+
+    // Remove inline code (single backticks) from this line
+    const withoutInlineCode = line.replace(/`[^`]*`/g, '');
+
     const importRegex = /@([^\s]+)/g;
     let match;
 
-    while ((match = importRegex.exec(lines[i])) !== null) {
+    while ((match = importRegex.exec(withoutInlineCode)) !== null) {
       imports.push({
         path: match[1],
         line: i + 1,

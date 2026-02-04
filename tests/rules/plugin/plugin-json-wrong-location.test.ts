@@ -8,11 +8,11 @@ import { rule } from '../../../src/rules/plugin/plugin-json-wrong-location';
 const ruleTester = new ClaudeLintRuleTester();
 
 describe('plugin-json-wrong-location', () => {
-  it('should pass when plugin.json is at repository root', async () => {
+  it('should pass when plugin.json is in .claude-plugin/ directory', async () => {
     await ruleTester.run('plugin-json-wrong-location', rule, {
       valid: [
         {
-          filePath: '/test/plugin.json',
+          filePath: '/test/.claude-plugin/plugin.json',
           content: JSON.stringify({
             name: 'my-plugin',
             version: '1.0.0',
@@ -20,7 +20,7 @@ describe('plugin-json-wrong-location', () => {
           }),
         },
         {
-          filePath: '/test/my-project/plugin.json',
+          filePath: '/test/my-project/.claude-plugin/plugin.json',
           content: JSON.stringify({
             name: 'my-plugin',
             version: '1.0.0',
@@ -32,12 +32,12 @@ describe('plugin-json-wrong-location', () => {
     });
   });
 
-  it('should fail when plugin.json is inside .claude-plugin/', async () => {
+  it('should fail when plugin.json is at repository root (not in .claude-plugin/)', async () => {
     await ruleTester.run('plugin-json-wrong-location', rule, {
       valid: [],
       invalid: [
         {
-          filePath: '/test/.claude-plugin/plugin.json',
+          filePath: '/test/plugin.json',
           content: JSON.stringify({
             name: 'my-plugin',
             version: '1.0.0',
@@ -46,12 +46,12 @@ describe('plugin-json-wrong-location', () => {
           errors: [
             {
               message:
-                'plugin.json should be at the repository root, not inside .claude-plugin/',
+                'plugin.json must be at .claude-plugin/plugin.json, not at repository root',
             },
           ],
         },
         {
-          filePath: '/test/project/.claude-plugin/nested/plugin.json',
+          filePath: '/test/project/plugin.json',
           content: JSON.stringify({
             name: 'my-plugin',
             version: '1.0.0',
@@ -60,7 +60,7 @@ describe('plugin-json-wrong-location', () => {
           errors: [
             {
               message:
-                'plugin.json should be at the repository root, not inside .claude-plugin/',
+                'plugin.json must be at .claude-plugin/plugin.json, not at repository root',
             },
           ],
         },

@@ -5,36 +5,24 @@ import { tmpdir } from 'os';
 
 describe('Plugin Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
-  const pluginJsonPath = join(projectRoot, 'plugin.json');
+  const pluginJsonPath = join(projectRoot, '.claude-plugin/plugin.json');
   const claudelintBin = join(projectRoot, 'bin/claudelint');
 
   describe('Plugin Manifest', () => {
-    it('should have valid plugin.json at repository root', () => {
+    it('should have valid plugin.json in .claude-plugin directory', () => {
       expect(() => {
         const content = readFileSync(pluginJsonPath, 'utf-8');
         JSON.parse(content);
       }).not.toThrow();
     });
 
-    it('should reference all created skills', () => {
+    it('should have required plugin fields', () => {
       const plugin = JSON.parse(readFileSync(pluginJsonPath, 'utf-8'));
-      const expectedSkills = [
-        '.claude/skills/validate-all',
-        '.claude/skills/validate-cc-md',
-        '.claude/skills/validate-skills',
-        '.claude/skills/validate-settings',
-        '.claude/skills/validate-hooks',
-        '.claude/skills/validate-mcp',
-        '.claude/skills/validate-plugin',
-        '.claude/skills/format-cc',
-      ];
 
-      expect(plugin.skills).toBeDefined();
-      expect(plugin.skills.length).toBe(expectedSkills.length);
-
-      for (const skill of expectedSkills) {
-        expect(plugin.skills).toContain(skill);
-      }
+      // Plugin manifest no longer lists skills - they're auto-discovered from skills/ directory
+      expect(plugin.name).toBe('claudelint');
+      expect(plugin.description).toBeDefined();
+      expect(plugin.version).toBeDefined();
     });
 
     it('should validate successfully', () => {
@@ -57,11 +45,12 @@ describe('Plugin Integration Tests', () => {
       'validate-mcp',
       'validate-plugin',
       'format-cc',
+      'optimize-cc-md',
     ];
 
     skills.forEach((skillName) => {
       describe(`${skillName} skill`, () => {
-        const skillPath = join(projectRoot, '.claude/skills', skillName);
+        const skillPath = join(projectRoot, 'skills', skillName);
 
         it('should have SKILL.md file', () => {
           const skillMdPath = join(skillPath, 'SKILL.md');

@@ -6,7 +6,6 @@
  */
 
 import { Rule } from '../../types/rule';
-import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
 
 /**
  * Import in code block validation rule implementation
@@ -27,41 +26,37 @@ export const rule: Rule = {
 
   validate: (context) => {
     const { fileContent } = context;
+    const lines = fileContent.split('\n');
 
-    // Find all fenced code blocks (``` or ~~~)
-    const fencedBlockRegex = /^```[\s\S]*?^```|^~~~[\s\S]*?^~~~/gm;
-    const codeBlocks: Array<{ start: number; end: number }> = [];
+    // Track code block boundaries and search for imports inside them
+    let inCodeBlock = false;
 
-    let match;
-    while ((match = fencedBlockRegex.exec(fileContent)) !== null) {
-      codeBlocks.push({
-        start: match.index,
-        end: match.index + match[0].length,
-      });
-    }
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
 
-    // Check if any imports fall within code blocks
-    const imports = extractImportsWithLineNumbers(fileContent);
-
-    for (const importInfo of imports) {
-      // Calculate the character position of this import
-      const lines = fileContent.split('\n');
-      let charPos = 0;
-      for (let i = 0; i < importInfo.line - 1; i++) {
-        charPos += lines[i].length + 1; // +1 for newline
+      // Detect code block boundaries (``` or ~~~)
+      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
+        // Toggle code block state
+        inCodeBlock = !inCodeBlock;
+        continue;
       }
 
-      // Check if this import is inside any code block
-      for (const block of codeBlocks) {
-        if (charPos >= block.start && charPos <= block.end) {
+      // If we're inside a code block, search for imports
+      if (inCodeBlock) {
+        const importRegex = /@([^\s]+)/g;
+        let match;
+
+        while ((match = importRegex.exec(line)) !== null) {
+          const importPath = match[1];
+
           context.report({
             message:
-              `Import statement found inside code block: ${importInfo.path}. ` +
+              `Import statement found inside code block: ${importPath}. ` +
               `Imports in code blocks are not processed by Claude Code. ` +
               `Move the import outside of the code block.`,
-            line: importInfo.line,
+            line: i + 1,
           });
-          break;
         }
       }
     }
