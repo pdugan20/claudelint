@@ -1340,16 +1340,16 @@ optimize-cc-md/
   - [x] Link to references for detailed strategies
   - [x] Keep SKILL.md under 3,000 words (target for interactive skill)
 
-- [ ] **Task 3.5**: Create reference documents
-  - [ ] `references/size-optimization.md`:
+- [x] **Task 3.5**: Create reference documents
+  - [x] `references/size-optimization.md`:
     - Strategies for reducing file size
     - What content to move to @imports
     - How to identify bloat (obvious advice, config duplication)
-  - [ ] `references/import-patterns.md`:
+  - [x] `references/import-patterns.md`:
     - Best practices for organizing @imports
     - Directory structure recommendations
     - Common patterns (git workflow, testing, linting)
-  - [ ] `references/organization-guide.md`:
+  - [x] `references/organization-guide.md`:
     - Section organization tips
     - When to split vs consolidate
     - Naming conventions for .claude/rules/ files
