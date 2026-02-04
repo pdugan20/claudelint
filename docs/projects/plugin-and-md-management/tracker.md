@@ -1373,15 +1373,32 @@ optimize-cc-md/
   - [ ] Not issues the skill helps fix (those are in examples)
   - [ ] Example: "Skill creates @import but file path is wrong"
 
-- [ ] **Task 3.8**: Test skill (manual - automated testing in Phase 5)
-  - [ ] Test on bloated CLAUDE.md (>300 lines, obvious content)
-  - [ ] Test on well-optimized CLAUDE.md (should suggest minimal changes)
-  - [ ] Verify trigger phrases work ("optimize my CLAUDE.md", "my config is too long")
-  - [ ] Ensure skill doesn't trigger on informational questions ("what is CLAUDE.md?")
-  - [ ] Test actual file editing works (Edit tool creates clean diffs)
-  - [ ] Test @import file creation (Write tool creates valid files)
-  - [ ] Test references/ documents are helpful when Claude reads them
-  - [ ] Verify SKILL.md stays under 3,000 words
+- [ ] **Task 3.8**: Test skill following Anthropic iterative methodology (manual - automated testing in Phase 5)
+  - [ ] **Phase 1: Single-task iteration (Anthropic p15 pro tip)**
+    - [ ] Pick ONE challenging CLAUDE.md problem (e.g., 52KB file with bloat, circular imports)
+    - [ ] Work with Claude to solve it WITHOUT the skill first
+    - [ ] Iterate conversation until perfect solution found
+    - [ ] Document the winning approach (what worked, what didn't)
+    - [ ] Verify skill instructions match the winning approach
+    - [ ] If skill doesn't match, update SKILL.md before expanding tests
+  - [ ] **Phase 2: Expanded testing**
+    - [ ] Test on bloated CLAUDE.md (>300 lines, obvious content)
+    - [ ] Test on well-optimized CLAUDE.md (should suggest minimal changes)
+    - [ ] Test on CLAUDE.md with import issues (circular, missing files)
+    - [ ] Test on CLAUDE.md with organization problems (too many sections)
+  - [ ] **Phase 3: Trigger validation**
+    - [ ] Verify trigger phrases work ("optimize my CLAUDE.md", "my config is too long")
+    - [ ] Ensure doesn't trigger on informational questions ("what is CLAUDE.md?")
+    - [ ] Test paraphrased requests ("help me fix my config", "CLAUDE.md too big")
+  - [ ] **Phase 4: Tool execution**
+    - [ ] Test actual file editing works (Edit tool creates clean diffs)
+    - [ ] Test @import file creation (Write tool creates valid files)
+    - [ ] Test references/ documents are helpful when Claude reads them
+    - [ ] Verify error handling for edge cases
+  - [ ] **Phase 5: Final checks**
+    - [ ] Verify SKILL.md stays under 3,000 words
+    - [ ] Confirm all acceptance criteria met
+    - [ ] Document any issues found for Phase 5 formal testing
 
 ### Acceptance Criteria
 
