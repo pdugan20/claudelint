@@ -1,8 +1,8 @@
 # Plugin & CLAUDE.md Management Project
 
-**Status**: In Progress (Phase 1: 83% complete)
+**Status**: Phase 2.6 In Progress (90% complete)
 **Priority**: High
-**Last Updated**: 2026-02-02
+**Last Updated**: 2026-02-03
 
 ## Overview
 
@@ -10,11 +10,24 @@ Transform claudelint from an npm CLI tool into a dual-purpose package: a CLI too
 
 ## Quick Links
 
-- [Implementation Tracker](./tracker.md) - Central task tracker with phases
+### Main Documents
+
+- **[tracker.md](./tracker.md)** - Central task tracker with all phases
+- **[phase-2-7-summary.md](./phase-2-7-summary.md)** - NEW: Summary of skill quality improvements
+- **[skill-improvement-guidelines.md](./skill-improvement-guidelines.md)** - NEW: Reference for improving existing skills
+
+### Supporting Documents
+
 - [Plugin Manifest Spec](./plugin-manifest-spec.md) - plugin.json requirements
 - [CLAUDE.md Best Practices](./claude-md-best-practices.md) - Extracted from official docs
 - [Skill Specifications](./skill-specifications.md) - New skills to create
 - [Validation Rules](./validation-rules.md) - New CLAUDE.md validation rules
+
+### Phase 2 Documentation
+
+- [Schema Verification Workflow](./schema-verification-workflow.md) - Dual-schema verification process
+- [Truth Registry Proposal](./truth-registry-proposal.md) - Schema verification design
+- [Phase 2.3 Verification](./phase-2-3-verification.md) - Verification audit results
 
 ## Goals
 
@@ -291,43 +304,94 @@ Researched `/init` command implementation:
 
 ## Phase Status
 
-1. **Phase 1**: Fix package.json bug and create plugin.json - **COMPLETE** (7/7 tasks done)
-   - [x] Fixed package.json files array (includes CLI + skills)
-   - [x] Created plugin.json manifest
-   - [x] Renamed 3 generic skills (validate-all, format-cc, validate-cc-md)
-   - [x] Fixed plugin.json schema (aligned with official spec, deleted 2 invalid rules)
-   - [x] Created E10 rule (skill-overly-generic-name)
-   - [x] Test plugin locally (automated structure verification - 95% confidence)
-   - [x] Add dependency checks to skill scripts (inlined in each skill for self-containment)
-   - [x] Update documentation (README trimmed from 866→467 lines, 46% reduction)
-2. **Phase 2**: Schema & constant verification system (9-14 days) **NEW - CRITICAL**
-   - Includes Phase 2.6: Rule Deprecation System
-3. **Phase 3**: Build optimize-cc-md skill (3-4 days)
-4. **Phase 4**: Update documentation (1-2 days)
-5. **Phase 5**: Test and release (1 day)
+### Completed Phases
 
-**Current Status**: Phase 1 complete! Ready to start Phase 2 or Phase 3.
-**Total Estimated**: 14-21 days remaining
+1. **Phase 0**: Research & Planning - Complete (1 day)
+2. **Phase 1**: Bug Fixes & Plugin Infrastructure - Complete (1.5 days)
+   - Fixed package.json files array
+   - Created plugin.json manifest
+   - Renamed 3 generic skills (validate-all, format-cc, validate-cc-md)
+   - Fixed plugin.json schema
+   - Created E10 rule (skill-overly-generic-name)
+   - Added dependency checks to skills
+   - Updated documentation
+3. **Phase 2.1-2.5**: Schema Verification System - Complete (9 days)
+   - Created manual reference schemas for all 8 schemas
+   - Built automated comparison tool
+   - Fixed drift in 6/8 schemas (75% had issues!)
+   - Integrated into CI/CD
+
+### In Progress
+
+1. **Phase 2.6**: Rule Deprecation System - 90% Complete (0.5 days remaining)
+   - [x] Tasks 2.6.1-2.6.5 (Research, Design, Implementation, Tooling)
+   - [ ] Task 2.6.6: Documentation (in progress)
+
+### Planned
+
+1. **Phase 2.7**: Skill Quality Improvements - Not Started (1-2 days)
+   - **NEW**: Added after analyzing Anthropic best practices guide
+   - Improve trigger phrases for all 8 skills
+   - Add troubleshooting to top 3 skills
+   - Add scenario examples to top 3 skills
+   - Add metadata fields
+   - See [phase-2-7-summary.md](./phase-2-7-summary.md) for details
+
+2. **Phase 3**: Create optimize-cc-md Skill - Not Started (3-4 days)
+   - Updated with progressive disclosure design
+   - Create references/ for detailed strategies
+   - Interactive CLAUDE.md optimization
+
+3. **Phase 4**: Documentation & Polish - Not Started (2-3 days)
+   - Expanded with plugin-specific README
+   - Skill development standards documentation
+   - Updated CONTRIBUTING.md
+
+4. **Phase 5**: Testing & Release - Not Started (2-3 days)
+   - Complete rewrite with Anthropic testing methodology
+   - Triggering tests, functional tests, performance comparison
+   - Integration testing
+   - Version 0.3.0 release
+
+**Current Status**: Phase 2.6 nearly complete (90%). Phase 2.7 ready to start.
+**Total Progress**: 75% complete (11.5 / ~23 days)
+**Total Remaining**: 9-13 days
 
 See [tracker.md](./tracker.md) for detailed task breakdown.
 
-### Phase 2 - Schema & Constant Verification System
+## Recent Updates (2026-02-03)
 
-During Phase 1, discovered systematic issues with schema and constant verification:
+### Added Phase 2.7: Skill Quality Improvements
 
-- **19 sources of truth** need verification (10 schemas + 9 constants)
-- **2 schemas out of sync** (PluginManifestSchema fixed, SkillFrontmatterSchema drift found)
-- **No automation** for most sources
-- **High risk** of validation drift
+After analyzing Anthropic's "Complete Guide to Building Skills for Claude" (Jan 2026), we identified critical improvements needed for our existing skills.
 
-**Current Work** (as of 2026-02-02):
+**Key Decision**: Keep current 8-skill structure (don't consolidate)
 
-- Creating manual reference JSON Schemas from official docs
-- Building dual-schema verification system (manual + auto-generated)
-- Already found drift: SkillFrontmatterSchema missing 4 fields
+- Anthropic emphasizes composability, not consolidation (p5)
+- validate-all already serves as orchestrator
+- Individual skills have legitimate use cases
 
-**Approach**: [Schema Verification Workflow](./schema-verification-workflow.md)
-**Details**: [Schema Inventory](./schema-inventory.md), [Truth Registry Proposal](./truth-registry-proposal.md)
+**5 Improvements** (see [skill-improvement-guidelines.md](./skill-improvement-guidelines.md)):
+
+1. **Update descriptions with trigger phrases** (HIGH) - All 8 skills
+2. **Add skill-specific troubleshooting** (HIGH) - Top 3 skills
+3. **Add scenario-based examples** (MEDIUM) - Top 3 skills
+4. **Add metadata fields** (LOW) - All 8 skills
+5. **Check progressive disclosure** (LOW) - If any skill >5000 words
+
+**Impact**:
+
+- Adds 1-2 days to timeline
+- Establishes quality standards before creating optimize-cc-md
+- All skills benefit, not just new ones
+
+**Why now?**
+
+- Phase 2.6 (deprecation) nearly complete
+- Better to establish standards before Phase 3
+- optimize-cc-md will follow these standards from day 1
+
+See [phase-2-7-summary.md](./phase-2-7-summary.md) for full details.
 
 ## Related Projects
 

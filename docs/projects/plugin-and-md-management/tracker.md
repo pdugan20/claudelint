@@ -976,11 +976,304 @@ npm run migrate:config
 
 ---
 
+## Phase 2.7: Skill Quality Improvements (Anthropic Best Practices)
+
+**Status**: Not Started
+**Duration**: 1-2 days
+**Dependencies**: Phase 2.6 complete
+**Priority**: HIGH (needed before Phase 3 to establish quality standards)
+
+**Goal**: Improve existing 8 skills to follow Anthropic's best practices from "Complete Guide to Building Skills for Claude" (Jan 2026).
+
+**Reference**: See `docs/projects/plugin-and-md-management/skill-improvement-guidelines.md` for detailed patterns and examples.
+
+### Key Improvements
+
+Based on Anthropic guide analysis + schema verification:
+
+1. **Keep current structure** (8 separate skills) - Anthropic emphasizes composability, not consolidation
+2. **Improve skill descriptions** - Add trigger phrases users actually say
+3. **Add troubleshooting** - Skill-specific (not generic boilerplate) - **Top 3 skills only**
+4. **Add scenario examples** - User says → Actions → Result format - **Top 3 skills only**
+5. **Add standard fields** - version, tags, dependencies (NOT custom metadata - schema forbids it)
+6. **Verify required fields** - Ensure all skills have name + description
+7. **Progressive disclosure** - Move detailed content to references/ if needed (check word counts)
+
+### Tasks
+
+#### Task 2.7.0: Audit Existing Skills for Required Fields
+
+**Priority**: CRITICAL - Must do first before adding new fields
+
+**Goal**: Verify all 8 skills have the 2 required fields from the schema.
+
+**Required fields** (per official schema):
+
+- `name` - Must be present (schema doesn't mark as required, but documentation says it's needed)
+- `description` - Must be present and min 10 characters
+
+**Check**:
+
+```bash
+# Verify all skills have name and description
+for skill in .claude/skills/*/SKILL.md; do
+  echo "Checking $skill..."
+
+  # Check for name field
+  if ! grep -q "^name:" "$skill"; then
+    echo "  [MISSING] name field"
+  else
+    name=$(grep "^name:" "$skill" | head -1)
+    echo "  [OK] Has name: $name"
+  fi
+
+  # Check for description field
+  if ! grep -q "^description:" "$skill"; then
+    echo "  [MISSING] description field"
+  else
+    desc_len=$(grep "^description:" "$skill" | cut -d: -f2- | wc -c)
+    if [ "$desc_len" -lt 10 ]; then
+      echo "  [WARNING] Description too short: $desc_len chars (min 10)"
+    else
+      echo "  [OK] Has description: $desc_len chars"
+    fi
+  fi
+done
+```
+
+**Expected**: All 8 skills should have both fields (we created them with frontmatter)
+
+**If missing**: Add missing required fields before proceeding to Task 2.7.1
+
+#### Task 2.7.1: Update All Skill Descriptions with Trigger Phrases
+
+**Priority**: HIGH - Descriptions control skill triggering (Anthropic p11)
+
+For all 8 skills, update descriptions following pattern:
+`[What it does] + [When to use it] + [Trigger phrases] + [Key capabilities]`
+
+**Example (validate-cc-md)**:
+
+```yaml
+# Current (too technical)
+description: Validate CLAUDE.md files for size, imports, and structure
+
+# Improved (user-focused with triggers)
+description: Validate CLAUDE.md files for size, imports, and structure. Use when you want to "check my CLAUDE.md", "audit my config", "why is my CLAUDE.md too long", or "validate imports". Checks file size limits (30KB warning, 50KB error), @import directives, frontmatter in .claude/rules/, and section organization.
+```
+
+**Skills to update**:
+
+- [ ] validate-all
+- [ ] validate-cc-md
+- [ ] validate-skills
+- [ ] validate-plugin
+- [ ] validate-mcp
+- [ ] validate-settings
+- [ ] validate-hooks
+- [ ] format-cc
+
+**Reference**: See skill-improvement-guidelines.md section "Skill-by-Skill Improvement Plan" for each skill's improved description.
+
+**Verification**:
+
+```bash
+# Check descriptions stay under 1024 character limit
+for skill in .claude/skills/*/SKILL.md; do
+  desc=$(grep "^description:" "$skill" | cut -d: -f2-)
+  len=$(echo "$desc" | wc -c)
+  echo "$skill: $len characters"
+done
+```
+
+#### Task 2.7.2: Add Troubleshooting to Top 3 Skills
+
+**Priority**: HIGH - Reduce user confusion (Anthropic p13, p26)
+
+Add skill-specific troubleshooting sections to:
+
+- [ ] **validate-all** - Installation issues, when to use specific validators
+  - "claudelint command not found"
+  - "Multiple validators failed"
+  - Exit code meanings
+
+- [ ] **validate-cc-md** - File size, imports, circular dependencies
+  - "File exceeds 50KB"
+  - "Import not found"
+  - "Circular import detected"
+  - "File exceeds 30KB" (warning vs error)
+
+- [ ] **validate-skills** - Name mismatches, invalid tools, dangerous commands
+  - "Skill name must match directory name"
+  - "Unknown tool in allowed-tools"
+  - "Dangerous command detected"
+  - "Shell script missing shebang"
+  - "Skill lacks version field"
+
+**Format** (from Anthropic p13):
+
+```markdown
+## Common Issues
+
+### Error: "[error message]"
+**Cause**: [why it happens]
+**Solution**: [how to fix]
+**Example**: [code sample showing fix]
+```
+
+**Reference**: See skill-improvement-guidelines.md for full troubleshooting text for each skill.
+
+**Note**: Other 5 skills (validate-plugin, validate-mcp, validate-settings, validate-hooks, format-cc) don't need troubleshooting - errors are self-explanatory. Can add later if users report confusion.
+
+#### Task 2.7.3: Add Scenario-Based Examples to Top 3 Skills
+
+**Priority**: MEDIUM - Helps users understand workflows (Anthropic p12)
+
+Add examples section using Anthropic's pattern to:
+
+- [ ] **validate-all**
+- [ ] **validate-cc-md**
+- [ ] **validate-skills**
+
+**Format** (from Anthropic p12):
+
+```markdown
+## Examples
+
+### Example 1: [scenario name]
+**User says**: "[what user might say]"
+**What happens**:
+1. [step 1]
+2. [step 2]
+3. [step 3]
+**Result**: [outcome]
+```
+
+**Reference**: See skill-improvement-guidelines.md for complete examples for each skill.
+
+#### Task 2.7.4: Add Standard Fields to All Skills
+
+**Priority**: MEDIUM - Important for discoverability and dependencies
+
+**IMPORTANT DISCOVERY**: Official skill schema does NOT support custom `metadata` object. It has `"additionalProperties": false`. We must use standard fields only.
+
+Add standard fields to all 8 skills:
+
+```yaml
+---
+name: skill-name
+description: [updated description]
+version: 1.0.0  # Add this - semantic versioning
+tags: [validation, claude-code, linting]  # Add this - for categorization
+dependencies: ["npm:claude-code-lint"]  # Add this - document npm dependency
+allowed-tools:  # Already present - verify correct
+  - Bash
+  - Read
+---
+```
+
+**Tag Guidelines**:
+
+- validate-* skills: `[validation, claude-code, linting]`
+- format-cc: `[formatting, claude-code, quality]`
+- optimize-cc-md: `[automation, claude-code, optimization]`
+
+**Dependencies**:
+
+- All skills depend on npm package: `["npm:claude-code-lint"]`
+- This documents the dependency we already have in skill scripts
+
+**Verification**:
+
+```bash
+# Check all skills have version field
+for skill in .claude/skills/*/SKILL.md; do
+  if ! grep -q "^version:" "$skill"; then
+    echo "Missing version: $skill"
+  fi
+  if ! grep -q "^tags:" "$skill"; then
+    echo "Missing tags: $skill"
+  fi
+  if ! grep -q "^dependencies:" "$skill"; then
+    echo "Missing dependencies: $skill"
+  fi
+done
+```
+
+#### Task 2.7.5: Check Progressive Disclosure Needs
+
+**Priority**: LOW - Only needed if SKILL.md >5000 words
+
+Check word count for all skills:
+
+```bash
+for skill in .claude/skills/*/SKILL.md; do
+  words=$(wc -w < "$skill")
+  echo "$skill: $words words"
+  if [ "$words" -gt 5000 ]; then
+    echo "  [WARNING] Consider progressive disclosure"
+  fi
+done
+```
+
+If any skill exceeds 5000 words:
+
+- [ ] Move detailed content to `references/` subdirectory
+- [ ] Link from SKILL.md
+- [ ] Keep core instructions focused
+
+**Current assessment**: All skills appear under 5000 words, likely no changes needed.
+
+### Acceptance Criteria
+
+- [ ] All 8 skills have descriptions with trigger phrases (under 1024 chars)
+- [ ] Top 3 skills have troubleshooting sections with skill-specific errors
+- [ ] Top 3 skills have scenario-based examples
+- [ ] All 8 skills have standard fields (version, tags, dependencies)
+- [ ] No skill exceeds 5000 words without progressive disclosure
+- [ ] Changes documented in skill-improvement-guidelines.md
+- [ ] All skills pass schema validation (required fields present)
+- [ ] Test that trigger phrases work (manual testing in Claude Code)
+
+### Verification Steps
+
+After completing all tasks:
+
+1. **Description validation**:
+
+   ```bash
+   npm run lint:md  # Check markdown format
+   # Manually verify trigger phrases in each description
+   ```
+
+2. **Troubleshooting validation**:
+   - Read each troubleshooting section
+   - Verify errors match what that validator actually reports
+   - Check examples are accurate
+
+3. **Examples validation**:
+   - Run each example scenario manually
+   - Verify "User says" triggers the skill
+   - Confirm actions/results are accurate
+
+4. **Metadata validation**:
+
+   ```bash
+   # Check all skills have required fields
+   for skill in .claude/skills/*/SKILL.md; do
+     echo "Checking $skill"
+     grep -q "^metadata:" "$skill" || echo "  Missing metadata"
+     grep -q "category:" "$skill" || echo "  Missing category"
+   done
+   ```
+
+---
+
 ## Phase 3: Create optimize-cc-md Skill
 
 **Status**: Not Started
 **Duration**: 3-4 days
-**Dependencies**: Phase 1 complete
+**Dependencies**: Phase 2.7 complete (establishes quality standards)
 
 **What This Skill Does**: Provides instructions for Claude to **interactively help users fix their CLAUDE.md files**. When user runs `/optimize-cc-md`, Claude reads the skill instructions and:
 
@@ -994,50 +1287,109 @@ npm run migrate:config
 
 **This is NOT**: A CLI script, automated tool, or non-interactive validator. It's instructions for Claude to work with the user.
 
+**Design Principle**: Use progressive disclosure from the start (Anthropic p5, p13, p27).
+
+### Directory Structure
+
+Based on Anthropic recommendations for managing large context:
+
+```text
+optimize-cc-md/
+├── SKILL.md (core instructions, <5000 words)
+├── references/
+│   ├── size-optimization.md (strategies for reducing file size)
+│   ├── import-patterns.md (best practices for @import)
+│   └── organization-guide.md (section organization tips)
+└── examples/ (optional)
+    ├── before-optimization.md
+    └── after-optimization.md
+```
+
 ### Tasks
 
-- [ ] **Task 2.1**: Create skill directory structure
+- [ ] **Task 3.1**: Design progressive disclosure structure
+  - [ ] Map out what goes in SKILL.md (core workflow)
+  - [ ] Map out what goes in references/ (detailed strategies)
+  - [ ] Ensure SKILL.md stays under 5000 words
+  - [ ] Document design in task comments
+
+- [ ] **Task 3.2**: Create skill directory structure
   - [ ] `.claude/skills/optimize-cc-md/`
   - [ ] `SKILL.md` with frontmatter
   - [ ] No README.md (forbidden in skills)
   - [ ] Optional: `references/` for best practices examples
 
-- [ ] **Task 2.2**: Write SKILL.md frontmatter
+- [ ] **Task 3.3**: Write SKILL.md frontmatter (following Phase 2.7 standards)
   - [ ] Name: `optimize-cc-md`
-  - [ ] Description: "Help users optimize their CLAUDE.md files interactively"
-  - [ ] Trigger phrases: "optimize CLAUDE.md", "audit my config", "improve CLAUDE.md", "fix my CLAUDE.md"
+  - [ ] Description with trigger phrases: "Interactively help users optimize their CLAUDE.md files. Use when you want to 'optimize my CLAUDE.md', 'fix my config', 'my CLAUDE.md is too long', 'improve organization', or 'split my CLAUDE.md'. Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure."
   - [ ] Allowed tools: Bash, Read, Edit, Write, Grep
+  - [ ] Metadata: author, category (automation), documentation
+  - [ ] Version: 1.0.0
   - [ ] Keep under 1024 characters
 
-- [ ] **Task 2.3**: Write skill instructions for Claude
-  - [ ] Step 1: Run `claudelint check-claude-md --explain`
-  - [ ] Step 2: Read user's CLAUDE.md file with Read tool
-  - [ ] Step 3: Explain violations in conversational language (not just dump CLI output)
-  - [ ] Step 4: Identify specific problems:
-    - File too long (>200 lines)
-    - Obvious content (generic advice)
-    - Config duplication (.eslintrc, .prettierrc)
-    - Poor organization (many sections)
-  - [ ] Step 5: Ask user what to fix first
-  - [ ] Step 6: Use Edit tool to make changes
-  - [ ] Step 7: Use Write tool to create @import files if splitting content
-  - [ ] Step 8: Show before/after comparison
-  - [ ] Keep all instructions under 5,000 words
+- [ ] **Task 3.4**: Write core workflow in SKILL.md
+  - [ ] Core workflow (keep concise):
+    - Step 1: Run `claudelint check-claude-md --explain`
+    - Step 2: Read user's CLAUDE.md file with Read tool
+    - Step 3: Explain violations in conversational language
+    - Step 4: Identify specific problems (link to references/ for details)
+    - Step 5: Ask user what to fix first
+    - Step 6: Use Edit tool to make changes
+    - Step 7: Use Write tool to create @import files if splitting
+    - Step 8: Show before/after comparison
+  - [ ] Link to references for detailed strategies
+  - [ ] Keep SKILL.md under 3,000 words (target for interactive skill)
 
-- [ ] **Task 2.4**: Add examples to skill
-  - [ ] Example violation: "Line 45-52 say 'write clean code' - that's obvious, should I remove?"
-  - [ ] Example fix: "I'll move your testing section to @docs/testing.md and replace with import"
-  - [ ] Example workflow: User approves → Claude makes edits → Shows results
+- [ ] **Task 3.5**: Create reference documents
+  - [ ] `references/size-optimization.md`:
+    - Strategies for reducing file size
+    - What content to move to @imports
+    - How to identify bloat (obvious advice, config duplication)
+  - [ ] `references/import-patterns.md`:
+    - Best practices for organizing @imports
+    - Directory structure recommendations
+    - Common patterns (git workflow, testing, linting)
+  - [ ] `references/organization-guide.md`:
+    - Section organization tips
+    - When to split vs consolidate
+    - Naming conventions for .claude/rules/ files
 
-- [ ] **Task 2.5**: Test skill
-  - [ ] Test on bloated CLAUDE.md (>300 lines)
-  - [ ] Test on well-optimized CLAUDE.md
-  - [ ] Verify trigger phrases work
-  - [ ] Ensure skill doesn't trigger on "what is CLAUDE.md?" type questions
-  - [ ] Test actual file editing works
+- [ ] **Task 3.6**: Add examples to SKILL.md (following Phase 2.7 pattern)
+  - [ ] Example 1: Fix size violations
+    - User says: "My CLAUDE.md is too long"
+    - Actions: Validate → Identify bloat → Suggest splits
+    - Result: Content moved to @imports
+  - [ ] Example 2: Create import structure
+    - User says: "Help me organize my config"
+    - Actions: Analyze sections → Create .claude/rules/ files → Replace with @imports
+    - Result: Well-organized, modular config
+  - [ ] Example 3: Remove obvious content
+    - User says: "Is my CLAUDE.md too generic?"
+    - Actions: Scan for generic advice → Suggest removals
+    - Result: Focused, project-specific config
+
+- [ ] **Task 3.7**: Add troubleshooting section
+  - [ ] Common issues when using the skill
+  - [ ] Not issues the skill helps fix (those are in examples)
+  - [ ] Example: "Skill creates @import but file path is wrong"
+
+- [ ] **Task 3.8**: Test skill (manual - automated testing in Phase 5)
+  - [ ] Test on bloated CLAUDE.md (>300 lines, obvious content)
+  - [ ] Test on well-optimized CLAUDE.md (should suggest minimal changes)
+  - [ ] Verify trigger phrases work ("optimize my CLAUDE.md", "my config is too long")
+  - [ ] Ensure skill doesn't trigger on informational questions ("what is CLAUDE.md?")
+  - [ ] Test actual file editing works (Edit tool creates clean diffs)
+  - [ ] Test @import file creation (Write tool creates valid files)
+  - [ ] Test references/ documents are helpful when Claude reads them
+  - [ ] Verify SKILL.md stays under 3,000 words
 
 ### Acceptance Criteria
 
+- [ ] Skill directory follows progressive disclosure structure (SKILL.md + references/)
+- [ ] SKILL.md under 3,000 words with core workflow
+- [ ] References contain detailed strategies (size-optimization, import-patterns, organization-guide)
+- [ ] Description follows Phase 2.7 standards (trigger phrases, under 1024 chars)
+- [ ] Metadata includes author, category, documentation
 - [ ] Skill loads when user runs `/optimize-cc-md`
 - [ ] Claude follows instructions to run validation
 - [ ] Claude reads CLAUDE.md file
@@ -1045,110 +1397,369 @@ npm run migrate:config
 - [ ] Claude asks for confirmation before edits
 - [ ] Claude actually makes edits using Edit/Write tools
 - [ ] Claude creates @import files when needed
+- [ ] Claude references references/ docs when user needs details
 - [ ] Trigger phrases work without false positives
+- [ ] Examples follow scenario format (User says → Actions → Result)
 
 ---
 
 ## Phase 4: Documentation & Polish
 
 **Status**: Not Started
-**Duration**: 1-2 days
+**Duration**: 2-3 days
 **Dependencies**: Phase 3 complete
 
 ### Tasks
 
-- [ ] **Task 4.1**: Update main README
-  - [ ] Add plugin installation section
+- [ ] **Task 4.1**: Create plugin-specific README
+  - [ ] NOT the same as npm package README.md
+  - [ ] Create `.claude-plugin/README.md` for GitHub plugin users
+  - [ ] Focus on plugin capabilities (skill descriptions)
+  - [ ] Installation for Claude.ai users (non-npm flow)
+  - [ ] Positioning: "Focus on outcomes, not features" (Anthropic p20)
+  - [ ] Clear value proposition for plugin installation
+  - [ ] Link to npm package README for CLI users
+
+**Example structure**:
+
+```markdown
+# claudelint Plugin for Claude Code
+
+Validate and format your Claude Code project files directly in Claude.
+
+## Skills Included
+
+- **validate-all** - Run all validators in one command
+- **validate-cc-md** - Check CLAUDE.md size and imports
+- **optimize-cc-md** - Interactively improve your CLAUDE.md [NEW]
+- [etc.]
+
+## Installation
+
+### For Claude.ai Users
+/plugin install github:pdugan20/claudelint
+
+### For npm Users (CLI + Skills)
+npm install --save-dev claude-code-lint
+/plugin install --source ./node_modules/claude-code-lint
+
+## Usage
+
+Simply ask Claude to validate your files:
+- "Check my Claude Code project"
+- "Validate my CLAUDE.md"
+- "Optimize my config"
+
+## Requirements
+
+Requires `claude-code-lint` npm package for CLI commands.
+```
+
+- [ ] **Task 4.2**: Update main npm README
+  - [ ] Add optimize-cc-md to skills list
   - [ ] Document skill namespace usage (`/claudelint:optimize-cc-md`)
   - [ ] Update feature list
   - [ ] Add optimize-cc-md usage example
+  - [ ] Link to plugin README for plugin-only users
 
-- [ ] **Task 4.2**: Document skill rename
-  - [ ] Update any docs referencing validate-agents-md
-  - [ ] Add migration note in CHANGELOG
-  - [ ] Update skills list
+- [ ] **Task 4.3**: Update skill quality standards documentation
+  - [ ] Create `docs/skill-development.md` or update existing
+  - [ ] Document trigger phrase requirements (Phase 2.7)
+  - [ ] Document troubleshooting requirements
+  - [ ] Document progressive disclosure guidelines
+  - [ ] Include examples from skill-improvement-guidelines.md
+  - [ ] Reference for future skill development
 
-- [ ] **Task 4.3**: Update skill documentation
-  - [ ] Document optimize-cc-md usage
-  - [ ] Add examples of violations it catches
-  - [ ] Document trigger phrases
+- [ ] **Task 4.4**: Update CONTRIBUTING.md
+  - [ ] Add skill quality standards section
+  - [ ] Link to skill-improvement-guidelines.md
+  - [ ] Document skill PR requirements
+  - [ ] Require trigger phrases in descriptions
+  - [ ] Require troubleshooting for complex skills
 
 ### Acceptance Criteria
 
-- [ ] README reflects plugin installation
-- [ ] Skill rename documented
-- [ ] No broken references to old skill name
+- [ ] Plugin README created for GitHub users
+- [ ] Plugin README focuses on outcomes, not implementation
+- [ ] npm README updated with optimize-cc-md
+- [ ] Skill development standards documented
+- [ ] CONTRIBUTING.md has skill quality requirements
+- [ ] No broken references to old skill names
+- [ ] All documentation follows markdown linting rules
 
 ---
 
 ## Phase 5: Testing & Release
 
 **Status**: Not Started
-**Duration**: 1 day
+**Duration**: 2-3 days
 **Dependencies**: Phase 4 complete
+
+**Testing Strategy**: Based on Anthropic Chapter 3 (p14-17) - systematic skill testing at three levels: triggering, functional, and performance.
 
 ### Tasks
 
-- [ ] **Task 5.1**: Integration testing
-  - [ ] Test plugin installation: `claude /plugin install --source .`
-  - [ ] Test skill namespace: `/claudelint:optimize-cc-md`
-  - [ ] Test skill rename: `/claudelint:validate-cc-md`
-  - [ ] Verify npm pack includes .claude/ directory
+#### Task 5.1: Create Skill Test Suite (Anthropic p15-17)
 
-- [ ] **Task 5.2**: Test optimize-cc-md skill
-  - [ ] Test on bloated CLAUDE.md file
-  - [ ] Test on optimized CLAUDE.md file
-  - [ ] Verify trigger phrases work
-  - [ ] Ensure validation integration works
+**Goal**: Systematic testing for all 9 skills (8 existing + optimize-cc-md).
 
-- [ ] **Task 5.3**: Version bump & release
-  - [ ] Determine semver bump (likely minor: 0.2.x → 0.3.0)
-  - [ ] Run `npm run release` (auto-generates CHANGELOG)
-  - [ ] Verify `npm run sync:versions` runs
-  - [ ] Push tags to GitHub
+**Reference**: See `docs/projects/plugin-and-md-management/skill-improvement-guidelines.md` section "Testing Checklist"
 
-- [ ] **Task 5.4**: Publish
-  - [ ] npm publish
-  - [ ] Create GitHub release
-  - [ ] Update release notes
+- [ ] **5.1.1**: Create triggering test suite
+  - [ ] Create `tests/skills/triggering-tests.md` with test cases
+  - [ ] For EACH skill, define:
+    - [x] Queries that should trigger (obvious + paraphrased)
+    - [ ] Queries that should NOT trigger (unrelated)
+  - [ ] Document expected behavior
+  - [ ] Create test protocol for manual validation
+
+**Example test suite for validate-cc-md**:
+
+```markdown
+# validate-cc-md Triggering Tests
+
+## Should Trigger
+- [x] "check my CLAUDE.md"
+- [x] "validate my config file"
+- [x] "why is my CLAUDE.md too long"
+- [x] "audit my CLAUDE.md"
+- [x] "fix my imports"
+
+## Should NOT Trigger
+- [ ] "what is CLAUDE.md?" (informational)
+- [ ] "help me write code" (unrelated)
+- [ ] "validate my Python code" (wrong domain)
+
+## Test Protocol
+1. Start new Claude Code session
+2. Enable claudelint plugin
+3. For each query above, check if skill loads
+4. Document: triggered (yes/no), time to load
+```
+
+- [ ] **5.1.2**: Create functional test suite
+  - [ ] Create `tests/skills/functional-tests.md`
+  - [ ] For top 4 skills (validate-all, validate-cc-md, validate-skills, optimize-cc-md):
+    - Define expected claudelint command
+    - Define expected tool usage (Bash, Read, Edit, Write)
+    - Define expected output format
+  - [ ] Create test fixtures (sample CLAUDE.md files with known issues)
+  - [ ] Document expected results
+
+**Example for validate-cc-md**:
+
+```markdown
+# validate-cc-md Functional Tests
+
+## Test Case 1: Oversized File
+**Fixture**: tests/fixtures/claude-md/oversized.md (51KB)
+**Expected**:
+1. Skill executes `claudelint check-claude-md`
+2. Reports "File exceeds 50KB (ERROR)"
+3. Suggests splitting into @imports
+4. Exit code: 2 (error)
+
+## Test Case 2: Missing Import
+**Fixture**: tests/fixtures/claude-md/missing-import.md
+**Expected**:
+1. Detects @import directive to non-existent file
+2. Reports "Import not found: .claude/rules/missing.md"
+3. Suggests checking path
+4. Exit code: 2 (error)
+```
+
+- [ ] **5.1.3**: Create performance comparison test
+  - [ ] Create `tests/skills/performance-comparison.md`
+  - [ ] Document baseline (without skills) vs with skills
+  - [ ] Track metrics (Anthropic p16):
+    - Tool calls required
+    - User messages needed
+    - Tokens consumed
+    - Task completion success rate
+
+**Example comparison for validate-all**:
+
+```markdown
+# validate-all Performance Comparison
+
+## Without Skill
+**Scenario**: User wants to validate entire project
+
+Workflow:
+1. User: "How do I validate my Claude Code project?"
+2. Claude: "You can use claudelint. What do you want to validate?"
+3. User: "Everything"
+4. Claude: "Try running: claudelint check-all"
+5. User: *runs command manually*
+
+**Metrics**:
+- User messages: 3
+- Tool calls: 0 (Claude doesn't run it)
+- Time: ~2 minutes
+- Success: Depends on user following instructions
+
+## With Skill
+**Scenario**: User wants to validate entire project
+
+Workflow:
+1. User: "check my entire Claude Code project"
+2. Skill triggers automatically
+3. Claude runs: `claudelint check-all`
+4. Reports results
+
+**Metrics**:
+- User messages: 1
+- Tool calls: 1 (Bash)
+- Time: ~30 seconds
+- Success: 100% (automated execution)
+
+**Improvement**: 75% reduction in user effort, automated execution
+```
+
+#### Task 5.2: Execute Manual Testing
+
+- [ ] **5.2.1**: Run triggering tests
+  - [ ] Test all 9 skills with queries from triggering test suite
+  - [ ] Document trigger success rate (target: 90%+)
+  - [ ] Document false positives (skill triggers when it shouldn't)
+  - [ ] Update descriptions if needed to improve triggering
+
+- [ ] **5.2.2**: Run functional tests
+  - [ ] Test each skill executes correct commands
+  - [ ] Verify dependency checks work (npm package required)
+  - [ ] Test error messages are clear
+  - [ ] Verify examples in SKILL.md are accurate
+  - [ ] Test optimize-cc-md actually edits files correctly
+
+- [ ] **5.2.3**: Run performance comparison
+  - [ ] Execute validate-all with/without skill
+  - [ ] Execute optimize-cc-md with/without skill
+  - [ ] Document improvements
+  - [ ] Use for release notes
+
+#### Task 5.3: Integration Testing
+
+- [ ] Test plugin installation from local source: `/plugin install --source .`
+- [ ] Test plugin installation from GitHub (after publishing)
+- [ ] Test all skill namespaces: `/claudelint:validate-all`, `/claudelint:optimize-cc-md`, etc.
+- [ ] Verify npm pack includes .claude/ directory
+- [ ] Test dependency detection (skill fails gracefully when npm package missing)
+- [ ] Test in both Claude.ai and Claude Code
+
+#### Task 5.4: Version Bump & Release
+
+- [ ] Determine semver bump (likely minor: 0.2.x → 0.3.0)
+  - Breaking changes? (No - all additions)
+  - New features? (Yes - optimize-cc-md, skill improvements)
+  - Bug fixes? (Yes - better descriptions, troubleshooting)
+- [ ] Run `npm run release` (auto-generates CHANGELOG)
+- [ ] Verify `npm run sync:versions` runs
+- [ ] Review generated CHANGELOG
+- [ ] Push tags to GitHub
+
+#### Task 5.5: Publish & Announce
+
+- [ ] npm publish
+- [ ] Create GitHub release with highlights:
+  - NEW: optimize-cc-md skill (interactive CLAUDE.md optimization)
+  - IMPROVED: All 8 skills now follow Anthropic best practices
+  - IMPROVED: Better trigger phrases for skill activation
+  - IMPROVED: Troubleshooting sections for complex skills
+  - IMPROVED: Scenario-based examples
+- [ ] Update release notes with performance comparison
+- [ ] Announce on relevant channels (if applicable)
 
 ### Acceptance Criteria
 
-- [ ] All tests passing
-- [ ] Plugin installable from GitHub
-- [ ] npm package includes skills
-- [ ] Release published
+- [ ] All 3 test types documented (triggering, functional, performance)
+- [ ] Test fixtures created for functional tests
+- [ ] Triggering success rate >90% for all skills
+- [ ] No false positives in triggering tests
+- [ ] All functional tests pass
+- [ ] Performance comparison shows improvement
+- [ ] Plugin installable from both GitHub and npm
+- [ ] All skills work correctly via namespace
+- [ ] npm package published successfully
+- [ ] GitHub release created with highlights
+- [ ] CHANGELOG auto-generated correctly
+
+### Success Metrics (from Anthropic p9)
+
+**Quantitative**:
+
+- Skills trigger on 90%+ of relevant queries
+- 0 failed API calls per workflow (dependency checks work)
+- Reduced token consumption vs baseline
+
+**Qualitative**:
+
+- Users don't need to prompt Claude about next steps
+- Workflows complete without user correction
+- Consistent results across sessions
+- New users can accomplish tasks on first try
 
 ## Progress Summary
 
 ```text
-Phase 0: [██████████] 100% (Complete)
-Phase 1: [█████████░]  92% (5.5/6 tasks - Tasks 1.1-1.4, 1.6-1.7 done, 1.8 remaining)
-Phase 2: [░░░░░░░░░░]   0% (0/6 sub-phases - includes new 2.6 deprecation system)
-Phase 3: [░░░░░░░░░░]   0% (0/5 tasks - optimize-cc-md skill)
-Phase 4: [░░░░░░░░░░]   0% (0/3 tasks - documentation)
-Phase 5: [░░░░░░░░░░]   0% (0/4 tasks - testing & release)
+Phase 0: [██████████] 100% (Complete - research & planning)
+Phase 1: [██████████] 100% (Complete - bug fixes & plugin infrastructure)
+Phase 2: [█████████░]  90% (Phase 2.1-2.5 complete, 2.6 in progress)
+  2.6:   [█████████░]  90% (Tasks 2.6.1-2.6.5 done, 2.6.6 documentation remaining)
+  2.7:   [░░░░░░░░░░]   0% (Not started - skill quality improvements)
+Phase 3: [░░░░░░░░░░]   0% (0/8 tasks - optimize-cc-md skill with progressive disclosure)
+Phase 4: [░░░░░░░░░░]   0% (0/4 tasks - documentation & polish)
+Phase 5: [░░░░░░░░░░]   0% (0/5 tasks - testing & release)
 
-Overall: [███░░░░░░░] 31% (Phase 0 complete + 5.5/6 Phase 1 tasks)
+Overall: [████████░░] 75% (Phases 0-1 complete, Phase 2 nearly done)
 ```
 
 ## Estimated Timeline
 
-- **Phase 0**: **Good** Complete
-- **Phase 1**: 1.5 days (bug fixes + plugin setup + skill renames + E10 update)
-- **Phase 2**: 3-4 days (optimize-cc-md skill)
-- **Phase 3**: 1-2 days (documentation)
-- **Phase 4**: 1 day (testing & release)
+### Completed
 
-**Total**: 6.5-8.5 days (1.5 weeks)
+- **Phase 0**: Complete (1 day - research & planning)
+- **Phase 1**: Complete (1.5 days - bug fixes + plugin setup + skill renames + E10 update)
+- **Phase 2.1-2.5**: Complete (9 days - schema verification system)
 
-**Phase 1 breakdown**:
+### Remaining
 
-- Package.json fix + plugin.json: 2 hours
-- Rename 3 skills: 3 hours (1 hour each)
-- Update E10 rule: 1-2 hours
-- Testing: 2 hours
-- Documentation: 1 hour
+- **Phase 2.6**: 0.5 days remaining (documentation task 2.6.6)
+- **Phase 2.7**: 1-2 days (skill quality improvements - NEW)
+  - Task 2.7.1: Update descriptions (3-4 hours)
+  - Task 2.7.2: Add troubleshooting (2-3 hours)
+  - Task 2.7.3: Add examples (2-3 hours)
+  - Task 2.7.4: Add metadata (1 hour)
+  - Task 2.7.5: Check progressive disclosure (30 min)
+- **Phase 3**: 3-4 days (optimize-cc-md skill with progressive disclosure)
+  - Task 3.1: Design structure (1 hour)
+  - Task 3.2: Create directories (30 min)
+  - Task 3.3: Write frontmatter (1 hour)
+  - Task 3.4: Write core workflow (4-6 hours)
+  - Task 3.5: Create reference docs (6-8 hours)
+  - Task 3.6: Add examples (2 hours)
+  - Task 3.7: Add troubleshooting (1 hour)
+  - Task 3.8: Manual testing (3-4 hours)
+- **Phase 4**: 2-3 days (documentation & polish - expanded)
+  - Task 4.1: Plugin README (3-4 hours)
+  - Task 4.2: Update npm README (2 hours)
+  - Task 4.3: Skill development standards (3-4 hours)
+  - Task 4.4: Update CONTRIBUTING (1-2 hours)
+- **Phase 5**: 2-3 days (testing & release - comprehensive)
+  - Task 5.1: Create test suite (6-8 hours)
+  - Task 5.2: Execute manual testing (6-8 hours)
+  - Task 5.3: Integration testing (2-3 hours)
+  - Task 5.4: Version bump (1 hour)
+  - Task 5.5: Publish & announce (1-2 hours)
+
+**Total Remaining**: 9-13 days (~2 weeks)
+
+**Total Project**: 20.5-24.5 days (~4-5 weeks)
+
+### Current Status
+
+- **Days completed**: ~11.5 days
+- **Days remaining**: ~9-13 days
+- **Completion**: 75%
 
 ## Risks & Blockers
 
