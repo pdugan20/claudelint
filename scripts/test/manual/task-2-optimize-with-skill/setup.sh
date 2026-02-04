@@ -40,12 +40,21 @@ echo "Test workspace: $TEST_DIR"
 echo "CLAUDE.md size: $(wc -c < "$TEST_DIR/CLAUDE.md") bytes"
 echo
 echo "Next steps:"
-echo "1. Open a NEW Claude Code session"
-echo "2. cd $TEST_DIR"
+echo "1. Start Claude Code with the plugin loaded:"
+echo "   cd $TEST_DIR"
+echo "   claude --plugin-dir $REPO_ROOT"
+echo
+echo "2. Verify skills are loaded:"
+echo "   /skills list"
+echo "   (Should see 9 claudelint skills)"
+echo
 echo "3. Trigger the optimize-cc-md skill:"
 echo "   - 'optimize my CLAUDE.md'"
 echo "   - 'can you help me improve my CLAUDE.md file?'"
 echo "   - 'this config file is too long'"
-echo "4. Observe the skill behavior"
-echo "5. Run: ./scripts/test/manual/task-2-optimize-with-skill/verify.sh"
+echo
+echo "4. Observe the skill behavior (should use @imports)"
+echo
+echo "5. Run verification:"
+echo "   ./scripts/test/manual/task-2-optimize-with-skill/verify.sh"
 echo

@@ -3,6 +3,9 @@
 # Install claudelint package in test workspace
 #
 # Usage: install-in-workspace.sh <workspace-path> <package-tgz>
+#
+# Note: This installs the npm package but does NOT create plugin.json.
+# For testing, use: claude --plugin-dir <path-to-claudelint-repo>
 
 set -e
 
@@ -43,16 +46,8 @@ if ! npm list claude-code-lint > /dev/null 2>&1; then
   exit 1
 fi
 
-# Create plugin.json
-echo "Creating plugin.json..."
-cat > plugin.json <<'EOF'
-{
-  "name": "claudelint",
-  "version": "1.0.0",
-  "plugins": ["claude-code-lint"]
-}
-EOF
-
 echo "Installation complete!"
 echo "  Workspace: $WORKSPACE"
 echo "  Package: $(basename $PACKAGE_TGZ)"
+echo
+echo "Note: No plugin.json created - use claude --plugin-dir for testing"
