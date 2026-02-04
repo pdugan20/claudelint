@@ -65,7 +65,7 @@
     "sync:versions:check": "ts-node scripts/check/version-sync.ts",
     "test:skills:structure": "bash scripts/test/skills/validate-self.sh",
     "test:skills:cli": "bash scripts/test/skills/test-cli-commands.sh",
-    "test:skills:metadata": "echo 'TODO: Add Jest tests for metadata consistency'",
+    "test:skills:metadata": "jest tests/skills/metadata.test.ts",
     "test:skills:automated": "npm run test:skills:structure && npm run test:skills:cli",
     "test:skills:manual": "echo 'See docs/skill-testing.md for manual test protocol. Run scripts/generate-manual-test-protocol.sh to generate checklist.'"
   },
