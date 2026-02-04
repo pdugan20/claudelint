@@ -31,6 +31,44 @@ claudelint check-claude-md
 
 ## Examples
 
+### Example 1: Fix size warnings
+
+**User says**: "My CLAUDE.md is too long"
+**What happens**:
+
+1. Skill runs `claudelint check-claude-md`
+2. Shows file size (e.g., "35KB / 30KB warning threshold")
+3. Lists largest sections that could be split out
+4. Suggests using @import to move content to .claude/rules/
+
+**Result**: User knows which sections to move to @imports and how to structure them
+
+### Example 2: Debug missing imports
+
+**User says**: "Why isn't my import working?"
+**What happens**:
+
+1. Skill checks @import directive syntax
+2. Verifies target file exists at the specified path
+3. Checks for circular dependencies
+4. Shows correct path format: `@import .claude/rules/filename.md`
+
+**Result**: Import error resolved with specific fix suggestion
+
+### Example 3: Validate frontmatter
+
+**User says**: "What's wrong with my .claude/rules/ file?"
+**What happens**:
+
+1. Validates YAML frontmatter syntax
+2. Checks required `paths` field is present
+3. Ensures frontmatter is properly closed with `---`
+4. Shows example of correct frontmatter structure
+
+**Result**: Frontmatter errors fixed and file loads correctly
+
+### Command Examples
+
 Validate all CLAUDE.md files:
 
 ```bash

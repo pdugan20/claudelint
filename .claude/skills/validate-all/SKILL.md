@@ -31,6 +31,42 @@ Available flags:
 
 ## Examples
 
+### Example 1: Full project audit
+
+**User says**: "Check everything in my project"
+**What happens**:
+
+1. Skill runs `claudelint check-all`
+2. Validates all file types: CLAUDE.md, skills, settings, hooks, MCP servers, plugins
+3. Shows summary of issues found across all validators
+4. Provides file-specific error details
+
+**Result**: User gets comprehensive report of all validation issues in one command
+
+### Example 2: CI/CD integration
+
+**User says**: "Set up validation for my CI pipeline"
+**What happens**:
+
+1. Skill suggests adding `claudelint check-all --warnings-as-errors` to CI
+2. Explains exit codes (0 = pass, 1/2 = fail)
+3. Shows JSON output format for parsing: `--format json`
+
+**Result**: User knows how to integrate claudelint into automated workflows
+
+### Example 3: Debug multiple validation failures
+
+**User says**: "I'm getting errors from multiple validators, where do I start?"
+**What happens**:
+
+1. Skill runs `claudelint check-all --verbose`
+2. Shows which validators failed (e.g., skills, CLAUDE.md, hooks)
+3. Suggests running individual validators for detailed output
+
+**Result**: User understands which areas need attention and how to debug each
+
+### Command Examples
+
 Basic validation:
 
 ```bash

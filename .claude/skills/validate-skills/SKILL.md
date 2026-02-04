@@ -26,6 +26,44 @@ claudelint validate-skills
 
 ## Examples
 
+### Example 1: Fix skill naming
+
+**User says**: "My skill isn't loading in Claude"
+**What happens**:
+
+1. Checks if directory name matches SKILL.md `name:` field
+2. Validates kebab-case naming convention (lowercase-with-hyphens)
+3. Checks for reserved words (claude, anthropic)
+4. Shows correct name format
+
+**Result**: Skill renamed correctly and loads properly in Claude Code
+
+### Example 2: Fix tool permissions
+
+**User says**: "Getting 'unknown tool' error"
+**What happens**:
+
+1. Validates `allowed-tools` array syntax
+2. Checks each tool name against valid tools list
+3. Shows correct capitalization (PascalCase: Bash, Read, Write)
+4. Suggests corrections for common mistakes
+
+**Result**: allowed-tools field corrected and skill has proper permissions
+
+### Example 3: Security review
+
+**User says**: "Need to validate shell scripts are safe"
+**What happens**:
+
+1. Scans scripts for dangerous commands (rm -rf, dd, mkfs)
+2. Checks for eval/exec usage
+3. Detects path traversal patterns
+4. Suggests safer alternatives for flagged commands
+
+**Result**: Security issues identified and resolved before deployment
+
+### Command Examples
+
 Validate all skills:
 
 ```bash
