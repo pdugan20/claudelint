@@ -27,11 +27,11 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 
 ## Phase 1: Critical Bug Fixes & Plugin Infrastructure
 
-**Status**: COMPLETE (100% - 7/7 tasks done)
-**Duration**: 1-2 days
+**Status**: COMPLETE (100% - 9/9 tasks done)
+**Duration**: Completed
 **Dependencies**: Phase 0 complete
 
-**Completed**: All tasks 1.1-1.9 (package.json, plugin.json, skill renames, schema fix, E10 rule, testing, dependency checks, documentation)
+**Completed**: All tasks 1.1-1.9 (package.json, plugin.json, skill renames, schema fix, E10 rule, testing, dependency checks, documentation, README trimming)
 
 ### Tasks
 
@@ -254,7 +254,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
   - [x] Add skill naming guidelines with E10 rule
   - [x] Update all install examples to use project install (--save-dev)
   - [x] Update all commands to use npx
-  - [ ] **REMAINING**: Trim README from 795 lines → ~400 lines (match ESLint/Prettier)
+  - [x] Trim README from 795 lines → 467 lines (41% reduction, close to 400 target)
 
   **Current README issues:**
   - Too long: 795 lines vs ESLint's 363 lines vs Prettier's ~100 lines
@@ -661,18 +661,115 @@ None - Phase 2.1 complete!
 - Verification audit: `docs/projects/plugin-and-md-management/phase-2-3-verification.md`
 - Evidence: All schemas show "No drift detected" in comparison output
 
-#### Phase 2.4: Manual Verification Support (2-3 days)
+#### Phase 2.4: Constants Verification (2-3 days) [COMPLETE]
 
-- [ ] **Task 2.4.1**: Tool names manual verification
-- [ ] **Task 2.4.2**: Model names manual verification
-- [ ] **Task 2.4.3**: Manual verification tracker (expiry warnings)
-- [ ] **Task 2.4.4**: Manual verification playbook
+**Goal**: Programmatically verify ToolNames and ModelNames constants against Claude Code CLI
+
+**Sources of Truth:**
+
+- **Primary**: Claude Code CLI (queries actual installed version)
+- **Documentation Reference**:
+  - ToolNames: <https://code.claude.com/docs/en/settings#tools-available-to-claude>
+  - ModelNames: <https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields>
+
+**Strategy:**
+
+1. **Query Claude CLI** - Ask Claude to list its tools/models via CLI
+2. **Supplemental Lists** - Maintain lists of valid values CLI doesn't return (e.g., `inherit`)
+3. **Hybrid Verification** - Compare against CLI + supplemental, not hardcoded lists
+4. **Settings.json** - Changed model to `z.string()` for arbitrary model names
+
+**Implementation:**
+
+**Tools Verification**:
+
+- Runs: `claude -p "List all tool names..."`
+- Returns: 17 tools from actual Claude Code
+- Supplemental: 0 tools (currently empty)
+- Compares: Against `VALID_TOOLS` constant
+- **Current Status**: [DRIFT DETECTED] (missing TodoWrite, extra 5 tools)
+
+**Models Verification**:
+
+- Runs: `claude -p "What model values for Task tool..."`
+- Returns: 3 models (sonnet, opus, haiku)
+- Supplemental: 1 model (`inherit` - valid but CLI doesn't mention)
+- Compares: Against `VALID_MODELS` constant
+- **Current Status**: [VERIFIED] (matches expected 4 models)
+
+**Tasks:**
+
+- [x] **Task 2.4.1**: Create tool names verification script [DONE]
+  - Script: `scripts/verify/tool-names.ts`
+  - Method: Queries Claude CLI with `execSync`
+  - Parses output, filters to PascalCase tool names
+  - Supports supplemental tools list (currently 0)
+  - Reports drift: missing TodoWrite, extra LSP/TaskCreate/TaskGet/TaskList/TaskUpdate
+  - Exit 1 on drift, 0 on match
+  - Includes error handling for missing CLI/API key
+
+- [x] **Task 2.4.2**: Create model names verification script [DONE]
+  - Script: `scripts/verify/model-names.ts`
+  - Method: Queries Claude CLI for Task tool model parameter
+  - Returns sonnet/opus/haiku from CLI
+  - Supplements with `inherit` (valid in docs but CLI doesn't return)
+  - Compares against `VALID_MODELS` constant
+  - **Result**: [SUCCESS] - matches expected 4 models
+  - Exit 0 (no drift)
+
+- [x] **Task 2.4.3**: Fix settings.json model validation [DONE]
+  - Changed `src/validators/schemas.ts` line 143
+  - From: `model: ModelNames.optional()`
+  - To: `model: z.string().optional()`
+  - Reason: settings.json accepts arbitrary model names
+  - Removed unused ModelNames import
+  - All tests pass (822 passed)
+  - ModelNames enum now ONLY for agents/skills
+
+- [x] **Task 2.4.4**: Rewrite constants verification documentation [DONE]
+  - Rewrote: `docs/constants-verification.md`
+  - Documents CLI-based verification approach
+  - Explains supplemental lists and why they exist
+  - Includes manual verification fallback
+  - Documents limitations and trade-offs
+  - Current drift status for both constants
+
+- [x] **Task 2.4.5**: Remove unused dependencies [DONE]
+  - Removed jsdom and @types/jsdom
+  - Freed 45 packages
+  - No longer needed - CLI queries don't parse HTML
+
+- [x] **Task 2.4.6**: Add NPM scripts [DONE]
+  - `npm run verify:tool-names` - Queries CLI, compares tools
+  - `npm run verify:model-names` - Queries CLI, compares models
+  - `npm run verify:constants` - Runs both verifications
+  - All scripts tested and working
+
+**Key Learnings:**
+
+- **Don't**: Maintain hardcoded lists that compare against themselves (useless)
+- **Do**: Query actual Claude Code installation via CLI
+- **Do**: Support supplemental lists for edge cases CLI misses
+- **Do**: Document why each supplemental value exists
+- **Limitation**: Requires Claude Code installed and API key configured
+- **Cost**: ~$0.01 per verification run (2 API calls, ~1000 tokens total)
 
 #### Phase 2.5: Integration & Documentation (1-2 days)
 
 - [ ] **Task 2.5.1**: Pre-commit hook integration
-- [ ] **Task 2.5.2**: Documentation
-- [ ] **Task 2.5.3**: Team training materials
+  - Add `npm run verify:constants` to pre-commit hook
+  - Fails commit if drift detected
+  - Forces manual review of constant changes
+
+- [ ] **Task 2.5.2**: Update project documentation
+  - Add constants verification to README
+  - Document verification workflow
+  - Explain source of truth for each constant
+
+- [ ] **Task 2.5.3**: CI integration
+  - Add verification to GitHub Actions workflow
+  - Run on every PR
+  - Fail CI if constants are out of sync
 
 ### Acceptance Criteria
 

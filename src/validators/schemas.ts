@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { ModelNames, HookTypes } from '../schemas/constants';
+import { HookTypes } from '../schemas/constants';
 import { semver } from '../schemas/refinements';
 
 /**
@@ -140,7 +140,9 @@ export const MarketplaceConfigSchema = z.object({
 export const SettingsSchema = z.object({
   permissions: PermissionsSchema.optional(),
   env: z.record(z.string()).optional(),
-  model: ModelNames.optional(),
+  // Note: model accepts arbitrary strings (aliases, full model names, ARNs, etc.)
+  // Don't use ModelNames enum - that's only for agent/skill frontmatter
+  model: z.string().optional(),
   apiKeyHelper: z.string().optional(),
   hooks: SettingsHooksSchema.optional(),
   attribution: AttributionSchema.optional(),
@@ -206,11 +208,13 @@ export const MCPWebSocketTransportSchema = z.object({
  * MCP server configuration (discriminated union based on transport type)
  * Server name is the key in mcpServers object, not a field
  */
-export const MCPServerSchema = z.discriminatedUnion('type', [
-  MCPHTTPTransportSchema,
-  MCPSSETransportSchema,
-  MCPWebSocketTransportSchema,
-]).or(MCPStdioTransportSchema); // Stdio is special since type is optional
+export const MCPServerSchema = z
+  .discriminatedUnion('type', [
+    MCPHTTPTransportSchema,
+    MCPSSETransportSchema,
+    MCPWebSocketTransportSchema,
+  ])
+  .or(MCPStdioTransportSchema); // Stdio is special since type is optional
 
 /**
  * MCP config schema (.mcp.json)

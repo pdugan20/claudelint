@@ -104,6 +104,48 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 - Test error conditions and edge cases
 - Use descriptive test names
 
+### Verifying Constants (Maintainers Only)
+
+Constants like `ToolNames` and `ModelNames` must stay synchronized with Claude Code. We verify these by querying the Claude Code CLI.
+
+**Requirements:**
+
+- Claude Code CLI installed (`brew install claude-code` or from <https://code.claude.com/>)
+- `ANTHROPIC_API_KEY` configured
+
+**When to verify:**
+
+- **Before releases** (required)
+- After Claude Code updates
+- Every 90 days (recommended)
+- When users report validation issues
+
+**How to verify:**
+
+```bash
+# Verify all constants
+npm run verify:constants
+
+# Or individually
+npm run verify:tool-names
+npm run verify:model-names
+```
+
+**If drift detected:**
+
+1. Review the output to see missing/extra values
+2. Cross-check with official docs:
+   - Tools: <https://code.claude.com/docs/en/settings#tools-available-to-claude>
+   - Models: <https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields>
+3. Update `src/schemas/constants.ts` if needed
+4. Run tests: `npm test`
+5. Re-verify: `npm run verify:constants`
+6. Update `docs/constants-verification.md` with new date
+
+**See also:** [docs/constants-verification.md](docs/constants-verification.md) for detailed documentation.
+
+**Note:** Regular contributors don't need Claude CLI installed. This is only for maintainers doing releases.
+
 ### Commit Message Guidelines
 
 Follow conventional commit format:
@@ -412,12 +454,99 @@ Include:
 
 (For maintainers only)
 
-1. Update version in package.json
-2. Update CHANGELOG.md
-3. Commit changes: `git commit -m "chore: release v1.2.3"`
-4. Tag release: `git tag v1.2.3`
-5. Push: `git push && git push --tags`
-6. GitHub Actions will automatically publish to npm
+**Pre-release checklist:**
+
+1. **Verify constants are current:**
+
+   ```bash
+   npm run verify:constants
+   ```
+
+   If drift detected, fix it before proceeding. See [Verifying Constants](#verifying-constants-maintainers-only) section.
+
+2. **Run full validation:**
+
+   ```bash
+   npm run validate:all
+   ```
+
+3. **Choose release type:**
+
+   ```bash
+   # Patch (bug fixes): 0.2.0 -> 0.2.1
+   npm run release:patch
+
+   # Minor (new features): 0.2.0 -> 0.3.0
+   npm run release:minor
+
+   # Major (breaking changes): 0.2.0 -> 1.0.0
+   npm run release:major
+
+   # Or interactive (prompts for version):
+   npm run release
+   ```
+
+4. **What `npm run release` does:**
+   - Runs lint, test, and build
+   - Analyzes commits since last release
+   - Auto-generates CHANGELOG section
+   - Bumps version in package.json
+   - Syncs skill versions
+   - Creates git commit and tag
+   - Pushes to GitHub
+   - Creates GitHub release
+   - Publishes to npm
+
+**Note:** The `npm run release` command uses [release-it](https://github.com/release-it/release-it) and handles all steps automatically. Manual version/changelog updates are not needed.
+
+## CI Integration (Optional)
+
+### Constants Verification in CI
+
+You can optionally run constants verification in CI, but be aware of trade-offs:
+
+**Trade-offs:**
+
+- Pro: Catches drift automatically on every PR
+- Con: Costs tokens (~$0.01 per run, adds up)
+- Con: Requires `ANTHROPIC_API_KEY` in CI secrets
+- Con: Adds ~30 seconds to CI runs
+
+**Example GitHub Actions workflow:**
+
+```yaml
+# .github/workflows/verify-constants.yml (optional)
+name: Verify Constants
+
+on:
+  pull_request:
+  schedule:
+    # Run weekly on Mondays at 9am UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+
+      # Install Claude CLI (example for Linux)
+      - name: Install Claude CLI
+        run: |
+          curl -fsSL https://code.claude.com/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify Constants
+        run: npm run verify:constants
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+**Recommendation:** Don't enable this initially. Manual verification before releases is sufficient for most projects.
 
 ## Getting Help
 
