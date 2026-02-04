@@ -115,6 +115,36 @@ Or disable for a single line:
 - `1` - Warnings found (or warnings treated as errors)
 - `2` - Errors found
 
+## Common Issues
+
+### Error: "File exceeds 50KB"
+
+**Cause**: CLAUDE.md file is too large for Claude's context window
+**Solution**: Split content into .claude/rules/ files using @import directives
+**Example**: Move testing guidelines to .claude/rules/testing.md and add `@import .claude/rules/testing.md` to CLAUDE.md
+
+### Error: "Import not found: .claude/rules/testing.md"
+
+**Cause**: @import directive points to a file that doesn't exist
+**Solution**: Check the path is correct relative to CLAUDE.md
+**Common mistakes:**
+
+- Using `@import ../rules/testing.md` (wrong - don't use ..)
+- Using `@import rules/testing.md` (wrong - missing .claude/)
+- Correct: `@import .claude/rules/testing.md`
+
+### Error: "Circular import detected"
+
+**Cause**: File A imports B which imports A (infinite loop)
+**Solution**: Reorganize imports to be one-directional
+**Example**: CLAUDE.md should import .claude/rules/ files, but those files should not import CLAUDE.md back
+
+### Warning: "File exceeds 30KB"
+
+**Cause**: File is approaching the safe limit for Claude's context
+**Solution**: Not urgent, but consider splitting large sections into @imports
+**Why 30KB?** Claude can handle up to ~50KB, but staying under 30KB leaves room for growth and keeps context manageable
+
 ## See Also
 
 - [validate-all](../validate-all/SKILL.md) - Run all validators
