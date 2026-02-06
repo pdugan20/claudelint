@@ -1,6 +1,6 @@
 ---
 name: format-cc
-description: Format Claude Code files with markdownlint, prettier, and shellcheck. Use when you want to "format my files", "fix markdown formatting", "clean up CLAUDE.md", or "check shell scripts". Auto-fixes markdown, JSON, YAML formatting and analyzes shell script quality.
+description: Formats Claude Code files with markdownlint, prettier, and shellcheck. Use when user asks to "format my files", "fix markdown formatting", "clean up CLAUDE.md", or "check shell scripts". Auto-fixes markdown, JSON, YAML formatting and analyzes shell script quality.
 version: 1.0.0
 tags:
   - formatting

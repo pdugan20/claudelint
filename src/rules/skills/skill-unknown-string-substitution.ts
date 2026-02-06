@@ -30,13 +30,18 @@ export const rule: Rule = {
       return;
     }
 
+    // Strip fenced code blocks and inline code to avoid false positives on shell variables in examples
+    const contentWithoutCodeBlocks = fileContent
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]+`/g, '');
+
     // Valid substitutions: $ARGUMENTS, $0, $1, etc., ${CLAUDE_SESSION_ID}
     // Pattern matches $UPPERCASE_WORDS that are NOT followed by {
     const invalidSubstitutionRegex = /\$[A-Z_]+(?!\{)/g;
     const validSubstitutions = ['$ARGUMENTS'];
 
     let match;
-    while ((match = invalidSubstitutionRegex.exec(fileContent)) !== null) {
+    while ((match = invalidSubstitutionRegex.exec(contentWithoutCodeBlocks)) !== null) {
       const substitution = match[0];
       // Allow $ARGUMENTS and $0-$9 patterns
       if (!validSubstitutions.includes(substitution) && !/^\$\d+$/.test(substitution)) {

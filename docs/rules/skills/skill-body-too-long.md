@@ -5,11 +5,11 @@
 **Validator**: Skills
 **Category**: File System
 
-SKILL.md body should not exceed 400 lines
+SKILL.md body should not exceed 500 lines
 
 ## Rule Details
 
-This rule triggers when the body content of a SKILL.md file (excluding frontmatter) exceeds 400 lines. Long SKILL.md files contradict Anthropic's guidance on progressive disclosure. According to their official guide, SKILL.md should be kept under 5,000 words with detailed documentation moved to the `references/` directory.
+This rule triggers when the body content of a SKILL.md file (excluding frontmatter) exceeds 500 lines. Long SKILL.md files contradict Anthropic's guidance on progressive disclosure. According to their official guide, SKILL.md should be kept under 5,000 words with detailed documentation moved to the `references/` directory.
 
 The rule counts body lines after the frontmatter delimiters (`---`). When a SKILL.md file exceeds this threshold, detailed documentation should be extracted to separate files in the `references/` directory and linked from the main SKILL.md file.
 
@@ -105,7 +105,7 @@ This rule has the following configuration options:
 Maximum number of lines in body content before triggering a warning. Must be a positive integer.
 
 **Type**: `number`
-**Default**: `400`
+**Default**: `500`
 
 **Schema**:
 

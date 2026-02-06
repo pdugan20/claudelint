@@ -11,7 +11,7 @@ import { z } from 'zod';
  * Options for skill-body-too-long rule
  */
 export interface SkillBodyTooLongOptions {
-  /** Maximum body length in lines before warning (default: 400) */
+  /** Maximum body length in lines before warning (default: 500) */
   maxLines?: number;
 }
 
@@ -22,7 +22,7 @@ export const rule: Rule = {
   meta: {
     id: 'skill-body-too-long',
     name: 'Skill Body Too Long',
-    description: 'SKILL.md body should not exceed 400 lines',
+    description: 'SKILL.md body should not exceed 500 lines',
     category: 'Skills',
     severity: 'warn',
     fixable: false,
@@ -34,7 +34,7 @@ export const rule: Rule = {
       maxLines: z.number().positive().int().optional(),
     }),
     defaultOptions: {
-      maxLines: 400,
+      maxLines: 500,
     },
   },
 

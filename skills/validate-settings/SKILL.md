@@ -1,6 +1,6 @@
 ---
 name: validate-settings
-description: Validate Claude Code settings.json files for schema, permissions, and security. Use when you want to "check my settings", "validate settings.json", "permission errors", "environment variable issues", or "settings syntax errors". Validates model names, permission rules, hooks configuration, and environment variables.
+description: Validates Claude Code settings.json files for schema, permissions, and security. Use when user asks to "check my settings", "validate settings.json", "permission errors", "environment variable issues", or "settings syntax errors". Validates model names, permission rules, hooks configuration, and environment variables.
 version: 1.0.0
 tags:
   - validation
@@ -46,4 +46,4 @@ claudelint validate-settings --path /path/to/settings.json
 
 ## See Also
 
-- [validate](../validate/SKILL.md) - Run all validators
+- [validate-all](../validate-all/SKILL.md) - Run all validators

@@ -11,8 +11,9 @@ import { Rule, RuleContext } from '../../types/rule';
 import { fileExists, resolvePath } from '../../utils/filesystem/files';
 import { dirname } from 'path';
 
-// Matches relative markdown links: [text](./file.md)
-const MARKDOWN_LINK_REGEX = /\[([^\]]+)\]\(\.\/([^)]+)\)/g;
+// Matches relative markdown links: [text](./file.md) or [text](file.md)
+// Excludes URLs, anchors, absolute paths, and mailto links
+const MARKDOWN_LINK_REGEX = /\[([^\]]+)\]\((?!https?:\/\/|#|\/|mailto:)(?:\.\/)?([^)]+)\)/g;
 
 export const rule: Rule = {
   meta: {

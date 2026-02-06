@@ -13,7 +13,7 @@ echo "Validating bundled skills (dogfooding)..."
 echo
 
 # Validate all bundled skills
-./bin/claudelint validate-skills --path .claude/skills
+./bin/claudelint validate-skills --path skills
 
 exit_code=$?
 

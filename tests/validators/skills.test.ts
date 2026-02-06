@@ -25,6 +25,44 @@ This is the skill body content.
     return skillMd;
   }
 
+  async function createRootLevelSkill(skillName: string, frontmatter: Record<string, unknown>) {
+    const skillDir = join(getTestDir(), 'skills', skillName);
+    await mkdir(skillDir, { recursive: true });
+
+    const skillMd = join(skillDir, 'SKILL.md');
+    const content = `---
+${Object.entries(frontmatter)
+  .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+  .join('\n')}
+---
+
+# ${frontmatter.name}
+
+This is the skill body content.
+`;
+    await writeFile(skillMd, content);
+    return skillMd;
+  }
+
+  async function createDirectSkill(skillName: string, frontmatter: Record<string, unknown>) {
+    const skillDir = join(getTestDir(), skillName);
+    await mkdir(skillDir, { recursive: true });
+
+    const skillMd = join(skillDir, 'SKILL.md');
+    const content = `---
+${Object.entries(frontmatter)
+  .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+  .join('\n')}
+---
+
+# ${frontmatter.name}
+
+This is the skill body content.
+`;
+    await writeFile(skillMd, content);
+    return skillMd;
+  }
+
   describe('Orchestration', () => {
     it('should validate valid skill', async () => {
       await createSkill('test-skill', {
@@ -109,6 +147,32 @@ Content here.
 
       expect(result.valid).toBe(false);
       expect(result.errors.length).toBeGreaterThan(0);
+    });
+
+    it('should find skills in root-level skills/ directory', async () => {
+      await createRootLevelSkill('root-skill', {
+        name: 'root-skill',
+        description: 'A root-level skill',
+      });
+
+      const validator = new SkillsValidator({ path: getTestDir() });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should find skills when --path points directly to a skills directory', async () => {
+      await createDirectSkill('direct-skill', {
+        name: 'direct-skill',
+        description: 'A directly referenced skill',
+      });
+
+      const validator = new SkillsValidator({ path: getTestDir() });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
   });
 });

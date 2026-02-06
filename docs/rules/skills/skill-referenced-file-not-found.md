@@ -11,7 +11,7 @@ Referenced file in markdown link does not exist
 
 This rule validates that all relative file references in markdown links within SKILL.md actually exist. Broken links create a poor user experience, lead to confusion when documentation points to missing files, waste time troubleshooting, and reduce confidence in the skill quality.
 
-The rule checks relative markdown links using the pattern `[text](./path/to/file)`. Absolute URLs, anchor links, and non-relative paths are not validated by this rule.
+The rule checks relative markdown links using both `[text](./path/to/file)` and `[text](path/to/file)` formats. Absolute URLs, anchor links, absolute paths, and mailto links are not validated by this rule.
 
 ### Incorrect
 
@@ -55,11 +55,20 @@ For examples, check [deploy script](./deploy.sh).         # File exists
 - [README](./README.md)
 ```
 
+Links without `./` prefix are also validated:
+
+```markdown
+See [configuration guide](docs/config.md) for setup.         # File exists
+For examples, check [deploy script](scripts/deploy.sh).      # File exists
+```
+
 External links (not validated):
 
 ```markdown
 See the [official documentation](https://example.com/docs).
 Check the [GitHub repository](https://github.com/org/repo).
+Jump to [setup section](#setup).
+Contact [support](mailto:support@example.com).
 ```
 
 ## How To Fix

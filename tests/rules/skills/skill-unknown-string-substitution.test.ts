@@ -75,6 +75,43 @@ Use $0, $1, $2, $9 for positional args.`,
     });
   });
 
+  it('should skip substitutions inside inline code', async () => {
+    await ruleTester.run('skill-unknown-string-substitution', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+---
+
+Finds \`rm -rf $TEMP_DIR\` and flags it because \`$TEMP_DIR\` could be empty.`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should skip substitutions inside fenced code blocks', async () => {
+    await ruleTester.run('skill-unknown-string-substitution', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+---
+
+Example:
+
+\`\`\`bash
+rm -rf $TEMP_DIR
+echo $HOME
+\`\`\``,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
   it('should allow ${VARIABLE} syntax', async () => {
     await ruleTester.run('skill-unknown-string-substitution', rule, {
       valid: [

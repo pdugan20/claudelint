@@ -39,6 +39,106 @@ This skill has no file references.`,
     });
   });
 
+  it('should skip external URLs', async () => {
+    await ruleTester.run('skill-referenced-file-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: Test skill
+---
+
+# Usage
+
+See [docs](https://example.com) for more info.`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should skip anchor links', async () => {
+    await ruleTester.run('skill-referenced-file-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: Test skill
+---
+
+# Usage
+
+See [section](#heading) for details.`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should skip absolute paths', async () => {
+    await ruleTester.run('skill-referenced-file-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: Test skill
+---
+
+# Usage
+
+See [file](/etc/passwd) for details.`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should skip mailto links', async () => {
+    await ruleTester.run('skill-referenced-file-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: Test skill
+---
+
+# Usage
+
+Contact [support](mailto:user@example.com).`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should validate links without ./ prefix', async () => {
+    await ruleTester.run('skill-referenced-file-not-found', rule, {
+      valid: [],
+      invalid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: Test skill
+---
+
+# Usage
+
+See [guide](references/guide.md) for details.`,
+          errors: [
+            {
+              message: 'Referenced file not found: references/guide.md',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
   // Note: Testing actual file existence requires integration tests with real filesystem
   // or complex mocking. The rule logic is tested here, filesystem interaction tested separately.
 });

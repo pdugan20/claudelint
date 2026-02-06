@@ -1,6 +1,6 @@
 ---
 name: validate-skills
-description: Validate Claude Code skills for schema, naming, documentation, and security. Use when you want to "check my skill", "validate skill syntax", "why isn't my skill loading", "skill errors", or "dangerous command detected". Validates SKILL.md frontmatter, allowed-tools, file references, directory organization, and shell script security.
+description: Validates Claude Code skills for schema, naming, documentation, and security. Use when user asks to "check my skill", "validate skill syntax", "why isn't my skill loading", "skill errors", or "dangerous command detected". Validates SKILL.md frontmatter, allowed-tools, file references, directory organization, and shell script security.
 version: 1.0.0
 tags:
   - validation
@@ -62,7 +62,7 @@ claudelint validate-skills
 **What happens**:
 
 1. Scans cleanup.sh script, finds `rm -rf $TEMP_DIR`
-2. Flags it because $TEMP_DIR could be empty or `/` (dangerous)
+2. Flags it because `$TEMP_DIR` could be empty or `/` (dangerous)
 3. Suggests safer alternative: validate directory first, use explicit path
 4. Shows fixed version: `[[ -n "$TEMP_DIR" && "$TEMP_DIR" != "/" ]] && rm -rf "$TEMP_DIR"`
 
@@ -227,5 +227,4 @@ version: 1.0.0  # Add this
 
 ## See Also
 
-- [validate](../validate/SKILL.md) - Run all validators
-- [validators documentation](../../docs/validators.md) - Complete validation rules
+- [validate-all](../validate-all/SKILL.md) - Run all validators

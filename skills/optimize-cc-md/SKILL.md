@@ -1,6 +1,6 @@
 ---
 name: optimize-cc-md
-description: Interactively help users optimize their CLAUDE.md files. Use when you want to "optimize my CLAUDE.md", "my CLAUDE.md is too long", "improve organization", or "split my CLAUDE.md". Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure.
+description: Interactively helps users optimize their CLAUDE.md files. Use when user asks to "optimize my CLAUDE.md", "my CLAUDE.md is too long", "improve organization", or "split my CLAUDE.md". Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure.
 version: 1.0.0
 tags:
   - automation
@@ -70,9 +70,9 @@ For each issue, determine the root cause:
 
 Link to reference files for detailed strategies:
 
-- See `references/size-optimization.md` for reduction strategies
-- See `references/import-patterns.md` for @import best practices
-- See `references/organization-guide.md` for structural guidance
+- See [size optimization](./references/size-optimization.md) for reduction strategies
+- See [import patterns](./references/import-patterns.md) for @import best practices
+- See [organization guide](./references/organization-guide.md) for structural guidance
 
 ### Step 5: Ask User What to Fix
 
@@ -165,7 +165,7 @@ Show before/after comparison:
 - Remove all generic/obvious content
 - Reorganize into focused, scoped rules
 
-See `references/size-optimization.md` for detailed strategies.
+See [size optimization](./references/size-optimization.md) for detailed strategies.
 
 ### Import Issues
 
@@ -190,7 +190,7 @@ Error: Import depth exceeded (4 levels)
 Fix: Flatten import hierarchy or consolidate files
 ```
 
-See `references/import-patterns.md` for @import best practices.
+See [import patterns](./references/import-patterns.md) for @import best practices.
 
 ### Organization Problems
 
@@ -211,7 +211,7 @@ See `references/import-patterns.md` for @import best practices.
 - If permissions are in settings.json, don't duplicate in CLAUDE.md
 - If environment variables are in settings.json, remove from CLAUDE.md
 
-See `references/organization-guide.md` for structural guidance.
+See [organization guide](./references/organization-guide.md) for structural guidance.
 
 ## Examples
 
@@ -528,8 +528,8 @@ The skill checks for this dependency and will show installation instructions if 
 
 For detailed strategies, see:
 
-- `references/size-optimization.md` - How to reduce CLAUDE.md file size
-- `references/import-patterns.md` - Best practices for organizing @imports
-- `references/organization-guide.md` - Structural organization principles
+- [size optimization](./references/size-optimization.md) - How to reduce CLAUDE.md file size
+- [import patterns](./references/import-patterns.md) - Best practices for organizing @imports
+- [organization guide](./references/organization-guide.md) - Structural organization principles
 
 These files are read on-demand when you need specific guidance.

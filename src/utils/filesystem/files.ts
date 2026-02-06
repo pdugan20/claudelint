@@ -91,16 +91,40 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
  * Find skill directories
  */
 export async function findSkillDirectories(basePath: string = process.cwd()): Promise<string[]> {
-  const skillFiles = await findFiles('.claude/skills/*/SKILL.md', basePath);
-  return skillFiles.map((file) => file.replace('/SKILL.md', ''));
+  const patterns = [
+    '.claude/skills/*/SKILL.md', // Standard project location
+    'skills/*/SKILL.md', // Plugin/root-level skills
+    '*/SKILL.md', // Direct --path to skills directory
+  ];
+
+  const allFiles: string[] = [];
+  for (const pattern of patterns) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+
+  const uniqueFiles = [...new Set(allFiles)];
+  return uniqueFiles.map((file) => file.replace('/SKILL.md', ''));
 }
 
 /**
  * Find agent directories
  */
 export async function findAgentDirectories(basePath: string = process.cwd()): Promise<string[]> {
-  const agentFiles = await findFiles('.claude/agents/*/AGENT.md', basePath);
-  return agentFiles.map((file) => file.replace('/AGENT.md', ''));
+  const patterns = [
+    '.claude/agents/*/AGENT.md', // Standard project location
+    'agents/*/AGENT.md', // Plugin/root-level agents
+    '*/AGENT.md', // Direct --path to agents directory
+  ];
+
+  const allFiles: string[] = [];
+  for (const pattern of patterns) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+
+  const uniqueFiles = [...new Set(allFiles)];
+  return uniqueFiles.map((file) => file.replace('/AGENT.md', ''));
 }
 
 /**
@@ -109,8 +133,20 @@ export async function findAgentDirectories(basePath: string = process.cwd()): Pr
 export async function findOutputStyleDirectories(
   basePath: string = process.cwd()
 ): Promise<string[]> {
-  const outputStyleFiles = await findFiles('.claude/output_styles/*/OUTPUT_STYLE.md', basePath);
-  return outputStyleFiles.map((file) => file.replace('/OUTPUT_STYLE.md', ''));
+  const patterns = [
+    '.claude/output_styles/*/OUTPUT_STYLE.md', // Standard project location
+    'output_styles/*/OUTPUT_STYLE.md', // Plugin/root-level output styles
+    '*/OUTPUT_STYLE.md', // Direct --path to output styles directory
+  ];
+
+  const allFiles: string[] = [];
+  for (const pattern of patterns) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+
+  const uniqueFiles = [...new Set(allFiles)];
+  return uniqueFiles.map((file) => file.replace('/OUTPUT_STYLE.md', ''));
 }
 
 /**
