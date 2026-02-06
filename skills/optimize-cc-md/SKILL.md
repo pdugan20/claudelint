@@ -18,11 +18,22 @@ allowed-tools:
 
 # Optimize CLAUDE.md
 
-An interactive skill that helps you optimize your CLAUDE.md file through validation, conversational explanation, and guided editing. This skill identifies issues, explains them in plain language, and makes the actual changes for you.
+An interactive skill that helps you optimize your CLAUDE.md file through a 3-phase workflow: validate, assess quality, then make guided improvements. Each phase builds on the previous one so the user understands what's wrong, why it matters, and what to do about it.
 
-## Core Workflow
+## Workflow Overview
 
-When you run this skill, follow this interactive process:
+```text
+Phase A: Validate         Phase B: Assess Quality     Phase C: Guided Improvement
+─────────────────         ───────────────────────     ───────────────────────────
+Run claudelint         →  Explain issues plainly   →  Ask user what to fix
+Read CLAUDE.md         →  Check quality criteria   →  Make surgical changes
+Collect violations     →  Identify opportunities   →  Create @import files
+                                                   →  Verify results
+```
+
+## Phase A: Validate
+
+Run automated validation and read the file to understand its current state.
 
 ### Step 1: Run Validation
 
@@ -48,7 +59,16 @@ Use the Read tool to examine the user's CLAUDE.md:
 Read(file_path: "CLAUDE.md")
 ```
 
-Understand the current structure, content, and patterns.
+Understand the current structure, content, and patterns. Note:
+
+- Total file size and number of sections
+- Which sections are project-specific vs generic
+- Existing @import structure (if any)
+- Content that could be scoped with globs
+
+## Phase B: Assess Quality
+
+Go beyond automated checks. Explain issues conversationally and evaluate quality using criteria that linting can't catch.
 
 ### Step 3: Explain Issues Conversationally
 
@@ -60,23 +80,42 @@ Translate validation errors into plain language:
 
 Focus on the "why" not just the "what". Help users understand the impact.
 
-### Step 4: Identify Specific Problems
+### Step 4: Assess Against Quality Criteria
 
-For each issue, determine the root cause:
+Walk through the key quality dimensions from [quality criteria](./references/quality-criteria.md):
 
-- **Size violations**: Generic content, config duplication, obvious advice
-- **Import issues**: Missing files, circular references, depth exceeded
-- **Organization**: Too many top-level sections, unclear structure
+- **Specificity**: Is every instruction project-specific? Flag generic advice ("always write clean code")
+- **Completeness**: Can a new developer build, test, and contribute?
+- **Clarity**: Are instructions directive ("do X") vs descriptive ("X is important")?
+- **Organization**: Is the most important info near the top? Are related items grouped?
+- **Maintenance**: Do commands and paths still work? Any stale content?
 
-Link to reference files for detailed strategies:
+Present a brief assessment to the user:
 
-- See [size optimization](./references/size-optimization.md) for reduction strategies
-- See [import patterns](./references/import-patterns.md) for @import best practices
-- See [organization guide](./references/organization-guide.md) for structural guidance
+```text
+"Your CLAUDE.md has 3 validation errors and some quality gaps:
+- 45KB (over 30KB threshold) - needs splitting
+- 12 generic statements that should be removed
+- Testing section is thorough but git workflow is missing
+- Good: all commands are current and paths are valid"
+```
 
-### Step 5: Ask User What to Fix
+### Step 5: Identify Improvement Opportunities
 
-Use the AskUserQuestion tool to present options:
+For each issue, determine the root cause and link to reference files:
+
+- **Size violations**: See [size optimization](./references/size-optimization.md)
+- **Import issues**: See [import patterns](./references/import-patterns.md)
+- **Organization**: See [organization guide](./references/organization-guide.md)
+- **Templates**: See [templates](./references/templates.md) for good CLAUDE.md examples
+
+## Phase C: Guided Improvement
+
+Let the user choose what to fix, then make the changes and verify results.
+
+### Step 6: Ask User What to Fix
+
+Use the AskUserQuestion tool to present prioritized options:
 
 ```text
 What would you like me to fix first?
@@ -89,7 +128,7 @@ What would you like me to fix first?
 
 Let the user prioritize. Don't assume.
 
-### Step 6: Make the Changes
+### Step 7: Make the Changes
 
 Use the Edit tool for surgical changes to CLAUDE.md:
 
@@ -107,7 +146,7 @@ For removing content:
 - Remove config duplication (if same rules in .claude/settings.json)
 - Clean up obvious statements that add no value
 
-### Step 7: Create @Import Files (If Splitting Content)
+### Step 8: Create @Import Files (If Splitting Content)
 
 Use the Write tool to create new files in .claude/rules/:
 
@@ -135,7 +174,7 @@ Edit(
 - Keep import depth under 3 levels
 - Avoid circular imports
 
-### Step 8: Show Results
+### Step 9: Verify Results
 
 Run validation again to confirm fixes:
 
@@ -151,117 +190,48 @@ Show before/after comparison:
 
 ## Common Fixes
 
-### File Size Violations
+For detailed fix strategies, see [common fixes reference](./references/common-fixes.md).
 
-**30KB warning threshold**: Your CLAUDE.md is getting large. Consider:
+Quick reference:
 
-- Moving project-specific rules to .claude/rules/ with @import
-- Removing generic advice that doesn't add value
-- Consolidating similar sections
-
-**50KB error threshold**: Your CLAUDE.md is too large. You must:
-
-- Split content into multiple @import files
-- Remove all generic/obvious content
-- Reorganize into focused, scoped rules
-
-See [size optimization](./references/size-optimization.md) for detailed strategies.
-
-### Import Issues
-
-**Missing imports**: Fix broken @import paths:
-
-```text
-Error: .claude/rules/missing.md not found
-Fix: Create the file or remove the @import
-```
-
-**Circular imports**: A imports B, B imports A:
-
-```text
-Error: Circular import detected
-Fix: Restructure imports to be hierarchical, not circular
-```
-
-**Depth exceeded**: Too many nested imports (limit: 3 levels):
-
-```text
-Error: Import depth exceeded (4 levels)
-Fix: Flatten import hierarchy or consolidate files
-```
-
-See [import patterns](./references/import-patterns.md) for @import best practices.
-
-### Organization Problems
-
-**Too many sections**: CLAUDE.md has 20+ top-level headings:
-
-- Group related sections together
-- Move specific topics to @import files
-- Use .claude/rules/ for scoped rules
-
-**Generic content**: Remove obvious advice:
-
-- "Always write clean code" (too generic)
-- "Follow best practices" (adds no value)
-- "Use proper error handling" (obvious)
-
-**Config duplication**: Don't repeat .claude/settings.json in CLAUDE.md:
-
-- If permissions are in settings.json, don't duplicate in CLAUDE.md
-- If environment variables are in settings.json, remove from CLAUDE.md
-
-See [organization guide](./references/organization-guide.md) for structural guidance.
+- **Size violations**: Move content to @imports, remove generic advice. See [size optimization](./references/size-optimization.md)
+- **Import issues**: Check paths, avoid circular imports, limit depth to 3. See [import patterns](./references/import-patterns.md)
+- **Organization**: Group related sections, use .claude/rules/ for scoped rules. See [organization guide](./references/organization-guide.md)
 
 ## Examples
 
-### Example 1: Fix Size Violations
+### Example 1: Full 3-Phase Workflow (Size Reduction)
 
 **User says:** "My CLAUDE.md is 45KB and I'm getting warnings. How do I reduce it?"
 
-**Actions Claude takes:**
+**Phase A** - Run validation and read the file:
 
-1. Run validation:
+```bash
+npx claude-code-lint check-claude-md --verbose
+```
 
-   ```bash
-   npx claude-code-lint check-claude-md --verbose
-   ```
+Output shows: "Warning: CLAUDE.md is 45KB (threshold: 30KB)". Read the file and note the largest sections: git workflow (12KB), testing standards (8KB), generic advice (~5KB scattered).
 
-   Output shows: "Warning: CLAUDE.md is 45KB (threshold: 30KB)"
+**Phase B** - Assess quality and explain:
 
-2. Read CLAUDE.md and identify largest sections:
-   - Git workflow section: 12KB (500 lines)
-   - Testing standards: 8KB (300 lines)
-   - Generic advice blocks: 5KB scattered throughout
+"Your file is 45KB - 15KB over the warning threshold. I found:
 
-3. Explain to user:
-   "Your file is 45KB - 15KB over the warning threshold. I found:
-   - Large git workflow section (12KB) - good candidate for @import
-   - Testing standards (8KB) - should move to .claude/rules/
-   - Generic advice (~5KB) - can be removed entirely"
+- Large git workflow section (12KB) - good candidate for @import
+- Testing standards (8KB) - should move to .claude/rules/
+- Generic advice (~5KB) - can be removed entirely
+- Quality: commands are current, but 12 statements are generic rather than project-specific"
 
-4. Ask user what to fix:
-   - Option 1: Split git workflow to @import
-   - Option 2: Remove all generic advice
-   - Option 3: Move testing to .claude/rules/
+**Phase C** - Fix with user guidance:
 
-5. User chooses: "Split git workflow and remove generic advice"
+Ask user what to fix. User chooses: "Split git workflow and remove generic advice."
 
-6. Make changes:
+```text
+Write(.claude/rules/git-workflow.md, content: git workflow section)
+Edit(CLAUDE.md, old: git workflow section, new: @import .claude/rules/git-workflow.md)
+Edit(CLAUDE.md, old: generic advice blocks, new: [removed])
+```
 
-   ```text
-   Write(.claude/rules/git-workflow.md, content: git workflow section)
-   Edit(CLAUDE.md, old: git workflow section, new: @import .claude/rules/git-workflow.md)
-   Edit(CLAUDE.md, old: generic advice blocks, new: [removed])
-   ```
-
-7. Show results:
-
-   ```bash
-   npx claude-code-lint check-claude-md --verbose
-   ```
-
-   "Success: CLAUDE.md is now 28KB (under 30KB threshold)"
+Re-run validation: "CLAUDE.md is now 28KB (under 30KB threshold)."
 
 **Result:** File reduced from 45KB to 28KB by splitting largest section and removing bloat.
 
@@ -269,67 +239,22 @@ See [organization guide](./references/organization-guide.md) for structural guid
 
 **User says:** "My CLAUDE.md has everything in one file. Help me organize it better."
 
-**Actions Claude takes:**
+**Phase A** - Validate and read. Find 5 distinct topics totaling 1,650 lines.
 
-1. Run validation and read CLAUDE.md
+**Phase B** - Assess: "I see 5 distinct topics that can each become focused @import files. This will make your config more maintainable. All content is project-specific (good), but nothing is scoped by file type."
 
-2. Analyze structure:
+**Phase C** - Suggest structure, create files with glob frontmatter, update CLAUDE.md:
 
-   ```markdown
-   # CLAUDE.md (current)
-   - Git workflow (500 lines)
-   - Testing standards (300 lines)
-   - TypeScript rules (400 lines)
-   - API conventions (250 lines)
-   - Code style (200 lines)
-   ```
+```text
+.claude/rules/
+├── git-workflow.md (glob: "**/*")
+├── testing.md (glob: "**/*.test.ts")
+├── typescript.md (glob: "**/*.{ts,tsx}")
+├── api-conventions.md (glob: "src/api/**/*.ts")
+└── style-guide.md (glob: "src/**/*.ts")
+```
 
-3. Explain organization strategy:
-   "I see 5 distinct topics that can each become focused @import files.
-   This will make your config more maintainable and easier to update."
-
-4. Suggest structure:
-
-   ```text
-   .claude/rules/
-   ├── git-workflow.md (glob: "**/*")
-   ├── testing.md (glob: "**/*.test.ts")
-   ├── typescript.md (glob: "**/*.{ts,tsx}")
-   ├── api-conventions.md (glob: "src/api/**/*.ts")
-   └── style-guide.md (glob: "src/**/*.ts")
-   ```
-
-5. Create import files with frontmatter:
-
-   ```text
-   Write(.claude/rules/git-workflow.md)
-   Write(.claude/rules/testing.md with glob frontmatter)
-   Write(.claude/rules/typescript.md with glob frontmatter)
-   Write(.claude/rules/api-conventions.md with glob frontmatter)
-   Write(.claude/rules/style-guide.md with glob frontmatter)
-   ```
-
-6. Update CLAUDE.md:
-
-   ```markdown
-   # CLAUDE.md (after)
-
-   ## Project Overview
-   Brief project-specific context.
-
-   ## Development Workflow
-   @import .claude/rules/git-workflow.md
-   @import .claude/rules/testing.md
-
-   ## Code Standards
-   @import .claude/rules/typescript.md
-   @import .claude/rules/style-guide.md
-
-   ## Architecture
-   @import .claude/rules/api-conventions.md
-   ```
-
-7. Run validation to confirm no circular imports or depth issues
+Re-run validation to confirm no circular imports or depth issues.
 
 **Result:** Well-organized config with 5 focused @import files, each scoped to relevant file types.
 
@@ -337,174 +262,19 @@ See [organization guide](./references/organization-guide.md) for structural guid
 
 **User says:** "Is my CLAUDE.md too generic? It feels bloated."
 
-**Actions Claude takes:**
+**Phase A** - Validate and read. Use Grep to find generic patterns ("always", "best practice", "should", "never"). Find 47 instances.
 
-1. Run validation and read CLAUDE.md
+**Phase B** - Assess: "I found 47 generic statements that Claude already knows. These add ~5KB without project-specific value. Example - Generic: 'Always write clean code' vs Project-specific: 'Use PascalCase for React components, camelCase for hooks'"
 
-2. Scan for generic patterns:
-
-   ```text
-   Grep("always", "best practice", "should", "never")
-   ```
-
-   Found 47 instances of generic advice:
-   - "Always write clean code"
-   - "Follow best practices"
-   - "Never commit commented code"
-   - "Use meaningful variable names"
-   - "Test your code thoroughly"
-
-3. Explain to user:
-   "I found 47 generic statements that Claude already knows. These add ~5KB
-   without providing project-specific value. For example:
-
-   Generic: 'Always write clean code'
-   vs
-   Project-specific: 'Use PascalCase for React components, camelCase for hooks'"
-
-4. Show examples of what will be removed:
-
-   ```diff
-   - Always write clean, maintainable code
-   - Follow SOLID principles
-   - Use descriptive variable names
-   - Write tests for all new features
-   - Document your functions
-   + (removed - Claude already knows these principles)
-   ```
-
-5. Ask user: "Remove all 47 generic statements?"
-
-6. User confirms. Make edits:
-
-   ```text
-   Edit(CLAUDE.md, remove all generic advice blocks)
-   ```
-
-7. Show comparison:
-
-   ```text
-   Before: 38KB with generic advice
-   After: 33KB, all project-specific
-   Removed: 5KB of obvious/generic content
-   ```
+**Phase C** - Show the user what will be removed, ask for confirmation, then edit. Re-run validation.
 
 **Result:** Focused config with only project-specific guidance. File size reduced by 5KB.
 
 ## Troubleshooting
 
-### Skill won't run - "claudelint command not found"
+For solutions to common problems, see [troubleshooting guide](./references/troubleshooting.md).
 
-**Problem:** You see "Error: claudelint CLI not installed" when running the skill.
-
-**Solution:** Install the claudelint npm package:
-
-```bash
-npm install --save-dev claude-code-lint
-```
-
-The optimize-cc-md skill requires the claudelint CLI to run validation. The skill checks for this dependency automatically.
-
-### @import paths don't work after creating files
-
-**Problem:** Skill created `.claude/rules/git-workflow.md` but CLAUDE.md shows import error.
-
-**Possible causes:**
-
-1. **Incorrect path in @import:** Check that the import path matches the file location exactly:
-
-   ```markdown
-   BAD: @import .claude/git-workflow.md
-   GOOD: @import .claude/rules/git-workflow.md
-   ```
-
-2. **File wasn't created:** Verify the file exists:
-
-   ```bash
-   ls .claude/rules/git-workflow.md
-   ```
-
-3. **Missing frontmatter in rules file:** Files in `.claude/rules/` may need frontmatter:
-
-   ```markdown
-   ---
-   glob: "**/*.ts"
-   ---
-
-   # Your rules content
-   ```
-
-**Fix:** Re-run the skill and verify file paths, or manually correct the @import directive.
-
-### Validation still shows size violation after optimization
-
-**Problem:** You split content to @imports but CLAUDE.md still reports 45KB.
-
-**Possible causes:**
-
-1. **@import content counts toward total:** Imported files add to total size. The goal is to stay under 30KB total (CLAUDE.md + all imports).
-
-2. **Large imports:** Check individual import file sizes:
-
-   ```bash
-   wc -c .claude/rules/*.md
-   ```
-
-3. **Didn't remove generic content:** Size violations often require both splitting AND removing bloat.
-
-**Fix:** Remove more generic content, or split largest import files into smaller focused files.
-
-### Skill suggests removing content I want to keep
-
-**Problem:** Skill identifies "generic advice" that's actually important for your project.
-
-**Solution:** Tell Claude which content to keep:
-
-- "Keep the git workflow section, it's project-specific"
-- "Don't remove the testing rules, our project has unique requirements"
-
-Claude will adjust recommendations based on your feedback. The skill suggests removals but always asks before making changes.
-
-### Circular import error after creating @imports
-
-**Problem:** Validation shows "Circular import detected: A.md → B.md → A.md"
-
-**Cause:** One of the import files imports another file that imports the first one back.
-
-**Solution:**
-
-1. Keep imports hierarchical - CLAUDE.md should import everything, but import files should NOT import each other:
-
-   ```text
-   GOOD: CLAUDE.md → git-workflow.md
-   GOOD: CLAUDE.md → testing.md
-   BAD: git-workflow.md → testing.md → git-workflow.md
-   ```
-
-2. If two files need shared content, extract it to a third file:
-
-   ```text
-   Before (circular):
-   git-workflow.md → shared.md
-   testing.md → shared.md
-   shared.md → git-workflow.md  BAD:
-
-   After (hierarchical):
-   CLAUDE.md → shared.md
-   CLAUDE.md → git-workflow.md
-   CLAUDE.md → testing.md  GOOD:
-   ```
-
-### Skill creates too many small files
-
-**Problem:** Skill split content into 15 small @import files, making it hard to maintain.
-
-**Solution:** Ask Claude to consolidate related files:
-
-- "Merge the three git files into one git-workflow.md"
-- "Combine testing-unit.md and testing-integration.md"
-
-Aim for 5-10 focused import files, not 20+ tiny ones. Each file should cover a complete topic.
+Common issues: CLI not found (install claude-code-lint), broken @import paths, size violations persisting after splits, circular imports.
 
 ## Important Notes
 
@@ -531,5 +301,10 @@ For detailed strategies, see:
 - [size optimization](./references/size-optimization.md) - How to reduce CLAUDE.md file size
 - [import patterns](./references/import-patterns.md) - Best practices for organizing @imports
 - [organization guide](./references/organization-guide.md) - Structural organization principles
+- [common fixes](./references/common-fixes.md) - Quick reference for common issues and solutions
+- [troubleshooting](./references/troubleshooting.md) - Solutions for common skill problems
+- [quality criteria](./references/quality-criteria.md) - Manual review checklist for CLAUDE.md quality
+- [templates](./references/templates.md) - Annotated examples of well-structured CLAUDE.md files
+- [file type taxonomy](./references/file-type-taxonomy.md) - Complete Claude Code config ecosystem reference
 
 These files are read on-demand when you need specific guidance.

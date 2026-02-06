@@ -25,6 +25,7 @@ import { registerCheckDeprecatedCommand } from './cli/commands/check-deprecated'
 import { registerMigrateCommand } from './cli/commands/migrate';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
 import { registerInstallPluginCommand } from './cli/commands/install-plugin';
+import { registerWatchCommand } from './cli/commands/watch';
 
 // Read version from package.json
 const packageJsonPath = join(__dirname, '../package.json');
@@ -59,6 +60,7 @@ registerCheckDeprecatedCommand(program);
 registerMigrateCommand(program);
 registerCacheClearCommand(program);
 registerInstallPluginCommand(program);
+registerWatchCommand(program);
 
 // Parse command line arguments
 program.parse();

@@ -178,7 +178,7 @@ repos:
 ```text
 ## Next Steps
 
-1. **Explore validators** - See [Validators](validators.md) for detailed information
+1. **Explore validators** - See [Validators](validation-reference.md) for detailed information
 2. **Configure rules** - See [Configuration](configuration.md) for all options
 3. **Integrate tools** - See [Formatting Tools](formatting-tools.md) for complementary tools
 4. **Use as plugin** - See [Plugin Usage](plugin-usage.md) for Claude Code integration

@@ -83,9 +83,9 @@ describe('Test Fixtures', () => {
 
       expect(content).toContain('name: "complete-skill"');
       expect(content).toContain('description:');
-      expect(content).toContain('usage:');
-      expect(content).toContain('examples:');
-      expect(content).toContain('tools:');
+      expect(content).toContain('version:');
+      expect(content).toContain('tags:');
+      expect(content).toContain('allowed-tools:');
     });
 
     it('should create shell script', async () => {

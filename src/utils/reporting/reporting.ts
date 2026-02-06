@@ -8,11 +8,12 @@ import {
 import { ProgressIndicator } from './progress';
 import { ValidationCache } from '../cache';
 import { ConfigError } from '../config/resolver';
+import { toSarif } from './sarif';
 
 /**
  * Output format for validation results
  */
-export type OutputFormat = 'stylish' | 'json' | 'compact';
+export type OutputFormat = 'stylish' | 'json' | 'compact' | 'sarif';
 
 /**
  * Configuration options for Reporter
@@ -79,7 +80,7 @@ export class Reporter {
     }
     // Initialize progress indicator
     this.progressIndicator = new ProgressIndicator({
-      enabled: this.options.format !== 'json',
+      enabled: this.options.format !== 'json' && this.options.format !== 'sarif',
     });
   }
 
@@ -175,7 +176,7 @@ export class Reporter {
       // Store results for JSON output
       this.allResults.push({ validator: name, result });
 
-      if (this.options.format !== 'json') {
+      if (this.options.format !== 'json' && this.options.format !== 'sarif') {
         this.newline();
         this.log(`✓ ${name} (${duration}ms)`);
         this.reportResult(result, name);
@@ -230,6 +231,13 @@ export class Reporter {
       })),
     };
     console.log(JSON.stringify(output, null, 2));
+  }
+
+  /**
+   * Report all results in SARIF format (call this at the end)
+   */
+  reportAllSARIF(version?: string): void {
+    console.log(toSarif(this.allResults, version));
   }
 
   /**

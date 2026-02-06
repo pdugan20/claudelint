@@ -103,7 +103,6 @@ export class SkillBuilder {
       name: this.skillName,
       description: 'A test skill for validation',
       version: '1.0.0',
-      usage: 'Use this skill to test things',
     };
     this.content = `# ${this.skillName}
 
@@ -122,9 +121,9 @@ ${this.skillName} arg1
     this.frontmatter = {
       name: this.skillName,
       description: 'A comprehensive test skill',
-      usage: 'Use this skill to test things',
-      examples: ['example1', 'example2'],
-      tools: ['Bash', 'Read', 'Write'],
+      version: '1.0.0',
+      tags: ['test', 'example'],
+      'allowed-tools': ['Bash', 'Read', 'Write'],
     };
     return this;
   }

@@ -41,6 +41,12 @@ export const rule: Rule = {
           `Shell script "${scriptName}" lacks shebang line. ` +
           'Add "#!/bin/bash" or "#!/usr/bin/env bash" as the first line.',
         fix: 'Add #!/usr/bin/env bash as first line',
+        autoFix: {
+          ruleId: 'skill-missing-shebang',
+          description: 'Add #!/usr/bin/env bash shebang line',
+          filePath,
+          apply: (content) => `#!/usr/bin/env bash\n${content}`,
+        },
       });
     }
   },

@@ -30,7 +30,7 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--strict', 'Exit with error on any issues (errors, warnings, or info)')
     .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)
     .option('--explain', 'Show detailed explanations and fix suggestions')
-    .option('--format <format>', 'Output format: stylish, json, compact (default: stylish)')
+    .option('--format <format>', 'Output format: stylish, json, compact, sarif (default: stylish)')
     .option('--color', 'Force color output')
     .option('--no-color', 'Disable color output')
     .option('--config <path>', 'Path to config file')
@@ -57,7 +57,7 @@ export function registerCheckAllCommand(program: Command): void {
         strict?: boolean;
         maxWarnings?: number;
         explain?: boolean;
-        format?: 'stylish' | 'json' | 'compact';
+        format?: 'stylish' | 'json' | 'compact' | 'sarif';
         color?: boolean;
         config?: string;
         fast?: boolean;
@@ -471,6 +471,8 @@ export function registerCheckAllCommand(program: Command): void {
 
           if (options.format === 'json') {
             reporter.reportAllJSON();
+          } else if (options.format === 'sarif') {
+            reporter.reportAllSARIF();
           } else {
             logger.section('Overall Summary');
             logger.log(`Total errors: ${totalErrors}`);

@@ -4,6 +4,27 @@ This document provides a high-level overview of all projects in the claudelint r
 
 ## Active Projects
 
+### dogfood-and-improvements
+
+**Status:** Phase 1 Complete, Phase 2 Ready
+**Timeline:** 2-4 weeks (Phase 2)
+**Location:** [docs/projects/dogfood-and-improvements/](./dogfood-and-improvements/)
+
+**Purpose:** Fix linter self-validation bugs and catalog all identified improvements, stack-ranked by usefulness and difficulty
+
+**Key Objectives:**
+
+- Fix bugs preventing linter from validating its own bundled skills (DONE)
+- Catalog 24 improvements across 4 tiers with priority scoring
+- Coordinate with skills-quality-validation and logging-architecture projects
+- Achieve 0 errors, 0 warnings on all bundled skills
+
+**Progress:** Phase 1 complete (7/7 tasks), Phase 2 ready (0/24 tasks)
+
+**Current Phase:** Phase 2 Sprint 1 (quick wins: broken links, optimize-cc-md trim, reference wiring)
+
+---
+
 ### plugin-and-md-management
 
 **Status:** Phase 2 In Progress (Constants Verification Complete)
@@ -359,6 +380,7 @@ Projects that have achieved their objectives. Completed projects are:
 
 **Active Project READMEs:**
 
+- [dogfood-and-improvements README](./dogfood-and-improvements/README.md)
 - [plugin-and-md-management README](./plugin-and-md-management/README.md)
 - [logging-architecture README](./logging-architecture/README.md)
 - [package-json-modernization README](./package-json-modernization/README.md)
@@ -380,4 +402,4 @@ Projects that have achieved their objectives. Completed projects are:
 
 ---
 
-**Last Updated:** 2026-02-04
+**Last Updated:** 2026-02-06

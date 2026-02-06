@@ -296,5 +296,5 @@ claudelint check-all --debug-config
 
 - [Configuration Guide](configuration.md) - Complete configuration reference
 - [Getting Started](getting-started.md) - Initial setup guide
-- [Validators](validators.md) - Available validation rules
+- [Validators](validation-reference.md) - Available validation rules
 ````

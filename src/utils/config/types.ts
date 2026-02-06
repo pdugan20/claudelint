@@ -52,7 +52,7 @@ export interface ClaudeLintConfig {
   ignorePatterns?: string[];
   /** Output formatting options */
   output?: {
-    format?: 'stylish' | 'json' | 'compact';
+    format?: 'stylish' | 'json' | 'compact' | 'sarif';
     verbose?: boolean;
     color?: boolean;
   };

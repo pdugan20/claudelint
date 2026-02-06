@@ -110,7 +110,7 @@ Valid rule IDs depend on the validator:
 - `skill-deep-nesting`
 - `skill-naming-inconsistent`
 
-See [Validators](validators.md) for complete rule list or run `claudelint list-rules`.
+See [Validators](validation-reference.md) for complete rule list or run `claudelint list-rules`.
 
 ## Unused Disable Detection
 
@@ -386,5 +386,5 @@ When `true`, claudelint warns about disable directives that don't suppress any v
 ## See Also
 
 - [Configuration Guide](configuration.md) - Complete configuration reference
-- [Validators](validators.md) - Available validation rules and their IDs
+- [Validators](validation-reference.md) - Available validation rules and their IDs
 - [Getting Started](getting-started.md) - Setting up claudelint

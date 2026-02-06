@@ -228,3 +228,4 @@ version: 1.0.0  # Add this
 ## See Also
 
 - [validate-all](../validate-all/SKILL.md) - Run all validators
+- [optimize-cc-md](../optimize-cc-md/SKILL.md) - Optimize CLAUDE.md files

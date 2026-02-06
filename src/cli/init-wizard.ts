@@ -38,7 +38,7 @@ interface WizardAnswers {
   useDefaults: boolean;
   ignorePatterns?: string[];
   customIgnorePattern?: string;
-  outputFormat?: 'stylish' | 'json' | 'compact';
+  outputFormat?: 'stylish' | 'json' | 'compact' | 'sarif';
   addNpmScripts?: boolean;
 }
 

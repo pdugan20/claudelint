@@ -1,97 +1,160 @@
-echo "Running pre-commit checks..."
-echo ""
+#!/bin/sh
 
-# 1. Lint-staged (ESLint + Prettier + Markdownlint on staged files only)
-echo "1/10 Running lint-staged (linting and formatting staged files)..."
-npx lint-staged
-if [ $? -ne 0 ]; then
-  echo "Lint-staged failed. Please fix the errors and try again."
-  exit 1
+# Smart pre-commit hook: only runs checks relevant to staged files
+# Use CLAUDELINT_PRECOMMIT_ALL=1 to force all checks
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null)
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "No staged files found, skipping pre-commit checks."
+  exit 0
+fi
+
+# Detect file categories in staged files
+HAS_TS=$(echo "$STAGED_FILES" | grep -c '\.ts$' || true)
+HAS_MD=$(echo "$STAGED_FILES" | grep -c '\.md$' || true)
+HAS_RULES=$(echo "$STAGED_FILES" | grep -c '^src/rules/' || true)
+HAS_RULE_TESTS=$(echo "$STAGED_FILES" | grep -c '^tests/rules/' || true)
+HAS_CLI=$(echo "$STAGED_FILES" | grep -c '^src/cli/' || true)
+HAS_SCRIPTS=$(echo "$STAGED_FILES" | grep -c '^scripts/' || true)
+HAS_SCHEMAS=$(echo "$STAGED_FILES" | grep -c -E '(^schemas/|^src/schemas/)' || true)
+HAS_VALIDATORS=$(echo "$STAGED_FILES" | grep -c -E '(^src/validators/|^tests/validators/)' || true)
+
+FORCE_ALL="${CLAUDELINT_PRECOMMIT_ALL:-0}"
+
+# Track which checks to run
+RUN_LINT_STAGED=1       # Always
+RUN_EMOJIS=0
+RUN_LOGGER_SPACING=0
+RUN_LOGGER_USAGE=0
+RUN_RULE_IMPLS=0
+RUN_RULE_COVERAGE=0
+RUN_SCHEMA_SYNC=0
+RUN_BUILD=1             # Always
+RUN_VALIDATOR_TESTS=0
+RUN_MARKDOWNLINT=0
+
+if [ "$FORCE_ALL" = "1" ]; then
+  RUN_EMOJIS=1
+  RUN_LOGGER_SPACING=1
+  RUN_LOGGER_USAGE=1
+  RUN_RULE_IMPLS=1
+  RUN_RULE_COVERAGE=1
+  RUN_SCHEMA_SYNC=1
+  RUN_VALIDATOR_TESTS=1
+  RUN_MARKDOWNLINT=1
+else
+  [ "$HAS_TS" -gt 0 ] || [ "$HAS_MD" -gt 0 ] && RUN_EMOJIS=1
+  [ "$HAS_CLI" -gt 0 ] && RUN_LOGGER_SPACING=1
+  [ "$HAS_SCRIPTS" -gt 0 ] && RUN_LOGGER_USAGE=1
+  [ "$HAS_RULES" -gt 0 ] && RUN_RULE_IMPLS=1
+  [ "$HAS_RULES" -gt 0 ] || [ "$HAS_RULE_TESTS" -gt 0 ] && RUN_RULE_COVERAGE=1
+  [ "$HAS_SCHEMAS" -gt 0 ] && RUN_SCHEMA_SYNC=1
+  [ "$HAS_VALIDATORS" -gt 0 ] && RUN_VALIDATOR_TESTS=1
+  [ "$HAS_MD" -gt 0 ] && RUN_MARKDOWNLINT=1
+fi
+
+# Count enabled checks for progress display
+TOTAL=0
+[ "$RUN_LINT_STAGED" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_EMOJIS" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_LOGGER_SPACING" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_LOGGER_USAGE" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_RULE_IMPLS" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_RULE_COVERAGE" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_SCHEMA_SYNC" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_BUILD" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_VALIDATOR_TESTS" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_MARKDOWNLINT" = "1" ] && TOTAL=$((TOTAL + 1))
+
+STEP=0
+echo "Running pre-commit checks ($TOTAL of 10 enabled)..."
+if [ "$FORCE_ALL" = "1" ]; then
+  echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
 echo ""
 
-# 2. Check for emojis (strict - only in headings)
-echo "2/10 Checking for emojis..."
-npm run check:emojis
-if [ $? -ne 0 ]; then
-  echo "Emojis found in code. Please remove them before committing."
-  exit 1
-fi
-echo ""
+run_check() {
+  STEP=$((STEP + 1))
+  echo "$STEP/$TOTAL $1..."
+}
 
-# 3. Check logger spacing/formatting standards (CLI)
-echo "3/10 Checking logger spacing..."
-npm run check:logger-spacing
-if [ $? -ne 0 ]; then
-  echo "Logger spacing violations found. Please fix them."
+fail_check() {
+  echo "$1"
   exit 1
-fi
-echo ""
+}
 
-# 4. Check logger usage in scripts
-echo "4/10 Checking logger usage in scripts..."
-npm run check:logger-usage
-if [ $? -ne 0 ]; then
-  echo "Logger usage violations found. Please fix them."
-  exit 1
+# 1. Lint-staged (always runs - already scoped to staged files)
+if [ "$RUN_LINT_STAGED" = "1" ]; then
+  run_check "Running lint-staged"
+  npx lint-staged || fail_check "Lint-staged failed. Please fix the errors and try again."
+  echo ""
 fi
-echo ""
 
-# 5. Verify rule implementations exist
-echo "5/10 Verifying rule implementations..."
-npm run check:rule-implementations
-if [ $? -ne 0 ]; then
-  echo "Rule implementation check failed."
-  exit 1
+# 2. Emoji check
+if [ "$RUN_EMOJIS" = "1" ]; then
+  run_check "Checking for emojis"
+  npm run check:emojis || fail_check "Emojis found in code. Please remove them before committing."
+  echo ""
 fi
-echo ""
 
-# 6. Check rule test coverage
-echo "6/10 Checking rule coverage..."
-npm run check:rule-coverage
-if [ $? -ne 0 ]; then
-  echo "Rule coverage check failed."
-  exit 1
+# 3. Logger spacing
+if [ "$RUN_LOGGER_SPACING" = "1" ]; then
+  run_check "Checking logger spacing"
+  npm run check:logger-spacing || fail_check "Logger spacing violations found. Please fix them."
+  echo ""
 fi
-echo ""
 
-# 7. Check schema sync (Zod vs JSON Schema)
-echo "7/10 Checking schema sync..."
-npm run check:schema-sync
-if [ $? -ne 0 ]; then
-  echo "Schema sync check failed."
-  exit 1
+# 4. Logger usage
+if [ "$RUN_LOGGER_USAGE" = "1" ]; then
+  run_check "Checking logger usage in scripts"
+  npm run check:logger-usage || fail_check "Logger usage violations found. Please fix them."
+  echo ""
 fi
-echo ""
 
-# 8. Build project (verify TypeScript compiles)
-echo "8/10 Building project..."
-npm run build
-if [ $? -ne 0 ]; then
-  echo "Build failed. Please fix TypeScript errors before committing."
-  exit 1
+# 5. Rule implementations
+if [ "$RUN_RULE_IMPLS" = "1" ]; then
+  run_check "Verifying rule implementations"
+  npm run check:rule-implementations || fail_check "Rule implementation check failed."
+  echo ""
 fi
-# Auto-stage rule files if they were regenerated during build
-git add src/rules/index.ts src/rules/rule-ids.ts 2>/dev/null || true
-echo ""
 
-# 9. Run validator tests
-echo "9/10 Running validator tests..."
-npx jest tests/validators --passWithNoTests
-if [ $? -ne 0 ]; then
-  echo "Validator tests failed."
-  exit 1
+# 6. Rule coverage
+if [ "$RUN_RULE_COVERAGE" = "1" ]; then
+  run_check "Checking rule coverage"
+  npm run check:rule-coverage || fail_check "Rule coverage check failed."
+  echo ""
 fi
-echo ""
 
-# 10. Lint all markdown files
-echo "10/10 Linting all markdown files..."
-npm run lint:md
-if [ $? -ne 0 ]; then
-  echo "Markdownlint failed. Run 'npm run lint:md:fix' to auto-fix."
-  exit 1
+# 7. Schema sync
+if [ "$RUN_SCHEMA_SYNC" = "1" ]; then
+  run_check "Checking schema sync"
+  npm run check:schema-sync || fail_check "Schema sync check failed."
+  echo ""
 fi
-echo ""
 
-echo "✓ All pre-commit checks passed!"
+# 8. Build (always runs - TypeScript must compile)
+if [ "$RUN_BUILD" = "1" ]; then
+  run_check "Building project"
+  npm run build || fail_check "Build failed. Please fix TypeScript errors before committing."
+  # Auto-stage rule files if they were regenerated during build
+  git add src/rules/index.ts src/rules/rule-ids.ts 2>/dev/null || true
+  echo ""
+fi
+
+# 9. Validator tests
+if [ "$RUN_VALIDATOR_TESTS" = "1" ]; then
+  run_check "Running validator tests"
+  npx jest tests/validators --passWithNoTests || fail_check "Validator tests failed."
+  echo ""
+fi
+
+# 10. Markdownlint
+if [ "$RUN_MARKDOWNLINT" = "1" ]; then
+  run_check "Linting markdown files"
+  npm run lint:md || fail_check "Markdownlint failed. Run 'npm run lint:md:fix' to auto-fix."
+  echo ""
+fi
+
+echo "All pre-commit checks passed!"
 exit 0

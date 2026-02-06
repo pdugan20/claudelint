@@ -23,7 +23,7 @@ export const rule: Rule = {
     description: 'File reference in backticks should be a markdown link',
     category: 'Skills',
     severity: 'warn',
-    fixable: false,
+    fixable: true,
     deprecated: false,
     since: '1.0.0',
     docUrl:
@@ -60,10 +60,18 @@ export const rule: Rule = {
         continue;
       }
 
+      const fullMatch = match[0]; // includes backticks
       context.report({
         message:
           `File reference \`${referencedPath}\` should be a markdown link. ` +
           `Use [${referencedPath}](./${referencedPath}) instead.`,
+        autoFix: {
+          ruleId: 'skill-reference-not-linked',
+          description: `Convert \`${referencedPath}\` to markdown link`,
+          filePath,
+          apply: (content) =>
+            content.replace(fullMatch, `[${referencedPath}](./${referencedPath})`),
+        },
       });
     }
   },
