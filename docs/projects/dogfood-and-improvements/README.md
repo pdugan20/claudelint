@@ -146,7 +146,7 @@ Requires adding `--fix` flag to CLI and `fix` property to rule type.
 
 #### T2-8: Begin skills-quality-validation Easy rules
 
-Top priorities from the existing [skills-quality-validation](../skills-quality-validation/) project:
+Top priorities from the existing [skills-quality-validation](../archive/skills-quality-validation/) project:
 
 - `skill-readme-forbidden` (E1) - Anthropic explicitly forbids README.md in skill dirs
 - `skill-body-word-count` (E6) - Word count check (guide uses words, not lines)
@@ -213,7 +213,7 @@ Verify that commands and file references in CLAUDE.md actually work:
 
 #### T3-14: Skills-quality-validation Medium rules
 
-From the existing [skills-quality-validation](../skills-quality-validation/) project Phase 2:
+From the existing [skills-quality-validation](../archive/skills-quality-validation/) project Phase 2:
 
 - Description trigger phrase validation (M1-M3) - most impactful
 - Hardcoded secrets detection (M13) - security critical
@@ -332,7 +332,7 @@ Let users write their own rules:
 
 ### skills-quality-validation
 
-The [skills-quality-validation](../skills-quality-validation/) project planned 41 new rules. Items T2-8, T3-14, and T4-21 in this catalog directly correspond to its Phase 1-3. Implementation should follow that project's existing rule specs but be prioritized according to this document's stack-ranking.
+The [skills-quality-validation](../archive/skills-quality-validation/) project planned 41 new rules. Items T2-8, T3-14, and T4-21 in this catalog directly correspond to its Phase 1-3. Implementation should follow that project's existing rule specs but be prioritized according to this document's stack-ranking.
 
 ### logging-architecture
 
@@ -400,6 +400,6 @@ Based on priority scores, dependencies, and practical sequencing:
 ## Related Documents
 
 - [Phase 1 Plan](../../../.claude/plans/piped-imagining-axolotl.md) (completed)
-- [skills-quality-validation Project](../skills-quality-validation/)
+- [skills-quality-validation Project](../archive/skills-quality-validation/)
 - [Rule Implementation Roadmap](../rule-implementation/)
-- [Anthropic Best Practices Summary](../skills-quality-validation/ANTHROPIC-BEST-PRACTICES-SUMMARY.md)
+- [Anthropic Best Practices Summary](../archive/skills-quality-validation/ANTHROPIC-BEST-PRACTICES-SUMMARY.md)

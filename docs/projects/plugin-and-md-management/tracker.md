@@ -1,18 +1,16 @@
 # Implementation Tracker
 
-**Last Updated**: 2026-02-04 (Phase 5 Task 5.1 COMPLETE - automated testing infrastructure ready)
+**Last Updated**: 2026-02-06
+**Status**: Phases 0-4 Complete (~85%). Phase 5 (testing + release) remaining.
 
 Track progress across all phases. Mark tasks complete with `[x]` as you finish them.
 
-## IMPORTANT NOTE: Manual Testing Deferred
+## Remaining Work
 
-All manual testing tasks (Task 3.8, Phase 5 manual tests) are DEFERRED until manual testing infrastructure complete.
-
-**Deferred Tasks**:
-
-- Task 3.8: Manual testing of optimize-cc-md skill
-- Task 5.2: Manual testing protocol execution
-- Task 5.3: Integration testing
+- Phase 2.5: Constants verification not yet wired into pre-commit hook or CI
+- Task 3.8: Manual testing of optimize-cc-md (deferred)
+- Phase 5.2-5.3: Manual testing execution — Manual testing infrastructure is now ready (archived as MVP complete)
+- Phase 5.4-5.5: Version bump and release
 
 **When to resume**: After infrastructure project Phase 6 complete (see below)
 

@@ -137,7 +137,7 @@
 **Progress**: 6/6 (100%)
 **Estimated Time**: 3-5 days
 
-Priority rules from the [skills-quality-validation](../skills-quality-validation/) project:
+Priority rules from the [skills-quality-validation](../archive/skills-quality-validation/) project:
 
 - [x] **E1**: `skill-readme-forbidden`
   - Files: `src/rules/skills/skill-readme-forbidden.ts`, test, doc
@@ -214,7 +214,7 @@ Priority rules from the [skills-quality-validation](../skills-quality-validation
 
 ### Sprint 6: Auto-fix
 
-**Progress**: 0/1 (0%)
+**Progress**: 1/1 (100%)
 **Estimated Time**: 3-4 days
 
 - [x] **T2-7**: Implement auto-fix for simple rules
@@ -251,7 +251,7 @@ These items are lower priority and can be tackled as time permits.
   - Notes: _High value but complex; 1+ week_
 
 - [ ] **T3-14**: Skills-quality-validation Medium rules (17 rules)
-  - Follow specs from [skills-quality-validation](../skills-quality-validation/) Phase 2
+  - Follow specs from [skills-quality-validation](../archive/skills-quality-validation/) Phase 2
   - Priority: M1 (trigger phrases), M13 (hardcoded secrets), M11 (MCP tool names)
   - Notes: _1-2 weeks; use existing project specs_
 

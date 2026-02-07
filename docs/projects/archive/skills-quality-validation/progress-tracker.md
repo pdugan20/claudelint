@@ -1,8 +1,9 @@
 # Skills Quality Validation - Progress Tracker
 
-**Last Updated**: 2026-01-30
-**Status**: Planning Phase
-**Progress**: 0/41 rules (0%) - Note: Reduced from 44 to 41 (removed H10-H12)
+**Last Updated**: 2026-02-06
+**Status**: Archived as Reference Spec — 5/41 rules from this spec implemented (E1, E5, E6, E10, M7)
+**Progress**: 5/41 rules (12%) — Remaining rules tracked in dogfood-and-improvements backlog (T3-14)
+**Archived**: 2026-02-06
 
 ---
 
@@ -15,9 +16,9 @@
 
 ---
 
-## Phase 0: Architecture Refactor (PREREQUISITE)
+## Phase 0: Architecture Refactor (NO LONGER NEEDED)
 
-### Must complete before implementing any skill rules
+### Originally marked as prerequisite, but infrastructure was built independently
 
 ### Goal
 
@@ -38,6 +39,8 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 ```
 
 ### Tasks
+
+**Note**: `--fix` flag, Fixer class, auto-fix callbacks, pre-commit optimization, and SARIF output were all implemented in dogfood-and-improvements Sprints 5-6. The architecture refactor described below is no longer a prerequisite for implementing rules.
 
 - [ ] **Task 1**: Move shellcheck from format command to main linting
   - Integration point: Add to ValidatorRegistry or run alongside validators
@@ -88,20 +91,20 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 
 ## Phase 1: Easy Rules (12 rules, 2-3 days)
 
-**Progress**: 0/12 (0%)
+**Progress**: 4/12 (33%) — E1, E5, E6 implemented in dogfood Sprint 4; E10 pre-existing
 
 ### Day 1: Core Structural Rules
 
-- [ ] **E1**: `skill-readme-forbidden` (30 min)
+- [x] **E1**: `skill-readme-forbidden` (30 min) — Implemented in dogfood Sprint 4
   - Notes: _Check for forbidden README.md in skill folders_
 
 - [ ] **E4**: `skill-multiple-scripts` (45 min)
   - Notes: _Only one executable script per skill_
 
-- [ ] **E5**: `skill-xml-tags-anywhere` (1 hour)
+- [x] **E5**: `skill-xml-tags-anywhere` (1 hour) — Implemented in dogfood Sprint 4
   - Notes: _XML tags forbidden everywhere (extend existing rule)_
 
-- [ ] **E6**: `skill-body-word-count` (1 hour)
+- [x] **E6**: `skill-body-word-count` (1 hour) — Implemented in dogfood Sprint 4
   - Notes: _Replace line count with word count (<5,000 words)_
 
 **Day 1 Subtotal**: 0/4 complete
@@ -130,7 +133,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 - [ ] **E8**: `skill-name-first-person` (45 min)
   - Notes: _Flag first-person skill names (my-skill)_
 
-- [ ] **E10**: `skill-overly-generic-name` (1 hour)
+- [x] **E10**: `skill-overly-generic-name` (1 hour) — Pre-existing rule
   - Notes: _Flag generic names (helper, utils, tool)_
 
 - [ ] **E11**: `skill-references-directory-structure` (1 hour)
@@ -149,7 +152,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 
 ## Phase 2: Medium Rules (17 rules, 1-2 weeks)
 
-**Progress**: 0/17 (0%)
+**Progress**: 1/17 (6%) — M7 implemented as skill-cross-reference-invalid in dogfood Sprint 4
 
 ### Week 1: Description Quality
 
@@ -217,7 +220,7 @@ claudelint format       # Prettier only (or deprecate and use prettier directly)
 
 #### Day 11: Cross-Reference & Keywords
 
-- [ ] **M7**: `skill-cross-reference-validation` (3 hours)
+- [x] **M7**: `skill-cross-reference-validation` (3 hours) — Implemented as skill-cross-reference-invalid in dogfood Sprint 4
   - Notes: _Validate referenced files exist (depends on E11)_
 
 - [ ] **M10**: `skill-keyword-density` (2 hours)

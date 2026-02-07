@@ -1,404 +1,143 @@
 # Project Status Dashboard
 
-This document provides a high-level overview of all projects in the claudelint repository, both active and archived.
+**Last Updated:** 2026-02-06
+
+High-level overview of all claudelint projects. For detailed task tracking, see each project's tracker file.
+
+---
 
 ## Active Projects
 
-### dogfood-and-improvements
+### dogfood-and-improvements (83%)
 
-**Status:** Phase 1 Complete, Phase 2 Ready
-**Timeline:** 2-4 weeks (Phase 2)
+**Status:** Phase 2 In Progress (Sprint 7)
 **Location:** [docs/projects/dogfood-and-improvements/](./dogfood-and-improvements/)
 
-**Purpose:** Fix linter self-validation bugs and catalog all identified improvements, stack-ranked by usefulness and difficulty
+Self-validation bug fixes and linter improvements. Phase 1 (bug fixes) and Sprints 1-6 complete. Sprint 7+ has 5 remaining advanced tasks.
 
-**Key Objectives:**
+**Completed:** Bug fixes (7/7), quick wins, reference content, workflow restructure, 6 new rules (105 total), pre-commit optimization, SARIF output, auto-fix (3 rules), CI guide, watch mode
 
-- Fix bugs preventing linter from validating its own bundled skills (DONE)
-- Catalog 24 improvements across 4 tiers with priority scoring
-- Coordinate with skills-quality-validation and logging-architecture projects
-- Achieve 0 errors, 0 warnings on all bundled skills
+**Remaining:**
 
-**Progress:** Phase 1 complete (7/7 tasks), Phase 2 ready (0/24 tasks)
-
-**Current Phase:** Phase 2 Sprint 1 (quick wins: broken links, optimize-cc-md trim, reference wiring)
+- T3-13: Codebase cross-referencing (verify npm scripts, file paths in CLAUDE.md)
+- T3-14: Medium skill rules (17 rules from [archived specs](./archive/skills-quality-validation/medium-rules.md))
+- T3-15: Red flags detection (stale commands, dead refs, old TODOs)
+- T3-16: Progressive disclosure validation
+- T3-17: Additive guidance engine
 
 ---
 
-### plugin-and-md-management
+### plugin-and-md-management (~85%)
 
-**Status:** Phase 2 In Progress (Constants Verification Complete)
-**Timeline:** 6-8 weeks
+**Status:** Phases 0-4 Complete. Phase 5 (testing + release) remaining.
 **Location:** [docs/projects/plugin-and-md-management/](./plugin-and-md-management/)
 
-**Purpose:** Fix npm package distribution, implement plugin infrastructure, and add CLAUDE.md management skills
+Plugin infrastructure, npm package distribution fix, and CLAUDE.md management skills.
 
-**Key Objectives:**
+**Completed:** Package distribution fix, plugin.json manifest, interactive skills, constants verification system
 
-- Fix package.json files array bug (npm users get zero skills)
-- Create plugin.json manifest for Claude Code plugin system
-- Add interactive skills for CLAUDE.md validation and management
-- Verify ToolNames and ModelNames constants stay synchronized
+**Remaining:**
 
-**Progress:** Phase 2.4 complete (Constants Verification), Phase 2.5-2.6 in progress
-
-**Current Phase:** Integrating constants verification into release process and documentation
+- Phase 2.5: Wire `check:constants` into pre-commit hook and CI workflow
+- Phase 3.8: Manual testing execution
+- Phase 5.2-5.5: Manual testing + release
 
 ---
 
-### logging-architecture
+### npm-release-setup (~75%)
 
-**Status:** Phase 1 Complete, Phase 2 In Progress (40% complete)
-**Timeline:** 1 day (~5 hours)
-**Location:** [docs/projects/logging-architecture/](./logging-architecture/)
-
-**Purpose:** Implement unified DiagnosticCollector system to make library code properly testable and follow industry standards
-
-**Key Objectives:**
-
-- Implement DiagnosticCollector pattern (ESLint/TypeScript approach)
-- Thread diagnostics through entire validation pipeline
-- Eliminate all direct console usage from library code (10 calls across 4 files)
-- Extend pre-commit checks to enforce policy across entire codebase
-- Fix verification scripts to follow proper logging patterns
-- Document diagnostic system for contributors
-
-**Scope:**
-
-- 1 new system (DiagnosticCollector class)
-- 4 files to create (collector, tests, index, docs)
-- 12 files to modify (validators, utils, enforcement, verification)
-- 10 console calls to remove
-- ~10 tests to update
-
-**Progress:** Phase 1 complete (3/3 tasks), Phase 2 in progress (2/5 tasks complete)
-
-**Benefits:**
-
-- Clean test output (no console spam)
-- Properly testable library code
-- Programmatic consumers can control output
-- Follows industry standards (ESLint, TypeScript, Prettier pattern)
-
----
-
-### npm-release-setup
-
-**Status:** Planning Phase
-**Timeline:** 2-3 weeks
+**Status:** Phases 1-5 Complete, Phases 6-8 Remaining
 **Location:** [docs/projects/npm-release-setup/](./npm-release-setup/)
 
-**Purpose:** Establish npm package versioning and release automation
+npm package versioning and release automation. Package is published as `claude-code-lint@0.2.0-beta.1`.
 
-**Key Objectives:**
+**Completed:** npm account, package name, release-it setup, conventional commits, GitHub Actions workflow, beta publish
 
-- Claim package name on npm registry
-- Set up automated release workflow with release-it
-- Sync versions across package.json and CHANGELOG.md
-- Configure GitHub Actions for automated publishing
+**Remaining:**
 
-**Progress:** 0/7 tasks complete (0%)
+- Phase 6: Release documentation (RELEASING.md, CONTRIBUTING.md updates)
+- Phase 7: Stable 0.2.0 release
+- Phase 8: Post-release maintenance process
 
 ---
 
-### vitepress-docs
+## Future Projects
 
-**Status:** Planning Phase
-**Timeline:** 2-3 weeks
+### vitepress-docs (0%)
+
+**Status:** Planned, not started
 **Location:** [docs/projects/vitepress-docs/](./vitepress-docs/)
 
-**Purpose:** Build professional documentation website at docs.claudelint.dev
-
-**Key Features:**
-
-- Modern static site generator (VitePress)
-- Full-text search with Algolia
-- Dark mode support
-- Interactive code examples
-- Mobile-responsive design
-
-**Content Scope:**
-
-- 20+ user guides
-- 107+ individual rule documentation pages
-- API reference
-- Custom rule examples
-
-**Progress:** 0/6 phases complete (Planning)
-
----
-
-### skills-quality-validation
-
-**Status:** Planning Phase (Prerequisites Required)
-**Timeline:** 4-6 weeks
-**Location:** [docs/projects/skills-quality-validation/](./skills-quality-validation/)
-
-**Purpose:** Add 41+ new skill validation rules aligned with Anthropic's official guide
-
-**Implementation Phases:**
-
-- **Phase 0:** Architecture refactor (prerequisite)
-- **Phase 1:** Easy rules (12 rules) - Basic structure checks
-- **Phase 2:** Medium rules (17 rules) - Advanced validation
-- **Phase 3:** Hard rules (12 rules) - Complex analysis
-
-**Progress:** 0/41 rules implemented (0%)
-
-**Note:** Requires architecture changes before implementation can begin
-
----
-
-### rule-implementation
-
-**Status:** Long-term Reference
-**Location:** [docs/projects/rule-implementation/](./rule-implementation/)
-
-**Purpose:** Comprehensive roadmap tracking for all planned validation rules
-
-**Scope:**
-
-- 324 total planned rules across all validator categories
-- 105 rules currently implemented (32.4% complete)
-- Tracks implementation status by category
-
-**Note:** This is a high-level tracking document, not an active project with deliverables
+Professional documentation website at docs.claudelint.dev. 176 planned tasks across 6 phases. Well-planned and ready when prioritized.
 
 ---
 
 ## Archived Projects
 
-### package-json-modernization
+Projects in `docs/projects/archive/`. Completed or preserved as reference material.
 
-**Status:** Completed
-**Location:** [docs/projects/package-json-modernization/](./package-json-modernization/)
-
-**Completion Date:** 2026-02-04
-
-**Summary:** Comprehensive package.json modernization following 2026 best practices. Integrated validation tools, reorganized scripts following Conventional Scripts, and added automatic formatting.
-
-**Key Outcomes:**
-
-- Integrated 4 new tools: npm-package-json-lint, publint, npm-run-all2, prettier-plugin-packagejson
-- Consolidated script namespaces: verify:*and audit:* → check:*
-- Created proper aggregate scripts: lint, lint:fix, format, check, validate
-- Added pre-commit validation for package.json
-- All package.json changes now auto-formatted and validated
-- Script composition modernized with npm-run-all2 (7 aggregate scripts)
-- Zero regressions - all existing workflows functional
-
-**Implementation Phases:**
-
-- Phase 1: Tool Installation (4 tools) - 30 min
-- Phase 2: Package.json Linting Setup - 20 min
-- Phase 3: Publint Integration - 15 min
-- Phase 4: Script Namespace Consolidation (7 scripts renamed) - 30 min
-- Phase 5: Aggregate Script Creation - 45 min
-- Phase 6: npm-run-all2 Migration (2 scripts) - 15 min
-- Phase 7: Package.json Formatting - 20 min
-- Phase 8: Pre-commit Hook Updates - 10 min
-- Phase 9: Documentation & Testing - 30 min
-
-**Total:** ~3.5 hours (faster than estimated 5 days due to systematic approach)
-
-**Reference Documentation:**
-
-- [Project README](./package-json-modernization/README.md)
-- [Implementation Tracker](./package-json-modernization/tracker.md)
-- [Script Organization Guide](./package-json-modernization/script-organization.md)
-- [npm-package-json-lint Setup](./package-json-modernization/npm-package-json-lint-setup.md)
-- [Publint Setup](./package-json-modernization/publint-setup.md)
-- [Tool Integration Guide](./package-json-modernization/tool-integration.md)
+| Project | Status | Notes |
+|---------|--------|-------|
+| [github-automation](./archive/github-automation/) | 99% | Tasks 1-6, 8-10 complete. **Pending: GitHub repo not yet created.** |
+| [manual-testing-infrastructure-refactor](./archive/manual-testing-infrastructure-refactor/) | MVP complete | Phases 0-6 done. Phases 7-8 (fixture cleanup, docs) deferred. |
+| [skills-quality-validation](./archive/skills-quality-validation/) | Reference specs | 5/41 rules implemented. Spec files preserved for future rule work. |
+| [rule-implementation](./archive/rule-implementation/) | Reference doc | 324 planned rules snapshot (105 implemented + 219 planned). |
+| [monorepo-support](./archive/monorepo-support/) | Completed | Config inheritance, workspace detection, parallel validation. |
+| [plugin-system-removal](./archive/plugin-system-removal/) | Completed | Removed legacy plugin system. |
+| [programmatic-api](./archive/programmatic-api/) | Completed | ClaudeLint class API. See [docs/api/](../api/README.md). |
+| [validator-refactor](./archive/validator-refactor/) | Completed | Rule-based architecture foundation. |
+| [validator-refactor-2026](./archive/validator-refactor-2026/) | Completed | Removed 1,263 LOC, renamed validators, added architecture docs. |
 
 ---
 
-### monorepo-support
+## Consolidated Backlog
 
-**Status:** Completed
-**Location:** [docs/projects/archive/monorepo-support/](./archive/monorepo-support/)
+Prioritized next steps across all projects. Work these in order.
 
-**Completion Date:** 2026-02-01
+### P0: Unblock Everything
 
-**Summary:** Comprehensive monorepo support implementation with config inheritance, workspace detection, and performance optimizations. All features are opt-in with zero breaking changes.
+- **Create GitHub repo** `pdugan20/claudelint` and push code. Remote URL is configured but repo was never created. This blocks CI/CD, branch protection, PR workflows, and the 54 prepared labels. *(from github-automation)*
 
-**Key Outcomes:**
+### P1: Ship
 
-- Config inheritance via `extends` field (ESLint pattern)
-- Auto-detection for pnpm, npm, and Yarn workspaces
-- CLI flags for workspace-scoped validation (--workspace, --workspaces)
-- Parallel workspace validation (3-10x performance improvement)
-- Workspace root auto-detection (works from any directory)
-- 778 tests passing (including 19 workspace integration tests)
+- **Execute manual testing protocol** for plugin-and-md-management. Unblocks plugin release. *(from plugin-and-md-management Phase 5)*
+- **Wire `check:constants` into pre-commit and CI.** npm script exists but isn't in the hook or workflow. *(from plugin-and-md-management Phase 2.5)*
+- **Publish stable 0.2.0 release.** Beta is on npm; need release docs and final publish. *(from npm-release-setup Phases 6-8)*
 
-**Implementation Phases:**
+### P2: High-Value Rules
 
-- Phase 1: Config Inheritance (2 days) - ~500 LOC
-- Phase 2: Workspace Detection (1.5 days) - ~400 LOC
-- Phase 3: Testing & Documentation (1 day) - ~800 LOC
-- Phase 4: Critical Improvements (2 days) - ~500 LOC
+- **T3-14: Medium skill rules** (17 rules). Implementation specs in [archived specs](./archive/skills-quality-validation/medium-rules.md). Priority: M1 (trigger phrases), M13 (hardcoded secrets), M11 (MCP tool names). *(from dogfood-and-improvements)*
+- **T3-13: Codebase cross-referencing.** Verify npm scripts, file paths, command names in CLAUDE.md actually exist. *(from dogfood-and-improvements)*
 
-**Total:** 6.5 days, ~2200 lines of code
+### P3: Advanced Analysis
 
-**Reference Documentation:**
+- **T3-15: Red flags detection.** Stale commands, dead file refs, old TODOs, version mismatches.
+- **T3-16: Progressive disclosure validation.** Enforce 3-level content hierarchy.
+- **T3-17: Additive guidance engine.** Suggest missing sections, not just flag errors.
 
-- [Project README](./archive/monorepo-support/README.md)
-- [Implementation Tracker](./archive/monorepo-support/tracker.md)
-- [User Guide](./archive/monorepo-support/user-guide.md)
-- [Testing Strategy](./archive/monorepo-support/testing-strategy.md)
+### P4: Low Priority / Deferred
 
----
+- Dependency migrations: Zod 4, markdownlint 0.40, ora 9 *(from github-automation)*
+- Manual testing fixture cleanup: 12 tasks from Phases 7-8 *(from manual-testing-infra)*
+- T4-21: Hard skill rules (12 rules, requires LLM dependency)
+- T4-22: Skill version drift detection
+- T4-23: Rule usage analytics
+- T4-24: Custom rule plugin API
 
-### validator-refactor
+### Future
 
-**Status:** Completed
-**Location:** [docs/projects/archive/validator-refactor/](./archive/validator-refactor/)
-
-**Completion Date:** Prior to v0.2.0
-
-**Summary:** Completed architecture refactoring to establish clean separation between validators and rules. Implemented the thin wrapper pattern for better composability and testability.
-
-**Key Outcomes:**
-
-- Rule-based architecture implemented
-- Validators now act as thin wrappers around rule execution
-- Improved testability and maintainability
-- Foundation for custom rules system
-
-**Reference Documentation:**
-
-- [Implementation Tracker](./archive/validator-refactor/implementation-tracker.md)
-- [Migration Guide](./archive/validator-refactor/migration-guide.md)
-- [Design Patterns](./archive/validator-refactor/patterns.md)
+- **VitePress documentation site.** 176 tasks planned, ready when prioritized.
 
 ---
 
-### validator-refactor-2026
+## Rule Implementation Reference
 
-**Status:** Completed
-**Location:** [docs/projects/archive/validator-refactor-2026/](./archive/validator-refactor-2026/)
+The linter currently has **105 implemented rules** across 10 categories. An additional **219 non-skill rules** and **36 skill rules** are planned but not yet implemented.
 
-**Completion Date:** 2026-02-01
+**Spec files for planned rules:**
 
-**Summary:** Comprehensive validator architecture refactoring to improve clarity, reduce code complexity, and enhance maintainability.
-
-**Key Outcomes:**
-
-- Removed 1,263 lines of code (deleted 733-line unused composition framework)
-- Renamed validators for clarity: BaseValidator → FileValidator, JSONConfigValidator → SchemaValidator
-- Simplified SchemaValidator with direct JSON parsing + Zod validation
-- Added comprehensive JSDoc documentation to both base validator classes
-- Created complete validation-architecture.md guide (510 lines)
-- All 10 validators use consistent category-based rule execution pattern
-- Updated all documentation with new validator names
-
-**Impact:** Internal refactoring only - no changes required for end users or .claudelintrc.json files
-
-**Reference Documentation:**
-
-- [Project Tracker](./archive/validator-refactor-2026/tracker.md)
-- [Architecture Changes](./archive/validator-refactor-2026/architecture-changes.md)
-- [Implementation Guide](./archive/validator-refactor-2026/implementation-guide.md)
-- [Validation Architecture Guide](../../validation-architecture.md)
-
----
-
-### programmatic-api
-
-**Status:** Completed and Superseded
-**Location:** [docs/projects/archive/programmatic-api/](./archive/programmatic-api/)
-
-**Completion Date:** v0.2.0-beta.0
-
-**Summary:** Completed implementation of programmatic API for Node.js applications. This project's documentation has been superseded by the official API documentation.
-
-**Current Documentation:** See [docs/api/](../../../api/README.md/) for complete, up-to-date API reference
-
-**Key Outcomes:**
-
-- ClaudeLint class with full feature parity to CLI
-- Functional API for stateless operations
-- Built-in formatters (stylish, JSON, compact)
-- Custom formatter support
-- Complete TypeScript type definitions
-
-**Note:** The planning documents in this folder are archived. For current API usage, always refer to [docs/api/](../../../api/README.md/).
-
----
-
-## Project Lifecycle
-
-### Planning Phase
-
-Projects in planning have detailed specifications but implementation has not started. These projects have:
-
-- Complete task breakdown
-- Timeline estimates
-- Technical design documents
-- Success criteria defined
-
-### Active Development
-
-Projects currently being implemented. These projects have:
-
-- Tasks in progress
-- Regular commits and updates
-- Progress tracking in task trackers
-
-### Completed
-
-Projects that have achieved their objectives. Completed projects are:
-
-- Moved to `archive/` folder
-- Summarized with outcomes and learnings
-- Linked to current documentation (if superseded)
-
----
-
-## How to Contribute
-
-### Working on Active Projects
-
-1. Review the project's README in its folder
-2. Check the task tracker for available tasks
-3. Follow the implementation phases if specified
-4. Submit PRs referencing the project name
-
-### Proposing New Projects
-
-1. Create a new folder in `docs/projects/`
-2. Include README.md with:
-   - Purpose and objectives
-   - Timeline estimate
-   - Task breakdown
-   - Success criteria
-3. Add entry to this STATUS.md file
-4. Discuss in GitHub issues before starting implementation
-
----
-
-## Quick Links
-
-**Active Project READMEs:**
-
-- [dogfood-and-improvements README](./dogfood-and-improvements/README.md)
-- [plugin-and-md-management README](./plugin-and-md-management/README.md)
-- [logging-architecture README](./logging-architecture/README.md)
-- [package-json-modernization README](./package-json-modernization/README.md)
-- [npm-release-setup README](./npm-release-setup/README.md)
-- [vitepress-docs README](./vitepress-docs/README.md)
-- [skills-quality-validation README](./skills-quality-validation/README.md)
-
-**Archived Projects:**
-
-- [validator-refactor Summary](./archive/validator-refactor/patterns.md)
-- [validator-refactor-2026 Summary](./archive/validator-refactor-2026/tracker.md)
-- [programmatic-api Summary](./archive/programmatic-api/README.md)
-
-**Main Documentation:**
-
-- [Project Documentation Home](../README.md)
-- [API Documentation](../api/README.md)
-- [Contributing Guide](../../CONTRIBUTING.md)
+- Skill rules: [easy-rules.md](./archive/skills-quality-validation/easy-rules.md), [medium-rules.md](./archive/skills-quality-validation/medium-rules.md), [hard-rules.md](./archive/skills-quality-validation/hard-rules.md)
+- All rules: [rules-reference.md](./archive/rule-implementation/rules-reference.md)
 
 ---
 

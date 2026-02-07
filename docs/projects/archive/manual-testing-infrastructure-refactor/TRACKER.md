@@ -1,9 +1,9 @@
 # Manual Testing Infrastructure Refactor - Tracker
 
-**Status:** In Progress - MVP Complete
+**Status:** Archived — MVP Complete (Phases 0-6). Phases 7-8 (cleanup/polish) deferred.
 **Started:** 2026-02-04
 **MVP Completed:** 2026-02-04
-**Target Completion:** TBD
+**Archived:** 2026-02-06
 
 ## Overview
 
