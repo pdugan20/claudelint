@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-02-06
 
-High-level overview of all claudelint projects. For detailed task tracking, see each project's tracker file.
+High-level overview of all claudelint projects. **For the sequenced execution plan, see [ROADMAP.md](./ROADMAP.md).**
 
 ---
 

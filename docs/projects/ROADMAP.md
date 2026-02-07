@@ -1,0 +1,243 @@
+# Aggregated Roadmap
+
+**Last Updated:** 2026-02-06
+**Purpose:** Single sequenced tracker for all remaining work across all projects.
+
+---
+
+## How This Works
+
+**This file is the single source of truth for active work.** Do not update individual project trackers.
+
+- **Working:** Check off tasks here as you complete them.
+- **Archiving:** When a milestone finishes all tasks for a source project, that milestone includes a cleanup task to mark the project tracker as "Complete" and move it to `archive/`.
+- **STATUS.md:** Update [STATUS.md](./STATUS.md) when projects move between active and archived.
+- **Project trackers:** Historical record only. Don't update during day-to-day work.
+
+### Project completion map
+
+| Project | Done when these milestones complete | Current status |
+|---------|-------------------------------------|----------------|
+| github-automation | Already archived (Milestone 1 is its last task) | archived, Task 7 pending |
+| plugin-and-md-management | Milestones 2 + 4 | active |
+| npm-release-setup | Milestones 3 + 5 | active |
+| dogfood-and-improvements | Milestones 6 + 7 + 8 | active |
+
+---
+
+## Milestone 1: Create GitHub Repo
+
+**Source:** github-automation (archived) Task 7
+**Unblocks:** CI/CD, branch protection, labels, codecov, GitHub releases, plugin GitHub install
+**Effort:** ~30 minutes
+
+- [ ] Create repo: `gh repo create pdugan20/claudelint --public --source=. --remote=origin --push`
+- [ ] Run label script: `bash scripts/setup-github-labels.sh` (54 labels)
+- [ ] Configure branch protection per `docs/github-branch-protection.md`
+- [ ] Enable GitHub Discussions
+- [ ] Set up Codecov integration
+- [ ] Verify CI workflows run on push
+
+**Cleanup:** github-automation's last pending task is done. Update archived tracker header to "Complete".
+
+---
+
+## Milestone 2: Constants Verification Wiring
+
+**Source:** plugin-and-md-management Phase 2.5
+**Effort:** ~1 hour
+
+- [ ] Add `npm run check:constants` to `.husky/pre-commit` hook
+- [ ] Add constants verification step to `.github/workflows/ci.yml`
+- [ ] Update README with constants verification docs
+
+---
+
+## Milestone 3: Release Documentation
+
+**Source:** npm-release-setup Phase 6
+**Depends on:** Milestone 1 (GitHub repo exists for release notes)
+**Effort:** ~half day
+
+- [ ] Create RELEASING.md (beta process, stable process, hotfix process)
+- [ ] Add release section to CONTRIBUTING.md
+- [ ] Add `prepublishOnly` script to package.json
+- [ ] Add version validation script
+- [ ] Verify release-it npm scripts work end-to-end
+- [ ] Update GitHub release for existing beta (was blocked by no repo)
+
+---
+
+## Milestone 4: Manual Testing
+
+**Source:** plugin-and-md-management Phase 5.2-5.3 + Task 3.8
+**Depends on:** Milestone 1 (GitHub install testing needs repo)
+**Effort:** ~1 day
+
+### Plugin Installation Testing
+
+- [ ] Test local plugin install: `/plugin install --source .`
+- [ ] Verify all 9 skills load: `/skills list`
+- [ ] Test GitHub plugin install: `/plugin install github:pdugan20/claudelint`
+- [ ] Test dependency detection (uninstall npm package, verify graceful error)
+- [ ] Verify npm package contents: `npm pack --dry-run` includes `.claude/`
+
+### Skill Trigger Testing (9 skills, ~30 min each)
+
+- [ ] validate-all: trigger phrases + non-triggers
+- [ ] validate-cc-md: trigger phrases + non-triggers
+- [ ] validate-skills: trigger phrases + non-triggers
+- [ ] validate-plugin: trigger phrases + non-triggers
+- [ ] validate-mcp: trigger phrases + non-triggers
+- [ ] validate-settings: trigger phrases + non-triggers
+- [ ] validate-hooks: trigger phrases + non-triggers
+- [ ] format-cc: trigger phrases + non-triggers
+- [ ] optimize-cc-md: trigger phrases + non-triggers
+
+### Functional & Quality Testing
+
+- [ ] Test each skill with valid and invalid inputs
+- [ ] Verify conversational quality (explanations, not just error dumps)
+- [ ] Test optimize-cc-md interactive workflow (asks before editing, shows diffs)
+- [ ] Document results in `docs/testing/`
+
+**Cleanup:** Milestones 2 + 4 complete all plugin-and-md-management work.
+
+- [ ] Update `plugin-and-md-management/tracker.md` header to "Complete"
+- [ ] Move `plugin-and-md-management/` to `archive/plugin-and-md-management/`
+- [ ] Update STATUS.md: move from Active to Archived
+
+---
+
+## Milestone 5: Stable Release (0.2.0)
+
+**Source:** npm-release-setup Phases 7-8
+**Depends on:** Milestones 3 + 4 (docs + testing done)
+**Effort:** ~2 hours
+
+- [ ] Fix any issues found in manual testing
+- [ ] Update CHANGELOG.md
+- [ ] Version bump to 0.2.0: `npm run release`
+- [ ] Publish: `npm publish --access public`
+- [ ] Verify `latest` tag applied
+- [ ] Create GitHub release with highlights
+- [ ] Remove beta warnings from docs
+
+### Post-Release
+
+- [ ] Define patch/minor/major release criteria
+- [ ] Set up GitHub Actions for automated releases
+- [ ] Document security patch process
+
+**Cleanup:** Milestones 3 + 5 complete all npm-release-setup work.
+
+- [ ] Update `npm-release-setup/tracker.md` header to "Complete"
+- [ ] Move `npm-release-setup/` to `archive/npm-release-setup/`
+- [ ] Update STATUS.md: move from Active to Archived
+
+---
+
+## Milestone 6: Medium Skill Rules (17 rules)
+
+**Source:** dogfood-and-improvements T3-14
+**Specs:** [medium-rules.md](./archive/skills-quality-validation/medium-rules.md)
+**Standalone** — no dependencies on other milestones
+**Effort:** ~1-2 weeks
+
+Priority order from specs:
+
+- [ ] M1: skill-description-missing-trigger-phrases
+- [ ] M2: skill-description-missing-capabilities
+- [ ] M3: skill-description-too-vague
+- [ ] M13: skill-hardcoded-secrets
+- [ ] M11: skill-mcp-tool-qualified-name
+- [ ] M7: skill-allowed-tools-not-used (already have partial: skill-disallowed-tools)
+- [ ] M4: skill-missing-error-handling
+- [ ] M5: skill-missing-examples
+- [ ] M6: skill-body-missing-usage-section
+- [ ] M8: skill-context-too-broad
+- [ ] M9: skill-shell-script-no-error-handling
+- [ ] M10: skill-shell-script-hardcoded-paths
+- [ ] M12: skill-import-not-used
+- [ ] M14: skill-progressive-disclosure-violation
+- [ ] M15: skill-frontmatter-missing-tags
+- [ ] M16: skill-frontmatter-missing-version
+- [ ] M17: skill-description-missing-context
+
+After each batch: `npm run generate:types && npm test && npm run build`
+
+---
+
+## Milestone 7: Codebase Cross-Referencing
+
+**Source:** dogfood-and-improvements T3-13
+**Standalone**
+**Effort:** ~1 week
+
+- [ ] Verify `npm run <script>` references in CLAUDE.md match package.json
+- [ ] Verify file paths in instructions point to real files
+- [ ] Verify command names (`claudelint`, `prettier`, etc.) are available
+- [ ] Flag stale instructions referencing renamed/removed resources
+
+---
+
+## Milestone 8: Advanced Analysis
+
+**Source:** dogfood-and-improvements T3-15, T3-16, T3-17
+**Standalone**
+**Effort:** ~2-3 weeks total
+
+- [ ] **T3-15: Red flags detection** — Stale commands, dead file refs, old TODOs, version mismatches (~3-5 days)
+- [ ] **T3-16: Progressive disclosure validation** — Enforce 3-level content hierarchy (~3-5 days)
+- [ ] **T3-17: Additive guidance engine** — Suggest missing sections, heuristics-based (~1+ week)
+
+**Cleanup:** Milestones 6 + 7 + 8 complete all dogfood-and-improvements work.
+
+- [ ] Update `dogfood-and-improvements/PROGRESS-TRACKER.md` header to "Complete"
+- [ ] Move `dogfood-and-improvements/` to `archive/dogfood-and-improvements/`
+- [ ] Update STATUS.md: move from Active to Archived
+
+---
+
+## Milestone 9: Deferred / Low Priority
+
+Work these when demand exists or as time permits.
+
+### Dependency Migrations (from github-automation)
+
+- [ ] Zod 4 migration (~15 files, breaking changes)
+- [ ] markdownlint 0.40 migration (API changes in formatter)
+- [ ] ora 9 migration (research needed)
+
+### Remaining Skill Rules
+
+- [ ] Easy rules not yet implemented: 8 remaining from [easy-rules.md](./archive/skills-quality-validation/easy-rules.md)
+- [ ] Hard rules (12): LLM-based evaluation, MCP registry — needs `--llm` flag ([hard-rules.md](./archive/skills-quality-validation/hard-rules.md))
+
+### Other Deferred Items
+
+- [ ] T4-22: Skill version drift detection
+- [ ] T4-23: Rule usage analytics
+- [ ] T4-24: Custom rule plugin API
+- [ ] Manual testing fixture cleanup (12 tasks from infra-refactor Phases 7-8)
+- [ ] VitePress documentation site (176 planned tasks, [tracker](./vitepress-docs/implementation-tracker.md))
+
+---
+
+## Source Project Reference
+
+| Milestone | Source Project | Source Tracker |
+|-----------|---------------|----------------|
+| 1 | github-automation (archived) | [tracker.md](./archive/github-automation/tracker.md) Task 7 |
+| 2 | plugin-and-md-management | [tracker.md](./plugin-and-md-management/tracker.md) Phase 2.5 |
+| 3 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phase 6 |
+| 4 | plugin-and-md-management | [tracker.md](./plugin-and-md-management/tracker.md) Phase 5.2-5.3 |
+| 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
+| 6 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-14 |
+| 7 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-13 |
+| 8 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-15/16/17 |
+| 9 | Various | See individual items |
+
+---
+
+**Last Updated:** 2026-02-06
