@@ -61,6 +61,23 @@ npm package versioning and release automation. Package is published as `claude-c
 
 ---
 
+### official-spec-alignment (0%)
+
+**Status:** Not started
+**Location:** [docs/projects/official-spec-alignment/](./official-spec-alignment/)
+
+Align linter's skill frontmatter schema, validation rules, and our own plugin against the official Claude Code spec. Fixes actively wrong results (false positives on 5 official fields, wrong description max-length default).
+
+**Phases:**
+
+- Phase A: Critical fixes (A1-A4) — fix KNOWN_KEYS, description max-length, thirdPerson() refinement, add missing schema fields
+- Phase B: New rules (B5-B9) — trigger phrases, argument hints, side effects, plugin hook paths, component paths
+- Phase C: Self-fixes (C10-C14) — remove non-official frontmatter, add disable-model-invocation, scope allowed-tools
+
+**ROADMAP:** Milestones 5a + 5b
+
+---
+
 ## Future Projects
 
 ### vitepress-docs (0%)
@@ -97,6 +114,10 @@ Prioritized next steps across all projects. Work these in order.
 ### P0: Unblock Everything
 
 - **Create GitHub repo** `pdugan20/claudelint` and push code. Remote URL is configured but repo was never created. This blocks CI/CD, branch protection, PR workflows, and the 54 prepared labels. *(from github-automation)*
+
+### P0.5: Fix Wrong Results
+
+- **Official spec alignment** — linter produces false positives on 5 official frontmatter fields, uses wrong description max-length (500 vs 1024), missing 3 official schema fields. *(from official-spec-alignment Phases A-C)*
 
 ### P1: Ship
 

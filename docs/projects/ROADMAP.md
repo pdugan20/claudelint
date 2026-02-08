@@ -21,6 +21,7 @@
 | github-automation | Already archived (Milestone 1 is its last task) | archived, Task 7 pending |
 | plugin-and-md-management | Milestones 2 + 4 | active |
 | npm-release-setup | Milestones 3 + 5 | active |
+| official-spec-alignment | Milestones 5a + 5b | active |
 | dogfood-and-improvements | Milestones 6 + 7 + 8 | active |
 
 ---
@@ -137,12 +138,68 @@
 
 ---
 
+## Milestone 5a: Spec Alignment Critical Fixes
+
+**Source:** official-spec-alignment Phase A
+**Tracker:** [tracker.md](./official-spec-alignment/tracker.md)
+**Standalone** — no dependencies on other milestones
+**Effort:** ~half day
+**Why before M6:** Fixes schema foundations that Milestone 6 rules build on. Implementing M6 rules against a wrong schema produces wrong rules.
+
+- [ ] A1: Update `KNOWN_KEYS` in `skill-frontmatter-unknown-keys.ts` (add 8 official fields)
+- [ ] A2: Update `skill-description-max-length` default from 500 to 1024
+- [ ] A3: Review `thirdPerson()` refinement against Anthropic guide examples
+- [ ] A4: Add `license`, `compatibility`, `metadata` to skill frontmatter schema
+- [ ] Run `npm run generate:types && npm test && npm run build`
+
+---
+
+## Milestone 5b: Spec Alignment New Rules + Self-Fixes
+
+**Source:** official-spec-alignment Phases B + C
+**Tracker:** [tracker.md](./official-spec-alignment/tracker.md)
+**Depends on:** Milestone 5a (schema must be correct first)
+**Effort:** ~2-3 days
+
+### New Rules
+
+- [ ] B5: `skill-description-missing-trigger` (warn) — description lacks trigger phrases
+- [ ] B6: `skill-arguments-without-hint` (warn) — uses $ARGUMENTS without argument-hint
+- [ ] B7: `skill-side-effects-without-disable-model` (warn) — Bash/Write tools without disable-model-invocation
+- [ ] B8: `plugin-hook-missing-plugin-root` (error) — plugin hooks missing ${CLAUDE_PLUGIN_ROOT}
+- [ ] B9: `plugin-missing-component-paths` (warn) — plugin.json paths invalid
+
+### Self-Fixes (Our Own Plugin)
+
+- [ ] C10: Remove `tags` and `dependencies` from all 9 skill SKILL.md files
+- [ ] C11: Add `disable-model-invocation: true` to validation/format skills
+- [ ] C12: Move verbose "Common Issues" sections to `references/` in validate-all, validate-skills
+- [ ] C13: Scope `allowed-tools` to `Bash(claudelint:*)` in all skills
+- [ ] C14: Consider `skill-description-negative-trigger` hint rule (low priority)
+
+### Post-Implementation
+
+- [ ] Run `npm run generate:types && npm test && npm run build`
+- [ ] Create rule doc files in `docs/rules/skills/` and `docs/rules/plugin/`
+- [ ] Run `claudelint check-all` against our own project to verify self-fixes
+- [ ] Reconcile Milestone 6: remove M1 (done via B5), rethink M15/M16 per [overlap analysis](./official-spec-alignment/milestone-6-overlap.md)
+
+**Cleanup:** Milestones 5a + 5b complete all official-spec-alignment work.
+
+- [ ] Update `official-spec-alignment/tracker.md` header to "Complete"
+- [ ] Move `official-spec-alignment/` to `archive/official-spec-alignment/`
+- [ ] Update STATUS.md: move from Active to Archived
+
+---
+
 ## Milestone 6: Medium Skill Rules (17 rules)
 
 **Source:** dogfood-and-improvements T3-14
 **Specs:** [medium-rules.md](./archive/skills-quality-validation/medium-rules.md)
 **Standalone** — no dependencies on other milestones
 **Effort:** ~1-2 weeks
+
+**Note:** Reconcile per [milestone-6-overlap.md](./official-spec-alignment/milestone-6-overlap.md) — M1 done via B5, M15/M16 may be removed (non-official fields), M17 depends on A4.
 
 Priority order from specs:
 
@@ -233,6 +290,8 @@ Work these when demand exists or as time permits.
 | 3 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phase 6 |
 | 4 | plugin-and-md-management | [tracker.md](./plugin-and-md-management/tracker.md) Phase 5.2-5.3 |
 | 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
+| 5a | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phase A |
+| 5b | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phases B + C |
 | 6 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-14 |
 | 7 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-13 |
 | 8 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-15/16/17 |
