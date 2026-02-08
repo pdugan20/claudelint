@@ -1,6 +1,6 @@
 # Aggregated Roadmap
 
-**Last Updated:** 2026-02-06
+**Last Updated:** 2026-02-08
 **Purpose:** Single sequenced tracker for all remaining work across all projects.
 
 ---
@@ -18,7 +18,7 @@
 
 | Project | Done when these milestones complete | Current status |
 |---------|-------------------------------------|----------------|
-| github-automation | Already archived (Milestone 1 is its last task) | archived, Task 7 pending |
+| github-automation | Already archived (Milestone 1 is its last task) | archived, Milestone 1 nearly done (2 web-UI tasks remain) |
 | plugin-and-md-management | Milestones 2 + 4 | active |
 | npm-release-setup | Milestones 3 + 5 | active |
 | official-spec-alignment | Milestones 5a + 5b | active |
@@ -32,12 +32,12 @@
 **Unblocks:** CI/CD, branch protection, labels, codecov, GitHub releases, plugin GitHub install
 **Effort:** ~30 minutes
 
-- [ ] Create repo: `gh repo create pdugan20/claudelint --public --source=. --remote=origin --push`
-- [ ] Run label script: `bash scripts/setup-github-labels.sh` (54 labels)
-- [ ] Configure branch protection per `docs/github-branch-protection.md`
-- [ ] Enable GitHub Discussions
-- [ ] Set up Codecov integration
-- [ ] Verify CI workflows run on push
+- [x] Create repo: `gh repo create pdugan20/claudelint --private --source=. --push`
+- [x] Run label script: `bash scripts/util/setup-github-labels.sh` (46 labels)
+- [ ] Configure branch protection per `docs/github-branch-protection.md` (requires GitHub web UI)
+- [x] Enable GitHub Discussions
+- [ ] Set up Codecov integration (requires web signup)
+- [x] Verify CI workflows run on push (all 15 jobs green)
 
 **Cleanup:** github-automation's last pending task is done. Update archived tracker header to "Complete".
 
@@ -299,4 +299,4 @@ Work these when demand exists or as time permits.
 
 ---
 
-**Last Updated:** 2026-02-06
+**Last Updated:** 2026-02-08
