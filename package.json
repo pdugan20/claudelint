@@ -131,7 +131,7 @@
     "glob": "^13.0.0",
     "inquirer": "^13.2.2",
     "js-yaml": "^4.1.0",
-    "markdownlint": "^0.35.0",
+    "markdownlint": "^0.40.0",
     "minimatch": "^10.1.1",
     "ora": "^6.3.1",
     "prettier": "^3.1.1",
