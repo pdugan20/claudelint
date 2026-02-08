@@ -66,7 +66,7 @@ Perform dangerous operation
 
 Using Markdown formatting instead of XML tags:
 
-```markdown
+````markdown
 ---
 name: safe-skill
 description: Safe skill using proper Markdown
@@ -93,11 +93,11 @@ For additional emphasis:
 Detailed content here using Markdown formatting.
 
 </details>
-```
+````
 
 Using standard HTML tags for documentation:
 
-```markdown
+````markdown
 ---
 name: well-documented-skill
 ---
@@ -118,7 +118,7 @@ This is **important** and this is *emphasized*.
 Advanced configuration options documented here.
 
 </details>
-```
+````
 
 ## How To Fix
 

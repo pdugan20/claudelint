@@ -60,7 +60,7 @@ Welcome to the claudelint documentation! claudelint is a comprehensive linter fo
 - **Adding rules**: [Rule Development Guide](./rule-development.md) - Complete guide for writing and contributing rules
 - **Rule implementations**: See `src/rules/{category}/` for examples
 - **Testing**: Run `npm test` to execute the test suite
-- **Project status**: [Project Dashboard](./projects/STATUS.md) - Active and archived projects
+- **Project status**: [Project Dashboard](./projects/status.md) - Active and archived projects
 
 ## Common Tasks
 

@@ -414,4 +414,4 @@ Questions about migration? See:
 
 - `docs/projects/manual-testing-infrastructure-refactor/README.md` - Project overview
 - `docs/projects/manual-testing-infrastructure-refactor/best-practices.md` - Guidelines
-- `docs/projects/manual-testing-infrastructure-refactor/TRACKER.md` - Implementation status
+- `docs/projects/manual-testing-infrastructure-refactor/tracker.md` - Implementation status

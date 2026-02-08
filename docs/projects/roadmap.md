@@ -11,7 +11,7 @@
 
 - **Working:** Check off tasks here as you complete them.
 - **Archiving:** When a milestone finishes all tasks for a source project, that milestone includes a cleanup task to mark the project tracker as "Complete" and move it to `archive/`.
-- **STATUS.md:** Update [STATUS.md](./STATUS.md) when projects move between active and archived.
+- **status.md:** Update [status.md](./status.md) when projects move between active and archived.
 - **Project trackers:** Historical record only. Don't update during day-to-day work.
 
 ### Project completion map
@@ -106,7 +106,7 @@
 
 - [ ] Update `plugin-and-md-management/tracker.md` header to "Complete"
 - [ ] Move `plugin-and-md-management/` to `archive/plugin-and-md-management/`
-- [ ] Update STATUS.md: move from Active to Archived
+- [ ] Update status.md: move from Active to Archived
 
 ---
 
@@ -134,7 +134,7 @@
 
 - [ ] Update `npm-release-setup/tracker.md` header to "Complete"
 - [ ] Move `npm-release-setup/` to `archive/npm-release-setup/`
-- [ ] Update STATUS.md: move from Active to Archived
+- [ ] Update status.md: move from Active to Archived
 
 ---
 
@@ -188,7 +188,7 @@
 
 - [ ] Update `official-spec-alignment/tracker.md` header to "Complete"
 - [ ] Move `official-spec-alignment/` to `archive/official-spec-alignment/`
-- [ ] Update STATUS.md: move from Active to Archived
+- [ ] Update status.md: move from Active to Archived
 
 ---
 
@@ -250,9 +250,9 @@ After each batch: `npm run generate:types && npm test && npm run build`
 
 **Cleanup:** Milestones 6 + 7 + 8 complete all dogfood-and-improvements work.
 
-- [ ] Update `dogfood-and-improvements/PROGRESS-TRACKER.md` header to "Complete"
+- [ ] Update `dogfood-and-improvements/progress-tracker.md` header to "Complete"
 - [ ] Move `dogfood-and-improvements/` to `archive/dogfood-and-improvements/`
-- [ ] Update STATUS.md: move from Active to Archived
+- [ ] Update status.md: move from Active to Archived
 
 ---
 
@@ -292,9 +292,9 @@ Work these when demand exists or as time permits.
 | 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
 | 5a | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phase A |
 | 5b | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phases B + C |
-| 6 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-14 |
-| 7 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-13 |
-| 8 | dogfood-and-improvements | [PROGRESS-TRACKER.md](./dogfood-and-improvements/PROGRESS-TRACKER.md) T3-15/16/17 |
+| 6 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-14 |
+| 7 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-13 |
+| 8 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-15/16/17 |
 | 9 | Various | See individual items |
 
 ---

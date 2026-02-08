@@ -2,7 +2,7 @@
 
 **Severity**: Warning
 **Fixable**: No
-**Validator**: OutputStyles
+**Validator**: Output Styles
 **Category**: Cross-Reference
 
 Output style should include a "Guidelines" or "Format" section
@@ -145,7 +145,6 @@ You might disable this rule if your output styles are simple enough that explici
 
 ## Related Rules
 
-- [output-style-missing-examples](./output-style-missing-examples.md) - Validates presence of Examples section
 - [output-style-body-too-short](./output-style-body-too-short.md) - Validates minimum body content length
 
 ## Resources

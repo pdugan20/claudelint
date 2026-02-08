@@ -43,7 +43,7 @@ Implement industry best practices from ESLint, TypeScript-ESLint, and other lint
 - **[research-findings.md](./research-findings.md)** - External research and sources
 - **[best-practices.md](./best-practices.md)** - Industry patterns and recommendations
 - **[implementation-plan.md](./implementation-plan.md)** - Detailed technical implementation
-- **[TRACKER.md](./TRACKER.md)** - Phase-based task tracker with acceptance criteria
+- **[tracker.md](./tracker.md)** - Phase-based task tracker with acceptance criteria
 - **[migration-guide.md](./migration-guide.md)** - How to update existing infrastructure
 
 ## Timeline
@@ -98,4 +98,4 @@ Implement industry best practices from ESLint, TypeScript-ESLint, and other lint
 
 **Immediate Next Action:** Begin Phase 6.1 (evaluate Task 1 fixture needs)
 
-**For Details:** See TRACKER.md "Next Actions" section
+**For Details:** See tracker.md "Next Actions" section

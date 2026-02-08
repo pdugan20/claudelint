@@ -2,7 +2,7 @@
 
 **Severity**: Error
 **Fixable**: No
-**Validator**: OutputStyles
+**Validator**: Output Styles
 **Category**: Best Practices
 
 Output style name must match parent directory name
@@ -77,8 +77,6 @@ This rule enforces a critical organizational requirement for output styles. Disa
 
 ## Related Rules
 
-- [output-style-name](./output-style-name.md) - Validates output style name format
-- [output-style-missing-examples](./output-style-missing-examples.md) - Validates presence of Examples section
 - [output-style-missing-guidelines](./output-style-missing-guidelines.md) - Validates presence of Guidelines section
 
 ## Resources

@@ -21,7 +21,7 @@ Track progress across all phases. Mark tasks complete with `[x]` as you finish t
 - **Status**: MVP complete (Task 2 infrastructure ready)
 - **Next**: Phase 6 - Expand to Tasks 1, 3-6
 - **Then**: Return here to execute Task 5.2-5.3 using that infrastructure
-- **See**: Infrastructure project TRACKER.md for workflow details
+- **See**: Infrastructure project tracker.md for workflow details
 
 ## Phase 0: Research & Planning
 

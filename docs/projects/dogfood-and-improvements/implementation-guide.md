@@ -1,6 +1,6 @@
 # Implementation Guide
 
-Technical details for each improvement in the dogfood-and-improvements project. Reference this when picking up a task from [PROGRESS-TRACKER.md](./PROGRESS-TRACKER.md).
+Technical details for each improvement in the dogfood-and-improvements project. Reference this when picking up a task from [progress-tracker.md](./progress-tracker.md).
 
 ---
 
@@ -109,7 +109,7 @@ For detailed strategies, see:
 
 **Difficulty**: Medium (content authoring)
 
-See [CONTENT-SPECS.md](./CONTENT-SPECS.md#quality-criteriamd) for the full specification.
+See [content-specs.md](./content-specs.md#quality-criteriamd) for the full specification.
 
 **Key design principle**: This is a manual review checklist, NOT a scoring rubric. It covers aspects that programmatic linting cannot evaluate.
 
@@ -121,7 +121,7 @@ See [CONTENT-SPECS.md](./CONTENT-SPECS.md#quality-criteriamd) for the full speci
 
 **Difficulty**: Medium (content authoring)
 
-See [CONTENT-SPECS.md](./CONTENT-SPECS.md#templatesmd) for the full specification.
+See [content-specs.md](./content-specs.md#templatesmd) for the full specification.
 
 **Key design principle**: Provide annotated, copy-paste-ready templates at different complexity levels. Each template should explain WHY each section exists, not just WHAT it contains.
 
@@ -133,7 +133,7 @@ See [CONTENT-SPECS.md](./CONTENT-SPECS.md#templatesmd) for the full specificatio
 
 **Difficulty**: Low (documentation)
 
-See [CONTENT-SPECS.md](./CONTENT-SPECS.md#file-type-taxonomymd) for the full specification.
+See [content-specs.md](./content-specs.md#file-type-taxonomymd) for the full specification.
 
 **File**: `skills/optimize-cc-md/references/file-type-taxonomy.md`
 

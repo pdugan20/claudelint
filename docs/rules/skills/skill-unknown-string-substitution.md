@@ -17,7 +17,7 @@ Valid substitution patterns include `$ARGUMENTS` (all skill arguments), `$0`-`$9
 
 SKILL.md with invalid substitution patterns:
 
-```markdown
+````markdown
 ---
 name: deploy
 description: Deploys applications
@@ -32,22 +32,20 @@ Usage:
 ```
 
 The script will deploy to $ENVIRONMENT region $REGION.
-
-```text
-```
+````
 
 Invalid substitutions:
 
-```markdown
+````markdown
 Run with: ./script.sh $INPUT_FILE
 Output location: $OUTPUT_DIR
-```
+````
 
 ### Correct
 
 Valid substitution patterns:
 
-```markdown
+````markdown
 ---
 name: deploy
 description: Deploys applications
@@ -69,10 +67,9 @@ Usage with positional arguments:
 
 Usage with environment variables:
 
-```markdown
 Run with: ./script.sh ${INPUT_FILE}
 Output location: ${OUTPUT_DIR}
-```
+````
 
 ## How To Fix
 

@@ -139,7 +139,6 @@ Always fix the hook configuration rather than disabling validation.
 ## Related Rules
 
 - [agent-hooks-invalid-schema](./agent-hooks-invalid-schema.md) - Validates hooks in agents.json
-- [agent-events](./agent-events.md) - Validates event subscriptions
 - [hooks-invalid-config](../hooks/hooks-invalid-config.md) - Validates hooks.json structure
 
 ## Resources

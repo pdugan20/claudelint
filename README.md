@@ -471,7 +471,7 @@ Recommended setup with complementary tools:
 
 Want to see what's being worked on? Check out our active projects and roadmap:
 
-- **[Project Status Dashboard](docs/projects/STATUS.md)** - Overview of all active and archived projects
+- **[Project Status Dashboard](docs/projects/status.md)** - Overview of all active and archived projects
 - **[npm Release Setup](docs/projects/npm-release-setup/README.md)** - Release automation (Planning)
 - **[VitePress Documentation Site](docs/projects/vitepress-docs/README.md)** - docs.claudelint.dev (Planning)
 - **[Skills Quality Validation](docs/projects/skills-quality-validation/README.md)** - 41 new rules (Planning)

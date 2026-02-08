@@ -55,4 +55,4 @@ See [tracker.md](./tracker.md) for detailed task list.
 
 - [spec-comparison.md](./spec-comparison.md) - Three-source field comparison table
 - [milestone-6-overlap.md](./milestone-6-overlap.md) - Impact on existing Milestone 6 rules
-- [ROADMAP.md](../ROADMAP.md) - Milestones 5a and 5b
+- [roadmap.md](../roadmap.md) - Milestones 5a and 5b

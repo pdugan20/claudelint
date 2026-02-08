@@ -125,4 +125,4 @@ These items fix actively incorrect linter output.
 - [ ] Run `npm run build` to verify compilation
 - [ ] Run `claudelint check-all` against our own project to verify self-fixes
 - [ ] Create rule doc files in `docs/rules/skills/` and `docs/rules/plugin/` for new rules
-- [ ] Update Milestone 6 in ROADMAP.md per [milestone-6-overlap.md](./milestone-6-overlap.md)
+- [ ] Update Milestone 6 in roadmap.md per [milestone-6-overlap.md](./milestone-6-overlap.md)

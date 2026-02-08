@@ -1,15 +1,14 @@
 # Rule Index
 
-This directory contains documentation for all 105 claudelint rules.
+This directory contains documentation for all 98 claudelint rules.
 
 ## Rules by Category
 
-### Agents (13 rules)
+### Agents (12 rules)
 
 - [agent-body-too-short](./agents/agent-body-too-short.md) - Agent body content should meet minimum length requirements
 - [agent-description](./agents/agent-description.md) - Agent description must be at least 10 characters, written in third person, with no XML tags
 - [agent-disallowed-tools](./agents/agent-disallowed-tools.md) - Agent disallowed-tools must be an array of tool names
-- [agent-events](./agents/agent-events.md) - Agent events must be an array of event names (max 3 items)
 - [agent-hooks](./agents/agent-hooks.md) - Agent hooks must be an array of valid hook objects
 - [agent-hooks-invalid-schema](./agents/agent-hooks-invalid-schema.md) - Hook configuration in agents.json violates schema requirements
 - [agent-missing-system-prompt](./agents/agent-missing-system-prompt.md) - Agent should include a "System Prompt" section
@@ -75,22 +74,16 @@ This directory contains documentation for all 105 claudelint rules.
 - [mcp-websocket-invalid-protocol](./mcp/mcp-websocket-invalid-protocol.md) - WebSocket URLs should use ws:// or wss:// protocol
 - [mcp-websocket-invalid-url](./mcp/mcp-websocket-invalid-url.md) - MCP WebSocket transport URL must be valid
 
-### OutputStyles (7 rules)
+### OutputStyles (3 rules)
 
 - [output-style-body-too-short](./output-styles/output-style-body-too-short.md) - Output style body content should meet minimum length requirements
-- [output-style-description](./output-styles/output-style-description.md) - Output style description must be at least 10 characters, written in third person, with no XML tags
-- [output-style-examples](./output-styles/output-style-examples.md) - Output style examples must be an array of strings
-- [output-style-missing-examples](./output-styles/output-style-missing-examples.md) - Output style should include an "Examples" section
 - [output-style-missing-guidelines](./output-styles/output-style-missing-guidelines.md) - Output style should include a "Guidelines" or "Format" section
-- [output-style-name](./output-styles/output-style-name.md) - Output style name must be lowercase-with-hyphens, under 64 characters, with no XML tags
 - [output-style-name-directory-mismatch](./output-styles/output-style-name-directory-mismatch.md) - Output style name must match parent directory name
 
-### Plugin (12 rules)
+### Plugin (10 rules)
 
 - [commands-in-plugin-deprecated](./plugin/commands-in-plugin-deprecated.md) - The commands field in plugin.json is deprecated
-- [plugin-circular-dependency](./plugin/plugin-circular-dependency.md) - Plugin must not have circular dependencies
 - [plugin-components-wrong-location](./plugin/plugin-components-wrong-location.md) - Plugin components should be in .claude/ not .claude-plugin/
-- [plugin-dependency-invalid-version](./plugin/plugin-dependency-invalid-version.md) - Plugin dependency versions must use valid semver ranges
 - [plugin-description-required](./plugin/plugin-description-required.md) - Plugin description is required and cannot be empty
 - [plugin-invalid-manifest](./plugin/plugin-invalid-manifest.md) - marketplace.json must be valid and reference existing files
 - [plugin-invalid-version](./plugin/plugin-invalid-version.md) - Plugin version must follow semantic versioning format
@@ -145,19 +138,19 @@ This directory contains documentation for all 105 claudelint rules.
 
 ## Statistics
 
-- **Total Rules**: 105
+- **Total Rules**: 98
 - **Fixable Rules**: 3
 - **Deprecated Rules**: 0
 
 ## Categories
 
-- [Agents](./agents/) - 13 rules
+- [Agents](./agents/) - 12 rules
 - [CLAUDE.md](./claude-md/) - 14 rules
 - [Commands](./commands/) - 2 rules
 - [Hooks](./hooks/) - 3 rules
 - [LSP](./lsp/) - 8 rules
 - [MCP](./mcp/) - 13 rules
-- [OutputStyles](./output-styles/) - 7 rules
-- [Plugin](./plugin/) - 12 rules
+- [OutputStyles](./output-styles/) - 3 rules
+- [Plugin](./plugin/) - 10 rules
 - [Settings](./settings/) - 5 rules
 - [Skills](./skills/) - 28 rules

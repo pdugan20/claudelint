@@ -2,7 +2,7 @@
 
 **Severity**: Warning
 **Fixable**: No
-**Validator**: OutputStyles
+**Validator**: Output Styles
 **Category**: Best Practices
 
 Output style body content should meet minimum length requirements
@@ -132,7 +132,6 @@ You might disable this rule if you intentionally use very minimal output styles 
 
 ## Related Rules
 
-- [output-style-missing-examples](./output-style-missing-examples.md) - Validates presence of Examples section
 - [output-style-missing-guidelines](./output-style-missing-guidelines.md) - Validates presence of Guidelines/Format section
 
 ## Resources

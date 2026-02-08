@@ -95,22 +95,21 @@ Add usage examples to SKILL.md:
 
 Example additions:
 
-```markdown
+````markdown
 ## Usage
 
 ```bash
 claude skill-name arg1 arg2
 ```
-
-```text
-```
+````
 
 Or:
 
-```markdown
+````markdown
 ## Examples
 
 Basic usage:
+
 ```bash
 ./script.sh input.txt
 ```
@@ -120,9 +119,7 @@ Advanced usage:
 ```bash
 ./script.sh input.txt --verbose --output result.txt
 ```
-
-```text
-```
+````
 
 ## Options
 

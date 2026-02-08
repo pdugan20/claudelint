@@ -5,7 +5,7 @@ This directory contains a complete project for refactoring the manual testing in
 ## Quick Start
 
 1. Read README.md for project overview
-2. Review TRACKER.md for current status and task list
+2. Review tracker.md for current status and task list
 3. Read research-findings.md for supporting evidence
 4. Review implementation-plan.md for technical details
 
@@ -16,7 +16,7 @@ Planning phase - awaiting approval to begin implementation
 ## Key Documents
 
 - README.md - Project overview and problem statement
-- TRACKER.md - **Main task tracker** (30 tasks across 7 phases)
+- tracker.md - **Main task tracker** (30 tasks across 7 phases)
 - research-findings.md - External research and best practices
 - best-practices.md - Industry patterns we're following
 - implementation-plan.md - Detailed technical implementation

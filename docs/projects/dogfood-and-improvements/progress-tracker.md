@@ -89,12 +89,12 @@
 
 - [x] **T1-3**: Create `quality-criteria.md` reference file
   - File: `skills/optimize-cc-md/references/quality-criteria.md`
-  - Content: Manual review checklist (see [CONTENT-SPECS.md](./CONTENT-SPECS.md#quality-criteriamd))
+  - Content: Manual review checklist (see [content-specs.md](./content-specs.md#quality-criteriamd))
   - Notes: _Complements programmatic validation; covers aspects that can't be linted_
 
 - [x] **T1-4**: Create `templates.md` reference file
   - File: `skills/optimize-cc-md/references/templates.md`
-  - Content: Annotated CLAUDE.md examples (see [CONTENT-SPECS.md](./CONTENT-SPECS.md#templatesmd))
+  - Content: Annotated CLAUDE.md examples (see [content-specs.md](./content-specs.md#templatesmd))
   - Notes: _Provides concrete examples users can model from_
 
 - [x] **T4-18**: Create file type taxonomy documentation
@@ -120,7 +120,7 @@
   - Phase A: Validate (run claudelint, present results)
   - Phase B: Assess (evaluate against quality criteria checklist)
   - Phase C: Improve (make targeted improvements with explanations)
-  - See [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md#t2-6-restructure-optimize-cc-md) for details
+  - See [implementation-guide.md](./implementation-guide.md#t2-6-restructure-optimize-cc-md) for details
   - Notes: _Must stay under 500 lines after restructure_
 
 **Sprint 3 Verification:**
