@@ -47,10 +47,11 @@ export const rule: Rule = {
 
     // Validate each server's transport type (transport fields are now flat on the server)
     if (config.mcpServers) {
-      for (const [, server] of Object.entries(config.mcpServers)) {
+      for (const [, rawServer] of Object.entries(config.mcpServers)) {
+        const server = rawServer as Record<string, unknown>;
         // Server can have optional type field, or be inferred from presence of command
         if (server.type) {
-          const transportType = server.type;
+          const transportType = server.type as string;
           if (!(VALID_MCP_TRANSPORT_TYPES as readonly string[]).includes(transportType)) {
             context.report({
               message: `Invalid MCP transport type: ${transportType}. Must be one of: ${VALID_MCP_TRANSPORT_TYPES.join(', ')}`,

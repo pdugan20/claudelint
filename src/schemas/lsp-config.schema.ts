@@ -25,9 +25,9 @@ const LSPServerSchema = z.object({
   // Optional fields
   args: z.array(z.string()).optional(),
   transport: LSPTransportType.optional(),
-  env: z.record(z.string()).optional(),
-  initializationOptions: z.record(z.unknown()).optional(),
-  settings: z.record(z.unknown()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
+  initializationOptions: z.record(z.string(), z.unknown()).optional(),
+  settings: z.record(z.string(), z.unknown()).optional(),
   workspaceFolder: z.string().optional(),
   startupTimeout: z.number().min(0).optional(),
   shutdownTimeout: z.number().min(0).optional(),

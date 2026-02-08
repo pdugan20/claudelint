@@ -139,7 +139,7 @@ export const MarketplaceConfigSchema = z.object({
  */
 export const SettingsSchema = z.object({
   permissions: PermissionsSchema.optional(),
-  env: z.record(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
   // Note: model accepts arbitrary strings (aliases, full model names, ARNs, etc.)
   // Don't use ModelNames enum - that's only for agent/skill frontmatter
   model: z.string().optional(),
@@ -149,8 +149,8 @@ export const SettingsSchema = z.object({
   statusLine: z.string().optional(),
   outputStyle: z.string().optional(),
   sandbox: SandboxSchema.optional(),
-  enabledPlugins: z.record(z.boolean()).optional(),
-  extraKnownMarketplaces: z.record(MarketplaceConfigSchema).optional(),
+  enabledPlugins: z.record(z.string(), z.boolean()).optional(),
+  extraKnownMarketplaces: z.record(z.string(), MarketplaceConfigSchema).optional(),
   strictKnownMarketplaces: z.boolean().optional(),
 });
 
@@ -169,7 +169,7 @@ export const MCPStdioTransportSchema = z.object({
   type: z.literal('stdio').optional(), // Optional since stdio is default when command is present
   command: z.string(),
   args: z.array(z.string()).optional(),
-  env: z.record(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
 });
 
 /**
@@ -179,8 +179,8 @@ export const MCPStdioTransportSchema = z.object({
 export const MCPSSETransportSchema = z.object({
   type: z.literal('sse'),
   url: z.string(),
-  headers: z.record(z.string()).optional(),
-  env: z.record(z.string()).optional(),
+  headers: z.record(z.string(), z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
 });
 
 /**
@@ -190,8 +190,8 @@ export const MCPSSETransportSchema = z.object({
 export const MCPHTTPTransportSchema = z.object({
   type: z.literal('http'),
   url: z.string(),
-  headers: z.record(z.string()).optional(),
-  env: z.record(z.string()).optional(),
+  headers: z.record(z.string(), z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
 });
 
 /**
@@ -201,7 +201,7 @@ export const MCPHTTPTransportSchema = z.object({
 export const MCPWebSocketTransportSchema = z.object({
   type: z.literal('websocket'),
   url: z.string(),
-  env: z.record(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
 });
 
 /**
@@ -221,7 +221,7 @@ export const MCPServerSchema = z
  * Based on https://code.claude.com/docs/en/mcp
  */
 export const MCPConfigSchema = z.object({
-  mcpServers: z.record(MCPServerSchema),
+  mcpServers: z.record(z.string(), MCPServerSchema),
 });
 
 /**
@@ -259,10 +259,10 @@ export const PluginManifestSchema = z.object({
   skills: z.union([z.string(), z.array(z.string())]).optional(),
 
   // Config paths (string for path, object for inline config)
-  hooks: z.union([z.string(), z.record(z.unknown())]).optional(),
-  mcpServers: z.union([z.string(), z.record(z.unknown())]).optional(),
+  hooks: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  mcpServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
   outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
-  lspServers: z.union([z.string(), z.record(z.unknown())]).optional(),
+  lspServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
 });
 
 /**

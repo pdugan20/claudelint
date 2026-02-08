@@ -76,7 +76,7 @@ export const rule: Rule = {
     // Validate each server (transport fields are now flat on the server)
     if (config.mcpServers) {
       for (const [, server] of Object.entries(config.mcpServers)) {
-        validateTransport(context, server);
+        validateTransport(context, server as MCPTransport);
       }
     }
   },

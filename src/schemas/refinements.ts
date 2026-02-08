@@ -138,6 +138,6 @@ export function envVarName() {
 export function applyRefinement<T extends z.ZodString>(
   schema: T,
   refinement: { check: (val: string) => boolean; message: string }
-): z.ZodEffects<T, string, string> {
+): z.ZodType<string> {
   return schema.refine(refinement.check, { message: refinement.message });
 }

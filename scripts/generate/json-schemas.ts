@@ -5,10 +5,11 @@
  *
  * This script converts our Zod implementation schemas to JSON Schema format
  * for comparison against manual reference schemas.
+ *
+ * Uses Zod 4's native z.toJSONSchema() for conversion.
  */
 
-import { zodToJsonSchema } from 'zod-to-json-schema';
-import type { JSONSchema7 } from 'json-schema';
+import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
 import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
@@ -31,26 +32,16 @@ for (const entry of SCHEMA_REGISTRY) {
   try {
     log.info(`Generating ${entry.name}...`);
 
-    // Convert Zod to JSON Schema
-    const jsonSchema = zodToJsonSchema(entry.zodSchema, {
-      name: entry.name,
-      $refStrategy: 'none', // Inline all definitions
-    }) as JSONSchema7 & { definitions?: Record<string, JSONSchema7> };
-
-    // Extract the actual schema from the wrapper
-    // zodToJsonSchema wraps it in { $ref, definitions }, we want the actual definition
-    let actualSchema: JSONSchema7;
-    if (jsonSchema.definitions?.[entry.name]) {
-      actualSchema = jsonSchema.definitions[entry.name];
-    } else {
-      actualSchema = jsonSchema;
-    }
+    // Convert Zod to JSON Schema using Zod 4's native conversion
+    const jsonSchema = z.toJSONSchema(entry.zodSchema, {
+      unrepresentable: 'any',
+    }) as Record<string, unknown>;
 
     // Build final schema with Draft 2020-12 and our description
-    const finalSchema: JSONSchema7 = {
+    const finalSchema = {
       $schema: 'https://json-schema.org/draft/2020-12/schema',
       description: entry.description,
-      ...actualSchema,
+      ...jsonSchema,
     };
 
     // Write to file
