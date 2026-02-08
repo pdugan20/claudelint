@@ -5,7 +5,6 @@
  * Faster than execSync and better error handling.
  */
 
-import markdownlint from 'markdownlint';
 import { glob } from 'glob';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
@@ -15,6 +14,16 @@ export interface MarkdownlintResult {
   errors: Record<string, string[]>;
   filesWithErrors: string[];
 }
+
+interface LintViolation {
+  lineNumber: number;
+  ruleNames: string[];
+  ruleDescription: string;
+}
+
+type LintResults = Record<string, LintViolation[]>;
+
+type LintFn = (options: { files: string[]; config: Record<string, unknown> }) => LintResults;
 
 /**
  * Check markdown files with markdownlint
@@ -27,6 +36,11 @@ export async function checkMarkdownlint(
   patterns: string[],
   fix: boolean = false
 ): Promise<MarkdownlintResult> {
+  // Dynamic import — markdownlint 0.40+ is ESM-only
+  // @ts-expect-error -- subpath exports require moduleResolution node16+
+  const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
+  const lint = mdlintSync.lint;
+
   // Expand glob patterns to file list
   const files: string[] = [];
   for (const pattern of patterns) {
@@ -46,20 +60,20 @@ export async function checkMarkdownlint(
   }
 
   // Load user's .markdownlint.json if it exists
-  let config: markdownlint.Configuration = { default: true };
+  let config: Record<string, unknown> = { default: true };
   const configPath = join(process.cwd(), '.markdownlint.json');
 
   if (existsSync(configPath)) {
     try {
       const configContent = readFileSync(configPath, 'utf-8');
-      config = JSON.parse(configContent) as markdownlint.Configuration;
+      config = JSON.parse(configContent) as Record<string, unknown>;
     } catch {
       // If config file is invalid, fall back to defaults
     }
   }
 
   // Run markdownlint
-  const results = markdownlint.sync({
+  const results = lint({
     files: uniqueFiles,
     config,
   });
