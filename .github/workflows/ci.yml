@@ -296,7 +296,7 @@ jobs:
         run: npm run build
 
       - name: Run integration tests
-        run: npm test -- --testPathPattern=integration
+        run: npm test -- --testPathPatterns=integration
 
   complete-validation:
     name: Complete Validation
