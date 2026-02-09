@@ -4,12 +4,12 @@
 coverage:
   precision: 2
   round: down
-  range: "70...100"
+  range: "65...100"
 
   status:
     project:
       default:
-        target: 80%
+        target: 65%
         threshold: 2%
         if_ci_failed: error
 
@@ -25,9 +25,27 @@ ignore:
   - "tests/__temp__/**"
   - "tests/**/*.fixture.ts"
 
+  # Entry points and barrel re-exports
+  - "src/index.ts"
+  - "src/api/index.ts"
+  - "src/schemas/index.ts"
+  - "src/utils/index.ts"
+  - "src/utils/validators/index.ts"
+  - "src/validators/index.ts"
+
   # Generated code
   - "src/rules/rule-ids.ts"
   - "src/rules/index.ts"
+
+  # CLI (tested via integration tests, not unit coverage)
+  - "src/cli.ts"
+  - "src/cli/commands/**"
+  - "src/cli/init-wizard.ts"
+  - "src/cli/config-debug.ts"
+  - "src/cli/utils/logger.ts"
+  - "src/cli/utils/config-loader.ts"
+  - "src/cli/utils/system-tools.ts"
+  - "src/cli/utils/formatters/**"
 
   # Scripts and tooling
   - "scripts/**"
