@@ -35,6 +35,13 @@ gh api "repos/${REPO}/rulesets" --method POST --input - <<'EOF'
       "exclude": []
     }
   },
+  "bypass_actors": [
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    }
+  ],
   "rules": [
     {
       "type": "deletion"
@@ -64,5 +71,6 @@ echo "  - Required checks: Build, Test (Node 20), Test (Node 22), Complete Valid
 echo "  - Branches must be up to date"
 echo "  - No force pushes"
 echo "  - No branch deletion"
+echo "  - Admin bypass enabled (solo dev can push directly)"
 echo ""
 echo "View at: https://github.com/${REPO}/rules"
