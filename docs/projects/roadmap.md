@@ -46,11 +46,12 @@
 ## Milestone 2: Constants Verification Wiring
 
 **Source:** plugin-and-md-management Phase 2.5
-**Effort:** ~1 hour
+**Status:** Skipped — not needed
+**Reason:** `check:constants` scripts query the Claude CLI via LLM prompts, making them non-deterministic, slow, and token-costly. Not suitable for pre-commit or CI automation. Internal consistency is already enforced by TypeScript compilation (in pre-commit via `npm run build`). External drift detection is a manual pre-release task, already documented in CONTRIBUTING.md (lines 169-209, 644-691).
 
-- [ ] Add `npm run check:constants` to `.husky/pre-commit` hook
-- [ ] Add constants verification step to `.github/workflows/ci.yml`
-- [ ] Update README with constants verification docs
+- [x] ~~Add `npm run check:constants` to `.husky/pre-commit` hook~~ — Not needed (tsc catches internal drift)
+- [x] ~~Add constants verification step to `.github/workflows/ci.yml`~~ — Not needed (LLM-based, not CI-grade)
+- [x] ~~Update README with constants verification docs~~ — Already in CONTRIBUTING.md
 
 ---
 
