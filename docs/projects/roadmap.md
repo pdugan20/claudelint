@@ -34,9 +34,9 @@
 
 - [x] Create repo: `gh repo create pdugan20/claudelint --private --source=. --push`
 - [x] Run label script: `bash scripts/util/setup-github-labels.sh` (46 labels)
-- [ ] Configure branch protection per `docs/github-branch-protection.md` (requires GitHub web UI)
+- [x] Configure branch protection (via `gh api`, required checks: Build, Test, Complete Validation)
 - [x] Enable GitHub Discussions
-- [ ] Set up Codecov integration (requires web signup)
+- [x] Set up Codecov integration (token added, uploads working)
 - [x] Verify CI workflows run on push (all 15 jobs green)
 
 **Cleanup:** github-automation's last pending task is done. Update archived tracker header to "Complete".
@@ -262,9 +262,9 @@ Work these when demand exists or as time permits.
 
 ### Dependency Migrations (from github-automation)
 
-- [ ] Zod 4 migration (~15 files, breaking changes)
-- [ ] markdownlint 0.40 migration (API changes in formatter)
-- [ ] ora 9 migration (research needed)
+- [x] Zod 4 migration (completed 2026-02-09)
+- [x] markdownlint 0.40 migration (completed 2026-02-09)
+- [x] ora 9 migration (completed via Dependabot PR #6)
 
 ### Remaining Skill Rules
 
