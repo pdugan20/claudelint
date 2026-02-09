@@ -14,6 +14,24 @@ claudelint follows the **complementary tools pattern** where each tool does one 
 
 All configs are **scoped** to Claude files only (`.claude/`, `CLAUDE.md`) to avoid conflicts with your existing project formatters.
 
+## Dependencies
+
+claudelint bundles its formatting tools automatically. No separate installation required.
+
+**Bundled:**
+
+- **Prettier** -- Markdown, JSON, and YAML formatting
+- **Markdownlint** -- Markdown structure validation
+- **Chalk** -- Colored terminal output
+
+**Optional (install separately):**
+
+- **ShellCheck** -- Shell script linting (recommended for `.sh` files)
+  - macOS: `brew install shellcheck`
+  - Linux: `apt install shellcheck` or `snap install shellcheck`
+
+claudelint detects ShellCheck automatically if available. The `claudelint format` command shows install instructions if it's missing.
+
 ## File Type Coverage
 
 | File Type             | Location                             | Linting             | Formatting | Tier |
