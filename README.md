@@ -8,19 +8,21 @@
 
 A linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
 
-> **Beta:** This is v0.2.0-beta. All features are implemented and tested. [Report issues](https://github.com/pdugan20/claudelint/issues).
-
 ## Quick Start
 
-### npm (CI/CD, automation, pre-commit hooks)
+### npm
+
+Use the npm package for CI/CD pipelines, pre-commit hooks, and automation scripts.
 
 ```bash
 npm install --save-dev claude-code-lint
-npx claudelint init
-npx claudelint check-all
+npx claudelint init       # Creates .claudelintrc.json and .claudelintignore
+npx claudelint check-all  # Validate your project
 ```
 
-### Claude Code Plugin (interactive sessions)
+### Claude Code Plugin
+
+Install as a plugin for interactive validation during Claude Code sessions.
 
 ```bash
 /plugin install github:pdugan20/claudelint
@@ -35,8 +37,6 @@ npx claudelint check-all
 - **Hooks** -- Event names, script existence, type validation
 - **MCP Servers** -- Transport types, URLs, environment variables
 - **Plugins** -- Manifest schema, directory structure, cross-references
-
-105 rules across 10 categories with auto-fix support.
 
 ## CLI
 
@@ -80,7 +80,3 @@ After installing as a plugin, use skills via `/claudelint:*` or natural language
 - [Troubleshooting](docs/troubleshooting.md)
 - [Contributing](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
-
-## License
-
-MIT
