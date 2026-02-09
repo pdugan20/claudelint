@@ -61,12 +61,12 @@
 **Depends on:** Milestone 1 (GitHub repo exists for release notes)
 **Effort:** ~half day
 
-- [ ] Create RELEASING.md (beta process, stable process, hotfix process)
-- [ ] Add release section to CONTRIBUTING.md
-- [ ] Add `prepublishOnly` script to package.json
-- [ ] Add version validation script
-- [ ] Verify release-it npm scripts work end-to-end
-- [ ] Update GitHub release for existing beta (was blocked by no repo)
+- [x] Create RELEASING.md (beta process, stable process, hotfix process)
+- [x] Add release section to CONTRIBUTING.md (already existed)
+- [x] Add `prepublishOnly` script to package.json (already existed)
+- [x] Add version validation script (already existed: `sync:versions:check`)
+- [x] Verify release-it npm scripts work end-to-end (dry run passed, needs npm auth)
+- [x] Update GitHub release for existing beta (created v0.2.0-beta.0 + v0.2.0-beta.1)
 
 ---
 
