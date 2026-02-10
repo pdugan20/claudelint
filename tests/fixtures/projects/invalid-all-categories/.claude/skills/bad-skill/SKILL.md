@@ -6,6 +6,7 @@ allowed-tools:
   - Bash
 disallowed-tools:
   - Write
+author: Bad Author
 ---
 
 # Bad Skill

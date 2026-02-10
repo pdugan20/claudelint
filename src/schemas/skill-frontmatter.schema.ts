@@ -48,6 +48,15 @@ export const SkillFrontmatterSchema = z.object({
   dependencies: z.array(z.string()).optional(),
 
   hooks: SettingsHooksSchema.optional(),
+
+  license: z.string().optional(),
+
+  compatibility: z
+    .string()
+    .max(500, 'Compatibility description must be 500 characters or less')
+    .optional(),
+
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**

@@ -120,6 +120,42 @@ describe('SkillFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
+    it('should accept license field', () => {
+      const result = SkillFrontmatterSchema.safeParse({
+        name: 'my-skill',
+        description: 'This skill does something',
+        license: 'MIT',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept compatibility field', () => {
+      const result = SkillFrontmatterSchema.safeParse({
+        name: 'my-skill',
+        description: 'This skill does something',
+        compatibility: 'Claude Code 1.0+',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject compatibility over 500 characters', () => {
+      const result = SkillFrontmatterSchema.safeParse({
+        name: 'my-skill',
+        description: 'This skill does something',
+        compatibility: 'x'.repeat(501),
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept metadata field', () => {
+      const result = SkillFrontmatterSchema.safeParse({
+        name: 'my-skill',
+        description: 'This skill does something',
+        metadata: { category: 'testing', priority: 1 },
+      });
+      expect(result.success).toBe(true);
+    });
+
     it('should accept any string for tools (validation happens in validator)', () => {
       // Note: allowed-tools uses z.array(z.string()) to allow custom validation
       // with warnings instead of schema errors. The Skills validator validates

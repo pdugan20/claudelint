@@ -1,7 +1,7 @@
 /**
  * Rule: skill-description-max-length
  *
- * Warns when a skill description exceeds 500 characters.
+ * Warns when a skill description exceeds 1024 characters.
  * Long descriptions reduce readability in skill listings and menus.
  */
 
@@ -24,7 +24,7 @@ export const rule: Rule = {
       maxLength: z.number().positive().int().optional(),
     }),
     defaultOptions: {
-      maxLength: 500,
+      maxLength: 1024,
     },
   },
 
@@ -49,7 +49,7 @@ export const rule: Rule = {
     }
 
     const description = descriptionMatch[1].trim();
-    const maxLength = (options.maxLength as number) ?? 500;
+    const maxLength = (options.maxLength as number) ?? 1024;
 
     if (description.length > maxLength) {
       context.report({

@@ -53,7 +53,7 @@ author: John Doe
           errors: [
             {
               message:
-                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, context, dependencies, description, model, name, tags, version',
+                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
             },
           ],
         },
@@ -71,18 +71,18 @@ author: John Doe
 name: my-skill
 description: A test skill
 author: John Doe
-license: MIT
+priority: high
 ---
 
 # My Skill`,
           errors: [
             {
               message:
-                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, context, dependencies, description, model, name, tags, version',
+                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
             },
             {
               message:
-                'Unknown frontmatter key "license". Valid keys: agent, allowed-tools, context, dependencies, description, model, name, tags, version',
+                'Unknown frontmatter key "priority". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
             },
           ],
         },
@@ -112,6 +112,35 @@ unknown-key: value
 ---
 
 # Readme`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should pass for newly added official keys', async () => {
+    await ruleTester.run('skill-frontmatter-unknown-keys', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: A test skill
+argument-hint: Pass a file path
+disable-model-invocation: true
+user-invocable: true
+disallowed-tools:
+  - Write
+hooks:
+  PreToolUse:
+    - command: echo check
+license: MIT
+compatibility: Claude Code 1.0+
+metadata:
+  category: testing
+---
+
+# My Skill`,
         },
       ],
       invalid: [],

@@ -14,9 +14,17 @@ const KNOWN_KEYS = new Set([
   'tags',
   'dependencies',
   'allowed-tools',
+  'disallowed-tools',
   'model',
   'context',
   'agent',
+  'argument-hint',
+  'disable-model-invocation',
+  'user-invocable',
+  'hooks',
+  'license',
+  'compatibility',
+  'metadata',
 ]);
 
 export const rule: Rule = {

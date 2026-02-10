@@ -6,6 +6,8 @@ model: sonnet
 allowed-tools:
   - Bash
   - Read
+argument-hint: Pass a test pattern to filter tests
+disable-model-invocation: true
 ---
 
 # Example Skill
@@ -15,7 +17,7 @@ This skill runs the project test suite.
 ## Usage
 
 ```bash
-/example-skill
+/example-skill $ARGUMENTS
 ```
 
 ## Example

@@ -9,7 +9,7 @@ Skill description should not exceed configured maximum length
 
 ## Rule Details
 
-This rule triggers when a skill's description exceeds the configured maximum length (default 500 characters). Concise descriptions help with:
+This rule triggers when a skill's description exceeds the configured maximum length (default 1024 characters). Concise descriptions help with:
 
 1. **Skill Listings**: Skills are displayed in listings and searches where space is limited
 2. **Readability**: Short descriptions are easier to understand at a glance
@@ -31,7 +31,7 @@ description: This skill deploys applications to production servers with comprehe
 
 ### Correct
 
-Concise description under 500 characters:
+Concise description under 1024 characters:
 
 ```markdown
 ---
@@ -98,7 +98,7 @@ This rule has the following configuration options:
 Maximum number of characters allowed in the description. Must be a positive integer.
 
 **Type**: `number`
-**Default**: `500`
+**Default**: `1024`
 
 **Schema**:
 

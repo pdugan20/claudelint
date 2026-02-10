@@ -1,6 +1,6 @@
 # Official Spec Alignment Tracker
 
-**Status:** Not started
+**Status:** Phase A complete, Phases B+C not started
 **Created:** 2026-02-06
 
 ---
@@ -14,28 +14,28 @@ These items fix actively incorrect linter output.
 - **File:** `src/rules/skills/skill-frontmatter-unknown-keys.ts`
 - **Problem:** Missing 5 official fields, causing false-positive warnings
 - **Action:** Add `argument-hint`, `disable-model-invocation`, `user-invocable`, `hooks`, `disallowed-tools`, `license`, `compatibility`, `metadata` to `KNOWN_KEYS`
-- **Status:** Not started
+- **Status:** Complete
 
 ### A2: Update skill-description-max-length default
 
 - **File:** `src/rules/skills/skill-description-max-length.ts`
 - **Problem:** Default is 500 chars, Anthropic guide says 1024
 - **Action:** Change default from 500 to 1024
-- **Status:** Not started
+- **Status:** Complete
 
 ### A3: Review thirdPerson() refinement
 
 - **File:** `src/schemas/skill-frontmatter.schema.ts` and `src/schemas/refinements.ts`
 - **Problem:** Anthropic guide examples use mixed voice ("Analyzes... Use when..."), our refinement may reject valid patterns
-- **Action:** Verify the refinement accepts guide-style descriptions; relax if needed
-- **Status:** Not started
+- **Action:** Verified the regex `/\b(I|you)\s/i` correctly accepts guide-style patterns. No change needed.
+- **Status:** Complete (no change needed)
 
 ### A4: Add license, compatibility, metadata to schema
 
 - **File:** `src/schemas/skill-frontmatter.schema.ts`
 - **Problem:** Three official fields from Skills Guide PDF not in our schema
-- **Action:** Add `license: z.string().optional()`, `compatibility: z.string().max(500).optional()`, `metadata: z.record(z.unknown()).optional()`
-- **Status:** Not started
+- **Action:** Added `license: z.string().optional()`, `compatibility: z.string().max(500).optional()`, `metadata: z.record(z.string(), z.unknown()).optional()`
+- **Status:** Complete
 
 ---
 

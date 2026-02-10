@@ -25,8 +25,8 @@ description: A concise skill description.
     });
   });
 
-  it('should warn for descriptions exceeding 500 characters', async () => {
-    const longDescription = 'A'.repeat(501);
+  it('should warn for descriptions exceeding 1024 characters', async () => {
+    const longDescription = 'A'.repeat(1025);
 
     await ruleTester.run('skill-description-max-length', rule, {
       valid: [],
@@ -41,7 +41,7 @@ description: ${longDescription}
 # My Skill`,
           errors: [
             {
-              message: `Skill description is 501 characters (max: 500). Shorten the description for better readability in skill listings.`,
+              message: `Skill description is 1025 characters (max: 1024). Shorten the description for better readability in skill listings.`,
             },
           ],
         },
@@ -49,8 +49,8 @@ description: ${longDescription}
     });
   });
 
-  it('should pass for exactly 500 characters', async () => {
-    const exactDescription = 'B'.repeat(500);
+  it('should pass for exactly 1024 characters', async () => {
+    const exactDescription = 'B'.repeat(1024);
 
     await ruleTester.run('skill-description-max-length', rule, {
       valid: [
