@@ -135,8 +135,12 @@ export async function findOutputStyleFiles(basePath: string = process.cwd()): Pr
   const patterns = [
     '.claude/output-styles/*/*.md', // Standard project location
     'output-styles/*/*.md', // Plugin/root-level output styles
-    '*/*.md', // Direct --path to output styles directory
   ];
+
+  // When --path points directly at an output-styles directory, match one level deep
+  if (basePath.endsWith('output-styles') || basePath.endsWith('output-styles/')) {
+    patterns.push('*/*.md');
+  }
 
   const allFiles: string[] = [];
   for (const pattern of patterns) {
