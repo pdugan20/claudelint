@@ -4,5 +4,17 @@
   "description": "A test fixture plugin with all valid configuration",
   "author": {
     "name": "Test Author"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh"
+          }
+        ]
+      }
+    ]
   }
 }

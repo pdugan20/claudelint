@@ -23,7 +23,7 @@
 | npm-release-setup | Milestones 3 + 5 | active |
 | schema-accuracy-fixes | Standalone (7 issues, 5 phases) | **archived** |
 | testing-fixture-infrastructure | Milestone 4a | **archived** |
-| official-spec-alignment | Milestones 5a + 5b | active |
+| official-spec-alignment | Milestones 5a + 5b | **archived** |
 | dogfood-and-improvements | Milestones 6 + 7 + 8 | active |
 
 ---
@@ -191,7 +191,7 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 ## Milestone 5a: Spec Alignment Critical Fixes
 
 **Source:** official-spec-alignment Phase A
-**Tracker:** [tracker.md](./official-spec-alignment/tracker.md)
+**Tracker:** [tracker.md](./archive/official-spec-alignment/tracker.md)
 **Standalone** — no dependencies on other milestones
 **Effort:** ~half day
 **Why before M6:** Fixes schema foundations that Milestone 6 rules build on. Implementing M6 rules against a wrong schema produces wrong rules.
@@ -208,7 +208,7 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 ## Milestone 5b: Spec Alignment New Rules + Self-Fixes
 
 **Source:** official-spec-alignment Phases B + C
-**Tracker:** [tracker.md](./official-spec-alignment/tracker.md)
+**Tracker:** [tracker.md](./archive/official-spec-alignment/tracker.md)
 **Depends on:** Milestone 5a (schema must be correct first), Milestone 4a (fixture builders + static fixtures for B5-B9 testing)
 **Effort:** ~2-3 days
 
@@ -234,19 +234,22 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 - [x] Updated integration test pinned counts: 29 errors, 25 warnings (was 20)
 - [x] Updated fixture builder `withMinimalFields()` to include trigger phrase in description
 - [x] Updated metadata tests to check for disable-model-invocation instead of tags/dependencies
+- [x] Add hooks with `${CLAUDE_PLUGIN_ROOT}` to valid-complete `.claude-plugin/plugin.json` (B8 follow-up from M4a)
+- [x] Add `${CLAUDE_PLUGIN_ROOT}/scripts/init.sh` hook script to valid-complete fixture
+- [x] Verify valid-complete still reports 0 errors / 0 warnings after adding hooks
 
 ### Post-Implementation
 
 - [x] Run `npm run generate:types && npm test && npm run build` — 110 rules, 1254 tests, 170 suites
 - [x] Create rule doc files in `docs/rules/skills/` and `docs/rules/plugin/` (5 files)
 - [x] Run `claudelint check-all` against our own project — **0 errors, 0 warnings**
-- [ ] Reconcile Milestone 6: remove M1 (done via B5), rethink M15/M16 per [overlap analysis](./official-spec-alignment/milestone-6-overlap.md)
+- [x] Reconcile Milestone 6: remove M1 (done via B5), rethink M15/M16 per [overlap analysis](./archive/official-spec-alignment/milestone-6-overlap.md)
 
 **Cleanup:** Milestones 5a + 5b complete all official-spec-alignment work.
 
-- [ ] Update `official-spec-alignment/tracker.md` header to "Complete"
-- [ ] Move `official-spec-alignment/` to `archive/official-spec-alignment/`
-- [ ] Update status.md: move from Active to Archived
+- [x] Update `official-spec-alignment/tracker.md` header to "Complete"
+- [x] Move `official-spec-alignment/` to `archive/official-spec-alignment/`
+- [x] Update status.md: move from Active to Archived
 
 ---
 
@@ -350,8 +353,8 @@ Work these when demand exists or as time permits.
 | 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
 | -- | schema-accuracy-fixes (archived) | [README.md](./archive/schema-accuracy-fixes/README.md) |
 | 4a | testing-fixture-infrastructure (archived) | [tracker.md](./archive/testing-fixture-infrastructure/tracker.md) |
-| 5a | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phase A |
-| 5b | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phases B + C |
+| 5a | official-spec-alignment | [tracker.md](./archive/official-spec-alignment/tracker.md) Phase A |
+| 5b | official-spec-alignment | [tracker.md](./archive/official-spec-alignment/tracker.md) Phases B + C |
 | 6 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-14 |
 | 7 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-13 |
 | 8 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-15/16/17 |

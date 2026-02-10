@@ -61,21 +61,6 @@ npm package versioning and release automation. Package is published as `claude-c
 
 ---
 
-### official-spec-alignment (0%)
-
-**Status:** Not started
-**Location:** [docs/projects/official-spec-alignment/](./official-spec-alignment/)
-
-Align linter's skill frontmatter schema, validation rules, and our own plugin against the official Claude Code spec. Fixes actively wrong results (false positives on 5 official fields, wrong description max-length default).
-
-**Phases:**
-
-- Phase A: Critical fixes (A1-A4) — fix KNOWN_KEYS, description max-length, thirdPerson() refinement, add missing schema fields
-- Phase B: New rules (B5-B9) — trigger phrases, argument hints, side effects, plugin hook paths, component paths
-- Phase C: Self-fixes (C10-C14) — remove non-official frontmatter, add disable-model-invocation, scope allowed-tools
-
-**ROADMAP:** Milestones 5a + 5b
-
 ---
 
 ## Future Projects
@@ -106,6 +91,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | [validator-refactor-2026](./archive/validator-refactor-2026/) | Completed | Removed 1,263 LOC, renamed validators, added architecture docs. |
 | [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Completed | Fixed 7 schema issues from Anthropic comparison audit (hooks, MCP, attribution, sandbox, settings, output styles). |
 | [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Completed | 9 fluent builders, extended SkillBuilder/PluginBuilder, enhanced fixtures, pinned integration tests. 3 follow-ups in M5a/M5b. |
+| [official-spec-alignment](./archive/official-spec-alignment/) | Completed | Aligned skill schema, 5 new rules (B5-B9), self-fixed all 9 skills (C10-C13). 110 total rules. |
 
 ---
 
@@ -157,7 +143,7 @@ Prioritized next steps across all projects. Work these in order.
 
 ## Rule Implementation Reference
 
-The linter currently has **105 implemented rules** across 10 categories. An additional **219 non-skill rules** and **36 skill rules** are planned but not yet implemented.
+The linter currently has **110 implemented rules** across 10 categories. An additional **219 non-skill rules** and **36 skill rules** are planned but not yet implemented.
 
 **Spec files for planned rules:**
 
