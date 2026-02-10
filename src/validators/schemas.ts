@@ -76,6 +76,8 @@ export const SettingsHooksSchema = z.object({
   Setup: z.array(SettingsHookMatcherSchema).optional(),
   SessionStart: z.array(SettingsHookMatcherSchema).optional(),
   SessionEnd: z.array(SettingsHookMatcherSchema).optional(),
+  TeammateIdle: z.array(SettingsHookMatcherSchema).optional(),
+  TaskCompleted: z.array(SettingsHookMatcherSchema).optional(),
 });
 
 /**
@@ -107,11 +109,25 @@ export const AttributionSchema = z.object({
 });
 
 /**
+ * Sandbox network schema for settings
+ */
+export const SandboxNetworkSchema = z.object({
+  allowedHosts: z.array(z.string()).optional(),
+  allowedPorts: z.array(z.number()).optional(),
+});
+
+/**
  * Sandbox schema for settings
+ * Based on official Claude Code sandbox configuration
  */
 export const SandboxSchema = z.object({
   enabled: z.boolean().optional(),
-  allowedCommands: z.array(z.string()).optional(),
+  autoAllowBashIfSandboxed: z.boolean().optional(),
+  excludedCommands: z.array(z.string()).optional(),
+  allowUnsandboxedCommands: z.array(z.string()).optional(),
+  network: SandboxNetworkSchema.optional(),
+  enableWeakerNestedSandbox: z.boolean().optional(),
+  ignoreViolations: z.boolean().optional(),
 });
 
 /**

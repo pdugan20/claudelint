@@ -254,24 +254,73 @@ describe('SandboxSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should accept allowedCommands array', () => {
+  it('should accept autoAllowBashIfSandboxed', () => {
     const result = SandboxSchema.safeParse({
       enabled: true,
-      allowedCommands: ['ls', 'cat', 'echo'],
+      autoAllowBashIfSandboxed: true,
     });
     expect(result.success).toBe(true);
   });
 
-  it('should accept empty allowedCommands', () => {
+  it('should accept excludedCommands array', () => {
     const result = SandboxSchema.safeParse({
       enabled: true,
-      allowedCommands: [],
+      excludedCommands: ['rm', 'sudo'],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept allowUnsandboxedCommands array', () => {
+    const result = SandboxSchema.safeParse({
+      enabled: true,
+      allowUnsandboxedCommands: ['docker', 'brew'],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept network config', () => {
+    const result = SandboxSchema.safeParse({
+      enabled: true,
+      network: {
+        allowedHosts: ['api.example.com'],
+        allowedPorts: [443, 8080],
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept enableWeakerNestedSandbox', () => {
+    const result = SandboxSchema.safeParse({
+      enableWeakerNestedSandbox: true,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept ignoreViolations', () => {
+    const result = SandboxSchema.safeParse({
+      ignoreViolations: true,
     });
     expect(result.success).toBe(true);
   });
 
   it('should accept all fields optional', () => {
     const result = SandboxSchema.safeParse({});
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept full sandbox configuration', () => {
+    const result = SandboxSchema.safeParse({
+      enabled: true,
+      autoAllowBashIfSandboxed: true,
+      excludedCommands: ['rm -rf'],
+      allowUnsandboxedCommands: ['docker'],
+      network: {
+        allowedHosts: ['localhost'],
+        allowedPorts: [3000],
+      },
+      enableWeakerNestedSandbox: false,
+      ignoreViolations: false,
+    });
     expect(result.success).toBe(true);
   });
 });
@@ -325,6 +374,8 @@ describe('SettingsHooksSchema', () => {
       Setup: [],
       SessionStart: [],
       SessionEnd: [],
+      TeammateIdle: [],
+      TaskCompleted: [],
     });
     expect(result.success).toBe(true);
   });

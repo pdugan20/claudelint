@@ -59,6 +59,8 @@ export const HookEvents = z.enum([
   'Setup',
   'SessionStart',
   'SessionEnd',
+  'TeammateIdle',
+  'TaskCompleted',
 ]);
 
 /**

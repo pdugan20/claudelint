@@ -31,7 +31,9 @@
               "Stop",
               "PreCompact",
               "SessionEnd",
-              "Setup"
+              "Setup",
+              "TeammateIdle",
+              "TaskCompleted"
             ]
           },
           "matcher": {
