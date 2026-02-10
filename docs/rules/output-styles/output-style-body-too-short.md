@@ -77,7 +77,7 @@ Example verbose log entry with full context and metadata.
 
 ## How To Fix
 
-To fix this violation, add more substantive content to your OUTPUT_STYLE.md file:
+To fix this violation, add more substantive content to your output style .md file:
 
 1. **Add a Guidelines or Format section** explaining how to use the style
 2. **Include concrete Examples** demonstrating the style in practice

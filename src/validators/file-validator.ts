@@ -159,7 +159,7 @@ interface DisabledRule {
  * Base validator class for text-based and markdown file validation
  *
  * FileValidator provides the foundation for validating text/markdown files like
- * CLAUDE.md, SKILL.md, AGENT.md, and OUTPUT_STYLE.md. It handles:
+ * CLAUDE.md, SKILL.md, AGENT.md, and output style .md files. It handles:
  * - Issue collection and aggregation
  * - Rule execution via category-based auto-discovery
  * - Inline disable comment parsing (claudelint-disable, etc.)
@@ -194,7 +194,7 @@ interface DisabledRule {
  * - ClaudeMdValidator - Validates CLAUDE.md files
  * - SkillsValidator - Validates SKILL.md files and scripts
  * - AgentsValidator - Validates AGENT.md files
- * - OutputStylesValidator - Validates OUTPUT_STYLE.md files
+ * - OutputStylesValidator - Validates output style .md files
  * - CommandsValidator - Validates deprecated commands
  *
  * @example

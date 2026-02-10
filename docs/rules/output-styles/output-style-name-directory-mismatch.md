@@ -11,7 +11,7 @@ Output style name must match parent directory name
 
 The output style name defined in the frontmatter must exactly match the parent directory name. This ensures consistency between file structure and output style configuration, making output styles easier to discover and reference.
 
-When OUTPUT_STYLE.md files are organized in directories, the directory name serves as the canonical identifier for the output style. The frontmatter name must match this identifier for proper organization and tooling support.
+When output style .md files are organized in directories, the directory name serves as the canonical identifier for the output style. The frontmatter name must match this identifier for proper organization and tooling support.
 
 ### Incorrect
 
@@ -19,7 +19,7 @@ Mismatched name and directory:
 
 ```json
 {
-  "filePath": ".claude/output_styles/code-style/OUTPUT_STYLE.md",
+  "filePath": ".claude/output-styles/code-style/output style .md",
   "content": "---\nname: wrong-name\ndescription: Formats code output\n---\n# Style"
 }
 ```
@@ -28,7 +28,7 @@ Case mismatch:
 
 ```json
 {
-  "filePath": ".claude/output_styles/minimal/OUTPUT_STYLE.md",
+  "filePath": ".claude/output-styles/minimal/output style .md",
   "content": "---\nname: Minimal\ndescription: Minimal output\n---\n# Style"
 }
 ```
@@ -39,7 +39,7 @@ Name matches directory exactly:
 
 ```json
 {
-  "filePath": ".claude/output_styles/code-style/OUTPUT_STYLE.md",
+  "filePath": ".claude/output-styles/code-style/output style .md",
   "content": "---\nname: code-style\ndescription: Formats code output\n---\n# Style"
 }
 ```
@@ -48,7 +48,7 @@ Consistent naming with kebab-case:
 
 ```json
 {
-  "filePath": ".claude/output_styles/verbose-logs/OUTPUT_STYLE.md",
+  "filePath": ".claude/output-styles/verbose-logs/output style .md",
   "content": "---\nname: verbose-logs\ndescription: Verbose logging format\n---\n# Guidelines"
 }
 ```
@@ -62,7 +62,7 @@ To fix a name/directory mismatch, you have two options:
    - Ensure exact match including case and hyphens
 
 2. **Rename the directory** to match the frontmatter name:
-   - Move OUTPUT_STYLE.md to a directory matching the name
+   - Move output style .md to a directory matching the name
    - Update any references to the old directory name
 
 The name and directory must match exactly, including case sensitivity.

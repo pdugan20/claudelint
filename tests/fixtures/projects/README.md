@@ -18,6 +18,24 @@ Each subdirectory is a complete, self-contained project with:
 
 ## Available Fixtures
 
+### valid-complete
+
+**Purpose:** False-positive detection. All 10 config file types present and valid.
+
+Running `claudelint check-all` produces zero errors and zero warnings.
+
+**Config files:** CLAUDE.md, settings.json, hooks.json, .mcp.json, lsp.json, SKILL.md, AGENT.md, output style .md, plugin.json (in .claude-plugin/), package.json.
+
+**Tested by:** `tests/integration/fixture-projects.test.ts`
+
+### invalid-all-categories
+
+**Purpose:** Pipeline validation. Intentional errors in every validator category.
+
+Running `claudelint check-all` produces errors from all 10 validators (CLAUDE.md, Skills, Agents, Output Styles, LSP, Settings, Hooks, MCP, Plugin, Commands).
+
+**Tested by:** `tests/integration/fixture-projects.test.ts`
+
 ### react-typescript-bloated
 
 **Purpose:** Primary test fixture for optimize-cc-md skill

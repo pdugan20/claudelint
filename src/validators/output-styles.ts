@@ -1,8 +1,8 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
-import { findOutputStyleDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
+import { findOutputStyleFiles, readFileContent } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
-import { basename, join } from 'path';
+import { basename, dirname } from 'path';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -30,54 +30,48 @@ export class OutputStylesValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
-    const outputStyleDirs = await this.findOutputStyleDirs();
+    const outputStyleFiles = await this.findOutputStyleFiles();
 
-    if (outputStyleDirs.length === 0) {
+    if (outputStyleFiles.length === 0) {
       return this.getResult();
     }
 
-    for (const outputStyleDir of outputStyleDirs) {
-      await this.validateOutputStyle(outputStyleDir);
+    for (const outputStyleFile of outputStyleFiles) {
+      await this.validateOutputStyle(outputStyleFile);
     }
 
     return this.getResult();
   }
 
-  private async findOutputStyleDirs(): Promise<string[]> {
-    const allOutputStyleDirs = await findOutputStyleDirectories(this.basePath);
+  private async findOutputStyleFiles(): Promise<string[]> {
+    const allOutputStyleFiles = await findOutputStyleFiles(this.basePath);
 
     if (this.specificOutputStyle) {
-      // Filter to specific output style
-      return allOutputStyleDirs.filter((dir) => basename(dir) === this.specificOutputStyle);
+      // Filter to specific output style by parent directory name
+      return allOutputStyleFiles.filter(
+        (file) => basename(dirname(file)) === this.specificOutputStyle
+      );
     }
 
-    return allOutputStyleDirs;
+    return allOutputStyleFiles;
   }
 
-  private async validateOutputStyle(outputStyleDir: string): Promise<void> {
-    const outputStyleMdPath = join(outputStyleDir, 'OUTPUT_STYLE.md');
-
-    // Check OUTPUT_STYLE.md exists
-    const exists = await fileExists(outputStyleMdPath);
-    if (!exists) {
-      throw new Error(`OUTPUT_STYLE.md not found in output style directory: ${outputStyleDir}`);
-    }
-
+  private async validateOutputStyle(outputStylePath: string): Promise<void> {
     // Read content
-    const content = await readFileContent(outputStyleMdPath);
+    const content = await readFileContent(outputStylePath);
 
     // Parse disable comments
-    this.parseDisableComments(outputStyleMdPath, content);
+    this.parseDisableComments(outputStylePath, content);
 
     // Validate frontmatter
-    await this.validateFrontmatter(outputStyleMdPath, content);
+    await this.validateFrontmatter(outputStylePath, content);
 
     // Execute ALL Output-styles rules via category-based discovery
-    await this.executeRulesForCategory('OutputStyles', outputStyleMdPath, content);
+    await this.executeRulesForCategory('OutputStyles', outputStylePath, content);
 
     // Report unused disable directives if configured
     if (this.options.config?.reportUnusedDisableDirectives) {
-      this.reportUnusedDisables(outputStyleMdPath);
+      this.reportUnusedDisables(outputStylePath);
     }
   }
 
@@ -109,7 +103,7 @@ ValidatorRegistry.register(
     id: 'output-styles',
     name: 'Output Styles Validator',
     description: 'Validates Claude Code output style structure and frontmatter',
-    filePatterns: ['**/.claude/output_styles/*/OUTPUT_STYLE.md'],
+    filePatterns: ['**/.claude/output-styles/*/*.md'],
     enabled: true,
   },
   (options) => new OutputStylesValidator(options)

@@ -128,15 +128,14 @@ export async function findAgentDirectories(basePath: string = process.cwd()): Pr
 }
 
 /**
- * Find output style directories
+ * Find output style files
+ * Returns paths to .md files in output-styles directories
  */
-export async function findOutputStyleDirectories(
-  basePath: string = process.cwd()
-): Promise<string[]> {
+export async function findOutputStyleFiles(basePath: string = process.cwd()): Promise<string[]> {
   const patterns = [
-    '.claude/output_styles/*/OUTPUT_STYLE.md', // Standard project location
-    'output_styles/*/OUTPUT_STYLE.md', // Plugin/root-level output styles
-    '*/OUTPUT_STYLE.md', // Direct --path to output styles directory
+    '.claude/output-styles/*/*.md', // Standard project location
+    'output-styles/*/*.md', // Plugin/root-level output styles
+    '*/*.md', // Direct --path to output styles directory
   ];
 
   const allFiles: string[] = [];
@@ -145,8 +144,7 @@ export async function findOutputStyleDirectories(
     allFiles.push(...files);
   }
 
-  const uniqueFiles = [...new Set(allFiles)];
-  return uniqueFiles.map((file) => file.replace('/OUTPUT_STYLE.md', ''));
+  return [...new Set(allFiles)];
 }
 
 /**

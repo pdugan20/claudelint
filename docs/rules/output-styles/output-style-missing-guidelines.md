@@ -106,7 +106,7 @@ Format all data as JSON with consistent indentation.
 
 ## How To Fix
 
-To fix this violation, add a Guidelines, Format, or Rules section to your OUTPUT_STYLE.md file:
+To fix this violation, add a Guidelines, Format, or Rules section to your output style .md file:
 
 1. **Add a section heading** using "Guidelines", "Format", or "Rules" as the title
 2. **Document formatting rules** that users should follow
@@ -141,7 +141,7 @@ This rule does not have configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if your output styles are simple enough that explicit guidelines aren't needed, or if formatting rules are documented elsewhere. However, including guidelines directly in OUTPUT_STYLE.md improves consistency and makes the style easier to use correctly.
+You might disable this rule if your output styles are simple enough that explicit guidelines aren't needed, or if formatting rules are documented elsewhere. However, including guidelines directly in output style .md improves consistency and makes the style easier to use correctly.
 
 ## Related Rules
 

@@ -44,8 +44,8 @@ export const rule: Rule = {
   validate: (context: RuleContext) => {
     const { filePath, fileContent, options } = context;
 
-    // Only validate OUTPUT_STYLE.md files
-    if (!filePath.endsWith('OUTPUT_STYLE.md')) {
+    // Only validate .md files (output style files)
+    if (!filePath.endsWith('.md')) {
       return;
     }
 

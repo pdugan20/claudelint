@@ -17,7 +17,7 @@ describe('path-helpers', () => {
     });
 
     it('should extract parent directory from output-style path', () => {
-      const path = '/path/to/.claude/output_styles/my-style/OUTPUT_STYLE.md';
+      const path = '/path/to/.claude/output-styles/my-style/my-style.md';
       expect(getParentDirectoryName(path)).toBe('my-style');
     });
 
@@ -27,7 +27,7 @@ describe('path-helpers', () => {
     });
 
     it('should handle paths with underscores', () => {
-      const path = '/path/to/.claude/output_styles/code_formatter/OUTPUT_STYLE.md';
+      const path = '/path/to/.claude/output-styles/code_formatter/code_formatter.md';
       expect(getParentDirectoryName(path)).toBe('code_formatter');
     });
 

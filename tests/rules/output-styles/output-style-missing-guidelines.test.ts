@@ -12,7 +12,7 @@ describe('output-style-missing-guidelines', () => {
     await ruleTester.run('output-style-missing-guidelines', rule, {
       valid: [
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -23,7 +23,7 @@ description: Test output style
 Follow these formatting guidelines.`,
         },
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -34,7 +34,7 @@ description: Test output style
 Follow these rules.`,
         },
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -45,7 +45,7 @@ description: Test output style
 Use this format.`,
         },
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -56,7 +56,7 @@ description: Test output style
 Follow this guideline.`,
         },
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -66,18 +66,10 @@ description: Test output style
 
 Follow these GUIDELINES.`,
         },
-        {
-          filePath: '.claude/output_styles/test-style/README.md',
-          content: `---
-name: test-style
----
-
-No guidelines here.`,
-        },
       ],
       invalid: [
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style
@@ -89,7 +81,7 @@ Some examples without guidelines section.`,
           errors: [{ message: 'should include a "Guidelines" or "Format" section' }],
         },
         {
-          filePath: '.claude/output_styles/test-style/OUTPUT_STYLE.md',
+          filePath: '.claude/output-styles/test-style/test-style.md',
           content: `---
 name: test-style
 description: Test output style

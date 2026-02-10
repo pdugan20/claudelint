@@ -10,7 +10,7 @@ describe('OutputStylesValidator', () => {
     const styleDir = join(getTestDir(), '.claude', 'output-styles', styleName);
     await mkdir(styleDir, { recursive: true });
 
-    const styleMd = join(styleDir, 'OUTPUT_STYLE.md');
+    const styleMd = join(styleDir, 'style.md');
     const content = `---
 ${Object.entries(frontmatter)
   .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
