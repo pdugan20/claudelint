@@ -77,16 +77,27 @@
 **Source:** plugin-and-md-management Phase 5.2-5.3 + Task 3.8
 **Depends on:** Milestone 1 (GitHub install testing needs repo)
 **Effort:** ~1 day
+**Strategy:** Smoke test now, full runbook before M5 (stable release). M5b changes all 9 skills, so full testing before M5b would need repeating.
 
-### Plugin Installation Testing
+### Smoke Test (completed 2026-02-10)
 
+- [x] Verify npm package contents: `npm pack --dry-run` includes `skills/`, `.claude-plugin/`, `bin/claudelint` (9 skills, 315KB)
+- [x] Verify CLI executes: `bin/claudelint check-all` runs all validators successfully
 - [ ] Test local plugin install: `/plugin install --source .`
 - [ ] Verify all 9 skills load: `/skills list`
-- [ ] Test GitHub plugin install: `/plugin install github:pdugan20/claudelint`
-- [ ] Test dependency detection (uninstall npm package, verify graceful error)
-- [ ] Verify npm package contents: `npm pack --dry-run` includes `.claude/`
+- [ ] Execute one skill: `/claudelint:validate-all`
+- [ ] Test one natural language trigger: "check my CLAUDE.md"
 
-### Skill Trigger Testing (9 skills, ~30 min each)
+### Full Testing (deferred to pre-M5, after M5b)
+
+**Runbook:** `docs/testing/manual-testing-runbook.md` (v1.1.0)
+
+#### Plugin Installation Testing
+
+- [ ] Test GitHub plugin install: `/plugin install github:pdugan20/claudelint` (blocked until repo is public)
+- [ ] Test dependency detection in external workspace (uninstall npm package, verify graceful error)
+
+#### Skill Trigger Testing (9 skills, ~30 min each)
 
 - [ ] validate-all: trigger phrases + non-triggers
 - [ ] validate-cc-md: trigger phrases + non-triggers
@@ -98,7 +109,7 @@
 - [ ] format-cc: trigger phrases + non-triggers
 - [ ] optimize-cc-md: trigger phrases + non-triggers
 
-### Functional & Quality Testing
+#### Functional & Quality Testing
 
 - [ ] Test each skill with valid and invalid inputs
 - [ ] Verify conversational quality (explanations, not just error dumps)
@@ -116,7 +127,7 @@
 ## Milestone 5: Stable Release (0.2.0)
 
 **Source:** npm-release-setup Phases 7-8
-**Depends on:** Milestones 3 + 4 (docs + testing done)
+**Depends on:** Milestones 3 + 4 + 5b (docs + full manual testing + new rules done)
 **Effort:** ~2 hours
 
 - [ ] Fix any issues found in manual testing
