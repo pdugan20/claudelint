@@ -1,10 +1,15 @@
 {
-  "hooks": [
-    {
-      "event": "SessionStart",
-      "type": "command",
-      "command": "claudelint check-all --format compact",
-      "description": "Validate Claude Code project files at session start"
-    }
-  ]
+  "description": "Validate Claude Code project files at session start",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --format compact"
+          }
+        ]
+      }
+    ]
+  }
 }

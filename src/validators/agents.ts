@@ -3,9 +3,7 @@ import { findAgentDirectories, readFileContent, fileExists } from '../utils/file
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
 import { basename, join } from 'path';
-import { validateHook } from '../utils/validators/helpers';
-import { HookSchema } from './schemas';
-import { z } from 'zod';
+import { validateSettingsHooks } from '../utils/validators/helpers';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -102,23 +100,14 @@ export class AgentsValidator extends FileValidator {
     }
 
     // Custom validation: Validate hooks if present
-    // Note: Hook rules (hooks-invalid-config, hooks-invalid-event) only run on hooks.json
-    // Agent hooks in frontmatter are validated here using validateHook() utility
+    // Agent hooks in frontmatter use the object-keyed format
     if (frontmatter.hooks) {
-      this.validateHooks(filePath, frontmatter.hooks);
-    }
-  }
-
-  private validateHooks(filePath: string, hooks: z.infer<typeof HookSchema>[]): void {
-    for (const hook of hooks) {
-      // Use shared validation utility for common checks
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(
+        frontmatter.hooks as Parameters<typeof validateSettingsHooks>[0]
+      );
       for (const issue of issues) {
         this.report(issue.message, filePath, undefined, issue.ruleId);
       }
-
-      // Note: We don't validate command scripts for agent hooks since they may be
-      // resolved relative to the agent directory or use agent-specific context
     }
   }
 }

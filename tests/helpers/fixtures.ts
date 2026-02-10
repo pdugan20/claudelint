@@ -247,32 +247,42 @@ export class SettingsBuilder {
 }
 
 /**
- * Fluent builder for hooks.json files
+ * Fluent builder for hooks.json files (object-keyed-by-event format)
  */
 export class HooksBuilder {
-  private hooks: Array<Record<string, unknown>> = [];
+  private hooksObj: Record<
+    string,
+    Array<{ matcher?: string; hooks: Array<Record<string, unknown>> }>
+  > = {};
 
   constructor(private baseDir: string) {}
 
   /**
-   * Add a hook
+   * Add a hook to an event
    */
   addHook(event: string, command: string, type: 'command' | 'prompt' | 'agent' = 'command'): this {
-    this.hooks.push({
-      event,
-      type,
-      command: type === 'command' ? command : undefined,
-      prompt: type === 'prompt' ? command : undefined,
-      agent: type === 'agent' ? command : undefined,
-    });
+    const handler: Record<string, unknown> = { type };
+    if (type === 'command') handler.command = command;
+    else if (type === 'prompt') handler.prompt = command;
+    else if (type === 'agent') handler.agent = command;
+
+    if (!this.hooksObj[event]) {
+      this.hooksObj[event] = [];
+    }
+    this.hooksObj[event].push({ hooks: [handler] });
     return this;
   }
 
   /**
-   * Set all hooks
+   * Set hooks object directly
    */
-  withHooks(hooks: Array<Record<string, unknown>>): this {
-    this.hooks = [...this.hooks, ...hooks];
+  withHooksObj(
+    hooksObj: Record<
+      string,
+      Array<{ matcher?: string; hooks: Array<Record<string, unknown>> }>
+    >
+  ): this {
+    this.hooksObj = { ...this.hooksObj, ...hooksObj };
     return this;
   }
 
@@ -280,47 +290,37 @@ export class HooksBuilder {
    * Create minimal valid hooks
    */
   withMinimalHooks(): this {
-    this.hooks = [
-      {
-        event: 'SessionStart',
-        type: 'command',
-        command: 'echo "Session started"',
-      },
-    ];
+    this.hooksObj = {
+      SessionStart: [
+        {
+          hooks: [{ type: 'command', command: 'echo "Session started"' }],
+        },
+      ],
+    };
     return this;
   }
 
   /**
-   * Create complete hooks with all lifecycle events
+   * Create complete hooks with multiple lifecycle events
    */
   withAllHooks(): this {
-    this.hooks = [
-      {
-        event: 'SessionStart',
-        type: 'command',
-        command: 'echo "Session started"',
-      },
-      {
-        event: 'SessionEnd',
-        type: 'command',
-        command: 'echo "Session ended"',
-      },
-      {
-        event: 'BeforeToolUse',
-        type: 'command',
-        command: 'echo "Before tool use"',
-      },
-      {
-        event: 'AfterToolUse',
-        type: 'command',
-        command: 'echo "After tool use"',
-      },
-      {
-        event: 'BeforePromptSubmit',
-        type: 'command',
-        command: 'echo "Before prompt submit"',
-      },
-    ];
+    this.hooksObj = {
+      SessionStart: [
+        { hooks: [{ type: 'command', command: 'echo "Session started"' }] },
+      ],
+      SessionEnd: [
+        { hooks: [{ type: 'command', command: 'echo "Session ended"' }] },
+      ],
+      PreToolUse: [
+        { hooks: [{ type: 'command', command: 'echo "Before tool use"' }] },
+      ],
+      PostToolUse: [
+        { hooks: [{ type: 'command', command: 'echo "After tool use"' }] },
+      ],
+      UserPromptSubmit: [
+        { hooks: [{ type: 'command', command: 'echo "Before prompt submit"' }] },
+      ],
+    };
     return this;
   }
 
@@ -331,19 +331,8 @@ export class HooksBuilder {
     const hooksDir = join(this.baseDir, '.claude', 'hooks');
     await mkdir(hooksDir, { recursive: true });
 
-    // Clean hooks to remove undefined fields
-    const cleanedHooks = this.hooks.map((hook) => {
-      const cleaned: Record<string, unknown> = {};
-      for (const [key, value] of Object.entries(hook)) {
-        if (value !== undefined) {
-          cleaned[key] = value;
-        }
-      }
-      return cleaned;
-    });
-
     const filePath = join(hooksDir, 'hooks.json');
-    await writeFile(filePath, JSON.stringify({ hooks: cleanedHooks }, null, 2));
+    await writeFile(filePath, JSON.stringify({ hooks: this.hooksObj }, null, 2));
     return filePath;
   }
 

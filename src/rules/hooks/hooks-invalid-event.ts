@@ -6,10 +6,6 @@
 
 import { Rule } from '../../types/rule';
 import { VALID_HOOK_EVENTS } from '../../schemas/constants';
-import { HooksConfigSchema } from '../../validators/schemas';
-import { z } from 'zod';
-
-type HooksConfig = z.infer<typeof HooksConfigSchema>;
 
 /**
  * Validates hook event names
@@ -32,20 +28,20 @@ export const rule: Rule = {
     const { fileContent } = context;
 
     // Parse JSON
-    let config: HooksConfig;
+    let config: Record<string, unknown>;
     try {
-      config = JSON.parse(fileContent) as HooksConfig;
+      config = JSON.parse(fileContent) as Record<string, unknown>;
     } catch {
       // JSON parse errors are handled by schema validation
       return;
     }
 
-    // Validate each hook's event
-    if (config.hooks && Array.isArray(config.hooks)) {
-      for (const hook of config.hooks) {
-        if (hook.event && !(VALID_HOOK_EVENTS as readonly string[]).includes(hook.event)) {
+    // In object-keyed format, event names are the keys of the hooks object
+    if (config.hooks && typeof config.hooks === 'object' && !Array.isArray(config.hooks)) {
+      for (const eventName of Object.keys(config.hooks as Record<string, unknown>)) {
+        if (!(VALID_HOOK_EVENTS as readonly string[]).includes(eventName)) {
           context.report({
-            message: `Unknown hook event: ${hook.event}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
+            message: `Unknown hook event: ${eventName}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
           });
         }
       }

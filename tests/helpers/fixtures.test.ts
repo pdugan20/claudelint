@@ -165,10 +165,9 @@ describe('Test Fixtures', () => {
 
       const content = JSON.parse(await readFile(path, 'utf-8'));
       expect(content.hooks).toBeDefined();
-      expect(Array.isArray(content.hooks)).toBe(true);
-      expect(content.hooks.length).toBe(1);
-      expect(content.hooks[0].event).toBe('SessionStart');
-      expect(content.hooks[0].type).toBe('command');
+      expect(typeof content.hooks).toBe('object');
+      expect(content.hooks.SessionStart).toBeDefined();
+      expect(content.hooks.SessionStart[0].hooks[0].type).toBe('command');
     });
 
     it('should create hooks with all lifecycle events', async () => {
@@ -177,12 +176,12 @@ describe('Test Fixtures', () => {
         .build();
 
       const content = JSON.parse(await readFile(path, 'utf-8'));
-      expect(Array.isArray(content.hooks)).toBe(true);
-      expect(content.hooks.length).toBe(5);
-      const events = content.hooks.map((h: any) => h.event);
+      expect(typeof content.hooks).toBe('object');
+      const events = Object.keys(content.hooks);
+      expect(events.length).toBe(5);
       expect(events).toContain('SessionStart');
       expect(events).toContain('SessionEnd');
-      expect(events).toContain('BeforeToolUse');
+      expect(events).toContain('PreToolUse');
     });
 
     it('should support adding custom hooks', async () => {
@@ -192,12 +191,10 @@ describe('Test Fixtures', () => {
         .build();
 
       const content = JSON.parse(await readFile(path, 'utf-8'));
-      expect(Array.isArray(content.hooks)).toBe(true);
-      expect(content.hooks.length).toBe(2);
-      expect(content.hooks[0].event).toBe('CustomHook');
-      expect(content.hooks[0].command).toBe('echo "custom"');
-      expect(content.hooks[1].event).toBe('AnotherHook');
-      expect(content.hooks[1].command).toBe('echo "another"');
+      expect(typeof content.hooks).toBe('object');
+      expect(Object.keys(content.hooks).length).toBe(2);
+      expect(content.hooks.CustomHook[0].hooks[0].command).toBe('echo "custom"');
+      expect(content.hooks.AnotherHook[0].hooks[0].command).toBe('echo "another"');
     });
 
     it('should create invalid JSON for testing', async () => {

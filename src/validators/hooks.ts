@@ -3,7 +3,6 @@ import { findHooksFiles, readFileContent } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { HooksConfigSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
-import { validateHook as validateHookHelper } from '../utils/validators/helpers';
 
 // Auto-register all rules
 import '../rules';
@@ -32,22 +31,16 @@ export class HooksValidator extends SchemaValidator<typeof HooksConfigSchema> {
 
   protected async validateSemantics(
     filePath: string,
-    config: z.infer<typeof HooksConfigSchema>
+    _config: z.infer<typeof HooksConfigSchema>
   ): Promise<void> {
     // Read file content for rule execution
     const content = await readFileContent(filePath);
 
     // Execute ALL Hooks rules via category-based discovery
+    // Rules cover: type validation, required fields, mutual exclusivity,
+    // timeout validation (hooks-invalid-config), event name validation
+    // (hooks-invalid-event), and script existence (hooks-missing-script)
     await this.executeRulesForCategory('Hooks', filePath, content);
-
-    // Keep additional validation not covered by registered rules
-    for (const hook of config.hooks) {
-      // Use shared validation utility for common checks
-      const issues = validateHookHelper(hook);
-      for (const issue of issues) {
-        this.report(issue.message, filePath, undefined, issue.ruleId);
-      }
-    }
   }
 }
 

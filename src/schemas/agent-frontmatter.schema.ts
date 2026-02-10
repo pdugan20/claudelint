@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { ModelNames } from './constants';
 import { noXMLTags, thirdPerson, lowercaseHyphens } from './refinements';
-import { HookSchema } from '../validators/schemas';
+import { SettingsHooksSchema } from '../validators/schemas';
 
 /**
  * Permission modes for agents
@@ -39,8 +39,8 @@ export const AgentFrontmatterSchema = z.object({
 
   skills: z.array(z.string()).optional(),
 
-  // Hooks that this agent defines
-  hooks: z.array(HookSchema).optional(),
+  // Hooks that this agent defines (object format with event name keys)
+  hooks: SettingsHooksSchema.optional(),
 });
 
 /**

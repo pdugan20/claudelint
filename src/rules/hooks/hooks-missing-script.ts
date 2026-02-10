@@ -7,10 +7,6 @@
 import { Rule } from '../../types/rule';
 import { fileExists } from '../../utils/filesystem/files';
 import { dirname, join, resolve } from 'path';
-import { HooksConfigSchema } from '../../validators/schemas';
-import { z } from 'zod';
-
-type HooksConfig = z.infer<typeof HooksConfigSchema>;
 
 /**
  * Validates hook script file existence
@@ -33,19 +29,27 @@ export const rule: Rule = {
     const { filePath, fileContent } = context;
 
     // Parse JSON
-    let config: HooksConfig;
+    let config: Record<string, unknown>;
     try {
-      config = JSON.parse(fileContent) as HooksConfig;
+      config = JSON.parse(fileContent) as Record<string, unknown>;
     } catch {
       // JSON parse errors are handled by schema validation
       return;
     }
 
-    // Validate each hook's command script exists
-    if (config.hooks && Array.isArray(config.hooks)) {
-      for (const hook of config.hooks) {
-        if (hook.type === 'command' && hook.command) {
-          await validateCommandScript(context, filePath, hook.command);
+    // Navigate object-keyed format: hooks -> event -> matcher groups -> hook handlers
+    if (config.hooks && typeof config.hooks === 'object' && !Array.isArray(config.hooks)) {
+      const hooksObj = config.hooks as Record<string, unknown>;
+      for (const matcherGroups of Object.values(hooksObj)) {
+        if (!Array.isArray(matcherGroups)) continue;
+        for (const matcherGroup of matcherGroups as Record<string, unknown>[]) {
+          const handlers = matcherGroup.hooks;
+          if (!Array.isArray(handlers)) continue;
+          for (const hook of handlers as Record<string, unknown>[]) {
+            if (hook.type === 'command' && typeof hook.command === 'string') {
+              await validateCommandScript(context, filePath, hook.command);
+            }
+          }
         }
       }
     }

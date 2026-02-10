@@ -7,46 +7,18 @@ import { HookTypes } from '../schemas/constants';
 import { semver } from '../schemas/refinements';
 
 /**
- * Matcher schema for hooks
+ * Individual hook handler schema (shared by hooks.json and settings.json)
+ * Based on official schema: https://json.schemastore.org/claude-code-settings.json
  */
-export const MatcherSchema = z.object({
-  tool: z.string().optional(),
-  pattern: z.string().optional(),
-});
-
-/**
- * Hook schema for hooks.json files (array format with event field)
- * Note: event uses z.string() instead of HookEvents enum to provide
- * custom validation with warnings for unknown events
- * Note: command/prompt/agent mutual exclusivity is validated in validation-helpers.ts
- */
-export const HookSchema = z.object({
-  event: z.string(),
-  matcher: MatcherSchema.optional(),
+export const SettingsHookSchema = z.object({
   type: HookTypes,
   command: z.string().optional(),
   prompt: z.string().optional(),
   agent: z.string().optional(),
-  exitCodeHandling: z
-    .object({
-      0: z.string().optional(),
-      1: z.string().optional(),
-      2: z.string().optional(),
-    })
-    .optional(),
-  timeout: z.number().min(0).max(600000).optional(),
-  async: z.boolean().optional(),
-});
-
-/**
- * Individual hook schema for settings.json (command or prompt type)
- * Based on official schema: https://json.schemastore.org/claude-code-settings.json
- */
-export const SettingsHookSchema = z.object({
-  type: z.enum(['command', 'prompt']),
-  command: z.string().optional(),
-  prompt: z.string().optional(),
   timeout: z.number().optional(),
+  statusMessage: z.string().optional(),
+  once: z.boolean().optional(),
+  model: z.string().optional(),
 });
 
 /**
@@ -186,10 +158,12 @@ export const SettingsSchema = z.object({
 });
 
 /**
- * Hooks config schema
+ * Hooks config schema (hooks.json)
+ * Uses object-keyed-by-event format matching settings.json hooks
  */
 export const HooksConfigSchema = z.object({
-  hooks: z.array(HookSchema),
+  description: z.string().optional(),
+  hooks: SettingsHooksSchema,
 });
 
 /**

@@ -3,8 +3,6 @@
  */
 
 import { VALID_HOOK_EVENTS, VALID_HOOK_TYPES } from '../../schemas/constants';
-import { z } from 'zod';
-import { HookSchema } from '../../validators/schemas';
 import { RuleId } from '../../rules/rule-ids';
 
 /**
@@ -39,79 +37,10 @@ export function hasVariableExpansion(path: string): boolean {
 }
 
 /**
- * Validates a hook configuration from hooks.json for common issues
- * Returns array of validation issues to be reported by the caller
+ * Validates hooks in object-keyed format (used by both hooks.json and settings.json)
+ * Event names are object keys, each containing an array of matcher groups
  *
- * Note: This function does NOT validate:
- * - Command script file existence (requires async file I/O)
- * - Tool name validation (requires validator context)
- * These should be validated by the caller after calling this function
- *
- * @param hook - Hook configuration to validate (hooks.json format)
- * @returns Array of validation issues found
- */
-export function validateHook(hook: z.infer<typeof HookSchema>): ValidationIssue[] {
-  const issues: ValidationIssue[] = [];
-
-  // Validate event name
-  if (!(VALID_HOOK_EVENTS as readonly string[]).includes(hook.event)) {
-    issues.push({
-      message: `Unknown hook event: ${hook.event}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
-      severity: 'warning',
-    });
-  }
-
-  // Validate hook type
-  if (!(VALID_HOOK_TYPES as readonly string[]).includes(hook.type)) {
-    issues.push({
-      message: `Invalid hook type: ${hook.type}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
-      severity: 'error',
-    });
-  }
-
-  // Validate hook has required field for its type
-  if (hook.type === 'command' && !hook.command) {
-    issues.push({
-      message: 'Hook with type "command" must have "command" field',
-      severity: 'error',
-    });
-  }
-
-  if (hook.type === 'prompt' && !hook.prompt) {
-    issues.push({
-      message: 'Hook with type "prompt" must have "prompt" field',
-      severity: 'error',
-    });
-  }
-
-  if (hook.type === 'agent' && !hook.agent) {
-    issues.push({
-      message: 'Hook with type "agent" must have "agent" field',
-      severity: 'error',
-    });
-  }
-
-  // Validate matcher pattern if present
-  if (hook.matcher?.pattern) {
-    try {
-      new RegExp(hook.matcher.pattern);
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      issues.push({
-        message: `Invalid regex pattern in matcher: ${errorMsg}`,
-        severity: 'error',
-      });
-    }
-  }
-
-  return issues;
-}
-
-/**
- * Validates settings.json hooks format
- * Hooks in settings.json use object format with event names as keys
- *
- * @param hooks - Hooks object from settings.json
+ * @param hooks - Hooks object with event names as keys
  * @returns Array of validation issues found
  */
 export function validateSettingsHooks(
@@ -119,7 +48,13 @@ export function validateSettingsHooks(
     string,
     Array<{
       matcher?: string;
-      hooks: Array<{ type: string; command?: string; prompt?: string; timeout?: number }>;
+      hooks: Array<{
+        type: string;
+        command?: string;
+        prompt?: string;
+        agent?: string;
+        timeout?: number;
+      }>;
     }>
   >
 ): ValidationIssue[] {
@@ -139,9 +74,9 @@ export function validateSettingsHooks(
       // Validate each hook in the hooks array
       for (const hook of hookMatcher.hooks) {
         // Validate hook type
-        if (hook.type !== 'command' && hook.type !== 'prompt') {
+        if (!(VALID_HOOK_TYPES as readonly string[]).includes(hook.type)) {
           issues.push({
-            message: `Invalid hook type: ${hook.type}. Must be "command" or "prompt"`,
+            message: `Invalid hook type: ${hook.type}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
             severity: 'error',
           });
         }
@@ -149,22 +84,30 @@ export function validateSettingsHooks(
         // Validate hook has required field for its type
         if (hook.type === 'command' && !hook.command) {
           issues.push({
-            message: `Hook with type "command" must have "command" field`,
+            message: 'Hook with type "command" must have "command" field',
             severity: 'error',
           });
         }
 
         if (hook.type === 'prompt' && !hook.prompt) {
           issues.push({
-            message: `Hook with type "prompt" must have "prompt" field`,
+            message: 'Hook with type "prompt" must have "prompt" field',
+            severity: 'error',
+          });
+        }
+
+        if (hook.type === 'agent' && !hook.agent) {
+          issues.push({
+            message: 'Hook with type "agent" must have "agent" field',
             severity: 'error',
           });
         }
 
         // Validate mutual exclusivity
-        if (hook.command && hook.prompt) {
+        const fieldCount = [hook.command, hook.prompt, hook.agent].filter(Boolean).length;
+        if (fieldCount > 1) {
           issues.push({
-            message: 'Hook cannot have both "command" and "prompt" fields',
+            message: 'Hook cannot have multiple handler fields (command, prompt, agent)',
             severity: 'error',
           });
         }

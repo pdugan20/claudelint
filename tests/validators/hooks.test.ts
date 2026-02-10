@@ -6,28 +6,31 @@ import { setupTestDir } from '../helpers/test-utils';
 describe('HooksValidator', () => {
   const { getTestDir } = setupTestDir();
 
-  async function createHooksFile(hooks: unknown) {
+  async function createHooksFile(hooksObj: unknown) {
     const hooksDir = join(getTestDir(), '.claude', 'hooks');
     await mkdir(hooksDir, { recursive: true });
 
     const filePath = join(hooksDir, 'hooks.json');
-    await writeFile(filePath, JSON.stringify({ hooks }, null, 2));
+    await writeFile(filePath, JSON.stringify({ hooks: hooksObj }, null, 2));
     return filePath;
   }
 
   describe('Orchestration', () => {
     it('should validate valid hooks configuration', async () => {
-      const filePath = await createHooksFile([
-        {
-          event: 'PreToolUse',
-          type: 'command',
-          command: 'echo test',
-          matcher: {
-            tool: 'Write',
-            pattern: '.*\\.ts$',
+      const filePath = await createHooksFile({
+        PreToolUse: [
+          {
+            matcher: 'Bash',
+            hooks: [
+              {
+                type: 'command',
+                command: 'echo test',
+                timeout: 30000,
+              },
+            ],
           },
-        },
-      ]);
+        ],
+      });
 
       const validator = new HooksValidator({ path: filePath });
       const result = await validator.validate();
@@ -62,28 +65,25 @@ describe('HooksValidator', () => {
       expect(result.errors.length).toBeGreaterThan(0);
     });
 
-    it('should aggregate results from multiple hooks', async () => {
-      const filePath = await createHooksFile([
-        {
-          event: 'PreToolUse',
-          type: 'command',
-          command: 'npm run lint',
-          matcher: {
-            tool: 'Write',
-            pattern: '.*\\.ts$',
+    it('should aggregate results from multiple events', async () => {
+      const filePath = await createHooksFile({
+        PreToolUse: [
+          {
+            matcher: 'Write',
+            hooks: [{ type: 'command', command: 'npm run lint' }],
           },
-        },
-        {
-          event: 'PostToolUse',
-          type: 'prompt',
-          prompt: 'Success!',
-        },
-        {
-          event: 'Stop',
-          type: 'command',
-          command: 'echo "Done"',
-        },
-      ]);
+        ],
+        PostToolUse: [
+          {
+            hooks: [{ type: 'prompt', prompt: 'Success!' }],
+          },
+        ],
+        Stop: [
+          {
+            hooks: [{ type: 'command', command: 'echo "Done"' }],
+          },
+        ],
+      });
 
       const validator = new HooksValidator({ path: filePath });
       const result = await validator.validate();

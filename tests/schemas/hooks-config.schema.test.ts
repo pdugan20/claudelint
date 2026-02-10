@@ -2,114 +2,107 @@
  * Tests for hooks configuration schema
  */
 
-import { HooksConfigSchema, HookSchema } from '../../src/validators/schemas';
+import {
+  HooksConfigSchema,
+  SettingsHookSchema,
+  SettingsHookMatcherSchema,
+} from '../../src/validators/schemas';
 
 describe('HooksConfigSchema', () => {
   describe('valid configurations', () => {
-    it('should accept valid hooks config with single hook', () => {
+    it('should accept valid hooks config with single event', () => {
       const result = HooksConfigSchema.safeParse({
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-            command: 'echo test',
-          },
-        ],
+        hooks: {
+          PreToolUse: [
+            {
+              hooks: [{ type: 'command', command: 'echo test' }],
+            },
+          ],
+        },
       });
       expect(result.success).toBe(true);
     });
 
-    it('should accept hooks config with multiple hooks', () => {
+    it('should accept hooks config with multiple events', () => {
       const result = HooksConfigSchema.safeParse({
-        hooks: [
-          {
-            event: 'PreToolUse',
-            type: 'command',
-            command: 'echo before',
-          },
-          {
-            event: 'PostToolUse',
-            type: 'command',
-            command: 'echo after',
-          },
-        ],
+        hooks: {
+          PreToolUse: [
+            {
+              hooks: [{ type: 'command', command: 'echo before' }],
+            },
+          ],
+          PostToolUse: [
+            {
+              hooks: [{ type: 'command', command: 'echo after' }],
+            },
+          ],
+        },
       });
       expect(result.success).toBe(true);
     });
 
-    it('should reject config without hooks array', () => {
+    it('should accept config with description', () => {
+      const result = HooksConfigSchema.safeParse({
+        description: 'My hooks config',
+        hooks: {
+          SessionStart: [
+            {
+              hooks: [{ type: 'command', command: 'echo start' }],
+            },
+          ],
+        },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept config with empty hooks object', () => {
+      const result = HooksConfigSchema.safeParse({
+        hooks: {},
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject config without hooks object', () => {
       const result = HooksConfigSchema.safeParse({});
       expect(result.success).toBe(false);
     });
 
-    it('should reject empty hooks array', () => {
+    it('should accept hooks with matcher', () => {
       const result = HooksConfigSchema.safeParse({
-        hooks: [],
+        hooks: {
+          PreToolUse: [
+            {
+              matcher: 'Bash',
+              hooks: [{ type: 'command', command: 'echo test' }],
+            },
+          ],
+        },
       });
-      expect(result.success).toBe(true); // Empty array is valid
+      expect(result.success).toBe(true);
     });
   });
 });
 
-describe('HookSchema', () => {
-  describe('required fields', () => {
-    it('should require event field', () => {
-      const result = HookSchema.safeParse({
-        type: 'command',
-        command: 'echo test',
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it('should require type field', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        command: 'echo test',
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it('should accept valid event as string', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept any event name string', () => {
-      const result = HookSchema.safeParse({
-        event: 'CustomEvent',
-        type: 'command',
-        command: 'echo test',
-      });
-      expect(result.success).toBe(true);
-    });
-  });
-
+describe('SettingsHookSchema', () => {
   describe('hook types', () => {
-    it('should accept command type with command field', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+    it('should accept command type', () => {
+      const result = SettingsHookSchema.safeParse({
         type: 'command',
         command: 'echo test',
       });
       expect(result.success).toBe(true);
     });
 
-    it('should accept prompt type with prompt field', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+    it('should accept prompt type', () => {
+      const result = SettingsHookSchema.safeParse({
         type: 'prompt',
-        prompt: 'Analyze this: $ARGUMENTS',
+        prompt: 'Review this code',
       });
       expect(result.success).toBe(true);
     });
 
-    it('should accept agent type with agent field', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+    it('should accept agent type', () => {
+      const result = SettingsHookSchema.safeParse({
         type: 'agent',
         agent: 'security-verifier',
       });
@@ -117,8 +110,7 @@ describe('HookSchema', () => {
     });
 
     it('should reject invalid type', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+      const result = SettingsHookSchema.safeParse({
         type: 'invalid',
         command: 'echo test',
       });
@@ -126,72 +118,9 @@ describe('HookSchema', () => {
     });
   });
 
-  describe('matcher field', () => {
-    it('should accept matcher with tool', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-        matcher: {
-          tool: 'Write',
-        },
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept matcher with pattern', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-        matcher: {
-          pattern: '.*\\.ts$',
-        },
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept matcher with both tool and pattern', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-        matcher: {
-          tool: 'Write',
-          pattern: '.*\\.ts$',
-        },
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept hook without matcher', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-      });
-      expect(result.success).toBe(true);
-    });
-  });
-
   describe('optional fields', () => {
-    it('should accept exitCodeHandling', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-        exitCodeHandling: {
-          0: 'continue',
-          1: 'warn',
-          2: 'error',
-        },
-      });
-      expect(result.success).toBe(true);
-    });
-
     it('should accept timeout', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+      const result = SettingsHookSchema.safeParse({
         type: 'command',
         command: 'echo test',
         timeout: 5000,
@@ -199,55 +128,55 @@ describe('HookSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject negative timeout', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+    it('should accept statusMessage', () => {
+      const result = SettingsHookSchema.safeParse({
         type: 'command',
         command: 'echo test',
-        timeout: -1,
+        statusMessage: 'Running test...',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject timeout over max', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
+    it('should accept once flag', () => {
+      const result = SettingsHookSchema.safeParse({
         type: 'command',
         command: 'echo test',
-        timeout: 700000,
+        once: true,
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should accept async flag', () => {
-      const result = HookSchema.safeParse({
-        event: 'PreToolUse',
-        type: 'command',
-        command: 'echo test',
-        async: true,
+    it('should accept model', () => {
+      const result = SettingsHookSchema.safeParse({
+        type: 'prompt',
+        prompt: 'Review this',
+        model: 'sonnet',
       });
       expect(result.success).toBe(true);
     });
   });
+});
 
-  describe('complete hooks', () => {
-    it('should accept hook with all fields', () => {
-      const result = HookSchema.safeParse({
-        event: 'PostToolUse',
-        type: 'command',
-        command: 'prettier --write $FILE',
-        matcher: {
-          tool: 'Write',
-          pattern: '.*\\.ts$',
-        },
-        exitCodeHandling: {
-          0: 'continue',
-          1: 'warn',
-        },
-        timeout: 30000,
-        async: false,
-      });
-      expect(result.success).toBe(true);
+describe('SettingsHookMatcherSchema', () => {
+  it('should accept matcher group with hooks', () => {
+    const result = SettingsHookMatcherSchema.safeParse({
+      hooks: [{ type: 'command', command: 'echo test' }],
     });
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept matcher group with matcher and hooks', () => {
+    const result = SettingsHookMatcherSchema.safeParse({
+      matcher: 'Bash',
+      hooks: [{ type: 'command', command: 'echo test' }],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject matcher group without hooks', () => {
+    const result = SettingsHookMatcherSchema.safeParse({
+      matcher: 'Bash',
+    });
+    expect(result.success).toBe(false);
   });
 });

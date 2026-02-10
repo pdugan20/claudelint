@@ -1,0 +1,10 @@
+{
+  "typescript-server": {
+    "command": "/usr/local/bin/node",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact"
+    }
+  }
+}

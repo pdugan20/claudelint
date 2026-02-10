@@ -180,10 +180,10 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
   {
     id: 'agent-hooks',
     name: 'Agent Hooks Format',
-    description: 'Agent hooks must be an array of valid hook objects',
+    description: 'Agent hooks must be an object with event name keys',
     category: 'agents',
     schemaName: 'AgentFrontmatterSchema',
-    schemaValidation: 'Array of HookSchema objects',
+    schemaValidation: 'SettingsHooksSchema object',
   },
 
   // Claude MD (1 rule)

@@ -1,7 +1,7 @@
 /**
  * Rule: agent-hooks
  *
- * Agent hooks must be an array of valid hook objects
+ * Agent hooks must be an object with event name keys
  *
  * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.hooks for validation
  */
@@ -14,7 +14,7 @@ export const rule: Rule = {
   meta: {
     id: 'agent-hooks',
     name: 'Agent Hooks Format',
-    description: 'Agent hooks must be an array of valid hook objects',
+    description: 'Agent hooks must be an object with event name keys',
     category: 'Agents',
     severity: 'error',
     fixable: false,

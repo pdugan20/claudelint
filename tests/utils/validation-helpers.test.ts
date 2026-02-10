@@ -1,165 +1,157 @@
 import {
-  validateHook,
+  validateSettingsHooks,
   formatError,
   hasVariableExpansion,
 } from '../../src/utils/validators/helpers';
 
 describe('validation-helpers', () => {
-  describe('validateHook', () => {
+  describe('validateSettingsHooks', () => {
     it('should pass for valid command hook', () => {
-      const hook = {
-        event: 'PreToolUse',
-        type: 'command' as const,
-        command: 'npm test',
+      const hooks = {
+        PreToolUse: [
+          {
+            hooks: [{ type: 'command', command: 'npm test' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues).toHaveLength(0);
     });
 
     it('should pass for valid prompt hook', () => {
-      const hook = {
-        event: 'UserPromptSubmit',
-        type: 'prompt' as const,
-        prompt: 'Review this code',
+      const hooks = {
+        UserPromptSubmit: [
+          {
+            hooks: [{ type: 'prompt', prompt: 'Review this code' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues).toHaveLength(0);
     });
 
     it('should pass for valid agent hook', () => {
-      const hook = {
-        event: 'Setup',
-        type: 'agent' as const,
-        agent: 'setup-agent',
+      const hooks = {
+        Setup: [
+          {
+            hooks: [{ type: 'agent', agent: 'setup-agent' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues).toHaveLength(0);
     });
 
     it('should warn for unknown hook event', () => {
-      const hook = {
-        event: 'UnknownEvent',
-        type: 'command' as const,
-        command: 'echo test',
+      const hooks = {
+        UnknownEvent: [
+          {
+            hooks: [{ type: 'command', command: 'echo test' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.message.includes('Unknown hook event'))).toBe(true);
       expect(issues.some((i) => i.severity === 'warning')).toBe(true);
     });
 
     it('should error for invalid hook type', () => {
-      const hook = {
-        event: 'PreToolUse',
-        type: 'invalid' as any,
-        command: 'echo test',
+      const hooks = {
+        PreToolUse: [
+          {
+            hooks: [{ type: 'invalid', command: 'echo test' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.message.includes('Invalid hook type'))).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
     });
 
     it('should error when command hook missing command field', () => {
-      const hook = {
-        event: 'PreToolUse',
-        type: 'command' as const,
+      const hooks = {
+        PreToolUse: [
+          {
+            hooks: [{ type: 'command' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.message.includes('must have "command" field'))).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
     });
 
     it('should error when prompt hook missing prompt field', () => {
-      const hook = {
-        event: 'UserPromptSubmit',
-        type: 'prompt' as const,
+      const hooks = {
+        UserPromptSubmit: [
+          {
+            hooks: [{ type: 'prompt' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.message.includes('must have "prompt" field'))).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
     });
 
     it('should error when agent hook missing agent field', () => {
-      const hook = {
-        event: 'Setup',
-        type: 'agent' as const,
+      const hooks = {
+        Setup: [
+          {
+            hooks: [{ type: 'agent' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.message.includes('must have "agent" field'))).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
     });
 
-    it('should pass for valid regex pattern in matcher', () => {
-      const hook = {
-        event: 'PreToolUse',
-        type: 'command' as const,
-        command: 'npm test',
-        matcher: {
-          pattern: '.*\\.ts$',
-        },
+    it('should pass for hook with matcher', () => {
+      const hooks = {
+        PreToolUse: [
+          {
+            matcher: 'Bash',
+            hooks: [{ type: 'command', command: 'npm test' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues).toHaveLength(0);
     });
 
-    it('should error for invalid regex pattern in matcher', () => {
-      const hook = {
-        event: 'PreToolUse',
-        type: 'command' as const,
-        command: 'npm test',
-        matcher: {
-          pattern: '*.ts', // Invalid regex - * with nothing to repeat
-        },
+    it('should handle multiple events with multiple issues', () => {
+      const hooks = {
+        UnknownEvent: [
+          {
+            hooks: [{ type: 'command' }],
+          },
+        ],
+        PreToolUse: [
+          {
+            hooks: [{ type: 'invalid' }],
+          },
+        ],
       };
 
-      const issues = validateHook(hook);
-      expect(issues.length).toBeGreaterThan(0);
-      expect(issues.some((i) => i.message.includes('Invalid regex pattern'))).toBe(true);
-      expect(issues.some((i) => i.severity === 'error')).toBe(true);
-    });
-
-    it('should handle multiple validation issues', () => {
-      const hook = {
-        event: 'UnknownEvent', // Warning
-        type: 'command' as const,
-        // Missing command field - Error
-        matcher: {
-          pattern: '**', // Invalid regex - Error
-        },
-      };
-
-      const issues = validateHook(hook);
+      const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThanOrEqual(3);
       expect(issues.some((i) => i.severity === 'warning')).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
-    });
-
-    it('should not validate tool name in matcher', () => {
-      // Tool validation requires validator context, so the shared utility doesn't handle it
-      const hook = {
-        event: 'PreToolUse',
-        type: 'command' as const,
-        command: 'npm test',
-        matcher: {
-          tool: 'InvalidTool', // This should NOT be validated by the utility
-        },
-      };
-
-      const issues = validateHook(hook);
-      expect(issues).toHaveLength(0); // Tool validation is left to the validator
     });
   });
 

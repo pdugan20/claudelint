@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'pre-tool check'",
+            "timeout": 30000
+          }
+        ]
+      }
+    ]
+  }
+}

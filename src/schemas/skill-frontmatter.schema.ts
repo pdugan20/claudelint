@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { ModelNames, ContextModes } from './constants';
 import { noXMLTags, thirdPerson, lowercaseHyphens, semver, noReservedWords } from './refinements';
-import { HookSchema } from '../validators/schemas';
+import { SettingsHooksSchema } from '../validators/schemas';
 
 /**
  * Base skill frontmatter schema without cross-field validations
@@ -47,7 +47,7 @@ export const SkillFrontmatterSchema = z.object({
 
   dependencies: z.array(z.string()).optional(),
 
-  hooks: z.array(HookSchema).optional(),
+  hooks: SettingsHooksSchema.optional(),
 });
 
 /**

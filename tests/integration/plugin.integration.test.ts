@@ -105,15 +105,16 @@ describe('Plugin Integration Tests', () => {
 
     it('should have SessionStart hook', () => {
       const hooksPath = join(projectRoot, '.claude/hooks/hooks.json');
-      const hooks = JSON.parse(readFileSync(hooksPath, 'utf-8'));
+      const hooksConfig = JSON.parse(readFileSync(hooksPath, 'utf-8'));
 
-      expect(hooks.hooks).toBeDefined();
-      expect(hooks.hooks.length).toBeGreaterThan(0);
+      expect(hooksConfig.hooks).toBeDefined();
+      expect(hooksConfig.hooks.SessionStart).toBeDefined();
+      expect(hooksConfig.hooks.SessionStart.length).toBeGreaterThan(0);
 
-      const sessionStartHook = hooks.hooks.find((h: any) => h.event === 'SessionStart');
-      expect(sessionStartHook).toBeDefined();
-      expect(sessionStartHook.type).toBe('command');
-      expect(sessionStartHook.command).toContain('claudelint check-all');
+      const firstMatcherGroup = hooksConfig.hooks.SessionStart[0];
+      expect(firstMatcherGroup.hooks).toBeDefined();
+      expect(firstMatcherGroup.hooks[0].type).toBe('command');
+      expect(firstMatcherGroup.hooks[0].command).toContain('claudelint check-all');
     });
   });
 
