@@ -217,8 +217,9 @@ None / [List issues]
 
 ### Package Contents
 
-- [ ] .claude/ included
-- [ ] All 9 SKILL.md files
+- [ ] skills/ directory included (9 skill subdirectories)
+- [ ] .claude-plugin/ directory included (plugin.json manifest)
+- [ ] All 9 SKILL.md files under skills/*/SKILL.md
 - [ ] bin/claudelint included
 - [ ] Size reasonable (<5MB)
 - [ ] No unnecessary files

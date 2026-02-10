@@ -27,10 +27,17 @@ echo
 echo "Checking package contents..."
 npm pack --dry-run > /tmp/npm-pack-output.txt 2>&1
 
-if grep -q ".claude/" /tmp/npm-pack-output.txt; then
-  echo "✓ .claude/ directory included"
+if grep -q "skills/" /tmp/npm-pack-output.txt; then
+  echo "✓ skills/ directory included"
 else
-  echo "ERROR: .claude/ directory not in package"
+  echo "ERROR: skills/ directory not in package"
+  exit 1
+fi
+
+if grep -q ".claude-plugin/" /tmp/npm-pack-output.txt; then
+  echo "✓ .claude-plugin/ directory included"
+else
+  echo "ERROR: .claude-plugin/ directory not in package"
   exit 1
 fi
 

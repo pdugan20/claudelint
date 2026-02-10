@@ -147,10 +147,10 @@ The skill should suggest:
 
 If manual testing reveals issues, update:
 
-- `.claude/skills/optimize-cc-md/SKILL.md` - Core workflow instructions
-- `.claude/skills/optimize-cc-md/references/size-optimization.md` - Optimization strategies
-- `.claude/skills/optimize-cc-md/references/import-patterns.md` - Import best practices
-- `.claude/skills/optimize-cc-md/references/organization-guide.md` - Organization tips
+- `skills/optimize-cc-md/SKILL.md` - Core workflow instructions
+- `skills/optimize-cc-md/references/size-optimization.md` - Optimization strategies
+- `skills/optimize-cc-md/references/import-patterns.md` - Import best practices
+- `skills/optimize-cc-md/references/organization-guide.md` - Organization tips
 
 ## Repeatability
 

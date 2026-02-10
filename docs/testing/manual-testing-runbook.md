@@ -1,7 +1,7 @@
 # Manual Testing Runbook for Claude Code Skills
 
-**Version:** 1.0.0
-**Last Updated:** 2026-02-04
+**Version:** 1.1.0
+**Last Updated:** 2026-02-10
 **Estimated Total Time:** 3.5-4 hours
 
 This runbook provides step-by-step instructions for manually testing all 9 bundled skills in the claudelint plugin. It combines manual verification (for conversational quality and UX) with automated checks (for verifiable aspects like tool usage and file changes).
@@ -29,13 +29,13 @@ npm run test:skills:automated  # Should pass
 
 ```bash
 # Run all automated setup and verification
-./scripts/test/manual/run-all-tests.sh
+./scripts/test/manual/run-all.sh
 
-# Or run individual tests
-./scripts/test/manual/setup-task-1.sh    # Setup
+# Or run individual tasks (each task has its own subdirectory)
+./scripts/test/manual/task-1-optimize-without-skill/setup.sh    # Setup
 # ... perform manual testing ...
-./scripts/test/manual/verify-task-1.sh  # Verify
-./scripts/test/manual/cleanup-task-1.sh # Cleanup
+./scripts/test/manual/task-1-optimize-without-skill/verify.sh   # Verify
+./scripts/test/manual/task-1-optimize-without-skill/cleanup.sh  # Cleanup
 ```
 
 ## Test Environment
@@ -108,7 +108,7 @@ This is exactly how users install the package - tests the real experience.
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-1.sh
+./scripts/test/manual/task-1-optimize-without-skill/setup.sh
 ```
 
 This creates:
@@ -150,7 +150,7 @@ This creates:
 #### Automated Verification
 
 ```bash
-./scripts/test/manual/verify-task-1.sh
+./scripts/test/manual/task-1-optimize-without-skill/verify.sh
 ```
 
 Checks:
@@ -171,7 +171,7 @@ Checks:
 #### Cleanup
 
 ```bash
-./scripts/test/manual/cleanup-task-1.sh
+./scripts/test/manual/task-1-optimize-without-skill/cleanup.sh
 ```
 
 ### Task 2: optimize-cc-md Skill (With Skill Loaded)
@@ -295,7 +295,7 @@ Checks:
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-3.sh
+./scripts/test/manual/task-3-triggers/setup.sh
 ```
 
 Creates test matrix with trigger phrases for all 9 skills.
@@ -446,7 +446,7 @@ For each skill:
 #### Automated Verification
 
 ```bash
-./scripts/test/manual/verify-task-3.sh
+./scripts/test/manual/task-3-triggers/verify.sh
 ```
 
 Generates trigger test matrix and checks coverage.
@@ -486,7 +486,7 @@ Success rate: 100% (6/6)
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-4.sh
+./scripts/test/manual/task-4-functional/setup.sh
 ```
 
 Creates test workspaces with various fixture files.
@@ -546,11 +546,11 @@ Creates test workspaces with various fixture files.
 
 ##### Test 4.3: optimize-cc-md with bloated file
 
-1. Setup:
+1. Setup (already done by setup script — copies react-typescript-bloated fixture):
 
    ```bash
    cd /tmp/claudelint-test-4/optimize-test
-   cp ../fixtures/bloated-realistic.md CLAUDE.md
+   npm install  # install fixture dependencies
    ```
 
 2. Test: "optimize my CLAUDE.md"
@@ -564,7 +564,7 @@ Creates test workspaces with various fixture files.
 #### Automated Verification
 
 ```bash
-./scripts/test/manual/verify-task-4.sh
+./scripts/test/manual/task-4-functional/verify.sh
 ```
 
 Checks:
@@ -592,7 +592,7 @@ Checks:
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-5.sh
+./scripts/test/manual/task-5-quality/setup.sh
 ```
 
 #### Manual Test Steps
@@ -686,7 +686,7 @@ Test error scenarios:
 #### Setup
 
 ```bash
-./scripts/test/manual/setup-task-6.sh
+./scripts/test/manual/task-6-install/setup.sh
 ```
 
 #### Manual Test Steps
@@ -727,7 +727,36 @@ Test error scenarios:
    - [ ] Shows expected output
    - [ ] No errors
 
-##### 6.2: Dependency Detection
+##### 6.2: GitHub Plugin Install
+
+1. Test GitHub install (requires repo to be public or accessible):
+
+   ```bash
+   /plugin install github:pdugan20/claudelint
+   ```
+
+   - [ ] Installation succeeds
+   - [ ] No errors shown
+
+2. Verify skills load:
+
+   ```bash
+   /skills list
+   ```
+
+   - [ ] Shows 9 claudelint skills
+
+3. Test one skill:
+
+   ```bash
+   /claudelint:validate-all
+   ```
+
+   - [ ] Skill executes correctly
+
+**Note:** If the repo is private, skip this test and document "Skipped - private repo".
+
+##### 6.4: Dependency Detection
 
 1. Uninstall npm package:
 
@@ -752,7 +781,7 @@ Test error scenarios:
    npm install
    ```
 
-##### 6.3: Verify Package Contents
+##### 6.5: Verify Package Contents
 
 ```bash
 npm pack --dry-run
@@ -760,8 +789,9 @@ npm pack --dry-run
 
 Check output:
 
-- [ ] `.claude/` directory included
-- [ ] All 9 SKILL.md files present
+- [ ] `skills/` directory included (9 skill subdirectories)
+- [ ] `.claude-plugin/` directory included (plugin.json manifest)
+- [ ] All 9 SKILL.md files present under `skills/*/SKILL.md`
 - [ ] `bin/claudelint` included
 - [ ] Package size reasonable (<5MB)
 - [ ] No unnecessary files (node_modules, tests, etc.)
@@ -769,7 +799,7 @@ Check output:
 #### Automated Verification
 
 ```bash
-./scripts/test/manual/verify-task-6.sh
+./scripts/test/manual/task-6-install/verify.sh
 ```
 
 Checks:
@@ -782,6 +812,7 @@ Checks:
 #### Pass Criteria
 
 - [ ] Plugin installs successfully from local source
+- [ ] Plugin installs successfully from GitHub (or documented as skipped)
 - [ ] All 9 skills appear in `/skills list`
 - [ ] Skills execute correctly
 - [ ] Dependency errors are helpful and clear
