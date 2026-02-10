@@ -93,8 +93,8 @@ export function createValidatorCommand(
         // Report results
         reporter.report(result, metadata.displayName);
 
-        // Exit with appropriate code
-        process.exit(reporter.getExitCode(result));
+        // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
+        process.exitCode = reporter.getExitCode(result);
       } catch (error) {
         logger.newline();
         logger.error('Validation failed:');

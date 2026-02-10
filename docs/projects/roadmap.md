@@ -264,10 +264,10 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 
 ### Batch 1: High value (simple, concrete checks)
 
-- [ ] M13: `skill-hardcoded-secrets` (error) — detect known API key prefixes (sk-ant-, ghp_, AKIA, sk_live_), generic password/token assignments, private keys
-- [ ] M9: `skill-shell-script-no-error-handling` (warn) — shell scripts missing `set -e` or `set -euo pipefail`. Merges old M4 (skill-missing-error-handling)
-- [ ] M10: `skill-shell-script-hardcoded-paths` (warn) — absolute paths (`/usr/`, `/home/`, `/Users/`) in shell scripts
-- [ ] M6: `skill-body-missing-usage-section` (warn) — SKILL.md body lacks `## Usage` heading
+- [x] M13: `skill-hardcoded-secrets` (error) — detect known API key prefixes (sk-ant-, ghp_, AKIA, sk_live_), generic password/token assignments, private keys
+- [x] M9: `skill-shell-script-no-error-handling` (warn) — shell scripts missing `set -e` or `set -euo pipefail`. Merges old M4 (skill-missing-error-handling)
+- [x] M10: `skill-shell-script-hardcoded-paths` (warn) — absolute paths (`/usr/`, `/home/`, `/Users/`) in shell scripts
+- [x] M6: `skill-body-missing-usage-section` (warn) — SKILL.md body lacks `## Usage` heading
 
 ### Batch 2: Medium value (need more logic)
 

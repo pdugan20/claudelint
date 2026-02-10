@@ -28,6 +28,7 @@ function runClaudelint(fixturePath: string): { stdout: string; exitCode: number 
       cwd: fixturePath,
       encoding: 'utf-8',
       timeout: CLI_TIMEOUT,
+      maxBuffer: 10 * 1024 * 1024, // 10MB to prevent buffer truncation
     });
     return { stdout, exitCode: 0 };
   } catch (error: unknown) {
@@ -37,18 +38,35 @@ function runClaudelint(fixturePath: string): { stdout: string; exitCode: number 
       status?: number | null;
       killed?: boolean;
       signal?: string;
+      code?: string;
     };
 
-    // Detect timeout kills -- fail fast with clear message
-    if (execError.killed || execError.signal === 'SIGTERM') {
+    // Detect any process kill (timeout, OOM, signals)
+    if (execError.killed || execError.signal) {
       throw new Error(
-        `CLI process was killed (signal: ${execError.signal}). ` +
+        `CLI process was killed (signal: ${execError.signal}, killed: ${execError.killed}). ` +
           `This usually means the ${CLI_TIMEOUT}ms timeout was exceeded under heavy load.`
       );
     }
 
+    // Detect buffer overflow
+    if (execError.code === 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER') {
+      throw new Error('CLI output exceeded maxBuffer. Increase maxBuffer in test.');
+    }
+
+    const stdout = execError.stdout || '';
+    const stderr = execError.stderr || '';
+
+    // Detect truncated output (missing summary line)
+    if (stdout.length > 0 && !stdout.includes('Total errors:')) {
+      throw new Error(
+        `CLI output appears truncated (${stdout.length} chars, no summary line). ` +
+          `stderr: ${stderr.substring(0, 500)}`
+      );
+    }
+
     return {
-      stdout: execError.stdout || execError.stderr || '',
+      stdout: stdout || stderr,
       exitCode: execError.status ?? 1,
     };
   }
@@ -100,11 +118,11 @@ describe('Fixture Project Integration Tests', () => {
 
     // Pinned counts -- update intentionally when adding new rules or fixture content
     it('should report expected error count', () => {
-      expect(result.stdout).toContain('Total errors: 29');
+      expect(result.stdout).toContain('Total errors: 33');
     });
 
     it('should report expected warning count', () => {
-      expect(result.stdout).toContain('Total warnings: 25');
+      expect(result.stdout).toContain('Total warnings: 33');
     });
 
     // Per-category rule ID assertions (specific, not vague)
@@ -129,6 +147,13 @@ describe('Fixture Project Integration Tests', () => {
       expect(result.stdout).toContain('skill-description-missing-trigger');
       expect(result.stdout).toContain('skill-arguments-without-hint');
       expect(result.stdout).toContain('skill-side-effects-without-disable-model');
+      expect(result.stdout).toContain('skill-body-missing-usage-section');
+      expect(result.stdout).toContain('skill-shell-script-no-error-handling');
+      expect(result.stdout).toContain('skill-shell-script-hardcoded-paths');
+    });
+
+    it('should detect security errors in skills', () => {
+      expect(result.stdout).toContain('skill-hardcoded-secrets');
     });
 
     it('should detect errors in agents', () => {

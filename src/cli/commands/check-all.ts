@@ -352,9 +352,11 @@ export function registerCheckAllCommand(program: Command): void {
                 failedPackages.forEach((pkg) => {
                   logger.detail(`- ${pkg}`);
                 });
-                process.exit(1);
+                process.exitCode = 1;
+                return;
               } else {
-                process.exit(0);
+                process.exitCode = 0;
+                return;
               }
             }
           }
@@ -504,24 +506,25 @@ export function registerCheckAllCommand(program: Command): void {
           if (maxWarnings >= 0 && totalWarnings > maxWarnings) {
             logger.newline();
             logger.error(`Warning limit exceeded: ${totalWarnings} > ${maxWarnings}`);
-            process.exit(1);
+            process.exitCode = 1;
+            return;
           }
 
-          // Exit with appropriate code
+          // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
           if (hasDeprecatedRules) {
             // Deprecated rules treated as errors
             logger.newline();
             logger.error('Deprecated rules detected (--error-on-deprecated)');
-            process.exit(1);
+            process.exitCode = 1;
           } else if (options.strict && (totalErrors > 0 || totalWarnings > 0)) {
             // Strict mode: fail on any issue
-            process.exit(1);
+            process.exitCode = 1;
           } else if (totalErrors > 0 || (totalWarnings > 0 && options.warningsAsErrors)) {
             // Errors or warnings-as-errors
-            process.exit(1);
+            process.exitCode = 1;
           } else {
             // Success (warnings are OK unless --warnings-as-errors or --strict)
-            process.exit(0);
+            process.exitCode = 0;
           }
         } catch (error: unknown) {
           // Handle configuration errors (invalid rule options)

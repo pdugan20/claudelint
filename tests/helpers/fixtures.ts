@@ -56,7 +56,7 @@ export class ClaudeMdBuilder {
 export class SkillBuilder {
   private frontmatter: Record<string, unknown> = {};
   private content = '# Skill Content';
-  private shellScript = '#!/bin/bash\necho "Hello"';
+  private shellScript = '#!/bin/bash\nset -euo pipefail\necho "Hello"';
   private referenceFiles: Array<{ name: string; content: string }> = [];
 
   constructor(

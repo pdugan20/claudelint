@@ -15,6 +15,10 @@ allowed-tools:
 
 An interactive skill that helps you optimize your CLAUDE.md file through a 3-phase workflow: validate, assess quality, then make guided improvements. Each phase builds on the previous one so the user understands what's wrong, why it matters, and what to do about it.
 
+## Usage
+
+Invoke with `/claudelint:optimize-cc-md` or say "optimize my CLAUDE.md". The skill guides you through three phases: validation, quality assessment, and guided improvement.
+
 ## Workflow Overview
 
 ```text
