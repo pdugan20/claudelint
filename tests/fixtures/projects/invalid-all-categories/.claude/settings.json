@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": ["FakeTool", "Bash()"],
+    "deny": ["Read((unmatched"]
+  },
+  "env": {
+    "bad-name": "",
+    "API_SECRET_KEY": "hardcoded-secret-value-here-long-enough"
+  }
+}

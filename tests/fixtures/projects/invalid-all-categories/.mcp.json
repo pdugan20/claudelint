@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "bad-transport": {
+      "type": "grpc",
+      "command": ""
+    },
+    "bad-http": {
+      "type": "http",
+      "url": "not-a-url"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "t": {
+    "command": "definitely-not-a-real-command-xyz123",
+    "extensionToLanguage": {
+      "ts": "TypeScript",
+      ".py": ""
+    },
+    "transport": "grpc"
+  }
+}

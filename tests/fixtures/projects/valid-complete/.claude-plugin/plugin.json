@@ -1,0 +1,8 @@
+{
+  "name": "valid-complete-fixture",
+  "version": "1.0.0",
+  "description": "A test fixture plugin with all valid configuration",
+  "author": {
+    "name": "Test Author"
+  }
+}

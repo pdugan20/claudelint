@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": ["Bash(npm run *)"],
+    "deny": ["Write(.env)"]
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "model": "sonnet"
+}
