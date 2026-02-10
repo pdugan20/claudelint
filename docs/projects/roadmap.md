@@ -271,9 +271,9 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 
 ### Batch 2: Medium value (need more logic)
 
-- [ ] M2: `skill-description-quality` (warn) — description should start with action verb and include technology/domain context. Merges old M17 (skill-description-missing-context)
-- [ ] M7: `skill-allowed-tools-not-used` (warn) — tools listed in allowed-tools but never referenced in skill body
-- [ ] M11: `skill-mcp-tool-qualified-name` (warn) — MCP tools in allowed-tools should use qualified server::tool format
+- [x] M2: `skill-description-quality` (warn) — description should start with action verb and include technology/domain context. Merges old M17 (skill-description-missing-context)
+- [x] M7: `skill-allowed-tools-not-used` (warn) — tools listed in allowed-tools but never referenced in skill body
+- [x] M11: `skill-mcp-tool-qualified-name` (warn) — MCP tools in allowed-tools should use qualified mcp__server__tool format
 
 ### Deferred (needs rethinking)
 

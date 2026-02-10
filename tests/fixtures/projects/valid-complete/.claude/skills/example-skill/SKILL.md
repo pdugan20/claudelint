@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 # Example Skill
 
-This skill runs the project test suite.
+This skill runs the project test suite using Bash. Use Read to examine test output files.
 
 ## Usage
 

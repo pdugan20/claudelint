@@ -5,7 +5,6 @@ version: 1.0.0
 disable-model-invocation: true
 allowed-tools:
   - Bash(claudelint:*)
-  - Read
 ---
 
 # Validate CLAUDE.md Files

@@ -122,7 +122,7 @@ describe('Fixture Project Integration Tests', () => {
     });
 
     it('should report expected warning count', () => {
-      expect(result.stdout).toContain('Total warnings: 33');
+      expect(result.stdout).toContain('Total warnings: 40');
     });
 
     // Per-category rule ID assertions (specific, not vague)
@@ -150,6 +150,9 @@ describe('Fixture Project Integration Tests', () => {
       expect(result.stdout).toContain('skill-body-missing-usage-section');
       expect(result.stdout).toContain('skill-shell-script-no-error-handling');
       expect(result.stdout).toContain('skill-shell-script-hardcoded-paths');
+      expect(result.stdout).toContain('skill-description-quality');
+      expect(result.stdout).toContain('skill-allowed-tools-not-used');
+      expect(result.stdout).toContain('skill-mcp-tool-qualified-name');
     });
 
     it('should detect security errors in skills', () => {

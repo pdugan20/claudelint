@@ -4,6 +4,7 @@ description: I do stuff
 allowed-tools:
   - Bash
   - Write
+  - firebase_login
 ---
 
 # Args Skill

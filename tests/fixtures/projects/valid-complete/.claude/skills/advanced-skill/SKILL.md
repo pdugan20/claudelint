@@ -10,7 +10,7 @@ allowed-tools:
 
 # Advanced Skill
 
-This skill handles project deployment using the `firebase:deploy` MCP tool.
+This skill handles project deployment using Bash commands. Use Write to generate deployment configs.
 
 ## Usage
 
