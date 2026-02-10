@@ -230,7 +230,6 @@ export class ClaudeLint {
   async lintText(code: string, options: LintTextOptions = {}): Promise<LintResult[]> {
     const { writeFileSync, unlinkSync, mkdirSync } = await import('fs');
     const { tmpdir } = await import('os');
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { join } = await import('path');
     const { randomBytes } = await import('crypto');
 
