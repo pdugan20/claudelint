@@ -1,6 +1,6 @@
 # Project Status Dashboard
 
-**Last Updated:** 2026-02-06
+**Last Updated:** 2026-02-09
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -104,6 +104,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | [programmatic-api](./archive/programmatic-api/) | Completed | ClaudeLint class API. See [docs/api/](../api/README.md). |
 | [validator-refactor](./archive/validator-refactor/) | Completed | Rule-based architecture foundation. |
 | [validator-refactor-2026](./archive/validator-refactor-2026/) | Completed | Removed 1,263 LOC, renamed validators, added architecture docs. |
+| [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Completed | Fixed 7 schema issues from Anthropic comparison audit (hooks, MCP, attribution, sandbox, settings, output styles). |
 
 ---
 
@@ -162,4 +163,4 @@ The linter currently has **105 implemented rules** across 10 categories. An addi
 
 ---
 
-**Last Updated:** 2026-02-06
+**Last Updated:** 2026-02-09

@@ -1,6 +1,6 @@
 # Aggregated Roadmap
 
-**Last Updated:** 2026-02-08
+**Last Updated:** 2026-02-09
 **Purpose:** Single sequenced tracker for all remaining work across all projects.
 
 ---
@@ -21,6 +21,7 @@
 | github-automation | Already archived (Milestone 1 is its last task) | archived, Milestone 1 nearly done (2 web-UI tasks remain) |
 | plugin-and-md-management | Milestones 2 + 4 | active |
 | npm-release-setup | Milestones 3 + 5 | active |
+| schema-accuracy-fixes | Standalone (7 issues, 5 phases) | **archived** |
 | official-spec-alignment | Milestones 5a + 5b | active |
 | dogfood-and-improvements | Milestones 6 + 7 + 8 | active |
 
@@ -136,6 +137,15 @@
 - [ ] Update `npm-release-setup/tracker.md` header to "Complete"
 - [ ] Move `npm-release-setup/` to `archive/npm-release-setup/`
 - [ ] Update status.md: move from Active to Archived
+
+---
+
+## Schema Accuracy Fixes (Complete)
+
+**Source:** schema-accuracy-fixes (archived)
+**Reference:** [official-claude-code-specs.md](../references/official-claude-code-specs.md)
+
+Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format rewrite (array to object-keyed), MCP flat format support, attribution schema, missing hook events, output styles rename, sandbox schema, and missing settings fields. All 1205 tests pass.
 
 ---
 
@@ -291,6 +301,7 @@ Work these when demand exists or as time permits.
 | 3 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phase 6 |
 | 4 | plugin-and-md-management | [tracker.md](./plugin-and-md-management/tracker.md) Phase 5.2-5.3 |
 | 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
+| -- | schema-accuracy-fixes (archived) | [README.md](./archive/schema-accuracy-fixes/README.md) |
 | 5a | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phase A |
 | 5b | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phases B + C |
 | 6 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-14 |
@@ -300,4 +311,4 @@ Work these when demand exists or as time permits.
 
 ---
 
-**Last Updated:** 2026-02-08
+**Last Updated:** 2026-02-09

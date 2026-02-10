@@ -47,19 +47,20 @@
 - [x] Add flat format integration test (1 new test)
 - [x] Commit, full test suite passes (1212 tests, 165 suites)
 
-### Phase 5: Hooks Schema Rewrite (Issue 1)
+### Phase 5: Hooks Schema Rewrite (Issue 1) -- COMPLETE
 
-- [ ] 5a: Rewrite HooksConfigSchema, delete HookSchema/MatcherSchema
-- [ ] 5a: Add statusMessage, once, model, agent type to hook handler schema
-- [ ] 5a: Update agent/skill frontmatter schemas
-- [ ] 5b: Rewrite 3 hooks rules for new format
-- [ ] 5c: Rewrite hooks helpers
-- [ ] 5d: Rewrite hooks validator
-- [ ] 5e: Rewrite hooks-config.schema.json
-- [ ] 5f: Rewrite all hooks tests (schema, validator, rule, agent, skill)
-- [ ] 5g: Update both fixture hooks.json files
-- [ ] 5h: Verify integration tests
-- [ ] Commit, full test suite passes
+- [x] 5a: Rewrite HooksConfigSchema, delete HookSchema/MatcherSchema
+- [x] 5a: Add statusMessage, once, model, agent type to hook handler schema
+- [x] 5a: Update agent/skill frontmatter schemas
+- [x] 5b: Rewrite 3 hooks rules for new format
+- [x] 5c: Rewrite hooks helpers (delete validateHook, update validateSettingsHooks)
+- [x] 5d: Rewrite hooks validator and agents validator
+- [x] 5e: Rewrite hooks-config.schema.json
+- [x] 5f: Rewrite all hooks tests (schema, validator, rule, agent, helpers, fixtures)
+- [x] 5g: Update fixture hooks.json files and project hooks.json
+- [x] 5h: Verify integration tests (14/14 pass)
+- [x] Fix valid-complete lsp.json fixture (absolute path for node)
+- [x] Full test suite passes (1205 tests, 165 suites)
 
 ### Phase 6: Reference Doc + Cleanup
 
