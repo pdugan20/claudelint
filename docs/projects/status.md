@@ -1,6 +1,6 @@
 # Project Status Dashboard
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -105,6 +105,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | [validator-refactor](./archive/validator-refactor/) | Completed | Rule-based architecture foundation. |
 | [validator-refactor-2026](./archive/validator-refactor-2026/) | Completed | Removed 1,263 LOC, renamed validators, added architecture docs. |
 | [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Completed | Fixed 7 schema issues from Anthropic comparison audit (hooks, MCP, attribution, sandbox, settings, output styles). |
+| [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Completed | 9 fluent builders, extended SkillBuilder/PluginBuilder, enhanced fixtures, pinned integration tests. 3 follow-ups in M5a/M5b. |
 
 ---
 
@@ -119,6 +120,8 @@ Prioritized next steps across all projects. Work these in order.
 ### P0.5: Fix Wrong Results
 
 - **Official spec alignment** — linter produces false positives on 5 official frontmatter fields, uses wrong description max-length (500 vs 1024), missing 3 official schema fields. *(from official-spec-alignment Phases A-C)*
+
+### ~~P0.75: Harden Test Infrastructure~~ (Complete -- Milestone 4a archived)
 
 ### P1: Ship
 
@@ -163,4 +166,4 @@ The linter currently has **105 implemented rules** across 10 categories. An addi
 
 ---
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10

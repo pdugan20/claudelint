@@ -153,6 +153,26 @@ Follow industry patterns from ESLint, TypeScript-ESLint, and similar tools:
 
 See `docs/projects/manual-testing-infrastructure-refactor/best-practices.md` for detailed guidelines.
 
+## Forward-Compatibility Strategy
+
+Integration tests pin exact error and warning counts for each fixture. This prevents "silent test pollution" when new rules are added to the codebase.
+
+**How it works:**
+
+1. `invalid-all-categories` pins `Total errors: 29` and `Total warnings: 20`
+2. When a new rule is added and fires against the fixture, the count changes
+3. The integration test fails, forcing an intentional decision:
+   - Add the rule ID to the fixture's assertions, OR
+   - Update the fixture to not trigger the new rule
+
+**When adding a new rule:**
+
+1. Run `npx jest tests/integration/fixture-projects.test.ts`
+2. If counts change, update the pinned values in the test file
+3. Add specific rule ID assertions for the new rule
+4. If the new rule needs fixture data, add it to the appropriate fixture
+5. If the new rule needs a dedicated fixture, create a new fixture project
+
 ## Adding New Fixtures
 
 To add a new fixture:

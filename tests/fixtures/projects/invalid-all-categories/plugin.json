@@ -1,4 +1,11 @@
 {
   "version": "not-semver",
-  "author": "string-author"
+  "author": "string-author",
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{ "type": "command", "command": "./scripts/setup.sh" }]
+    }]
+  },
+  "skills": "skills",
+  "agents": "agents"
 }

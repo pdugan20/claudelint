@@ -1,6 +1,6 @@
 # Aggregated Roadmap
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
 **Purpose:** Single sequenced tracker for all remaining work across all projects.
 
 ---
@@ -22,6 +22,7 @@
 | plugin-and-md-management | Milestones 2 + 4 | active |
 | npm-release-setup | Milestones 3 + 5 | active |
 | schema-accuracy-fixes | Standalone (7 issues, 5 phases) | **archived** |
+| testing-fixture-infrastructure | Milestone 4a | **archived** |
 | official-spec-alignment | Milestones 5a + 5b | active |
 | dogfood-and-improvements | Milestones 6 + 7 + 8 | active |
 
@@ -149,6 +150,30 @@ Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format
 
 ---
 
+## Milestone 4a: Testing Fixture Infrastructure (Complete)
+
+**Source:** testing-fixture-infrastructure (archived)
+**Tracker:** [tracker.md](./archive/testing-fixture-infrastructure/tracker.md)
+**Depends on:** Schema Accuracy Fixes (complete)
+**Unblocks:** Milestone 5b (5 new rules need fixtures), Milestone 6 (17 new rules need fixtures)
+
+Hardened test infrastructure for forward-compatibility. All 9 config types have fluent builders (3 new: Agent, OutputStyle, LSP). SkillBuilder extended with 7 capabilities, PluginBuilder with 2. Static fixtures enhanced. Integration test rewritten with specific rule IDs and pinned counts (29 errors, 20 warnings). 63/70 tasks complete, 4 dropped, 3 follow-ups added to M5a/M5b.
+
+- [x] Phase 1: Complete missing builders (Agent, OutputStyle, LSP)
+- [x] Phase 2: Extend SkillBuilder (7 capabilities for future rules)
+- [x] Phase 3: Extend PluginBuilder (2 capabilities for future rules)
+- [x] Phase 4: Enhance static fixtures (valid-complete + invalid-all-categories)
+- [x] Phase 5: Forward-compatible integration testing (pinned counts approach)
+- [x] Phase 6: Documentation and validation
+
+**Cleanup:**
+
+- [x] Update `testing-fixture-infrastructure/tracker.md` header to "Complete"
+- [x] Move `testing-fixture-infrastructure/` to `archive/testing-fixture-infrastructure/`
+- [x] Update status.md: move from Active to Archived
+
+---
+
 ## Milestone 5a: Spec Alignment Critical Fixes
 
 **Source:** official-spec-alignment Phase A
@@ -157,11 +182,12 @@ Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format
 **Effort:** ~half day
 **Why before M6:** Fixes schema foundations that Milestone 6 rules build on. Implementing M6 rules against a wrong schema produces wrong rules.
 
-- [ ] A1: Update `KNOWN_KEYS` in `skill-frontmatter-unknown-keys.ts` (add 8 official fields)
-- [ ] A2: Update `skill-description-max-length` default from 500 to 1024
-- [ ] A3: Review `thirdPerson()` refinement against Anthropic guide examples
-- [ ] A4: Add `license`, `compatibility`, `metadata` to skill frontmatter schema
-- [ ] Run `npm run generate:types && npm test && npm run build`
+- [x] A1: Update `KNOWN_KEYS` in `skill-frontmatter-unknown-keys.ts` (add 8 official fields)
+- [x] A1-followup: Add `argument-hint`, `disable-model-invocation`, `$ARGUMENTS` to valid-complete example-skill SKILL.md
+- [x] A2: Update `skill-description-max-length` default from 500 to 1024
+- [x] A3: Review `thirdPerson()` refinement — no change needed (regex accepts guide-style patterns)
+- [x] A4: Add `license`, `compatibility`, `metadata` to skill frontmatter schema
+- [x] Run `npm run generate:types && npm test && npm run build` (1249 tests, 165 suites)
 
 ---
 
@@ -169,7 +195,7 @@ Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format
 
 **Source:** official-spec-alignment Phases B + C
 **Tracker:** [tracker.md](./official-spec-alignment/tracker.md)
-**Depends on:** Milestone 5a (schema must be correct first)
+**Depends on:** Milestone 5a (schema must be correct first), Milestone 4a (fixture builders + static fixtures for B5-B9 testing)
 **Effort:** ~2-3 days
 
 ### New Rules
@@ -187,6 +213,11 @@ Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format
 - [ ] C12: Move verbose "Common Issues" sections to `references/` in validate-all, validate-skills
 - [ ] C13: Scope `allowed-tools` to `Bash(claudelint:*)` in all skills
 - [ ] C14: Consider `skill-description-negative-trigger` hint rule (low priority)
+
+### Fixture Follow-ups (from M4a deferred tasks)
+
+- [ ] Add hooks with `${CLAUDE_PLUGIN_ROOT}` to valid-complete `.claude-plugin/plugin.json` (unblocked by B8)
+- [ ] Add `${CLAUDE_PLUGIN_ROOT}/scripts/init.sh` hook script to valid-complete fixture (unblocked by B8)
 
 ### Post-Implementation
 
@@ -207,7 +238,7 @@ Fixed 7 schema issues found during Anthropic comparison audit: hooks.json format
 
 **Source:** dogfood-and-improvements T3-14
 **Specs:** [medium-rules.md](./archive/skills-quality-validation/medium-rules.md)
-**Standalone** — no dependencies on other milestones
+**Depends on:** Milestone 4a (fixture builders for M4, M7, M9-M13 testing)
 **Effort:** ~1-2 weeks
 
 **Note:** Reconcile per [milestone-6-overlap.md](./official-spec-alignment/milestone-6-overlap.md) — M1 done via B5, M15/M16 may be removed (non-official fields), M17 depends on A4.
@@ -302,6 +333,7 @@ Work these when demand exists or as time permits.
 | 4 | plugin-and-md-management | [tracker.md](./plugin-and-md-management/tracker.md) Phase 5.2-5.3 |
 | 5 | npm-release-setup | [tracker.md](./npm-release-setup/tracker.md) Phases 7-8 |
 | -- | schema-accuracy-fixes (archived) | [README.md](./archive/schema-accuracy-fixes/README.md) |
+| 4a | testing-fixture-infrastructure (archived) | [tracker.md](./archive/testing-fixture-infrastructure/tracker.md) |
 | 5a | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phase A |
 | 5b | official-spec-alignment | [tracker.md](./official-spec-alignment/tracker.md) Phases B + C |
 | 6 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-14 |
@@ -311,4 +343,4 @@ Work these when demand exists or as time permits.
 
 ---
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-10
