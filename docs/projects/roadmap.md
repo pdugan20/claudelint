@@ -79,14 +79,17 @@
 **Effort:** ~1 day
 **Strategy:** Smoke test now, full runbook before M5 (stable release). M5b changes all 9 skills, so full testing before M5b would need repeating.
 
-### Smoke Test (completed 2026-02-10)
+### Smoke Test (2026-02-10)
 
 - [x] Verify npm package contents: `npm pack --dry-run` includes `skills/`, `.claude-plugin/`, `bin/claudelint` (9 skills, 315KB)
 - [x] Verify CLI executes: `bin/claudelint check-all` runs all validators successfully
-- [ ] Test local plugin install: `/plugin install --source .`
-- [ ] Verify all 9 skills load: `/skills list`
-- [ ] Execute one skill: `/claudelint:validate-all`
-- [ ] Test one natural language trigger: "check my CLAUDE.md"
+- [x] Fix output styles validator false positives: `*/*.md` glob matched all docs as output styles
+- [x] Fix cache invalidation bug: stale results served after code changes (added build fingerprint)
+- [x] Dogfood: `check-all` reports **0 errors, 0 warnings** on our own project
+- [ ] Test local plugin install: `/plugin install --source .` (interactive — deferred to full testing)
+- [ ] Verify all 9 skills load: `/skills list` (interactive — deferred to full testing)
+- [ ] Execute one skill: `/claudelint:validate-all` (interactive — deferred to full testing)
+- [ ] Test one natural language trigger: "check my CLAUDE.md" (interactive — deferred to full testing)
 
 ### Full Testing (deferred to pre-M5, after M5b)
 
@@ -211,30 +214,32 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 
 ### New Rules
 
-- [ ] B5: `skill-description-missing-trigger` (warn) — description lacks trigger phrases
-- [ ] B6: `skill-arguments-without-hint` (warn) — uses $ARGUMENTS without argument-hint
-- [ ] B7: `skill-side-effects-without-disable-model` (warn) — Bash/Write tools without disable-model-invocation
-- [ ] B8: `plugin-hook-missing-plugin-root` (error) — plugin hooks missing ${CLAUDE_PLUGIN_ROOT}
-- [ ] B9: `plugin-missing-component-paths` (warn) — plugin.json paths invalid
+- [x] B5: `skill-description-missing-trigger` (warn) — description lacks trigger phrases
+- [x] B6: `skill-arguments-without-hint` (warn) — uses $ARGUMENTS without argument-hint
+- [x] B7: `skill-side-effects-without-disable-model` (warn) — Bash/Write tools without disable-model-invocation
+- [x] B8: `plugin-hook-missing-plugin-root` (error) — plugin hooks missing ${CLAUDE_PLUGIN_ROOT}
+- [x] B9: `plugin-missing-component-paths` (warn) — plugin.json paths invalid
 
 ### Self-Fixes (Our Own Plugin)
 
-- [ ] C10: Remove `tags` and `dependencies` from all 9 skill SKILL.md files
-- [ ] C11: Add `disable-model-invocation: true` to validation/format skills
-- [ ] C12: Move verbose "Common Issues" sections to `references/` in validate-all, validate-skills
-- [ ] C13: Scope `allowed-tools` to `Bash(claudelint:*)` in all skills
-- [ ] C14: Consider `skill-description-negative-trigger` hint rule (low priority)
+- [x] C10: Remove `tags` and `dependencies` from all 9 skill SKILL.md files
+- [x] C11: Add `disable-model-invocation: true` to validation/format skills
+- [x] C12: Move verbose "Common Issues" sections to `references/` in validate-all, validate-skills
+- [x] C13: Scope `allowed-tools` to `Bash(claudelint:*)` in all skills
+- [x] C14: Skip — low priority
 
-### Fixture Follow-ups (from M4a deferred tasks)
+### Fixture Updates
 
-- [ ] Add hooks with `${CLAUDE_PLUGIN_ROOT}` to valid-complete `.claude-plugin/plugin.json` (unblocked by B8)
-- [ ] Add `${CLAUDE_PLUGIN_ROOT}/scripts/init.sh` hook script to valid-complete fixture (unblocked by B8)
+- [x] Updated valid-complete fixture skills (added trigger phrases, disable-model-invocation)
+- [x] Updated integration test pinned counts: 29 errors, 25 warnings (was 20)
+- [x] Updated fixture builder `withMinimalFields()` to include trigger phrase in description
+- [x] Updated metadata tests to check for disable-model-invocation instead of tags/dependencies
 
 ### Post-Implementation
 
-- [ ] Run `npm run generate:types && npm test && npm run build`
-- [ ] Create rule doc files in `docs/rules/skills/` and `docs/rules/plugin/`
-- [ ] Run `claudelint check-all` against our own project to verify self-fixes
+- [x] Run `npm run generate:types && npm test && npm run build` — 110 rules, 1254 tests, 170 suites
+- [x] Create rule doc files in `docs/rules/skills/` and `docs/rules/plugin/` (5 files)
+- [x] Run `claudelint check-all` against our own project — **0 errors, 0 warnings**
 - [ ] Reconcile Milestone 6: remove M1 (done via B5), rethink M15/M16 per [overlap analysis](./official-spec-alignment/milestone-6-overlap.md)
 
 **Cleanup:** Milestones 5a + 5b complete all official-spec-alignment work.
@@ -252,11 +257,11 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 **Depends on:** Milestone 4a (fixture builders for M4, M7, M9-M13 testing)
 **Effort:** ~1-2 weeks
 
-**Note:** Reconcile per [milestone-6-overlap.md](./official-spec-alignment/milestone-6-overlap.md) — M1 done via B5, M15/M16 may be removed (non-official fields), M17 depends on A4.
+**Reconciled:** M1 done via B5 (skill-description-missing-trigger), M15 removed (tags non-official per Anthropic spec), M16 already covered by skill-missing-version. 14 rules remain.
 
 Priority order from specs:
 
-- [ ] M1: skill-description-missing-trigger-phrases
+- [x] ~~M1: skill-description-missing-trigger-phrases~~ — Done via B5 (skill-description-missing-trigger)
 - [ ] M2: skill-description-missing-capabilities
 - [ ] M3: skill-description-too-vague
 - [ ] M13: skill-hardcoded-secrets
@@ -270,8 +275,8 @@ Priority order from specs:
 - [ ] M10: skill-shell-script-hardcoded-paths
 - [ ] M12: skill-import-not-used
 - [ ] M14: skill-progressive-disclosure-violation
-- [ ] M15: skill-frontmatter-missing-tags
-- [ ] M16: skill-frontmatter-missing-version
+- [x] ~~M15: skill-frontmatter-missing-tags~~ — Removed (tags not in official Anthropic spec)
+- [x] ~~M16: skill-frontmatter-missing-version~~ — Already covered by existing skill-missing-version rule
 - [ ] M17: skill-description-missing-context
 
 After each batch: `npm run generate:types && npm test && npm run build`

@@ -2,14 +2,9 @@
 name: validate-cc-md
 description: Validates CLAUDE.md files for size, imports, and structure. Use when user asks to "check my CLAUDE.md", "why is my CLAUDE.md too long", "validate imports", or "fix CLAUDE.md errors". Checks file size limits (30KB warning, 50KB error), @import directives, frontmatter in .claude/rules/, and section organization.
 version: 1.0.0
-tags:
-  - validation
-  - claude-code
-  - linting
-dependencies:
-  - npm:claude-code-lint
+disable-model-invocation: true
 allowed-tools:
-  - Bash
+  - Bash(claudelint:*)
   - Read
 ---
 

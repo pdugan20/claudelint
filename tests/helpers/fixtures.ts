@@ -102,7 +102,7 @@ export class SkillBuilder {
   withMinimalFields(): this {
     this.frontmatter = {
       name: this.skillName,
-      description: 'A test skill for validation',
+      description: 'Use this to run a test skill for validation',
       version: '1.0.0',
     };
     this.content = `# ${this.skillName}

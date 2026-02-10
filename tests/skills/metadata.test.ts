@@ -241,32 +241,19 @@ describe('Skill Metadata Consistency', () => {
 
   describe('Standard Fields', () => {
     it.each(getSkillDirs())(
-      'skill %s should have tags field',
+      'skill %s should have disable-model-invocation: true',
       (skillName) => {
         if (skillName === 'lib') {
           return;
         }
 
-        const metadata = getSkillMetadata(skillName);
-        expect(metadata).not.toBeNull();
-
-        // Tags field should exist (even if it's a string representation of an array)
-        expect(metadata?.tags).toBeDefined();
-      }
-    );
-
-    it.each(getSkillDirs())(
-      'skill %s should have dependencies field',
-      (skillName) => {
-        if (skillName === 'lib') {
+        const skillMdPath = join(SKILLS_DIR, skillName, 'SKILL.md');
+        if (!existsSync(skillMdPath)) {
           return;
         }
 
-        const metadata = getSkillMetadata(skillName);
-        expect(metadata).not.toBeNull();
-
-        // Dependencies field should exist
-        expect(metadata?.dependencies).toBeDefined();
+        const content = readFileSync(skillMdPath, 'utf-8');
+        expect(content).toContain('disable-model-invocation: true');
       }
     );
 
@@ -289,6 +276,22 @@ describe('Skill Metadata Consistency', () => {
           content.includes('allowed-tools:') ||
             content.includes('allowedTools:')
         ).toBe(true);
+      }
+    );
+
+    it.each(getSkillDirs())(
+      'skill %s should not have non-official tags or dependencies fields',
+      (skillName) => {
+        if (skillName === 'lib') {
+          return;
+        }
+
+        const metadata = getSkillMetadata(skillName);
+        expect(metadata).not.toBeNull();
+
+        // tags and dependencies are not part of the official Anthropic spec
+        expect(metadata?.tags).toBeUndefined();
+        expect(metadata?.dependencies).toBeUndefined();
       }
     );
   });

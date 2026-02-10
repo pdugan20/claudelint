@@ -1,6 +1,6 @@
 ---
 name: example-skill
-description: Runs the complete test suite for the project
+description: Use this to run the complete test suite for the project
 version: 1.0.0
 model: sonnet
 allowed-tools:

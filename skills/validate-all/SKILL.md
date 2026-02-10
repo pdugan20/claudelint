@@ -2,14 +2,9 @@
 name: validate-all
 description: Runs comprehensive claudelint validation on all Claude Code project files. Use when user asks to "check everything", "run all validators", "full audit", "validate my entire project", or "what's wrong with my config". Validates CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests.
 version: 1.0.0
-tags:
-  - validation
-  - claude-code
-  - linting
-dependencies:
-  - npm:claude-code-lint
+disable-model-invocation: true
 allowed-tools:
-  - Bash
+  - Bash(claudelint:*)
   - Read
 ---
 
@@ -122,94 +117,7 @@ The validate skill checks:
 - `1` - Warnings found (or warnings treated as errors)
 - `2` - Errors found or fatal error (invalid config, crash)
 
-## Common Issues
-
-### Error: "claudelint command not found"
-
-**Cause**: claude-code-lint npm package not installed
-**Solution**: Install the package in your project
-
-```bash
-npm install --save-dev claude-code-lint
-```
-
-### Warning: "Multiple validators failed"
-
-**Cause**: Various validation issues across different file types
-**Solution**: Run individual validators for detailed errors
-
-- `claudelint validate-skills` for skill issues
-- `claudelint check-claude-md` for CLAUDE.md issues
-- `claudelint validate-mcp` for MCP config issues
-- `claudelint validate-settings` for settings issues
-- `claudelint validate-hooks` for hooks issues
-
-### When to use validate-all vs individual validators?
-
-**Use validate-all when:**
-
-- Running full project audit
-- Setting up CI/CD checks
-- Before committing changes
-
-**Use individual validators when:**
-
-- Debugging specific file type
-- Developing a new skill or configuration
-- Want detailed output for one area
-
-## Configuration
-
-Create a `.claudelintrc.json` file to customize validation:
-
-```json
-{
-  "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error"
-  },
-  "output": {
-    "format": "stylish",
-    "verbose": false
-  }
-}
-```
-
-See [configuration docs](../../docs/configuration.md) for full options.
-
-## Ignoring Files
-
-Create a `.claudelintignore` file to exclude files:
-
-```text
-# Test fixtures
-fixtures/
-**/*.test.md
-
-# Generated files
-**/*.generated.ts
-```
-
-## Integration
-
-Add to package.json scripts:
-
-```json
-{
-  "scripts": {
-    "lint:claude": "claudelint check-all",
-    "lint:claude:fix": "claudelint format --fix"
-  }
-}
-```
-
-Add to pre-commit hooks:
-
-```bash
-#!/bin/sh
-claudelint check-all --warnings-as-errors
-```
+For troubleshooting, see [common issues](./references/common-issues.md). For customization, see [configuration](./references/configuration.md).
 
 ## See Also
 

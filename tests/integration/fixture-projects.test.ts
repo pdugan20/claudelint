@@ -104,7 +104,7 @@ describe('Fixture Project Integration Tests', () => {
     });
 
     it('should report expected warning count', () => {
-      expect(result.stdout).toContain('Total warnings: 20');
+      expect(result.stdout).toContain('Total warnings: 25');
     });
 
     // Per-category rule ID assertions (specific, not vague)
@@ -126,6 +126,9 @@ describe('Fixture Project Integration Tests', () => {
       expect(result.stdout).toContain('skill-missing-changelog');
       expect(result.stdout).toContain('skill-frontmatter-unknown-keys');
       expect(result.stdout).toContain('skill-missing-shebang');
+      expect(result.stdout).toContain('skill-description-missing-trigger');
+      expect(result.stdout).toContain('skill-arguments-without-hint');
+      expect(result.stdout).toContain('skill-side-effects-without-disable-model');
     });
 
     it('should detect errors in agents', () => {

@@ -73,7 +73,7 @@ describe('Test Fixtures', () => {
 
       const content = await readFile(skillMdPath, 'utf-8');
       expect(content).toContain('name: "test-skill"');
-      expect(content).toContain('description: "A test skill for validation"');
+      expect(content).toContain('description: "Use this to run a test skill for validation"');
     });
 
     it('should create skill with all fields', async () => {

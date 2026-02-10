@@ -1,7 +1,8 @@
 ---
 name: advanced-skill
-description: Deploys the project using Firebase tools and MCP integration
+description: Use this to deploy the project using Firebase tools and MCP integration
 version: 1.0.0
+disable-model-invocation: true
 allowed-tools:
   - Bash
   - Write

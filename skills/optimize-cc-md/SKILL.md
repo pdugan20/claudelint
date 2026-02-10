@@ -2,14 +2,9 @@
 name: optimize-cc-md
 description: Interactively helps users optimize their CLAUDE.md files. Use when user asks to "optimize my CLAUDE.md", "my CLAUDE.md is too long", "improve organization", or "split my CLAUDE.md". Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure.
 version: 1.0.0
-tags:
-  - automation
-  - claude-code
-  - optimization
-dependencies:
-  - npm:claude-code-lint
+disable-model-invocation: true
 allowed-tools:
-  - Bash
+  - Bash(claudelint:*)
   - Read
   - Edit
   - Write
