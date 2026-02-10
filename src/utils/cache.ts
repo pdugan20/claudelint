@@ -65,15 +65,26 @@ export class ValidationCache {
   }
 
   /**
-   * Get claudelint version from package.json
+   * Get claudelint version from package.json, including build fingerprint
+   * so that any rebuild invalidates the cache (e.g., rule changes, glob fixes).
    */
   private getVersion(): string {
     try {
-      // Try to load from package.json
-      const pkg = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8')) as {
+      const pkgPath = join(__dirname, '../../package.json');
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as {
         version?: string;
       };
-      return pkg.version || '0.0.0';
+      const version = pkg.version || '0.0.0';
+
+      // Include dist/ directory mtime as build fingerprint
+      // This ensures any rebuild (even without version bump) invalidates the cache
+      try {
+        const distPath = join(__dirname, '..');
+        const distStats = statSync(distPath);
+        return `${version}-${distStats.mtime.getTime()}`;
+      } catch {
+        return version;
+      }
     } catch {
       return '0.0.0';
     }
