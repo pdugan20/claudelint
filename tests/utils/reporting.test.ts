@@ -203,23 +203,6 @@ describe('Reporter', () => {
   });
 
   describe('Color support', () => {
-    it.skip('should use colors when color is enabled', () => {
-      // Skipped: chalk color forcing doesn't work reliably in test environment
-      reporter = new Reporter({ format: 'stylish', color: true });
-
-      const result: ValidationResult = {
-        errors: [{ message: 'Test error', severity: 'error' }],
-        warnings: [],
-        valid: false,
-      };
-
-      reporter.report(result, 'Test');
-
-      // Color codes should be present (ANSI escape codes)
-      const logCalls = consoleLogSpy.mock.calls.flat().join('');
-      expect(logCalls).toMatch(/\u001b\[\d+m/); // ANSI color code pattern
-    });
-
     it('should not use colors when color is disabled', () => {
       reporter = new Reporter({ format: 'stylish', color: false });
 

@@ -1,11 +1,15 @@
-module.exports = {
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+
+const sharedConfig = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  verbose: true,
+};
+
+module.exports = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -40,5 +44,23 @@ module.exports = {
     },
   },
   coverageDirectory: 'coverage',
-  verbose: true,
+
+  projects: [
+    {
+      ...sharedConfig,
+      displayName: 'unit',
+      roots: ['<rootDir>/src', '<rootDir>/tests'],
+      testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+      testPathIgnorePatterns: ['<rootDir>/tests/integration/'],
+    },
+    {
+      ...sharedConfig,
+      displayName: 'integration',
+      roots: ['<rootDir>/tests/integration'],
+      testMatch: ['**/?(*.)+(spec|test).ts'],
+      // Run integration tests sequentially -- they spawn CLI subprocesses
+      // that compete for CPU when run in parallel
+      maxWorkers: 1,
+    },
+  ],
 };

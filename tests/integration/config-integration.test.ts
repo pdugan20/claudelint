@@ -165,38 +165,6 @@ describe('Config Integration Tests', () => {
     });
   });
 
-  describe('severity override', () => {
-    it.skip('should treat warning as error when severity is overridden', async () => {
-      // TODO: Severity override requires architectural changes to how we report issues
-      // Currently reportError() vs reportWarning() is hardcoded in validator logic
-      // ESLint pattern: rules report issues, reporter applies severity from config
-      // Will implement in future phase
-      const testDir = getTestDir();
-      const filePath = join(testDir, 'CLAUDE.md');
-
-      // Create a 38KB file (exceeds warning threshold but not error)
-      const content = '# Test\n\n' + 'x'.repeat(38000);
-      await writeFile(filePath, content);
-
-      // Override size-warning to be an error
-      const config: ClaudeLintConfig = {
-        rules: {
-          'claude-md-size-warning': 'error',
-        },
-      };
-
-      const validator = new ClaudeMdValidator({ path: filePath, config });
-      const result = await validator.validate();
-
-      // Should report as error instead of warning
-      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-size-warning');
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-warning');
-
-      expect(sizeWarnings.length).toBe(0);
-      expect(sizeErrors.length).toBe(1);
-    });
-  });
-
   describe('file-specific overrides', () => {
     it('should apply different config for files matching glob pattern', async () => {
       const testDir = getTestDir();
