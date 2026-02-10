@@ -248,12 +248,32 @@ export const MCPServerSchema = z
   .or(MCPStdioTransportSchema); // Stdio is special since type is optional
 
 /**
+ * MCP servers record (shared between wrapped and flat formats)
+ */
+export const MCPServersRecord = z.record(z.string(), MCPServerSchema);
+
+/**
  * MCP config schema (.mcp.json)
  * Based on https://code.claude.com/docs/en/mcp
+ *
+ * Supports two formats:
+ * - Wrapped: { "mcpServers": { "name": { ... } } } (project scope)
+ * - Flat: { "name": { ... } } (plugin scope, no mcpServers wrapper)
+ *
+ * Flat format is normalized to wrapped format during validation.
  */
-export const MCPConfigSchema = z.object({
-  mcpServers: z.record(z.string(), MCPServerSchema),
-});
+export const MCPConfigSchema = z.preprocess(
+  (data) => {
+    if (data && typeof data === 'object' && !Array.isArray(data) && 'mcpServers' in data) {
+      return data; // Already wrapped format
+    }
+    // Flat format: treat entire object as server map
+    return { mcpServers: data };
+  },
+  z.object({
+    mcpServers: MCPServersRecord,
+  })
+);
 
 /**
  * Plugin author schema

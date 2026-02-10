@@ -36,9 +36,36 @@ export class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
     // Read file content for rule execution
     const content = await readFileContent(filePath);
 
+    // Normalize flat format to wrapped format for rules
+    // Rules always expect { "mcpServers": { ... } } format
+    const normalizedContent = this.normalizeContent(content);
+
     // Execute ALL MCP rules via category-based discovery
     // All validation logic is in rule files under src/rules/mcp/
-    await this.executeRulesForCategory('MCP', filePath, content);
+    await this.executeRulesForCategory('MCP', filePath, normalizedContent);
+  }
+
+  /**
+   * Normalize MCP config content to wrapped format
+   * Flat format: { "serverName": { ... } }
+   * Wrapped format: { "mcpServers": { "serverName": { ... } } }
+   */
+  private normalizeContent(content: string): string {
+    try {
+      const parsed: unknown = JSON.parse(content);
+      if (
+        parsed &&
+        typeof parsed === 'object' &&
+        !Array.isArray(parsed) &&
+        !('mcpServers' in parsed)
+      ) {
+        // Flat format - wrap for rules
+        return JSON.stringify({ mcpServers: parsed });
+      }
+      return content;
+    } catch {
+      return content;
+    }
   }
 }
 

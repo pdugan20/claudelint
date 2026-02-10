@@ -31,9 +31,63 @@ describe('MCPConfigSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should require mcpServers field', () => {
+    it('should accept empty object as flat format', () => {
+      // Empty object is valid flat format (no servers configured)
       const result = MCPConfigSchema.safeParse({});
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('flat format (no mcpServers wrapper)', () => {
+    it('should accept flat format with stdio server', () => {
+      const result = MCPConfigSchema.safeParse({
+        myServer: {
+          command: 'node',
+          args: ['server.js'],
+        },
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.mcpServers).toBeDefined();
+        expect(result.data.mcpServers.myServer).toBeDefined();
+      }
+    });
+
+    it('should accept flat format with multiple servers', () => {
+      const result = MCPConfigSchema.safeParse({
+        stdioServer: {
+          command: 'node',
+          args: ['server.js'],
+        },
+        httpServer: {
+          type: 'http',
+          url: 'http://localhost:3000',
+        },
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(Object.keys(result.data.mcpServers)).toHaveLength(2);
+      }
+    });
+
+    it('should normalize flat format to wrapped format', () => {
+      const result = MCPConfigSchema.safeParse({
+        myServer: {
+          command: 'npx',
+          args: ['-y', '@modelcontextprotocol/server-filesystem'],
+        },
+      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toHaveProperty('mcpServers');
+        const server = result.data.mcpServers.myServer as { command: string };
+        expect(server.command).toBe('npx');
+      }
+    });
+
+    it('should accept empty flat format', () => {
+      const result = MCPConfigSchema.safeParse({});
+      expect(result.success).toBe(true);
     });
   });
 

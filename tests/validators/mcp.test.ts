@@ -69,6 +69,21 @@ describe('MCPValidator', () => {
       expect(result.valid).toBe(true);
     });
 
+    it('should validate flat format MCP configuration', async () => {
+      const filePath = await createMCPFile({
+        myServer: {
+          command: 'node',
+          args: ['server.js'],
+        },
+      });
+
+      const validator = new MCPValidator({ path: filePath });
+      const result = await validator.validate();
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
     it('should handle missing MCP files', async () => {
       const originalCwd = process.cwd();
       process.chdir(getTestDir());
