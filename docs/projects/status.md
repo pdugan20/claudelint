@@ -20,7 +20,7 @@ Self-validation bug fixes and linter improvements. Phase 1 (bug fixes) and Sprin
 **Remaining:**
 
 - T3-13: Codebase cross-referencing (verify npm scripts, file paths in CLAUDE.md)
-- T3-14: Medium skill rules (17 rules from [archived specs](./archive/skills-quality-validation/medium-rules.md))
+- T3-14: Medium skill rules (9 rules, reconciled from 17 — see [roadmap M6](./roadmap.md#milestone-6-medium-skill-rules-9-rules))
 - T3-15: Red flags detection (stale commands, dead refs, old TODOs)
 - T3-16: Progressive disclosure validation
 - T3-17: Additive guidance engine
@@ -117,7 +117,7 @@ Prioritized next steps across all projects. Work these in order.
 
 ### P2: High-Value Rules
 
-- **T3-14: Medium skill rules** (17 rules). Implementation specs in [archived specs](./archive/skills-quality-validation/medium-rules.md). Priority: M1 (trigger phrases), M13 (hardcoded secrets), M11 (MCP tool names). *(from dogfood-and-improvements)*
+- **T3-14: Medium skill rules** (9 rules, reconciled from 17). Batch 1: M13 (secrets), M9 (shell error handling), M10 (hardcoded paths), M6 (usage section). Batch 2: M2 (description quality), M7 (unused tools), M11 (MCP names). *(from dogfood-and-improvements)*
 - **T3-13: Codebase cross-referencing.** Verify npm scripts, file paths, command names in CLAUDE.md actually exist. *(from dogfood-and-improvements)*
 
 ### P3: Advanced Analysis

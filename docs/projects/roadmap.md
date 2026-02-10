@@ -253,34 +253,43 @@ Hardened test infrastructure for forward-compatibility. All 9 config types have 
 
 ---
 
-## Milestone 6: Medium Skill Rules (17 rules)
+## Milestone 6: Medium Skill Rules (9 rules)
 
 **Source:** dogfood-and-improvements T3-14
 **Specs:** [medium-rules.md](./archive/skills-quality-validation/medium-rules.md)
-**Depends on:** Milestone 4a (fixture builders for M4, M7, M9-M13 testing)
-**Effort:** ~1-2 weeks
+**Depends on:** Milestone 4a (fixture builders)
+**Effort:** ~1 week
 
-**Reconciled:** M1 done via B5 (skill-description-missing-trigger), M15 removed (tags non-official per Anthropic spec), M16 already covered by skill-missing-version. 14 rules remain.
+**Reconciled (round 2):** Original 17 rules reduced to 9 after removing duplicates, merging overlaps, and deferring subjective rules. See history below.
 
-Priority order from specs:
+### Batch 1: High value (simple, concrete checks)
+
+- [ ] M13: `skill-hardcoded-secrets` (error) — detect known API key prefixes (sk-ant-, ghp_, AKIA, sk_live_), generic password/token assignments, private keys
+- [ ] M9: `skill-shell-script-no-error-handling` (warn) — shell scripts missing `set -e` or `set -euo pipefail`. Merges old M4 (skill-missing-error-handling)
+- [ ] M10: `skill-shell-script-hardcoded-paths` (warn) — absolute paths (`/usr/`, `/home/`, `/Users/`) in shell scripts
+- [ ] M6: `skill-body-missing-usage-section` (warn) — SKILL.md body lacks `## Usage` heading
+
+### Batch 2: Medium value (need more logic)
+
+- [ ] M2: `skill-description-quality` (warn) — description should start with action verb and include technology/domain context. Merges old M17 (skill-description-missing-context)
+- [ ] M7: `skill-allowed-tools-not-used` (warn) — tools listed in allowed-tools but never referenced in skill body
+- [ ] M11: `skill-mcp-tool-qualified-name` (warn) — MCP tools in allowed-tools should use qualified server::tool format
+
+### Deferred (needs rethinking)
+
+- [ ] M3: `skill-description-too-vague` — conflicts with B5 (skill-description-missing-trigger) which requires "Use this to..." patterns that M3 would flag as meta-language. Needs redesign to coexist.
+- [ ] M8: `skill-context-too-broad` — subjective; hard to define "too broad" without false positives
+
+### Removed
 
 - [x] ~~M1: skill-description-missing-trigger-phrases~~ — Done via B5 (skill-description-missing-trigger)
-- [ ] M2: skill-description-missing-capabilities
-- [ ] M3: skill-description-too-vague
-- [ ] M13: skill-hardcoded-secrets
-- [ ] M11: skill-mcp-tool-qualified-name
-- [ ] M7: skill-allowed-tools-not-used (already have partial: skill-disallowed-tools)
-- [ ] M4: skill-missing-error-handling
-- [ ] M5: skill-missing-examples
-- [ ] M6: skill-body-missing-usage-section
-- [ ] M8: skill-context-too-broad
-- [ ] M9: skill-shell-script-no-error-handling
-- [ ] M10: skill-shell-script-hardcoded-paths
-- [ ] M12: skill-import-not-used
-- [ ] M14: skill-progressive-disclosure-violation
+- [x] ~~M4: skill-missing-error-handling~~ — Merged into M9 (skill-shell-script-no-error-handling)
+- [x] ~~M5: skill-missing-examples~~ — Already exists as `skill-missing-examples` rule
+- [x] ~~M12: skill-import-not-used~~ — Hard to define "used"; low value
+- [x] ~~M14: skill-progressive-disclosure-violation~~ — Complex and subjective; deferred to M8 advanced analysis
 - [x] ~~M15: skill-frontmatter-missing-tags~~ — Removed (tags not in official Anthropic spec)
 - [x] ~~M16: skill-frontmatter-missing-version~~ — Already covered by existing skill-missing-version rule
-- [ ] M17: skill-description-missing-context
+- [x] ~~M17: skill-description-missing-context~~ — Merged into M2 (skill-description-quality)
 
 After each batch: `npm run generate:types && npm test && npm run build`
 
