@@ -101,11 +101,11 @@ export const PermissionsSchema = z.object({
 
 /**
  * Attribution schema for settings
+ * Official format uses commit/pr message templates, not enabled/name/email
  */
 export const AttributionSchema = z.object({
-  enabled: z.boolean().optional(),
-  name: z.string().optional(),
-  email: z.string().optional(),
+  commit: z.string().optional(),
+  pr: z.string().optional(),
 });
 
 /**
@@ -154,6 +154,7 @@ export const MarketplaceConfigSchema = z.object({
  * Verify sync with: npm run check:schema-sync
  */
 export const SettingsSchema = z.object({
+  $schema: z.string().optional(),
   permissions: PermissionsSchema.optional(),
   env: z.record(z.string(), z.string()).optional(),
   // Note: model accepts arbitrary strings (aliases, full model names, ARNs, etc.)
@@ -168,6 +169,20 @@ export const SettingsSchema = z.object({
   enabledPlugins: z.record(z.string(), z.boolean()).optional(),
   extraKnownMarketplaces: z.record(z.string(), MarketplaceConfigSchema).optional(),
   strictKnownMarketplaces: z.boolean().optional(),
+  autoUpdatesChannel: z.string().optional(),
+  cleanupPeriodDays: z.number().optional(),
+  language: z.string().optional(),
+  respectGitignore: z.boolean().optional(),
+  enableAllProjectMcpServers: z.boolean().optional(),
+  disableAllHooks: z.boolean().optional(),
+  teammateMode: z.boolean().optional(),
+  showTurnDuration: z.boolean().optional(),
+  terminalProgressBarEnabled: z.boolean().optional(),
+  spinnerTipsEnabled: z.boolean().optional(),
+  alwaysThinkingEnabled: z.boolean().optional(),
+  prefersReducedMotion: z.boolean().optional(),
+  plansDirectory: z.string().optional(),
+  skipWebFetchPreflight: z.boolean().optional(),
 });
 
 /**
