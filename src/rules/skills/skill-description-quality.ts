@@ -5,7 +5,7 @@
  * mood or lacks sufficient context. Good descriptions follow the pattern:
  * "[Action Verb] [what it does] [context/technology]"
  *
- * Merges old M2 (skill-description-structure) and M17 (skill-description-missing-context).
+ * Consolidates the former skill-description-structure and skill-description-missing-context rules.
  */
 
 import { Rule, RuleContext } from '../../types/rule';

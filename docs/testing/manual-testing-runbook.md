@@ -883,7 +883,7 @@ Then fill in the template with your findings. See `docs/testing/manual-test-resu
 
 Based on test results:
 
-1. **All tests pass:** Ready for release (proceed to Phase 5 Task 5.4)
+1. **All tests pass:** Ready for release (proceed to version bump and release)
 2. **Some tests fail:** Fix issues, update skills, run tests again
 3. **UX improvements needed:** Update SKILL.md files, references, test again
 4. **Trigger phrases don't work:** Update description fields, test again

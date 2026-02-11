@@ -95,5 +95,5 @@ echo "1. Review docs/testing/manual-testing-runbook.md"
 echo "2. Fill out docs/testing/manual-test-results/YYYY-MM-DD.md"
 echo "3. Fix any issues found"
 echo "4. Re-test if needed"
-echo "5. Proceed to Phase 5 Task 5.4 (Version Bump & Release)"
+echo "5. Proceed to version bump and release"
 echo

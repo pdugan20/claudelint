@@ -97,6 +97,9 @@ jobs:
       - name: Check for emojis
         run: npm run check:emojis
 
+      - name: Check for stale milestone references
+        run: npm run check:milestone-refs
+
   verify-rules:
     name: Verify Rule Implementations
     runs-on: ubuntu-latest
@@ -116,7 +119,7 @@ jobs:
         run: npm run check:rule-implementations
 
   verify-rule-structure:
-    name: Verify Rule Structure (1:1:1 mapping)
+    name: Verify Rule Structure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -134,7 +137,7 @@ jobs:
         run: npm run check:rule-structure
 
   schema-sync:
-    name: Verify Schema Synchronization (Phase 2.2)
+    name: Verify Schema Synchronization
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -247,7 +250,7 @@ jobs:
         run: node bin/claudelint validate-plugin
 
   skill-validation:
-    name: Validate Bundled Skills (Dogfood + Metadata)
+    name: Validate Skills
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -298,7 +301,7 @@ jobs:
         run: npm test -- --testPathPatterns=integration
 
   complete-validation:
-    name: Complete Validation
+    name: Full Validation
     runs-on: ubuntu-latest
     needs: [lint, format, markdown, links, emoji-check, verify-rules, verify-rule-structure, schema-sync, build, test, dogfood, skill-validation, integration]
     steps:

@@ -157,7 +157,7 @@ ${this.skillName} arg1
   }
 
   /**
-   * Add reference files to a references/ subdirectory (M4, M7)
+   * Add reference files to a references/ subdirectory
    */
   withReferences(files: Array<{ name: string; content: string }>): this {
     this.referenceFiles = [...this.referenceFiles, ...files];
@@ -165,7 +165,7 @@ ${this.skillName} arg1
   }
 
   /**
-   * Add MCP tool reference in body content using server:tool format (M11)
+   * Add MCP tool reference in body content using server:tool format
    */
   withMCPToolReference(server: string, tool: string): this {
     this.content += `\n\nUse the \`${server}:${tool}\` MCP tool for this operation.`;
@@ -173,7 +173,7 @@ ${this.skillName} arg1
   }
 
   /**
-   * Set shell script with or without error handling (M9)
+   * Set shell script with or without error handling
    */
   withErrorHandling(enabled: boolean): this {
     if (enabled) {
@@ -185,7 +185,7 @@ ${this.skillName} arg1
   }
 
   /**
-   * Set shell script with a hardcoded absolute path (M10)
+   * Set shell script with a hardcoded absolute path
    */
   withHardcodedPath(path: string): this {
     this.shellScript = `#!/bin/bash\nset -euo pipefail\n\ncat ${path}\necho "Done"`;
@@ -193,7 +193,7 @@ ${this.skillName} arg1
   }
 
   /**
-   * Set shell script with a hardcoded secret (M13)
+   * Set shell script with a hardcoded secret
    */
   withHardcodedSecret(type: 'api-key' | 'token' | 'password'): this {
     const secrets: Record<string, string> = {

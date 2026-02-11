@@ -17,6 +17,8 @@ HAS_RULES=$(echo "$STAGED_FILES" | grep -c '^src/rules/' || true)
 HAS_RULE_TESTS=$(echo "$STAGED_FILES" | grep -c '^tests/rules/' || true)
 HAS_CLI=$(echo "$STAGED_FILES" | grep -c '^src/cli/' || true)
 HAS_SCRIPTS=$(echo "$STAGED_FILES" | grep -c '^scripts/' || true)
+HAS_JS=$(echo "$STAGED_FILES" | grep -c '\.js$' || true)
+HAS_CI=$(echo "$STAGED_FILES" | grep -c '^\.github/' || true)
 HAS_SCHEMAS=$(echo "$STAGED_FILES" | grep -c -E '(^schemas/|^src/schemas/)' || true)
 HAS_VALIDATORS=$(echo "$STAGED_FILES" | grep -c -E '(^src/validators/|^tests/validators/)' || true)
 
@@ -30,6 +32,7 @@ RUN_LOGGER_USAGE=0
 RUN_RULE_IMPLS=0
 RUN_RULE_COVERAGE=0
 RUN_SCHEMA_SYNC=0
+RUN_MILESTONE_REFS=0
 RUN_BUILD=1             # Always
 RUN_VALIDATOR_TESTS=0
 RUN_MARKDOWNLINT=0
@@ -40,6 +43,7 @@ if [ "$FORCE_ALL" = "1" ]; then
   RUN_LOGGER_USAGE=1
   RUN_RULE_IMPLS=1
   RUN_RULE_COVERAGE=1
+  RUN_MILESTONE_REFS=1
   RUN_SCHEMA_SYNC=1
   RUN_VALIDATOR_TESTS=1
   RUN_MARKDOWNLINT=1
@@ -49,6 +53,7 @@ else
   [ "$HAS_SCRIPTS" -gt 0 ] && RUN_LOGGER_USAGE=1
   [ "$HAS_RULES" -gt 0 ] && RUN_RULE_IMPLS=1
   [ "$HAS_RULES" -gt 0 ] || [ "$HAS_RULE_TESTS" -gt 0 ] && RUN_RULE_COVERAGE=1
+  [ "$HAS_TS" -gt 0 ] || [ "$HAS_JS" -gt 0 ] || [ "$HAS_CI" -gt 0 ] && RUN_MILESTONE_REFS=1
   [ "$HAS_SCHEMAS" -gt 0 ] && RUN_SCHEMA_SYNC=1
   [ "$HAS_VALIDATORS" -gt 0 ] && RUN_VALIDATOR_TESTS=1
   [ "$HAS_MD" -gt 0 ] && RUN_MARKDOWNLINT=1
@@ -62,13 +67,14 @@ TOTAL=0
 [ "$RUN_LOGGER_USAGE" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_RULE_IMPLS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_RULE_COVERAGE" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_MILESTONE_REFS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_SCHEMA_SYNC" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_BUILD" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_VALIDATOR_TESTS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MARKDOWNLINT" = "1" ] && TOTAL=$((TOTAL + 1))
 
 STEP=0
-echo "Running pre-commit checks ($TOTAL of 10 enabled)..."
+echo "Running pre-commit checks ($TOTAL of 11 enabled)..."
 if [ "$FORCE_ALL" = "1" ]; then
   echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
@@ -126,14 +132,21 @@ if [ "$RUN_RULE_COVERAGE" = "1" ]; then
   echo ""
 fi
 
-# 7. Schema sync
+# 7. Milestone references
+if [ "$RUN_MILESTONE_REFS" = "1" ]; then
+  run_check "Checking for stale milestone references"
+  npm run check:milestone-refs || fail_check "Stale milestone references found. Use descriptive labels instead."
+  echo ""
+fi
+
+# 8. Schema sync
 if [ "$RUN_SCHEMA_SYNC" = "1" ]; then
   run_check "Checking schema sync"
   npm run check:schema-sync || fail_check "Schema sync check failed."
   echo ""
 fi
 
-# 8. Build (always runs - TypeScript must compile)
+# 9. Build (always runs - TypeScript must compile)
 if [ "$RUN_BUILD" = "1" ]; then
   run_check "Building project"
   npm run build || fail_check "Build failed. Please fix TypeScript errors before committing."
@@ -142,14 +155,14 @@ if [ "$RUN_BUILD" = "1" ]; then
   echo ""
 fi
 
-# 9. Validator tests
+# 10. Validator tests
 if [ "$RUN_VALIDATOR_TESTS" = "1" ]; then
   run_check "Running validator tests"
   npx jest tests/validators --passWithNoTests || fail_check "Validator tests failed."
   echo ""
 fi
 
-# 10. Markdownlint
+# 11. Markdownlint
 if [ "$RUN_MARKDOWNLINT" = "1" ]; then
   run_check "Linting markdown files"
   npm run lint:md || fail_check "Markdownlint failed. Run 'npm run lint:md:fix' to auto-fix."

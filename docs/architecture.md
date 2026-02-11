@@ -153,16 +153,16 @@ export class SkillsValidator extends FileValidator {
 - Don't modify validator orchestration logic
 - Don't write validation logic directly in validators
 
-### Evolution: Pre-Phase 5 vs Post-Phase 5
+### Evolution: Validator-Centric to Rule-Based
 
-**Before Phase 5 (Validator-Centric):**
+**Before (Validator-Centric):**
 
 - Contributors extended `FileValidator` classes
 - Validators contained validation logic
 - Heavy composition patterns required
 - Plugin system exported validators
 
-**After Phase 5 (Rule-Based):**
+**After (Rule-Based):**
 
 - Contributors write individual rules
 - Validators are internal orchestrators
@@ -391,7 +391,7 @@ Warning: LSP server name "ts" is too short.
 
 User has no way to disable this warning.
 
-**Good (after Phase 2.3B - all checks are rules):**
+**Good (all checks are rules):**
 
 ```json
 // .claudelintrc.json
@@ -748,7 +748,7 @@ Hooks trigger validation automatically:
 
 ### Benchmarks
 
-Target performance (Phase 7):
+Target performance:
 
 - CLAUDE.md validation: < 100ms
 - Skills validation: < 500ms for 20 skills

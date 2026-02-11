@@ -137,7 +137,7 @@ Every rule MUST have:
 
 Tests MUST:
 
-1. **Use test builders** (after Phase 6 migration):
+1. **Use test builders**:
 
    ```typescript
    const skill = await createSkill({

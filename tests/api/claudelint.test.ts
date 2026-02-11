@@ -1,7 +1,7 @@
 /**
  * Tests for ClaudeLint class
  *
- * Basic tests for Phase 1 implementation of the programmatic API
+ * Tests for the programmatic API
  */
 
 import { ClaudeLint } from '../../src/api/claudelint';
