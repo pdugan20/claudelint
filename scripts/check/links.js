@@ -48,8 +48,16 @@ async function checkLinks() {
     }
 
   } catch (error) {
-    // remark exits with code 1 if there are warnings
-    const lines = (error.stdout + error.stderr).split('\n');
+    // Check for fatal errors (e.g., config parse failures, missing plugins)
+    const combined = (error.stdout || '') + (error.stderr || '');
+    if (combined.includes('Cannot process file') || combined.includes('Cannot parse file')) {
+      console.error('FATAL: remark failed to process files:');
+      console.error(combined);
+      process.exit(1);
+    }
+
+    // remark exits with code 1 if there are warnings - filter and report
+    const lines = combined.split('\n');
     const filteredLines = lines.filter(line => {
       if (!line.includes('warning') && !line.includes('Cannot find file')) {
         return true;
@@ -66,7 +74,7 @@ async function checkLinks() {
       console.error(`\nWARNING: ${warningCount} documentation link warnings (source code references filtered)`);
     }
 
-    process.exit(0); // Don't fail for now
+    process.exit(0); // Don't fail CI for link warnings
   }
 }
 

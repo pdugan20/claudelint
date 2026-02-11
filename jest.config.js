@@ -6,10 +6,10 @@ const sharedConfig = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
-  verbose: true,
 };
 
 module.exports = {
+  verbose: true,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',

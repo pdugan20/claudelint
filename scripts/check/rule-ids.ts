@@ -36,11 +36,11 @@ async function extractRuleIds(filePath: string): Promise<void> {
   const lines = content.split('\n');
   const relativePath = relative(projectRoot, filePath);
 
-  // Match reportError and reportWarning calls with rule IDs
-  // Examples:
-  //   this.reportError('message', file, line, 'rule-id')
-  //   this.reportWarning('message', file, undefined, 'rule-id')
-  const ruleIdPattern = /\.(reportError|reportWarning)\([^)]*,\s*['"`]([a-z-]+)['"`]\s*\)/g;
+  // Match rule ID patterns:
+  // 1. reportError/reportWarning calls: this.reportError('msg', file, line, 'rule-id')
+  // 2. Rule object id field: id: 'rule-id'
+  const reportPattern = /\.(reportError|reportWarning)\([^)]*,\s*['"`]([a-z-]+)['"`]\s*\)/g;
+  const ruleObjectPattern = /^\s+id:\s*['"`]([a-z][a-z0-9-]+)['"`]/;
 
   // Track if we're inside a multi-line comment
   let inComment = false;
@@ -60,9 +60,25 @@ async function extractRuleIds(filePath: string): Promise<void> {
       return;
     }
 
+    // Check reportError/reportWarning pattern
     let match;
-    while ((match = ruleIdPattern.exec(line)) !== null) {
+    while ((match = reportPattern.exec(line)) !== null) {
       const ruleId = match[2];
+      usedRuleIds.add(ruleId);
+
+      if (!ruleIdLocations.has(ruleId)) {
+        ruleIdLocations.set(ruleId, []);
+      }
+      ruleIdLocations.get(ruleId)!.push({
+        file: relativePath,
+        line: index + 1,
+      });
+    }
+
+    // Check Rule object id pattern
+    const objectMatch = line.match(ruleObjectPattern);
+    if (objectMatch) {
+      const ruleId = objectMatch[1];
       usedRuleIds.add(ruleId);
 
       if (!ruleIdLocations.has(ruleId)) {
@@ -77,24 +93,30 @@ async function extractRuleIds(filePath: string): Promise<void> {
 }
 
 /**
- * Recursively scan validators directory
+ * Recursively scan a directory for TypeScript files
  */
-async function scanValidators(): Promise<void> {
-  const validatorsDir = join(projectRoot, 'src', 'validators');
-  if (!existsSync(validatorsDir)) {
-    throw new Error('src/validators directory not found');
-  }
+async function scanDirectory(dir: string): Promise<void> {
+  if (!existsSync(dir)) return;
 
-  const entries = await readdir(validatorsDir);
+  const entries = await readdir(dir);
 
   for (const entry of entries) {
-    const fullPath = join(validatorsDir, entry);
+    const fullPath = join(dir, entry);
     const stats = await stat(fullPath);
 
-    if (stats.isFile() && entry.endsWith('.ts')) {
+    if (stats.isDirectory()) {
+      await scanDirectory(fullPath);
+    } else if (stats.isFile() && entry.endsWith('.ts')) {
       await extractRuleIds(fullPath);
     }
   }
+}
+
+/**
+ * Scan rule source files for rule ID usage
+ */
+async function scanSourceFiles(): Promise<void> {
+  await scanDirectory(join(projectRoot, 'src', 'rules'));
 }
 
 /**
@@ -246,8 +268,8 @@ async function main(): Promise<void> {
   log.info('Checking rule ID registration...');
   log.blank();
 
-  // Scan validators for used rule IDs
-  await scanValidators();
+  // Scan source files for used rule IDs
+  await scanSourceFiles();
 
   // Load registered rule IDs
   const registeredRuleIds = await loadRegisteredRuleIds();
