@@ -1,139 +1,61 @@
 # Rule: lsp-config-file-not-json
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: LSP
-**Category**: Schema Validation
 
-LSP configFile should end with .json extension
+LSP configFile should end with .json extension (DEPRECATED: configFile is not in official spec)
 
 ## Rule Details
 
-LSP server configuration files should use the `.json` extension to indicate their format and enable proper editor support. Config files without the `.json` extension may not receive JSON syntax highlighting, validation, or auto-completion in editors.
-
-This rule validates that any `configFile` paths specified in LSP server configurations end with `.json`. Using the correct extension improves the developer experience and prevents confusion about file formats.
+This deprecated rule checks the `configFile` property on LSP server entries in `lsp.json` and warns when the path does not end with `.json`. Config files using the JSON extension get better editor support with syntax highlighting and validation. Note: the `configFile` property is not part of the official LSP specification and this rule is deprecated.
 
 ### Incorrect
 
-Config files without .json extension:
+Config file without .json extension
 
 ```json
 {
-  "servers": {
-    "typescript-language-server": {
-      "command": "typescript-language-server",
-      "configFile": ".claude/tsconfig"
-    },
-    "rust-analyzer": {
-      "command": "rust-analyzer",
-      "configFile": "./rust-config.txt"
-    }
-  }
-}
-```
-
-Config files with wrong extensions:
-
-```json
-{
-  "servers": {
-    "python-lsp": {
-      "command": "pylsp",
-      "configFile": "./.claude/pylsp.config"
-    }
+  "my-server": {
+    "command": "/usr/bin/my-server",
+    "configFile": "config/server.yaml"
   }
 }
 ```
 
 ### Correct
 
-Config files with .json extension:
+Config file with .json extension
 
 ```json
 {
-  "servers": {
-    "typescript-language-server": {
-      "command": "typescript-language-server",
-      "configFile": ".claude/tsconfig.json"
-    },
-    "rust-analyzer": {
-      "command": "rust-analyzer",
-      "configFile": "./rust-analyzer.json"
-    }
-  }
-}
-```
-
-Relative and absolute JSON paths:
-
-```json
-{
-  "servers": {
-    "python-lsp": {
-      "command": "pylsp",
-      "configFile": "./.claude/pylsp-config.json"
-    },
-    "gopls": {
-      "command": "gopls",
-      "configFile": "/Users/username/.config/gopls/config.json"
-    }
+  "my-server": {
+    "command": "/usr/bin/my-server",
+    "configFile": "config/server.json"
   }
 }
 ```
 
 ## How To Fix
 
-To fix config file extension issues:
-
-1. **Rename the file** to use .json extension:
-
-```bash
-mv .claude/tsconfig .claude/tsconfig.json
-```
-
-1. **Update the lsp.json reference**:
-
-```json
-{
-  "servers": {
-    "typescript-language-server": {
-      "command": "typescript-language-server",
-      "configFile": ".claude/tsconfig.json"
-    }
-  }
-}
-```
-
-1. **Verify the file contains valid JSON**:
-
-```bash
-cat .claude/tsconfig.json | jq .
-```
-
-1. **Run validation**:
-
-```bash
-claudelint check-lsp
-```
+Rename the configuration file to use the `.json` extension and update the `configFile` path in `lsp.json` accordingly.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Disable this rule if your LSP server uses a custom configuration format that intentionally doesn't use `.json` extension. However, most modern LSP servers expect JSON configuration files.
+This rule is deprecated because `configFile` is not part of the official LSP specification. Disable it if your LSP server requires a non-JSON config format.
 
 ## Related Rules
 
-- [lsp-config-file-relative-path](./lsp-config-file-relative-path.md) - Validates config file path format
-- [lsp-invalid-transport](./lsp-invalid-transport.md) - Validates transport configuration
+- [`lsp-config-file-relative-path`](/rules/lsp/lsp-config-file-relative-path)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/lsp/lsp-config-file-not-json.ts)
-- [Rule Tests](../../tests/rules/lsp/lsp-config-file-not-json.test.ts)
-- [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-config-file-not-json.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-config-file-not-json.test.ts)
 
 ## Version
 

@@ -1,110 +1,69 @@
 # Rule: skill-arguments-without-hint
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
 
-Skill body references arguments but frontmatter lacks an argument-hint field
+Skills using $ARGUMENTS or positional parameters should include an argument-hint in frontmatter
 
 ## Rule Details
 
-This rule warns when a skill body contains argument substitution variables (`$ARGUMENTS`, `$0`, `$1`, etc.) but the frontmatter does not include an `argument-hint` field. The argument-hint provides a short description shown to users so they know what arguments the skill expects. Without it, users have to read the skill source to understand what input is required.
-
-The rule scans the skill body for references to `$ARGUMENTS`, `$0`, `$1`, `$2`, or similar numbered argument variables, and then checks that `argument-hint` is present and non-empty in the frontmatter.
+The `argument-hint` frontmatter field provides placeholder text that helps users understand what arguments a skill expects when invoked. This rule detects when the skill body references `$ARGUMENTS`, `$0`, `$1`, or other positional parameters but the frontmatter does not include an `argument-hint`. Without the hint, users have no guidance on what input the skill expects.
 
 ### Incorrect
 
-Body uses $ARGUMENTS without hint:
+Body uses $ARGUMENTS but frontmatter has no argument-hint
 
 ```markdown
 ---
-name: deploy
-description: Deploys to a target environment
+name: greet
+description: Greets a user by name
 ---
 
-Deploy the application to the `$ARGUMENTS` environment.
-```
-
-Body uses numbered arguments without hint:
-
-```markdown
----
-name: rename-file
-description: Renames a file in the project
----
-
-Rename the file at `$0` to `$1`.
+Say hello to $ARGUMENTS.
 ```
 
 ### Correct
 
-Argument-hint provided:
+argument-hint provided for skill that uses $ARGUMENTS
 
 ```markdown
 ---
-name: deploy
-description: Deploys to a target environment
-argument-hint: "<environment> (e.g., staging, production)"
+name: greet
+description: Greets a user by name
+argument-hint: "<user name>"
 ---
 
-Deploy the application to the `$ARGUMENTS` environment.
+Say hello to $ARGUMENTS.
 ```
 
-Numbered arguments with hint:
+Skill without argument references needs no hint
 
 ```markdown
 ---
-name: rename-file
-description: Renames a file in the project
-argument-hint: "<source-path> <destination-path>"
+name: status
+description: Shows project status
 ---
 
-Rename the file at `$0` to `$1`.
-```
-
-No arguments used (rule does not apply):
-
-```markdown
----
-name: health-check
-description: Checks service health across all endpoints
----
-
-Run health checks on all configured endpoints.
+Check the current project status.
 ```
 
 ## How To Fix
 
-Add an `argument-hint` field to the skill frontmatter:
-
-1. Identify which argument variables the body references
-2. Write a short hint describing the expected input
-3. Use angle brackets for placeholders: `<environment>`
-4. Include examples in parentheses when helpful
-
-Examples:
-
-- `argument-hint: "<environment>"` for a single argument
-- `argument-hint: "<file-path> [--verbose]"` for path with optional flag
-- `argument-hint: "<source> <destination>"` for two arguments
+Add `argument-hint: "<description of expected arguments>"` to the SKILL.md frontmatter. Use angle brackets or descriptive placeholder text so users know what to provide, for example: `argument-hint: "<file path> [--verbose]"`.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule if your skill arguments are self-documenting through context or if the skill is only invoked programmatically by other skills where the argument format is already known.
-
 ## Related Rules
 
-- [skill-allowed-tools](./skill-allowed-tools.md) - Tool access restrictions for skills
+- [`skill-description`](/rules/skills/skill-description)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-arguments-without-hint.ts)
-- [Rule Tests](../../tests/rules/skills/skill-arguments-without-hint.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-arguments-without-hint.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-arguments-without-hint.test.ts)
 
 ## Version
 

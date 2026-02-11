@@ -1,85 +1,57 @@
 # Rule: skill-reference-not-linked
 
-**Severity**: Warning
-**Fixable**: No
+**Severity**: Warn
+**Fixable**: Yes
 **Validator**: Skills
-**Category**: Cross-Reference
 
 File reference in backticks should be a markdown link
 
 ## Rule Details
 
-This rule triggers when a SKILL.md file contains backtick-enclosed file paths that reference skill supporting directories (`references/`, `examples/`, `scripts/`, `templates/`) but are not formatted as markdown links. Plain-text references prevent the `skill-referenced-file-not-found` rule from validating that the referenced files actually exist, which can lead to broken references going undetected.
+SKILL.md files often reference supporting files in directories like `references/`, `examples/`, `scripts/`, and `templates/`. When these paths appear in backticks (e.g., `references/guide.md`) but are not proper markdown links, the `skill-referenced-file-not-found` rule cannot validate that the files exist. This rule detects backtick-enclosed file paths targeting those directories and suggests converting them to markdown links. It provides an auto-fix that converts the backtick reference to `[path](./path)` format.
 
 ### Incorrect
 
-SKILL.md with plain-text file references:
+File reference in backticks without a markdown link
 
 ```markdown
 ---
-name: deploy
-description: Deploys applications
+name: deploy-app
+description: Deploys the application
 ---
 
-# Deploy Skill
-
-See `references/size-optimization.md` for size guidelines.
-
-Check `examples/basic.sh` for usage patterns.
-
-Run `scripts/deploy.sh` to deploy.
-
-Use `templates/config.yaml` as a starting point.
+See `references/deploy-guide.md` for details.
 ```
 
 ### Correct
 
-SKILL.md with properly linked file references:
+File reference as a proper markdown link
 
 ```markdown
 ---
-name: deploy
-description: Deploys applications
+name: deploy-app
+description: Deploys the application
 ---
 
-# Deploy Skill
-
-See [size optimization](./references/size-optimization.md) for size guidelines.
-
-Check [basic example](./examples/basic.sh) for usage patterns.
-
-Run [deploy script](./scripts/deploy.sh) to deploy.
-
-Use [config template](./templates/config.yaml) as a starting point.
+See [references/deploy-guide.md](./references/deploy-guide.md) for details.
 ```
 
 ## How To Fix
 
-Convert backtick file references to markdown links:
-
-1. Replace `` `references/file.md` `` with `[descriptive text](./references/file.md)`
-2. Replace `` `examples/file.sh` `` with `[descriptive text](./examples/file.sh)`
-3. Replace `` `scripts/file.sh` `` with `[descriptive text](./scripts/file.sh)`
-4. Replace `` `templates/file.yaml` `` with `[descriptive text](./templates/file.yaml)`
-
-Using markdown links enables the `skill-referenced-file-not-found` rule to validate that the referenced files actually exist.
+Convert backtick-enclosed file paths to markdown links. For example, change `references/guide.md` to `[references/guide.md](./references/guide.md)`. The auto-fixer will perform this conversion automatically.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Consider disabling this rule if your skill references files that are generated at runtime or if backtick formatting is intentional for display purposes only.
-
 ## Related Rules
 
-- [skill-referenced-file-not-found](./skill-referenced-file-not-found.md) - Validates that linked files exist
+- [`skill-referenced-file-not-found`](/rules/skills/skill-referenced-file-not-found)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-reference-not-linked.ts)
-- [Rule Tests](../../tests/rules/skills/skill-reference-not-linked.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-reference-not-linked.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-reference-not-linked.test.ts)
 
 ## Version
 

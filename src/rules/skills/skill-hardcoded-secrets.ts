@@ -46,6 +46,50 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-hardcoded-secrets.md',
+    docs: {
+      recommended: true,
+      summary: 'Detects hardcoded API keys, tokens, passwords, and other secrets in skill files.',
+      details:
+        'This rule scans SKILL.md files and associated scripts (.sh, .bash, .py, .js, .ts) for known ' +
+        'secret patterns including Anthropic, OpenAI, GitHub, AWS, Stripe, and Slack API keys, ' +
+        'private keys, and generic password/secret/token assignments. ' +
+        'Hardcoded secrets are a critical security risk -- they can be leaked through version control, ' +
+        'shared skill repositories, or AI model context. ' +
+        'Comment lines containing "example" or "placeholder" are excluded to avoid false positives.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Script with a hardcoded API key',
+            code: '#!/bin/bash\nAPI_KEY="sk-ant-abc123def456ghi789jkl012mno345"',
+            language: 'bash',
+          },
+          {
+            description: 'SKILL.md with a hardcoded password',
+            code: '---\nname: deploy\ndescription: Deploys the app\n---\n\nConnect with password: "MyS3cretP@ss"',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Script using environment variables for secrets',
+            code: '#!/bin/bash\nAPI_KEY="$ANTHROPIC_API_KEY"',
+            language: 'bash',
+          },
+          {
+            description: 'SKILL.md referencing environment variables',
+            code: '---\nname: deploy\ndescription: Deploys the app\n---\n\nSet the `DEPLOY_TOKEN` environment variable before running.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Replace hardcoded secrets with environment variable references (e.g., `$API_KEY` or `process.env.API_KEY`). ' +
+        'Store actual secret values in a secure secrets manager or `.env` file that is excluded from version control.',
+      whenNotToUse:
+        'This rule should almost never be disabled. If you have a test fixture that contains ' +
+        'fake/example secrets, add a comment with "example" or "placeholder" on the line to suppress the warning.',
+      relatedRules: ['skill-dangerous-command', 'skill-path-traversal'],
+    },
   },
 
   validate: (context) => {

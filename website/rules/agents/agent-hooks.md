@@ -3,148 +3,70 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: Schema Validation
+**Recommended**: Yes
 
-Agent hooks must be an array of valid hook objects
+Agent hooks must be an object with event name keys
 
 ## Rule Details
 
-The `hooks` field in agent frontmatter allows agents to define their own hook handlers inline. Each hook must be a valid hook object with the required fields based on its type (command, prompt, or agent).
-
-Hooks in agent frontmatter follow the same schema as hooks in hooks.json but are scoped to the specific agent. They trigger on specified events and can filter based on tool names or patterns.
+This rule enforces that the `hooks` field in agent markdown frontmatter is a valid object keyed by event names. The supported event names are PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, and Notification. Each key maps to an array of hook matchers. Validation is delegated to the AgentFrontmatterSchema.shape.hooks Zod schema. Correctly structured hooks allow the agent framework to register event handlers at runtime.
 
 ### Incorrect
 
-Not an array:
+Hooks defined as an array instead of an object
 
-```markdown
+```yaml
 ---
-name: validator
-description: Validates tool usage
+name: build-agent
+description: Runs build pipelines
 hooks:
-  event: PreToolUse
-  type: command
-  command: ./validate.sh
+  - PreToolUse
+  - PostToolUse
 ---
 ```
 
-Invalid hook object:
+Hooks defined as a plain string
 
-```markdown
+```yaml
 ---
-name: validator
-description: Validates tool usage
-hooks:
-  - event: PreToolUse
-    type: command
----
-```
-
-Missing required fields:
-
-```markdown
----
-name: validator
-description: Validates tool usage
-hooks:
-  - type: prompt
+name: build-agent
+description: Runs build pipelines
+hooks: PreToolUse
 ---
 ```
 
 ### Correct
 
-Valid command hook:
+Hooks as an object with event name keys
 
-```markdown
+```yaml
 ---
-name: validator
-description: Validates tool usage before execution
+name: build-agent
+description: Runs build pipelines
 hooks:
-  - event: PreToolUse
-    type: command
-    command: ./scripts/validate-tool.sh
----
-```
-
-Multiple valid hooks:
-
-```markdown
----
-name: security-agent
-description: Monitors and validates security-sensitive operations
-hooks:
-  - event: PreToolUse
-    type: command
-    command: ./scripts/check-security.sh
-    matcher:
-      tool: Bash
-  - event: PostToolUse
-    type: prompt
-    prompt: Review the output for security issues
-    matcher:
-      pattern: "password|secret|key"
----
-```
-
-Hook with agent delegation:
-
-```markdown
----
-name: code-reviewer
-description: Reviews code changes
-hooks:
-  - event: PreCommit
-    type: agent
-    agent: lint-checker
+  PreToolUse:
+    - matcher: Bash
+      command: echo "pre-check"
 ---
 ```
 
 ## How To Fix
 
-To fix hooks configuration:
-
-1. **Format as array**: Use YAML array syntax with hyphens
-
-   ```yaml
-   hooks:
-     - event: PreToolUse
-       type: command
-       command: ./validate.sh
-   ```
-
-2. **Include required fields for hook type**:
-   - `command` hooks: Must have `command` field
-   - `prompt` hooks: Must have `prompt` field
-   - `agent` hooks: Must have `agent` field
-
-3. **Use valid event names**: Reference actual Claude Code event names
-
-4. **Validate regex patterns**: If using matcher with pattern, ensure valid regex syntax
+Reformat the `hooks` field as an object where each key is a valid event name (PreToolUse, PostToolUse, etc.) and each value is an array of hook matcher objects.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid hooks configuration causes:
-
-- Runtime errors when Claude Code tries to register hooks
-- Hooks failing silently
-- Unexpected agent behavior
-- Difficult debugging
-
-Always fix the hook configuration rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [agent-hooks-invalid-schema](./agent-hooks-invalid-schema.md) - Validates hooks in agents.json
-- [hooks-invalid-config](../hooks/hooks-invalid-config.md) - Validates hooks.json structure
+- [`agent-hooks-invalid-schema`](/rules/agents/agent-hooks-invalid-schema)
+- [`hooks-invalid-event`](/rules/hooks/hooks-invalid-event)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/agents/agent-hooks.ts)
-- [Rule Tests](../../tests/rules/agents/agent-hooks.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-hooks.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/agents/agent-hooks.test.ts)
 
 ## Version
 

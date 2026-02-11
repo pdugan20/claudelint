@@ -35,6 +35,62 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-too-many-files.md',
+    docs: {
+      summary: 'Warns when a skill directory has too many files at the root level.',
+      details:
+        'Skill directories with a large number of loose files become difficult to navigate and maintain. ' +
+        'This rule counts files at the root level of the skill directory (excluding known documentation ' +
+        'files like SKILL.md, README.md, CHANGELOG.md, .gitignore, and .DS_Store) and warns when the ' +
+        'count exceeds the configured threshold (default: 10). The suggestion is to organize scripts ' +
+        'into subdirectories such as `bin/`, `lib/`, and `tests/`.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skill directory with too many root-level files',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  build.sh\n  test.sh\n  deploy.sh\n  lint.sh\n' +
+              '  format.sh\n  validate.sh\n  setup.sh\n  clean.sh\n' +
+              '  migrate.sh\n  backup.sh\n  restore.sh',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skill directory organized into subdirectories',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  bin/\n' +
+              '    build.sh\n    deploy.sh\n    clean.sh\n' +
+              '  lib/\n' +
+              '    format.sh\n    validate.sh\n' +
+              '  tests/\n' +
+              '    test.sh\n    lint.sh',
+            language: 'text',
+          },
+          {
+            description: 'Simple skill with few files (under threshold)',
+            code: 'my-skill/\n' + '  SKILL.md\n' + '  run.sh\n' + '  config.json',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Organize files into subdirectories. Common patterns include `bin/` for executables, ' +
+        '`lib/` for libraries, and `tests/` for test scripts.',
+      optionExamples: [
+        {
+          description: 'Allow up to 15 root-level files before warning',
+          config: { maxFiles: 15 },
+        },
+      ],
+      whenNotToUse:
+        'If the skill intentionally provides many standalone scripts that are each invoked independently, ' +
+        'you may increase the threshold or disable this rule.',
+      relatedRules: ['skill-multi-script-missing-readme', 'skill-naming-inconsistent'],
+    },
     schema: z.object({
       maxFiles: z.number().positive().int().optional(),
     }),

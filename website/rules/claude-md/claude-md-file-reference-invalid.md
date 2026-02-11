@@ -1,81 +1,77 @@
 # Rule: claude-md-file-reference-invalid
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: File System
+**Recommended**: Yes
 
 File path referenced in CLAUDE.md does not exist
 
 ## Rule Details
 
-This rule warns when CLAUDE.md references file paths (in inline code or bash code blocks) that do not exist on disk. It checks paths that look like real file references (containing a dot extension or ending with `/`) and resolves them relative to the CLAUDE.md file's directory.
-
-The rule intelligently skips URLs, glob patterns, template variables, npm scopes, version strings, and `node_modules`/`dist` paths.
+CLAUDE.md files often reference project files using inline code (backticks) or in bash code blocks. When these file paths point to files that do not exist, the instructions become misleading -- Claude Code may attempt to read or modify non-existent files. This rule extracts file-like paths from inline code and bash/shell code blocks, resolves them relative to the CLAUDE.md location, and verifies they exist on disk. It intelligently skips URLs, glob patterns, template variables, version strings, and common non-path patterns to minimize false positives.
 
 ### Incorrect
 
-CLAUDE.md referencing a file that does not exist:
+Inline code referencing a file that does not exist
 
 ```markdown
-# Development
+# Project Setup
 
-See `src/utils/old-helper.ts` for the helper functions.
+Configuration is in `src/config/settigns.ts` (check for typos).
 ```
 
-If `src/utils/old-helper.ts` has been deleted or renamed, this rule fires.
+Bash code block referencing a non-existent script
+
+````markdown
+# Testing
+
+```bash
+./scripts/run-tets.sh
+```
+````
 
 ### Correct
 
-CLAUDE.md referencing files that exist:
+Inline code referencing a file that exists
 
 ```markdown
-# Development
+# Project Setup
 
-See `src/utils/helper.ts` for the helper functions.
+Configuration is in `src/config/settings.ts`.
 ```
+
+Bash code block referencing an existing script
+
+````markdown
+# Testing
+
+```bash
+./scripts/run-tests.sh
+```
+````
 
 ## How To Fix
 
-1. **Update the path** to point to the correct file:
-
-   ```markdown
-   # Before (file was renamed)
-   See `src/utils/old-name.ts`
-
-   # After
-   See `src/utils/new-name.ts`
-   ```
-
-2. **Remove the reference** if the file was intentionally deleted.
-
-3. **Create the file** if the reference is correct but the file is missing.
+Verify the file path is correct. Check for typos in the filename or directory. If the file was moved or renamed, update the reference to match the new location. If the file was intentionally deleted, remove the reference from CLAUDE.md.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Disable this rule if your CLAUDE.md references files that are generated at build time or only exist in certain environments.
-
-```json
-{
-  "rules": {
-    "claude-md-file-reference-invalid": "off"
-  }
-}
-```
+Disable this rule if your CLAUDE.md intentionally references files that will be generated later (e.g., build outputs) or if you reference example paths that are illustrative rather than literal.
 
 ## Related Rules
 
-- [claude-md-file-not-found](./claude-md-file-not-found.md) - CLAUDE.md file itself is missing
-- [claude-md-import-missing](./claude-md-import-missing.md) - Imported files must exist
+- [`claude-md-file-not-found`](/rules/claude-md/claude-md-file-not-found)
+- [`claude-md-npm-script-not-found`](/rules/claude-md/claude-md-npm-script-not-found)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-file-reference-invalid.ts)
-- [Rule Tests](../../tests/rules/claude-md/claude-md-file-reference-invalid.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-file-reference-invalid.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-file-reference-invalid.test.ts)
 
 ## Version
 

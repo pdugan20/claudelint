@@ -3,87 +3,53 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Best Practices
+**Recommended**: Yes
 
 Import statement found inside code block
 
 ## Rule Details
 
-This rule triggers when a CLAUDE.md file contains an import statement inside a markdown code block. Imports placed in code blocks are treated as example code and are not processed by Claude Code, which can lead to confusion when the expected file content is not loaded.
-
-Import statements must appear outside code blocks to be recognized and processed. This ensures your CLAUDE.md files behave as expected when loaded by Claude Code.
+Claude Code processes `@import` directives to include content from other files. However, when an `@import` appears inside a fenced code block (``` or ~~~), it is treated as literal text and will not be resolved. This is almost always a mistake -- the author intended the import to be active but accidentally placed it inside a code fence. This rule scans for `@` references inside code blocks and reports them so the import can be moved outside the fence.
 
 ### Incorrect
 
-Import statement inside a code block:
+An @import inside a fenced code block (will not be processed)
 
 ````markdown
----
-name: "My Project"
----
-
-# Instructions
-
-Here's how to import a file:
+# CLAUDE.md
 
 ```markdown
-import rules/coding-standards.md
+@import .claude/rules/testing.md
 ```
 ````
 
 ### Correct
 
-Import statement outside code blocks:
+An @import outside of code blocks (will be processed)
 
 ```markdown
----
-name: "My Project"
----
+# CLAUDE.md
 
-# Instructions
-
-import rules/coding-standards.md
-
-Here's an example of what the import looks like in the file.
+@import .claude/rules/testing.md
 ```
+
+Documenting import syntax in a code block with explanatory text
+
+````markdown
+# CLAUDE.md
+
+@import .claude/rules/testing.md
+
+Import syntax example:
+
+```text
+# This is just documentation, not an active import
+```
+````
 
 ## How To Fix
 
-To move import statements out of code blocks:
-
-1. **Identify imports in code blocks** - look for import statements between backticks
-
-2. **Move the import outside the code block:**
-
-   ```markdown
-   # Before (incorrect)
-   Here's how to import:
-   ```markdown
-   Import: @.claude/rules/standards.md
-   ```
-
-   After (correct):
-
-   Import: @.claude/rules/standards.md
-
-   Here's an example of the import syntax.
-
-   ```text
-   ```
-
-3. **If showing import syntax as an example**, use inline code:
-
-   ```markdown
-   Use the syntax: `Import: @path/to/file.md`
-   ```
-
-4. **Verify all imports are processed**:
-
-   ```bash
-   claudelint check-claude-md
-   ```
-
-Remember: Import statements must be outside code blocks to be processed by Claude Code.
+Move the `@import` directive outside of the code block. If the import is inside a code block as documentation or an example, this is a false positive and the warning can be ignored.
 
 ## Options
 
@@ -91,17 +57,17 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-You should not disable this rule. Import statements in code blocks will never work as intended. If you want to show an example of import syntax, use inline code or add a comment explaining it's an example.
+Disable this rule if your CLAUDE.md includes code block examples that intentionally show import syntax for documentation purposes.
 
 ## Related Rules
 
-- [import-missing](./claude-md-import-missing.md) - Validates that imported files exist
-- [import-circular](./claude-md-import-circular.md) - Detects circular import dependencies
+- [`claude-md-import-missing`](/rules/claude-md/claude-md-import-missing)
+- [`claude-md-import-circular`](/rules/claude-md/claude-md-import-circular)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-import-in-code-block.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-import-in-code-block.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-import-in-code-block.test.ts)
 
 ## Version
 

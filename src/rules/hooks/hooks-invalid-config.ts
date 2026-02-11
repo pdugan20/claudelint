@@ -22,6 +22,109 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/hooks/hooks-invalid-config.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates hook configuration structure and required fields.',
+      details:
+        'This rule validates the structure of hook definitions inside settings files. ' +
+        'It checks that each hook handler has a valid type (command, prompt, or agent), ' +
+        'includes the required field for its type, does not specify multiple handler fields ' +
+        'simultaneously, and has a valid timeout value if one is provided. ' +
+        'Malformed hook configurations will cause runtime errors when Claude Code ' +
+        'attempts to execute them.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Hook with invalid type',
+            code:
+              '{\n' +
+              '  "hooks": {\n' +
+              '    "PreToolUse": [{\n' +
+              '      "matcher": "*",\n' +
+              '      "hooks": [{\n' +
+              '        "type": "invalid",\n' +
+              '        "command": "echo hello"\n' +
+              '      }]\n' +
+              '    }]\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Hook missing required command field',
+            code:
+              '{\n' +
+              '  "hooks": {\n' +
+              '    "PreToolUse": [{\n' +
+              '      "matcher": "*",\n' +
+              '      "hooks": [{\n' +
+              '        "type": "command"\n' +
+              '      }]\n' +
+              '    }]\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Hook with multiple handler fields',
+            code:
+              '{\n' +
+              '  "hooks": {\n' +
+              '    "PreToolUse": [{\n' +
+              '      "matcher": "*",\n' +
+              '      "hooks": [{\n' +
+              '        "type": "command",\n' +
+              '        "command": "echo hello",\n' +
+              '        "prompt": "also do this"\n' +
+              '      }]\n' +
+              '    }]\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Valid command hook',
+            code:
+              '{\n' +
+              '  "hooks": {\n' +
+              '    "PreToolUse": [{\n' +
+              '      "matcher": "Bash",\n' +
+              '      "hooks": [{\n' +
+              '        "type": "command",\n' +
+              '        "command": "echo Pre-tool check"\n' +
+              '      }]\n' +
+              '    }]\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Valid prompt hook with timeout',
+            code:
+              '{\n' +
+              '  "hooks": {\n' +
+              '    "PostToolUse": [{\n' +
+              '      "matcher": "Write",\n' +
+              '      "hooks": [{\n' +
+              '        "type": "prompt",\n' +
+              '        "prompt": "Review the written file",\n' +
+              '        "timeout": 30000\n' +
+              '      }]\n' +
+              '    }]\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure each hook has a valid `type` (command, prompt, or agent) and includes ' +
+        'the corresponding handler field. Remove any extra handler fields so only one ' +
+        'is present. If a timeout is specified, ensure it is a positive number.',
+      relatedRules: ['agent-hooks-invalid-schema', 'agent-hooks'],
+    },
   },
 
   validate: (context) => {

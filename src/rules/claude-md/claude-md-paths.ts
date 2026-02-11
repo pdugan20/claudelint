@@ -20,6 +20,59 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-paths.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Validates that the `paths` field in rule file frontmatter is a non-empty array of strings.',
+      details:
+        'Rule files in `.claude/rules/` use YAML frontmatter to declare which file paths the rule ' +
+        'applies to via the `paths` field. When present, this field must be a non-empty array ' +
+        'where each element is a non-empty string (typically a glob pattern). This rule checks ' +
+        'three conditions: (1) `paths` must be an array, not a string or other type; (2) the ' +
+        'array must contain at least one entry; (3) each entry must be a non-empty string. If ' +
+        '`paths` is not present at all, the rule passes silently since paths are optional in ' +
+        'some configurations.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Paths as a string instead of an array',
+            code: '---\n' + 'paths: src/**/*.ts\n' + '---\n\n' + 'TypeScript coding standards.',
+            language: 'markdown',
+          },
+          {
+            description: 'Empty paths array',
+            code: '---\n' + 'paths: []\n' + '---\n\n' + 'These guidelines apply to nothing.',
+            language: 'markdown',
+          },
+          {
+            description: 'Paths array with an empty string',
+            code: '---\n' + 'paths:\n' + '  - ""\n' + '---\n\n' + 'Guidelines with invalid path.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Paths as a properly formatted array',
+            code:
+              '---\n' +
+              'paths:\n' +
+              '  - src/**/*.ts\n' +
+              '  - src/**/*.tsx\n' +
+              '---\n\n' +
+              'TypeScript coding standards.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure the `paths` field in your frontmatter is a YAML array with at least one ' +
+        'non-empty string entry. Each entry should be a valid glob pattern describing the files ' +
+        'the rule applies to.',
+      whenNotToUse:
+        'There is no reason to disable this rule. Malformed paths always indicate a configuration ' +
+        'error that should be corrected.',
+      relatedRules: ['claude-md-glob-pattern-backslash', 'claude-md-glob-pattern-too-broad'],
+    },
   },
 
   validate: (context) => {

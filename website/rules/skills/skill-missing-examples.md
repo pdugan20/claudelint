@@ -1,144 +1,78 @@
 # Rule: skill-missing-examples
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Cross-Reference
+**Recommended**: Yes
 
 SKILL.md lacks usage examples
 
 ## Rule Details
 
-This rule triggers when SKILL.md lacks both code blocks (fenced with backticks) and a section titled "Example", "Examples", or "Usage". Examples are critical because they teach by showing (clearer than prose), reduce support burden (users self-serve), prevent misuse (show correct patterns), and speed adoption (copy-paste and adapt).
-
-Without examples, users don't know how to invoke the skill, what arguments are accepted, or what output to expect. This hurts usability and adoption. The rule checks for either dedicated example sections or inline code blocks demonstrating usage.
+Skills should include concrete usage examples so users understand how to invoke them and what to expect. This rule checks for the presence of fenced code blocks (```) or a markdown section titled "Example", "Examples", or "Usage". Without examples, users must read the entire skill to figure out how to use it, which slows adoption.
 
 ### Incorrect
 
-SKILL.md without examples:
+SKILL.md with no code blocks or example section
 
-````markdown
+```markdown
 ---
-name: deploy
-description: Deploys the application to production
+name: deploy-app
+description: Deploys the application
 ---
 
-# Deploy Skill
+This skill deploys the application to production.
 
-This skill handles deployment to production servers.
-
-````
+It uses the deploy script to push changes.
+```
 
 ### Correct
 
-SKILL.md with code block examples:
+SKILL.md with a code block example
 
 ````markdown
 ---
-name: deploy
-description: Deploys applications to production
+name: deploy-app
+description: Deploys the application
 ---
-
-# Deploy Skill
-
-This skill handles deployment to production servers.
 
 ## Usage
 
 ```bash
-# Deploy to production
-claude deploy production us-east-1
-
-# Deploy to staging
-claude deploy staging us-west-2
-```
-
-## Arguments
-
-- `environment` - Target environment (production, staging)
-- `region` - AWS region for deployment
-````
-
-SKILL.md with Examples section:
-
-````markdown
----
-name: deploy
-description: Deploys applications
----
-
-# Deploy Skill
-
-## Examples
-
-Deploy to production:
-
-```bash
-./deploy.sh production
-```
-
-Deploy with custom configuration:
-
-```bash
-./deploy.sh staging --config custom.yml
+/deploy-app staging
 ```
 ````
+
+SKILL.md with an Example section heading
+
+```markdown
+---
+name: deploy-app
+description: Deploys the application
+---
+
+## Example
+
+Run the skill with the target environment as the argument.
+```
 
 ## How To Fix
 
-Add usage examples to SKILL.md:
-
-1. Add a code block showing basic usage
-2. Or add an "Examples" section with multiple use cases
-3. Include expected output when helpful
-4. Show common argument combinations
-
-Example additions:
-
-````markdown
-## Usage
-
-```bash
-claude skill-name arg1 arg2
-```
-````
-
-Or:
-
-````markdown
-## Examples
-
-Basic usage:
-
-```bash
-./script.sh input.txt
-```
-
-Advanced usage:
-
-```bash
-./script.sh input.txt --verbose --output result.txt
-```
-````
+Add a fenced code block showing how to invoke the skill, or add a section headed "## Example", "## Examples", or "## Usage" with usage instructions.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Consider disabling if your skill is self-explanatory with no arguments, examples exist in separate README.md (though SKILL.md is preferred), or your skill is internal and well-understood by the team. However, examples benefit all skills, even simple ones.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [skill-missing-changelog](./skill-missing-changelog.md) - Skills should track changes
-- [skill-missing-version](./skill-missing-version.md) - Skills should have version numbers
-- [skill-missing-comments](./skill-missing-comments.md) - Scripts should have comments
+- [`skill-body-missing-usage-section`](/rules/skills/skill-body-missing-usage-section)
+- [`skill-body-word-count`](/rules/skills/skill-body-word-count)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-missing-examples.ts)
-- [Rule Tests](../../tests/rules/skills/skill-missing-examples.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-missing-examples.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-missing-examples.test.ts)
 
 ## Version
 

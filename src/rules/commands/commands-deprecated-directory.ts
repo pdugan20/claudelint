@@ -24,6 +24,48 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/commands/commands-deprecated-directory.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when the deprecated .claude/commands directory is detected.',
+      details:
+        'Commands were the original way to add custom slash commands to Claude Code, ' +
+        'but they have been superseded by Skills. Skills provide better structure with ' +
+        'YAML frontmatter, versioning, documentation, and reference file support. ' +
+        'This rule fires when a `.claude/commands` directory exists in the project, ' +
+        'prompting migration to the Skills format.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Project with a .claude/commands directory',
+            code: '.claude/\n' + '  commands/\n' + '    deploy.md\n' + '    test-all.md',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Project migrated to Skills',
+            code:
+              '.claude/\n' +
+              '  skills/\n' +
+              '    deploy/\n' +
+              '      SKILL.md\n' +
+              '      deploy.sh\n' +
+              '    test-all/\n' +
+              '      SKILL.md\n' +
+              '      test-all.sh',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Create equivalent skills in `.claude/skills/` for each command in `.claude/commands/`. ' +
+        'Each skill needs a directory with a SKILL.md file containing YAML frontmatter. ' +
+        'After migrating all commands, remove the `.claude/commands/` directory.',
+      whenNotToUse:
+        'Disable this rule if you are intentionally maintaining legacy commands ' +
+        'alongside skills during a gradual migration.',
+      relatedRules: ['commands-migrate-to-skills'],
+    },
   },
 
   validate: async (context) => {

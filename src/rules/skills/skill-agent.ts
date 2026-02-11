@@ -22,6 +22,37 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-agent.md',
+    docs: {
+      recommended: true,
+      summary: 'Requires the agent field when a skill uses fork context mode.',
+      details:
+        'When a skill sets `context: fork`, it runs in a separate agent process. ' +
+        'The `agent` field must be specified to tell the system which agent to use for the forked context. ' +
+        'Without this field, the system cannot determine which agent should handle the skill execution. ' +
+        'This rule performs cross-field validation between `context` and `agent` to catch this misconfiguration.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Fork context without agent field',
+            code: '---\nname: deploy\ndescription: Deploys the app to production\ncontext: fork\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Fork context with agent specified',
+            code: '---\nname: deploy\ndescription: Deploys the app to production\ncontext: fork\nagent: deploy-agent\n---',
+          },
+          {
+            description: 'Inline context does not require agent',
+            code: '---\nname: lint\ndescription: Runs linting on the project\ncontext: inline\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Add an `agent` field to your SKILL.md frontmatter specifying which agent to use. ' +
+        'If you do not need a separate agent process, change `context` to `inline` or `auto` instead.',
+      relatedRules: ['skill-context'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

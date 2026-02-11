@@ -23,6 +23,53 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-language-id-not-lowercase.md',
+    docs: {
+      summary: 'Warns when language IDs in LSP extension mappings are not lowercase.',
+      details:
+        'This rule checks the values in the `extensionToLanguage` mapping of each LSP ' +
+        'server entry in `lsp.json` and warns when a language ID contains uppercase ' +
+        'characters. The LSP specification convention is to use lowercase language IDs ' +
+        '(e.g., `typescript` not `TypeScript`). Using inconsistent casing can cause ' +
+        'mismatches between editor expectations and server behavior.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Language IDs with uppercase characters',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      ".ts": "TypeScript",\n' +
+              '      ".py": "Python"\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Lowercase language IDs',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      ".ts": "typescript",\n' +
+              '      ".py": "python"\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Convert all language ID values to lowercase. For example, change ' +
+        '`"TypeScript"` to `"typescript"` and `"Python"` to `"python"`.',
+      relatedRules: ['lsp-language-id-empty', 'lsp-extension-missing-dot'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

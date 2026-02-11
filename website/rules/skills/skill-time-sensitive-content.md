@@ -1,57 +1,66 @@
 # Rule: skill-time-sensitive-content
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
 
 SKILL.md should avoid time-sensitive references
 
 ## Rule Details
 
-This rule triggers when Claude Code detects time-sensitive references in your SKILL.md documentation. Time-sensitive content includes relative terms like "today", "yesterday", "this week", or specific dates like "January 15, 2026" that become inaccurate as time passes.
-
-The rule scans the entire SKILL.md body (excluding frontmatter and title) for these patterns:
-
-- Relative time references: today, yesterday, tomorrow
-- Time period references: this week, last month, next year
-- Specific dates: January 15, 2026, 2026-01-15
-
-Documentation should remain accurate and useful over time. Time-sensitive language creates confusion when users read the documentation months or years after it was written.
+Skills should contain evergreen content that remains accurate over time. References to specific dates ("January 15, 2025"), relative time ("last week", "this month"), or ISO date strings ("2025-01-15") become stale and misleading. This rule scans the SKILL.md body (after frontmatter) for patterns like "today", "yesterday", "tomorrow", "this/last/next week/month/year", full date strings, and ISO date formats. Each matching line is reported.
 
 ### Incorrect
 
-SKILL.md with time-sensitive content:
+SKILL.md body with a specific date reference
 
 ```markdown
 ---
-name: deploy
+name: deploy-app
+description: Deploys the application
 ---
 
-# Deploy Skill
+Updated on January 15, 2025 to support the new API.
+```
 
-This skill was updated last week to support staging environments.
-As of today, it supports three deployment targets.
+SKILL.md body with relative time reference
 
-The production deploy feature was added on January 15, 2026.
+```markdown
+---
+name: deploy-app
+description: Deploys the application
+---
+
+This week we migrated to the new deploy pipeline.
 ```
 
 ### Correct
 
-SKILL.md with timeless language:
+SKILL.md body with evergreen language
 
 ```markdown
 ---
-name: deploy
+name: deploy-app
+description: Deploys the application
 ---
 
-# Deploy Skill
-
-This skill supports staging environments (added in v2.0).
-It currently supports three deployment targets.
-
-The production deploy feature was introduced in version 2.0.
+Uses the current deploy pipeline with zero-downtime rollouts.
 ```
+
+Version references instead of dates
+
+```markdown
+---
+name: deploy-app
+description: Deploys the application
+---
+
+Supports API v2 and later.
+```
+
+## How To Fix
+
+Replace specific dates with version references or relative terms that age well. For example, use "recent versions" instead of "this month" and "API v2+" instead of "the January 2025 API update".
 
 ## Options
 
@@ -59,17 +68,17 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Consider disabling this rule if your skill documentation includes a dated changelog section where specific dates are appropriate. However, the main skill body should still avoid time-sensitive language.
+If the skill documentation intentionally tracks a changelog or release history with dates, you may disable this rule for that specific file.
 
 ## Related Rules
 
-- [skill-body-too-long](./skill-body-too-long.md) - SKILL.md body should not exceed 500 lines
-- [skill-missing-changelog](./skill-missing-changelog.md) - Skills should have CHANGELOG.md for version history
+- [`skill-body-word-count`](/rules/skills/skill-body-word-count)
+- [`skill-body-too-long`](/rules/skills/skill-body-too-long)
 
 ## Resources
 
-- [Rule Implementation](../../src/validators/skills.ts#L503)
-- [Rule Tests](../../tests/validators/skills.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-time-sensitive-content.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-time-sensitive-content.test.ts)
 
 ## Version
 

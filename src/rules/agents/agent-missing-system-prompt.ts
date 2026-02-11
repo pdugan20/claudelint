@@ -22,6 +22,53 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-missing-system-prompt.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that agent files include a "System Prompt" ' + 'markdown section.',
+      details:
+        'This rule checks that AGENT.md files contain a heading ' +
+        'matching "System Prompt" (case-insensitive, levels 1-3). ' +
+        'A dedicated system prompt section provides clear, ' +
+        'maintainable behavioral instructions for the agent. ' +
+        'Without it, the agent may lack the structured guidance ' +
+        'needed for consistent responses. The rule scans the body ' +
+        'content (after frontmatter) using a regex pattern for ' +
+        'headings like `# System Prompt`, `## System Prompt`, or ' +
+        '`### System Prompt`.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Agent file without a System Prompt section',
+            code:
+              '---\nname: code-review\n' +
+              'description: Reviews code for quality\n---\n\n' +
+              '## Instructions\n\n' +
+              'Review all code changes carefully.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Agent file with a System Prompt section',
+            code:
+              '---\nname: code-review\n' +
+              'description: Reviews code for quality\n---\n\n' +
+              '## System Prompt\n\n' +
+              'You are a code review agent. Analyze code changes ' +
+              'for correctness, performance, and maintainability.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Add a markdown heading titled "System Prompt" (at level ' +
+        '1, 2, or 3) followed by the agent behavioral instructions. ' +
+        'For example: `## System Prompt`.',
+      whenNotToUse:
+        'Disable this rule if your project uses a different ' +
+        'convention for naming the agent instructions section.',
+      relatedRules: ['agent-body-too-short', 'agent-name', 'agent-description'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

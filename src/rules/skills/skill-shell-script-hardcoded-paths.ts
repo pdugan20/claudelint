@@ -42,6 +42,50 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-shell-script-hardcoded-paths.md',
+    docs: {
+      summary: 'Warns when shell scripts contain hardcoded absolute paths that reduce portability.',
+      details:
+        'Hardcoded absolute paths like `/Users/john/project` or `/home/deploy/app` make shell scripts ' +
+        'non-portable across different systems, users, and environments. This rule scans `.sh` and ' +
+        '`.bash` files for paths under `/Users`, `/home`, `/opt`, `/var`, `/etc`, and `/usr/local`. ' +
+        'Standard system paths like `/dev/null`, `/tmp`, `/usr/bin/env`, and shell paths are excluded. ' +
+        'Comments and shebang lines are also skipped. Only one warning per file is reported.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Script with hardcoded home directory path',
+            code: '#!/bin/bash\n' + 'set -euo pipefail\n' + 'CONFIG="/Users/john/project/.config"',
+            language: 'bash',
+          },
+          {
+            description: 'Script referencing a hardcoded /opt path',
+            code:
+              '#!/bin/bash\n' + 'set -euo pipefail\n' + 'source /opt/mycompany/scripts/common.sh',
+            language: 'bash',
+          },
+        ],
+        correct: [
+          {
+            description: 'Script using environment variables for paths',
+            code: '#!/bin/bash\n' + 'set -euo pipefail\n' + 'CONFIG="$HOME/project/.config"',
+            language: 'bash',
+          },
+          {
+            description: 'Script using relative paths',
+            code:
+              '#!/bin/bash\n' +
+              'set -euo pipefail\n' +
+              'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n' +
+              'source "$SCRIPT_DIR/common.sh"',
+            language: 'bash',
+          },
+        ],
+      },
+      howToFix:
+        'Replace hardcoded absolute paths with environment variables like `$HOME`, `$PWD`, or ' +
+        '`$(dirname "$0")` for script-relative paths. Use relative paths when possible.',
+      relatedRules: ['skill-shell-script-no-error-handling', 'skill-path-traversal'],
+    },
   },
 
   validate: (context) => {

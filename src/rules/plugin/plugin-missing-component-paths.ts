@@ -37,6 +37,35 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-missing-component-paths.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when plugin component paths do not start with "./".',
+      details:
+        'Component paths in plugin.json (skills, agents, commands, outputStyles) should start with ' +
+        '"./" to make it explicit that they are relative to the plugin root. Paths without the ' +
+        'leading "./" prefix are ambiguous and may be misinterpreted. This rule is auto-fixable ' +
+        'and will prepend "./" to paths that lack it.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skills path missing the ./ prefix',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "skills": [\n    ".claude/skills"\n  ]\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skills path with the ./ prefix',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "skills": [\n    "./.claude/skills"\n  ]\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Prepend "./" to any component path that does not already start with it. For example, ' +
+        'change ".claude/skills" to "./.claude/skills".',
+      relatedRules: ['plugin-missing-file', 'plugin-components-wrong-location'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

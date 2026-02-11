@@ -23,6 +23,55 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-language-id-empty.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures language IDs in LSP extension mappings are not empty.',
+      details:
+        'This rule checks the values in the `extensionToLanguage` mapping of each LSP ' +
+        'server entry in `lsp.json` and reports an error when a language ID is an empty ' +
+        'string or contains only whitespace. Language IDs are used to identify the ' +
+        'programming language for syntax highlighting, diagnostics, and other language ' +
+        'server features. An empty language ID prevents proper language detection.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Empty language ID value',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      ".ts": "",\n' +
+              '      ".js": "   "\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Non-empty language IDs',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      ".ts": "typescript",\n' +
+              '      ".js": "javascript"\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Provide a valid language ID string for each extension in the ' +
+        '`extensionToLanguage` mapping. Common language IDs include `typescript`, ' +
+        '`javascript`, `python`, `rust`, `go`, and `java`.',
+      relatedRules: ['lsp-language-id-not-lowercase', 'lsp-extension-missing-dot'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

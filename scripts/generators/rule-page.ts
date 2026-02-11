@@ -93,9 +93,10 @@ export function generateRulePage(meta: RuleMetadata): string {
     for (const example of docs.examples.incorrect) {
       parts.push(example.description);
       parts.push('');
-      parts.push('```' + (example.language || 'yaml'));
+      const fence = example.code.includes('```') ? '````' : '```';
+      parts.push(fence + (example.language || 'yaml'));
       parts.push(example.code);
-      parts.push('```');
+      parts.push(fence);
       parts.push('');
     }
   }
@@ -107,9 +108,10 @@ export function generateRulePage(meta: RuleMetadata): string {
     for (const example of docs.examples.correct) {
       parts.push(example.description);
       parts.push('');
-      parts.push('```' + (example.language || 'yaml'));
+      const fence = example.code.includes('```') ? '````' : '```';
+      parts.push(fence + (example.language || 'yaml'));
       parts.push(example.code);
-      parts.push('```');
+      parts.push(fence);
       parts.push('');
     }
   }

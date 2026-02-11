@@ -21,6 +21,54 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-hooks.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Validates that agent hooks are a properly formatted object ' + 'with event name keys.',
+      details:
+        'This rule enforces that the `hooks` field in agent markdown ' +
+        'frontmatter is a valid object keyed by event names. The ' +
+        'supported event names are PreToolUse, PostToolUse, ' +
+        'PostToolUseFailure, PermissionRequest, and Notification. ' +
+        'Each key maps to an array of hook matchers. Validation is ' +
+        'delegated to the AgentFrontmatterSchema.shape.hooks Zod ' +
+        'schema. Correctly structured hooks allow the agent ' +
+        'framework to register event handlers at runtime.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Hooks defined as an array instead of an object',
+            code:
+              '---\nname: build-agent\n' +
+              'description: Runs build pipelines\n' +
+              'hooks:\n  - PreToolUse\n  - PostToolUse\n---',
+          },
+          {
+            description: 'Hooks defined as a plain string',
+            code:
+              '---\nname: build-agent\n' +
+              'description: Runs build pipelines\n' +
+              'hooks: PreToolUse\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Hooks as an object with event name keys',
+            code:
+              '---\nname: build-agent\n' +
+              'description: Runs build pipelines\n' +
+              'hooks:\n  PreToolUse:\n' +
+              '    - matcher: Bash\n' +
+              '      command: echo "pre-check"\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Reformat the `hooks` field as an object where each key is ' +
+        'a valid event name (PreToolUse, PostToolUse, etc.) and ' +
+        'each value is an array of hook matcher objects.',
+      relatedRules: ['agent-hooks-invalid-schema', 'hooks-invalid-event'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

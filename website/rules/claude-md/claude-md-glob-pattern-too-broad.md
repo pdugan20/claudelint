@@ -1,31 +1,19 @@
 # Rule: claude-md-glob-pattern-too-broad
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Best Practices
+**Recommended**: Yes
 
 Path pattern is overly broad
 
 ## Rule Details
 
-This rule warns when path patterns in the frontmatter `paths` field of `.claude/rules/*.md` files are overly broad. Specifically, it flags patterns that are exactly `**` or `*`, which match all files recursively or all files in the current directory respectively.
-
-Overly broad patterns can cause:
-
-- Unintended file matches, including dependencies, build artifacts, and cached files
-- Performance issues when scanning large directory trees
-- Rules applying to files they weren't meant for
-- Confusion about which files a rule actually targets
-- Excessive processing time during validation
-
-While `**` and `*` are valid glob patterns, using them alone without any specificity indicates the pattern should be more targeted. More specific patterns make rules clearer, faster, and less error-prone.
-
-This rule only applies to `.claude/rules/*.md` files that contain frontmatter with a `paths` field.
+Files in `.claude/rules/` include YAML frontmatter with a `paths` field that controls which files the rule applies to. Using `**` or `*` as a path pattern matches every file in the project, which is almost never the intended behavior for a scoped rule. Overly broad patterns defeat the purpose of file-scoped rules and can cause Claude Code to apply guidelines in contexts where they are not relevant. This rule flags bare `**` and `*` patterns and suggests more specific alternatives.
 
 ### Incorrect
 
-Using bare `**` pattern:
+Frontmatter with a catch-all glob pattern
 
 ```markdown
 ---
@@ -33,12 +21,10 @@ paths:
   - "**"
 ---
 
-# Rule: TypeScript Coding Standards
+These guidelines apply to React components.
 ```
 
-This matches every file in the project, including `node_modules/`, `.git/`, build outputs, and everything else.
-
-Using bare `*` pattern:
+Frontmatter with a single-star catch-all
 
 ```markdown
 ---
@@ -46,180 +32,43 @@ paths:
   - "*"
 ---
 
-# Rule: File Naming Convention
-```
-
-This matches all files in the current directory, which may be too broad.
-
-Multiple overly broad patterns:
-
-```markdown
----
-paths:
-  - "**"
-  - "*"
----
+TypeScript coding standards.
 ```
 
 ### Correct
 
-Specific file type patterns:
-
-```markdown
----
-paths:
-  - "**/*.ts"
-  - "**/*.tsx"
----
-
-# Rule: TypeScript Coding Standards
-```
-
-Directory-specific patterns:
-
-```markdown
----
-paths:
-  - src/**/*.ts
-  - tests/**/*.test.ts
-  - lib/**/*.ts
----
-```
-
-Targeted patterns with file extensions:
-
-```markdown
----
-paths:
-  - "*.md"
-  - docs/**/*.md
-  - .claude/rules/*.md
----
-
-# Rule: Markdown Documentation Standards
-```
-
-Multiple specific patterns:
+Frontmatter with a specific glob pattern
 
 ```markdown
 ---
 paths:
   - src/components/**/*.tsx
-  - src/hooks/**/*.ts
-  - src/utils/**/*.ts
 ---
+
+These guidelines apply to React components.
 ```
 
 ## How To Fix
 
-To make glob patterns more specific:
-
-1. **Add file extensions** to target specific file types:
-
-   ```markdown
-   # Too broad
-   ---
-   paths:
-     - "**"
-   ---
-
-   # More specific
-   ---
-   paths:
-     - "**/*.ts"
-     - "**/*.tsx"
-   ---
-   ```
-
-2. **Specify target directories**:
-
-   ```markdown
-   # Too broad
-   ---
-   paths:
-     - "*"
-   ---
-
-   # More specific
-   ---
-   paths:
-     - src/**/*.ts
-     - tests/**/*.test.ts
-   ---
-   ```
-
-3. **Combine directory and file patterns**:
-
-   ```markdown
-   # Too broad
-   ---
-   paths:
-     - "**"
-   ---
-
-   # More specific
-   ---
-   paths:
-     - src/components/**/*.tsx
-     - src/services/**/*.ts
-     - config/**/*.json
-   ---
-   ```
-
-4. **Use multiple specific patterns** instead of one broad pattern:
-
-   ```markdown
-   # Too broad
-   ---
-   paths:
-     - "**"
-   ---
-
-   # More specific
-   ---
-   paths:
-     - "**/*.ts"
-     - "**/*.tsx"
-     - "**/*.js"
-     - "**/*.jsx"
-   ---
-   ```
-
-5. **Consider what the rule is actually checking**:
-   - If it's a TypeScript rule, use `**/*.ts` and `**/*.tsx`
-   - If it's for documentation, use `**/*.md`
-   - If it's for configuration, use `**/*.json` or specific config files
-
-6. **Verify the pattern matches your intent**:
-
-   ```bash
-   # Test the glob pattern
-   find . -name "*.ts" -not -path "*/node_modules/*"
-   ```
+Replace the broad pattern with a more specific glob that targets the files the rule should apply to. For example, use `src/**/*.ts` for all TypeScript files or `src/components/**/*.tsx` for React components.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-You might disable this rule if:
-
-- You genuinely need to check all files (rare)
-- You're creating a general-purpose rule that applies to any file type
-- You're prototyping and plan to make the pattern more specific later
-
-However, it's generally better to be explicit and use multiple specific patterns rather than relying on overly broad matching. Even general-purpose rules benefit from excluding common directories like `node_modules/`, `.git/`, and build outputs.
+Disable this rule if you intentionally want a rule file to apply to every file in the project. In that case, consider placing the content in the main CLAUDE.md instead.
 
 ## Related Rules
 
-- [claude-md-glob-pattern-backslash](./claude-md-glob-pattern-backslash.md) - Backslashes in patterns
-- [claude-md-paths](./claude-md-paths.md) - Path format validation
+- [`claude-md-glob-pattern-backslash`](/rules/claude-md/claude-md-glob-pattern-backslash)
+- [`claude-md-paths`](/rules/claude-md/claude-md-paths)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-glob-pattern-too-broad.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-glob-pattern-too-broad.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-glob-pattern-too-broad.test.ts)
 
 ## Version
 

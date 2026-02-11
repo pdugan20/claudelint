@@ -28,6 +28,60 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-invalid-env-var.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates environment variable naming and detects potential hardcoded secrets.',
+      details:
+        'This rule checks the `env` object in `settings.json` for three issues: ' +
+        '(1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` ' +
+        'convention (must start with a letter and contain only uppercase letters, digits, ' +
+        'and underscores), (2) empty or whitespace-only values, and (3) potential hardcoded ' +
+        'secrets in variables whose names contain "secret", "key", "token", or "password". ' +
+        'Secrets should use variable expansion syntax instead of plain text values.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Lowercase env var name and empty value',
+            code:
+              '{\n' +
+              '  "env": {\n' +
+              '    "myApiUrl": "https://api.example.com",\n' +
+              '    "EMPTY_VAR": ""\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Hardcoded secret value',
+            code:
+              '{\n' +
+              '  "env": {\n' +
+              '    "API_SECRET_KEY": "sk-abc123def456ghi789"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Proper env var naming with variable expansion for secrets',
+            code:
+              '{\n' +
+              '  "env": {\n' +
+              '    "API_URL": "https://api.example.com",\n' +
+              '    "API_SECRET_KEY": "${CLAUDE_API_KEY}"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Rename environment variables to use `UPPER_CASE_WITH_UNDERSCORES` format. ' +
+        'Remove or provide values for empty entries. For sensitive values, use variable ' +
+        'expansion syntax like `${SYSTEM_ENV_VAR}` instead of hardcoding secrets.',
+      relatedRules: ['settings-file-path-not-found', 'settings-permission-empty-pattern'],
+    },
   },
 
   validate: (context) => {

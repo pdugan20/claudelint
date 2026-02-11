@@ -3,57 +3,28 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Plugin
-**Category**: Portability
+**Recommended**: Yes
 
-Plugin hook references a script path without using ${CLAUDE_PLUGIN_ROOT}
+Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability
 
 ## Rule Details
 
-This rule errors when a plugin hook configuration references a script path that does not use the `${CLAUDE_PLUGIN_ROOT}` variable. Plugins are installed in dynamic locations that vary between users and systems. Hardcoded or relative paths break when the plugin is installed somewhere other than where it was developed.
-
-The `${CLAUDE_PLUGIN_ROOT}` variable resolves to the plugin's installation directory at runtime, ensuring hook scripts are found regardless of where the plugin is installed. All script paths in hook configurations must use this variable as a prefix.
+Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) will break when the plugin is installed in a different location. This rule ensures that hook commands use the ${CLAUDE_PLUGIN_ROOT} variable to form absolute paths that resolve correctly regardless of where the plugin is installed. Both inline hooks and hooks path references are checked.
 
 ### Incorrect
 
-Hardcoded relative path:
+Hook using a relative script path without ${CLAUDE_PLUGIN_ROOT}
 
 ```json
 {
-  "hooks": {
-    "PreToolUse": [
-      {
-        "type": "command",
-        "command": "./scripts/pre-tool-check.sh"
-      }
-    ]
-  }
-}
-```
-
-Hardcoded absolute path:
-
-```json
-{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "My plugin",
   "hooks": {
     "PostToolUse": [
       {
-        "type": "command",
-        "command": "/home/user/plugins/my-plugin/scripts/post-tool.sh"
-      }
-    ]
-  }
-}
-```
-
-Path without variable prefix:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "type": "command",
-        "command": "scripts/validate.sh"
+        "command": "./scripts/post-tool.sh",
+        "matcher": "Write"
       }
     ]
   }
@@ -62,36 +33,18 @@ Path without variable prefix:
 
 ### Correct
 
-Using ${CLAUDE_PLUGIN_ROOT}:
+Hook using ${CLAUDE_PLUGIN_ROOT} for the script path
 
 ```json
 {
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "My plugin",
   "hooks": {
-    "PreToolUse": [
-      {
-        "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-check.sh"
-      }
-    ]
-  }
-}
-```
-
-Multiple hooks with correct paths:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate.sh"
-      }
-    ],
     "PostToolUse": [
       {
-        "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/report.sh"
+        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-tool.sh",
+        "matcher": "Write"
       }
     ]
   }
@@ -100,35 +53,20 @@ Multiple hooks with correct paths:
 
 ## How To Fix
 
-Replace hardcoded paths with `${CLAUDE_PLUGIN_ROOT}`:
-
-1. Identify all `command` values in hook configurations
-2. Replace the path prefix with `${CLAUDE_PLUGIN_ROOT}/`
-3. Ensure the script path is relative to the plugin root
-
-Examples:
-
-- `./scripts/check.sh` -> `${CLAUDE_PLUGIN_ROOT}/scripts/check.sh`
-- `/absolute/path/scripts/check.sh` -> `${CLAUDE_PLUGIN_ROOT}/scripts/check.sh`
-- `scripts/check.sh` -> `${CLAUDE_PLUGIN_ROOT}/scripts/check.sh`
+Replace relative script paths in hook commands with paths that start with ${CLAUDE_PLUGIN_ROOT}. For example, change "./scripts/lint.sh" to "${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh".
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule only if the plugin is designed to run exclusively in a fixed location and will never be distributed. For any plugin intended for sharing or installation by others, this rule should remain enabled to ensure portability across environments.
-
 ## Related Rules
 
-- [plugin-name-required](./plugin-name-required.md) - Plugin manifest must include a name
-- [plugin-missing-file](./plugin-missing-file.md) - Referenced files must exist in the plugin
+- [`plugin-missing-file`](/rules/plugin/plugin-missing-file)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/plugin/plugin-hook-missing-plugin-root.ts)
-- [Rule Tests](../../tests/rules/plugin/plugin-hook-missing-plugin-root.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-hook-missing-plugin-root.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-hook-missing-plugin-root.test.ts)
 
 ## Version
 

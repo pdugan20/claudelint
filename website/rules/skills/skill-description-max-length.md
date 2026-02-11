@@ -1,147 +1,80 @@
 # Rule: skill-description-max-length
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
 
-Skill description should not exceed configured maximum length
+Skill description exceeds maximum character length
 
 ## Rule Details
 
-This rule triggers when a skill's description exceeds the configured maximum length (default 1024 characters). Concise descriptions help with:
-
-1. **Skill Listings**: Skills are displayed in listings and searches where space is limited
-2. **Readability**: Short descriptions are easier to understand at a glance
-3. **Mobile Compatibility**: Truncated text on small screens is avoided
-4. **Accessibility**: Shorter text improves readability for users with screen readers
-
-While descriptions can contain useful information, they should be concise and focused on the primary purpose. Detailed information about capabilities, parameters, and examples should be in the SKILL.md body or in reference files.
+Long descriptions reduce readability in skill listings and menus. This rule checks the `description` field in SKILL.md frontmatter and reports when it exceeds the configurable maximum character count (default: 1024). Descriptions should be concise summaries; detailed documentation belongs in the body or reference files.
 
 ### Incorrect
 
-Description exceeding default 500 character limit:
+Description exceeding 1024 characters
 
-```markdown
+```yaml
 ---
 name: deploy
-description: This skill deploys applications to production servers with comprehensive support for Docker containers, Kubernetes orchestration, AWS services, Azure cloud platform, and Google Cloud Platform. It includes health checks, rollback capability, automated scaling, load balancing, monitoring integration, and detailed logging. You can use it for staging, production, canary deployments, blue-green deployments, rolling updates, and more. It also supports custom pre-deployment and post-deployment hooks, environment variable management, secrets handling, and compliance checking.    # 450+ characters - too long
+description: This is an extremely long description that goes on and on about every detail of the deployment process including all edge cases, error handling, rollback procedures, monitoring setup, and more until it far exceeds the maximum allowed length...
 ---
 ```
 
 ### Correct
 
-Concise description under 1024 characters:
+Concise description within the limit
 
-```markdown
+```yaml
 ---
 name: deploy
-description: Deploys applications to production servers with health checks, rollback capability, and support for Docker and Kubernetes
+description: Deploys the application to the specified environment with rollback support
 ---
-```
-
-Another example:
-
-```markdown
----
-name: database-backup
-description: Backs up PostgreSQL and MySQL databases to S3 with encryption and retention policies
----
-```
-
-Extended information in SKILL.md body:
-
-```markdown
----
-name: deploy
-description: Deploys applications to production servers
-version: 1.0.0
----
-
-# Deploy Skill
-
-## Features
-
-This skill provides comprehensive deployment capabilities:
-
-- Docker container support
-- Kubernetes orchestration
-- Multi-cloud support (AWS, Azure, GCP)
-- Health checks and validation
-- Automatic rollback on failure
-- Custom hooks for pre/post deployment
-- Environment variable and secrets management
-
-## Detailed documentation continues here...
 ```
 
 ## How To Fix
 
-To reduce description length:
-
-1. **Keep it focused on primary purpose**: What does the skill do at its core?
-2. **Remove lists of features**: Save detailed features for SKILL.md body
-3. **Use simple language**: Avoid marketing speak and unnecessary adjectives
-4. **Remove version/platform details**: These belong in dependencies or tags
-
-Examples of reduction:
-
-- `This skill deploys applications to production servers with comprehensive support for Docker containers, Kubernetes orchestration, AWS services, and more` → `Deploys applications to production servers with Docker and Kubernetes support`
-- `Backs up databases to multiple cloud providers including AWS S3, Azure Blob Storage, and Google Cloud Storage with automatic encryption` → `Backs up databases to cloud storage with encryption`
+Shorten the `description` field to a concise summary. Move detailed information to the SKILL.md body or reference files.
 
 ## Options
 
-This rule has the following configuration options:
-
-### `maxLength`
-
-Maximum number of characters allowed in the description. Must be a positive integer.
-
-**Type**: `number`
-**Default**: `1024`
-
-**Schema**:
-
-```typescript
-{
-  maxLength: number // positive integer
-}
-```
-
-**Example configuration**:
+Default options:
 
 ```json
 {
-  "rules": {
-    "skill-description-max-length": ["warn", { "maxLength": 750 }]
-  }
+  "maxLength": 1024
+}
+```
+
+Allow up to 2048 characters:
+
+```json
+{
+  "maxLength": 2048
+}
+```
+
+Enforce a strict 256-character limit:
+
+```json
+{
+  "maxLength": 256
 }
 ```
 
 ## When Not To Use It
 
-You may increase the threshold if your skill requires a more detailed description:
-
-```json
-{
-  "rules": {
-    "skill-description-max-length": ["warn", { "maxLength": 800 }]
-  }
-}
-```
-
-However, consider whether additional details truly belong in the description or if they should be in SKILL.md instead.
+Disable this rule if your skill requires a longer description for adequate trigger phrase coverage and you accept reduced readability in listings.
 
 ## Related Rules
 
-- [skill-description](./skill-description.md) - Skill descriptions must be valid
-- [skill-body-too-long](./skill-body-too-long.md) - SKILL.md body length validation
-- [skill-tags](./skill-tags.md) - Tag validation for categorization
+- [`skill-description`](/rules/skills/skill-description)
+- [`skill-description-quality`](/rules/skills/skill-description-quality)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-description-max-length.ts)
-- [Rule Tests](../../tests/rules/skills/skill-description-max-length.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-description-max-length.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-description-max-length.test.ts)
 
 ## Version
 

@@ -3,140 +3,68 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Agent skills must be an array of skill names
 
 ## Rule Details
 
-The `skills` field in agent frontmatter specifies which skills the agent can invoke. It must be formatted as an array of skill name strings. Skills extend agent capabilities by providing reusable, executable commands.
-
-Each skill name should reference a valid skill directory at `.claude/skills/{skill-name}/SKILL.md`. While this rule validates the array format, the [agent-skills-not-found](./agent-skills-not-found.md) rule validates that referenced skills actually exist.
+This rule enforces that the `skills` field in agent markdown frontmatter is a valid array of strings. Each entry should be a skill name corresponding to a directory under `.claude/skills/`. Validation is delegated to the AgentFrontmatterSchema.shape.skills Zod schema. Proper formatting ensures the agent framework can correctly resolve and load skill definitions.
 
 ### Incorrect
 
-Not an array:
+Skills as a single string instead of array
 
-```markdown
+```yaml
 ---
-name: developer
-description: Development assistance agent
-skills: git-commit
----
-```
-
-Invalid object format:
-
-```markdown
----
-name: developer
-description: Development assistance agent
-skills:
-  skill1: git-commit
-  skill2: run-tests
+name: deploy-agent
+description: Handles deployment pipelines
+skills: run-tests
 ---
 ```
 
-Non-string values:
+Skills with non-string entries
 
-```markdown
+```yaml
 ---
-name: developer
-description: Development assistance agent
+name: deploy-agent
+description: Handles deployment pipelines
 skills:
-  - 123
+  - 42
   - true
-  - git-commit
 ---
 ```
 
 ### Correct
 
-Valid skills array:
+Skills as a valid array of skill names
 
-```markdown
+```yaml
 ---
-name: developer
-description: Development assistance agent
+name: deploy-agent
+description: Handles deployment pipelines
 skills:
-  - git-commit
   - run-tests
   - deploy
 ---
 ```
 
-Single skill:
-
-```markdown
----
-name: committer
-description: Handles git commits
-skills:
-  - git-commit
----
-```
-
-Empty array (no skills):
-
-```markdown
----
-name: simple-agent
-description: Basic agent without skills
-skills: []
----
-```
-
 ## How To Fix
 
-To fix skills configuration:
-
-1. **Format as array**: Use YAML array syntax with hyphens
-
-   ```yaml
-   skills:
-     - git-commit
-     - run-tests
-   ```
-
-2. **Use string values**: Each skill name must be a string
-
-   ```yaml
-   skills:
-     - "git-commit"  # Quotes optional for simple strings
-     - "run-tests"
-   ```
-
-3. **Reference valid skill names**: Use kebab-case skill names that match skill directories
-   - Valid: `git-commit`, `run-tests`, `deploy-app`
-   - Invalid: `gitCommit`, `run_tests`, `Deploy App`
-
-4. **Verify skills exist**: After fixing the format, ensure each referenced skill has a corresponding directory at `.claude/skills/{skill-name}/SKILL.md`
+Ensure `skills` is formatted as a YAML array of strings. Each entry should be the name of a skill directory under `.claude/skills/`.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid `skills` configuration causes:
-
-- Runtime errors when agent tries to load skills
-- Skills not being available to the agent
-- Type errors in Claude Code
-- Confusion about agent capabilities
-
-Always fix the array format rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [agent-skills-not-found](./agent-skills-not-found.md) - Validates that referenced skills exist
-- [agent-tools](./agent-tools.md) - Validates tools array format
-- [skill-name](../skills/skill-name.md) - Skill name validation
+- [`agent-skills-not-found`](/rules/agents/agent-skills-not-found)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/agents/agent-skills.ts)
-- [Rule Tests](../../tests/rules/agents/agent-skills.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-skills.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/agents/agent-skills.test.ts)
 
 ## Version
 

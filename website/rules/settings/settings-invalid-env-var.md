@@ -1,137 +1,69 @@
 # Rule: settings-invalid-env-var
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Settings
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Environment variables must follow naming conventions
 
 ## Rule Details
 
-Environment variables in settings must follow the pattern `/^[A-Z_][A-Z0-9_]*$/` (uppercase with underscores) and shouldn't have empty values. Variables with names containing "secret", "key", "token", or "password" should use variable expansion `${VAR}` instead of hardcoded values to prevent committing secrets.
-
-This rule detects invalid naming (lowercase, camelCase, mixed case, hyphens), empty or whitespace-only values, and hardcoded secrets in sensitive variable names. Values under 10 characters aren't flagged as secrets to avoid false positives.
+This rule checks the `env` object in `settings.json` for three issues: (1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` convention (must start with a letter and contain only uppercase letters, digits, and underscores), (2) empty or whitespace-only values, and (3) potential hardcoded secrets in variables whose names contain "secret", "key", "token", or "password". Secrets should use variable expansion syntax instead of plain text values.
 
 ### Incorrect
 
-Invalid naming:
+Lowercase env var name and empty value
 
 ```json
 {
   "env": {
-    "api_key": "value",
-    "nodeEnv": "production"
+    "myApiUrl": "https://api.example.com",
+    "EMPTY_VAR": ""
   }
 }
 ```
 
-Empty values:
+Hardcoded secret value
 
 ```json
 {
   "env": {
-    "API_KEY": "",
-    "DATABASE_URL": "   "
-  }
-}
-```
-
-Hardcoded secrets:
-
-```json
-{
-  "env": {
-    "API_KEY": "sk-1234567890abcdef",
-    "DATABASE_PASSWORD": "MySecretPass123"
+    "API_SECRET_KEY": "sk-abc123def456ghi789"
   }
 }
 ```
 
 ### Correct
 
-Proper naming with variable expansion:
+Proper env var naming with variable expansion for secrets
 
 ```json
 {
   "env": {
-    "API_KEY": "${API_KEY}",
-    "NODE_ENV": "development",
-    "DATABASE_URL": "${DATABASE_URL}",
-    "DEBUG": "true"
-  }
-}
-```
-
-Non-sensitive literal values:
-
-```json
-{
-  "env": {
-    "NODE_ENV": "production",
-    "LOG_LEVEL": "info",
-    "PORT": "3000",
-    "ENABLE_CACHE": "true"
+    "API_URL": "https://api.example.com",
+    "API_SECRET_KEY": "${CLAUDE_API_KEY}"
   }
 }
 ```
 
 ## How To Fix
 
-To resolve environment variable errors:
-
-1. **Invalid naming** - Convert to SCREAMING_SNAKE_CASE:
-   - `api_key` → `API_KEY`
-   - `nodeEnv` → `NODE_ENV`
-   - `database-url` → `DATABASE_URL`
-
-2. **Empty values** - Either:
-   - Remove the variable entirely if not needed
-   - Use variable expansion: `"${VAR_NAME}"`
-   - Provide a valid default value
-
-3. **Hardcoded secrets** - Use variable expansion:
-   - `"API_KEY": "sk-123..."` → `"API_KEY": "${API_KEY}"`
-   - `"PASSWORD": "secret"` → `"PASSWORD": "${DATABASE_PASSWORD}"`
-   - Store actual values in system environment variables or `.env` files (gitignored)
-
-4. **Verify naming convention**:
-   - Start with uppercase letter or underscore
-   - Use only uppercase letters, numbers, and underscores
-   - No hyphens, lowercase, or camelCase
-
-Example fix:
-
-```json
-{
-  "env": {
-    "NODE_ENV": "production",
-    "API_KEY": "${API_KEY}",
-    "DATABASE_URL": "${DATABASE_URL}",
-    "LOG_LEVEL": "info"
-  }
-}
-```
+Rename environment variables to use `UPPER_CASE_WITH_UNDERSCORES` format. Remove or provide values for empty entries. For sensitive values, use variable expansion syntax like `${SYSTEM_ENV_VAR}` instead of hardcoding secrets.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Consider disabling if your organization uses different naming conventions (not recommended) or you have non-sensitive values that trigger false positives. However, following standard conventions and avoiding hardcoded secrets benefits all projects.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [settings-invalid-schema](./settings-invalid-env-var.md) - Settings file schema validation
-- [settings-invalid-permission](./settings-invalid-permission.md) - Permission rule validation
+- [`settings-file-path-not-found`](/rules/settings/settings-file-path-not-found)
+- [`settings-permission-empty-pattern`](/rules/settings/settings-permission-empty-pattern)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/settings/settings-invalid-env-var.ts)
-- [Rule Tests](../../tests/rules/settings/settings-invalid-env-var.test.ts)
-- [Environment Variable Best Practices](https://12factor.net/config)
-- [Secrets Management Guide](https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/settings/settings-invalid-env-var.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/settings/settings-invalid-env-var.test.ts)
 
 ## Version
 

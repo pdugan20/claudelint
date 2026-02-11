@@ -1,88 +1,72 @@
 # Rule: skill-body-missing-usage-section
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Skills
 
 SKILL.md body lacks a ## Usage section
 
 ## Rule Details
 
-This rule warns when a SKILL.md file does not include a `## Usage` heading in its body content. A dedicated usage section helps users understand how to invoke the skill and what arguments it accepts.
-
-The rule checks the body content (everything after the YAML frontmatter) for a level-2 heading matching `## Usage` (case-insensitive).
+A dedicated `## Usage` section helps users and AI models understand how to invoke and interact with the skill. This rule checks the body content of SKILL.md files for a level-2 heading that starts with "Usage". Without this section, users must read through the entire file to figure out how to use the skill, reducing discoverability and usability.
 
 ### Incorrect
 
-SKILL.md without a usage section:
+SKILL.md body without a Usage section
 
 ```markdown
 ---
-name: my-skill
-description: Does something useful
+name: deploy
+description: Deploys the application
 ---
 
-# My Skill
+# Deploy
 
-This skill does something useful.
+This skill deploys the app.
 
-## Examples
+## Configuration
 
-Run it like this.
+Set environment variables.
 ```
 
 ### Correct
 
-SKILL.md with a usage section:
+SKILL.md body with a Usage section
 
 ```markdown
 ---
-name: my-skill
-description: Does something useful
+name: deploy
+description: Deploys the application
 ---
 
-# My Skill
-
-This skill does something useful.
+# Deploy
 
 ## Usage
 
-Invoke with `/my-skill` or say "run my skill". Pass arguments after the command name.
+Run `/deploy staging` to deploy to the staging environment.
 
-## Examples
+## Configuration
 
-Run it like this.
+Set environment variables.
 ```
 
 ## How To Fix
 
-Add a `## Usage` section to the SKILL.md body. Include:
-
-1. How to invoke the skill (slash command syntax)
-2. What arguments or options it accepts
-3. Any prerequisites or setup required
+Add a `## Usage` section to the body of your SKILL.md file. Include invocation examples, expected arguments, and any flags or options the skill supports.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule only if:
-
-- The skill is internal and documentation is maintained elsewhere
-- The skill's name and description are self-explanatory enough that no usage section is needed
-
 ## Related Rules
 
-- [skill-description](./skill-description.md) - Ensures skills have a description
-- [skill-missing-examples](./skill-missing-examples.md) - Ensures skills include examples
+- [`skill-body-too-long`](/rules/skills/skill-body-too-long)
+- [`skill-body-word-count`](/rules/skills/skill-body-word-count)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-body-missing-usage-section.ts)
-- [Rule Tests](../../tests/rules/skills/skill-body-missing-usage-section.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-body-missing-usage-section.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-body-missing-usage-section.test.ts)
 
 ## Version
 

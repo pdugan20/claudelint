@@ -36,6 +36,54 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-naming-inconsistent.md',
+    docs: {
+      summary: 'Warns when files in a skill directory mix different naming conventions.',
+      details:
+        'Consistent file naming improves readability and predictability. This rule scans the skill ' +
+        'directory for files using `.sh`, `.py`, `.js`, and `.md` extensions, classifies them as ' +
+        'kebab-case, snake_case, or camelCase, and warns if multiple conventions are present. ' +
+        'The check only fires when the total number of classifiable files reaches the configured ' +
+        'minimum threshold (default: 3). Kebab-case is the recommended convention.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skill directory mixing kebab-case and snake_case',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  build-app.sh\n' +
+              '  run_tests.sh\n' +
+              '  deploy-prod.sh',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skill directory using consistent kebab-case',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  build-app.sh\n' +
+              '  run-tests.sh\n' +
+              '  deploy-prod.sh',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Rename files to use a single naming convention. Kebab-case (e.g., `my-script.sh`) is recommended. ' +
+        'Ensure all `.sh`, `.py`, `.js`, and `.md` files in the skill directory follow the same pattern.',
+      optionExamples: [
+        {
+          description: 'Only check consistency when 5 or more files exist',
+          config: { minFiles: 5 },
+        },
+      ],
+      whenNotToUse:
+        'If the skill directory contains files from different ecosystems with established naming ' +
+        'conventions (e.g., Python snake_case alongside shell kebab-case), you may disable this rule.',
+      relatedRules: ['skill-name', 'skill-too-many-files'],
+    },
     schema: z.object({
       minFiles: z.number().positive().int().optional(),
     }),

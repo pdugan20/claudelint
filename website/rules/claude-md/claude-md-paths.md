@@ -3,273 +3,82 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Best Practices
+**Recommended**: Yes
 
 Claude MD paths must be a non-empty array with at least one path pattern
 
 ## Rule Details
 
-This rule validates the `paths` field in the frontmatter of `.claude/rules/*.md` files. The `paths` field specifies which files a rule applies to using glob patterns. When present, this field must be:
-
-- An array (not a string, number, or other type)
-- Non-empty (containing at least one path pattern)
-- Containing only non-empty string values
-
-The `paths` field tells claudelint which files to check when validating a rule. Without proper path patterns, the rule won't know which files to validate, or it may attempt to validate inappropriate files.
-
-This rule only applies to `.claude/rules/*.md` files, which are custom rule definitions that require frontmatter. Regular CLAUDE.md files do not require this field.
+Rule files in `.claude/rules/` use YAML frontmatter to declare which file paths the rule applies to via the `paths` field. When present, this field must be a non-empty array where each element is a non-empty string (typically a glob pattern). This rule checks three conditions: (1) `paths` must be an array, not a string or other type; (2) the array must contain at least one entry; (3) each entry must be a non-empty string. If `paths` is not present at all, the rule passes silently since paths are optional in some configurations.
 
 ### Incorrect
 
-Missing paths array:
+Paths as a string instead of an array
 
 ```markdown
 ---
-name: TypeScript Strict Mode
-severity: error
+paths: src/**/*.ts
 ---
 
-# TypeScript files must use strict mode
+TypeScript coding standards.
 ```
 
-Empty paths array:
+Empty paths array
 
 ```markdown
 ---
-name: File Naming Convention
 paths: []
 ---
 
-# Files must use kebab-case naming
+These guidelines apply to nothing.
 ```
 
-Paths is not an array:
+Paths array with an empty string
 
 ```markdown
 ---
-name: Import Organization
-paths: "src/**/*.ts"
----
-
-# Imports must be organized
-```
-
-Paths contains non-string values:
-
-```markdown
----
-name: Code Standards
 paths:
-  - src/**/*.ts
-  - 123
-  - true
----
-```
-
-Paths contains empty strings:
-
-```markdown
----
-name: Documentation Standards
-paths:
-  - "src/**/*.ts"
   - ""
-  - "docs/**/*.md"
 ---
+
+Guidelines with invalid path.
 ```
 
 ### Correct
 
-Valid paths array with single pattern:
+Paths as a properly formatted array
 
 ```markdown
 ---
-name: TypeScript Strict Mode
-paths:
-  - "**/*.ts"
----
-
-# TypeScript files must use strict mode
-```
-
-Multiple path patterns:
-
-```markdown
----
-name: File Naming Convention
 paths:
   - src/**/*.ts
-  - tests/**/*.test.ts
-  - lib/**/*.ts
+  - src/**/*.tsx
 ---
 
-# Files must use kebab-case naming
-```
-
-Specific file patterns:
-
-```markdown
----
-name: Configuration Validation
-paths:
-  - "*.json"
-  - "config/**/*.json"
-  - ".claude/**/*.json"
----
-
-# JSON files must be valid
-```
-
-Mixed specificity:
-
-```markdown
----
-name: Documentation Standards
-paths:
-  - "**/*.md"
-  - "README.md"
-  - "CHANGELOG.md"
----
-
-# Markdown files must follow standards
+TypeScript coding standards.
 ```
 
 ## How To Fix
 
-To fix invalid `paths` fields:
-
-1. **Convert string to array**:
-
-   ```markdown
-   # Wrong - paths is a string
-   ---
-   paths: "src/**/*.ts"
-   ---
-
-   # Correct - paths is an array
-   ---
-   paths:
-     - "src/**/*.ts"
-   ---
-   ```
-
-2. **Add at least one path pattern** to empty arrays:
-
-   ```markdown
-   # Wrong - empty array
-   ---
-   paths: []
-   ---
-
-   # Correct - contains patterns
-   ---
-   paths:
-     - "**/*.ts"
-     - "**/*.tsx"
-   ---
-   ```
-
-3. **Ensure all values are strings**:
-
-   ```markdown
-   # Wrong - contains non-string values
-   ---
-   paths:
-     - src/**/*.ts
-     - 123
-     - true
-   ---
-
-   # Correct - all strings
-   ---
-   paths:
-     - "src/**/*.ts"
-     - "tests/**/*.ts"
-   ---
-   ```
-
-4. **Remove empty strings**:
-
-   ```markdown
-   # Wrong - contains empty string
-   ---
-   paths:
-     - "src/**/*.ts"
-     - ""
-     - "docs/**/*.md"
-   ---
-
-   # Correct - no empty strings
-   ---
-   paths:
-     - "src/**/*.ts"
-     - "docs/**/*.md"
-   ---
-   ```
-
-5. **Add paths field if missing** (when creating rules files):
-
-   ```markdown
-   # Wrong - no paths field
-   ---
-   name: My Rule
-   severity: error
-   ---
-
-   # Correct - includes paths
-   ---
-   name: My Rule
-   severity: error
-   paths:
-     - "**/*.ts"
-   ---
-   ```
-
-6. **Use YAML array syntax properly**:
-
-   ```markdown
-   # Option 1: Multi-line array
-   ---
-   paths:
-     - "src/**/*.ts"
-     - "lib/**/*.ts"
-   ---
-
-   # Option 2: Inline array
-   ---
-   paths: ["src/**/*.ts", "lib/**/*.ts"]
-   ---
-   ```
-
-7. **Verify the fix**:
-
-   ```bash
-   claudelint check-claude-md
-   ```
+Ensure the `paths` field in your frontmatter is a YAML array with at least one non-empty string entry. Each entry should be a valid glob pattern describing the files the rule applies to.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-This rule only applies to `.claude/rules/*.md` files that define custom validation rules. It does not apply to:
-
-- Top-level `CLAUDE.md` files
-- Regular markdown documentation files
-- Imported rule files that don't define path patterns
-
-However, if you're creating a custom rule file in `.claude/rules/`, you should always provide valid `paths` patterns to specify which files the rule validates. Disabling this rule would allow misconfigured rules that don't know which files to check.
+There is no reason to disable this rule. Malformed paths always indicate a configuration error that should be corrected.
 
 ## Related Rules
 
-- [claude-md-glob-pattern-backslash](./claude-md-glob-pattern-backslash.md) - Backslashes in patterns
-- [claude-md-glob-pattern-too-broad](./claude-md-glob-pattern-too-broad.md) - Overly broad patterns
+- [`claude-md-glob-pattern-backslash`](/rules/claude-md/claude-md-glob-pattern-backslash)
+- [`claude-md-glob-pattern-too-broad`](/rules/claude-md/claude-md-glob-pattern-too-broad)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-paths.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-paths.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-paths.test.ts)
 
 ## Version
 

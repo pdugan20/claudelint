@@ -21,6 +21,34 @@ export const rule: Rule = {
     since: '0.3.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-cross-reference-invalid.md',
+    docs: {
+      summary: 'Validates that cross-references between skills point to SKILL.md files that exist.',
+      details:
+        'Skills can link to other skills using relative markdown links (e.g., `[Other Skill](../other/SKILL.md)`). ' +
+        'This rule checks that each cross-reference target actually exists on disk. Broken cross-references ' +
+        'mislead users and the AI model, leading to confusion when referenced skills cannot be found. ' +
+        'The rule matches markdown link syntax with relative paths ending in `SKILL.md`.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Link to a skill that does not exist',
+            code: '---\nname: deploy\ndescription: Deploys the application\n---\n\n## See Also\n\n- [Build Skill](../build/SKILL.md)',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Link to a skill that exists on disk',
+            code: '---\nname: deploy\ndescription: Deploys the application\n---\n\n## See Also\n\n- [Test Skill](../test/SKILL.md)',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Verify the relative path in the markdown link points to an existing SKILL.md file. ' +
+        'Fix any typos in the path or remove the link if the referenced skill was deleted.',
+      relatedRules: ['skill-dependencies'],
+    },
   },
 
   validate: (context: RuleContext) => {

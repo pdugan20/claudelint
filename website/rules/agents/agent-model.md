@@ -3,135 +3,75 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Agent model must be one of: sonnet, opus, haiku, inherit
 
 ## Rule Details
 
-The `model` field specifies which Claude model the agent should use. It must be one of the allowed model values: `sonnet`, `opus`, `haiku`, or `inherit`.
-
-- `sonnet`: Use Claude Sonnet (balanced performance and cost)
-- `opus`: Use Claude Opus (maximum capability)
-- `haiku`: Use Claude Haiku (fastest, most cost-effective)
-- `inherit`: Use the same model as the parent context
-
-This field is optional, but when specified, it must use one of these exact values.
+This rule enforces that the `model` field in agent markdown frontmatter is one of the allowed values: `sonnet`, `opus`, `haiku`, or `inherit`. Using an unrecognized model name will cause the agent framework to fail at initialization. Validation is delegated to the AgentFrontmatterSchema.shape.model Zod schema which uses the ModelNames enum. The `inherit` option tells the agent to use the parent conversation model.
 
 ### Incorrect
 
-Invalid model name:
+Invalid model name
 
-```markdown
+```yaml
 ---
-name: analyzer
-description: Analyzes code structure
+name: code-review
+description: Reviews code for quality
 model: gpt-4
 ---
 ```
 
-Typo in model name:
+Model name with wrong casing
 
-```markdown
+```yaml
 ---
-name: analyzer
-description: Analyzes code structure
-model: sonnet-3.5
----
-```
-
-Wrong case:
-
-```markdown
----
-name: analyzer
-description: Analyzes code structure
+name: code-review
+description: Reviews code for quality
 model: Sonnet
 ---
 ```
 
 ### Correct
 
-Using Sonnet model:
+Valid model name
 
-```markdown
+```yaml
 ---
-name: code-reviewer
-description: Reviews code changes for quality
+name: code-review
+description: Reviews code for quality
 model: sonnet
 ---
 ```
 
-Using Opus for complex tasks:
+Using inherit to match the parent model
 
-```markdown
+```yaml
 ---
-name: architecture-analyzer
-description: Analyzes and designs system architecture
-model: opus
----
-```
-
-Using Haiku for simple tasks:
-
-```markdown
----
-name: linter
-description: Runs fast code quality checks
-model: haiku
----
-```
-
-Inheriting parent model:
-
-```markdown
----
-name: helper
-description: Assists with current task
+name: code-review
+description: Reviews code for quality
 model: inherit
 ---
 ```
 
 ## How To Fix
 
-To fix model configuration:
-
-1. Use one of the allowed values: `sonnet`, `opus`, `haiku`, or `inherit`
-
-2. Ensure lowercase spelling (all model names are lowercase)
-
-3. Remove the field entirely if you want to use the default model
-
-4. Choose the appropriate model based on task complexity:
-   - **haiku**: Simple, fast tasks (linting, formatting, simple queries)
-   - **sonnet**: General-purpose tasks (code review, documentation, analysis)
-   - **opus**: Complex tasks requiring deep reasoning (architecture design, complex debugging)
-   - **inherit**: When the agent should use whatever model invoked it
+Set the `model` field to one of: `sonnet`, `opus`, `haiku`, or `inherit`. Model names are case-sensitive and must be lowercase.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid model names cause:
-
-- Runtime errors when Claude Code tries to initialize the agent
-- Agents failing to load
-- Unexpected behavior or fallback to default models
-- Cost and performance issues from using wrong models
-
-Always use valid model names from the allowed list.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [agent-name](./agent-name.md) - Agent name format validation
-- [skill-model](../skills/skill-model.md) - Skill model validation
+- [`agent-name`](/rules/agents/agent-name)
+- [`agent-description`](/rules/agents/agent-description)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/agents/agent-model.ts)
-- [Rule Tests](../../tests/rules/agents/agent-model.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-model.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/agents/agent-model.test.ts)
 
 ## Version
 

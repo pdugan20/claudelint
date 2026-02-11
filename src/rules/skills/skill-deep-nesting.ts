@@ -63,6 +63,47 @@ export const rule: Rule = {
     defaultOptions: {
       maxDepth: DEFAULT_MAX_DEPTH,
     },
+    docs: {
+      summary: 'Warns when a skill directory has excessive nesting depth.',
+      details:
+        'This rule measures the maximum directory nesting depth within a skill directory starting from ' +
+        'where the SKILL.md file resides. Deeply nested directories are harder to navigate, slower to scan, ' +
+        'and often indicate an overly complex structure that should be flattened. ' +
+        'The `node_modules` directory is excluded from the depth calculation.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skill directory with 4 levels of nesting (exceeds default max of 3)',
+            code: 'my-skill/\n  SKILL.md\n  src/\n    utils/\n      helpers/\n        deep/\n          file.ts',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skill directory with flat structure',
+            code: 'my-skill/\n  SKILL.md\n  run.sh\n  references/\n    api.md',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Flatten the directory structure by reducing unnecessary nesting levels. ' +
+        'Move deeply nested files closer to the skill root or consolidate subdirectories.',
+      optionExamples: [
+        {
+          description: 'Allow up to 5 levels of nesting',
+          config: { maxDepth: 5 },
+        },
+        {
+          description: 'Enforce strict 2-level nesting limit',
+          config: { maxDepth: 2 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule if your skill has a legitimate reason for deep nesting, such as mirroring ' +
+        'an external project structure that cannot be flattened.',
+      relatedRules: ['skill-body-too-long'],
+    },
   },
 
   validate: async (context) => {

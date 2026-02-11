@@ -3,117 +3,116 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Hooks
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Hook configuration must be valid
 
 ## Rule Details
 
-Each hook must specify a valid type and include the corresponding required field for that type. The three hook types are: `command` (executes shell command), `prompt` (displays custom prompt), and `agent` (launches subagent). Optional matchers must have valid tool names and regex patterns.
-
-This rule detects invalid hook types, missing required fields for the specified type, invalid tool names in matchers, and malformed regex patterns. Each type has specific required fields that must be present and non-empty.
+This rule validates the structure of hook definitions inside settings files. It checks that each hook handler has a valid type (command, prompt, or agent), includes the required field for its type, does not specify multiple handler fields simultaneously, and has a valid timeout value if one is provided. Malformed hook configurations will cause runtime errors when Claude Code attempts to execute them.
 
 ### Incorrect
 
-Missing required field:
+Hook with invalid type
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "PreToolUse",
-      "type": "command"
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "invalid",
+        "command": "echo hello"
+      }]
+    }]
+  }
 }
 ```
 
-Invalid regex in matcher:
+Hook missing required command field
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "PreToolUse",
-      "type": "command",
-      "command": "echo 'test'",
-      "matcher": {
-        "pattern": "[invalid("
-      }
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command"
+      }]
+    }]
+  }
+}
+```
+
+Hook with multiple handler fields
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "echo hello",
+        "prompt": "also do this"
+      }]
+    }]
+  }
 }
 ```
 
 ### Correct
 
-Valid command hook:
+Valid command hook
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "PreToolUse",
-      "type": "command",
-      "command": "./scripts/pre-tool.sh"
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "echo Pre-tool check"
+      }]
+    }]
+  }
 }
 ```
 
-Hook with valid matcher:
+Valid prompt hook with timeout
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "PreToolUse",
-      "type": "command",
-      "command": "./scripts/validate-bash.sh",
-      "matcher": {
-        "tool": "Bash",
-        "pattern": "^npm"
-      }
-    }
-  ]
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "Write",
+      "hooks": [{
+        "type": "prompt",
+        "prompt": "Review the written file",
+        "timeout": 30000
+      }]
+    }]
+  }
 }
 ```
 
 ## How To Fix
 
-To resolve hook configuration errors:
-
-1. **Invalid hook type**: Change `type` to one of: `command`, `prompt`, or `agent`
-
-2. **Missing required field for type**:
-   - If `type: "command"` - add `"command": "./path/to/script.sh"`
-   - If `type: "prompt"` - add `"prompt": "Your prompt text here"`
-   - If `type: "agent"` - add `"agent": "agent-name"`
-
-3. **Invalid regex pattern**: Fix the regex in `matcher.pattern` using valid regex syntax
-
-4. **Invalid tool name in matcher**: Use a valid tool name from Claude Code's tool registry
-
-Verify your hooks.json is valid JSON and all required fields are present for each hook.
+Ensure each hook has a valid `type` (command, prompt, or agent) and includes the corresponding handler field. Remove any extra handler fields so only one is present. If a timeout is specified, ensure it is a positive number.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid hook configuration causes runtime failures, silent errors, unexpected behavior, and difficult debugging. Always fix configuration issues rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [hooks-invalid-event](./hooks-invalid-event.md) - Hook event name validation
-- [hooks-missing-script](./hooks-missing-script.md) - Hook script file validation
+- [`agent-hooks-invalid-schema`](/rules/agents/agent-hooks-invalid-schema)
+- [`agent-hooks`](/rules/agents/agent-hooks)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/hooks/hooks-invalid-config.ts)
-- [Rule Tests](../../tests/validators/hooks.test.ts)
-- [Hooks Documentation](https://github.com/anthropics/claude-code)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/hooks/hooks-invalid-config.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/hooks/hooks-invalid-config.test.ts)
 
 ## Version
 

@@ -1,157 +1,93 @@
 # Rule: settings-permission-empty-pattern
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Settings
-**Category**: Best Practices
 
 Tool(pattern) syntax should not have empty patterns
 
 ## Rule Details
 
-When using inline `Tool(pattern)` syntax in permission rules, the pattern should not be empty. Empty patterns `Tool()` suggest incomplete configuration and don't provide any filtering benefit over using just the tool name.
-
-This rule detects permission rules with empty inline patterns in the `allow`, `deny`, or `ask` arrays. Empty patterns make the syntax more confusing without adding functionality, since `"Bash()"` is equivalent to `"Bash"` but less clear.
+This rule checks permission entries in `settings.json` across the `allow`, `deny`, and `ask` arrays for the `Tool(pattern)` syntax and warns when the pattern inside the parentheses is empty. An empty pattern like `Bash()` is likely a mistake and should either include a glob pattern like `Bash(npm test)` or be simplified to just the tool name `Bash`. Empty patterns may cause unexpected permission matching behavior.
 
 ### Incorrect
 
-Empty inline pattern:
+Permission with empty inline pattern
 
 ```json
 {
   "permissions": {
-    "allow": ["Bash()"]
-  }
-}
-```
-
-Multiple rules with empty patterns:
-
-```json
-{
-  "permissions": {
-    "allow": ["Read()"],
-    "deny": ["Write()"],
-    "ask": ["Edit()"]
-  }
-}
-```
-
-Empty pattern with whitespace:
-
-```json
-{
-  "permissions": {
-    "deny": ["Bash(   )"]
+    "allow": [
+      "Bash()",
+      "Write()"
+    ]
   }
 }
 ```
 
 ### Correct
 
-Remove empty parentheses:
+Permission with a specific pattern
 
 ```json
 {
   "permissions": {
-    "allow": ["Bash", "Read", "Write"]
+    "allow": [
+      "Bash(npm test)",
+      "Write(src/**)"
+    ]
   }
 }
 ```
 
-Add a pattern to filter specific commands:
+Permission without inline pattern syntax
 
 ```json
 {
   "permissions": {
-    "allow": ["Bash(npm run *)", "Read(src/**/*.ts)"]
-  }
-}
-```
-
-Mix of tools with and without patterns:
-
-```json
-{
-  "permissions": {
-    "allow": ["Bash(npm run *)", "Read", "Write(*.json)"],
-    "deny": ["Bash(rm -rf *)"]
+    "allow": [
+      "Bash",
+      "Write"
+    ]
   }
 }
 ```
 
 ## How To Fix
 
-To fix empty inline patterns:
-
-1. **Remove the empty parentheses**: `"Bash()"` → `"Bash"`
-
-   ```json
-   {
-     "permissions": {
-       "allow": ["Bash", "Read"]
-     }
-   }
-   ```
-
-2. **Or add a pattern** if you want to filter specific operations:
-
-   ```json
-   {
-     "permissions": {
-       "allow": ["Bash(npm run *)", "Read(src/**)"]
-     }
-   }
-   ```
-
-The empty parentheses syntax provides no benefit - either add a pattern to filter specific commands, or remove the parentheses entirely.
+Either add a meaningful pattern inside the parentheses (e.g., `Bash(npm test)`) or remove the parentheses entirely to use the bare tool name (e.g., `Bash`).
 
 ## Options
 
-This rule has the following configuration options:
-
-### `allowEmpty`
-
-Allow empty inline patterns in Tool(pattern) syntax. When enabled, rules like `Bash()` or `Read()` will not trigger warnings.
-
-**Type**: `boolean`
-**Default**: `false`
-
-**Schema**:
-
-```typescript
-{
-  allowEmpty: boolean
-}
-```
-
-**Example configuration**:
+Default options:
 
 ```json
 {
-  "rules": {
-    "settings-permission-empty-pattern": ["warn", { "allowEmpty": true }]
-  }
+  "allowEmpty": false
 }
 ```
 
-**Note**: Empty patterns provide no functional benefit over using just the tool name. This option should only be used if you have a specific need for placeholder patterns in your configuration.
+Allow empty inline patterns:
+
+```json
+{
+  "allowEmpty": true
+}
+```
 
 ## When Not To Use It
 
-This rule helps maintain clean, clear permission syntax. There's no good reason to disable it - always fix empty patterns rather than disabling the warning.
+Disable this rule or set `allowEmpty: true` if your permission system intentionally uses empty patterns as a wildcard syntax.
 
 ## Related Rules
 
-- [settings-permission-invalid-rule](./settings-permission-invalid-rule.md) - Validates Tool(pattern) syntax conflicts
-- [settings-invalid-permission](./settings-invalid-permission.md) - Validates permission actions and tool names
+- [`settings-file-path-not-found`](/rules/settings/settings-file-path-not-found)
+- [`settings-invalid-env-var`](/rules/settings/settings-invalid-env-var)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/settings/settings-permission-empty-pattern.ts)
-- [Rule Tests](../../tests/rules/settings/settings-permission-empty-pattern.test.ts)
-- [Claude Code Settings Documentation](https://code.claude.com/docs/en/settings)
-- [Official Settings JSON Schema](https://json.schemastore.org/claude-code-settings.json)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/settings/settings-permission-empty-pattern.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/settings/settings-permission-empty-pattern.test.ts)
 
 ## Version
 

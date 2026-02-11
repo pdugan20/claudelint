@@ -22,6 +22,54 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-import-in-code-block.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Errors when @import statements appear inside fenced code blocks where they are not processed.',
+      details:
+        'Claude Code processes `@import` directives to include content from other files. However, ' +
+        'when an `@import` appears inside a fenced code block (``` or ~~~), it is treated as ' +
+        'literal text and will not be resolved. This is almost always a mistake -- the author ' +
+        'intended the import to be active but accidentally placed it inside a code fence. This ' +
+        'rule scans for `@` references inside code blocks and reports them so the import can be ' +
+        'moved outside the fence.',
+      examples: {
+        incorrect: [
+          {
+            description: 'An @import inside a fenced code block (will not be processed)',
+            code:
+              '# CLAUDE.md\n\n' + '```markdown\n' + '@import .claude/rules/testing.md\n' + '```',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'An @import outside of code blocks (will be processed)',
+            code: '# CLAUDE.md\n\n' + '@import .claude/rules/testing.md',
+            language: 'markdown',
+          },
+          {
+            description: 'Documenting import syntax in a code block with explanatory text',
+            code:
+              '# CLAUDE.md\n\n' +
+              '@import .claude/rules/testing.md\n\n' +
+              'Import syntax example:\n\n' +
+              '```text\n' +
+              '# This is just documentation, not an active import\n' +
+              '```',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Move the `@import` directive outside of the code block. If the import is inside a code ' +
+        'block as documentation or an example, this is a false positive and the warning can be ' +
+        'ignored.',
+      whenNotToUse:
+        'Disable this rule if your CLAUDE.md includes code block examples that intentionally ' +
+        'show import syntax for documentation purposes.',
+      relatedRules: ['claude-md-import-missing', 'claude-md-import-circular'],
+    },
   },
 
   validate: (context) => {

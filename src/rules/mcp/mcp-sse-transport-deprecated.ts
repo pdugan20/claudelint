@@ -19,6 +19,44 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-sse-transport-deprecated.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when an MCP server uses the deprecated SSE transport type.',
+      details:
+        'The Server-Sent Events (SSE) transport for MCP servers is deprecated in favor of the ' +
+        'HTTP streamable transport. This rule emits a warning whenever a server has type set to ' +
+        '"sse" so that configurations can be migrated before SSE support is removed entirely. ' +
+        'The HTTP transport offers better bidirectional communication and is the recommended ' +
+        'replacement.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Server using the deprecated SSE transport',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "sse",\n      "url": "https://mcp.example.com/sse"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Server using the recommended HTTP transport',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "http",\n      "url": "https://mcp.example.com/api"\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'Server using WebSocket transport',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Change the server type from "sse" to "http" and update the url to point to the HTTP ' +
+        'streamable endpoint. Alternatively, use "websocket" if the server supports it.',
+      whenNotToUse:
+        'Disable this rule if you are intentionally targeting an MCP server that only supports ' +
+        'the SSE transport and cannot be upgraded.',
+      relatedRules: ['mcp-sse-empty-url', 'mcp-sse-invalid-url', 'mcp-invalid-transport'],
+    },
   },
 
   validate: (context) => {

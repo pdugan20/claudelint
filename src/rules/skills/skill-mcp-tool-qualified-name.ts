@@ -50,6 +50,38 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-mcp-tool-qualified-name.md',
+    docs: {
+      summary:
+        'Warns when allowed-tools entries appear to be MCP tools but lack the qualified mcp__server__tool format.',
+      details:
+        'MCP (Model Context Protocol) tools should use the fully qualified `mcp__<server>__<tool>` naming format ' +
+        'in the `allowed-tools` list. Unqualified tool names can be ambiguous when multiple MCP servers ' +
+        'provide tools with similar names. This rule skips recognized built-in tools (e.g., Bash, Read, Write) ' +
+        'and tools already using the `mcp__` prefix. Any remaining unrecognized tool name triggers a warning, ' +
+        'as it is likely an MCP tool reference that should be fully qualified.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Unqualified MCP tool name in allowed-tools',
+            code: '---\nname: search\ndescription: Searches across repositories\nallowed-tools:\n  - Bash\n  - search_code\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Fully qualified MCP tool name',
+            code: '---\nname: search\ndescription: Searches across repositories\nallowed-tools:\n  - Bash\n  - mcp__github__search_code\n---',
+          },
+          {
+            description: 'Only built-in tools (no MCP tools)',
+            code: '---\nname: lint\ndescription: Runs linting checks\nallowed-tools:\n  - Bash\n  - Read\n  - Write\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Replace the unqualified tool name with the fully qualified MCP format: `mcp__<server>__<tool>`. ' +
+        'For example, change `search_code` to `mcp__github__search_code`.',
+      relatedRules: ['skill-allowed-tools', 'skill-allowed-tools-not-used'],
+    },
   },
 
   validate: (context: RuleContext) => {

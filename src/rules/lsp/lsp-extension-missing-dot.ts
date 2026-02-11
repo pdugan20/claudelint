@@ -23,6 +23,54 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-extension-missing-dot.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures file extension mappings in LSP config start with a dot.',
+      details:
+        'This rule validates keys in the `extensionToLanguage` mapping of each LSP ' +
+        'server entry in `lsp.json`. File extensions must begin with a dot (e.g., ' +
+        '`.ts`, `.py`) to be recognized by the LSP system. Extensions without a ' +
+        'leading dot will fail to match files correctly, causing language server ' +
+        'features like code completion and diagnostics to not activate.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Extension keys missing the leading dot',
+            code:
+              '{\n' +
+              '  "typescript-server": {\n' +
+              '    "command": "/usr/bin/tsserver",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      "ts": "typescript",\n' +
+              '      "tsx": "typescriptreact"\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Extension keys with leading dot',
+            code:
+              '{\n' +
+              '  "typescript-server": {\n' +
+              '    "command": "/usr/bin/tsserver",\n' +
+              '    "extensionToLanguage": {\n' +
+              '      ".ts": "typescript",\n' +
+              '      ".tsx": "typescriptreact"\n' +
+              '    }\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Add a leading dot to each extension key in the `extensionToLanguage` mapping. ' +
+        'For example, change `"ts"` to `".ts"` and `"py"` to `".py"`.',
+      relatedRules: ['lsp-language-id-empty', 'lsp-language-id-not-lowercase'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

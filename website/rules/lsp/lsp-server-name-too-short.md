@@ -1,119 +1,46 @@
 # Rule: lsp-server-name-too-short
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: LSP
-**Category**: Schema Validation
 
 LSP server names should be descriptive
 
 ## Rule Details
 
-LSP server names should be descriptive to improve readability and maintainability of configuration files. Single-character or very short names like "a", "ts", or "py" make configuration harder to understand and maintain, especially in projects with multiple language servers.
-
-This rule enforces a minimum length for server names (default: 2 characters). Using descriptive names like "typescript-language-server" or "rust-analyzer" makes the configuration self-documenting and easier to debug.
+This rule checks the top-level keys in `lsp.json`, which serve as server names, and warns when any name is shorter than the configured minimum length. Descriptive server names like `typescript-language-server` or `python-lsp` improve readability and maintainability of LSP configuration files. Single-character or very short names make it hard to identify which language server is being configured.
 
 ### Incorrect
 
-Single-character server names:
+Server name that is too short
 
 ```json
 {
-  "servers": {
-    "t": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"]
-    },
-    "p": {
-      "command": "pylsp"
-    }
-  }
-}
-```
-
-Very short server names:
-
-```json
-{
-  "servers": {
-    "ts": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"]
-    }
+  "t": {
+    "command": "/usr/bin/tsserver"
   }
 }
 ```
 
 ### Correct
 
-Descriptive server names:
+Descriptive server name
 
 ```json
 {
-  "servers": {
-    "typescript-language-server": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"]
-    },
-    "python-lsp": {
-      "command": "pylsp"
-    }
-  }
-}
-```
-
-Multi-word descriptive names:
-
-```json
-{
-  "servers": {
-    "rust-analyzer": {
-      "command": "rust-analyzer"
-    },
-    "gopls-language-server": {
-      "command": "gopls",
-      "args": ["serve"]
-    }
+  "typescript-server": {
+    "command": "/usr/bin/tsserver"
   }
 }
 ```
 
 ## How To Fix
 
-To fix server names that are too short:
-
-1. **Use descriptive names** - Match the actual language server name:
-   - `"t"` → `"typescript-language-server"`
-   - `"py"` → `"python-lsp"`
-   - `"rs"` → `"rust-analyzer"`
-
-2. **Include context** - Add language or purpose:
-   - `"ts"` → `"typescript-language-server"`
-   - `"go"` → `"gopls-server"`
-
-3. **Verify configuration**:
-
-```bash
-claudelint check-lsp
-```
+Rename the server key to a more descriptive name that identifies the language or purpose, such as `typescript-server`, `python-lsp`, or `rust-analyzer`.
 
 ## Options
 
-This rule has configurable options:
-
-### `minLength`
-
-Minimum length for server names (default: 2). Set this to require longer, more descriptive names.
-
-**Schema:**
-
-```typescript
-{
-  minLength: number (positive integer)
-}
-```
-
-**Default Options:**
+Default options:
 
 ```json
 {
@@ -121,46 +48,35 @@ Minimum length for server names (default: 2). Set this to require longer, more d
 }
 ```
 
-**Example Configuration:**
-
-Require minimum 5-character names:
+Require server names of at least 3 characters:
 
 ```json
 {
-  "rules": {
-    "lsp-server-name-too-short": ["warn", { "minLength": 5 }]
-  }
+  "minLength": 3
 }
 ```
 
-With this configuration:
+Allow single-character server names:
 
 ```json
 {
-  "servers": {
-    "ts": {
-      "command": "typescript-language-server"
-    }
-  }
+  "minLength": 1
 }
 ```
-
-Would fail because "ts" (2 characters) is less than the required 5 characters.
 
 ## When Not To Use It
 
-Disable this rule if you prefer short, abbreviated server names or have established conventions using brief identifiers. However, descriptive names are recommended for maintainability.
+Disable this rule if you have an established convention using short abbreviations for server names that are well-understood by your team.
 
 ## Related Rules
 
-- [lsp-invalid-transport](./lsp-invalid-transport.md) - Validates transport types
-- [lsp-command-not-in-path](./lsp-command-not-in-path.md) - Validates server commands
+- [`lsp-command-not-in-path`](/rules/lsp/lsp-command-not-in-path)
+- [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/lsp/lsp-server-name-too-short.ts)
-- [Rule Tests](../../tests/rules/lsp/lsp-server-name-too-short.test.ts)
-- [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-server-name-too-short.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-server-name-too-short.test.ts)
 
 ## Version
 

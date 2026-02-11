@@ -1,123 +1,98 @@
 # Rule: skill-too-many-files
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: File System
 
 Skill directory has too many files at root level
 
 ## Rule Details
 
-When a skill directory contains more than 10 files at the root level (excluding `SKILL.md`, `README.md`, `CHANGELOG.md`, `.gitignore`, `.DS_Store`), it becomes difficult to navigate, maintain, and understand. Files should be organized into logical subdirectories like `bin/`, `lib/`, `tests/`, or functional groupings.
-
-This rule counts non-documentation files at the root level. Exceeding 10 files indicates poor organization that harms maintainability. Proper structure makes skills easier to navigate, understand at a glance, and update.
+Skill directories with a large number of loose files become difficult to navigate and maintain. This rule counts files at the root level of the skill directory (excluding known documentation files like SKILL.md, README.md, CHANGELOG.md, .gitignore, and .DS_Store) and warns when the count exceeds the configured threshold (default: 10). The suggestion is to organize scripts into subdirectories such as `bin/`, `lib/`, and `tests/`.
 
 ### Incorrect
 
-15 files at root level:
+Skill directory with too many root-level files
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-├── deploy.sh
-├── rollback.sh
-├── health-check.sh
-├── validate.sh
-├── notify.sh
-├── backup.sh
-├── restore.sh
-├── config.sh
-├── utils.sh
-├── logging.sh
-├── monitoring.sh
-├── cleanup.sh
-├── setup.sh
-├── teardown.sh
-└── verify.sh
-
-14 script files at root (>10)
+my-skill/
+  SKILL.md
+  build.sh
+  test.sh
+  deploy.sh
+  lint.sh
+  format.sh
+  validate.sh
+  setup.sh
+  clean.sh
+  migrate.sh
+  backup.sh
+  restore.sh
 ```
 
 ### Correct
 
-Well-organized with subdirectories:
+Skill directory organized into subdirectories
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-├── deploy.sh           # Main entry point
-├── bin/                # Executable scripts
-│   ├── rollback.sh
-│   ├── health-check.sh
-│   └── validate.sh
-├── lib/                # Library/utility scripts
-│   ├── config.sh
-│   ├── utils.sh
-│   ├── logging.sh
-│   └── monitoring.sh
-└── tests/              # Test scripts
-    ├── test-deploy.sh
-    └── test-rollback.sh
+my-skill/
+  SKILL.md
+  bin/
+    build.sh
+    deploy.sh
+    clean.sh
+  lib/
+    format.sh
+    validate.sh
+  tests/
+    test.sh
+    lint.sh
+```
 
-3 files at root (<10)
+Simple skill with few files (under threshold)
+
+```text
+my-skill/
+  SKILL.md
+  run.sh
+  config.json
+```
+
+## How To Fix
+
+Organize files into subdirectories. Common patterns include `bin/` for executables, `lib/` for libraries, and `tests/` for test scripts.
+
+## Options
+
+Default options:
+
+```json
+{
+  "maxFiles": 10
+}
+```
+
+Allow up to 15 root-level files before warning:
+
+```json
+{
+  "maxFiles": 15
+}
 ```
 
 ## When Not To Use It
 
-Consider disabling if your skill genuinely needs many root-level files, you're following a specific project structure convention, or you're mid-reorganization. However, organization improves all projects, so restructuring is preferred over disabling.
+If the skill intentionally provides many standalone scripts that are each invoked independently, you may increase the threshold or disable this rule.
 
 ## Related Rules
 
-- [skill-deep-nesting](./skill-deep-nesting.md) - Excessive directory nesting
-- [skill-naming-inconsistent](./skill-naming-inconsistent.md) - Inconsistent file naming
-
-## How To Fix
-
-Organize files into logical subdirectories:
-
-1. Create subdirectories: `bin/`, `lib/`, `tests/`, `docs/`
-2. Move scripts to appropriate directories
-3. Keep only essential files at root (SKILL.md, main script, README.md)
-4. Update references in scripts and documentation
-
-Example restructuring:
-
-```bash
-# Before: 15 files at root
-.claude/skills/deploy/*.sh
-
-# After: Organized structure
-mkdir -p bin lib tests
-mv *-check.sh *-validate.sh bin/
-mv utils.sh config.sh logging.sh lib/
-mv *-test.sh tests/
-```
-
-## Options
-
-### `maxFiles`
-
-Maximum number of files allowed at root level before warning.
-
-Type: `number`
-Default: `10`
-
-Example configuration:
-
-```json
-{
-  "rules": {
-    "skill-too-many-files": ["warn", { "maxFiles": 15 }]
-  }
-}
-```
+- [`skill-multi-script-missing-readme`](/rules/skills/skill-multi-script-missing-readme)
+- [`skill-naming-inconsistent`](/rules/skills/skill-naming-inconsistent)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-too-many-files.ts)
-- [Rule Tests](../../tests/rules/skills/skill-too-many-files.test.ts)
-- [Shell Script Organization](https://google.github.io/styleguide/shellguide.html)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-too-many-files.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-too-many-files.test.ts)
 
 ## Version
 

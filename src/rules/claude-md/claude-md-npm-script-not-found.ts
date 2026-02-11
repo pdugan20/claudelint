@@ -67,6 +67,44 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-npm-script-not-found.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Errors when CLAUDE.md references `npm run` scripts that do not exist in package.json.',
+      details:
+        'CLAUDE.md files frequently instruct Claude Code to run npm scripts for testing, linting, ' +
+        'or building. If a referenced script does not exist in the nearest `package.json`, Claude ' +
+        'Code will fail when attempting to run it. This rule extracts all `npm run <script>` ' +
+        'references from the markdown content, locates the nearest `package.json` by walking up ' +
+        'the directory tree, and verifies each referenced script exists in the `scripts` field. ' +
+        'Common causes include typos in script names, renamed scripts, or referencing scripts ' +
+        'from a different package in a monorepo.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Referencing a script that does not exist in package.json',
+            code: '# Testing\n\n' + 'Run the tests:\n\n' + '```bash\n' + 'npm run tets\n' + '```',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Referencing a script that exists in package.json',
+            code: '# Testing\n\n' + 'Run the tests:\n\n' + '```bash\n' + 'npm run test\n' + '```',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Verify the script name matches exactly what is defined in `package.json` scripts. ' +
+        'Check for typos. If the script was renamed, update the reference in CLAUDE.md. If the ' +
+        'script needs to be created, add it to the `scripts` field in `package.json`.',
+      whenNotToUse:
+        'Disable this rule if your CLAUDE.md references scripts from a different package.json ' +
+        'than the nearest one (e.g., in a monorepo where CLAUDE.md is at the root but scripts ' +
+        'are in a sub-package).',
+      relatedRules: ['claude-md-file-reference-invalid'],
+    },
   },
 
   validate: (context) => {

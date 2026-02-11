@@ -23,6 +23,59 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-command-not-in-path.md',
+    docs: {
+      summary: 'Warns when LSP server commands are not in PATH or lack absolute paths.',
+      details:
+        'This rule checks each LSP server entry in `lsp.json` for its `command` field ' +
+        'and warns when the command does not start with `/` (absolute path) or `./` ' +
+        '(explicit relative path). Commands that rely on being in the system PATH may ' +
+        'fail in environments where PATH is configured differently, such as CI systems, ' +
+        "containers, or other developers' machines.",
+      examples: {
+        incorrect: [
+          {
+            description: 'Server command relies on PATH resolution',
+            code:
+              '{\n' +
+              '  "typescript-server": {\n' +
+              '    "command": "typescript-language-server --stdio"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Server command uses absolute path',
+            code:
+              '{\n' +
+              '  "typescript-server": {\n' +
+              '    "command": "/usr/local/bin/typescript-language-server --stdio"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Server command uses explicit relative path',
+            code:
+              '{\n' +
+              '  "typescript-server": {\n' +
+              '    "command": "./node_modules/.bin/typescript-language-server --stdio"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Replace bare command names with absolute paths (e.g., `/usr/local/bin/my-server`) ' +
+        'or explicit relative paths (e.g., `./node_modules/.bin/my-server`). ' +
+        'You can find the absolute path with `which <command>`.',
+      whenNotToUse:
+        'Disable this rule if you have consistent PATH configuration across all ' +
+        'environments and prefer shorter command references.',
+      relatedRules: ['lsp-server-name-too-short', 'lsp-extension-missing-dot'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

@@ -3,126 +3,85 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
+**Recommended**: Yes
 
 Skill context must be one of: fork, inline, auto
 
 ## Rule Details
 
-This rule validates that when a skill specifies a `context` field in its frontmatter, it must be one of the valid execution context modes. The context determines how the skill runs relative to the main conversation thread.
-
-Valid context values are `fork` (creates new conversation thread), `inline` (executes in current thread), and `auto` (Claude Code decides based on skill complexity). The context field is optional and defaults to `auto`. Each mode has different isolation, state management, and performance characteristics.
+The `context` field controls how a skill is executed. It must be one of the recognized modes: `fork` (runs in a separate agent process), `inline` (runs in the current conversation context), or `auto` (lets the system decide). Any other value is invalid and will cause the skill to fail at runtime. This rule delegates to the Zod schema for validation.
 
 ### Incorrect
 
-Invalid context values in SKILL.md frontmatter:
+Invalid context value
 
-```markdown
+```yaml
 ---
 name: deploy
-description: Deploys applications
-context: parallel           # Not a valid context
+description: Deploys the application
+context: background
 ---
 ```
 
-```markdown
----
-name: deploy
-description: Deploys applications
-context: Fork               # Must be lowercase
----
-```
+Misspelled context value
 
-```markdown
+```yaml
 ---
 name: deploy
-description: Deploys applications
-context: background         # Not a valid context
----
-```
-
-```markdown
----
-name: deploy
-description: Deploys applications
-context: thread             # Not a valid context
+description: Deploys the application
+context: forked
 ---
 ```
 
 ### Correct
 
-Valid context specifications:
+Using fork context
 
-```markdown
----
-name: long-analysis
-description: Performs deep code analysis
-context: fork               # Isolate in new thread
----
-```
-
-```markdown
----
-name: quick-format
-description: Formats code quickly
-context: inline             # Run in current thread
----
-```
-
-```markdown
+```yaml
 ---
 name: deploy
-description: Deploys applications
-context: auto               # Let Claude Code decide
+description: Deploys the application
+context: fork
+agent: deploy-agent
 ---
 ```
 
-Omit context for auto (also valid):
+Using inline context
 
-```markdown
+```yaml
 ---
-name: deploy
-description: Deploys applications
-# No context field - defaults to auto
+name: lint
+description: Runs linting checks
+context: inline
+---
+```
+
+Using auto context
+
+```yaml
+---
+name: test
+description: Runs tests
+context: auto
 ---
 ```
 
 ## How To Fix
 
-Update the context field to use a valid execution mode:
-
-1. Choose the appropriate context for your skill
-2. Use lowercase: `fork`, `inline`, or `auto`
-3. Consider isolation and performance needs
-4. Use `auto` if unsure
-
-Context selection guide:
-
-- `fork` - Long-running tasks, isolated execution, independent state
-- `inline` - Quick operations, shares conversation context, synchronous
-- `auto` - Claude Code chooses based on complexity (recommended)
+Set the `context` field to one of the valid values: `fork`, `inline`, or `auto`. Use `fork` when the skill needs its own agent, `inline` when it should run in the current context, or `auto` to let the system choose.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-This is a critical validation rule that should never be disabled. The context field must use valid values for Claude Code to execute skills correctly. If you need different behavior:
-
-- Use one of the three valid options
-- Let Claude Code choose with `auto`
-- Request new context modes from the Claude Code team
-
 ## Related Rules
 
-- [skill-agent](./skill-agent.md) - Agent requirement for fork context
-- [skill-model](./skill-model.md) - Model selection validation
+- [`skill-agent`](/rules/skills/skill-agent)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-context.ts)
-- [Rule Tests](../../tests/rules/skills/skill-context.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-context.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-context.test.ts)
 
 ## Version
 

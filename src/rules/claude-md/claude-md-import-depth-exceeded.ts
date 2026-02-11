@@ -36,6 +36,60 @@ export const rule: Rule = {
     defaultOptions: {
       maxDepth: 5,
     },
+    docs: {
+      recommended: true,
+      summary: 'Errors when the @import nesting depth exceeds the configured maximum.',
+      details:
+        'Deeply nested import chains make CLAUDE.md configurations difficult to understand and ' +
+        'may indicate accidental circular dependencies that the circular-import rule has not yet ' +
+        'caught. This rule tracks the depth of the import tree as it recursively resolves ' +
+        '`@import` directives. When the depth exceeds the configured maximum (default: 5), an ' +
+        'error is reported. A depth of 5 means file A imports B, which imports C, which imports ' +
+        'D, which imports E, which imports F -- at that point the nesting is flagged.',
+      examples: {
+        incorrect: [
+          {
+            description: 'An import chain that is too deep (depth > 5)',
+            code:
+              '# CLAUDE.md\n' +
+              '@import .claude/rules/a.md\n\n' +
+              '# a.md imports b.md, b.md imports c.md,\n' +
+              '# c.md imports d.md, d.md imports e.md,\n' +
+              '# e.md imports f.md -- depth 6 exceeds the limit',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'A flat import structure with minimal nesting',
+            code:
+              '# CLAUDE.md\n\n' +
+              '@import .claude/rules/git.md\n' +
+              '@import .claude/rules/testing.md\n' +
+              '@import .claude/rules/api.md',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Flatten the import hierarchy by importing files directly from the main CLAUDE.md ' +
+        'instead of chaining imports through intermediate files. If files genuinely need to share ' +
+        'content, extract the shared content into a common file imported by both.',
+      optionExamples: [
+        {
+          description: 'Allow deeper nesting up to 10 levels',
+          config: { maxDepth: 10 },
+        },
+        {
+          description: 'Strict mode: limit to 3 levels of nesting',
+          config: { maxDepth: 3 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule only if your project has a legitimate reason for deeply nested ' +
+        'imports, such as a multi-team monorepo with layered configuration.',
+      relatedRules: ['claude-md-import-circular', 'claude-md-import-missing'],
+    },
   },
 
   validate: async (context) => {

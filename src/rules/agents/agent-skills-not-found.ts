@@ -24,6 +24,43 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-skills-not-found.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that skills referenced in agent frontmatter ' + 'exist on disk.',
+      details:
+        'This rule checks that every skill name listed in the ' +
+        '`skills` array of agent frontmatter has a corresponding ' +
+        'SKILL.md file at `.claude/skills/{skill-name}/SKILL.md`. ' +
+        'Referencing a nonexistent skill causes the agent to fail ' +
+        'when it tries to load or invoke the skill at runtime. ' +
+        'The rule resolves the project root from the agent file ' +
+        'path and checks each referenced skill directory.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Agent references a skill that does not exist',
+            code:
+              '---\nname: deploy-agent\n' +
+              'description: Handles deployment pipelines\n' +
+              'skills:\n  - nonexistent-skill\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Agent references skills that exist at ' + '.claude/skills/',
+            code:
+              '---\nname: deploy-agent\n' +
+              'description: Handles deployment pipelines\n' +
+              'skills:\n  - run-tests\n  - deploy\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Create the missing skill directory and SKILL.md file at ' +
+        '`.claude/skills/{skill-name}/SKILL.md`, or remove the ' +
+        'nonexistent skill name from the `skills` array.',
+      relatedRules: ['agent-skills'],
+    },
   },
   validate: async (context: RuleContext) => {
     const { filePath, fileContent } = context;

@@ -61,6 +61,38 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-hook-missing-plugin-root.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Requires plugin hook scripts to use ${CLAUDE_PLUGIN_ROOT} for portable path references.',
+      details:
+        'Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) ' +
+        'will break when the plugin is installed in a different location. This rule ensures that ' +
+        'hook commands use the ${CLAUDE_PLUGIN_ROOT} variable to form absolute paths that resolve ' +
+        'correctly regardless of where the plugin is installed. Both inline hooks and hooks path ' +
+        'references are checked.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Hook using a relative script path without ${CLAUDE_PLUGIN_ROOT}',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "hooks": {\n    "PostToolUse": [\n      {\n        "command": "./scripts/post-tool.sh",\n        "matcher": "Write"\n      }\n    ]\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Hook using ${CLAUDE_PLUGIN_ROOT} for the script path',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "hooks": {\n    "PostToolUse": [\n      {\n        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-tool.sh",\n        "matcher": "Write"\n      }\n    ]\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Replace relative script paths in hook commands with paths that start with ' +
+        '${CLAUDE_PLUGIN_ROOT}. For example, change "./scripts/lint.sh" to ' +
+        '"${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh".',
+      relatedRules: ['plugin-missing-file'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

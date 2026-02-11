@@ -3,45 +3,24 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: MCP
-**Category**: Schema Validation
+**Recommended**: Yes
 
 MCP transport type must be one of the supported values
 
 ## Rule Details
 
-MCP servers support two transport types: `stdio` (subprocess via standard input/output) and `sse` (Server-Sent Events over HTTP). Each transport type has specific required fields that must be properly formatted and non-empty.
-
-This rule detects invalid transport types, empty commands in stdio transport, empty or invalid URLs in SSE transport, and improper variable expansion syntax. All transport configurations must specify a valid type and provide all required fields for that type.
+This rule checks that the type field of each MCP server is one of the supported transport types: stdio, sse, http, or websocket. An unrecognized transport type will prevent Claude Code from establishing a connection to the MCP server. Servers without an explicit type field are skipped because the type can be inferred from the presence of a command field.
 
 ### Incorrect
 
-Invalid transport type:
+Server with an unsupported transport type
 
 ```json
 {
   "mcpServers": {
     "my-server": {
-      "name": "my-server",
-      "transport": {
-        "type": "http",
-        "url": "http://localhost:3000"
-      }
-    }
-  }
-}
-```
-
-Empty required field:
-
-```json
-{
-  "mcpServers": {
-    "my-server": {
-      "name": "my-server",
-      "transport": {
-        "type": "stdio",
-        "command": ""
-      }
+      "type": "grpc",
+      "url": "https://mcp.example.com"
     }
   }
 }
@@ -49,40 +28,28 @@ Empty required field:
 
 ### Correct
 
-Valid stdio transport:
+Server with a valid HTTP transport type
 
 ```json
 {
   "mcpServers": {
     "my-server": {
-      "name": "my-server",
-      "transport": {
-        "type": "stdio",
-        "command": "node",
-        "args": ["server.js"],
-        "env": {
-          "LOG_LEVEL": "info"
-        }
-      }
+      "type": "http",
+      "url": "https://mcp.example.com"
     }
   }
 }
 ```
 
-Valid SSE transport with variable expansion:
+Server with a valid stdio transport type
 
 ```json
 {
   "mcpServers": {
     "my-server": {
-      "name": "my-server",
-      "transport": {
-        "type": "sse",
-        "url": "${MCP_SERVER_URL:-http://localhost:3000}",
-        "env": {
-          "API_KEY": "${API_KEY}"
-        }
-      }
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@my/mcp-server"]
     }
   }
 }
@@ -90,96 +57,21 @@ Valid SSE transport with variable expansion:
 
 ## How To Fix
 
-To fix invalid transport configuration:
-
-1. **Use only supported transport types** (`stdio` or `sse`):
-
-   ```json
-   # Wrong: "http", "ws", "grpc"
-   # Correct: "stdio" or "sse"
-   {
-     "transport": {
-       "type": "stdio"
-     }
-   }
-   ```
-
-2. **For stdio transport**, provide non-empty command:
-
-   ```json
-   {
-     "transport": {
-       "type": "stdio",
-       "command": "node",
-       "args": ["server.js"]
-     }
-   }
-   ```
-
-3. **For sse transport**, provide valid URL:
-
-   ```json
-   {
-     "transport": {
-       "type": "sse",
-       "url": "http://localhost:3000"
-     }
-   }
-   ```
-
-4. **Use environment variable expansion** for dynamic values:
-
-   ```json
-   {
-     "transport": {
-       "type": "sse",
-       "url": "${MCP_SERVER_URL:-http://localhost:3000}",
-       "env": {
-         "API_KEY": "${API_KEY}"
-       }
-     }
-   }
-   ```
-
-5. **Validate the configuration**:
-
-   ```bash
-   # Check JSON syntax
-   cat .mcp.json | jq .
-
-   # Run claudelint
-   claudelint check-mcp
-   ```
-
-6. **Test the server connection**:
-
-   ```bash
-   # For stdio servers, test command runs
-   node server.js
-
-   # For SSE servers, test URL is reachable
-   curl http://localhost:3000
-   ```
+Change the type field to one of the supported values: stdio, sse, http, or websocket. Note that sse is deprecated in favor of http.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid transport configuration causes MCP server connection failures, runtime errors, silent functionality loss, and difficult debugging. Always fix transport issues rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [mcp-invalid-server](./mcp-invalid-server.md) - Server configuration validation
-- [mcp-invalid-env-var](./mcp-invalid-env-var.md) - Environment variable validation
+- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
+- [`mcp-sse-transport-deprecated`](/rules/mcp/mcp-sse-transport-deprecated)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/mcp/mcp-invalid-transport.ts)
-- [Rule Tests](../../tests/rules/mcp/mcp-invalid-transport.test.ts)
-- [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [MCP Transport Types](https://spec.modelcontextprotocol.io/specification/architecture/#transports)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-invalid-transport.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/mcp/mcp-invalid-transport.test.ts)
 
 ## Version
 

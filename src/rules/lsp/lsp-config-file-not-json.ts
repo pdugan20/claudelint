@@ -24,6 +24,50 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-config-file-not-json.md',
+    docs: {
+      summary: 'Warns when LSP configFile paths do not end with .json extension.',
+      details:
+        'This deprecated rule checks the `configFile` property on LSP server entries ' +
+        'in `lsp.json` and warns when the path does not end with `.json`. Config files ' +
+        'using the JSON extension get better editor support with syntax highlighting ' +
+        'and validation. Note: the `configFile` property is not part of the official ' +
+        'LSP specification and this rule is deprecated.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Config file without .json extension',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "configFile": "config/server.yaml"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Config file with .json extension',
+            code:
+              '{\n' +
+              '  "my-server": {\n' +
+              '    "command": "/usr/bin/my-server",\n' +
+              '    "configFile": "config/server.json"\n' +
+              '  }\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Rename the configuration file to use the `.json` extension and update ' +
+        'the `configFile` path in `lsp.json` accordingly.',
+      whenNotToUse:
+        'This rule is deprecated because `configFile` is not part of the official LSP ' +
+        'specification. Disable it if your LSP server requires a non-JSON config format.',
+      relatedRules: ['lsp-config-file-relative-path'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

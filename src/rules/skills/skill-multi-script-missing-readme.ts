@@ -40,6 +40,62 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-multi-script-missing-readme.md',
+    docs: {
+      summary: 'Warns when a skill with multiple script files does not include a README.md.',
+      details:
+        'Complex skills that contain many script files (`.sh`, `.py`, `.js`, etc.) benefit from ' +
+        'a README.md that documents setup, usage, dependencies, and troubleshooting. ' +
+        'This rule counts the script files in the skill directory and warns if the count exceeds ' +
+        'the configured threshold (default: 3) without a README.md present. ' +
+        'A README helps contributors and users navigate multi-file skills.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skill directory with 4 scripts and no README.md',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  build.sh\n' +
+              '  test.sh\n' +
+              '  deploy.sh\n' +
+              '  lint.sh',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skill directory with 4 scripts and a README.md',
+            code:
+              'my-skill/\n' +
+              '  SKILL.md\n' +
+              '  README.md\n' +
+              '  build.sh\n' +
+              '  test.sh\n' +
+              '  deploy.sh\n' +
+              '  lint.sh',
+            language: 'text',
+          },
+          {
+            description: 'Skill directory with few scripts (under threshold)',
+            code: 'my-skill/\n' + '  SKILL.md\n' + '  run.sh\n' + '  setup.sh',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Add a README.md to the skill directory documenting setup instructions, usage examples ' +
+        'for each script, dependencies, and troubleshooting guidance.',
+      optionExamples: [
+        {
+          description: 'Require README only when more than 5 scripts exist',
+          config: { maxScripts: 5 },
+        },
+      ],
+      whenNotToUse:
+        'If your multi-script skill is self-documenting through SKILL.md alone and the scripts ' +
+        'have clear names, you may disable this rule.',
+      relatedRules: ['skill-too-many-files', 'skill-missing-examples'],
+    },
     schema: z.object({
       maxScripts: z.number().positive().int().optional(),
     }),

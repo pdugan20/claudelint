@@ -3,137 +3,74 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Plugin
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Plugin version must follow semantic versioning format
 
 ## Rule Details
 
-Plugin versions must follow the semver format `MAJOR.MINOR.PATCH` with all three numeric components required. Optional pre-release identifiers (e.g., `-alpha`, `-beta.1`) and build metadata (e.g., `+build.123`) are allowed following semver 2.0.0 specification.
-
-This rule detects invalid semver formats including missing version parts, non-numeric components, `v` prefixes, wrong separators (underscores instead of dots), and text versions like "latest".
+This rule checks that the version field in plugin.json conforms to the Semantic Versioning (semver) specification. Valid formats include major.minor.patch (e.g., 1.0.0), optional pre-release identifiers (e.g., 2.1.0-beta.1), and optional build metadata (e.g., 1.0.0+build.42). Proper semver ensures consistent dependency resolution and clear communication about breaking changes.
 
 ### Incorrect
 
-Missing version parts:
+Version missing the patch number
 
 ```json
 {
-  "version": "1.0"
+  "name": "my-plugin",
+  "version": "1.0",
+  "description": "A sample plugin"
 }
 ```
 
-Invalid prefix or text:
+Version with a leading v prefix
 
 ```json
 {
-  "version": "v1.0.0"
-}
-```
-
-```json
-{
-  "version": "latest"
+  "name": "my-plugin",
+  "version": "v2.1.0",
+  "description": "A sample plugin"
 }
 ```
 
 ### Correct
 
-Standard semver:
+Standard semver version
 
 ```json
 {
-  "version": "1.0.0"
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "A sample plugin"
 }
 ```
 
-With pre-release and build metadata:
+Pre-release version
 
 ```json
 {
-  "version": "2.1.0-beta.1"
-}
-```
-
-```json
-{
-  "version": "3.0.0-rc.1+build.123"
+  "name": "my-plugin",
+  "version": "2.1.0-beta.1",
+  "description": "A sample plugin"
 }
 ```
 
 ## How To Fix
 
-To fix invalid version numbers:
-
-1. **Ensure all three parts** are present (MAJOR.MINOR.PATCH):
-
-   ```json
-   # Before: "1.0"
-   # After: "1.0.0"
-   ```
-
-2. **Remove "v" prefix**:
-
-   ```json
-   # Before: "v1.0.0"
-   # After: "1.0.0"
-   ```
-
-3. **Replace text versions** with semver:
-
-   ```json
-   # Before: "latest"
-   # After: "1.0.0"
-   ```
-
-4. **Use valid pre-release** format if needed:
-
-   ```json
-   # Valid: "2.1.0-beta.1"
-   # Valid: "3.0.0-rc.1+build.123"
-   ```
-
-5. **Update version** in plugin.json:
-
-   ```bash
-   # Edit plugin.json
-   vim plugin.json
-   # Update version field to valid semver
-   ```
-
-6. **Sync with marketplace.json** if present:
-
-   ```bash
-   # Ensure both have same version
-   jq '.version' plugin.json
-   jq '.version' marketplace.json
-   ```
-
-7. **Run validation**:
-
-   ```bash
-   claudelint check-plugin
-   ```
+Update the version field to follow the semver format: MAJOR.MINOR.PATCH. Optionally append a pre-release identifier with a hyphen (e.g., 1.0.0-beta) or build metadata with a plus sign (e.g., 1.0.0+build.1).
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid version numbers cause plugin installation failures, dependency resolution problems, marketplace submission rejection, and update mechanism failures. Always use valid semver versions rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [plugin-invalid-manifest](./plugin-invalid-manifest.md) - Manifest schema validation
-- [plugin-missing-file](./plugin-missing-file.md) - Referenced file validation
+- [`plugin-description-required`](/rules/plugin/plugin-description-required)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/plugin/plugin-invalid-version.ts)
-- [Rule Tests](../../tests/rules/plugin/plugin-invalid-version.test.ts)
-- [Semantic Versioning 2.0.0](https://semver.org/)
-- [NPM Semver](https://docs.npmjs.com/about-semantic-versioning)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-invalid-version.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-invalid-version.test.ts)
 
 ## Version
 

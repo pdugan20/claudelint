@@ -1,35 +1,24 @@
 # Rule: agent-body-too-short
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Agents
-**Category**: Schema Validation
+**Recommended**: Yes
 
 Agent body content should meet minimum length requirements
 
 ## Rule Details
 
-Agents should include substantive instructions beyond frontmatter. Very short body content suggests incomplete documentation or insufficient guidance for the agent's behavior and capabilities.
-
-The body content is measured after the frontmatter block. This rule helps ensure agents have meaningful system prompts that provide clear direction.
+This rule checks that the markdown body of an AGENT.md file (the content after frontmatter) contains enough substantive text. Very short body content typically indicates an incomplete agent definition that lacks the detailed instructions needed for effective agent behavior. The minimum length is configurable via the `minLength` option.
 
 ### Incorrect
 
-Empty body:
+Agent body that is too short
 
 ```markdown
 ---
-name: code-reviewer
-description: Reviews code changes for quality and best practices
----
-```
-
-Body too short:
-
-```markdown
----
-name: code-reviewer
-description: Reviews code changes for quality and best practices
+name: code-review
+description: Reviews code for quality
 ---
 
 Review code.
@@ -37,90 +26,73 @@ Review code.
 
 ### Correct
 
-Sufficient body content with clear instructions:
+Agent body with sufficient instructions
 
 ```markdown
 ---
-name: code-reviewer
-description: Reviews code changes for quality and best practices
+name: code-review
+description: Reviews code for quality
 ---
 
-# System Prompt
+## System Prompt
 
-This agent specializes in code review. When reviewing code:
-
-1. Check for syntax errors and potential bugs
-2. Validate adherence to coding standards
-3. Suggest performance improvements
-4. Identify security vulnerabilities
-5. Ensure proper error handling
-
-Focus on constructive feedback and provide specific examples.
+You are a code review agent. Analyze pull requests for correctness, performance, and style issues. Provide actionable feedback with specific suggestions.
 ```
 
 ## How To Fix
 
-To resolve body length issues:
-
-1. Add a "System Prompt" section with detailed instructions
-2. Document the agent's purpose, behavior, and capabilities
-3. Include specific guidelines for how the agent should operate
-4. Add examples of expected inputs and outputs
-5. Document any constraints or limitations
-
-The default minimum length is 50 characters, but longer, more detailed instructions are recommended for better agent performance.
+Add more detailed instructions, guidelines, or context to the agent body content. Include a System Prompt section with clear behavioral directives.
 
 ## Options
 
-This rule accepts a configuration object with the following property:
-
-### `minLength`
-
-Minimum number of characters required in the agent body content.
-
-Type: `number` (positive integer)
-Default: `50`
-
-Example configuration:
+Default options:
 
 ```json
 {
-  "rules": {
-    "agent-body-too-short": ["warn", { "minLength": 100 }]
-  }
+  "minLength": 50
 }
 ```
 
-Schema:
+Require at least 100 characters of body content:
 
-```typescript
+```json
 {
-  minLength?: number; // positive integer
+  "agent-body-too-short": [
+    "warn",
+    {
+      "minLength": 100
+    }
+  ]
 }
 ```
 
-Default options:
+Use a lower threshold for simple agents:
 
-```typescript
+```json
 {
-  minLength: 50
+  "agent-body-too-short": [
+    "warn",
+    {
+      "minLength": 30
+    }
+  ]
 }
 ```
 
 ## When Not To Use It
 
-You might reduce the `minLength` threshold for simple agents that genuinely require minimal instructions. However, most agents benefit from detailed system prompts. Consider whether your agent truly needs minimal documentation or if it would perform better with more guidance.
-
-Never disable this rule entirely - even simple agents should have some body content explaining their purpose.
+Disable this rule if your agents use an external system prompt source and the AGENT.md body is intentionally minimal.
 
 ## Related Rules
 
-- [agent-missing-system-prompt](./agent-missing-system-prompt.md) - Validates presence of "System Prompt" section
+- [`agent-missing-system-prompt`](/rules/agents/agent-missing-system-prompt)
+- [`agent-name`](/rules/agents/agent-name)
+- [`agent-description`](/rules/agents/agent-description)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/agents/agent-body-too-short.ts)
-- [Rule Tests](../../tests/rules/agents/agent-body-too-short.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-body-too-short.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/agents/agent-body-too-short.test.ts)
 
 ## Version
 

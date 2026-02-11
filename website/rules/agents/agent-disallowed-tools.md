@@ -3,126 +3,68 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Agents
-**Category**: Schema Validation
+**Recommended**: Yes
 
-Agent disallowed-tools must be an array of tool names
+Agent disallowedTools must be an array of tool names
 
 ## Rule Details
 
-The `disallowed-tools` field restricts which Claude Code tools an agent cannot use. It must be formatted as an array of tool names and cannot be used simultaneously with the `tools` field (they are mutually exclusive).
-
-This field is useful for security-sensitive agents or when you want to prevent specific tool usage. For example, an agent that only reads documentation might disallow file modification tools.
+This rule enforces that the `disallowedTools` field in agent markdown frontmatter is a valid array of strings. Each entry should be a tool name that the agent is prohibited from using. Validation is delegated to the AgentFrontmatterSchema Zod schema. Proper formatting prevents runtime errors when the agent framework parses tool restrictions.
 
 ### Incorrect
 
-Not an array:
+disallowedTools as a single string instead of array
 
-```markdown
+```yaml
 ---
-name: reader
-description: Reads documentation files
-disallowed-tools: Edit
----
-```
-
-Invalid format:
-
-```markdown
----
-name: reader
-description: Reads documentation files
-disallowed-tools:
-  tool1: Edit
-  tool2: Write
+name: safe-agent
+description: Agent with tool restrictions
+disallowedTools: Bash
 ---
 ```
 
-Used with tools field (mutually exclusive):
+disallowedTools with non-string entries
 
-```markdown
+```yaml
 ---
-name: reader
-description: Reads documentation files
-tools:
-  - Read
-  - Bash
-disallowed-tools:
-  - Edit
-  - Write
+name: safe-agent
+description: Agent with tool restrictions
+disallowedTools:
+  - 123
+  - true
 ---
 ```
 
 ### Correct
 
-Valid disallowed-tools array:
+disallowedTools as a valid array of tool names
 
-```markdown
+```yaml
 ---
-name: reader
-description: Reads documentation files
-disallowed-tools:
-  - Edit
-  - Write
-  - NotebookEdit
----
-```
-
-Restricting file system modifications:
-
-```markdown
----
-name: analyzer
-description: Analyzes code without making changes
-disallowed-tools:
-  - Edit
-  - Write
+name: safe-agent
+description: Agent with tool restrictions
+disallowedTools:
   - Bash
+  - Write
 ---
 ```
 
 ## How To Fix
 
-To fix disallowed-tools configuration:
-
-1. **Format as array**: Use YAML array syntax with hyphens
-
-   ```yaml
-   disallowed-tools:
-     - Edit
-     - Write
-   ```
-
-2. **Remove tools field**: Cannot use both `tools` and `disallowed-tools` in the same agent
-   - Use `tools` to allowlist specific tools
-   - Use `disallowed-tools` to blocklist specific tools
-   - Never use both together
-
-3. **Use valid tool names**: Reference actual Claude Code tool names (Bash, Read, Edit, Write, Grep, Glob, etc.)
+Ensure `disallowedTools` is formatted as a YAML array of strings. Each entry should be a valid tool name like Bash, Write, Edit, or WebFetch.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid `disallowed-tools` configuration causes:
-
-- Runtime errors when agent tries to validate tool access
-- Unexpected tool availability
-- Security issues if restrictions aren't applied correctly
-- Confusion about which tools are available
-
-Always fix the configuration rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [agent-tools](./agent-tools.md) - Agent tools field validation
-- [agent-name](./agent-name.md) - Agent name format validation
+- [`agent-tools`](/rules/agents/agent-tools)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/agents/agent-disallowed-tools.ts)
-- [Rule Tests](../../tests/rules/agents/agent-disallowed-tools.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-disallowed-tools.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/agents/agent-disallowed-tools.test.ts)
 
 ## Version
 

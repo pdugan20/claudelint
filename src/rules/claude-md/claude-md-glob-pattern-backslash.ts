@@ -23,6 +23,50 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-glob-pattern-backslash.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Warns when path patterns in rule file frontmatter use backslashes instead of forward slashes.',
+      details:
+        'Files in `.claude/rules/` can include YAML frontmatter with a `paths` field that specifies ' +
+        'glob patterns for when the rule should apply. Glob patterns should always use forward ' +
+        'slashes (`/`) as path separators, even on Windows. Backslashes (`\\`) are treated as ' +
+        'escape characters by most glob implementations and will not match paths correctly on ' +
+        'macOS or Linux. This rule inspects the `paths` array in frontmatter and reports any ' +
+        'pattern that contains a backslash.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Frontmatter path pattern using backslashes',
+            code:
+              '---\n' +
+              'paths:\n' +
+              '  - src\\components\\**\\*.tsx\n' +
+              '---\n\n' +
+              'Component guidelines here.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Frontmatter path pattern using forward slashes',
+            code:
+              '---\n' +
+              'paths:\n' +
+              '  - src/components/**/*.tsx\n' +
+              '---\n\n' +
+              'Component guidelines here.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Replace all backslashes (`\\`) with forward slashes (`/`) in the `paths` array of your ' +
+        'rule file frontmatter. Forward slashes work correctly on all operating systems.',
+      whenNotToUse:
+        'There is no reason to disable this rule. Backslashes in glob patterns are always incorrect.',
+      relatedRules: ['claude-md-glob-pattern-too-broad', 'claude-md-paths'],
+    },
   },
 
   validate: (context) => {

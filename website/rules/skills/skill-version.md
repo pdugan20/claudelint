@@ -3,116 +3,89 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
+**Recommended**: Yes
 
 Skill version must follow semantic versioning format (e.g., 1.0.0)
 
 ## Rule Details
 
-This rule validates that when a skill includes a `version` field in its frontmatter, it follows the semantic versioning (SemVer) format: `MAJOR.MINOR.PATCH`. Semantic versioning provides a clear, standardized way to communicate changes and compatibility.
-
-The version field is optional, but when present it must be a valid SemVer string. This enables proper dependency management, clear communication about breaking changes, and version-based compatibility checks.
+The `version` frontmatter field communicates the skill's release state to users. When present, it must follow semantic versioning format (e.g., `1.0.0`, `0.3.1`). This rule delegates to the skill frontmatter Zod schema for validation. Invalid version strings prevent proper version tracking and dependency resolution. The field is optional; this rule only fires when it is present but malformed.
 
 ### Incorrect
 
-Invalid version formats in SKILL.md frontmatter:
+Version missing patch number
 
-```markdown
+```yaml
 ---
-name: deploy
-description: Deploys applications to production
-version: 1.0          # Missing patch version
+name: deploy-app
+version: 1.0
 ---
 ```
 
-```markdown
+Version with non-numeric components
+
+```yaml
 ---
-name: deploy
-description: Deploys applications to production
-version: v1.0.0       # Should not include 'v' prefix
+name: deploy-app
+version: v1.0.0
 ---
 ```
 
-```markdown
+Arbitrary string as version
+
+```yaml
 ---
-name: deploy
-description: Deploys applications to production
-version: latest       # Not a valid SemVer
+name: deploy-app
+version: latest
 ---
 ```
 
 ### Correct
 
-Valid semantic version:
+Standard semantic version
 
-```markdown
+```yaml
 ---
-name: deploy
-description: Deploys applications to production
-version: "1.0.0"
----
-```
-
-With pre-release tag:
-
-```markdown
----
-name: deploy
-description: Deploys applications to production
-version: "1.0.0-beta.1"
+name: deploy-app
+version: 1.0.0
 ---
 ```
 
-With build metadata:
+Pre-release semantic version
 
-```markdown
+```yaml
 ---
-name: deploy
-description: Deploys applications to production
-version: "1.0.0+20240115"
+name: deploy-app
+version: 0.3.1
+---
+```
+
+No version field (version is optional)
+
+```yaml
+---
+name: deploy-app
+description: Deploys the application
 ---
 ```
 
 ## How To Fix
 
-Update the version field to follow semantic versioning:
-
-1. Use three numbers separated by dots: `MAJOR.MINOR.PATCH`
-2. Remove any `v` prefix
-3. Optionally add pre-release identifiers: `1.0.0-alpha.1`
-4. Optionally add build metadata: `1.0.0+build.123`
-
-Examples:
-
-- `1.0.0` - Initial release
-- `1.1.0` - New feature (backwards compatible)
-- `2.0.0` - Breaking change
-- `1.0.1` - Bug fix
+Set the `version` field to a valid semantic version string in `MAJOR.MINOR.PATCH` format (e.g., `1.0.0`). Do not include a "v" prefix or use partial version numbers.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Consider disabling this rule if:
-
-- Your project uses a different versioning scheme mandated by your organization
-- You're working with auto-generated skills where versions are managed externally
-- The skill is experimental and versioning hasn't been established yet
-
-However, SemVer is the industry standard and recommended for all projects.
-
 ## Related Rules
 
-- [skill-missing-version](./skill-missing-version.md) - Skill should have a version field
-- [skill-missing-changelog](./skill-missing-changelog.md) - Track version changes in CHANGELOG
+- [`skill-name`](/rules/skills/skill-name)
+- [`skill-model`](/rules/skills/skill-model)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-version.ts)
-- [Rule Tests](../../tests/rules/skills/skill-version.test.ts)
-- [Semantic Versioning Specification](https://semver.org/)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-version.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-version.test.ts)
 
 ## Version
 

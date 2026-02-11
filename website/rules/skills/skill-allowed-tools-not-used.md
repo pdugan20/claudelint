@@ -1,80 +1,71 @@
 # Rule: skill-allowed-tools-not-used
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Skills
 
 Tools listed in allowed-tools are never referenced in the skill body
 
 ## Rule Details
 
-This rule warns when a tool declared in the `allowed-tools` frontmatter is never mentioned in the skill body content. Unused tool declarations grant unnecessary permissions and may indicate stale configuration from a previous version of the skill.
-
-The rule handles several tool formats:
-
-- **Base tools**: `Bash`, `Read`, `Write` - checks for the tool name in the body
-- **Scoped tools**: `Bash(claudelint:*)` - extracts the base name (`Bash`) and checks for that
-- **MCP tools**: `mcp__firebase__firebase_login` - also checks for the short name (`firebase_login`)
+This rule checks each tool listed in the `allowed-tools` frontmatter array against the SKILL.md body content. If a tool name is never mentioned in the body, it is likely stale configuration left over from a previous version. Unused tool declarations grant unnecessary permissions and make the skill harder to audit. The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), checking for the short name portion of MCP tools as well.
 
 ### Incorrect
 
-Tool declared but not mentioned in body:
+Tool listed in allowed-tools but never mentioned in body
 
-```markdown
+```yaml
 ---
+name: build
+description: Builds the project
 allowed-tools:
   - Bash
-  - Write
+  - Read
+  - WebFetch
 ---
 
-# My Skill
+## Usage
 
-Use the Bash tool to run validation.
+Run `Bash` to execute the build.
+Use `Read` to check config.
 ```
-
-`Write` is declared but never referenced.
 
 ### Correct
 
-All declared tools referenced in body:
+All allowed tools are referenced in the body
 
-```markdown
+```yaml
 ---
+name: build
+description: Builds the project
 allowed-tools:
   - Bash
-  - Write
+  - Read
 ---
 
-# My Skill
+## Usage
 
-Use Bash to run validation. Use Write to save results.
+Use `Bash` to run the build command.
+Use `Read` to inspect configuration files.
 ```
 
 ## How To Fix
 
-Either:
-
-1. **Remove unused tools** from the `allowed-tools` list to minimize permissions
-2. **Add usage instructions** in the body that reference the tool, explaining when and how it's used
+Remove unused tools from the `allowed-tools` list, or add instructions in the skill body that reference the tool so the AI model knows when and how to use it.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule if your skill uses tools implicitly through sub-processes or other indirect mechanisms where the tool name doesn't appear in documentation.
-
 ## Related Rules
 
-- [skill-allowed-tools](./skill-allowed-tools.md) - Validates allowed-tools format and mutual exclusivity
-- [skill-mcp-tool-qualified-name](./skill-mcp-tool-qualified-name.md) - Ensures MCP tools use qualified names
+- [`skill-allowed-tools`](/rules/skills/skill-allowed-tools)
+- [`skill-mcp-tool-qualified-name`](/rules/skills/skill-mcp-tool-qualified-name)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-allowed-tools-not-used.ts)
-- [Rule Tests](../../tests/rules/skills/skill-allowed-tools-not-used.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-allowed-tools-not-used.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-allowed-tools-not-used.test.ts)
 
 ## Version
 

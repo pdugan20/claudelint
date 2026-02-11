@@ -1,136 +1,64 @@
 # Rule: lsp-language-id-not-lowercase
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: LSP
-**Category**: Best Practices
 
 LSP language IDs should be lowercase
 
 ## Rule Details
 
-Language IDs in extension mappings should be lowercase to follow LSP conventions and ensure consistent behavior across different language servers and editors. While some LSP implementations may accept mixed-case language IDs, using lowercase is the standard convention recommended by the Language Server Protocol specification.
-
-This rule warns when language IDs contain uppercase characters. Using consistent lowercase IDs improves compatibility and prevents potential issues with case-sensitive language server matching.
+This rule checks the values in the `extensionToLanguage` mapping of each LSP server entry in `lsp.json` and warns when a language ID contains uppercase characters. The LSP specification convention is to use lowercase language IDs (e.g., `typescript` not `TypeScript`). Using inconsistent casing can cause mismatches between editor expectations and server behavior.
 
 ### Incorrect
 
-Mixed-case language IDs:
+Language IDs with uppercase characters
 
 ```json
 {
-  "extensionMapping": {
-    ".ts": "TypeScript",
-    ".py": "Python",
-    ".rs": "Rust"
-  }
-}
-```
-
-Uppercase language IDs:
-
-```json
-{
-  "extensionMapping": {
-    ".js": "JavaScript",
-    ".jsx": "JavaScriptReact",
-    ".go": "GO"
+  "my-server": {
+    "command": "/usr/bin/my-server",
+    "extensionToLanguage": {
+      ".ts": "TypeScript",
+      ".py": "Python"
+    }
   }
 }
 ```
 
 ### Correct
 
-Lowercase language IDs:
+Lowercase language IDs
 
 ```json
 {
-  "extensionMapping": {
-    ".ts": "typescript",
-    ".tsx": "typescriptreact",
-    ".py": "python",
-    ".rs": "rust"
-  }
-}
-```
-
-Standard LSP language identifiers:
-
-```json
-{
-  "extensionMapping": {
-    ".js": "javascript",
-    ".jsx": "javascriptreact",
-    ".go": "go",
-    ".md": "markdown",
-    ".json": "json",
-    ".yaml": "yaml",
-    ".yml": "yaml"
+  "my-server": {
+    "command": "/usr/bin/my-server",
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".py": "python"
+    }
   }
 }
 ```
 
 ## How To Fix
 
-To fix language ID case issues:
-
-1. **Convert to lowercase**:
-   - `"TypeScript"` → `"typescript"`
-   - `"Python"` → `"python"`
-   - `"Rust"` → `"rust"`
-   - `"JavaScript"` → `"javascript"`
-
-2. **Update lsp.json**:
-
-```json
-{
-  "extensionMapping": {
-    ".ts": "typescript",
-    ".tsx": "typescriptreact",
-    ".js": "javascript",
-    ".jsx": "javascriptreact"
-  }
-}
-```
-
-1. **Use standard identifiers** from LSP specification:
-
-Common language IDs:
-
-- TypeScript: `"typescript"` and `"typescriptreact"`
-- JavaScript: `"javascript"` and `"javascriptreact"`
-- Python: `"python"`
-- Rust: `"rust"`
-- Go: `"go"`
-- C/C++: `"c"` and `"cpp"`
-- Java: `"java"`
-- Markdown: `"markdown"`
-
-1. **Verify configuration**:
-
-```bash
-claudelint check-lsp
-```
+Convert all language ID values to lowercase. For example, change `"TypeScript"` to `"typescript"` and `"Python"` to `"python"`.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Disable this rule if your language server explicitly requires mixed-case or uppercase language IDs (very rare). However, following the lowercase convention is strongly recommended for compatibility.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [lsp-language-id-empty](./lsp-language-id-empty.md) - Validates language IDs are not empty
-- [lsp-extension-missing-dot](./lsp-extension-missing-dot.md) - Validates extension format
+- [`lsp-language-id-empty`](/rules/lsp/lsp-language-id-empty)
+- [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/lsp/lsp-language-id-not-lowercase.ts)
-- [Rule Tests](../../tests/rules/lsp/lsp-language-id-not-lowercase.test.ts)
-- [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/)
-- [LSP Language Identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-language-id-not-lowercase.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-language-id-not-lowercase.test.ts)
 
 ## Version
 

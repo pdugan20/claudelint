@@ -26,6 +26,40 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-invalid-transport.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that MCP server transport types are supported values.',
+      details:
+        'This rule checks that the type field of each MCP server is one of the supported transport ' +
+        'types: stdio, sse, http, or websocket. An unrecognized transport type will prevent Claude ' +
+        'Code from establishing a connection to the MCP server. Servers without an explicit type ' +
+        'field are skipped because the type can be inferred from the presence of a command field.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Server with an unsupported transport type',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "type": "grpc",\n      "url": "https://mcp.example.com"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Server with a valid HTTP transport type',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "type": "http",\n      "url": "https://mcp.example.com"\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'Server with a valid stdio transport type',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "type": "stdio",\n      "command": "npx",\n      "args": ["-y", "@my/mcp-server"]\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Change the type field to one of the supported values: stdio, sse, http, or websocket. ' +
+        'Note that sse is deprecated in favor of http.',
+      relatedRules: ['mcp-invalid-server', 'mcp-sse-transport-deprecated'],
+    },
   },
 
   validate: (context) => {

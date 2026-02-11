@@ -1,124 +1,86 @@
 # Rule: skill-multi-script-missing-readme
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Cross-Reference
 
 Skills with multiple scripts should include a README.md
 
 ## Rule Details
 
-This rule triggers when a skill directory contains more than 3 script files but lacks a `README.md` file. Complex skills with multiple executable scripts become difficult to understand without documentation explaining how they work together, which script to run first, and how they interact.
-
-The rule counts scripts with extensions `.sh`, `.py`, `.js`, `.ts` and other executable file types. When the count exceeds the threshold (default: 3), users need additional documentation beyond SKILL.md to understand the setup process, usage patterns for each script, dependencies between scripts, and troubleshooting steps.
+Complex skills that contain many script files (`.sh`, `.py`, `.js`, etc.) benefit from a README.md that documents setup, usage, dependencies, and troubleshooting. This rule counts the script files in the skill directory and warns if the count exceeds the configured threshold (default: 3) without a README.md present. A README helps contributors and users navigate multi-file skills.
 
 ### Incorrect
 
-Skill with 5 scripts but no README.md:
+Skill directory with 4 scripts and no README.md
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-├── deploy.sh
-├── rollback.sh
-├── health-check.sh
-├── validate.sh
-└── notify.sh
-
-5 scripts, no README.md
+my-skill/
+  SKILL.md
+  build.sh
+  test.sh
+  deploy.sh
+  lint.sh
 ```
 
 ### Correct
 
-Skill with README.md explaining script organization:
+Skill directory with 4 scripts and a README.md
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-├── README.md          ✓ Explains all scripts
-├── deploy.sh
-├── rollback.sh
-├── health-check.sh
-├── validate.sh
-└── notify.sh
+my-skill/
+  SKILL.md
+  README.md
+  build.sh
+  test.sh
+  deploy.sh
+  lint.sh
 ```
 
-Sample README.md content:
+Skill directory with few scripts (under threshold)
 
-```markdown
-# Deploy Skill
-
-## Scripts
-
-- `deploy.sh` - Main deployment script (run this first)
-- `rollback.sh` - Rollback to previous version
-- `health-check.sh` - Verify deployment health
-- `validate.sh` - Pre-deployment validation
-- `notify.sh` - Send deployment notifications
-
-## Setup
-
-1. Configure API credentials in `.env`
-2. Run `validate.sh` to check configuration
-3. Execute `deploy.sh` to deploy
-
-## Dependencies
-
-- curl
-- jq
-- AWS CLI
+```text
+my-skill/
+  SKILL.md
+  run.sh
+  setup.sh
 ```
 
 ## How To Fix
 
-Add a README.md to your skill directory that includes:
-
-1. Create `README.md` in the skill directory
-2. List all scripts with brief descriptions
-3. Document the execution order
-4. Explain setup and dependencies
-5. Include troubleshooting tips
+Add a README.md to the skill directory documenting setup instructions, usage examples for each script, dependencies, and troubleshooting guidance.
 
 ## Options
 
-### `maxScripts`
-
-Maximum number of scripts before README is required.
-
-Type: `number`
-Default: `3`
-
-Example configuration:
+Default options:
 
 ```json
 {
-  "rules": {
-    "skill-multi-script-missing-readme": ["warn", { "maxScripts": 5 }]
-  }
+  "maxScripts": 3
+}
+```
+
+Require README only when more than 5 scripts exist:
+
+```json
+{
+  "maxScripts": 5
 }
 ```
 
 ## When Not To Use It
 
-Consider disabling this rule if:
-
-- All scripts are self-explanatory single-purpose utilities
-- Your skill has comprehensive SKILL.md documentation covering all scripts
-- Scripts are auto-generated and change frequently
-- You're using a different documentation format (Wiki, external docs)
-
-However, README.md is the standard location users expect to find setup instructions.
+If your multi-script skill is self-documenting through SKILL.md alone and the scripts have clear names, you may disable this rule.
 
 ## Related Rules
 
-- [skill-missing-examples](./skill-missing-examples.md) - SKILL.md should have usage examples
-- [skill-too-many-files](./skill-too-many-files.md) - Too many files at root level
+- [`skill-too-many-files`](/rules/skills/skill-too-many-files)
+- [`skill-missing-examples`](/rules/skills/skill-missing-examples)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-multi-script-missing-readme.ts)
-- [Rule Tests](../../tests/rules/skills/skill-multi-script-missing-readme.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-multi-script-missing-readme.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-multi-script-missing-readme.test.ts)
 
 ## Version
 

@@ -3,157 +3,63 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Plugin
-**Category**: Cross-Reference
+**Recommended**: Yes
 
 Files referenced in plugin.json must exist
 
 ## Rule Details
 
-When a plugin declares skills, agents, hooks, commands, or MCP servers in `plugin.json`, the corresponding files must exist in specific locations following Claude Code's directory conventions. Each component type has a defined file path pattern that must be followed.
-
-This rule detects missing skill SKILL.md files, missing agent markdown files, missing hook JSON files, missing command markdown files, and missing .mcp.json when MCP servers are referenced. File names are case-sensitive and must match references exactly.
+This rule checks that every path referenced in plugin.json actually exists. It validates skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. For hooks and server configs, only string paths are checked (inline objects are skipped). Missing referenced files will cause the plugin to fail at runtime when Claude Code tries to load the referenced resources.
 
 ### Incorrect
 
-Skill reference without file:
+Plugin referencing a skills directory that does not exist
 
 ```json
 {
   "name": "my-plugin",
   "version": "1.0.0",
   "description": "My plugin",
-  "skills": ["format-code"]
-}
-```
-
-```text
-.claude/skills/format-code/SKILL.md not found
-```
-
-Multiple missing component files:
-
-```json
-{
-  "name": "my-plugin",
-  "version": "1.0.0",
-  "description": "My plugin",
-  "skills": ["missing-skill"],
-  "agents": ["missing-agent"],
-  "hooks": ["missing-hook"]
+  "skills": [
+    "./.claude/skills"
+  ]
 }
 ```
 
 ### Correct
 
-All referenced files exist:
+Plugin with all referenced paths existing on disk
 
 ```json
 {
   "name": "my-plugin",
   "version": "1.0.0",
   "description": "My plugin",
-  "skills": ["format-code"],
-  "agents": ["reviewer"],
-  "hooks": ["pre-commit"],
-  "commands": ["build"]
+  "skills": [
+    "./.claude/skills"
+  ],
+  "hooks": "./.claude/hooks.json"
 }
-```
-
-Plugin with matching directory structure:
-
-```text
-my-plugin/
-├── plugin.json
-└── .claude/
-    ├── skills/
-    │   └── format-code/
-    │       └── SKILL.md
-    ├── agents/
-    │   └── reviewer.md
-    ├── hooks/
-    │   └── pre-commit.json
-    └── commands/
-        └── build.md
 ```
 
 ## How To Fix
 
-To resolve missing file errors:
-
-1. **Check which files are missing** from the error message
-
-2. **Create missing skill files**:
-
-   ```bash
-   mkdir -p .claude/skills/format-code
-   touch .claude/skills/format-code/SKILL.md
-   # Add frontmatter and content
-   ```
-
-3. **Create missing agent files**:
-
-   ```bash
-   mkdir -p .claude/agents
-   touch .claude/agents/reviewer.md
-   # Add frontmatter and content
-   ```
-
-4. **Create missing hook files**:
-
-   ```bash
-   mkdir -p .claude/hooks
-   touch .claude/hooks/pre-commit.json
-   # Add hook configuration
-   ```
-
-5. **Create missing command files**:
-
-   ```bash
-   mkdir -p .claude/commands
-   touch .claude/commands/build.md
-   # Add command documentation
-   ```
-
-6. **Create MCP configuration** if needed:
-
-   ```bash
-   touch .mcp.json
-   # Add MCP server configuration
-   ```
-
-7. **Or remove the reference** from plugin.json if not needed:
-
-   ```json
-   {
-     "skills": ["format-code"],
-     "agents": []
-   }
-   ```
-
-8. **Run validation**:
-
-   ```bash
-   claudelint check-plugin
-   ```
+Create the missing files or directories at the paths specified in plugin.json. Alternatively, remove or correct any stale references that point to files that have been moved or deleted.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Missing files cause plugin installation failures, components not loading, runtime errors when components are invoked, and broken plugin functionality. Always ensure referenced files exist rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [plugin-invalid-manifest](./plugin-invalid-manifest.md) - Manifest schema validation
-- [plugin-invalid-version](./plugin-invalid-version.md) - Version format validation
+- [`plugin-missing-component-paths`](/rules/plugin/plugin-missing-component-paths)
+- [`plugin-marketplace-files-not-found`](/rules/plugin/plugin-marketplace-files-not-found)
+- [`plugin-components-wrong-location`](/rules/plugin/plugin-components-wrong-location)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/plugin/plugin-missing-file.ts)
-- [Rule Tests](../../tests/rules/plugin/plugin-missing-file.test.ts)
-- [Plugin Development Guide](https://github.com/anthropics/claude-code)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-missing-file.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-missing-file.test.ts)
 
 ## Version
 

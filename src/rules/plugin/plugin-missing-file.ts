@@ -27,6 +27,41 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-missing-file.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that files and directories referenced in plugin.json exist on disk.',
+      details:
+        'This rule checks that every path referenced in plugin.json actually exists. It validates ' +
+        'skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. For ' +
+        'hooks and server configs, only string paths are checked (inline objects are skipped). ' +
+        'Missing referenced files will cause the plugin to fail at runtime when Claude Code tries ' +
+        'to load the referenced resources.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Plugin referencing a skills directory that does not exist',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "skills": [\n    "./.claude/skills"\n  ]\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Plugin with all referenced paths existing on disk',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "My plugin",\n  "skills": [\n    "./.claude/skills"\n  ],\n  "hooks": "./.claude/hooks.json"\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Create the missing files or directories at the paths specified in plugin.json. ' +
+        'Alternatively, remove or correct any stale references that point to files that have ' +
+        'been moved or deleted.',
+      relatedRules: [
+        'plugin-missing-component-paths',
+        'plugin-marketplace-files-not-found',
+        'plugin-components-wrong-location',
+      ],
+    },
   },
 
   validate: async (context) => {

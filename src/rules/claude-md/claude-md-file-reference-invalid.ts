@@ -118,6 +118,55 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-file-reference-invalid.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when file paths referenced in CLAUDE.md do not exist on disk.',
+      details:
+        'CLAUDE.md files often reference project files using inline code (backticks) or in bash ' +
+        'code blocks. When these file paths point to files that do not exist, the instructions ' +
+        'become misleading -- Claude Code may attempt to read or modify non-existent files. This ' +
+        'rule extracts file-like paths from inline code and bash/shell code blocks, resolves them ' +
+        'relative to the CLAUDE.md location, and verifies they exist on disk. It intelligently ' +
+        'skips URLs, glob patterns, template variables, version strings, and common non-path ' +
+        'patterns to minimize false positives.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Inline code referencing a file that does not exist',
+            code:
+              '# Project Setup\n\n' +
+              'Configuration is in `src/config/settigns.ts` (check for typos).',
+            language: 'markdown',
+          },
+          {
+            description: 'Bash code block referencing a non-existent script',
+            code: '# Testing\n\n' + '```bash\n' + './scripts/run-tets.sh\n' + '```',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Inline code referencing a file that exists',
+            code: '# Project Setup\n\n' + 'Configuration is in `src/config/settings.ts`.',
+            language: 'markdown',
+          },
+          {
+            description: 'Bash code block referencing an existing script',
+            code: '# Testing\n\n' + '```bash\n' + './scripts/run-tests.sh\n' + '```',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Verify the file path is correct. Check for typos in the filename or directory. If the ' +
+        'file was moved or renamed, update the reference to match the new location. If the file ' +
+        'was intentionally deleted, remove the reference from CLAUDE.md.',
+      whenNotToUse:
+        'Disable this rule if your CLAUDE.md intentionally references files that will be generated ' +
+        'later (e.g., build outputs) or if you reference example paths that are illustrative rather ' +
+        'than literal.',
+      relatedRules: ['claude-md-file-not-found', 'claude-md-npm-script-not-found'],
+    },
   },
 
   validate: (context) => {

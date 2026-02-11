@@ -24,6 +24,38 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name-directory-mismatch.md',
+    docs: {
+      recommended: true,
+      summary: 'Enforces that the skill `name` in frontmatter matches its parent directory name.',
+      details:
+        'The skill name declared in SKILL.md frontmatter must match the directory the skill lives in. ' +
+        'A mismatch between the two causes confusion when browsing skills on disk versus invoking them ' +
+        'by name. This rule compares the `name` field against the parent directory name and reports ' +
+        'an error if they differ. The rule provides an auto-fix that updates the frontmatter name ' +
+        'to match the directory.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Name does not match directory (directory is "deploy-app")',
+            code: '---\nname: deploy-application\ndescription: Deploys the application\n---',
+          },
+          {
+            description: 'Name uses different casing than directory "my-tool"',
+            code: '---\nname: my-Tool\ndescription: Runs the tool\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Name matches directory "deploy-app"',
+            code: '---\nname: deploy-app\ndescription: Deploys the application\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Update the `name` field in SKILL.md frontmatter to exactly match the parent directory name, ' +
+        'or rename the directory to match the desired skill name. The auto-fixer updates the frontmatter name.',
+      relatedRules: ['skill-name', 'skill-overly-generic-name'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

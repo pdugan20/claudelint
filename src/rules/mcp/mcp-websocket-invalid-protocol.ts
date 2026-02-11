@@ -19,6 +19,41 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-websocket-invalid-protocol.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when a WebSocket MCP server URL does not use ws:// or wss:// protocol.',
+      details:
+        'This rule parses the url field of MCP servers with type "websocket" and checks that the ' +
+        'protocol is ws: or wss:. Using an incorrect protocol such as http:// or https:// may ' +
+        'cause connection failures or unexpected behavior. URLs containing variable expansions ' +
+        '(${ or $) are skipped since they are resolved at runtime. Completely invalid URLs are ' +
+        'caught by the mcp-websocket-invalid-url rule instead.',
+      examples: {
+        incorrect: [
+          {
+            description: 'WebSocket server using https:// instead of wss://',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "https://mcp.example.com/ws"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'WebSocket server using wss:// protocol',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'WebSocket server using ws:// protocol for local development',
+            code: '{\n  "mcpServers": {\n    "local": {\n      "type": "websocket",\n      "url": "ws://localhost:8080/ws"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Change the URL scheme to ws:// (unencrypted) or wss:// (encrypted). Use wss:// for ' +
+        'production servers and ws:// only for local development.',
+      relatedRules: ['mcp-websocket-invalid-url', 'mcp-websocket-empty-url'],
+    },
   },
 
   validate: (context) => {

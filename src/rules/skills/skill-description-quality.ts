@@ -159,6 +159,47 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description-quality.md',
+    docs: {
+      summary:
+        'Checks that skill descriptions start with an action verb and include sufficient context.',
+      details:
+        'Good skill descriptions follow the pattern "[Action Verb] [what it does] [context/technology]". ' +
+        'This rule performs two checks: (1) the description must start with a recognized action verb in ' +
+        'imperative or third-person form (e.g., "Deploy", "Validates", "Run"), and (2) the description ' +
+        'must contain at least 4 words to provide meaningful context. ' +
+        'This consolidates the former skill-description-structure and skill-description-missing-context rules.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Description not starting with an action verb',
+            code: '---\nname: deploy\ndescription: The deployment pipeline for production\n---',
+          },
+          {
+            description: 'Description too brief (fewer than 4 words)',
+            code: '---\nname: deploy\ndescription: Deploy app\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Starts with action verb and has sufficient context',
+            code: '---\nname: deploy\ndescription: Deploys the application to the staging environment\n---',
+          },
+          {
+            description: 'Third-person verb form with technology context',
+            code: '---\nname: lint\ndescription: Validates TypeScript code against project style guidelines\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Rewrite the description to start with an imperative or third-person action verb ' +
+        '(e.g., "Deploy", "Generate", "Validates") and include enough words to describe what the skill does ' +
+        'and what technology or domain it targets.',
+      relatedRules: [
+        'skill-description',
+        'skill-description-missing-trigger',
+        'skill-description-max-length',
+      ],
+    },
   },
 
   validate: (context: RuleContext) => {

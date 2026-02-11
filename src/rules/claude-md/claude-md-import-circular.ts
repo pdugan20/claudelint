@@ -23,6 +23,63 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-import-circular.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Detects circular @import chains between CLAUDE.md files that would cause infinite loops.',
+      details:
+        'When CLAUDE.md files use `@import` directives to include other files, it is possible to ' +
+        'create circular dependencies where file A imports file B, which imports file A again. ' +
+        'This would cause infinite recursion during import resolution. This rule walks the full ' +
+        'import tree, tracking each file in the chain. If a file appears twice in the same import ' +
+        'path, a circular dependency is reported. The rule also detects self-imports where a file ' +
+        'imports itself.',
+      examples: {
+        incorrect: [
+          {
+            description: 'File A imports file B, which imports file A (circular)',
+            code:
+              '# .claude/rules/api.md\n\n' +
+              'API guidelines.\n\n' +
+              '@import .claude/rules/auth.md\n\n' +
+              '# .claude/rules/auth.md\n\n' +
+              'Auth guidelines.\n\n' +
+              '@import .claude/rules/api.md',
+            language: 'markdown',
+          },
+          {
+            description: 'A file that imports itself',
+            code:
+              '# .claude/rules/style.md\n\n' +
+              'Style guidelines.\n\n' +
+              '@import .claude/rules/style.md',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'A linear import chain with no cycles',
+            code:
+              '# CLAUDE.md\n\n' +
+              '@import .claude/rules/api.md\n' +
+              '@import .claude/rules/auth.md',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Remove the import that creates the cycle. Reorganize shared content into a separate ' +
+        'file that both files can import independently, or merge the circularly dependent files ' +
+        'into a single file.',
+      whenNotToUse:
+        'There is no reason to disable this rule. Circular imports always indicate a structural ' +
+        'problem that should be resolved.',
+      relatedRules: [
+        'claude-md-import-missing',
+        'claude-md-import-depth-exceeded',
+        'claude-md-import-read-failed',
+      ],
+    },
   },
 
   validate: async (context) => {

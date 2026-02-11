@@ -1,124 +1,59 @@
 # Rule: output-style-body-too-short
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Output Styles
-**Category**: Best Practices
 
 Output style body content should meet minimum length requirements
 
 ## Rule Details
 
-Output styles should include substantive examples and guidelines beyond frontmatter. Very short body content suggests incomplete documentation that may not provide users with enough information to effectively apply the output style.
-
-This rule validates that the body content (excluding frontmatter) meets a minimum character length threshold. By default, the minimum is 50 characters, but this can be configured based on your documentation standards.
+This rule checks the body of output style markdown files (everything after the YAML frontmatter) and warns when the content is shorter than the configured minimum length. Output styles need substantive content including formatting examples, guidelines, and instructions to be effective. Very short body content suggests the style definition is incomplete or lacks enough detail to guide output formatting consistently.
 
 ### Incorrect
 
-Empty or minimal body content:
+Output style with minimal body content
 
 ```markdown
 ---
-name: code-style
-description: Formats code output
+name: concise
+description: Concise output style
 ---
 
-Short.
-```
-
-Very brief documentation:
-
-```markdown
----
-name: verbose-logs
-description: Verbose logging format
----
-
-Use verbose format.
+Be concise.
 ```
 
 ### Correct
 
-Comprehensive documentation with examples:
+Output style with substantive body content
 
 ```markdown
 ---
-name: code-style
-description: Formats code output with syntax highlighting
+name: concise
+description: Concise output style
 ---
 
-# Guidelines
+# Concise Style
 
-Format all code output with proper syntax highlighting and line numbers.
-Use language-specific formatting and include context around code snippets.
+## Guidelines
 
-# Examples
+- Use short, direct sentences
+- Avoid filler words and unnecessary qualifiers
+- Lead with the most important information
+- Use bullet points for lists of 3+ items
 
-Here is an example of formatted code output with annotations.
-```
+## Examples
 
-Detailed formatting instructions:
-
-```markdown
----
-name: verbose-logs
-description: Verbose logging format for debugging
----
-
-# Format
-
-Include timestamps, log levels, and context for each entry.
-Organize logs by component and include stack traces when applicable.
-
-# Examples
-
-Example verbose log entry with full context and metadata.
+Instead of "It might be worth considering..." write "Consider..."
 ```
 
 ## How To Fix
 
-To fix this violation, add more substantive content to your output style .md file:
-
-1. **Add a Guidelines or Format section** explaining how to use the style
-2. **Include concrete Examples** demonstrating the style in practice
-3. **Document formatting rules** that users should follow
-4. **Provide context** on when and how to apply the style
-
-The goal is to create documentation that helps users understand and correctly apply your output style.
+Add more detail to the output style body. Include sections for guidelines, formatting rules, examples of correct and incorrect output, and any special instructions for applying the style.
 
 ## Options
 
-This rule has the following configuration options:
-
-### `minLength`
-
-Minimum number of characters required in the body content (excluding frontmatter). Must be a positive integer.
-
-**Type**: `number`
-**Default**: `50`
-
-**Schema**:
-
-```json
-{
-  "minLength": {
-    "type": "number",
-    "minimum": 1
-  }
-}
-```
-
-**Example configuration**:
-
-```json
-{
-  "rules": {
-    "output-style-body-too-short": ["warn", { "minLength": 100 }]
-  }
-}
-```
-
-**Default options**:
+Default options:
 
 ```json
 {
@@ -126,19 +61,34 @@ Minimum number of characters required in the body content (excluding frontmatter
 }
 ```
 
+Require at least 100 characters of body content:
+
+```json
+{
+  "minLength": 100
+}
+```
+
+Allow shorter body content for simple styles:
+
+```json
+{
+  "minLength": 20
+}
+```
+
 ## When Not To Use It
 
-You might disable this rule if you intentionally use very minimal output styles with self-explanatory names and descriptions. However, comprehensive documentation is recommended for better maintainability and user understanding.
+Disable this rule for intentionally minimal output styles that rely on a short description and a few key directives rather than extensive documentation.
 
 ## Related Rules
 
-- [output-style-missing-guidelines](./output-style-missing-guidelines.md) - Validates presence of Guidelines/Format section
+- [`output-style-missing-guidelines`](/rules/output-styles/output-style-missing-guidelines)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/output-styles/output-style-body-too-short.ts)
-- [Rule Tests](../../tests/rules/output-styles/output-style-body-too-short.test.ts)
-- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-body-too-short.md)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/output-styles/output-style-body-too-short.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/output-styles/output-style-body-too-short.test.ts)
 
 ## Version
 

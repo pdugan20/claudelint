@@ -40,6 +40,60 @@ export const rule: Rule = {
     defaultOptions: {
       minLength: 50,
     },
+    docs: {
+      recommended: true,
+      summary: 'Validates that agent body content meets a minimum length threshold.',
+      details:
+        'This rule checks that the markdown body of an AGENT.md file ' +
+        '(the content after frontmatter) contains enough substantive ' +
+        'text. Very short body content typically indicates an incomplete ' +
+        'agent definition that lacks the detailed instructions needed ' +
+        'for effective agent behavior. The minimum length is ' +
+        'configurable via the `minLength` option.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Agent body that is too short',
+            code:
+              '---\nname: code-review\n' +
+              'description: Reviews code for quality\n---\n\n' +
+              'Review code.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Agent body with sufficient instructions',
+            code:
+              '---\nname: code-review\n' +
+              'description: Reviews code for quality\n---\n\n' +
+              '## System Prompt\n\n' +
+              'You are a code review agent. Analyze pull requests ' +
+              'for correctness, performance, and style issues. ' +
+              'Provide actionable feedback with specific suggestions.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Add more detailed instructions, guidelines, or context to ' +
+        'the agent body content. Include a System Prompt section ' +
+        'with clear behavioral directives.',
+      optionExamples: [
+        {
+          description: 'Require at least 100 characters of body content',
+          config: { 'agent-body-too-short': ['warn', { minLength: 100 }] },
+        },
+        {
+          description: 'Use a lower threshold for simple agents',
+          config: { 'agent-body-too-short': ['warn', { minLength: 30 }] },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule if your agents use an external system ' +
+        'prompt source and the AGENT.md body is intentionally minimal.',
+      relatedRules: ['agent-missing-system-prompt', 'agent-name', 'agent-description'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent, options } = context;

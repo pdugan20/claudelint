@@ -1,175 +1,147 @@
 # Rule: claude-md-content-too-many-sections
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: File System
+**Recommended**: Yes
 
 CLAUDE.md has too many sections making it hard to navigate
 
 ## Rule Details
 
-This rule warns when a CLAUDE.md file contains too many markdown heading sections (default: 20). Files with excessive sections become difficult to navigate, understand, and maintain. This is a signal that the file should be organized into separate topic-specific files using the import system.
-
-The rule counts all markdown headings (`# Heading`, `## Heading`, etc.) in the main CLAUDE.md file. It does not count headings in imported files. Having too many sections suggests poor organization and makes it hard for developers to find specific guidelines.
+Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to navigate. When the number of markdown headings exceeds the configured threshold (default: 20), this rule warns that the file should be reorganized. The recommended approach is to split content into topic-specific files under `.claude/rules/` and use `@import` directives to include them. This keeps each file focused and easier to maintain. The rule only checks top-level CLAUDE.md files, not files already in the `.claude/rules/` directory.
 
 ### Incorrect
 
-CLAUDE.md with 25 sections:
+A CLAUDE.md with too many sections (over 20 headings)
 
 ```markdown
-# Project Guidelines
+# Project Instructions
 
 ## Git Workflow
-## Branch Naming
-## Commit Messages
-## Pull Requests
-## Code Review
-## API Design
-## REST Endpoints
-## Authentication
-## Error Handling
-## Testing Strategy
-## Unit Tests
-## Integration Tests
-## E2E Tests
-## Deployment
-## CI/CD
-## Environment Variables
-## Logging
-## Monitoring
+...
+
+## Code Style
+...
+
+## Testing
+...
+
+## API Guidelines
+...
+
 ## Database
-## Migrations
-## Performance
+...
+
+## Auth
+...
+
+## Logging
+...
+
+## Error Handling
+...
+
+## Deployment
+...
+
+## Monitoring
+...
+
 ## Security
+...
+
+## Performance
+...
+
+## Accessibility
+...
+
+## i18n
+...
+
+## CI/CD
+...
+
+## Docker
+...
+
+## Kubernetes
+...
+
+## AWS
+...
+
+## Terraform
+...
+
 ## Documentation
-## Troubleshooting
-## FAQ
+...
+
+## Reviews
+...
 ```
 
 ### Correct
 
-CLAUDE.md with organized imports:
+A CLAUDE.md that imports topic-specific rule files
 
 ```markdown
-# Project Guidelines
+# Project Instructions
 
-Import: @.claude/rules/git-workflow.md
-Import: @.claude/rules/api-design.md
-Import: @.claude/rules/testing.md
-Import: @.claude/rules/deployment.md
-Import: @.claude/rules/database.md
-Import: @.claude/rules/security.md
+## Overview
 
-## Quick Reference
+Brief project description.
 
-Key principles and links to detailed guidelines above.
-```
-
-Each imported file contains related sections:
-
-```markdown
-# .claude/rules/git-workflow.md
-
-## Branch Naming
-## Commit Messages
-## Pull Requests
-## Code Review
+@import .claude/rules/git.md
+@import .claude/rules/code-style.md
+@import .claude/rules/testing.md
+@import .claude/rules/deployment.md
 ```
 
 ## How To Fix
 
-To reduce section count:
-
-1. **Identify logical groupings** of related sections:
-
-   ```text
-   Git-related: workflow, branches, commits, PRs
-   API-related: design, endpoints, auth, errors
-   Testing-related: unit, integration, e2e
-   ```
-
-2. **Create separate files** for each group:
-
-   ```bash
-   mkdir -p .claude/rules
-   # Extract sections to files
-   touch .claude/rules/git-workflow.md
-   touch .claude/rules/api-design.md
-   touch .claude/rules/testing.md
-   ```
-
-3. **Move content** to the new files:
-
-   ```markdown
-   # .claude/rules/git-workflow.md
-
-   ## Branch Naming
-   [content here]
-
-   ## Commit Messages
-   [content here]
-   ```
-
-4. **Update CLAUDE.md** to import the files:
-
-   ```markdown
-   # CLAUDE.md
-
-   Import: @.claude/rules/git-workflow.md
-   Import: @.claude/rules/api-design.md
-   Import: @.claude/rules/testing.md
-   ```
-
-5. **Verify section count**:
-
-   ```bash
-   grep -c "^#" .claude/CLAUDE.md
-   # Should be <= 20
-   ```
+Split the CLAUDE.md file into smaller, topic-specific files in the `.claude/rules/` directory. Use `@import` directives in the main CLAUDE.md to include them. For example, move git-related instructions to `.claude/rules/git.md` and testing guidelines to `.claude/rules/testing.md`.
 
 ## Options
 
-### `maxSections`
-
-Maximum number of sections (markdown headings) allowed before warning.
-
-- Type: `number`
-- Default: `20`
-
-Example configuration:
+Default options:
 
 ```json
 {
-  "rules": {
-    "claude-md-content-too-many-sections": ["warn", { "maxSections": 15 }]
-  }
+  "maxSections": 20
 }
 ```
 
-To allow more sections:
+Allow up to 30 sections before warning:
 
 ```json
 {
-  "rules": {
-    "claude-md-content-too-many-sections": ["warn", { "maxSections": 30 }]
-  }
+  "maxSections": 30
+}
+```
+
+Strict mode: warn after 10 sections:
+
+```json
+{
+  "maxSections": 10
 }
 ```
 
 ## When Not To Use It
 
-Consider disabling if your project genuinely requires many top-level sections in a single file and splitting would reduce clarity. However, most projects benefit from organized, topic-focused files that are easier to navigate and maintain.
+Disable this rule if your project intentionally maintains a single large CLAUDE.md file and the team finds the flat structure easier to manage.
 
 ## Related Rules
 
-- [claude-md-size-warning](./claude-md-size-warning.md) - Warns when file approaches size limit
-- [claude-md-size-error](./claude-md-size-error.md) - Errors when file exceeds size limit
+- [`claude-md-import-missing`](/rules/claude-md/claude-md-import-missing)
+- [`claude-md-size-warning`](/rules/claude-md/claude-md-size-warning)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-content-too-many-sections.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-content-too-many-sections.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-content-too-many-sections.test.ts)
 
 ## Version
 

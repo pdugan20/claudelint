@@ -1,122 +1,109 @@
 # Rule: skill-body-long-code-block
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Content Quality
 
 Long code blocks in SKILL.md should be moved to reference files
 
 ## Rule Details
 
-This rule warns when a SKILL.md body contains code blocks exceeding a configurable line threshold (default: 20 lines). Long code blocks bloat the skill's context window footprint and should be moved to the `references/` directory for progressive disclosure.
-
-Claude Code only loads reference files when the skill is invoked, so moving large examples there keeps the skill description lean while preserving the full content.
+This rule scans the body of SKILL.md files for fenced code blocks (triple backticks) and reports any that exceed the maximum line count. Long code blocks inflate the skill file size, slow down AI model processing, and make the skill harder to maintain. Large code examples and templates should be moved to separate files in the `references/` directory and linked from the main SKILL.md for progressive disclosure.
 
 ### Incorrect
 
-SKILL.md with a long inline code block:
+Code block exceeding the default 20-line limit
 
 ````markdown
 ---
-name: deploy
-description: Deploy the application
+name: setup
+description: Sets up the development environment
 ---
 
 ## Usage
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail
-# ... 30+ lines of deployment script
+# Line 1
+# Line 2
+# ...
+# Line 25
 ```
 ````
 
 ### Correct
 
-SKILL.md with code moved to references:
+Short code block within the limit
 
 ````markdown
 ---
-name: deploy
-description: Deploy the application
+name: setup
+description: Sets up the development environment
 ---
 
 ## Usage
 
-Run the deployment script:
-
 ```bash
-./references/deploy.sh
+npm install
+npm run build
 ```
 ````
 
-With the actual script in `references/deploy.sh`.
+Long code moved to a reference file
+
+```markdown
+---
+name: setup
+description: Sets up the development environment
+---
+
+## Usage
+
+See [full setup script](references/setup.sh) for the complete configuration.
+```
 
 ## How To Fix
 
-1. **Move the code block** to a file in the `references/` directory:
-
-   ```bash
-   mkdir -p references
-   # Extract the code block content to a reference file
-   ```
-
-2. **Update SKILL.md** to reference the file instead of inlining the code.
-
-3. **Adjust the threshold** if 20 lines is too strict for your use case:
-
-   ```json
-   {
-     "rules": {
-       "skill-body-long-code-block": ["warn", { "maxLines": 30 }]
-     }
-   }
-   ```
+Move the long code block into a file under the `references/` directory and link to it from the SKILL.md body. Keep only short, illustrative snippets inline.
 
 ## Options
 
-This rule has the following configuration options:
-
-### `maxLines`
-
-Maximum number of lines in a code block before triggering a warning.
-
-**Type**: `number`
-**Default**: `20`
-
-**Example configuration**:
+Default options:
 
 ```json
 {
-  "rules": {
-    "skill-body-long-code-block": ["warn", { "maxLines": 30 }]
-  }
+  "maxLines": 20
+}
+```
+
+Allow up to 40 lines per code block:
+
+```json
+{
+  "maxLines": 40
+}
+```
+
+Enforce a strict 10-line limit:
+
+```json
+{
+  "maxLines": 10
 }
 ```
 
 ## When Not To Use It
 
-Disable this rule if your skills intentionally embed long code blocks that must be visible in the skill description without needing invocation.
-
-```json
-{
-  "rules": {
-    "skill-body-long-code-block": "off"
-  }
-}
-```
+Disable this rule if your skill requires inline code blocks that cannot be meaningfully extracted into separate reference files.
 
 ## Related Rules
 
-- [skill-body-too-long](./skill-body-too-long.md) - Overall skill body length limit
-- [skill-body-word-count](./skill-body-word-count.md) - Skill body word count limit
-- [skill-body-missing-usage-section](./skill-body-missing-usage-section.md) - Skills should have a Usage section
+- [`skill-body-too-long`](/rules/skills/skill-body-too-long)
+- [`skill-body-word-count`](/rules/skills/skill-body-word-count)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-body-long-code-block.ts)
-- [Rule Tests](../../tests/rules/skills/skill-body-long-code-block.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-body-long-code-block.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-body-long-code-block.test.ts)
 
 ## Version
 

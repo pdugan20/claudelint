@@ -24,6 +24,52 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-side-effects-without-disable-model.md',
+    docs: {
+      summary:
+        'Warns when skills with side-effect tools do not set `disable-model-invocation` to true.',
+      details:
+        'Skills that include side-effect tools (Bash, Write, Edit, NotebookEdit) in their ' +
+        '`allowed-tools` list can potentially execute destructive operations. Setting ' +
+        '`disable-model-invocation: true` prevents Claude from automatically invoking the skill, ' +
+        'requiring explicit user action instead. This rule checks for the presence of side-effect ' +
+        'tools in `allowed-tools` (including scoped variants like `Bash(scope:*)`) and verifies ' +
+        'that `disable-model-invocation` is set to `true` when they are present.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Side-effect tools without disable-model-invocation',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n' +
+              'allowed-tools:\n  - Bash\n  - Read\n---',
+          },
+          {
+            description: 'Scoped Bash tool without disable-model-invocation',
+            code:
+              '---\nname: format-code\ndescription: Formats source files\n' +
+              'allowed-tools:\n  - Bash(prettier:*)\n  - Write\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Side-effect tools with disable-model-invocation enabled',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n' +
+              'disable-model-invocation: true\n' +
+              'allowed-tools:\n  - Bash\n  - Read\n---',
+          },
+          {
+            description: 'No side-effect tools (disable-model-invocation not needed)',
+            code:
+              '---\nname: analyze-code\ndescription: Analyzes source code\n' +
+              'allowed-tools:\n  - Read\n  - Glob\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Add `disable-model-invocation: true` to the SKILL.md frontmatter. This prevents the model ' +
+        'from auto-invoking the skill, requiring explicit user confirmation for side-effect operations.',
+      relatedRules: ['skill-allowed-tools', 'skill-disallowed-tools', 'skill-dangerous-command'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

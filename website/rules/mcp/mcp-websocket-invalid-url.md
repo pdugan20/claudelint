@@ -3,61 +3,24 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: MCP
-**Category**: Schema Validation
+**Recommended**: Yes
 
-MCP WebSocket transport URL must be valid format
+MCP WebSocket transport URL must be valid
 
 ## Rule Details
 
-WebSocket transport URLs must be valid, well-formed URLs that can be parsed by standard URL parsers. Invalid URLs will cause connection errors when Claude Code attempts to establish WebSocket transport to the MCP server.
-
-This rule validates URL syntax using JavaScript's URL constructor. URLs containing environment variables (${VAR} or $VAR syntax) skip validation since they will be expanded at runtime.
+This rule checks that the url field of MCP servers with type "websocket" is a valid URL by attempting to parse it with the URL constructor. URLs containing variable expansions (${ or $) are skipped since they are resolved at runtime. An invalid URL will prevent Claude Code from establishing a WebSocket connection to the MCP server.
 
 ### Incorrect
 
-Missing protocol:
+WebSocket server with a malformed URL
 
 ```json
 {
   "mcpServers": {
-    "ws-server": {
-      "name": "ws-server",
-      "transport": {
-        "type": "websocket",
-        "url": "localhost:9000"
-      }
-    }
-  }
-}
-```
-
-Invalid URL format:
-
-```json
-{
-  "mcpServers": {
-    "broken-ws": {
-      "name": "broken-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "ws://invalid url with spaces"
-      }
-    }
-  }
-}
-```
-
-Malformed protocol:
-
-```json
-{
-  "mcpServers": {
-    "bad-protocol": {
-      "name": "bad-protocol",
-      "transport": {
-        "type": "websocket",
-        "url": "ws:/localhost:9000"
-      }
+    "realtime": {
+      "type": "websocket",
+      "url": "not-a-valid-url"
     }
   }
 }
@@ -65,97 +28,27 @@ Malformed protocol:
 
 ### Correct
 
-Valid ws:// URL:
+WebSocket server with a valid URL
 
 ```json
 {
   "mcpServers": {
-    "local-ws": {
-      "name": "local-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "ws://localhost:9000"
-      }
+    "realtime": {
+      "type": "websocket",
+      "url": "wss://mcp.example.com/ws"
     }
   }
 }
 ```
 
-Valid wss:// URL:
+WebSocket server with a variable-expanded URL (skipped)
 
 ```json
 {
   "mcpServers": {
-    "secure-ws": {
-      "name": "secure-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "wss://api.example.com/ws"
-      }
-    }
-  }
-}
-```
-
-WebSocket URL with port and path:
-
-```json
-{
-  "mcpServers": {
-    "custom-ws": {
-      "name": "custom-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "ws://localhost:8080/mcp/realtime"
-      }
-    }
-  }
-}
-```
-
-URL with environment variable (skips validation):
-
-```json
-{
-  "mcpServers": {
-    "dynamic-ws": {
-      "name": "dynamic-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "${WS_BASE_URL}/socket"
-      }
-    }
-  }
-}
-```
-
-URL with variable and default:
-
-```json
-{
-  "mcpServers": {
-    "configurable-ws": {
-      "name": "configurable-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "${WS_URL:-ws://localhost:9000}"
-      }
-    }
-  }
-}
-```
-
-Valid http:// URL (triggers protocol warning):
-
-```json
-{
-  "mcpServers": {
-    "http-ws": {
-      "name": "http-ws",
-      "transport": {
-        "type": "websocket",
-        "url": "http://localhost:9000"
-      }
+    "realtime": {
+      "type": "websocket",
+      "url": "${MCP_WS_URL}"
     }
   }
 }
@@ -163,101 +56,22 @@ Valid http:// URL (triggers protocol warning):
 
 ## How To Fix
 
-To resolve invalid URL errors:
-
-1. **Add the protocol** if missing:
-
-   ```json
-   # Before
-   {
-     "transport": {
-       "type": "websocket",
-       "url": "localhost:9000"
-     }
-   }
-
-   # After
-   {
-     "transport": {
-       "type": "websocket",
-       "url": "ws://localhost:9000"
-     }
-   }
-   ```
-
-2. **Use ws:// or wss:/** for WebSocket transport:
-
-   ```json
-   # Use ws:// for local development
-   "url": "ws://localhost:9000"
-
-   # Use wss:// for production/secure
-   "url": "wss://api.example.com"
-   ```
-
-3. **Remove spaces and special characters**:
-
-   ```json
-   # Before
-   "url": "ws://my server.com/socket"
-
-   # After
-   "url": "ws://my-server.com/socket"
-   ```
-
-4. **Encode special characters** if needed:
-
-   ```json
-   # Use URL encoding for special characters
-   "url": "ws://api.example.com/path%20with%20spaces"
-   ```
-
-5. **Fix protocol format**:
-
-   ```json
-   # Before (malformed)
-   "url": "ws:/localhost:9000"
-
-   # After (correct)
-   "url": "ws://localhost:9000"
-   ```
-
-6. **Test URL validity**:
-
-   ```bash
-   # Test if URL is valid
-   node -e "new URL('ws://localhost:9000')"
-
-   # Test WebSocket connection (using wscat)
-   npx wscat -c ws://localhost:9000
-   ```
-
-7. **Run validation**:
-
-   ```bash
-   claudelint check-mcp
-   ```
+Provide a fully qualified URL with a ws:// or wss:// scheme. Ensure the URL is well-formed and reachable from the environment where Claude Code runs.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. Invalid URLs will cause connection failures when Claude Code attempts to establish the WebSocket connection. URLs with environment variables are automatically skipped from validation, so there's no need to disable the rule for dynamic configurations.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [mcp-websocket-empty-url](./mcp-websocket-empty-url.md) - WebSocket URL emptiness check
-- [mcp-websocket-invalid-protocol](./mcp-websocket-invalid-protocol.md) - WebSocket protocol validation
-- [mcp-invalid-transport](./mcp-invalid-transport.md) - Transport configuration validation
+- [`mcp-websocket-empty-url`](/rules/mcp/mcp-websocket-empty-url)
+- [`mcp-websocket-invalid-protocol`](/rules/mcp/mcp-websocket-invalid-protocol)
+- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/mcp/mcp-websocket-invalid-url.ts)
-- [Rule Tests](../../tests/rules/mcp/mcp-websocket-invalid-url.test.ts)
-- [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [WebSocket Protocol RFC 6455](https://datatracker.ietf.org/doc/html/rfc6455)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-websocket-invalid-url.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/mcp/mcp-websocket-invalid-url.test.ts)
 
 ## Version
 

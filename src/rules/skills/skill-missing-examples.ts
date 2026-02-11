@@ -22,6 +22,49 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-examples.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Warns when SKILL.md lacks usage examples such as code blocks or an Example section.',
+      details:
+        'Skills should include concrete usage examples so users understand how to invoke them ' +
+        'and what to expect. This rule checks for the presence of fenced code blocks (```) or ' +
+        'a markdown section titled "Example", "Examples", or "Usage". Without examples, users ' +
+        'must read the entire skill to figure out how to use it, which slows adoption.',
+      examples: {
+        incorrect: [
+          {
+            description: 'SKILL.md with no code blocks or example section',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'This skill deploys the application to production.\n\n' +
+              'It uses the deploy script to push changes.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'SKILL.md with a code block example',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              '## Usage\n\n' +
+              '```bash\n/deploy-app staging\n```',
+            language: 'markdown',
+          },
+          {
+            description: 'SKILL.md with an Example section heading',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              '## Example\n\nRun the skill with the target environment as the argument.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Add a fenced code block showing how to invoke the skill, or add a section headed ' +
+        '"## Example", "## Examples", or "## Usage" with usage instructions.',
+      relatedRules: ['skill-body-missing-usage-section', 'skill-body-word-count'],
+    },
   },
 
   validate: (context) => {

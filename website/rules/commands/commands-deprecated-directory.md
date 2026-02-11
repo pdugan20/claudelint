@@ -1,70 +1,45 @@
 # Rule: commands-deprecated-directory
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Commands
-**Category**: Deprecation
+**Recommended**: Yes
 
 Commands directory is deprecated, migrate to Skills
 
 ## Rule Details
 
-This rule triggers when Claude Code detects a `.claude/commands` directory in your project. The commands directory was an early feature in Claude Code but has been superseded by the Skills system, which provides better structure, versioning, documentation, and reusability.
-
-Skills offer several advantages over commands:
-
-- **Structured format**: SKILL.md with frontmatter and documentation
-- **Versioning**: Track changes with semantic versions
-- **Documentation**: Rich markdown docs integrated with the skill
-- **Examples**: Include usage examples directly in the skill
-- **Metadata**: Specify requirements, dependencies, and more
-
-Continuing to use commands prevents you from leveraging these benefits and may lead to compatibility issues in future Claude Code versions.
+Commands were the original way to add custom slash commands to Claude Code, but they have been superseded by Skills. Skills provide better structure with YAML frontmatter, versioning, documentation, and reference file support. This rule fires when a `.claude/commands` directory exists in the project, prompting migration to the Skills format.
 
 ### Incorrect
 
-Project with deprecated commands directory:
+Project with a .claude/commands directory
 
 ```text
-my-project/
-└── .claude/
-    └── commands/
-        ├── deploy.sh
-        ├── test.sh
-        └── build.sh
+.claude/
+  commands/
+    deploy.md
+    test-all.md
 ```
 
 ### Correct
 
-Project migrated to skills:
+Project migrated to Skills
 
 ```text
-my-project/
-└── .claude/
-    └── skills/
-        ├── deploy/
-        │   ├── SKILL.md
-        │   └── deploy.sh
-        ├── test/
-        │   ├── SKILL.md
-        │   └── test.sh
-        └── build/
-            ├── SKILL.md
-            └── build.sh
+.claude/
+  skills/
+    deploy/
+      SKILL.md
+      deploy.sh
+    test-all/
+      SKILL.md
+      test-all.sh
 ```
 
 ## How To Fix
 
-To resolve this warning:
-
-1. Create `.claude/skills/` directory if it doesn't exist
-2. For each command script in `.claude/commands/`, create a skill directory: `.claude/skills/<command-name>/`
-3. Move the script: `.claude/commands/<command-name>.sh` → `.claude/skills/<command-name>/<command-name>.sh`
-4. Create a `SKILL.md` file in each skill directory with frontmatter (name, version, description)
-5. Update any `plugin.json` files to reference skills instead of commands
-6. Remove the `.claude/commands/` directory
-
-See [commands-migrate-to-skills](./commands-migrate-to-skills.md) for detailed migration instructions.
+Create equivalent skills in `.claude/skills/` for each command in `.claude/commands/`. Each skill needs a directory with a SKILL.md file containing YAML frontmatter. After migrating all commands, remove the `.claude/commands/` directory.
 
 ## Options
 
@@ -72,18 +47,16 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Consider disabling this rule if you're maintaining a legacy project that cannot be updated yet. However, migration is recommended for all projects to benefit from the Skills system improvements.
+Disable this rule if you are intentionally maintaining legacy commands alongside skills during a gradual migration.
 
 ## Related Rules
 
-- [commands-migrate-to-skills](./commands-migrate-to-skills.md) - Provides migration instructions
-- [commands-in-plugin-deprecated](./../plugin/commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
+- [`commands-migrate-to-skills`](/rules/commands/commands-migrate-to-skills)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/commands/commands-deprecated-directory.ts)
-- [Rule Tests](../../tests/validators/commands.test.ts)
-- [Skills Documentation](https://docs.anthropic.com/claude-code/skills)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/commands/commands-deprecated-directory.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/commands/commands-deprecated-directory.test.ts)
 
 ## Version
 

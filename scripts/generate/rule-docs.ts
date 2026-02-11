@@ -164,7 +164,7 @@ async function generateSidebarData(
   }
 
   const sidebarPath = join(WEBSITE_RULES_DIR, '_sidebar.json');
-  await writeFile(sidebarPath, JSON.stringify(sidebar, null, 2));
+  await writeFile(sidebarPath, JSON.stringify(sidebar, null, 2) + '\n');
   log.info(`Generated sidebar data: ${sidebarPath}`);
 }
 

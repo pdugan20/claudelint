@@ -22,6 +22,51 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-disallowed-tools.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Validates that agent disallowedTools is a properly formatted ' +
+        'array of tool name strings.',
+      details:
+        'This rule enforces that the `disallowedTools` field in agent ' +
+        'markdown frontmatter is a valid array of strings. Each entry ' +
+        'should be a tool name that the agent is prohibited from using. ' +
+        'Validation is delegated to the AgentFrontmatterSchema Zod ' +
+        'schema. Proper formatting prevents runtime errors when the ' +
+        'agent framework parses tool restrictions.',
+      examples: {
+        incorrect: [
+          {
+            description: 'disallowedTools as a single string instead of array',
+            code:
+              '---\nname: safe-agent\n' +
+              'description: Agent with tool restrictions\n' +
+              'disallowedTools: Bash\n---',
+          },
+          {
+            description: 'disallowedTools with non-string entries',
+            code:
+              '---\nname: safe-agent\n' +
+              'description: Agent with tool restrictions\n' +
+              'disallowedTools:\n  - 123\n  - true\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'disallowedTools as a valid array of tool names',
+            code:
+              '---\nname: safe-agent\n' +
+              'description: Agent with tool restrictions\n' +
+              'disallowedTools:\n  - Bash\n  - Write\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure `disallowedTools` is formatted as a YAML array of ' +
+        'strings. Each entry should be a valid tool name like Bash, ' +
+        'Write, Edit, or WebFetch.',
+      relatedRules: ['agent-tools'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

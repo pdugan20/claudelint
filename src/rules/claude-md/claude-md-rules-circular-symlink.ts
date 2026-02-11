@@ -38,6 +38,52 @@ export const rule: Rule = {
     defaultOptions: {
       maxSymlinkDepth: 100,
     },
+    docs: {
+      recommended: true,
+      summary:
+        'Detects circular symlinks in import paths that would cause infinite resolution loops.',
+      details:
+        'Symbolic links can create cycles where a symlink points to a path that eventually ' +
+        'resolves back to itself. When Claude Code attempts to resolve `@import` directives, a ' +
+        'circular symlink would cause infinite recursion. This rule checks each imported file to ' +
+        'determine if it is a symlink and, if so, follows the symlink chain up to the configured ' +
+        'maximum depth (default: 100). If the chain revisits a path or exceeds the depth limit, ' +
+        'a circular symlink is reported.',
+      examples: {
+        incorrect: [
+          {
+            description: 'An import that resolves to a circular symlink',
+            code:
+              '# CLAUDE.md\n\n' +
+              '@import .claude/rules/shared.md\n\n' +
+              '# Where shared.md is a symlink:\n' +
+              '# shared.md -> ../other/rules.md -> ../../.claude/rules/shared.md',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'An import that resolves to a regular file or a non-circular symlink',
+            code: '# CLAUDE.md\n\n' + '@import .claude/rules/coding-standards.md',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Remove or recreate the symlink so it points to the correct target without creating a ' +
+        'cycle. Use `ls -la` to inspect the symlink chain and `readlink -f` to see the final ' +
+        'resolved path. Replace the circular symlink with a regular file or a symlink that ' +
+        'terminates at a real file.',
+      optionExamples: [
+        {
+          description: 'Reduce the symlink depth limit to detect cycles faster',
+          config: { maxSymlinkDepth: 50 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule only if your project does not use symlinks for any imported files.',
+      relatedRules: ['claude-md-import-circular', 'claude-md-import-missing'],
+    },
   },
 
   validate: async (context) => {

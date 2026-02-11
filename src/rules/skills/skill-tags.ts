@@ -21,6 +21,42 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-tags.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Enforces that the `tags` field in SKILL.md frontmatter is a valid array of strings.',
+      details:
+        'The `tags` frontmatter field helps categorize and discover skills. When present, it must be ' +
+        'a YAML array of strings. This rule delegates to the skill frontmatter Zod schema for validation, ' +
+        'reporting the first schema violation found. Invalid tag formats prevent proper skill indexing ' +
+        'and search functionality.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Tags as a single string instead of an array',
+            code: '---\nname: deploy-app\ntags: deployment\n---',
+          },
+          {
+            description: 'Tags array containing non-string values',
+            code: '---\nname: deploy-app\ntags:\n  - deployment\n  - 123\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Valid tags array',
+            code: '---\nname: deploy-app\ntags:\n  - deployment\n  - ci-cd\n  - production\n---',
+          },
+          {
+            description: 'No tags field (tags are optional)',
+            code: '---\nname: deploy-app\ndescription: Deploys the application\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure the `tags` field is a YAML array of strings. Each tag should be on its own line ' +
+        'prefixed with `- `. Remove any non-string values from the array.',
+      relatedRules: ['skill-name', 'skill-description'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

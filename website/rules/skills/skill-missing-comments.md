@@ -1,130 +1,94 @@
 # Rule: skill-missing-comments
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Cross-Reference
 
 Shell script lacks explanatory comments
 
 ## Rule Details
 
-This rule triggers when a shell script has more than 10 non-empty lines but contains no explanatory comments (or only a shebang line). Comments help developers understand what the script does, why certain decisions were made, and how to use or modify it. Scripts without comments are harder to understand at a glance, maintain and debug, modify safely, and review in pull requests.
-
-The rule counts non-empty lines and checks for comment lines starting with `#` (excluding shebang). Scripts with 10 lines or fewer are exempt since they're typically self-explanatory. The 10-line threshold balances avoiding noise in trivial scripts with ensuring documentation in non-trivial ones.
+Shell scripts that are longer than a configurable threshold (default: 10 non-empty lines) should include comments explaining their purpose, approach, and any non-obvious logic. This rule counts non-empty lines and comment lines (lines starting with `#`). If the script exceeds the threshold but has at most one comment line (typically just the shebang), the rule reports a warning. Comments improve maintainability and help other developers (and AI models) understand the script without executing it.
 
 ### Incorrect
 
-Script with 15 lines but no explanatory comments:
+Long script with no explanatory comments
 
 ```bash
-#!/usr/bin/env bash
-
-set -e
-
-API_URL="https://api.example.com"
-TOKEN=$(cat ~/.api-token)
-
-response=$(curl -s -H "Authorization: Bearer $TOKEN" "$API_URL/deploy")
-
-if [ $? -ne 0 ]; then
-  echo "Deployment failed"
-  exit 1
-fi
-
-echo "Deployment successful"
+#!/bin/bash
+npm install
+npm run build
+npm run test
+npm run lint
+cp dist/* /var/www/
+systemctl restart app
+curl -s http://localhost/health
+echo "Done"
+rm -rf tmp/
+exit 0
 ```
 
 ### Correct
 
-Same script with explanatory comments:
+Script with explanatory comments
 
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
+# Deploy script: builds, tests, and deploys the application
+npm install
+npm run build
+npm run test
 
-# Deploy application to production environment
-# Usage: ./deploy.sh
-# Requires: API token in ~/.api-token
+# Copy artifacts and restart the service
+cp dist/* /var/www/
+systemctl restart app
 
-set -e
+# Verify the deployment
+curl -s http://localhost/health
+```
 
-# API configuration
-API_URL="https://api.example.com"
-TOKEN=$(cat ~/.api-token)
+## How To Fix
 
-# Trigger deployment via API
-response=$(curl -s -H "Authorization: Bearer $TOKEN" "$API_URL/deploy")
+Add comments to the script explaining what it does, why certain steps are needed, and any non-obvious logic. At minimum, add a header comment describing the script purpose.
 
-# Check for errors
-if [ $? -ne 0 ]; then
-  echo "Deployment failed"
-  exit 1
-fi
+## Options
 
-echo "Deployment successful"
+Default options:
+
+```json
+{
+  "minLines": 10
+}
+```
+
+Require comments only for scripts longer than 20 lines:
+
+```json
+{
+  "minLines": 20
+}
+```
+
+Require comments for any script longer than 5 lines:
+
+```json
+{
+  "minLines": 5
+}
 ```
 
 ## When Not To Use It
 
-Consider disabling if your code is genuinely trivial and self-documenting, you have comprehensive external documentation, or your team has a different commenting standard. However, comments are generally beneficial even for "simple" scripts.
+Disable this rule for auto-generated scripts where comments would be immediately overwritten.
 
 ## Related Rules
 
-- [skill-missing-shebang](./skill-missing-shebang.md) - Scripts need shebang lines
-- [skill-missing-examples](./skill-missing-examples.md) - Skills need usage examples
-
-## How To Fix
-
-Add explanatory comments to shell scripts:
-
-1. Add header comment explaining script purpose
-2. Document usage and requirements
-3. Comment complex logic sections
-4. Explain non-obvious decisions
-
-Example additions:
-
-```bash
-#!/usr/bin/env bash
-
-# Deploy application to specified environment
-# Usage: ./deploy.sh <environment> [region]
-# Requires: AWS CLI, Docker
-
-# Configuration
-API_URL="https://api.example.com"
-
-# Validate arguments
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 <environment> [region]"
-  exit 1
-fi
-```
-
-## Options
-
-### `minLines`
-
-Minimum number of non-empty lines before comments are required.
-
-Type: `number`
-Default: `10`
-
-Example configuration:
-
-```json
-{
-  "rules": {
-    "skill-missing-comments": ["warn", { "minLines": 20 }]
-  }
-}
-```
+- [`skill-missing-shebang`](/rules/skills/skill-missing-shebang)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-missing-comments.ts)
-- [Rule Tests](../../tests/rules/skills/skill-missing-comments.test.ts)
-- [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-missing-comments.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-missing-comments.test.ts)
 
 ## Version
 

@@ -25,6 +25,50 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-file-path-not-found.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when file paths referenced in settings.json do not exist.',
+      details:
+        'This rule validates that file paths in `settings.json` properties such as ' +
+        '`apiKeyHelper` and `outputStyle` point to files that actually exist on disk. ' +
+        'Missing files will cause runtime errors when Claude Code tries to use them. ' +
+        'Paths containing variable expansion syntax (e.g., `${HOME}/...`) are skipped ' +
+        'since they cannot be resolved statically.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Settings referencing a non-existent script',
+            code:
+              '{\n' +
+              '  "apiKeyHelper": "/scripts/get-api-key.sh",\n' +
+              '  "outputStyle": "./styles/missing-style.md"\n' +
+              '}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Settings referencing existing files',
+            code:
+              '{\n' +
+              '  "apiKeyHelper": "./scripts/get-api-key.sh",\n' +
+              '  "outputStyle": ".claude/styles/concise.md"\n' +
+              '}',
+            language: 'json',
+          },
+          {
+            description: 'Settings using variable expansion (skipped)',
+            code: '{\n' + '  "apiKeyHelper": "${HOME}/.config/claude/api-key-helper.sh"\n' + '}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Verify that the file paths in `settings.json` are correct and the files exist. ' +
+        'Check for typos in the path, ensure the file has been created, and confirm the ' +
+        'path is relative to the correct base directory.',
+      relatedRules: ['settings-invalid-env-var', 'settings-permission-empty-pattern'],
+    },
   },
   validate: async (context: RuleContext) => {
     const { filePath, fileContent } = context;

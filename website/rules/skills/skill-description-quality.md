@@ -1,84 +1,73 @@
 # Rule: skill-description-quality
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Skills
 
 Skill description should start with an action verb and include sufficient context
 
 ## Rule Details
 
-This rule warns when a skill description does not start with an action verb in imperative or third-person mood, or when the description is too brief to provide meaningful context. Good descriptions follow the pattern: `[Action Verb] [what it does] [context/technology]`.
-
-The rule checks two quality criteria:
-
-1. **Action verb start**: The first word must be a recognized action verb (e.g., "Validate", "Run", "Generate"). Both imperative ("Validate") and third-person ("Validates") forms are accepted.
-2. **Sufficient context**: The description must contain at least 4 words to provide meaningful information about what the skill does and in what domain.
+Good skill descriptions follow the pattern "[Action Verb] [what it does] [context/technology]". This rule performs two checks: (1) the description must start with a recognized action verb in imperative or third-person form (e.g., "Deploy", "Validates", "Run"), and (2) the description must contain at least 4 words to provide meaningful context. This consolidates the former skill-description-structure and skill-description-missing-context rules.
 
 ### Incorrect
 
-Description not starting with an action verb:
+Description not starting with an action verb
 
 ```yaml
-description: This skill validates project configuration files
+---
+name: deploy
+description: The deployment pipeline for production
+---
 ```
 
-Description too brief:
+Description too brief (fewer than 4 words)
 
 ```yaml
-description: Run all tests
-```
-
-Description with both problems:
-
-```yaml
-description: I do it
+---
+name: deploy
+description: Deploy app
+---
 ```
 
 ### Correct
 
-Description with action verb and context:
+Starts with action verb and has sufficient context
 
 ```yaml
-description: Validate Claude Code project configuration files
+---
+name: deploy
+description: Deploys the application to the staging environment
+---
 ```
 
-Third-person form also accepted:
+Third-person verb form with technology context
 
 ```yaml
-description: Validates project settings and reports issues
-```
-
-Using "Use this to" pattern:
-
-```yaml
-description: Use this to run the complete test suite for the project
+---
+name: lint
+description: Validates TypeScript code against project style guidelines
+---
 ```
 
 ## How To Fix
 
-1. Start the description with an action verb like "Validate", "Run", "Generate", "Deploy", "Analyze"
-2. Include at least 4 words describing what the skill does and the domain/technology it targets
-3. Both imperative ("Validate") and third-person ("Validates") forms work
+Rewrite the description to start with an imperative or third-person action verb (e.g., "Deploy", "Generate", "Validates") and include enough words to describe what the skill does and what technology or domain it targets.
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule only if your skill descriptions intentionally use a non-standard format for a specific reason.
-
 ## Related Rules
 
-- [skill-description](./skill-description.md) - Basic description validation (min length, no XML)
-- [skill-description-missing-trigger](./skill-description-missing-trigger.md) - Checks for trigger phrases
+- [`skill-description`](/rules/skills/skill-description)
+- [`skill-description-missing-trigger`](/rules/skills/skill-description-missing-trigger)
+- [`skill-description-max-length`](/rules/skills/skill-description-max-length)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-description-quality.ts)
-- [Rule Tests](../../tests/rules/skills/skill-description-quality.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-description-quality.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-description-quality.test.ts)
 
 ## Version
 

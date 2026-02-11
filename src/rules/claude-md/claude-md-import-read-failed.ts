@@ -22,6 +22,45 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-import-read-failed.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Errors when an imported file exists but cannot be read due to permission or encoding issues.',
+      details:
+        'This rule complements `claude-md-import-missing` by catching a different failure mode: ' +
+        'the imported file exists on disk, but reading its contents fails. Common causes include ' +
+        'insufficient file permissions, the file being a directory instead of a regular file, ' +
+        'binary files that cannot be read as text, or filesystem-level errors. The rule first ' +
+        'confirms the file exists (deferring to `claude-md-import-missing` otherwise), then ' +
+        'attempts to read it and reports any errors encountered.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Importing a file that exists but is not readable',
+            code:
+              '# CLAUDE.md\n\n' +
+              '@import .claude/rules/secrets.md\n\n' +
+              '# Where secrets.md has permissions set to 000 (no read access)',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Importing a file that exists and is readable',
+            code: '# CLAUDE.md\n\n' + '@import .claude/rules/coding-standards.md',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Check the file permissions with `ls -la` and ensure the file is readable. If the file ' +
+        'is a binary file, it should not be imported into CLAUDE.md. Verify the path does not ' +
+        'point to a directory.',
+      whenNotToUse:
+        'There is no reason to disable this rule. An unreadable import always indicates a problem ' +
+        'that needs to be fixed.',
+      relatedRules: ['claude-md-import-missing', 'claude-md-import-circular'],
+    },
   },
 
   validate: async (context) => {

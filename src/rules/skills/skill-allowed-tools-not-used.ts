@@ -59,6 +59,33 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-allowed-tools-not-used.md',
+    docs: {
+      summary: 'Warns when tools declared in allowed-tools are never referenced in the skill body.',
+      details:
+        'This rule checks each tool listed in the `allowed-tools` frontmatter array against the SKILL.md body content. ' +
+        'If a tool name is never mentioned in the body, it is likely stale configuration left over from a previous version. ' +
+        'Unused tool declarations grant unnecessary permissions and make the skill harder to audit. ' +
+        'The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), ' +
+        'checking for the short name portion of MCP tools as well.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Tool listed in allowed-tools but never mentioned in body',
+            code: '---\nname: build\ndescription: Builds the project\nallowed-tools:\n  - Bash\n  - Read\n  - WebFetch\n---\n\n## Usage\n\nRun `Bash` to execute the build.\nUse `Read` to check config.',
+          },
+        ],
+        correct: [
+          {
+            description: 'All allowed tools are referenced in the body',
+            code: '---\nname: build\ndescription: Builds the project\nallowed-tools:\n  - Bash\n  - Read\n---\n\n## Usage\n\nUse `Bash` to run the build command.\nUse `Read` to inspect configuration files.',
+          },
+        ],
+      },
+      howToFix:
+        'Remove unused tools from the `allowed-tools` list, or add instructions in the skill body ' +
+        'that reference the tool so the AI model knows when and how to use it.',
+      relatedRules: ['skill-allowed-tools', 'skill-mcp-tool-qualified-name'],
+    },
   },
 
   validate: (context: RuleContext) => {

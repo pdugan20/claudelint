@@ -1,98 +1,65 @@
 # Rule: commands-migrate-to-skills
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Commands
-**Category**: Deprecation
+**Recommended**: Yes
 
 Migration guidance for deprecated Commands
 
 ## Rule Details
 
-This rule triggers alongside [commands-deprecated-directory](./commands-deprecated-directory.md) when a `.claude/commands` directory is detected. It provides detailed migration instructions to help you convert your commands to the modern Skills format.
-
-The migration process involves:
-
-1. Creating skill directories with proper structure
-2. Moving command scripts to skill directories
-3. Creating SKILL.md files with documentation
-4. Updating plugin configurations
-
-This guidance ensures a smooth transition from the deprecated commands system to Skills.
+This rule complements `commands-deprecated-directory` by providing detailed, actionable migration instructions when a `.claude/commands` directory is detected. It walks through the four steps needed to convert each command into a properly structured skill: creating the skill directory, moving scripts, adding SKILL.md with frontmatter, and updating plugin.json references.
 
 ### Incorrect
 
-Project still using deprecated commands directory:
+Legacy command file in .claude/commands
 
-```text
-.claude/
-├── commands/
-│   ├── deploy.sh
-│   └── test.sh
-└── plugin.json (with "commands" field)
+````markdown
+# .claude/commands/deploy.md
+Run the deployment script.
+
+```bash
+./scripts/deploy.sh
 ```
+````
 
 ### Correct
 
-Project properly using skills:
+Equivalent skill with proper structure
 
-```text
-.claude/
-├── skills/
-│   ├── deploy/
-│   │   ├── SKILL.md
-│   │   └── deploy.sh
-│   └── test/
-│       ├── SKILL.md
-│       └── test.sh
-└── plugin.json (with "skills" field)
+```markdown
+# .claude/skills/deploy/SKILL.md
+---
+name: deploy
+description: Run the deployment script
+---
+
+## Usage
+
+Invoke with `/deploy` to run the deployment pipeline.
 ```
 
 ## How To Fix
 
-To migrate from commands to skills:
-
-1. **Create skill directories**: For each command script, create a directory: `.claude/skills/<command-name>/`
-
-2. **Move command scripts**: Move each script from `.claude/commands/<command-name>.sh` to `.claude/skills/<command-name>/<command-name>.sh`
-
-3. **Add SKILL.md with frontmatter**: Create `.claude/skills/<command-name>/SKILL.md`:
-
-   ```markdown
-   ---
-   name: command-name
-   version: 1.0.0
-   description: Brief description of what this skill does
-   ---
-
-   # Command Name
-
-   Documentation here...
-   ```
-
-4. **Update plugin.json**: Change `"commands": ["my-command"]` to `"skills": ["my-command"]`
-
-5. **Remove old directory**: Delete `.claude/commands/` once migration is complete
+1. Create a skill directory: `.claude/skills/<skill-name>/`
+2. Move command scripts to `<skill-name>/<skill-name>.sh`
+3. Add a `SKILL.md` with YAML frontmatter (name, description) and documentation
+4. Update `plugin.json` to reference skills instead of commands
+5. Remove the old command file from `.claude/commands/`
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-This rule provides helpful migration guidance and should generally remain enabled. It only triggers when deprecated commands are detected, so it won't show warnings in projects already using Skills.
-
 ## Related Rules
 
-- [commands-deprecated-directory](./commands-deprecated-directory.md) - Warns about deprecated commands directory
-- [commands-in-plugin-deprecated](./../plugin/commands-in-plugin-deprecated.md) - Warns about commands field in plugin.json
-- [skill-invalid-schema](../skills/skill-name.md) - Validates SKILL.md structure
+- [`commands-deprecated-directory`](/rules/commands/commands-deprecated-directory)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/commands/commands-migrate-to-skills.ts)
-- [Rule Tests](../../tests/validators/commands.test.ts)
-- [Skills Documentation](https://docs.anthropic.com/claude-code/skills)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/commands/commands-migrate-to-skills.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/commands/commands-migrate-to-skills.test.ts)
 
 ## Version
 

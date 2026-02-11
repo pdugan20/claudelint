@@ -1,106 +1,83 @@
 # Rule: skill-deep-nesting
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
 
 Skill directory has excessive directory nesting
 
 ## Rule Details
 
-This rule triggers when skill directories exceed the maximum nesting depth (default: 3 levels, counted from the skill root). Deep directory structures make navigation difficult, create long import paths, increase cognitive overhead, and make relative paths harder to understand. Flat structures are easier to browse, have simpler import paths, and reduce mental mapping of directory hierarchies.
-
-The default maximum depth of 3 levels provides enough structure for organization (like `lib/`, `tests/`, `bin/`) while preventing over-complicated hierarchies. Files beyond the maximum depth should be moved up and renamed with contextual prefixes instead of relying on deep nesting for organization.
+This rule measures the maximum directory nesting depth within a skill directory starting from where the SKILL.md file resides. Deeply nested directories are harder to navigate, slower to scan, and often indicate an overly complex structure that should be flattened. The `node_modules` directory is excluded from the depth calculation.
 
 ### Incorrect
 
-Skill with excessive nesting (5 levels):
+Skill directory with 4 levels of nesting (exceeds default max of 3)
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-└── src/                    (1)
-    └── core/               (2)
-        └── deployment/     (3)
-            └── strategies/ (4)
-                └── aws/    (5)  Too deep (exceeds default max of 3)
-                    └── ec2.sh
-```
-
-Difficult relative imports:
-
-```bash
-# With deep nesting - difficult to reference
-source ../../../lib/utils/helpers/format.sh
+my-skill/
+  SKILL.md
+  src/
+    utils/
+      helpers/
+        deep/
+          file.ts
 ```
 
 ### Correct
 
-Well-organized skill with flat structure (3 levels max):
+Skill directory with flat structure
 
 ```text
-.claude/skills/deploy/
-├── SKILL.md
-├── deploy.sh
-├── lib/                    (1)
-│   ├── deployment.sh
-│   └── strategies/         (2)
-│       ├── aws-ec2.sh      (3) ✓ Within limit
-│       └── aws-lambda.sh   (3)
-└── tests/                  (1)
-    └── deploy-test.sh      (2)
+my-skill/
+  SKILL.md
+  run.sh
+  references/
+    api.md
 ```
 
-Easier relative imports:
+## How To Fix
 
-```bash
-# Easier to reference
-source ../lib/format.sh
-```
+Flatten the directory structure by reducing unnecessary nesting levels. Move deeply nested files closer to the skill root or consolidate subdirectories.
 
 ## Options
 
-This rule has the following configuration options:
-
-### `maxDepth`
-
-Maximum directory nesting depth before triggering a warning. Must be a positive integer.
-
-**Type**: `number`
-**Default**: `3`
-
-**Schema**:
-
-```typescript
-{
-  maxDepth: number // positive integer
-}
-```
-
-**Example configuration**:
+Default options:
 
 ```json
 {
-  "rules": {
-    "skill-deep-nesting": ["warn", { "maxDepth": 4 }]
-  }
+  "maxDepth": 3
+}
+```
+
+Allow up to 5 levels of nesting:
+
+```json
+{
+  "maxDepth": 5
+}
+```
+
+Enforce strict 2-level nesting limit:
+
+```json
+{
+  "maxDepth": 2
 }
 ```
 
 ## When Not To Use It
 
-Consider disabling if you're mirroring an external project structure or following a specific framework convention. However, flatter structures are generally easier to maintain.
+Disable this rule if your skill has a legitimate reason for deep nesting, such as mirroring an external project structure that cannot be flattened.
 
 ## Related Rules
 
-- [skill-too-many-files](./skill-too-many-files.md) - Too many files at root level
-- [skill-naming-inconsistent](./skill-naming-inconsistent.md) - Inconsistent file naming
+- [`skill-body-too-long`](/rules/skills/skill-body-too-long)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-deep-nesting.ts)
-- [Rule Tests](../../tests/rules/skills/skill-deep-nesting.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-deep-nesting.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-deep-nesting.test.ts)
 
 ## Version
 

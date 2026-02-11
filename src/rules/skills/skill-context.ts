@@ -21,6 +21,46 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-context.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that the context field in SKILL.md frontmatter uses a valid mode.',
+      details:
+        'The `context` field controls how a skill is executed. It must be one of the recognized modes: ' +
+        '`fork` (runs in a separate agent process), `inline` (runs in the current conversation context), ' +
+        'or `auto` (lets the system decide). Any other value is invalid and will cause the skill to fail ' +
+        'at runtime. This rule delegates to the Zod schema for validation.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Invalid context value',
+            code: '---\nname: deploy\ndescription: Deploys the application\ncontext: background\n---',
+          },
+          {
+            description: 'Misspelled context value',
+            code: '---\nname: deploy\ndescription: Deploys the application\ncontext: forked\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Using fork context',
+            code: '---\nname: deploy\ndescription: Deploys the application\ncontext: fork\nagent: deploy-agent\n---',
+          },
+          {
+            description: 'Using inline context',
+            code: '---\nname: lint\ndescription: Runs linting checks\ncontext: inline\n---',
+          },
+          {
+            description: 'Using auto context',
+            code: '---\nname: test\ndescription: Runs tests\ncontext: auto\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Set the `context` field to one of the valid values: `fork`, `inline`, or `auto`. ' +
+        'Use `fork` when the skill needs its own agent, `inline` when it should run in the current context, ' +
+        'or `auto` to let the system choose.',
+      relatedRules: ['skill-agent'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

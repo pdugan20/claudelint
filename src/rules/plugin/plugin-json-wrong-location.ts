@@ -23,6 +23,42 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-json-wrong-location.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures plugin.json is inside the .claude-plugin/ directory.',
+      details:
+        'The plugin.json manifest must be located at .claude-plugin/plugin.json for Claude Code ' +
+        'to discover the plugin. Placing it at the repository root or any other location will ' +
+        'cause the plugin to not be recognized. This rule checks whether the file path includes ' +
+        'the .claude-plugin/ directory segment.',
+      examples: {
+        incorrect: [
+          {
+            description: 'plugin.json placed at the repository root',
+            code:
+              'my-plugin/\n' +
+              '  plugin.json        <-- wrong location\n' +
+              '  .claude/\n' +
+              '    skills/',
+          },
+        ],
+        correct: [
+          {
+            description: 'plugin.json inside .claude-plugin/ directory',
+            code:
+              'my-plugin/\n' +
+              '  .claude-plugin/\n' +
+              '    plugin.json      <-- correct location\n' +
+              '  .claude/\n' +
+              '    skills/',
+          },
+        ],
+      },
+      howToFix:
+        'Move plugin.json to the .claude-plugin/ directory at the root of your plugin repository ' +
+        'so it resides at .claude-plugin/plugin.json.',
+      relatedRules: ['plugin-components-wrong-location'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath } = context;

@@ -1,139 +1,70 @@
 # Rule: lsp-command-not-in-path
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: LSP
-**Category**: Best Practices
 
 LSP server commands should be in PATH or use absolute paths
 
 ## Rule Details
 
-LSP server commands should either exist in the system PATH or use explicit paths (absolute paths starting with `/` or relative paths starting with `./`). Commands without explicit paths that aren't in PATH will fail at runtime with "command not found" errors.
-
-This rule warns when a command doesn't start with `/` (absolute path) or `./` (relative path), indicating it relies on being in PATH. While PATH-based commands work when properly installed, explicit paths provide better portability and clearer error messages when dependencies are missing.
+This rule checks each LSP server entry in `lsp.json` for its `command` field and warns when the command does not start with `/` (absolute path) or `./` (explicit relative path). Commands that rely on being in the system PATH may fail in environments where PATH is configured differently, such as CI systems, containers, or other developers' machines.
 
 ### Incorrect
 
-Commands relying on PATH without verification:
+Server command relies on PATH resolution
 
 ```json
 {
-  "servers": {
-    "typescript-language-server": {
-      "command": "typescript-language-server --stdio"
-    },
-    "rust-analyzer": {
-      "command": "rust-analyzer"
-    }
-  }
-}
-```
-
-Implicit relative paths (not recommended):
-
-```json
-{
-  "servers": {
-    "custom-server": {
-      "command": "node_modules/.bin/custom-lsp"
-    }
+  "typescript-server": {
+    "command": "typescript-language-server --stdio"
   }
 }
 ```
 
 ### Correct
 
-Absolute paths:
+Server command uses absolute path
 
 ```json
 {
-  "servers": {
-    "typescript-language-server": {
-      "command": "/usr/local/bin/typescript-language-server",
-      "args": ["--stdio"]
-    },
-    "rust-analyzer": {
-      "command": "/Users/username/.cargo/bin/rust-analyzer"
-    }
+  "typescript-server": {
+    "command": "/usr/local/bin/typescript-language-server --stdio"
   }
 }
 ```
 
-Explicit relative paths:
+Server command uses explicit relative path
 
 ```json
 {
-  "servers": {
-    "custom-server": {
-      "command": "./node_modules/.bin/custom-lsp"
-    },
-    "local-server": {
-      "command": "./.claude/bin/language-server"
-    }
+  "typescript-server": {
+    "command": "./node_modules/.bin/typescript-language-server --stdio"
   }
 }
 ```
 
 ## How To Fix
 
-To fix command path issues:
-
-1. **Find the command location**:
-
-```bash
-which typescript-language-server
-# Output: /usr/local/bin/typescript-language-server
-```
-
-1. **Use the absolute path** in lsp.json:
-
-```json
-{
-  "servers": {
-    "typescript-language-server": {
-      "command": "/usr/local/bin/typescript-language-server"
-    }
-  }
-}
-```
-
-1. **Or use explicit relative paths** for project-local tools:
-
-```json
-{
-  "servers": {
-    "local-tool": {
-      "command": "./node_modules/.bin/tool-name"
-    }
-  }
-}
-```
-
-1. **Verify configuration**:
-
-```bash
-claudelint check-lsp
-```
+Replace bare command names with absolute paths (e.g., `/usr/local/bin/my-server`) or explicit relative paths (e.g., `./node_modules/.bin/my-server`). You can find the absolute path with `which <command>`.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Disable this rule if you have strict control over system PATH across all environments and prefer shorter command names. However, explicit paths are recommended for portability and debugging.
+Disable this rule if you have consistent PATH configuration across all environments and prefer shorter command references.
 
 ## Related Rules
 
-- [lsp-server-name-too-short](./lsp-server-name-too-short.md) - Validates server names
-- [lsp-config-file-relative-path](./lsp-config-file-relative-path.md) - Validates config file paths
+- [`lsp-server-name-too-short`](/rules/lsp/lsp-server-name-too-short)
+- [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/lsp/lsp-command-not-in-path.ts)
-- [Rule Tests](../../tests/rules/lsp/lsp-command-not-in-path.test.ts)
-- [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-command-not-in-path.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-command-not-in-path.test.ts)
 
 ## Version
 

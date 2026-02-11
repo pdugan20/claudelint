@@ -1,126 +1,77 @@
 # Rule: claude-md-import-circular
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: CLAUDE.md
-**Category**: Cross-Reference
+**Recommended**: Yes
 
 Circular import detected between Claude.md files
 
 ## Rule Details
 
-This rule detects circular import dependencies where file A imports file B, which imports file C, which eventually imports file A again (or any variation). Circular imports cause infinite loops, stack overflow errors, and prevent Claude Code from loading context. The validator tracks all processed imports and detects when the same file is encountered multiple times in an import chain.
-
-To prevent infinite loops from undetected circular imports, the validator enforces a maximum import depth of 10 levels. If the chain exceeds this depth, validation fails even if no explicit cycle is detected. This protects against deeply nested or complex circular patterns.
+When CLAUDE.md files use `@import` directives to include other files, it is possible to create circular dependencies where file A imports file B, which imports file A again. This would cause infinite recursion during import resolution. This rule walks the full import tree, tracking each file in the chain. If a file appears twice in the same import path, a circular dependency is reported. The rule also detects self-imports where a file imports itself.
 
 ### Incorrect
 
-Simple circular import (A → B → A):
+File A imports file B, which imports file A (circular)
 
 ```markdown
-# CLAUDE.md
-Import: @.claude/rules/main.md
+# .claude/rules/api.md
+
+API guidelines.
+
+@import .claude/rules/auth.md
+
+# .claude/rules/auth.md
+
+Auth guidelines.
+
+@import .claude/rules/api.md
 ```
 
-```markdown
-# .claude/rules/main.md
-Import: @../../CLAUDE.md ← Circular: back to CLAUDE.md
-```
-
-Self-referential import:
+A file that imports itself
 
 ```markdown
-# .claude/rules/main.md
-Import: @./main.md ← Circular: imports itself
+# .claude/rules/style.md
+
+Style guidelines.
+
+@import .claude/rules/style.md
 ```
 
 ### Correct
 
-Linear import chain (no cycles):
+A linear import chain with no cycles
 
 ```markdown
 # CLAUDE.md
-Import: @.claude/rules/main.md
-Import: @.claude/rules/git.md
-Import: @.claude/rules/testing.md
-```
 
-```markdown
-# .claude/rules/main.md
-Import: @./shared.md
-Import: @./utilities.md
-```
-
-```markdown
-# .claude/rules/shared.md
-# No imports - leaf node
-```
-
-Hierarchical structure with no file imported more than once:
-
-```text
-CLAUDE.md
-  └─ .claude/rules/main.md
-      ├─ .claude/rules/git.md
-      ├─ .claude/rules/api.md
-      └─ .claude/rules/shared.md
+@import .claude/rules/api.md
+@import .claude/rules/auth.md
 ```
 
 ## How To Fix
 
-To resolve circular import dependencies:
-
-1. **Identify the cycle** from the error message showing the import chain
-
-2. **Refactor the structure** using one of these approaches:
-
-   **a) Extract shared content to a separate file:**
-
-   ```markdown
-   # Before: A imports B, B imports A
-
-   # After: Both import shared.md
-   # A.md imports shared.md
-   # B.md imports shared.md
-   # shared.md has no imports (leaf node)
-   ```
-
-   **b) Consolidate into a single file** if the files are tightly coupled
-
-   **c) Create a hierarchical structure:**
-
-   ```text
-   CLAUDE.md
-     ├─ main.md (imports utilities)
-     └─ utilities.md (no imports - leaf node)
-   ```
-
-3. **Remove the circular reference** - delete one of the import statements
-
-4. **Verify the fix**:
-
-   ```bash
-   claudelint check-claude-md
-   ```
-
-The key principle: imports should form a directed acyclic graph (DAG), not a cycle.
+Remove the import that creates the cycle. Reorganize shared content into a separate file that both files can import independently, or merge the circularly dependent files into a single file.
 
 ## Options
 
-This rule does not have configuration options.
+This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Never disable this rule. Circular imports will cause infinite loops, stack overflow errors, Claude Code failure to load context, and undefined behavior. Always fix the circular dependency structure rather than disabling the rule.
+There is no reason to disable this rule. Circular imports always indicate a structural problem that should be resolved.
 
 ## Related Rules
 
-- [import-missing](./claude-md-import-missing.md) - Missing import files
+- [`claude-md-import-missing`](/rules/claude-md/claude-md-import-missing)
+- [`claude-md-import-depth-exceeded`](/rules/claude-md/claude-md-import-depth-exceeded)
+- [`claude-md-import-read-failed`](/rules/claude-md/claude-md-import-read-failed)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/claude-md/claude-md-import-circular.ts)
-- [Rule Tests](../../tests/validators/claude-md.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-import-circular.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/claude-md/claude-md-import-circular.test.ts)
 
 ## Version
 

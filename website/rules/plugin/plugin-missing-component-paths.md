@@ -1,105 +1,63 @@
 # Rule: plugin-missing-component-paths
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: Yes
 **Validator**: Plugin
-**Category**: Best Practices
+**Recommended**: Yes
 
-Plugin component paths in plugin.json should start with ./
+Plugin component paths should start with ./ to be explicit about their location
 
 ## Rule Details
 
-This rule warns when component paths declared in `plugin.json` do not start with `./`. Component paths for skills, agents, hooks, and commands should use explicit relative paths prefixed with `./` to make it clear they are relative to the plugin root directory. Omitting the prefix can lead to ambiguity about whether the path is relative, absolute, or a module name.
-
-When fixable, the linter can automatically prepend `./` to bare component path references.
+Component paths in plugin.json (skills, agents, commands, outputStyles) should start with "./" to make it explicit that they are relative to the plugin root. Paths without the leading "./" prefix are ambiguous and may be misinterpreted. This rule is auto-fixable and will prepend "./" to paths that lack it.
 
 ### Incorrect
 
-Bare component names without ./ prefix:
+Skills path missing the ./ prefix
 
 ```json
 {
   "name": "my-plugin",
   "version": "1.0.0",
   "description": "My plugin",
-  "skills": ["format-code", "run-tests"]
-}
-```
-
-Mixed paths:
-
-```json
-{
-  "name": "my-plugin",
-  "version": "1.0.0",
-  "description": "My plugin",
-  "skills": ["./format-code", "run-tests"],
-  "agents": ["reviewer"]
+  "skills": [
+    ".claude/skills"
+  ]
 }
 ```
 
 ### Correct
 
-All paths with ./ prefix:
+Skills path with the ./ prefix
 
 ```json
 {
   "name": "my-plugin",
   "version": "1.0.0",
   "description": "My plugin",
-  "skills": ["./format-code", "./run-tests"]
-}
-```
-
-All component types with ./ prefix:
-
-```json
-{
-  "name": "my-plugin",
-  "version": "1.0.0",
-  "description": "My plugin",
-  "skills": ["./format-code", "./run-tests"],
-  "agents": ["./reviewer"],
-  "hooks": ["./pre-commit"],
-  "commands": ["./deploy"]
+  "skills": [
+    "./.claude/skills"
+  ]
 }
 ```
 
 ## How To Fix
 
-Prepend `./` to any component path that lacks it:
-
-1. Open `plugin.json`
-2. Find component arrays (`skills`, `agents`, `hooks`, `commands`)
-3. Add `./` prefix to any bare path
-
-Examples:
-
-- `"format-code"` -> `"./format-code"`
-- `"agents/reviewer"` -> `"./agents/reviewer"`
-
-Or run the linter with `--fix` to apply this automatically:
-
-```bash
-claudelint check-plugin --fix
-```
+Prepend "./" to any component path that does not already start with it. For example, change ".claude/skills" to "./.claude/skills".
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-Disable this rule if your plugin tooling resolves bare component names through a custom lookup mechanism that does not rely on relative paths. For standard Claude Code plugins, always use the `./` prefix for clarity.
-
 ## Related Rules
 
-- [plugin-components-wrong-location](./plugin-components-wrong-location.md) - Components must be in .claude/ not .claude-plugin/
+- [`plugin-missing-file`](/rules/plugin/plugin-missing-file)
+- [`plugin-components-wrong-location`](/rules/plugin/plugin-components-wrong-location)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/plugin/plugin-missing-component-paths.ts)
-- [Rule Tests](../../tests/rules/plugin/plugin-missing-component-paths.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-missing-component-paths.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-missing-component-paths.test.ts)
 
 ## Version
 

@@ -25,6 +25,35 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-marketplace-files-not-found.md',
+    docs: {
+      recommended: true,
+      summary: 'Verifies that files referenced in marketplace.json actually exist on disk.',
+      details:
+        'Plugins can include a marketplace.json file that references assets such as an icon, ' +
+        'screenshots, a readme, and a changelog. This rule checks that each referenced file path ' +
+        'resolves to an existing file relative to the directory containing marketplace.json. ' +
+        'Missing files will cause broken links or images in the marketplace listing.',
+      examples: {
+        incorrect: [
+          {
+            description: 'marketplace.json referencing a non-existent icon file',
+            code: '{\n  "icon": "./assets/icon.png",\n  "screenshots": ["./assets/screenshot1.png"],\n  "readme": "./README.md"\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'marketplace.json with all referenced files present',
+            code: '{\n  "icon": "./assets/icon.png",\n  "screenshots": ["./assets/screenshot1.png"],\n  "readme": "./README.md",\n  "changelog": "./CHANGELOG.md"\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure all files referenced in marketplace.json exist at the specified paths relative ' +
+        'to the marketplace.json file. Create any missing assets or correct the paths.',
+      relatedRules: ['plugin-missing-file'],
+    },
   },
   validate: async (context: RuleContext) => {
     const { filePath, fileContent } = context;

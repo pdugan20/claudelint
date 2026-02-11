@@ -3,118 +3,57 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: Skills
-**Category**: Security
+**Recommended**: Yes
 
-Detects hardcoded API keys, passwords, tokens, and private keys in skill files
+Skill file contains hardcoded secrets that should use environment variables
 
 ## Rule Details
 
-This rule prevents accidentally committing sensitive credentials to your codebase. It detects common patterns of hardcoded secrets including:
-
-- API keys: `sk-ant-`, `ghp_`, `AKIA`, `sk_live_`, `pk_live_`, `rk_live_`
-- Generic patterns: `password=`, `api_key=`, `token=`, `secret=`
-- Private keys: `-----BEGIN PRIVATE KEY-----`, `-----BEGIN RSA PRIVATE KEY-----`
-- AWS credentials: Access key IDs starting with ASIA or AKIA
-- Slack tokens: `xoxb-`, `xoxp-`
-- GitHub tokens: `ghp_` or `github_pat_`
-
-Hardcoded secrets are a critical security vulnerability. Any developer who clones the repository gains access to production credentials, and if the repository is accidentally made public, credentials become immediately compromised.
+This rule scans SKILL.md files and associated scripts (.sh, .bash, .py, .js, .ts) for known secret patterns including Anthropic, OpenAI, GitHub, AWS, Stripe, and Slack API keys, private keys, and generic password/secret/token assignments. Hardcoded secrets are a critical security risk -- they can be leaked through version control, shared skill repositories, or AI model context. Comment lines containing "example" or "placeholder" are excluded to avoid false positives.
 
 ### Incorrect
 
-Hardcoded API key in shell script:
+Script with a hardcoded API key
 
 ```bash
 #!/bin/bash
-API_KEY="sk-ant-abc123def456ghi789"
-curl -H "Authorization: Bearer $API_KEY" https://api.example.com/data
+API_KEY="sk-ant-abc123def456ghi789jkl012mno345"
 ```
 
-Hardcoded password in SKILL.md:
+SKILL.md with a hardcoded password
 
 ```markdown
 ---
-name: deploy-app
-description: Deploys the application
-allowed-tools:
-  - Bash
+name: deploy
+description: Deploys the app
 ---
 
-export DATABASE_PASSWORD="super-secret-123"
-bash deploy.sh
-```
-
-Hardcoded AWS credentials:
-
-```bash
-#!/bin/bash
-AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
-AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-aws s3 cp file.txt s3://my-bucket/
-```
-
-Hardcoded GitHub token:
-
-```bash
-#!/bin/bash
-GITHUB_TOKEN="ghp_abcdefghijklmnopqrstuvwxyz123456"
-curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
+Connect with password: "MyS3cretP@ss"
 ```
 
 ### Correct
 
-Use environment variables instead:
+Script using environment variables for secrets
 
 ```bash
 #!/bin/bash
-# Reads from environment, never hardcoded
-curl -H "Authorization: Bearer $API_KEY" https://api.example.com/data
+API_KEY="$ANTHROPIC_API_KEY"
 ```
 
-Use environment variables in SKILL.md:
+SKILL.md referencing environment variables
 
 ```markdown
 ---
-name: deploy-app
-description: Deploys the application
-allowed-tools:
-  - Bash
+name: deploy
+description: Deploys the app
 ---
 
-# DATABASE_PASSWORD should be set in environment before running
-bash deploy.sh
-```
-
-Load secrets from secure files:
-
-```bash
-#!/bin/bash
-# Load from .env file (which is .gitignored)
-set -a
-source ~/.aws/credentials
-set +a
-
-aws s3 cp file.txt s3://my-bucket/
-```
-
-Use credential managers:
-
-```bash
-#!/bin/bash
-# Load from credential manager instead of hardcoding
-GITHUB_TOKEN=$(pass github/token)
-curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user
+Set the `DEPLOY_TOKEN` environment variable before running.
 ```
 
 ## How To Fix
 
-1. Never hardcode secrets in skill files or scripts
-2. Use environment variables: `export SECRET_NAME="value"` before running, or `$SECRET_NAME` in scripts
-3. Store secrets in `.env` files and add them to `.gitignore`
-4. Use a credential manager like `pass`, `1password`, or similar
-5. For CI/CD, use GitHub Secrets, GitLab CI/CD variables, or similar secure storage
-6. If working with AWS, use IAM roles instead of long-lived access keys
-7. Rotate any credentials that were accidentally committed
+Replace hardcoded secrets with environment variable references (e.g., `$API_KEY` or `process.env.API_KEY`). Store actual secret values in a secure secrets manager or `.env` file that is excluded from version control.
 
 ## Options
 
@@ -122,17 +61,17 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-This rule should not be disabled. Hardcoded secrets are a critical security risk and should never appear in version control. If you have legitimate use cases for example credentials in tests, use placeholder values that are clearly not real credentials (e.g., `test-key-12345` or `fake-token-for-testing`).
+This rule should almost never be disabled. If you have a test fixture that contains fake/example secrets, add a comment with "example" or "placeholder" on the line to suppress the warning.
 
 ## Related Rules
 
-- [skill-side-effects-without-disable-model](./skill-side-effects-without-disable-model.md) - Ensures skills with side effects disable model invocation
+- [`skill-dangerous-command`](/rules/skills/skill-dangerous-command)
+- [`skill-path-traversal`](/rules/skills/skill-path-traversal)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-hardcoded-secrets.ts)
-- [Rule Tests](../../tests/rules/skills/skill-hardcoded-secrets.test.ts)
-- [OWASP Secrets Management](https://owasp.org/www-community/Sensitive_Data_Exposure)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-hardcoded-secrets.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-hardcoded-secrets.test.ts)
 
 ## Version
 

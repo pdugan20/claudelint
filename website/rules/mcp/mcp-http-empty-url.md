@@ -3,60 +3,36 @@
 **Severity**: Error
 **Fixable**: No
 **Validator**: MCP
-**Category**: Schema Validation
+**Recommended**: Yes
 
 MCP HTTP transport URL cannot be empty
 
 ## Rule Details
 
-HTTP transport configurations must include a non-empty URL. The URL specifies where Claude Code should connect to reach the MCP server. An empty or whitespace-only URL will cause connection failures when Claude Code attempts to establish the HTTP transport.
-
-This rule validates that the `url` field in HTTP transport configurations contains actual content, not empty strings or whitespace.
+This rule checks that MCP servers configured with type "http" include a url field that is present and non-empty. A missing or blank URL means Claude Code cannot connect to the remote MCP server, resulting in silent failures or confusing runtime errors.
 
 ### Incorrect
 
-Empty URL string:
+HTTP server with an empty URL string
 
 ```json
 {
   "mcpServers": {
-    "api-server": {
-      "name": "api-server",
-      "transport": {
-        "type": "http",
-        "url": ""
-      }
+    "remote": {
+      "type": "http",
+      "url": ""
     }
   }
 }
 ```
 
-Whitespace-only URL:
+HTTP server with the url field missing entirely
 
 ```json
 {
   "mcpServers": {
-    "web-service": {
-      "name": "web-service",
-      "transport": {
-        "type": "http",
-        "url": "   "
-      }
-    }
-  }
-}
-```
-
-Missing URL property triggers other rules:
-
-```json
-{
-  "mcpServers": {
-    "remote-api": {
-      "name": "remote-api",
-      "transport": {
-        "type": "http"
-      }
+    "remote": {
+      "type": "http"
     }
   }
 }
@@ -64,65 +40,14 @@ Missing URL property triggers other rules:
 
 ### Correct
 
-Valid HTTP URL:
+HTTP server with a valid URL
 
 ```json
 {
   "mcpServers": {
-    "api-server": {
-      "name": "api-server",
-      "transport": {
-        "type": "http",
-        "url": "http://localhost:8080"
-      }
-    }
-  }
-}
-```
-
-HTTPS URL with path:
-
-```json
-{
-  "mcpServers": {
-    "remote-api": {
-      "name": "remote-api",
-      "transport": {
-        "type": "http",
-        "url": "https://api.example.com/mcp/v1"
-      }
-    }
-  }
-}
-```
-
-URL with environment variable:
-
-```json
-{
-  "mcpServers": {
-    "configurable-api": {
-      "name": "configurable-api",
-      "transport": {
-        "type": "http",
-        "url": "${API_URL}"
-      }
-    }
-  }
-}
-```
-
-URL with default fallback:
-
-```json
-{
-  "mcpServers": {
-    "flexible-api": {
-      "name": "flexible-api",
-      "transport": {
-        "type": "http",
-        "url": "${API_URL:-http://localhost:3000}"
-      }
+    "remote": {
+      "type": "http",
+      "url": "https://mcp.example.com/api"
     }
   }
 }
@@ -130,80 +55,21 @@ URL with default fallback:
 
 ## How To Fix
 
-To resolve empty URL errors:
-
-1. **Add a valid URL** to the HTTP transport:
-
-   ```json
-   # Before
-   {
-     "transport": {
-       "type": "http",
-       "url": ""
-     }
-   }
-
-   # After
-   {
-     "transport": {
-       "type": "http",
-       "url": "http://localhost:8080"
-     }
-   }
-   ```
-
-2. **Use environment variable** for configurable URLs:
-
-   ```json
-   {
-     "transport": {
-       "type": "http",
-       "url": "${MCP_SERVER_URL}"
-     }
-   }
-   ```
-
-3. **Include a default value** for environment variables:
-
-   ```json
-   {
-     "transport": {
-       "type": "http",
-       "url": "${MCP_SERVER_URL:-http://localhost:8080}"
-     }
-   }
-   ```
-
-4. **Ensure URL includes protocol**:
-   - Use `http://` for local/development servers
-   - Use `https://` for production/remote servers
-   - Include port if not using standard ports (80/443)
-
-5. **Run validation**:
-
-   ```bash
-   claudelint check-mcp
-   ```
+Add a non-empty url field to the MCP server configuration. The URL should be a fully qualified address including the scheme (http:// or https://).
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-Never disable this rule. An empty HTTP URL will cause immediate connection failures when Claude Code attempts to connect to the MCP server. Always provide a valid URL rather than disabling validation.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [mcp-http-invalid-url](./mcp-http-invalid-url.md) - HTTP URL format validation
-- [mcp-invalid-transport](./mcp-invalid-transport.md) - Transport configuration validation
-- [mcp-invalid-env-var](./mcp-invalid-env-var.md) - Environment variable syntax
+- [`mcp-http-invalid-url`](/rules/mcp/mcp-http-invalid-url)
+- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/mcp/mcp-http-empty-url.ts)
-- [Rule Tests](../../tests/rules/mcp/mcp-http-empty-url.test.ts)
-- [MCP Specification](https://spec.modelcontextprotocol.io/)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-http-empty-url.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/mcp/mcp-http-empty-url.test.ts)
 
 ## Version
 

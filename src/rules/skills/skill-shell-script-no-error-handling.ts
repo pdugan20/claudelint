@@ -20,6 +20,57 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-shell-script-no-error-handling.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Warns when shell scripts lack error handling such as `set -e` or `set -euo pipefail`.',
+      details:
+        'Without proper error handling, shell scripts continue executing after a command fails, ' +
+        'which can cause cascading issues and data corruption. This rule checks `.sh` and `.bash` ' +
+        'files for the presence of `set -e`, `set -euo pipefail`, or a `trap ... ERR` handler. ' +
+        'If none are found, a warning is reported with an auto-fix that inserts `set -euo pipefail` ' +
+        'after the shebang line.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Script with no error handling',
+            code:
+              '#!/bin/bash\n' +
+              'echo "Building..."\n' +
+              'npm run build\n' +
+              'echo "Deploying..."\n' +
+              'npm run deploy',
+            language: 'bash',
+          },
+        ],
+        correct: [
+          {
+            description: 'Script with set -euo pipefail',
+            code:
+              '#!/bin/bash\n' +
+              'set -euo pipefail\n' +
+              'echo "Building..."\n' +
+              'npm run build\n' +
+              'echo "Deploying..."\n' +
+              'npm run deploy',
+            language: 'bash',
+          },
+          {
+            description: 'Script with trap-based error handling',
+            code:
+              '#!/bin/bash\n' +
+              'trap \'echo "Error on line $LINENO"; exit 1\' ERR\n' +
+              'npm run build',
+            language: 'bash',
+          },
+        ],
+      },
+      howToFix:
+        'Add `set -euo pipefail` immediately after the shebang line. This causes the script to ' +
+        'exit on any command failure (`-e`), undefined variable usage (`-u`), and pipe failures (`-o pipefail`). ' +
+        'The auto-fixer inserts this line automatically.',
+      relatedRules: ['skill-shell-script-hardcoded-paths', 'skill-missing-shebang'],
+    },
   },
 
   validate: (context) => {

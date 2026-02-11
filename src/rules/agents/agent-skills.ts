@@ -21,6 +21,51 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-skills.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Validates that agent skills is a properly formatted array ' + 'of skill name strings.',
+      details:
+        'This rule enforces that the `skills` field in agent ' +
+        'markdown frontmatter is a valid array of strings. Each ' +
+        'entry should be a skill name corresponding to a directory ' +
+        'under `.claude/skills/`. Validation is delegated to the ' +
+        'AgentFrontmatterSchema.shape.skills Zod schema. Proper ' +
+        'formatting ensures the agent framework can correctly ' +
+        'resolve and load skill definitions.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skills as a single string instead of array',
+            code:
+              '---\nname: deploy-agent\n' +
+              'description: Handles deployment pipelines\n' +
+              'skills: run-tests\n---',
+          },
+          {
+            description: 'Skills with non-string entries',
+            code:
+              '---\nname: deploy-agent\n' +
+              'description: Handles deployment pipelines\n' +
+              'skills:\n  - 42\n  - true\n---',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skills as a valid array of skill names',
+            code:
+              '---\nname: deploy-agent\n' +
+              'description: Handles deployment pipelines\n' +
+              'skills:\n  - run-tests\n  - deploy\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure `skills` is formatted as a YAML array of strings. ' +
+        'Each entry should be the name of a skill directory under ' +
+        '`.claude/skills/`.',
+      relatedRules: ['agent-skills-not-found'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

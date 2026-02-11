@@ -1,157 +1,84 @@
 # Rule: output-style-missing-guidelines
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Output Styles
-**Category**: Cross-Reference
+**Recommended**: Yes
 
 Output style should include a "Guidelines" or "Format" section
 
 ## Rule Details
 
-Output styles should document formatting rules and guidelines to ensure consistent application of the style across different contexts. Guidelines help users understand when and how to apply the output style correctly.
-
-This rule checks for the presence of a markdown section with a heading matching "Guidelines", "Guideline", "Rules", "Rule", or "Format" (case-insensitive). The section can use any heading level (H1, H2, or H3).
+This rule checks the body of output style markdown files for a heading that matches "Guidelines", "Rules", or "Format" (case-insensitive, headings level 1-3). Output styles should document their formatting rules and guidelines in a dedicated section so that the instructions are clearly structured and easy to follow. Without such a section, the style definition may be ambiguous or difficult for models to apply consistently.
 
 ### Incorrect
 
-Missing guidelines section:
+Output style without a Guidelines or Format section
 
 ```markdown
 ---
-name: code-style
-description: Formats code output
+name: technical
+description: Technical writing style
 ---
 
-# Examples
+# Technical Style
 
-Here are some examples of code formatting.
-```
-
-Only frontmatter, no guidelines:
-
-```markdown
----
-name: minimal
-description: Minimal output style
----
-
-Brief description without formatting guidelines.
+Write in a technical manner with precise language.
+Use code blocks for examples.
 ```
 
 ### Correct
 
-Guidelines section with H1 heading:
+Output style with a Guidelines section
 
 ```markdown
 ---
-name: code-style
-description: Formats code output with syntax highlighting
+name: technical
+description: Technical writing style
 ---
 
-# Guidelines
+# Technical Style
 
-- Use syntax highlighting for all code snippets
-- Include line numbers for multi-line code
-- Add language identifier to code blocks
-- Provide context comments when needed
+## Guidelines
 
-# Examples
-
-Example code with proper formatting.
+- Use precise, unambiguous language
+- Include code blocks for all examples
+- Define acronyms on first use
 ```
 
-Format section with H2 heading:
+Output style with a Format section
 
 ```markdown
 ---
-name: verbose-logs
-description: Verbose logging format
+name: report
+description: Report output format
 ---
+
+# Report Format
 
 ## Format
 
-All log entries should include:
-- ISO 8601 timestamp
-- Log level (INFO, DEBUG, WARN, ERROR)
-- Component name
-- Message with context
-```
-
-Rules section variation:
-
-```markdown
----
-name: minimal
-description: Minimal output
----
-
-### Rules
-
-Keep output concise and focused on essential information only.
-```
-
-Case-insensitive heading:
-
-```markdown
----
-name: structured
-description: Structured data output
----
-
-## GUIDELINES
-
-Format all data as JSON with consistent indentation.
+- Start with a summary paragraph
+- Use numbered headings for sections
+- End with recommendations
 ```
 
 ## How To Fix
 
-To fix this violation, add a Guidelines, Format, or Rules section to your output style .md file:
-
-1. **Add a section heading** using "Guidelines", "Format", or "Rules" as the title
-2. **Document formatting rules** that users should follow
-3. **Use appropriate heading level** (H1, H2, or H3 all work)
-4. **Explain when to use** the output style and how to apply it consistently
-
-Example fix:
-
-```markdown
-# Guidelines
-
-Follow these rules when using this output style:
-
-- Guideline 1: [Description]
-- Guideline 2: [Description]
-- Guideline 3: [Description]
-```
-
-Or use Format heading:
-
-```markdown
-## Format
-
-Structure your output as follows:
-
-[Format description]
-```
+Add a `## Guidelines`, `## Rules`, or `## Format` section to the output style body. Document the formatting rules, conventions, and any special instructions within that section.
 
 ## Options
 
-This rule does not have configuration options.
-
-## When Not To Use It
-
-You might disable this rule if your output styles are simple enough that explicit guidelines aren't needed, or if formatting rules are documented elsewhere. However, including guidelines directly in output style .md improves consistency and makes the style easier to use correctly.
+This rule does not have any configuration options.
 
 ## Related Rules
 
-- [output-style-body-too-short](./output-style-body-too-short.md) - Validates minimum body content length
+- [`output-style-body-too-short`](/rules/output-styles/output-style-body-too-short)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/output-styles/output-style-missing-guidelines.ts)
-- [Rule Tests](../../tests/rules/output-styles/output-style-missing-guidelines.test.ts)
-- [Documentation](https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-missing-guidelines.md)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/output-styles/output-style-missing-guidelines.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/output-styles/output-style-missing-guidelines.test.ts)
 
 ## Version
 

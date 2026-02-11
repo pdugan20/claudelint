@@ -35,6 +35,59 @@ export const rule: Rule = {
     defaultOptions: {
       maxLines: 20,
     },
+    docs: {
+      summary: 'Warns when code blocks in a SKILL.md body exceed a configurable line threshold.',
+      details:
+        'This rule scans the body of SKILL.md files for fenced code blocks (triple backticks) and ' +
+        'reports any that exceed the maximum line count. Long code blocks inflate the skill file size, ' +
+        'slow down AI model processing, and make the skill harder to maintain. ' +
+        'Large code examples and templates should be moved to separate files in the `references/` directory ' +
+        'and linked from the main SKILL.md for progressive disclosure.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Code block exceeding the default 20-line limit',
+            code:
+              '---\nname: setup\ndescription: Sets up the development environment\n---\n\n## Usage\n\n' +
+              '```bash\n# Line 1\n# Line 2\n# ...\n# Line 25\n```',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'Short code block within the limit',
+            code:
+              '---\nname: setup\ndescription: Sets up the development environment\n---\n\n## Usage\n\n' +
+              '```bash\nnpm install\nnpm run build\n```',
+            language: 'markdown',
+          },
+          {
+            description: 'Long code moved to a reference file',
+            code:
+              '---\nname: setup\ndescription: Sets up the development environment\n---\n\n## Usage\n\n' +
+              'See [full setup script](references/setup.sh) for the complete configuration.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Move the long code block into a file under the `references/` directory and link to it from ' +
+        'the SKILL.md body. Keep only short, illustrative snippets inline.',
+      optionExamples: [
+        {
+          description: 'Allow up to 40 lines per code block',
+          config: { maxLines: 40 },
+        },
+        {
+          description: 'Enforce a strict 10-line limit',
+          config: { maxLines: 10 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule if your skill requires inline code blocks that cannot be meaningfully ' +
+        'extracted into separate reference files.',
+      relatedRules: ['skill-body-too-long', 'skill-body-word-count'],
+    },
   },
 
   validate: (context) => {

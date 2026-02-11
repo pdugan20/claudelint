@@ -39,6 +39,48 @@ export const rule: Rule = {
     defaultOptions: {
       minLines: DEFAULT_MIN_LINES,
     },
+    docs: {
+      summary: 'Warns when shell scripts exceed a line threshold but lack explanatory comments.',
+      details:
+        'Shell scripts that are longer than a configurable threshold (default: 10 non-empty lines) ' +
+        'should include comments explaining their purpose, approach, and any non-obvious logic. ' +
+        'This rule counts non-empty lines and comment lines (lines starting with `#`). ' +
+        'If the script exceeds the threshold but has at most one comment line (typically just the shebang), ' +
+        'the rule reports a warning. Comments improve maintainability and help other developers ' +
+        '(and AI models) understand the script without executing it.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Long script with no explanatory comments',
+            code: '#!/bin/bash\nnpm install\nnpm run build\nnpm run test\nnpm run lint\ncp dist/* /var/www/\nsystemctl restart app\ncurl -s http://localhost/health\necho "Done"\nrm -rf tmp/\nexit 0',
+            language: 'bash',
+          },
+        ],
+        correct: [
+          {
+            description: 'Script with explanatory comments',
+            code: '#!/bin/bash\n# Deploy script: builds, tests, and deploys the application\nnpm install\nnpm run build\nnpm run test\n\n# Copy artifacts and restart the service\ncp dist/* /var/www/\nsystemctl restart app\n\n# Verify the deployment\ncurl -s http://localhost/health',
+            language: 'bash',
+          },
+        ],
+      },
+      howToFix:
+        'Add comments to the script explaining what it does, why certain steps are needed, ' +
+        'and any non-obvious logic. At minimum, add a header comment describing the script purpose.',
+      optionExamples: [
+        {
+          description: 'Require comments only for scripts longer than 20 lines',
+          config: { minLines: 20 },
+        },
+        {
+          description: 'Require comments for any script longer than 5 lines',
+          config: { minLines: 5 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule for auto-generated scripts where comments would be immediately overwritten.',
+      relatedRules: ['skill-missing-shebang'],
+    },
   },
 
   validate: (context) => {

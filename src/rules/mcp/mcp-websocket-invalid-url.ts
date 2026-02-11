@@ -20,6 +20,44 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-websocket-invalid-url.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that MCP WebSocket transport URLs are well-formed.',
+      details:
+        'This rule checks that the url field of MCP servers with type "websocket" is a valid URL ' +
+        'by attempting to parse it with the URL constructor. URLs containing variable expansions ' +
+        '(${ or $) are skipped since they are resolved at runtime. An invalid URL will prevent ' +
+        'Claude Code from establishing a WebSocket connection to the MCP server.',
+      examples: {
+        incorrect: [
+          {
+            description: 'WebSocket server with a malformed URL',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "not-a-valid-url"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'WebSocket server with a valid URL',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'WebSocket server with a variable-expanded URL (skipped)',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "${MCP_WS_URL}"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Provide a fully qualified URL with a ws:// or wss:// scheme. Ensure the URL is ' +
+        'well-formed and reachable from the environment where Claude Code runs.',
+      relatedRules: [
+        'mcp-websocket-empty-url',
+        'mcp-websocket-invalid-protocol',
+        'mcp-invalid-server',
+      ],
+    },
   },
 
   validate: (context) => {

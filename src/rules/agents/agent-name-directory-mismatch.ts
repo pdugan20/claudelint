@@ -24,6 +24,42 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-name-directory-mismatch.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Validates that the agent name in frontmatter matches its ' + 'parent directory name.',
+      details:
+        'This rule checks that the `name` field in AGENT.md ' +
+        'frontmatter exactly matches the name of the directory ' +
+        'containing the file. For example, an agent at ' +
+        '`.claude/agents/code-review/AGENT.md` must have ' +
+        '`name: code-review` in its frontmatter. This consistency ' +
+        'ensures agents are discoverable by directory traversal ' +
+        'and prevents confusion when the file system and ' +
+        'configuration disagree about an agent identity.',
+      examples: {
+        incorrect: [
+          {
+            description:
+              'Agent name does not match directory ' +
+              '(file at .claude/agents/code-review/AGENT.md)',
+            code: '---\nname: review-agent\n' + 'description: Reviews code for quality\n---',
+          },
+        ],
+        correct: [
+          {
+            description:
+              'Agent name matches directory ' + '(file at .claude/agents/code-review/AGENT.md)',
+            code: '---\nname: code-review\n' + 'description: Reviews code for quality\n---',
+          },
+        ],
+      },
+      howToFix:
+        'Either rename the parent directory to match the agent ' +
+        'name, or update the `name` field in frontmatter to ' +
+        'match the parent directory name.',
+      relatedRules: ['agent-name'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;

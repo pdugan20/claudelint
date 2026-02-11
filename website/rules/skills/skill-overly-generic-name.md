@@ -1,167 +1,83 @@
 # Rule: skill-overly-generic-name
 
-**Severity**: Warning
+**Severity**: Warn
 **Fixable**: No
 **Validator**: Skills
-**Category**: Best Practices
+**Recommended**: Yes
 
 Skill name should be specific and descriptive, not just generic keywords or single-word verbs
 
 ## Rule Details
 
-This rule validates that skill names are specific enough to describe what the skill does. Generic names like single-word verbs or common keywords can be confusing and don't help users understand the skill's purpose.
-
-Based on Anthropic Skills Guide p11: "Avoid generic names that don't describe what the skill does."
-
-This rule flags:
-
-1. **Single-word verbs without context**: Names like `format`, `validate`, `test`, `build`, `deploy` don't indicate what is being formatted, validated, tested, built, or deployed.
-
-2. **Generic keywords only**: Names composed only of generic terms like `helper`, `utils`, `tool`, `manager` that don't specify what they help with, what utilities they provide, or what they manage.
+Skill names should clearly describe their functionality. Names that consist entirely of generic keywords (e.g., "utils", "helper", "manager") or are single-word verbs (e.g., "build", "deploy", "test") do not communicate the skill's purpose. This rule checks for names composed solely of generic keywords like "helper", "util", "tool", "service", "core", or single-word action verbs like "format", "validate", "deploy". Based on the Anthropic Skills Guide recommendation to avoid generic names.
 
 ### Incorrect
 
-Generic skill names that should be more specific:
+Single-word generic verb
 
-```markdown
+```yaml
 ---
-name: format
-description: Formats files
+name: deploy
+description: Deploys the application
 ---
 ```
 
-```markdown
+Name composed only of generic keywords
+
+```yaml
 ---
-name: validate
-description: Validates something
+name: helper-utils
+description: Helper utilities
 ---
 ```
 
-```markdown
----
-name: test
-description: Tests code
----
-```
+Another generic-only name
 
-```markdown
+```yaml
 ---
-name: utils
-description: Utility functions
----
-```
-
-```markdown
----
-name: helper
-description: Helper functions
----
-```
-
-```markdown
----
-name: tool-manager
-description: Manages tools
+name: tool
+description: A useful tool
 ---
 ```
 
 ### Correct
 
-Specific skill names that clearly indicate functionality:
+Descriptive name indicating what is deployed
 
-```markdown
+```yaml
 ---
-name: format-code
-description: Formats source code files using project standards
+name: deploy-staging
+description: Deploys the application to staging
 ---
 ```
 
-```markdown
----
-name: validate-config
-description: Validates configuration files against schemas
----
-```
+Specific name with context
 
-```markdown
+```yaml
 ---
-name: test-api
-description: Tests API endpoints for correctness
----
-```
-
-```markdown
----
-name: project-utils
-description: Utility functions for project management
----
-```
-
-```markdown
----
-name: docker-helper
-description: Helper functions for Docker operations
----
-```
-
-```markdown
----
-name: build-docker
-description: Builds Docker containers for deployment
+name: format-sql
+description: Formats SQL query files
 ---
 ```
 
 ## How To Fix
 
-Add specificity to generic names by indicating what they operate on:
-
-1. **For single-word verbs**, add what is being acted upon:
-   - `format` → `format-code`, `format-json`, `format-config`
-   - `validate` → `validate-schema`, `validate-env`, `validate-config`
-   - `test` → `test-api`, `test-e2e`, `test-integration`
-   - `build` → `build-docker`, `build-assets`, `build-docs`
-   - `deploy` → `deploy-production`, `deploy-staging`, `deploy-lambda`
-
-2. **For generic keywords**, add the specific domain:
-   - `utils` → `project-utils`, `api-utils`, `string-utils`
-   - `helper` → `docker-helper`, `git-helper`, `api-helper`
-   - `tools` → `dev-tools`, `testing-tools`, `build-tools`
-   - `manager` → `cache-manager`, `session-manager`, `state-manager`
-
-## Why This Matters
-
-Generic names cause problems:
-
-- **Triggering confusion**: Claude may invoke the wrong skill when names are too generic
-- **User confusion**: Users can't tell what the skill does from the name alone
-- **Namespace pollution**: Generic names conflict with other skills or future additions
-- **Discoverability**: Specific names make skills easier to find and understand
+Add descriptive words to the skill name that indicate its specific functionality. For example, change "deploy" to "deploy-staging" or "utils" to "string-utils".
 
 ## Options
 
 This rule does not have any configuration options.
 
-## When Not To Use It
-
-This is a warning-level rule, not an error, to allow some flexibility. However, you should only ignore it if:
-
-- The skill name is a proper noun or product name (e.g., `docker`, `kubernetes`)
-- The skill truly has a single, universally understood purpose in your domain
-- The description field provides sufficient context
-
-If you find yourself wanting to disable this rule frequently, your skill names may need to be more descriptive.
-
 ## Related Rules
 
-- [skill-name](./skill-name.md) - Name format validation (kebab-case, length, reserved words)
-- [skill-name-directory-mismatch](./skill-name-directory-mismatch.md) - Name must match directory
-- [skill-description](./skill-description.md) - Description format validation
+- [`skill-name`](/rules/skills/skill-name)
+- [`skill-name-directory-mismatch`](/rules/skills/skill-name-directory-mismatch)
+- [`skill-description-quality`](/rules/skills/skill-description-quality)
 
 ## Resources
 
-- [Rule Implementation](../../src/rules/skills/skill-overly-generic-name.ts)
-- [Rule Tests](../../tests/rules/skills/skill-overly-generic-name.test.ts)
-- [Anthropic Skills Guide p11](https://anthropic.com) - Naming best practices
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-overly-generic-name.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/skills/skill-overly-generic-name.test.ts)
 
 ## Version
 

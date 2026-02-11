@@ -32,6 +32,58 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-time-sensitive-content.md',
+    docs: {
+      summary:
+        'Warns when SKILL.md body contains time-sensitive references that will become outdated.',
+      details:
+        'Skills should contain evergreen content that remains accurate over time. References to ' +
+        'specific dates ("January 15, 2025"), relative time ("last week", "this month"), or ISO ' +
+        'date strings ("2025-01-15") become stale and misleading. This rule scans the SKILL.md body ' +
+        '(after frontmatter) for patterns like "today", "yesterday", "tomorrow", "this/last/next ' +
+        'week/month/year", full date strings, and ISO date formats. Each matching line is reported.',
+      examples: {
+        incorrect: [
+          {
+            description: 'SKILL.md body with a specific date reference',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'Updated on January 15, 2025 to support the new API.',
+            language: 'markdown',
+          },
+          {
+            description: 'SKILL.md body with relative time reference',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'This week we migrated to the new deploy pipeline.',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description: 'SKILL.md body with evergreen language',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'Uses the current deploy pipeline with zero-downtime rollouts.',
+            language: 'markdown',
+          },
+          {
+            description: 'Version references instead of dates',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'Supports API v2 and later.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Replace specific dates with version references or relative terms that age well. ' +
+        'For example, use "recent versions" instead of "this month" and "API v2+" instead of ' +
+        '"the January 2025 API update".',
+      whenNotToUse:
+        'If the skill documentation intentionally tracks a changelog or release history with dates, ' +
+        'you may disable this rule for that specific file.',
+      relatedRules: ['skill-body-word-count', 'skill-body-too-long'],
+    },
   },
 
   validate: (context) => {
