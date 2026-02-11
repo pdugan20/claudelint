@@ -66,13 +66,7 @@ export interface ClaudeLintConfig {
  * Find configuration file by walking up directory tree
  */
 export function findConfigFile(startDir: string): string | null {
-  const configNames = [
-    '.claudelintrc.json',
-    '.claudelintrc.yaml',
-    '.claudelintrc.yml',
-    'claudelint.config.js',
-    'package.json',
-  ];
+  const configNames = ['.claudelintrc.json', 'package.json'];
 
   let currentDir = startDir;
   const root = '/';
@@ -123,17 +117,7 @@ export function loadConfig(configPath: string): ClaudeLintConfig {
     return JSON.parse(readFileSync(configPath, 'utf-8')) as ClaudeLintConfig;
   }
 
-  if (ext === 'yaml' || ext === 'yml') {
-    // For now, just support JSON. YAML support can be added later with a library
-    throw new Error('YAML config files not yet supported. Use .claudelintrc.json instead.');
-  }
-
-  if (ext === 'js') {
-    // For now, just support JSON. JS support can be added later with dynamic import
-    throw new Error('JavaScript config files not yet supported. Use .claudelintrc.json instead.');
-  }
-
-  return {};
+  throw new Error(`Unsupported config file format: ${configPath}. Use .claudelintrc.json instead.`);
 }
 
 /**
