@@ -138,7 +138,7 @@ If strict mode is too aggressive, selectively disable rules:
   "rules": {
     "skill-missing-comments": "warn",   // Downgrade to warning
     "skill-missing-changelog": "off",   // Disable entirely
-    "size-warning": "warn"              // Keep as warning, not error
+    "claude-md-size-warning": "warn"              // Keep as warning, not error
   },
   "maxWarnings": 10  // Allow up to 10 warnings
 }
@@ -198,7 +198,7 @@ cp examples/basic/.claudelintrc.json .
 claudelint check-all
 
 # Upgrade warnings to errors one by one
-# Edit .claudelintrc.json: "size-warning": "error"
+# Edit .claudelintrc.json: "claude-md-size-warning": "error"
 
 # Eventually switch to strict config
 cp examples/strict/.claudelintrc.json .

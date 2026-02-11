@@ -45,7 +45,7 @@ After this project, monorepo users can:
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "size-warning": "off"  // Override for this package
+    "claude-md-size-warning": "off"  // Override for this package
   }
 }
 

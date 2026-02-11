@@ -145,8 +145,8 @@ All examples can be customized:
 ```json
 {
   "rules": {
-    "size-warning": "off",           // Disable rule
-    "import-missing": "warn",         // Downgrade to warning
+    "claude-md-size-warning": "off",           // Disable rule
+    "claude-md-import-missing": "warn",         // Downgrade to warning
     "skill-missing-shebang": "error"  // Upgrade to error
   },
   "maxWarnings": 10,                  // Allow up to 10 warnings

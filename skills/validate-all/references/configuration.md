@@ -5,9 +5,9 @@ Create a `.claudelintrc.json` file to customize validation:
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error"
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "error"
   },
   "output": {
     "format": "stylish",

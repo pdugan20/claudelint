@@ -1,11 +1,10 @@
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error",
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "error",
     "skill-missing-shebang": "warn",
-    "skill-dangerous-command": "error",
-    "settings-invalid-schema": "error"
+    "skill-dangerous-command": "error"
   },
-  "ignore": ["**/node_modules/**", "**/.git/**", "**/dist/**"]
+  "ignorePatterns": ["**/node_modules/**", "**/.git/**", "**/dist/**"]
 }

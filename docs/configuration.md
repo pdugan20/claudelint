@@ -101,9 +101,9 @@ Rules can be configured with a severity level or a full configuration object:
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "off"
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "off"
   }
 }
 ```
@@ -119,7 +119,7 @@ For rules that support options:
 ```json
 {
   "rules": {
-    "size-error": {
+    "claude-md-size-error": {
       "severity": "error",
       "options": {
         "maxSize": 50000
@@ -162,13 +162,13 @@ Override rules for specific file patterns:
     {
       "files": ["*.test.ts", "*.spec.ts"],
       "rules": {
-        "size-warning": "off"
+        "claude-md-size-warning": "off"
       }
     },
     {
       "files": [".claude/skills/**/SKILL.md"],
       "rules": {
-        "size-error": "off"
+        "claude-md-size-error": "off"
       }
     }
   ]
@@ -301,7 +301,7 @@ You can also configure claudelint in your `package.json`:
   "version": "1.0.0",
   "claudelint": {
     "rules": {
-      "size-warning": "off"
+      "claude-md-size-warning": "off"
     }
   }
 }
@@ -434,10 +434,10 @@ Complete example `.claudelintrc.json`:
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error",
-    "import-circular": "error",
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "error",
+    "claude-md-import-circular": "error",
     "skill-missing-shebang": "warn",
     "skill-dangerous-command": "error"
   },
@@ -445,7 +445,7 @@ Complete example `.claudelintrc.json`:
     {
       "files": ["*.test.ts"],
       "rules": {
-        "size-warning": "off"
+        "claude-md-size-warning": "off"
       }
     }
   ],

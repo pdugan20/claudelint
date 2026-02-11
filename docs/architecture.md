@@ -1781,7 +1781,7 @@ User configuration affects all components:
 // .claudelintrc
 {
   "rules": {
-    "size-error": "error",
+    "claude-md-size-error": "error",
     "missing-shebang": "warning",
     "require-jira-ticket": "error"  // Plugin rule
   },

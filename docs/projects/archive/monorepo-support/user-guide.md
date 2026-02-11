@@ -21,8 +21,8 @@ Create a shared config at your monorepo root:
 {
   "rules": {
     "skill-missing-changelog": "warn",
-    "size-warning": "warn",
-    "size-error": "error"
+    "claude-md-size-warning": "warn",
+    "claude-md-size-error": "error"
   }
 }
 ```
@@ -36,7 +36,7 @@ Each package can extend the root config:
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "size-warning": "off"  // Override for this package
+    "claude-md-size-warning": "off"  // Override for this package
   }
 }
 ```
@@ -122,8 +122,8 @@ Child configs override parent rules:
 // base.json
 {
   "rules": {
-    "size-warning": "warn",
-    "size-error": "error"
+    "claude-md-size-warning": "warn",
+    "claude-md-size-error": "error"
   }
 }
 
@@ -131,15 +131,15 @@ Child configs override parent rules:
 {
   "extends": "./base.json",
   "rules": {
-    "size-warning": "off"  // Override
+    "claude-md-size-warning": "off"  // Override
   }
 }
 
 // Result
 {
   "rules": {
-    "size-warning": "off",   // Overridden
-    "size-error": "error"    // Inherited
+    "claude-md-size-warning": "off",   // Overridden
+    "claude-md-size-error": "error"    // Inherited
   }
 }
 ```
@@ -276,8 +276,8 @@ my-monorepo/
   "rules": {
     "skill-missing-changelog": "warn",
     "skill-missing-version": "error",
-    "size-warning": "warn",
-    "size-error": "error"
+    "claude-md-size-warning": "warn",
+    "claude-md-size-error": "error"
   },
   "ignorePatterns": [
     "**/node_modules/**",
@@ -304,7 +304,7 @@ my-monorepo/
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "size-warning": "off",  // Disable for this package
+    "claude-md-size-warning": "off",  // Disable for this package
     "skill-missing-tests": "warn"  // Add package-specific rule
   }
 }
@@ -518,7 +518,7 @@ Only include rules that apply to all packages:
 // .claudelintrc.json - Root config
 {
   "rules": {
-    "size-error": "error",        // All packages
+    "claude-md-size-error": "error",        // All packages
     "skill-missing-version": "error"  // All packages
   }
 }
@@ -534,7 +534,7 @@ Add comments explaining why rules are overridden:
   "extends": "../../.claudelintrc.json",
   "rules": {
     // Examples are allowed to be larger than 5MB
-    "size-warning": "off"
+    "claude-md-size-warning": "off"
   }
 }
 ```

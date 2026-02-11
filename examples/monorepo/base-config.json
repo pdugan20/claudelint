@@ -2,8 +2,8 @@
   "rules": {
     "skill-missing-changelog": "warn",
     "skill-missing-version": "error",
-    "size-warning": "warn",
-    "size-error": "error"
+    "claude-md-size-warning": "warn",
+    "claude-md-size-error": "error"
   },
   "ignorePatterns": ["**/node_modules/**", "**/dist/**"]
 }

@@ -52,7 +52,7 @@ export interface ClaudeLintConfig {
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "size-warning": "off"
+    "claude-md-size-warning": "off"
   }
 }
 ```
@@ -77,7 +77,7 @@ export interface ClaudeLintConfig {
 {
   "extends": "@acme/claudelint-config",
   "rules": {
-    "size-error": "off"
+    "claude-md-size-error": "off"
   }
 }
 ```
@@ -260,8 +260,8 @@ function mergeConfig(
 // base.json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn"
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn"
   }
 }
 
@@ -269,15 +269,15 @@ function mergeConfig(
 {
   "extends": "./base.json",
   "rules": {
-    "size-warning": "off"  // Override
+    "claude-md-size-warning": "off"  // Override
   }
 }
 
 // Result
 {
   "rules": {
-    "size-error": "error",    // From base
-    "size-warning": "off"     // Overridden in child
+    "claude-md-size-error": "error",    // From base
+    "claude-md-size-warning": "off"     // Overridden in child
   }
 }
 ```
@@ -288,14 +288,14 @@ function mergeConfig(
 // base.json
 {
   "rules": {
-    "size-error": "error"
+    "claude-md-size-error": "error"
   }
 }
 
 // strict.json
 {
   "rules": {
-    "size-error": "error",
+    "claude-md-size-error": "error",
     "skill-missing-changelog": "error"
   }
 }
@@ -304,16 +304,16 @@ function mergeConfig(
 {
   "extends": ["./base.json", "./strict.json"],
   "rules": {
-    "size-warning": "warn"
+    "claude-md-size-warning": "warn"
   }
 }
 
 // Result (merge order: base → strict → child)
 {
   "rules": {
-    "size-error": "error",              // From base (also in strict)
+    "claude-md-size-error": "error",              // From base (also in strict)
     "skill-missing-changelog": "error", // From strict
-    "size-warning": "warn"              // From child
+    "claude-md-size-warning": "warn"              // From child
   }
 }
 ```
@@ -326,7 +326,7 @@ function mergeConfig(
   "overrides": [
     {
       "files": ["*.md"],
-      "rules": { "size-error": "off" }
+      "rules": { "claude-md-size-error": "off" }
     }
   ]
 }
@@ -347,7 +347,7 @@ function mergeConfig(
   "overrides": [
     {
       "files": ["*.md"],
-      "rules": { "size-error": "off" }
+      "rules": { "claude-md-size-error": "off" }
     },
     {
       "files": ["SKILL.md"],
@@ -559,7 +559,7 @@ describe('extends with validation', () => {
 {
   "rules": {
     "skill-missing-changelog": "warn",
-    "size-warning": "warn"
+    "claude-md-size-warning": "warn"
   }
 }
 
@@ -568,7 +568,7 @@ describe('extends with validation', () => {
   "extends": "./index.json",
   "rules": {
     "skill-missing-changelog": "error",
-    "size-warning": "error"
+    "claude-md-size-warning": "error"
   }
 }
 ```

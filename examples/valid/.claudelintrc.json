@@ -1,8 +1,8 @@
 {
   "rules": {
-    "size-warning": "warn",
-    "size-error": "error",
-    "import-missing": "error"
+    "claude-md-size-warning": "warn",
+    "claude-md-size-error": "error",
+    "claude-md-import-missing": "error"
   },
   "ignorePatterns": ["node_modules/", "dist/", "coverage/"],
   "output": {

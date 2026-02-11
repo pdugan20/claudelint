@@ -115,8 +115,8 @@ Config: /Users/me/project/.claudelintrc.json
 Effective configuration:
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn"
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn"
   },
   "output": {
     "format": "stylish",
@@ -139,7 +139,7 @@ claudelint check-all --debug-config
 Using config file: /Users/me/project/.claudelintrc.json
 [Config Debug] Loaded config: {
   "rules": {
-    "size-error": "error"
+    "claude-md-size-error": "error"
   }
 }
 
@@ -194,7 +194,7 @@ Change severity to one of the valid values:
 ```json
 {
   "rules": {
-    "size-error": "error"
+    "claude-md-size-error": "error"
   }
 }
 ```text

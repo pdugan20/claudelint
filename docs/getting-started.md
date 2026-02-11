@@ -80,9 +80,9 @@ The init wizard creates this default configuration:
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error",
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "error",
     "skill-dangerous-command": "error",
     "skill-missing-changelog": "off"
   },
@@ -99,9 +99,9 @@ Edit `.claudelintrc.json` to customize:
 ```json
 {
   "rules": {
-    "size-error": "error",
-    "size-warning": "off",
-    "import-missing": "error",
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "off",
+    "claude-md-import-missing": "error",
     "skill-missing-changelog": "warn"
   },
   "output": {

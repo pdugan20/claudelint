@@ -50,8 +50,8 @@ Edit `.claudelintrc.json` to adjust rules:
 ```json
 {
   "rules": {
-    "size-warning": "off",           // Disable this rule
-    "import-missing": "warn",         // Downgrade to warning
+    "claude-md-size-warning": "off",           // Disable this rule
+    "claude-md-import-missing": "warn",         // Downgrade to warning
     "skill-missing-shebang": "error"  // Upgrade to error
   }
 }

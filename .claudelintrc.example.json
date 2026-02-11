@@ -1,10 +1,9 @@
 {
-  "$schema": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schema.json",
   "rules": {
-    "size-error": "error",
-    "size-warning": "warn",
-    "import-missing": "error",
-    "import-circular": "error",
+    "claude-md-size-error": "error",
+    "claude-md-size-warning": "warn",
+    "claude-md-import-missing": "error",
+    "claude-md-import-circular": "error",
     "skill-missing-shebang": "warn",
     "skill-missing-comments": "warn",
     "skill-dangerous-command": "error",
@@ -21,14 +20,14 @@
     {
       "files": ["*.test.ts", "*.spec.ts"],
       "rules": {
-        "size-warning": "off"
+        "claude-md-size-warning": "off"
       }
     },
     {
       "files": [".claude/skills/**/SKILL.md"],
       "rules": {
-        "size-error": "off",
-        "size-warning": "off"
+        "claude-md-size-error": "off",
+        "claude-md-size-warning": "off"
       }
     }
   ],

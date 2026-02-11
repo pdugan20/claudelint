@@ -267,7 +267,7 @@ When enabled, reports empty files as warnings.
 
 {
   "rules": {
-    "size-error": "error"
+    "claude-md-size-error": "error"
   }
 }
 
@@ -275,7 +275,7 @@ When enabled, reports empty files as warnings.
 
 {
   "rules": {
-    "size-error": {
+    "claude-md-size-error": {
       "severity": "error",
       "options": {
         "maxSize": 60000
@@ -288,7 +288,7 @@ When enabled, reports empty files as warnings.
 
 {
   "rules": {
-    "size-error": {
+    "claude-md-size-error": {
       "severity": "error",
       "options": {
         "maxSize": 50000,
