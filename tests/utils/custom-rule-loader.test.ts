@@ -1,14 +1,15 @@
 import { CustomRuleLoader } from '../../src/utils/rules/loader';
 import { mkdirSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
+import { tmpdir } from 'os';
 
 describe('CustomRuleLoader', () => {
   let testDir: string;
   let loader: CustomRuleLoader;
 
   beforeEach(() => {
-    // Create temp directory
-    testDir = join(__dirname, '../__temp__', `test-${Date.now()}`);
+    // Create temp directory outside the project tree
+    testDir = join(tmpdir(), `claudelint-loader-test-${Date.now()}`);
     mkdirSync(testDir, { recursive: true });
 
     // Create loader

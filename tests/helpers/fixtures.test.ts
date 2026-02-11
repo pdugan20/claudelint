@@ -12,9 +12,10 @@ import {
 import { readFile, rm } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { tmpdir } from 'os';
 
 describe('Test Fixtures', () => {
-  const testDir = join(__dirname, '../__temp__', `fixtures-test-${Date.now()}`);
+  const testDir = join(tmpdir(), `claudelint-fixtures-test-${Date.now()}`);
 
   afterEach(async () => {
     if (existsSync(testDir)) {

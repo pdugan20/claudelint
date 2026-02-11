@@ -8,13 +8,14 @@ import { ClaudeLint } from '../../src/api/claudelint';
 import { LintResult } from '../../src/api/types';
 import { writeFileSync, mkdirSync, rmSync } from 'fs';
 import { join } from 'path';
+import { tmpdir } from 'os';
 
 describe('ClaudeLint', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    // Create temp directory for tests
-    tempDir = join(__dirname, '../fixtures/api-temp');
+    // Create temp directory outside the project tree
+    tempDir = join(tmpdir(), `claudelint-api-test-${Date.now()}`);
     mkdirSync(tempDir, { recursive: true });
   });
 

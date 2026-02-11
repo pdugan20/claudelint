@@ -6,6 +6,7 @@
 import { execSync, spawnSync } from 'child_process';
 import { join } from 'path';
 import { mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'fs';
+import { tmpdir } from 'os';
 import { claudeMd, skill, settings, hooks, mcp, plugin } from '../helpers/fixtures';
 
 describe('CLI Integration Tests', () => {
@@ -14,8 +15,8 @@ describe('CLI Integration Tests', () => {
   let testProjectDir: string;
 
   beforeEach(() => {
-    // Create a temporary test project directory
-    testProjectDir = join(__dirname, '../__temp__', `cli-test-${Date.now()}`);
+    // Create a temporary test project directory outside the project tree
+    testProjectDir = join(tmpdir(), `claudelint-cli-test-${Date.now()}`);
     mkdirSync(testProjectDir, { recursive: true });
   });
 

@@ -7,13 +7,14 @@ import { CustomRuleLoader } from '../../src/utils/rules/loader';
 import { RuleRegistry } from '../../src/utils/rules/registry';
 import { mkdirSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
+import { tmpdir } from 'os';
 
 describe('Custom Rules Integration', () => {
   let testDir: string;
 
   beforeEach(() => {
-    // Create temp directory
-    testDir = join(__dirname, '../__temp__', `integration-${Date.now()}`);
+    // Create temp directory outside the project tree
+    testDir = join(tmpdir(), `claudelint-integration-${Date.now()}`);
     mkdirSync(testDir, { recursive: true });
   });
 
