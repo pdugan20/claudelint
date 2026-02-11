@@ -274,12 +274,98 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 
 1. ✓ Create rule file in `src/rules/{category}/{rule-id}.ts`
 2. ✓ Define rule metadata (id, name, description, category, severity)
-3. ✓ Implement `validate()` function
-4. ✓ Add rule to category index in `src/rules/{category}/index.ts`
-5. ✓ Write unit tests in `tests/rules/{category}/{rule-id}.test.ts`
-6. ✓ Document rule in `docs/rules/{category}/{rule-id}.md`
+3. ✓ Add `meta.docs` documentation metadata (see below)
+4. ✓ Implement `validate()` function
+5. ✓ Add rule to category index in `src/rules/{category}/index.ts`
+6. ✓ Write unit tests in `tests/rules/{category}/{rule-id}.test.ts`
 7. ✓ Test the rule with `npm test`
-8. ✓ Run validation on project: `npm run validate`
+8. ✓ Run `npm run docs:generate` to verify documentation generates
+9. ✓ Run validation on project: `npm run validate`
+
+### Rule Documentation Metadata
+
+Rule documentation is **auto-generated** from `meta.docs` in each rule's source file. When you add or modify a rule, include a `docs` property so the documentation site stays in sync automatically.
+
+Here is an example of good metadata for a simple rule without options:
+
+```typescript
+export const rule: Rule = {
+  meta: {
+    id: 'hooks-missing-script',
+    name: 'Hooks Missing Script',
+    description: 'Hook command references a script file that does not exist',
+    category: 'Hooks',
+    severity: 'error',
+    fixable: false,
+    deprecated: false,
+    since: '0.1.0',
+    docs: {
+      recommended: true,
+      summary: 'Hook command references a script file that does not exist',
+      details:
+        'When a hook command points to a script (e.g., `bash .claude/hooks/pre-tool.sh`), ' +
+        'the referenced file must exist on disk. A missing script causes the hook to fail ' +
+        'silently at runtime, which can lead to skipped validations or security checks.',
+      examples: {
+        incorrect: [
+          {
+            description: 'A hook referencing a script that does not exist',
+            code: `hooks:
+  PreToolUse:
+    - matcher: Write
+      command: "bash .claude/hooks/missing-script.sh"`,
+          },
+        ],
+        correct: [
+          {
+            description: 'A hook referencing an existing script',
+            code: `hooks:
+  PreToolUse:
+    - matcher: Write
+      command: "bash .claude/hooks/validate-write.sh"`,
+          },
+        ],
+      },
+      howToFix:
+        'Create the missing script file at the path referenced in the hook command, ' +
+        'or update the command to point to an existing script.',
+      whenNotToUse:
+        'Disable this rule if hook scripts are generated at build time ' +
+        'and do not exist in the source tree.',
+    },
+  },
+  validate: async (context) => { /* ... */ },
+};
+```
+
+And an example with configurable options:
+
+```typescript
+docs: {
+  recommended: true,
+  summary: 'CLAUDE.md exceeds maximum file size limit',
+  details:
+    'Large CLAUDE.md files cause performance issues and may exceed ' +
+    'context window limits when loaded by Claude Code. ...',
+  examples: { /* ... */ },
+  howToFix: 'Split into smaller files using @import directives.',
+  optionExamples: [
+    {
+      description: 'Set a custom maximum file size of 50KB',
+      config: { maxSize: 50000 },
+    },
+    {
+      description: 'Use the default 40KB limit',
+      config: { maxSize: 40000 },
+    },
+  ],
+  whenNotToUse:
+    'This rule should always be enabled.',
+  relatedRules: ['claude-md-size-warning', 'claude-md-import-missing'],
+}
+```
+
+Run `npm run docs:generate` after adding metadata to verify the generated page looks correct. The generated pages appear in `website/rules/{category}/{rule-id}.md`.
 
 ## Contributing Skills
 

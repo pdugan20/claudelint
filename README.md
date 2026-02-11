@@ -67,16 +67,17 @@ After installing as a plugin, use skills via `/claudelint:*` or natural language
 
 ## Documentation
 
+Full documentation is available at **[claudelint.com](https://claudelint.com)**.
+
+Rule documentation is auto-generated from inline metadata in each rule's source code. Run `npm run docs:generate` to regenerate pages after modifying rules.
+
+### Quick Links
+
 - [Getting Started](docs/getting-started.md)
 - [Configuration](docs/configuration.md)
 - [Validation Reference](docs/validation-reference.md)
 - [Plugin Usage](docs/plugin-usage.md)
 - [Programmatic API](docs/api/README.md)
-- [Hooks](docs/hooks.md)
 - [Custom Rules](docs/custom-rules.md)
-- [Auto-fix Guide](docs/auto-fix.md)
-- [Formatting Tools](docs/formatting-tools.md)
-- [Monorepo Support](docs/monorepo.md)
-- [Troubleshooting](docs/troubleshooting.md)
 - [Contributing](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
