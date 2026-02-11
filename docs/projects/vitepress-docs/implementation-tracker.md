@@ -77,7 +77,7 @@ Track progress through each phase of VitePress documentation website implementat
   - [ ] Configure appearance (dark mode settings)
   - [ ] Set up head tags (favicon, meta)
   - [ ] Enable local search
-  - [ ] Configure sitemap (hostname: docs.claudelint.dev)
+  - [ ] Configure sitemap (hostname: <https://claudelint.dev>)
 - [ ] Configure navigation (based on information-architecture.md)
   - [ ] Create navbar (Guide, Validators, Rules, Integrations, API, Development)
   - [ ] Create sidebar structure (per-section sidebars)
@@ -146,7 +146,7 @@ Track progress through each phase of VitePress documentation website implementat
   - [ ] Verify generated markdown quality
   - [ ] Test in VitePress dev server
 
-### Priority 1: High-Impact Rules (25% = ~26 rules)
+### Priority 1: High-Impact Rules (25% = ~29 rules)
 
 Add `meta.docs` to most commonly violated rules:
 
@@ -157,7 +157,7 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] claude-md-import-missing
 - [ ] claude-md-file-not-found
 
-#### Skills Rules (32 total → 8 with metadata)
+#### Skills Rules (45 total → 10 with metadata)
 
 - [ ] skill-name
 - [ ] skill-description
@@ -167,6 +167,8 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] skill-dangerous-command
 - [ ] skill-eval-usage
 - [ ] skill-path-traversal
+- [ ] skill-body-too-long
+- [ ] skill-body-word-count
 
 #### Settings Rules (5 total → 2 with metadata)
 
@@ -185,23 +187,30 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] mcp-http-invalid-url
 - [ ] mcp-invalid-env-var
 
-#### Plugin Rules (13 total → 3 with metadata)
+#### Plugin Rules (12 total → 3 with metadata)
 
 - [ ] plugin-invalid-manifest
 - [ ] plugin-name-required
 - [ ] plugin-version-required
 
-#### Other Validators (25 total → 3 with metadata)
+#### Agents Rules (12 total → 2 with metadata)
 
 - [ ] agent-name
-- [ ] lsp-command-not-in-path
+- [ ] agent-description
+
+#### LSP Rules (8 total → 1 with metadata)
+
+- [ ] lsp-invalid-transport
+
+#### Output Styles Rules (3 total → 1 with metadata)
+
 - [ ] output-style-name
 
 ### Testing & Validation
 
 - [ ] Generate all docs: `npm run docs:generate`
-- [ ] Verify 26 rules have generated docs
-- [ ] Verify 79 rules use existing docs (fallback)
+- [ ] Verify 29 rules have generated docs
+- [ ] Verify 88 rules use existing docs (fallback)
 - [ ] Check generated markdown quality
 - [ ] Test all links work
 - [ ] Run dev server and spot-check pages
@@ -219,7 +228,7 @@ Add `meta.docs` to most commonly violated rules:
 ## Phase 3: Metadata Completion (Weeks 3-4)
 
 **Goal**: Add metadata to 100% of rules
-**Deliverable**: All 105 rules auto-generated from source code
+**Deliverable**: All 117 rules auto-generated from source code
 
 ### Week 3: Remaining 50% (40 rules)
 
@@ -246,15 +255,14 @@ Add `meta.docs` to most commonly violated rules:
   - [ ] Complete all Skills rules
   - [ ] Complete all other validators
 - [ ] Final cleanup (Day 5)
-  - [ ] Ensure all 105 rules have metadata
+  - [ ] Ensure all 117 rules have metadata
   - [ ] Verify consistency across all docs
   - [ ] Generate final docs
-  - [ ] Remove docs/ folder (now unnecessary)
 
 ### Validation
 
 - [ ] Run full generation: `npm run docs:generate`
-- [ ] Verify all 105 rules auto-generated
+- [ ] Verify all 117 rules auto-generated
 - [ ] No fallback to manual docs
 - [ ] All examples render correctly
 - [ ] All options documented
@@ -406,7 +414,7 @@ Add `meta.docs` to most commonly violated rules:
 ## Phase 6: Deployment & Launch (Week 6)
 
 **Goal**: Deploy to Vercel and launch publicly
-**Deliverable**: Live site at docs.claudelint.dev with 95+ Lighthouse score
+**Deliverable**: Live site at claudelint.dev with 95+ Lighthouse score
 
 ### Vercel Setup (Days 1-2)
 
@@ -424,12 +432,12 @@ Add `meta.docs` to most commonly violated rules:
   - [ ] Wait for build completion (~1-2 min)
   - [ ] Verify preview URL works
 - [ ] Configure custom domain
-  - [ ] Add domain: `docs.claudelint.dev`
+  - [ ] Add domain: `claudelint.dev`
   - [ ] Copy DNS instructions
   - [ ] Configure DNS at domain provider:
-    - Type: CNAME
-    - Name: docs
-    - Value: cname.vercel-dns.com
+    - Type: A
+    - Name: @
+    - Value: 76.76.21.21 (Vercel)
   - [ ] Wait for DNS propagation (5-30 min)
   - [ ] Verify HTTPS works
 - [ ] Test PR preview deployments
@@ -471,7 +479,7 @@ Add `meta.docs` to most commonly violated rules:
   - [ ] Option 2: Plausible (privacy-focused)
 - [ ] Set up uptime monitoring
   - [ ] UptimeRobot or similar
-  - [ ] Monitor docs.claudelint.dev
+  - [ ] Monitor claudelint.dev
   - [ ] Configure alerts
 
 ### Pre-Launch Polish (Day 5)
@@ -497,7 +505,7 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] Final deployment
   - [ ] Merge to main branch
   - [ ] Verify Vercel auto-deploys
-  - [ ] Test live site at docs.claudelint.dev
+  - [ ] Test live site at claudelint.dev
   - [ ] Verify search works in production
   - [ ] Test mobile responsiveness
 - [ ] Update project links
@@ -520,27 +528,71 @@ Add `meta.docs` to most commonly violated rules:
 
 ---
 
+## Phase 7: Docs Cleanup & Single Source of Truth (Post-Launch)
+
+**Goal**: Eliminate duplicate documentation, establish single source of truth
+**Deliverable**: `docs/` folder deleted, all documentation in `website/`
+
+### Verify Migration Completeness
+
+- [ ] Audit all files in `docs/` against `website/` content
+  - [ ] Verify every user-facing doc has been migrated
+  - [ ] Verify no content was lost during migration
+  - [ ] Check all internal links resolve correctly
+- [ ] Confirm auto-generation covers all 117 rules
+  - [ ] Run `npm run docs:generate` and verify output
+  - [ ] Spot-check 10 rule pages for quality
+
+### Delete docs/ Directory
+
+- [ ] Remove `docs/rules/` (117 rule docs - now auto-generated)
+- [ ] Remove `docs/api/` (migrated to `website/api/`)
+- [ ] Remove `docs/projects/` (internal planning docs - archive or delete)
+- [ ] Remove remaining guide docs (migrated to `website/guide/`)
+- [ ] Remove `docs/` directory entirely
+- [ ] `git rm -r docs/`
+
+### Prevent Regression
+
+- [ ] Add CI check that fails if files are added to `docs/`
+- [ ] Update CLAUDE.md with "Documentation lives in `website/`"
+- [ ] Update CONTRIBUTING.md with new docs workflow
+- [ ] Update README.md to link to live site instead of docs/ files
+
+### Update References
+
+- [ ] Search codebase for `docs/` references and update
+- [ ] Update any skill or hook references to docs/ paths
+- [ ] Update package.json homepage field to claudelint.dev
+- [ ] Verify all README badge links point to live site
+
+**Phase 7 Complete**: ☐ (0/14 tasks = 0%)
+
+---
+
 ## Overall Progress
 
 ### By Phase
 
 - [ ] Pre-Phase: Validation (0/9 tasks = 0%)
 - [ ] Phase 1: VitePress Setup + Manual Sync (0/29 tasks = 0%)
-- [ ] Phase 2: Metadata Foundation (0/43 tasks = 0%)
+- [ ] Phase 2: Metadata Foundation (0/46 tasks = 0%)
 - [ ] Phase 3: Metadata Completion (0/10 tasks = 0%)
 - [ ] Phase 4: Custom Components (0/24 tasks = 0%)
 - [ ] Phase 5: Enhanced Features (0/29 tasks = 0%)
 - [ ] Phase 6: Deployment & Launch (0/32 tasks = 0%)
+- [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 tasks = 0%)
 
-**Total Progress**: 0/176 tasks (0%)
+**Total Progress**: 0/193 tasks (0%)
 
 ### By Category
 
 - **Validation**: 0/9 tasks (0%)
 - **Setup & Infrastructure**: 0/29 tasks (0%)
-- **Auto-Generation & Metadata**: 0/53 tasks (0%)
+- **Auto-Generation & Metadata**: 0/56 tasks (0%)
 - **Components & Features**: 0/53 tasks (0%)
 - **Deployment & Launch**: 0/32 tasks (0%)
+- **Docs Cleanup**: 0/14 tasks (0%)
 
 ---
 
@@ -575,9 +627,8 @@ Add `meta.docs` to most commonly violated rules:
 ### Milestone 3: 100% Auto-Generated Docs
 
 - [ ] Phase 3 complete
-- [ ] All 105 rules have metadata
+- [ ] All 117 rules have metadata
 - [ ] All rule docs auto-generated
-- [ ] docs/ folder removed (single source of truth)
 - [ ] Pre-commit hook enforces metadata sync
 - **Target**: End of Week 4
 
@@ -594,7 +645,7 @@ Add `meta.docs` to most commonly violated rules:
 
 - [ ] Phase 6 complete (deployment section)
 - [ ] Site deployed to Vercel
-- [ ] Custom domain configured (docs.claudelint.dev)
+- [ ] Custom domain configured (claudelint.dev)
 - [ ] HTTPS enabled
 - [ ] PR previews working
 - **Target**: Week 6, Day 2
@@ -607,6 +658,15 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] Site announced publicly
 - [ ] Monitoring active
 - **Target**: End of Week 6
+
+### Milestone 7: Single Source of Truth
+
+- [ ] Phase 7 complete
+- [ ] `docs/` folder deleted
+- [ ] CI check prevents new docs in old location
+- [ ] All references updated to live site
+- [ ] CLAUDE.md and CONTRIBUTING.md updated
+- **Target**: Week 6 + 1 day (immediately post-launch)
 
 ---
 

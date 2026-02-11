@@ -78,15 +78,24 @@ Ensure these scripts exist:
 
 1. Go to Project Settings → Domains
 2. Click "Add Domain"
-3. Enter: `docs.claudelint.dev`
+3. Enter: `claudelint.dev` (root domain, not a subdomain)
 
 #### Step 2: Configure DNS
 
 At your domain provider (Cloudflare, Namecheap, etc.), add:
 
 ```text
+Type: A
+Name: @
+Value: 76.76.21.21 (Vercel)
+TTL: Auto / 3600
+```
+
+Also add a www redirect:
+
+```text
 Type: CNAME
-Name: docs
+Name: www
 Value: cname.vercel-dns.com
 TTL: Auto / 3600
 ```
@@ -96,7 +105,8 @@ TTL: Auto / 3600
 - Vercel automatically provisions SSL certificate
 - HTTPS enabled by default
 - DNS propagation: 5-30 minutes
-- Site live at: `https://docs.claudelint.dev`
+- Site live at: `https://claudelint.dev`
+- Landing page at root, docs at `/guide/`, `/rules/`, etc.
 
 ### PR Preview Deployments
 
@@ -188,8 +198,8 @@ Create `vercel.json` for advanced settings:
 
 - **First build**: 30-60 seconds (includes npm install)
 - **Incremental builds**: 10-20 seconds (with cache)
-- **Rule doc generation**: <1 second (105 rules)
-- **VitePress build**: 5-10 seconds (155 pages)
+- **Rule doc generation**: <1 second (117 rules)
+- **VitePress build**: 5-10 seconds (170 pages)
 
 **Vercel Free Tier Limits:**
 
@@ -215,7 +225,7 @@ export default defineConfig({
   head: [
     ['script', {
       defer: true,
-      'data-domain': 'docs.claudelint.dev',
+      'data-domain': 'claudelint.dev',
       src: 'https://plausible.io/js/script.js'
     }]
   ]
@@ -247,7 +257,7 @@ If you prefer GitHub Pages:
 3. Push to deploy
 4. Site live at `pdugan20.github.io/claudelint/`
 
-For custom domain, add `website/public/CNAME` with `docs.claudelint.dev` and configure DNS.
+For custom domain, add `website/public/CNAME` with `claudelint.dev` and configure DNS.
 
 See [archived deployment guide](https://github.com/pdugan20/claudelint/blob/main/docs/projects/vitepress-docs/deployment.md#github-pages-full-guide) for complete GitHub Pages setup.
 
@@ -286,7 +296,7 @@ Click "Deploy" - site will be live in ~1 minute.
 ### Custom Domain
 
 1. Go to Project Settings → Domains
-2. Add domain: `docs.claudelint.dev`
+2. Add domain: `claudelint.dev`
 3. Follow DNS configuration instructions
 4. Vercel provides automatic HTTPS
 
@@ -487,7 +497,7 @@ All platforms automatically compress with Brotli/Gzip.
 **Verify compression**:
 
 ```bash
-curl -H "Accept-Encoding: br,gzip" -I https://docs.claudelint.dev
+curl -H "Accept-Encoding: br,gzip" -I https://claudelint.dev
 # Look for: Content-Encoding: br
 ```
 
@@ -554,7 +564,7 @@ export default defineConfig({
   head: [
     ['script', {
       defer: true,
-      'data-domain': 'docs.claudelint.dev',
+      'data-domain': 'claudelint.dev',
       src: 'https://plausible.io/js/script.js'
     }]
   ]
@@ -572,7 +582,7 @@ export default defineConfig({
 **Setup**:
 
 1. Create account
-2. Add monitor: `https://docs.claudelint.dev`
+2. Add monitor: `https://claudelint.dev`
 3. Set check interval: 5 minutes
 4. Configure alerts (email, Slack)
 

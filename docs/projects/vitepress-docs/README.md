@@ -4,11 +4,12 @@ Create a modern, fast documentation website for claudelint using VitePress.
 
 ## Project Overview
 
-**Goal**: Build and deploy a professional documentation website at docs.claudelint.dev
+**Goal**: Build and deploy a professional documentation website at claudelint.dev
 **Framework**: VitePress (Vue-powered static site generator)
 **Timeline**: 6 weeks (phased approach)
 **Hosting**: Vercel (automatic PR previews, global CDN)
 **Approach**: Monorepo with auto-generated rule docs
+**Domain Strategy**: Single domain (claudelint.dev) with landing page at root, docs at path prefixes - matching ESLint, Prettier, Biome, and Oxc patterns
 
 ## Key Decisions
 
@@ -26,12 +27,21 @@ Create a modern, fast documentation website for claudelint using VitePress.
 - [x] **Zero configuration** - auto-detects VitePress
 - [x] **Free for open source** projects
 
+### Domain Strategy: Single Domain (No Subdomain)
+
+- [x] **claudelint.dev** - Single domain, no docs subdomain
+- [x] **Landing page at root** (`/`) - Marketing hero, install snippet, features
+- [x] **Docs at path prefixes** (`/guide/`, `/rules/`, etc.)
+- [x] **Industry standard** - ESLint, Prettier, Biome, Stylelint, and Oxc all use this pattern
+- [x] **Simpler setup** - No CORS, no split deployments, no split analytics
+
 ### Information Architecture
 
-- [x] **~155 pages** total documentation
-- [x] **105 rule pages** auto-generated from code
+- [x] **~170 pages** total documentation
+- [x] **117 rule pages** auto-generated from code
 - [x] **6 main sections**: Guide, Validators, Rules, Integrations, API, Development
 - [x] **Hybrid approach**: ESLint's depth + Prettier's simplicity
+- [x] **Reference project**: Oxc (oxc.rs) - VitePress-based linting tool with similar structure
 
 See [information-architecture.md](./information-architecture.md) and [auto-generation-guide.md](./auto-generation-guide.md) for complete details.
 
@@ -67,7 +77,7 @@ See [information-architecture.md](./information-architecture.md) and [auto-gener
 claudelint is:
 
 - A single-version CLI tool (no multi-version docs needed)
-- Medium-sized documentation (~50 pages total)
+- Medium-sized documentation (~53 hand-written pages + 117 auto-generated rule pages)
 - TypeScript-based (VitePress advantage)
 - Developer-focused (users value performance)
 
@@ -102,7 +112,7 @@ Site structure and navigation:
 - Analysis of ESLint and Prettier docs
 - Proposed 6-section structure
 - Content mapping (existing → new)
-- ~157 pages breakdown
+- ~170 pages breakdown
 - Page templates and patterns
 
 ### [auto-generation-guide.md](./auto-generation-guide.md)
@@ -139,17 +149,30 @@ Deployment configuration:
 
 ### Documentation Scale
 
-- **Total Pages**: ~157 pages
-- **Auto-Generated**: 105 rule pages (from TypeScript metadata)
-- **Hand-Written**: ~52 pages (guides, validators, API, development)
+- **Total Pages**: ~170 pages
+- **Auto-Generated**: 117 rule pages (from TypeScript metadata)
+- **Hand-Written**: ~53 pages (guides, validators, API, development)
 - **Build Size**: <200KB gzipped
 - **Build Time**: <30 seconds for full site
+
+### Rule Categories (117 rules across 10 categories)
+
+- **skills**: 45 rules
+- **claude-md**: 14 rules
+- **mcp**: 13 rules
+- **agents**: 12 rules
+- **plugin**: 12 rules
+- **lsp**: 8 rules
+- **settings**: 5 rules
+- **hooks**: 3 rules
+- **output-styles**: 3 rules
+- **commands**: 2 rules
 
 ### Content Organization
 
 - **/guide/**: 8 pages (getting started, config, CLI, troubleshooting)
 - **/validators/**: 11 pages (overview + 10 validators)
-- **/rules/**: 106 pages (overview + 105 auto-generated rules)
+- **/rules/**: 118 pages (overview + 117 auto-generated rules)
 - **/integrations/**: 10 pages (npm, pre-commit, GitHub Actions, Claude plugin, **monorepos**)
 - **/api/**: 7 pages (programmatic API docs)
 - **/development/**: 8 pages (custom rules, architecture, contributing)
@@ -158,16 +181,22 @@ Deployment configuration:
 ### Comparison to Similar Tools
 
 - **Prettier**: ~24 pages (simple formatter)
-- **claudelint**: ~157 pages (comprehensive linter) ← You are here
+- **claudelint**: ~170 pages (comprehensive linter) ← You are here
 - **ESLint**: ~364 pages (284 rules)
+- **Oxc/oxlint**: Uses VitePress, 668 rules, multi-dimension filtering (closest comparable)
 
-claudelint is **43% the size of ESLint**, appropriate for our 105 rules.
+claudelint is **47% the size of ESLint**, appropriate for our 117 rules.
 
 ### Recent Feature Additions (Feb 2026)
 
 - **Monorepo Support** - Config inheritance with `extends`, workspace detection, 3-10x faster validation
 - **Simplified Architecture** - Removed composition framework, renamed validators (FileValidator, SchemaValidator)
 - **Performance** - Parallel workspace validation for large monorepos
+- **SARIF Output** - Standard SARIF format for CI/CD integration
+- **Watch Mode** - Continuous validation during development
+- **Diagnostic Collector** - Improved error aggregation and reporting
+- **12 New Rules** - Added across agents, plugin, skills, claude-md categories (M5-M6)
+- **Skills Directory Migration** - Skills moved from `.claude/skills/` to root `skills/` directory
 
 ### Features to Implement
 
@@ -201,7 +230,7 @@ claudelint is **43% the size of ESLint**, appropriate for our 105 rules.
 ## Site Structure
 
 ```text
-docs.claudelint.dev/
+claudelint.dev/
 ├── /                          # Homepage
 ├── /guide/
 │   ├── /getting-started       # Quick start guide
@@ -331,7 +360,7 @@ See [implementation-tracker.md](./implementation-tracker.md) for detailed task l
 
 - **Week 1**: VitePress setup, manual doc sync
 - **Week 2**: Auto-generation infrastructure, add metadata to 25% of rules
-- **Weeks 3-4**: Complete metadata for all 105 rules
+- **Weeks 3-4**: Complete metadata for all 117 rules
 - **Week 5**: Custom Vue components, interactive features
 - **Week 6**: Deploy to Vercel, performance optimization, launch
 
@@ -388,9 +417,50 @@ This is acceptable for the performance and simplicity gains.
 - **Why VitePress over Docusaurus?** See trade-offs section above
 - **Can we use React components?** No, VitePress is Vue-based. See Vue section above.
 - **What about versioning?** VitePress has no native versioning - see plan.md for details
-- **Custom domain?** Yes, docs.claudelint.dev (configure in Phase 5)
+- **Custom domain?** Yes, claudelint.dev with docs at path prefixes (configure in Phase 5)
+
+## Docs Cleanup Strategy
+
+**Principle: Single Source of Truth** - When the VitePress site goes live, the `docs/` folder is eliminated.
+
+### What Happens to Existing `docs/`
+
+- **User-facing docs** (guides, API, rule docs): Migrated into `website/`, then deleted from `docs/`
+- **Rule docs** (117 files): Become seed content for auto-generation metadata, then deleted
+- **Project planning docs** (`docs/projects/`): Archived or deleted (not public-facing)
+- **Internal docs** (enforcement policies, templates): Removed or moved to repo root
+
+### Migration Approach: Hard Cutover (Recommended)
+
+Instead of a gradual migration with dual locations, we do a single cutover:
+
+1. Build the VitePress site with all content in `website/`
+2. Delete the entire `docs/` directory
+3. Add CI check to prevent new files in `docs/`
+4. Update CLAUDE.md: "Documentation lives in `website/`"
+
+See [docs-migration-inventory.md](./docs-migration-inventory.md) for the complete file-by-file mapping.
+
+### What Stays in Repo Root
+
+Only standard repo-level files: `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `CLAUDE.md`
+
+## Comparable Projects
+
+| Project | Framework | Domain Pattern | Rules |
+|---------|-----------|---------------|-------|
+| **ESLint** | Eleventy | eslint.org/docs/latest/ | 270+ |
+| **Prettier** | Docusaurus | prettier.io/docs/ | N/A |
+| **Biome** | Astro + Starlight | biomejs.dev/guides/ | 434 |
+| **Oxc/oxlint** | **VitePress** | oxc.rs/docs/ | 668 |
+| **Stylelint** | Docusaurus | stylelint.io/user-guide/ | 170+ |
+| **claudelint** | **VitePress** | claudelint.dev/guide/ | 117 |
+
+**Key takeaway**: No major project uses a docs subdomain. All use path prefixes on a single domain.
 
 ## Related Documents
 
 - [Architecture](../../architecture.md) - claudelint system architecture
 - [Contributing](../../../CONTRIBUTING.md) - Contribution guidelines
+- [Docs Migration Inventory](./docs-migration-inventory.md) - File-by-file migration mapping
+- [Landing Page Spec](./landing-page-spec.md) - Marketing homepage design

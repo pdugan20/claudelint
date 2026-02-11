@@ -2,6 +2,96 @@
 
 Based on comprehensive research comparing VitePress and Docusaurus, the following updates have been made to the VitePress documentation project proposal.
 
+## February 2026 Review: Major Plan Updates
+
+### Context
+
+After 89 commits and 438 file changes since the last vitepress-docs update, a comprehensive review was performed covering:
+
+1. Outdated stats and feature references
+2. Domain strategy research (ESLint, Prettier, Biome, Oxc, Stylelint)
+3. Docs cleanup strategy to prevent duplicate/overlapping documentation
+
+### Changes Made (Feb 10, 2026)
+
+#### Domain Strategy: Single Domain (No Subdomain)
+
+**Research finding**: None of the 5 major projects studied use a docs subdomain. All use path prefixes on a single domain.
+
+**Change**: `docs.claudelint.dev` changed to `claudelint.dev` across all files.
+
+| Before | After |
+|---|---|
+| `docs.claudelint.dev` (CNAME subdomain) | `claudelint.dev` (A record, root domain) |
+| No landing page | Marketing landing page at root (`/`) |
+| Docs at root | Docs at path prefixes (`/guide/`, `/rules/`, etc.) |
+
+**Files updated**: README.md, plan.md, implementation-tracker.md, information-architecture.md, deployment.md, quickstart.md
+
+#### Stats Updated: 105 Rules to 117
+
+Since the last update, 12 new rules were added across milestones 5 and 6:
+
+| Category | Old Count | New Count |
+|---|---|---|
+| skills | 32 | 45 |
+| agents | ~10 | 12 |
+| plugin | 13 | 12 |
+| output-styles | 7 | 3 |
+| All others | unchanged | unchanged |
+| **Total** | **105** | **117** |
+
+**Files updated**: All files referencing rule counts
+
+#### New Features Added to Plan
+
+Features implemented since last update that need documentation:
+
+- **SARIF Output** - Standard format for CI/CD integration
+- **Watch Mode** - Continuous validation during development
+- **Diagnostic Collector** - Improved error aggregation
+- **Skills Directory Migration** - `.claude/skills/` moved to root `skills/`
+- **12 New Rules** - Added across M5-M6
+
+#### Phase 7 Added: Docs Cleanup & Single Source of Truth
+
+New phase added to implementation tracker to prevent the duplicate docs problem:
+
+- Verify migration completeness
+- Delete entire `docs/` directory
+- Add CI check to prevent regression
+- Update all codebase references
+
+#### New Supplemental Documents
+
+- **docs-migration-inventory.md** - File-by-file mapping of every doc and its fate
+- **landing-page-spec.md** - Marketing homepage design based on competitor research
+
+#### Comparable Project Added: Oxc
+
+Oxc (oxc.rs) identified as the closest comparable project:
+
+- Also uses VitePress
+- Also a linting tool (668 rules)
+- Has multi-dimension rule filtering
+- Good reference for our implementation
+
+### Summary
+
+| What | Change |
+|---|---|
+| Domain | `docs.claudelint.dev` -> `claudelint.dev` |
+| Rules | 105 -> 117 |
+| Total pages | ~157 -> ~170 |
+| New phases | Phase 7: Docs Cleanup |
+| New docs | docs-migration-inventory.md, landing-page-spec.md |
+| Migration strategy | Gradual sync -> Hard cutover (recommended) |
+| Reference project | Added Oxc as primary comparable |
+
+---
+
+## Previous Updates
+
 ## Summary of Changes
 
 All updates are based on real-world migration experiences, performance benchmarks, and feature comparisons from 2026 research.

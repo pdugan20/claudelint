@@ -619,14 +619,14 @@ docs: {
 
 ### Generation Speed
 
-- **~105 rules**: <1 second to generate all docs
+- **~117 rules**: <1 second to generate all docs
 - **Incremental**: Only changed rules regenerated (future optimization)
 - **CI/CD**: <30 seconds total build time
 
 ### File Size
 
 - **Average rule page**: ~3-5KB markdown
-- **Total rule docs**: ~300-500KB (105 rules)
+- **Total rule docs**: ~300-500KB (117 rules)
 - **Built HTML**: ~1-2MB total (gzipped: ~200KB)
 
 ## Comparison to ESLint
@@ -743,7 +743,7 @@ npm run list-rules | grep "rule-name"
 
 **Automated:** Docs auto-generated, always in sync.
 
-**Scalable:** Works for 105 rules, will work for 500+.
+**Scalable:** Works for 117 rules across 10 categories, will work for 500+.
 
 **Industry-proven:** ESLint uses the same approach.
 
