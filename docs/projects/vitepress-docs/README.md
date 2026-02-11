@@ -4,12 +4,12 @@ Create a modern, fast documentation website for claudelint using VitePress.
 
 ## Project Overview
 
-**Goal**: Build and deploy a professional documentation website at claudelint.dev
+**Goal**: Build and deploy a professional documentation website at claudelint.com
 **Framework**: VitePress (Vue-powered static site generator)
 **Timeline**: 6 weeks (phased approach)
 **Hosting**: Vercel (automatic PR previews, global CDN)
 **Approach**: Monorepo with auto-generated rule docs
-**Domain Strategy**: Single domain (claudelint.dev) with landing page at root, docs at path prefixes - matching ESLint, Prettier, Biome, and Oxc patterns
+**Domain Strategy**: Single domain (claudelint.com) with landing page at root, docs at path prefixes - matching ESLint, Prettier, Biome, and Oxc patterns
 
 ## Key Decisions
 
@@ -29,7 +29,7 @@ Create a modern, fast documentation website for claudelint using VitePress.
 
 ### Domain Strategy: Single Domain (No Subdomain)
 
-- [x] **claudelint.dev** - Single domain, no docs subdomain
+- [x] **claudelint.com** - Single domain, no docs subdomain
 - [x] **Landing page at root** (`/`) - Marketing hero, install snippet, features
 - [x] **Docs at path prefixes** (`/guide/`, `/rules/`, etc.)
 - [x] **Industry standard** - ESLint, Prettier, Biome, Stylelint, and Oxc all use this pattern
@@ -230,7 +230,7 @@ claudelint is **47% the size of ESLint**, appropriate for our 117 rules.
 ## Site Structure
 
 ```text
-claudelint.dev/
+claudelint.com/
 ├── /                          # Homepage
 ├── /guide/
 │   ├── /getting-started       # Quick start guide
@@ -417,7 +417,7 @@ This is acceptable for the performance and simplicity gains.
 - **Why VitePress over Docusaurus?** See trade-offs section above
 - **Can we use React components?** No, VitePress is Vue-based. See Vue section above.
 - **What about versioning?** VitePress has no native versioning - see plan.md for details
-- **Custom domain?** Yes, claudelint.dev with docs at path prefixes (configure in Phase 5)
+- **Custom domain?** Yes, claudelint.com with docs at path prefixes (configure in Phase 5)
 
 ## Docs Cleanup Strategy
 
@@ -454,7 +454,7 @@ Only standard repo-level files: `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, 
 | **Biome** | Astro + Starlight | biomejs.dev/guides/ | 434 |
 | **Oxc/oxlint** | **VitePress** | oxc.rs/docs/ | 668 |
 | **Stylelint** | Docusaurus | stylelint.io/user-guide/ | 170+ |
-| **claudelint** | **VitePress** | claudelint.dev/guide/ | 117 |
+| **claudelint** | **VitePress** | claudelint.com/guide/ | 117 |
 
 **Key takeaway**: No major project uses a docs subdomain. All use path prefixes on a single domain.
 

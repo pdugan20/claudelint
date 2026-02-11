@@ -18,11 +18,11 @@ After 89 commits and 438 file changes since the last vitepress-docs update, a co
 
 **Research finding**: None of the 5 major projects studied use a docs subdomain. All use path prefixes on a single domain.
 
-**Change**: `docs.claudelint.dev` changed to `claudelint.dev` across all files.
+**Change**: `docs.claudelint.com` changed to `claudelint.com` across all files.
 
 | Before | After |
 |---|---|
-| `docs.claudelint.dev` (CNAME subdomain) | `claudelint.dev` (A record, root domain) |
+| `docs.claudelint.com` (CNAME subdomain) | `claudelint.com` (A record, root domain) |
 | No landing page | Marketing landing page at root (`/`) |
 | Docs at root | Docs at path prefixes (`/guide/`, `/rules/`, etc.) |
 
@@ -80,7 +80,7 @@ Oxc (oxc.rs) identified as the closest comparable project:
 
 | What | Change |
 |---|---|
-| Domain | `docs.claudelint.dev` -> `claudelint.dev` |
+| Domain | `docs.claudelint.com` -> `claudelint.com` |
 | Rules | 105 -> 117 |
 | Total pages | ~157 -> ~170 |
 | New phases | Phase 7: Docs Cleanup |

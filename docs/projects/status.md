@@ -63,7 +63,7 @@ Self-validation bug fixes and linter improvements. Bug fixes (7/7), Sprints 1-6 
 **Status:** Planned, not started
 **Location:** [docs/projects/vitepress-docs/](./vitepress-docs/)
 
-Professional documentation website at docs.claudelint.dev. 176 planned tasks across 6 phases.
+Professional documentation website at claudelint.com. 176 planned tasks across 6 phases.
 
 ---
 

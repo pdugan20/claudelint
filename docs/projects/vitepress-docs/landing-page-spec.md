@@ -1,6 +1,6 @@
 # Landing Page Specification
 
-Design specification for the claudelint.dev marketing landing page.
+Design specification for the claudelint.com marketing landing page.
 
 ## Why a Landing Page
 

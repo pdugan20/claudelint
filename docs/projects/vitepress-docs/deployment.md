@@ -78,7 +78,7 @@ Ensure these scripts exist:
 
 1. Go to Project Settings → Domains
 2. Click "Add Domain"
-3. Enter: `claudelint.dev` (root domain, not a subdomain)
+3. Enter: `claudelint.com` (root domain, not a subdomain)
 
 #### Step 2: Configure DNS
 
@@ -105,7 +105,7 @@ TTL: Auto / 3600
 - Vercel automatically provisions SSL certificate
 - HTTPS enabled by default
 - DNS propagation: 5-30 minutes
-- Site live at: `https://claudelint.dev`
+- Site live at: `https://claudelint.com`
 - Landing page at root, docs at `/guide/`, `/rules/`, etc.
 
 ### PR Preview Deployments
@@ -225,7 +225,7 @@ export default defineConfig({
   head: [
     ['script', {
       defer: true,
-      'data-domain': 'claudelint.dev',
+      'data-domain': 'claudelint.com',
       src: 'https://plausible.io/js/script.js'
     }]
   ]
@@ -257,7 +257,7 @@ If you prefer GitHub Pages:
 3. Push to deploy
 4. Site live at `pdugan20.github.io/claudelint/`
 
-For custom domain, add `website/public/CNAME` with `claudelint.dev` and configure DNS.
+For custom domain, add `website/public/CNAME` with `claudelint.com` and configure DNS.
 
 See [archived deployment guide](https://github.com/pdugan20/claudelint/blob/main/docs/projects/vitepress-docs/deployment.md#github-pages-full-guide) for complete GitHub Pages setup.
 
@@ -296,7 +296,7 @@ Click "Deploy" - site will be live in ~1 minute.
 ### Custom Domain
 
 1. Go to Project Settings → Domains
-2. Add domain: `claudelint.dev`
+2. Add domain: `claudelint.com`
 3. Follow DNS configuration instructions
 4. Vercel provides automatic HTTPS
 
@@ -497,7 +497,7 @@ All platforms automatically compress with Brotli/Gzip.
 **Verify compression**:
 
 ```bash
-curl -H "Accept-Encoding: br,gzip" -I https://claudelint.dev
+curl -H "Accept-Encoding: br,gzip" -I https://claudelint.com
 # Look for: Content-Encoding: br
 ```
 
@@ -564,7 +564,7 @@ export default defineConfig({
   head: [
     ['script', {
       defer: true,
-      'data-domain': 'claudelint.dev',
+      'data-domain': 'claudelint.com',
       src: 'https://plausible.io/js/script.js'
     }]
   ]
@@ -582,7 +582,7 @@ export default defineConfig({
 **Setup**:
 
 1. Create account
-2. Add monitor: `https://claudelint.dev`
+2. Add monitor: `https://claudelint.com`
 3. Set check interval: 5 minutes
 4. Configure alerts (email, Slack)
 

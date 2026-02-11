@@ -170,7 +170,7 @@ Analysis of ESLint and Prettier documentation structures, and proposed informati
 ### Site Structure
 
 ```text
-claudelint.dev/
+claudelint.com/
 ├── /                              # Homepage
 │
 ├── /guide/                        # Getting Started & Guides
@@ -343,10 +343,10 @@ docs/rule-options-guide.md        →     /development/rule-development
 
 **Single domain, no subdomain.** Based on research of ESLint, Prettier, Biome, Oxc, and Stylelint, no major project uses a docs subdomain. All use a single domain with path prefixes:
 
-- `claudelint.dev/` - Marketing landing page (hero, features, install snippet)
-- `claudelint.dev/guide/` - Getting started, configuration, CLI
-- `claudelint.dev/rules/` - Auto-generated rule reference
-- `claudelint.dev/api/` - Programmatic API documentation
+- `claudelint.com/` - Marketing landing page (hero, features, install snippet)
+- `claudelint.com/guide/` - Getting started, configuration, CLI
+- `claudelint.com/rules/` - Auto-generated rule reference
+- `claudelint.com/api/` - Programmatic API documentation
 
 See [landing-page-spec.md](./landing-page-spec.md) for complete landing page design.
 
@@ -656,7 +656,7 @@ For better search experience:
 3. Optimize images
 4. Set up deployment
 5. Configure custom domain
-6. Launch claudelint.dev
+6. Launch claudelint.com
 
 ## Content Guidelines
 
@@ -692,7 +692,7 @@ For better search experience:
   property="og:description"
   content="Validate CLAUDE.md, skills, settings, hooks, MCP servers, and plugins"
 />
-<meta property="og:image" content="https://claudelint.dev/og-image.png" />
+<meta property="og:image" content="https://claudelint.com/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
 ```
 

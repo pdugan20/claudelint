@@ -160,7 +160,7 @@ export default defineConfig({
   },
 
   sitemap: {
-    hostname: 'https://claudelint.dev',
+    hostname: 'https://claudelint.com',
   },
 });
 ```
@@ -540,7 +540,7 @@ Click "Deploy" and wait ~1-2 minutes. Your site will be live at `claudelint.verc
 
 ### Step 3: Custom Domain
 
-1. Add domain in Vercel: `claudelint.dev`
+1. Add domain in Vercel: `claudelint.com`
 2. Configure DNS:
 
    ```text
@@ -550,7 +550,7 @@ Click "Deploy" and wait ~1-2 minutes. Your site will be live at `claudelint.verc
    ```
 
 3. Wait 5-30 minutes for DNS propagation
-4. Site live at `https://claudelint.dev`
+4. Site live at `https://claudelint.com`
 
 ## Troubleshooting
 

@@ -36,3 +36,7 @@ temp/
 
 # Generated schemas (for comparison only, not committed)
 schemas/generated/
+
+# VitePress
+website/.vitepress/dist/
+website/.vitepress/cache/
