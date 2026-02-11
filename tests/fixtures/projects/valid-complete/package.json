@@ -2,5 +2,9 @@
   "name": "valid-complete-fixture",
   "version": "1.0.0",
   "private": true,
-  "description": "Test fixture with all valid config files"
+  "description": "Test fixture with all valid config files",
+  "scripts": {
+    "build": "echo build",
+    "test": "echo test"
+  }
 }
