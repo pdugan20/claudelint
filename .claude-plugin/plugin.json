@@ -9,5 +9,13 @@
   "homepage": "https://github.com/pdugan20/claudelint",
   "repository": "https://github.com/pdugan20/claudelint",
   "license": "MIT",
-  "keywords": ["validation", "linting", "developer-tools", "code-quality"]
+  "keywords": ["validation", "linting", "developer-tools", "code-quality"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-dependency.sh"
+      }
+    ]
+  }
 }
