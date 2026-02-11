@@ -7,6 +7,9 @@ export default defineConfig({
 
   base: '/',
 
+  // TODO: Remove once all pages exist (Phase 2-3 will add rule pages)
+  ignoreDeadLinks: true,
+
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { property: 'og:type', content: 'website' }],
@@ -30,16 +33,102 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'Rules', link: '/guide/rules-overview' },
+      {
+        text: 'Validators',
+        link: '/validators/overview',
+      },
+      { text: 'Rules', link: '/rules/overview' },
+      { text: 'Integrations', link: '/integrations/overview' },
+      { text: 'API', link: '/api/overview' },
+      { text: 'Development', link: '/development/overview' },
     ],
 
     sidebar: {
       '/guide/': [
         {
-          text: 'Introduction',
+          text: 'Getting Started',
           items: [
-            { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Rules Overview', link: '/guide/rules-overview' },
+            { text: 'Introduction', link: '/guide/getting-started' },
+            { text: 'Why claudelint?', link: '/guide/why-claudelint' },
+          ],
+        },
+        {
+          text: 'Usage',
+          items: [
+            { text: 'Configuration', link: '/guide/configuration' },
+            { text: 'CLI Reference', link: '/guide/cli-reference' },
+            { text: 'Auto-fix', link: '/guide/auto-fix' },
+            { text: 'Inline Disables', link: '/guide/inline-disables' },
+          ],
+        },
+        {
+          text: 'Help',
+          items: [
+            { text: 'Troubleshooting', link: '/guide/troubleshooting' },
+            { text: 'Glossary', link: '/guide/glossary' },
+          ],
+        },
+      ],
+      '/validators/': [
+        {
+          text: 'Validators',
+          items: [
+            { text: 'Overview', link: '/validators/overview' },
+            { text: 'CLAUDE.md', link: '/validators/claude-md' },
+            { text: 'Skills', link: '/validators/skills' },
+            { text: 'Settings', link: '/validators/settings' },
+            { text: 'Hooks', link: '/validators/hooks' },
+            { text: 'MCP Servers', link: '/validators/mcp' },
+            { text: 'Plugins', link: '/validators/plugin' },
+            { text: 'Agents', link: '/validators/agents' },
+            { text: 'LSP', link: '/validators/lsp' },
+            { text: 'Output Styles', link: '/validators/output-styles' },
+            { text: 'Commands', link: '/validators/commands' },
+          ],
+        },
+      ],
+      '/rules/': [
+        {
+          text: 'Rules Reference',
+          items: [{ text: 'Overview', link: '/rules/overview' }],
+        },
+      ],
+      '/integrations/': [
+        {
+          text: 'Integrations',
+          items: [
+            { text: 'Overview', link: '/integrations/overview' },
+            { text: 'CI/CD', link: '/integrations/ci' },
+            { text: 'Pre-commit Hooks', link: '/integrations/pre-commit' },
+            { text: 'npm Scripts', link: '/integrations/npm-scripts' },
+            {
+              text: 'Claude Code Plugin',
+              link: '/integrations/claude-code-plugin',
+            },
+            { text: 'Monorepos', link: '/integrations/monorepos' },
+          ],
+        },
+      ],
+      '/api/': [
+        {
+          text: 'API Reference',
+          items: [
+            { text: 'Overview', link: '/api/overview' },
+            { text: 'ClaudeLint Class', link: '/api/claudelint-class' },
+            { text: 'Functional API', link: '/api/functional-api' },
+            { text: 'Types', link: '/api/types' },
+            { text: 'Formatters', link: '/api/formatters' },
+          ],
+        },
+      ],
+      '/development/': [
+        {
+          text: 'Development',
+          items: [
+            { text: 'Overview', link: '/development/overview' },
+            { text: 'Architecture', link: '/development/architecture' },
+            { text: 'Custom Rules', link: '/development/custom-rules' },
+            { text: 'Contributing', link: '/development/contributing' },
           ],
         },
       ],
@@ -47,7 +136,17 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/pdugan20/claudelint' },
+      {
+        icon: 'npm',
+        link: 'https://www.npmjs.com/package/claude-code-lint',
+      },
     ],
+
+    editLink: {
+      pattern:
+        'https://github.com/pdugan20/claudelint/edit/main/website/:path',
+      text: 'Edit this page on GitHub',
+    },
 
     footer: {
       message: 'Released under the MIT License.',

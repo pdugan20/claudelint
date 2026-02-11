@@ -16,6 +16,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
+    "docs:dev": "vitepress dev website",
+    "docs:build": "vitepress build website",
+    "docs:preview": "vitepress preview website",
     "test": "jest",
     "test:schemas": "jest tests/schemas --coverage",
     "test:skills:automated": "npm-run-all test:skills:structure test:skills:cli",
@@ -169,6 +172,7 @@
     "remark-validate-links": "^13.1.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.3",
     "vitepress": "^1.6.4",
     "vue": "^3.5.28"
