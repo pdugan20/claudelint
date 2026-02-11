@@ -51,6 +51,10 @@ See `src/utils/helper.ts` for the helper functions.
 
 3. **Create the file** if the reference is correct but the file is missing.
 
+## Options
+
+This rule does not have configuration options.
+
 ## When Not To Use It
 
 Disable this rule if your CLAUDE.md references files that are generated at build time or only exist in certain environments.

@@ -65,6 +65,10 @@ Run `npm run build` to build the project.
    }
    ```
 
+## Options
+
+This rule does not have configuration options.
+
 ## When Not To Use It
 
 Disable this rule if your CLAUDE.md references scripts from a different package.json (e.g., in a monorepo where CLAUDE.md is at the root but scripts are in a sub-package).
