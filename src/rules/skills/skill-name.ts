@@ -22,6 +22,52 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name.md',
+    docs: {
+      recommended: true,
+      summary:
+        'Enforces that skill names use lowercase-with-hyphens format and are under 64 characters.',
+      details:
+        'Skill names serve as identifiers throughout the Claude Code ecosystem. ' +
+        'This rule validates that the `name` field in SKILL.md frontmatter follows a strict format: ' +
+        'lowercase letters and hyphens only, no longer than 64 characters, and free of XML tags or reserved words. ' +
+        'Consistent naming prevents conflicts and ensures skills are discoverable and portable across projects.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Name with uppercase letters',
+            code: '---\nname: My-Skill\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Name with spaces',
+            code: '---\nname: my skill name\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Name exceeding 64 characters',
+            code: '---\nname: this-is-an-extremely-long-skill-name-that-exceeds-the-sixty-four-character-limit\n---',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'Valid lowercase hyphenated name',
+            code: '---\nname: deploy-to-staging\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Short single-word name',
+            code: '---\nname: lint\n---',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Rename the skill to use only lowercase letters and hyphens. ' +
+        'Remove any uppercase letters, spaces, underscores, or special characters. ' +
+        'Ensure the name is under 64 characters.',
+      relatedRules: ['skill-name-directory-mismatch', 'skill-description'],
+    },
   },
   validate: (context: RuleContext) => {
     // Extract frontmatter

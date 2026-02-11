@@ -24,6 +24,36 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-changelog.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when a skill directory is missing a CHANGELOG.md file.',
+      details:
+        'A changelog helps users understand what changed between versions and track the evolution of a skill. ' +
+        'This rule checks that a `CHANGELOG.md` file exists in the same directory as the SKILL.md file. ' +
+        'Without a changelog, users have no reliable way to review the history of changes ' +
+        'or assess the impact of upgrading to a newer version.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Skill directory without CHANGELOG.md',
+            code: '.claude/skills/deploy/\n  SKILL.md\n  deploy.sh',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'Skill directory with CHANGELOG.md',
+            code: '.claude/skills/deploy/\n  SKILL.md\n  CHANGELOG.md\n  deploy.sh',
+            language: 'text',
+          },
+        ],
+      },
+      howToFix:
+        'Create a `CHANGELOG.md` file in the skill directory alongside SKILL.md. ' +
+        'Follow the Keep a Changelog format (https://keepachangelog.com/) and ' +
+        'document notable changes for each version of the skill.',
+      relatedRules: ['skill-missing-version'],
+    },
   },
 
   validate: async (context) => {

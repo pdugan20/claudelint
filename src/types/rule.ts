@@ -12,6 +12,7 @@
 import { z } from 'zod';
 import { RuleId } from '../rules/rule-ids';
 import { AutoFix } from '../validators/file-validator';
+import { RuleDocumentation } from './rule-metadata';
 
 /**
  * Rule category - used for organizing rules in documentation
@@ -126,6 +127,16 @@ export interface RuleMetadata {
    * Used when no options are specified in config
    */
   defaultOptions?: Record<string, unknown>;
+
+  /**
+   * Documentation metadata for auto-generating rule docs.
+   * When present, the generation script produces a VitePress page
+   * from this metadata instead of using manually-written docs.
+   *
+   * @see src/types/rule-metadata.ts for type definitions
+   * @see scripts/generate/rule-docs.ts for the generation script
+   */
+  docs?: RuleDocumentation;
 }
 
 /**

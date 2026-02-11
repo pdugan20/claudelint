@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import rulesSidebar from '../rules/_sidebar.json';
 
 export default defineConfig({
   title: 'claudelint',
@@ -87,12 +88,7 @@ export default defineConfig({
           ],
         },
       ],
-      '/rules/': [
-        {
-          text: 'Rules Reference',
-          items: [{ text: 'Overview', link: '/rules/overview' }],
-        },
-      ],
+      '/rules/': rulesSidebar,
       '/integrations/': [
         {
           text: 'Integrations',

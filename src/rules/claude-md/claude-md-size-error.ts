@@ -38,6 +38,51 @@ export const rule: Rule = {
     defaultOptions: {
       maxSize: 40000, // 40KB
     },
+    docs: {
+      recommended: true,
+      summary: 'Ensures CLAUDE.md files do not exceed the maximum file size limit.',
+      details:
+        'Large CLAUDE.md files cause performance issues and may exceed context window limits ' +
+        'when loaded by Claude Code. This rule triggers an error when the file reaches or exceeds ' +
+        '40KB (configurable). At this size, the file should be split into smaller, focused files ' +
+        'under the `.claude/rules/` directory and referenced via `@import` directives. Keeping ' +
+        'files under the limit ensures fast loading and reliable context injection.',
+      examples: {
+        incorrect: [
+          {
+            description: 'A CLAUDE.md file that exceeds 40KB with all instructions inlined',
+            code: '# CLAUDE.md\n\n<!-- 40,000+ bytes of inlined instructions -->\n## Coding Standards\n...(thousands of lines)...\n## Testing Guidelines\n...(thousands of lines)...\n## Deployment Procedures\n...(thousands of lines)...',
+            language: 'markdown',
+          },
+        ],
+        correct: [
+          {
+            description:
+              'A well-organized CLAUDE.md that imports separate rule files to stay under the limit',
+            code: '# CLAUDE.md\n\nCore project instructions go here.\n\n@import .claude/rules/coding-standards.md\n@import .claude/rules/testing-guidelines.md\n@import .claude/rules/deployment-procedures.md',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Split the CLAUDE.md content into smaller, focused files inside the `.claude/rules/` ' +
+        'directory. Then replace the inlined content with `@import` directives pointing to ' +
+        'each extracted file. Each rule file should cover a single concern.',
+      optionExamples: [
+        {
+          description: 'Set a custom maximum file size of 50KB',
+          config: { maxSize: 50000 },
+        },
+        {
+          description: 'Use the default 40KB limit',
+          config: { maxSize: 40000 },
+        },
+      ],
+      whenNotToUse:
+        'This rule should always be enabled. Exceeding the size limit can cause Claude Code ' +
+        'to fail to load the file or truncate instructions.',
+      relatedRules: ['claude-md-size-warning', 'claude-md-import-missing'],
+    },
   },
 
   validate: async (context) => {

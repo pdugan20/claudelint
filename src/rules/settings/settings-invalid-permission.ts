@@ -70,6 +70,37 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-invalid-permission.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures permission rules reference valid Claude Code tool names.',
+      details:
+        'This rule validates that tool names used in the permissions.allow, permissions.deny, and ' +
+        'permissions.ask arrays in settings.json are recognized Claude Code tools. Valid tools include ' +
+        'Bash, Edit, Glob, Grep, Read, Write, and others, as well as MCP server references prefixed ' +
+        'with mcp__. Using an invalid tool name means the permission rule will have no effect, which ' +
+        'can leave unintended access open or block expected functionality.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Permission referencing a non-existent tool name',
+            code: '{\n  "permissions": {\n    "allow": ["Bassh(npm run build)"]\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Permission using valid tool names',
+            code: '{\n  "permissions": {\n    "allow": ["Bash(npm run build)", "Read", "mcp__myserver"]\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Check the tool name against the list of valid tools: Bash, Edit, ExitPlanMode, Glob, Grep, ' +
+        'KillShell, NotebookEdit, Read, Skill, Task, TodoWrite, WebFetch, WebSearch, Write. For MCP ' +
+        'servers, use the mcp__ prefix followed by the server name.',
+      relatedRules: ['settings-permission-invalid-rule'],
+    },
   },
 
   validate: (context) => {

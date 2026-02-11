@@ -23,6 +23,36 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/hooks/hooks-missing-script.md',
+    docs: {
+      recommended: true,
+      summary: 'Errors when a hook command references a script file that does not exist.',
+      details:
+        'This rule checks that hook commands pointing to relative script paths (starting with ./ or ../) ' +
+        'reference files that actually exist on disk. It skips validation for inline shell commands ' +
+        '(containing spaces or shell operators), commands with variable expansions, and absolute paths ' +
+        'or commands expected to be in PATH. A missing script will cause the hook to fail at runtime, ' +
+        'breaking the intended automation workflow.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Hook referencing a script that does not exist',
+            code: '{\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "*",\n        "hooks": [{ "type": "command", "command": "./scripts/missing.sh" }]\n      }\n    ]\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Hook referencing an existing script file',
+            code: '{\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "*",\n        "hooks": [{ "type": "command", "command": "./scripts/lint.sh" }]\n      }\n    ]\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Verify the script path is correct and the file exists. Create the missing script file if ' +
+        'needed, or update the command to point to the correct location.',
+      relatedRules: ['hooks-invalid-event'],
+    },
   },
 
   validate: async (context) => {

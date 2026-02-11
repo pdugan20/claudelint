@@ -19,6 +19,37 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-file-not-found.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures the specified CLAUDE.md file exists at the expected path.',
+      details:
+        'This rule verifies that the CLAUDE.md file targeted for linting actually exists on ' +
+        'disk. Without a CLAUDE.md file, Claude Code has no project-level instructions to load, ' +
+        'which means the AI assistant operates without any custom guidance. This is the most ' +
+        'fundamental check: if the file is missing, no other rules can run against it.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Running claudelint when CLAUDE.md does not exist',
+            code: '$ claudelint\nError: File not found: /path/to/project/CLAUDE.md',
+            language: 'text',
+          },
+        ],
+        correct: [
+          {
+            description: 'A project with a CLAUDE.md file present at the root',
+            code: '# CLAUDE.md\n\nProject instructions for Claude Code.',
+            language: 'markdown',
+          },
+        ],
+      },
+      howToFix:
+        'Create a CLAUDE.md file at the project root (or at the path specified in your ' +
+        'configuration). Add project-specific instructions that guide Claude Code behavior.',
+      whenNotToUse:
+        'Disable this rule only if you are intentionally running claudelint against a path ' +
+        'that may not yet have a CLAUDE.md file, such as during project scaffolding.',
+    },
   },
 
   validate: async (context) => {

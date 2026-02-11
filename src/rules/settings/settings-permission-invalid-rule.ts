@@ -70,6 +70,41 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-permission-invalid-rule.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that permission rules use correct Tool(pattern) syntax.',
+      details:
+        'This rule checks the syntax of permission rule strings in settings.json. Each rule must ' +
+        'be either a plain tool name like "Bash" or a tool name with a pattern like "Bash(npm run *)". ' +
+        'It detects unmatched parentheses, empty rule strings, and malformed patterns. Incorrect syntax ' +
+        'prevents the permission system from matching commands properly, which can lead to unexpected ' +
+        'access behavior.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Permission rule with unmatched parentheses',
+            code: '{\n  "permissions": {\n    "allow": ["Bash(npm run build"]\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'Empty permission rule string',
+            code: '{\n  "permissions": {\n    "deny": [""]\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Valid permission rules with proper syntax',
+            code: '{\n  "permissions": {\n    "allow": ["Bash(npm run *)", "Read", "WebFetch(domain:example.com)"]\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure each permission rule uses the format "Tool" or "Tool(pattern)". Check for matched ' +
+        'parentheses and non-empty values. Remove any trailing or leading whitespace.',
+      relatedRules: ['settings-invalid-permission'],
+    },
   },
 
   validate: (context) => {

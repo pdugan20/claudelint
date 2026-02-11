@@ -21,6 +21,33 @@ export const rule: Rule = {
     deprecated: true,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-invalid-server.md',
+    docs: {
+      recommended: false,
+      summary: 'Validates that MCP server names are unique within the configuration.',
+      details:
+        'This rule is deprecated and no longer performs any validation. It originally checked for ' +
+        'duplicate MCP server names, but the configuration format was changed to use object keys ' +
+        'for server names, making duplicates impossible at the JSON level. The rule is retained for ' +
+        'backward compatibility but will be removed in a future version.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Duplicate server names (no longer possible with object-key format)',
+            code: '{\n  "mcpServers": {\n    "my-server": { "command": "npx", "args": ["server-a"] },\n    "my-server": { "command": "npx", "args": ["server-b"] }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Unique server names as object keys',
+            code: '{\n  "mcpServers": {\n    "server-a": { "command": "npx", "args": ["server-a"] },\n    "server-b": { "command": "npx", "args": ["server-b"] }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      whenNotToUse: 'This rule is deprecated and performs no checks. It can be safely disabled.',
+      relatedRules: ['mcp-invalid-transport'],
+    },
   },
 
   validate: () => {

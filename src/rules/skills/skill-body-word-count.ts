@@ -27,6 +27,56 @@ export const rule: Rule = {
     defaultOptions: {
       maxWords: 5000,
     },
+    docs: {
+      summary: 'Warns when a SKILL.md body exceeds the maximum word count.',
+      details:
+        'This rule counts the words in the body of SKILL.md files (everything after the YAML frontmatter) ' +
+        'and warns when the count exceeds a configurable threshold. ' +
+        'Anthropic recommends keeping skills concise so AI models can process them efficiently. ' +
+        'Lengthy content should be moved to reference files for progressive disclosure, ' +
+        'allowing the model to load detailed information only when needed.',
+      examples: {
+        incorrect: [
+          {
+            description: 'SKILL.md with a body exceeding 5,000 words',
+            code: '---\nname: my-skill\n---\n\n# My Skill\n\n... (5,000+ words of inline content) ...',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'SKILL.md with concise body and references to external files',
+            code: '---\nname: my-skill\n---\n\n# My Skill\n\nBrief overview and core instructions.\n\nFor details, see [reference docs](references/details.md).',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Extract verbose sections, long examples, and reference material into separate files ' +
+        'under a `references/` directory. Keep the SKILL.md body focused on essential instructions ' +
+        'and link to the extracted files.',
+      options: {
+        maxWords: {
+          type: 'number',
+          description: 'Maximum number of words allowed in the SKILL.md body',
+          default: 5000,
+        },
+      },
+      optionExamples: [
+        {
+          description: 'Allow up to 8,000 words in the body',
+          config: { maxWords: 8000 },
+        },
+        {
+          description: 'Enforce a stricter 3,000-word limit',
+          config: { maxWords: 3000 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule if your skill requires extensive inline documentation and ' +
+        'splitting into reference files would reduce clarity or usability.',
+      relatedRules: ['skill-body-too-long'],
+    },
   },
 
   validate: (context: RuleContext) => {

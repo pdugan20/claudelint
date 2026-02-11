@@ -54,6 +54,56 @@ export const rule: Rule = {
     defaultOptions: {
       pattern: '^[A-Z_][A-Z0-9_]*$',
     },
+    docs: {
+      recommended: true,
+      summary: 'Validates environment variable expansion syntax in MCP server configurations.',
+      details:
+        'This rule checks that environment variable references in MCP transport fields (command, args, ' +
+        'url, and env values) use proper ${VAR} expansion syntax and that variable names match a ' +
+        'configurable naming pattern. It warns on empty env values, empty expansion syntax like ${}, ' +
+        'variable names that do not match the expected pattern, and bare $VAR references that should ' +
+        'use the ${VAR} format. The special variable ${CLAUDE_PLUGIN_ROOT} is always excluded from ' +
+        'pattern validation.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Bare variable reference without braces',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "command": "node",\n      "env": {\n        "API_KEY": "$MY_API_KEY"\n      }\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'Empty environment variable value',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "command": "node",\n      "env": {\n        "API_KEY": ""\n      }\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Proper variable expansion with braces',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "command": "node",\n      "env": {\n        "API_KEY": "${MY_API_KEY}"\n      }\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Use the ${VAR_NAME} format for environment variable references. Ensure variable names match ' +
+        'the expected pattern (default: uppercase letters, digits, and underscores starting with a ' +
+        'letter or underscore). Provide non-empty values for all env entries.',
+      options: {
+        pattern: {
+          type: 'string',
+          description: 'Regex pattern for valid environment variable names',
+          default: '^[A-Z_][A-Z0-9_]*$',
+        },
+      },
+      optionExamples: [
+        {
+          description: 'Allow lowercase environment variable names',
+          config: { pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$' },
+        },
+      ],
+      relatedRules: ['mcp-invalid-server'],
+    },
   },
 
   validate: (context) => {

@@ -24,6 +24,36 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-invalid-manifest.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that marketplace.json is well-formed and consistent with plugin.json.',
+      details:
+        'This rule checks the marketplace.json file that accompanies a plugin.json. It verifies that ' +
+        'marketplace.json contains valid JSON, conforms to the MarketplaceMetadataSchema, and that its ' +
+        'version field matches the version declared in plugin.json. If marketplace.json does not exist, ' +
+        'the rule is skipped since it is optional. A mismatched version or invalid schema will cause ' +
+        'marketplace publishing issues.',
+      examples: {
+        incorrect: [
+          {
+            description: 'marketplace.json with version mismatch',
+            code: '// plugin.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0"\n}\n\n// marketplace.json\n{\n  "name": "my-plugin",\n  "version": "1.0.0"\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'marketplace.json with matching version',
+            code: '// plugin.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0"\n}\n\n// marketplace.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0",\n  "description": "A useful plugin"\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Ensure marketplace.json is valid JSON, follows the expected schema, and has a version that ' +
+        'matches plugin.json. Update the version in marketplace.json whenever you bump plugin.json.',
+      relatedRules: ['plugin-name-required', 'plugin-version-required'],
+    },
   },
 
   validate: async (context) => {

@@ -19,6 +19,40 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-stdio-empty-command.md',
+    docs: {
+      recommended: true,
+      summary: 'Ensures that MCP stdio transport servers have a non-empty command field.',
+      details:
+        'This rule validates that every MCP server using the stdio transport has a command property ' +
+        'that is present, is a string, and is not empty or whitespace-only. A server is considered ' +
+        'stdio if it has type set to "stdio" or has a command field. Without a valid command, the MCP ' +
+        'server cannot be started, causing a runtime failure when Claude Code tries to connect.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Stdio server with an empty command',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "type": "stdio",\n      "command": ""\n    }\n  }\n}',
+            language: 'json',
+          },
+          {
+            description: 'Stdio server missing the command field entirely',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "type": "stdio",\n      "args": ["--port", "3000"]\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Stdio server with a valid command',
+            code: '{\n  "mcpServers": {\n    "my-server": {\n      "command": "npx",\n      "args": ["-y", "@modelcontextprotocol/server-filesystem"]\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Add a non-empty command string to the MCP server configuration. The command should be the ' +
+        'executable that starts the MCP server process (e.g., "npx", "node", "python").',
+      relatedRules: ['mcp-invalid-server'],
+    },
   },
 
   validate: (context) => {

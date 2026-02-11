@@ -23,6 +23,46 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description.md',
+    docs: {
+      recommended: true,
+      summary: 'Enforces that skills have a valid description in their SKILL.md frontmatter.',
+      details:
+        'Every skill should include a meaningful description so users and Claude understand its purpose. ' +
+        'This rule validates that the `description` field in SKILL.md frontmatter is present, at least 10 characters long, ' +
+        'written in third person, and free of XML tags. ' +
+        'A good description improves discoverability and helps users decide whether a skill fits their needs.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Description too short',
+            code: '---\nname: deploy\ndescription: Deploys\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Description with XML tags',
+            code: '---\nname: deploy\ndescription: <b>Deploys the app</b> to production\n---',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'Clear third-person description',
+            code: '---\nname: deploy\ndescription: Deploys the application to the staging environment\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Detailed description',
+            code: '---\nname: test-runner\ndescription: Runs the full test suite and reports coverage metrics\n---',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Add or update the `description` field in your SKILL.md frontmatter. ' +
+        'Use at least 10 characters, write in third person (e.g., "Deploys the app" not "I deploy the app"), ' +
+        'and avoid HTML or XML markup.',
+      relatedRules: ['skill-name', 'skill-description-quality'],
+    },
   },
   validate: (context: RuleContext) => {
     // Extract frontmatter

@@ -36,6 +36,56 @@ export const rule: Rule = {
     defaultOptions: {
       maxLines: 500,
     },
+    docs: {
+      summary: 'Warns when a SKILL.md body exceeds the maximum number of lines.',
+      details:
+        'This rule checks the body content of SKILL.md files (everything after the YAML frontmatter) ' +
+        'and warns when it exceeds a configurable line count threshold. ' +
+        'Overly long skill files are harder to maintain and slower for AI models to process. ' +
+        'Detailed reference material should be extracted into separate files in a `references/` directory ' +
+        'and linked from the main SKILL.md for progressive disclosure.',
+      examples: {
+        incorrect: [
+          {
+            description: 'SKILL.md with an excessively long body section',
+            code: '---\nname: my-skill\n---\n\n# My Skill\n\n... (600+ lines of content) ...',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'SKILL.md with a concise body that links to reference files',
+            code: '---\nname: my-skill\n---\n\n# My Skill\n\nCore instructions here.\n\nSee [detailed API reference](references/api.md) for more.',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Move detailed documentation, long code examples, and reference material into separate files ' +
+        'under a `references/` directory. Link to these files from your SKILL.md so the AI model ' +
+        'can load them on demand.',
+      options: {
+        maxLines: {
+          type: 'number',
+          description: 'Maximum number of lines allowed in the SKILL.md body',
+          default: 500,
+        },
+      },
+      optionExamples: [
+        {
+          description: 'Allow up to 800 lines in the body',
+          config: { maxLines: 800 },
+        },
+        {
+          description: 'Enforce a stricter 300-line limit',
+          config: { maxLines: 300 },
+        },
+      ],
+      whenNotToUse:
+        'Disable this rule if your skill genuinely requires a large inline body and splitting ' +
+        'into reference files would harm usability.',
+      relatedRules: ['skill-body-word-count'],
+    },
   },
 
   validate: (context) => {

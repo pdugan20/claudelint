@@ -1,0 +1,552 @@
+[
+  {
+    "text": "Rules Reference",
+    "collapsed": false,
+    "items": [
+      {
+        "text": "Overview",
+        "link": "/rules/overview"
+      }
+    ]
+  },
+  {
+    "text": "CLAUDE.md (16)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "claude-md-content-too-many-sections",
+        "link": "/rules/claude-md/claude-md-content-too-many-sections"
+      },
+      {
+        "text": "claude-md-file-not-found",
+        "link": "/rules/claude-md/claude-md-file-not-found"
+      },
+      {
+        "text": "claude-md-file-reference-invalid",
+        "link": "/rules/claude-md/claude-md-file-reference-invalid"
+      },
+      {
+        "text": "claude-md-filename-case-sensitive",
+        "link": "/rules/claude-md/claude-md-filename-case-sensitive"
+      },
+      {
+        "text": "claude-md-glob-pattern-backslash",
+        "link": "/rules/claude-md/claude-md-glob-pattern-backslash"
+      },
+      {
+        "text": "claude-md-glob-pattern-too-broad",
+        "link": "/rules/claude-md/claude-md-glob-pattern-too-broad"
+      },
+      {
+        "text": "claude-md-import-circular",
+        "link": "/rules/claude-md/claude-md-import-circular"
+      },
+      {
+        "text": "claude-md-import-depth-exceeded",
+        "link": "/rules/claude-md/claude-md-import-depth-exceeded"
+      },
+      {
+        "text": "claude-md-import-in-code-block",
+        "link": "/rules/claude-md/claude-md-import-in-code-block"
+      },
+      {
+        "text": "claude-md-import-missing",
+        "link": "/rules/claude-md/claude-md-import-missing"
+      },
+      {
+        "text": "claude-md-import-read-failed",
+        "link": "/rules/claude-md/claude-md-import-read-failed"
+      },
+      {
+        "text": "claude-md-npm-script-not-found",
+        "link": "/rules/claude-md/claude-md-npm-script-not-found"
+      },
+      {
+        "text": "claude-md-paths",
+        "link": "/rules/claude-md/claude-md-paths"
+      },
+      {
+        "text": "claude-md-rules-circular-symlink",
+        "link": "/rules/claude-md/claude-md-rules-circular-symlink"
+      },
+      {
+        "text": "claude-md-size-error",
+        "link": "/rules/claude-md/claude-md-size-error"
+      },
+      {
+        "text": "claude-md-size-warning",
+        "link": "/rules/claude-md/claude-md-size-warning"
+      }
+    ]
+  },
+  {
+    "text": "Skills (46)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "skill-agent",
+        "link": "/rules/skills/skill-agent"
+      },
+      {
+        "text": "skill-allowed-tools",
+        "link": "/rules/skills/skill-allowed-tools"
+      },
+      {
+        "text": "skill-allowed-tools-not-used",
+        "link": "/rules/skills/skill-allowed-tools-not-used"
+      },
+      {
+        "text": "skill-arguments-without-hint",
+        "link": "/rules/skills/skill-arguments-without-hint"
+      },
+      {
+        "text": "skill-body-long-code-block",
+        "link": "/rules/skills/skill-body-long-code-block"
+      },
+      {
+        "text": "skill-body-missing-usage-section",
+        "link": "/rules/skills/skill-body-missing-usage-section"
+      },
+      {
+        "text": "skill-body-too-long",
+        "link": "/rules/skills/skill-body-too-long"
+      },
+      {
+        "text": "skill-body-word-count",
+        "link": "/rules/skills/skill-body-word-count"
+      },
+      {
+        "text": "skill-context",
+        "link": "/rules/skills/skill-context"
+      },
+      {
+        "text": "skill-cross-reference-invalid",
+        "link": "/rules/skills/skill-cross-reference-invalid"
+      },
+      {
+        "text": "skill-dangerous-command",
+        "link": "/rules/skills/skill-dangerous-command"
+      },
+      {
+        "text": "skill-deep-nesting",
+        "link": "/rules/skills/skill-deep-nesting"
+      },
+      {
+        "text": "skill-dependencies",
+        "link": "/rules/skills/skill-dependencies"
+      },
+      {
+        "text": "skill-description",
+        "link": "/rules/skills/skill-description"
+      },
+      {
+        "text": "skill-description-max-length",
+        "link": "/rules/skills/skill-description-max-length"
+      },
+      {
+        "text": "skill-description-missing-trigger",
+        "link": "/rules/skills/skill-description-missing-trigger"
+      },
+      {
+        "text": "skill-description-quality",
+        "link": "/rules/skills/skill-description-quality"
+      },
+      {
+        "text": "skill-disallowed-tools",
+        "link": "/rules/skills/skill-disallowed-tools"
+      },
+      {
+        "text": "skill-eval-usage",
+        "link": "/rules/skills/skill-eval-usage"
+      },
+      {
+        "text": "skill-frontmatter-unknown-keys",
+        "link": "/rules/skills/skill-frontmatter-unknown-keys"
+      },
+      {
+        "text": "skill-hardcoded-secrets",
+        "link": "/rules/skills/skill-hardcoded-secrets"
+      },
+      {
+        "text": "skill-mcp-tool-qualified-name",
+        "link": "/rules/skills/skill-mcp-tool-qualified-name"
+      },
+      {
+        "text": "skill-missing-changelog",
+        "link": "/rules/skills/skill-missing-changelog"
+      },
+      {
+        "text": "skill-missing-comments",
+        "link": "/rules/skills/skill-missing-comments"
+      },
+      {
+        "text": "skill-missing-examples",
+        "link": "/rules/skills/skill-missing-examples"
+      },
+      {
+        "text": "skill-missing-shebang",
+        "link": "/rules/skills/skill-missing-shebang"
+      },
+      {
+        "text": "skill-missing-version",
+        "link": "/rules/skills/skill-missing-version"
+      },
+      {
+        "text": "skill-model",
+        "link": "/rules/skills/skill-model"
+      },
+      {
+        "text": "skill-multi-script-missing-readme",
+        "link": "/rules/skills/skill-multi-script-missing-readme"
+      },
+      {
+        "text": "skill-name",
+        "link": "/rules/skills/skill-name"
+      },
+      {
+        "text": "skill-name-directory-mismatch",
+        "link": "/rules/skills/skill-name-directory-mismatch"
+      },
+      {
+        "text": "skill-naming-inconsistent",
+        "link": "/rules/skills/skill-naming-inconsistent"
+      },
+      {
+        "text": "skill-overly-generic-name",
+        "link": "/rules/skills/skill-overly-generic-name"
+      },
+      {
+        "text": "skill-path-traversal",
+        "link": "/rules/skills/skill-path-traversal"
+      },
+      {
+        "text": "skill-readme-forbidden",
+        "link": "/rules/skills/skill-readme-forbidden"
+      },
+      {
+        "text": "skill-reference-not-linked",
+        "link": "/rules/skills/skill-reference-not-linked"
+      },
+      {
+        "text": "skill-referenced-file-not-found",
+        "link": "/rules/skills/skill-referenced-file-not-found"
+      },
+      {
+        "text": "skill-shell-script-hardcoded-paths",
+        "link": "/rules/skills/skill-shell-script-hardcoded-paths"
+      },
+      {
+        "text": "skill-shell-script-no-error-handling",
+        "link": "/rules/skills/skill-shell-script-no-error-handling"
+      },
+      {
+        "text": "skill-side-effects-without-disable-model",
+        "link": "/rules/skills/skill-side-effects-without-disable-model"
+      },
+      {
+        "text": "skill-tags",
+        "link": "/rules/skills/skill-tags"
+      },
+      {
+        "text": "skill-time-sensitive-content",
+        "link": "/rules/skills/skill-time-sensitive-content"
+      },
+      {
+        "text": "skill-too-many-files",
+        "link": "/rules/skills/skill-too-many-files"
+      },
+      {
+        "text": "skill-unknown-string-substitution",
+        "link": "/rules/skills/skill-unknown-string-substitution"
+      },
+      {
+        "text": "skill-version",
+        "link": "/rules/skills/skill-version"
+      },
+      {
+        "text": "skill-xml-tags-anywhere",
+        "link": "/rules/skills/skill-xml-tags-anywhere"
+      }
+    ]
+  },
+  {
+    "text": "Settings (5)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "settings-file-path-not-found",
+        "link": "/rules/settings/settings-file-path-not-found"
+      },
+      {
+        "text": "settings-invalid-env-var",
+        "link": "/rules/settings/settings-invalid-env-var"
+      },
+      {
+        "text": "settings-invalid-permission",
+        "link": "/rules/settings/settings-invalid-permission"
+      },
+      {
+        "text": "settings-permission-empty-pattern",
+        "link": "/rules/settings/settings-permission-empty-pattern"
+      },
+      {
+        "text": "settings-permission-invalid-rule",
+        "link": "/rules/settings/settings-permission-invalid-rule"
+      }
+    ]
+  },
+  {
+    "text": "Hooks (3)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "hooks-invalid-config",
+        "link": "/rules/hooks/hooks-invalid-config"
+      },
+      {
+        "text": "hooks-invalid-event",
+        "link": "/rules/hooks/hooks-invalid-event"
+      },
+      {
+        "text": "hooks-missing-script",
+        "link": "/rules/hooks/hooks-missing-script"
+      }
+    ]
+  },
+  {
+    "text": "MCP (13)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "mcp-http-empty-url",
+        "link": "/rules/mcp/mcp-http-empty-url"
+      },
+      {
+        "text": "mcp-http-invalid-url",
+        "link": "/rules/mcp/mcp-http-invalid-url"
+      },
+      {
+        "text": "mcp-invalid-env-var",
+        "link": "/rules/mcp/mcp-invalid-env-var"
+      },
+      {
+        "text": "mcp-invalid-server",
+        "link": "/rules/mcp/mcp-invalid-server"
+      },
+      {
+        "text": "mcp-invalid-transport",
+        "link": "/rules/mcp/mcp-invalid-transport"
+      },
+      {
+        "text": "mcp-server-key-mismatch",
+        "link": "/rules/mcp/mcp-server-key-mismatch"
+      },
+      {
+        "text": "mcp-sse-empty-url",
+        "link": "/rules/mcp/mcp-sse-empty-url"
+      },
+      {
+        "text": "mcp-sse-invalid-url",
+        "link": "/rules/mcp/mcp-sse-invalid-url"
+      },
+      {
+        "text": "mcp-sse-transport-deprecated",
+        "link": "/rules/mcp/mcp-sse-transport-deprecated"
+      },
+      {
+        "text": "mcp-stdio-empty-command",
+        "link": "/rules/mcp/mcp-stdio-empty-command"
+      },
+      {
+        "text": "mcp-websocket-empty-url",
+        "link": "/rules/mcp/mcp-websocket-empty-url"
+      },
+      {
+        "text": "mcp-websocket-invalid-protocol",
+        "link": "/rules/mcp/mcp-websocket-invalid-protocol"
+      },
+      {
+        "text": "mcp-websocket-invalid-url",
+        "link": "/rules/mcp/mcp-websocket-invalid-url"
+      }
+    ]
+  },
+  {
+    "text": "Plugin (12)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "commands-in-plugin-deprecated",
+        "link": "/rules/plugin/commands-in-plugin-deprecated"
+      },
+      {
+        "text": "plugin-components-wrong-location",
+        "link": "/rules/plugin/plugin-components-wrong-location"
+      },
+      {
+        "text": "plugin-description-required",
+        "link": "/rules/plugin/plugin-description-required"
+      },
+      {
+        "text": "plugin-hook-missing-plugin-root",
+        "link": "/rules/plugin/plugin-hook-missing-plugin-root"
+      },
+      {
+        "text": "plugin-invalid-manifest",
+        "link": "/rules/plugin/plugin-invalid-manifest"
+      },
+      {
+        "text": "plugin-invalid-version",
+        "link": "/rules/plugin/plugin-invalid-version"
+      },
+      {
+        "text": "plugin-json-wrong-location",
+        "link": "/rules/plugin/plugin-json-wrong-location"
+      },
+      {
+        "text": "plugin-marketplace-files-not-found",
+        "link": "/rules/plugin/plugin-marketplace-files-not-found"
+      },
+      {
+        "text": "plugin-missing-component-paths",
+        "link": "/rules/plugin/plugin-missing-component-paths"
+      },
+      {
+        "text": "plugin-missing-file",
+        "link": "/rules/plugin/plugin-missing-file"
+      },
+      {
+        "text": "plugin-name-required",
+        "link": "/rules/plugin/plugin-name-required"
+      },
+      {
+        "text": "plugin-version-required",
+        "link": "/rules/plugin/plugin-version-required"
+      }
+    ]
+  },
+  {
+    "text": "Agents (12)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "agent-body-too-short",
+        "link": "/rules/agents/agent-body-too-short"
+      },
+      {
+        "text": "agent-description",
+        "link": "/rules/agents/agent-description"
+      },
+      {
+        "text": "agent-disallowed-tools",
+        "link": "/rules/agents/agent-disallowed-tools"
+      },
+      {
+        "text": "agent-hooks",
+        "link": "/rules/agents/agent-hooks"
+      },
+      {
+        "text": "agent-hooks-invalid-schema",
+        "link": "/rules/agents/agent-hooks-invalid-schema"
+      },
+      {
+        "text": "agent-missing-system-prompt",
+        "link": "/rules/agents/agent-missing-system-prompt"
+      },
+      {
+        "text": "agent-model",
+        "link": "/rules/agents/agent-model"
+      },
+      {
+        "text": "agent-name",
+        "link": "/rules/agents/agent-name"
+      },
+      {
+        "text": "agent-name-directory-mismatch",
+        "link": "/rules/agents/agent-name-directory-mismatch"
+      },
+      {
+        "text": "agent-skills",
+        "link": "/rules/agents/agent-skills"
+      },
+      {
+        "text": "agent-skills-not-found",
+        "link": "/rules/agents/agent-skills-not-found"
+      },
+      {
+        "text": "agent-tools",
+        "link": "/rules/agents/agent-tools"
+      }
+    ]
+  },
+  {
+    "text": "LSP (8)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "lsp-command-not-in-path",
+        "link": "/rules/lsp/lsp-command-not-in-path"
+      },
+      {
+        "text": "lsp-config-file-not-json",
+        "link": "/rules/lsp/lsp-config-file-not-json"
+      },
+      {
+        "text": "lsp-config-file-relative-path",
+        "link": "/rules/lsp/lsp-config-file-relative-path"
+      },
+      {
+        "text": "lsp-extension-missing-dot",
+        "link": "/rules/lsp/lsp-extension-missing-dot"
+      },
+      {
+        "text": "lsp-invalid-transport",
+        "link": "/rules/lsp/lsp-invalid-transport"
+      },
+      {
+        "text": "lsp-language-id-empty",
+        "link": "/rules/lsp/lsp-language-id-empty"
+      },
+      {
+        "text": "lsp-language-id-not-lowercase",
+        "link": "/rules/lsp/lsp-language-id-not-lowercase"
+      },
+      {
+        "text": "lsp-server-name-too-short",
+        "link": "/rules/lsp/lsp-server-name-too-short"
+      }
+    ]
+  },
+  {
+    "text": "Output Styles (3)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "output-style-body-too-short",
+        "link": "/rules/output-styles/output-style-body-too-short"
+      },
+      {
+        "text": "output-style-missing-guidelines",
+        "link": "/rules/output-styles/output-style-missing-guidelines"
+      },
+      {
+        "text": "output-style-name-directory-mismatch",
+        "link": "/rules/output-styles/output-style-name-directory-mismatch"
+      }
+    ]
+  },
+  {
+    "text": "Commands (2)",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "commands-deprecated-directory",
+        "link": "/rules/commands/commands-deprecated-directory"
+      },
+      {
+        "text": "commands-migrate-to-skills",
+        "link": "/rules/commands/commands-migrate-to-skills"
+      }
+    ]
+  }
+]

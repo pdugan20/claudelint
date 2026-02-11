@@ -20,6 +20,35 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-http-invalid-url.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that MCP HTTP transport URLs are well-formed.',
+      details:
+        'This rule checks that the url field of MCP servers with type "http" is a valid URL by ' +
+        'attempting to parse it with the URL constructor. URLs containing variable expansions (${ or $) ' +
+        'are skipped since they are resolved at runtime. An invalid URL will prevent Claude Code from ' +
+        'connecting to the remote MCP server, causing silent failures or error messages at runtime.',
+      examples: {
+        incorrect: [
+          {
+            description: 'HTTP server with a malformed URL',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "http",\n      "url": "not-a-valid-url"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'HTTP server with a valid URL',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "http",\n      "url": "https://mcp.example.com/sse"\n    }\n  }\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Provide a fully qualified URL including the scheme (http:// or https://). Ensure the URL ' +
+        'is well-formed and reachable from the environment where Claude Code runs.',
+      relatedRules: ['mcp-invalid-server'],
+    },
   },
 
   validate: (context) => {

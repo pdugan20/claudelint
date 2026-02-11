@@ -21,6 +21,40 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-name.md',
+    docs: {
+      recommended: true,
+      summary: 'Validates that agent names follow the lowercase-with-hyphens naming convention.',
+      details:
+        'This rule enforces naming constraints on the name field in agent markdown frontmatter. The ' +
+        'name must be lowercase with hyphens, under 64 characters, and must not contain XML tags. ' +
+        'Validation is delegated to the AgentFrontmatterSchema.shape.name Zod schema. Consistent ' +
+        'naming ensures agents are easily discoverable and avoids conflicts with reserved syntax.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Agent name with uppercase letters',
+            code: '---\nname: My-Agent\ndescription: Handles code reviews\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Agent name containing XML tags',
+            code: '---\nname: <agent>helper</agent>\ndescription: Handles code reviews\n---',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'Agent name using lowercase and hyphens',
+            code: '---\nname: code-review-agent\ndescription: Handles code reviews for pull requests\n---',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Rename the agent to use only lowercase letters, digits, and hyphens. Ensure the name is ' +
+        'under 64 characters and does not include any XML-style tags.',
+      relatedRules: ['agent-description'],
+    },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);

@@ -24,6 +24,41 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-version.md',
+    docs: {
+      recommended: true,
+      summary: 'Warns when skill frontmatter is missing a version field.',
+      details:
+        'Version numbers help users and Claude track skill updates and ensure compatibility. ' +
+        'This rule checks that the `version` field is present in the SKILL.md frontmatter. ' +
+        'Without a version, users cannot tell which iteration of a skill they are running ' +
+        'or whether an update has introduced breaking changes.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Frontmatter without version field',
+            code: '---\nname: deploy\ndescription: Deploys the application\n---',
+            language: 'yaml',
+          },
+        ],
+        correct: [
+          {
+            description: 'Frontmatter with version field',
+            code: '---\nname: deploy\ndescription: Deploys the application\nversion: 1.0.0\n---',
+            language: 'yaml',
+          },
+          {
+            description: 'Pre-release version',
+            code: '---\nname: deploy\ndescription: Deploys the application\nversion: 0.1.0\n---',
+            language: 'yaml',
+          },
+        ],
+      },
+      howToFix:
+        'Add a `version` field to the frontmatter section of your SKILL.md file. ' +
+        'Use semantic versioning (e.g., `version: 1.0.0`). ' +
+        'Start with `0.1.0` for new skills that are not yet stable.',
+      relatedRules: ['skill-missing-changelog'],
+    },
   },
 
   validate: (context) => {

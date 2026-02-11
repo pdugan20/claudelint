@@ -23,6 +23,39 @@ export const rule: Rule = {
     since: '1.0.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-version-required.md',
+    docs: {
+      recommended: true,
+      summary: 'Requires that plugin.json contains a non-empty version field.',
+      details:
+        'This rule checks that the plugin.json file has a version property that is a non-empty string. ' +
+        'The version is used for dependency management and marketplace distribution. A missing or empty ' +
+        'version prevents proper version tracking, update detection, and may cause installation failures.',
+      examples: {
+        incorrect: [
+          {
+            description: 'Plugin with missing version',
+            code: '{\n  "name": "my-plugin",\n  "description": "A useful plugin"\n}',
+            language: 'json',
+          },
+          {
+            description: 'Plugin with empty version',
+            code: '{\n  "name": "my-plugin",\n  "version": ""\n}',
+            language: 'json',
+          },
+        ],
+        correct: [
+          {
+            description: 'Plugin with a valid version',
+            code: '{\n  "name": "my-plugin",\n  "version": "1.0.0"\n}',
+            language: 'json',
+          },
+        ],
+      },
+      howToFix:
+        'Add a version field to plugin.json with a non-empty string value, ideally following semver ' +
+        'format (e.g., "1.0.0").',
+      relatedRules: ['plugin-invalid-manifest'],
+    },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent } = context;
