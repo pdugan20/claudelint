@@ -1,6 +1,7 @@
 # Project Status Dashboard
 
 **Last Updated:** 2026-02-10
+**Current stats:** 120 rules, 1280 tests, 181 suites
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -8,58 +9,50 @@ High-level overview of all claudelint projects. **For the sequenced execution pl
 
 ## Active Projects
 
-### dogfood-and-improvements (83%)
+### plugin-and-md-management (~90%)
 
-**Status:** Phase 2 In Progress (Sprint 7)
-**Location:** [docs/projects/dogfood-and-improvements/](./dogfood-and-improvements/)
-
-Self-validation bug fixes and linter improvements. Phase 1 (bug fixes) and Sprints 1-6 complete. Sprint 7+ has 5 remaining advanced tasks.
-
-**Completed:** Bug fixes (7/7), quick wins, reference content, workflow restructure, 6 new rules (105 total), pre-commit optimization, SARIF output, auto-fix (3 rules), CI guide, watch mode
-
-**Remaining:**
-
-- T3-13: Codebase cross-referencing (verify npm scripts, file paths in CLAUDE.md)
-- T3-14: Medium skill rules (9 rules, reconciled from 17 — see [roadmap M6](./roadmap.md#milestone-6-medium-skill-rules-9-rules))
-- T3-15: Red flags detection (stale commands, dead refs, old TODOs)
-- T3-16: Progressive disclosure validation
-- T3-17: Additive guidance engine
-
----
-
-### plugin-and-md-management (~85%)
-
-**Status:** Phases 0-4 Complete. Phase 5 (testing + release) remaining.
+**Status:** Phases 0-4 Complete. Phase 5 (interactive testing) remaining.
 **Location:** [docs/projects/plugin-and-md-management/](./plugin-and-md-management/)
 
-Plugin infrastructure, npm package distribution fix, and CLAUDE.md management skills.
+Plugin infrastructure, npm package distribution, and CLAUDE.md management skills.
 
-**Completed:** Package distribution fix, plugin.json manifest, interactive skills, constants verification system
+**Completed:** Package distribution fix, plugin.json manifest, interactive skills, constants verification system, smoke testing, all 9 skill self-fixes
 
 **Remaining:**
 
-- Phase 2.5: Wire `check:constants` into pre-commit hook and CI workflow
-- Phase 3.8: Manual testing execution
-- Phase 5.2-5.5: Manual testing + release
+- Milestone 4: Interactive + full manual testing (pre-release)
 
 ---
 
-### npm-release-setup (~75%)
+### npm-release-setup (~85%)
 
-**Status:** Phases 1-5 Complete, Phases 6-8 Remaining
+**Status:** Phases 1-6 Complete. Phases 7-8 (stable release) remaining.
 **Location:** [docs/projects/npm-release-setup/](./npm-release-setup/)
 
-npm package versioning and release automation. Package is published as `claude-code-lint@0.2.0-beta.1`.
+npm package versioning and release automation. Published as `claude-code-lint@0.2.0-beta.1`.
 
-**Completed:** npm account, package name, release-it setup, conventional commits, GitHub Actions workflow, beta publish
+**Completed:** npm account, package name, release-it setup, conventional commits, GitHub Actions, beta publish, release docs (RELEASING.md)
 
 **Remaining:**
 
-- Phase 6: Release documentation (RELEASING.md, CONTRIBUTING.md updates)
-- Phase 7: Stable 0.2.0 release
-- Phase 8: Post-release maintenance process
+- Milestone 5: Stable 0.2.0 release + post-release process
 
 ---
+
+### dogfood-and-improvements (~92%)
+
+**Status:** Phase 1 complete, Phase 2 Sprint 7 nearly complete
+**Location:** [docs/projects/dogfood-and-improvements/](./dogfood-and-improvements/)
+
+Self-validation bug fixes and linter improvements. Bug fixes (7/7), Sprints 1-6 complete, T3-13 and T3-14 complete via Milestones 6+7.
+
+**Completed:** Bug fixes (7/7), quick wins, reference content, workflow restructure, 21 new rules (Sprint 4 + M5b + M6 + M7), pre-commit optimization, SARIF output, auto-fix (3 rules), CI guide, watch mode, codebase cross-referencing, medium skill rules, custom rule plugin API
+
+**Remaining:**
+
+- T3-15: Red flags detection (stale commands, dead refs, old TODOs)
+- T3-16: Progressive disclosure validation (1 of N rules done)
+- T3-17: Additive guidance engine
 
 ---
 
@@ -70,7 +63,7 @@ npm package versioning and release automation. Package is published as `claude-c
 **Status:** Planned, not started
 **Location:** [docs/projects/vitepress-docs/](./vitepress-docs/)
 
-Professional documentation website at docs.claudelint.dev. 176 planned tasks across 6 phases. Well-planned and ready when prioritized.
+Professional documentation website at docs.claudelint.dev. 176 planned tasks across 6 phases.
 
 ---
 
@@ -80,72 +73,57 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 
 | Project | Status | Notes |
 |---------|--------|-------|
-| [github-automation](./archive/github-automation/) | 99% | Tasks 1-6, 8-10 complete. **Pending: GitHub repo not yet created.** |
-| [manual-testing-infrastructure-refactor](./archive/manual-testing-infrastructure-refactor/) | MVP complete | Phases 0-6 done. Phases 7-8 (fixture cleanup, docs) deferred. |
-| [skills-quality-validation](./archive/skills-quality-validation/) | Reference specs | 5/41 rules implemented. Spec files preserved for future rule work. |
-| [rule-implementation](./archive/rule-implementation/) | Reference doc | 324 planned rules snapshot (105 implemented + 219 planned). |
-| [monorepo-support](./archive/monorepo-support/) | Completed | Config inheritance, workspace detection, parallel validation. |
-| [plugin-system-removal](./archive/plugin-system-removal/) | Completed | Removed legacy plugin system. |
-| [programmatic-api](./archive/programmatic-api/) | Completed | ClaudeLint class API. See [docs/api/](../api/README.md). |
-| [validator-refactor](./archive/validator-refactor/) | Completed | Rule-based architecture foundation. |
-| [validator-refactor-2026](./archive/validator-refactor-2026/) | Completed | Removed 1,263 LOC, renamed validators, added architecture docs. |
-| [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Completed | Fixed 7 schema issues from Anthropic comparison audit (hooks, MCP, attribution, sandbox, settings, output styles). |
-| [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Completed | 9 fluent builders, extended SkillBuilder/PluginBuilder, enhanced fixtures, pinned integration tests. 3 follow-ups in M5a/M5b. |
-| [official-spec-alignment](./archive/official-spec-alignment/) | Completed | Aligned skill schema, 5 new rules (B5-B9), self-fixed all 9 skills (C10-C13). 110 total rules. |
+| [github-automation](./archive/github-automation/) | Complete | Repo created, CI/CD, labels, Codecov, Discussions all configured. |
+| [manual-testing-infrastructure-refactor](./archive/manual-testing-infrastructure-refactor/) | MVP complete | Phases 0-6 done. Phases 7-8 deferred. |
+| [skills-quality-validation](./archive/skills-quality-validation/) | Reconciled | 4 easy rules implemented, 7 dropped, 1 deferred. Hard rules need infrastructure. See roadmap M9. |
+| [rule-implementation](./archive/rule-implementation/) | Reference doc | 324 planned rules snapshot (120 implemented). |
+| [monorepo-support](./archive/monorepo-support/) | Complete | Config inheritance, workspace detection, parallel validation. |
+| [plugin-system-removal](./archive/plugin-system-removal/) | Complete | Removed legacy plugin system. |
+| [programmatic-api](./archive/programmatic-api/) | Complete | ClaudeLint class API. See [docs/api/](../api/README.md). |
+| [validator-refactor](./archive/validator-refactor/) | Complete | Rule-based architecture foundation. |
+| [validator-refactor-2026](./archive/validator-refactor-2026/) | Complete | Removed 1,263 LOC, renamed validators, added architecture docs. |
+| [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Complete | Fixed 7 schema issues from Anthropic comparison audit. |
+| [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Complete | 9 fluent builders, enhanced fixtures, pinned integration tests. |
+| [official-spec-alignment](./archive/official-spec-alignment/) | Complete | 5 new rules (B5-B9), self-fixed all 9 skills. |
 
 ---
 
-## Consolidated Backlog
+## Next Steps (Priority Order)
 
-Prioritized next steps across all projects. Work these in order.
+### 1. Ship Stable Release
 
-### P0: Unblock Everything
+1. Complete interactive testing (M4)
+2. Fix any issues found
+3. Publish 0.2.0 (M5)
 
-- **Create GitHub repo** `pdugan20/claudelint` and push code. Remote URL is configured but repo was never created. This blocks CI/CD, branch protection, PR workflows, and the 54 prepared labels. *(from github-automation)*
+### 2. Advanced Analysis (M8)
 
-### P0.5: Fix Wrong Results
+Red flags detection, progressive disclosure validation, additive guidance engine. These are the last dogfood-and-improvements tasks.
 
-- **Official spec alignment** — linter produces false positives on 5 official frontmatter fields, uses wrong description max-length (500 vs 1024), missing 3 official schema fields. *(from official-spec-alignment Phases A-C)*
+### 3. Deferred (M9)
 
-### ~~P0.75: Harden Test Infrastructure~~ (Complete -- Milestone 4a archived)
-
-### P1: Ship
-
-- **Execute manual testing protocol** for plugin-and-md-management. Unblocks plugin release. *(from plugin-and-md-management Phase 5)*
-- **Wire `check:constants` into pre-commit and CI.** npm script exists but isn't in the hook or workflow. *(from plugin-and-md-management Phase 2.5)*
-- **Publish stable 0.2.0 release.** Beta is on npm; need release docs and final publish. *(from npm-release-setup Phases 6-8)*
-
-### P2: High-Value Rules
-
-- **T3-14: Medium skill rules** (9 rules, reconciled from 17). Batch 1: M13 (secrets), M9 (shell error handling), M10 (hardcoded paths), M6 (usage section). Batch 2: M2 (description quality), M7 (unused tools), M11 (MCP names). *(from dogfood-and-improvements)*
-- **T3-13: Codebase cross-referencing.** Verify npm scripts, file paths, command names in CLAUDE.md actually exist. *(from dogfood-and-improvements)*
-
-### P3: Advanced Analysis
-
-- **T3-15: Red flags detection.** Stale commands, dead file refs, old TODOs, version mismatches.
-- **T3-16: Progressive disclosure validation.** Enforce 3-level content hierarchy.
-- **T3-17: Additive guidance engine.** Suggest missing sections, not just flag errors.
-
-### P4: Low Priority / Deferred
-
-- Dependency migrations: Zod 4, markdownlint 0.40, ora 9 *(from github-automation)*
-- Manual testing fixture cleanup: 12 tasks from Phases 7-8 *(from manual-testing-infra)*
-- T4-21: Hard skill rules (12 rules, requires LLM dependency)
-- T4-22: Skill version drift detection
-- T4-23: Rule usage analytics
-- T4-24: Custom rule plugin API
-
-### Future
-
-- **VitePress documentation site.** 176 tasks planned, ready when prioritized.
+Hard skill rules (needs MCP registry / LLM infrastructure), version drift detection, rule analytics, VitePress docs site.
 
 ---
 
-## Rule Implementation Reference
+## Rule Implementation Summary
 
-The linter currently has **110 implemented rules** across 10 categories. An additional **219 non-skill rules** and **36 skill rules** are planned but not yet implemented.
+The linter has **120 implemented rules** across 10 categories:
 
-**Spec files for planned rules:**
+| Category | Count |
+|----------|-------|
+| Skills | 46 |
+| CLAUDE.md | 16 |
+| MCP | 13 |
+| Plugin | 12 |
+| Agents | 12 |
+| LSP | 8 |
+| Settings | 5 |
+| Hooks | 3 |
+| Output Styles | 3 |
+| Commands | 2 |
+
+**Spec files for future rules:**
 
 - Skill rules: [easy-rules.md](./archive/skills-quality-validation/easy-rules.md), [medium-rules.md](./archive/skills-quality-validation/medium-rules.md), [hard-rules.md](./archive/skills-quality-validation/hard-rules.md)
 - All rules: [rules-reference.md](./archive/rule-implementation/rules-reference.md)

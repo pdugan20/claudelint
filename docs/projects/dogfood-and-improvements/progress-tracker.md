@@ -1,8 +1,8 @@
 # Dogfood and Improvements - Progress Tracker
 
-**Last Updated**: 2026-02-06
-**Status**: Phase 2 In Progress (Sprint 7 In Progress)
-**Progress**: Phase 1 7/7 (100%), Phase 2 19/24 (79%)
+**Last Updated**: 2026-02-10
+**Status**: Phase 2 In Progress (Sprint 7 Nearly Complete)
+**Progress**: Phase 1 7/7 (100%), Phase 2 23/24 (96%)
 
 ---
 
@@ -242,18 +242,18 @@ Priority rules from the [skills-quality-validation](../archive/skills-quality-va
 
 ### Sprint 7+: Advanced (Ongoing)
 
-**Progress**: 0/7 (0%)
+**Progress**: 4/7 (57%)
 
 These items are lower priority and can be tackled as time permits.
 
-- [ ] **T3-13**: Codebase cross-referencing
-  - Verify `npm run` scripts, file paths, and command names in CLAUDE.md
-  - Notes: _High value but complex; 1+ week_
+- [x] **T3-13**: Codebase cross-referencing
+  - Implemented as Milestone 7: `claude-md-npm-script-not-found` (error), `claude-md-file-reference-invalid` (warn)
+  - Notes: _Completed 2026-02-10_
 
-- [ ] **T3-14**: Skills-quality-validation Medium rules (17 rules)
-  - Follow specs from [skills-quality-validation](../archive/skills-quality-validation/) Phase 2
-  - Priority: M1 (trigger phrases), M13 (hardcoded secrets), M11 (MCP tool names)
-  - Notes: _1-2 weeks; use existing project specs_
+- [x] **T3-14**: Skills-quality-validation Medium rules (9 rules, reconciled from 17)
+  - Implemented as Milestone 6: 7 rules shipped, 2 deferred (M3: conflicts with B5, M8: too subjective)
+  - Rules: skill-hardcoded-secrets, skill-shell-script-no-error-handling, skill-shell-script-hardcoded-paths, skill-body-missing-usage-section, skill-description-quality, skill-allowed-tools-not-used, skill-mcp-tool-qualified-name
+  - Notes: _Completed 2026-02-10_
 
 - [ ] **T3-15**: Red flags detection
   - Stale commands, dead file refs, old TODOs, version mismatches
@@ -294,8 +294,9 @@ These items are tracked but intentionally deferred until there's user demand or 
 - [ ] **T4-23**: Rule usage analytics
   - Deferred: Needs meaningful user base for data to be useful
 
-- [ ] **T4-24**: Custom rule plugin API
-  - Deferred: Significant API surface; wait for user demand
+- [x] **T4-24**: Custom rule plugin API
+  - Implemented: `CustomRuleLoader` class, tests, comprehensive docs at `docs/custom-rules.md`
+  - Notes: _Completed 2026-02-10_
 
 ---
 
@@ -309,10 +310,10 @@ Sprint 3 (Workflow):    [##########] 100%  (1/1)
 Sprint 4 (New Rules):   [##########] 100%  (6/6)
 Sprint 5 (DevEx):       [##########] 100%  (3/3)
 Sprint 6 (Auto-fix):    [##########] 100%  (1/1)
-Sprint 7+ (Advanced):   [###       ]  29%  (2/7)
-Deferred:               [          ]   0%  (0/4)
+Sprint 7+ (Advanced):   [########  ]  57%  (4/7)
+Deferred:               [###       ]  25%  (1/4)
 
-Phase 2 Total:          [########  ]  79%  (19/24 active + 4 deferred)
+Phase 2 Total:          [######### ]  96%  (23/24 active + 1 deferred)
 ```
 
 ---
