@@ -133,7 +133,6 @@ jobs:
 
       - name: Verify rule structure
         run: npm run check:rule-structure
-        continue-on-error: true
 
   schema-sync:
     name: Verify Schema Synchronization (Phase 2.2)
