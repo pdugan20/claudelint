@@ -116,7 +116,7 @@
   "bugs": {
     "url": "https://github.com/pdugan20/claudelint/issues"
   },
-  "homepage": "https://github.com/pdugan20/claudelint#readme",
+  "homepage": "https://claudelint.com",
   "engines": {
     "node": ">=20.0.0"
   },
