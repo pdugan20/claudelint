@@ -14,7 +14,6 @@
     "settings-invalid-permission": "error",
     "hooks-invalid-event": "error",
     "hooks-invalid-config": "error",
-    "mcp-invalid-server": "error",
     "plugin-invalid-manifest": "error"
   },
   "reportUnusedDisableDirectives": true,

@@ -102,7 +102,7 @@ export const rule: Rule = {
           config: { pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$' },
         },
       ],
-      relatedRules: ['mcp-invalid-server'],
+      relatedRules: [],
     },
   },
 

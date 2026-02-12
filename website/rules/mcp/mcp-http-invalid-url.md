@@ -44,10 +44,6 @@ Provide a fully qualified URL including the scheme (http:// or https://). Ensure
 
 This rule does not have any configuration options.
 
-## Related Rules
-
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
-
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-http-invalid-url.ts)

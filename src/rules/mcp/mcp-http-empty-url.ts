@@ -49,7 +49,7 @@ export const rule: Rule = {
       howToFix:
         'Add a non-empty url field to the MCP server configuration. The URL should be a fully ' +
         'qualified address including the scheme (http:// or https://).',
-      relatedRules: ['mcp-http-invalid-url', 'mcp-invalid-server'],
+      relatedRules: ['mcp-http-invalid-url'],
     },
   },
 

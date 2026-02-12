@@ -52,7 +52,7 @@ export const rule: Rule = {
       howToFix:
         'Provide a fully qualified URL including the scheme (http:// or https://). Ensure the URL ' +
         'is well-formed and reachable from the environment where Claude Code runs.',
-      relatedRules: ['mcp-sse-empty-url', 'mcp-sse-transport-deprecated', 'mcp-invalid-server'],
+      relatedRules: ['mcp-sse-empty-url', 'mcp-sse-transport-deprecated'],
     },
   },
 

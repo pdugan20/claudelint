@@ -286,14 +286,14 @@ describe('Rule Type', () => {
           fixable: false,
           deprecated: {
             reason: 'Test',
-            replacedBy: 'mcp-invalid-server' as RuleId,
+            replacedBy: 'mcp-invalid-transport' as RuleId,
           },
           since: '1.0.0',
         },
         validate: async () => {},
       };
 
-      expect(getReplacementRuleIds(rule)).toEqual(['mcp-invalid-server']);
+      expect(getReplacementRuleIds(rule)).toEqual(['mcp-invalid-transport']);
     });
 
     it('should handle array replacement', () => {

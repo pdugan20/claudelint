@@ -60,7 +60,6 @@ This rule does not have any configuration options.
 
 ## Related Rules
 
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 - [`mcp-sse-transport-deprecated`](/rules/mcp/mcp-sse-transport-deprecated)
 
 ## Resources

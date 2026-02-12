@@ -58,7 +58,7 @@ export const rule: Rule = {
       howToFix:
         'Change the type field to one of the supported values: stdio, sse, http, or websocket. ' +
         'Note that sse is deprecated in favor of http.',
-      relatedRules: ['mcp-invalid-server', 'mcp-sse-transport-deprecated'],
+      relatedRules: ['mcp-sse-transport-deprecated'],
     },
   },
 

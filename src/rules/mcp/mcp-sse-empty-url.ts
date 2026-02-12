@@ -50,7 +50,7 @@ export const rule: Rule = {
       howToFix:
         'Add a non-empty url field to the SSE server configuration. Consider migrating to the ' +
         'http transport type, as SSE is deprecated.',
-      relatedRules: ['mcp-sse-invalid-url', 'mcp-sse-transport-deprecated', 'mcp-invalid-server'],
+      relatedRules: ['mcp-sse-invalid-url', 'mcp-sse-transport-deprecated'],
     },
   },
 

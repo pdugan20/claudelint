@@ -50,11 +50,7 @@ export const rule: Rule = {
       howToFix:
         'Add a non-empty url field to the WebSocket server configuration. The URL should use ' +
         'the ws:// or wss:// protocol scheme.',
-      relatedRules: [
-        'mcp-websocket-invalid-url',
-        'mcp-websocket-invalid-protocol',
-        'mcp-invalid-server',
-      ],
+      relatedRules: ['mcp-websocket-invalid-url', 'mcp-websocket-invalid-protocol'],
     },
   },
 

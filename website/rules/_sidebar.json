@@ -314,7 +314,7 @@
     ]
   },
   {
-    "text": "MCP (13)",
+    "text": "MCP (11)",
     "collapsed": true,
     "items": [
       {
@@ -330,16 +330,8 @@
         "link": "/rules/mcp/mcp-invalid-env-var"
       },
       {
-        "text": "mcp-invalid-server",
-        "link": "/rules/mcp/mcp-invalid-server"
-      },
-      {
         "text": "mcp-invalid-transport",
         "link": "/rules/mcp/mcp-invalid-transport"
-      },
-      {
-        "text": "mcp-server-key-mismatch",
-        "link": "/rules/mcp/mcp-server-key-mismatch"
       },
       {
         "text": "mcp-sse-empty-url",
@@ -480,20 +472,12 @@
     ]
   },
   {
-    "text": "LSP (8)",
+    "text": "LSP (6)",
     "collapsed": true,
     "items": [
       {
         "text": "lsp-command-not-in-path",
         "link": "/rules/lsp/lsp-command-not-in-path"
-      },
-      {
-        "text": "lsp-config-file-not-json",
-        "link": "/rules/lsp/lsp-config-file-not-json"
-      },
-      {
-        "text": "lsp-config-file-relative-path",
-        "link": "/rules/lsp/lsp-config-file-relative-path"
       },
       {
         "text": "lsp-extension-missing-dot",

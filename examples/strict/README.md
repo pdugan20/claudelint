@@ -43,7 +43,6 @@ All major rules enabled as errors:
 - `settings-invalid-permission` - Invalid permission rules
 - `hooks-invalid-event` - Unknown hook event names
 - `hooks-invalid-config` - Invalid hooks configuration
-- `mcp-invalid-server` - Invalid MCP server config
 - `plugin-invalid-manifest` - Invalid plugin manifest
 
 ## Special Features

@@ -77,10 +77,6 @@ Allow lowercase environment variable names:
 }
 ```
 
-## Related Rules
-
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
-
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-invalid-env-var.ts)

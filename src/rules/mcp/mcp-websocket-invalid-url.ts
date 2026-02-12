@@ -52,11 +52,7 @@ export const rule: Rule = {
       howToFix:
         'Provide a fully qualified URL with a ws:// or wss:// scheme. Ensure the URL is ' +
         'well-formed and reachable from the environment where Claude Code runs.',
-      relatedRules: [
-        'mcp-websocket-empty-url',
-        'mcp-websocket-invalid-protocol',
-        'mcp-invalid-server',
-      ],
+      relatedRules: ['mcp-websocket-empty-url', 'mcp-websocket-invalid-protocol'],
     },
   },
 

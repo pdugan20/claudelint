@@ -1,5 +1,5 @@
 {
-  "total": 120,
+  "total": 116,
   "categoryCount": 10,
   "categories": {
     "claude-md": {
@@ -20,7 +20,7 @@
     },
     "mcp": {
       "display": "MCP",
-      "count": 13
+      "count": 11
     },
     "plugin": {
       "display": "Plugin",
@@ -32,7 +32,7 @@
     },
     "lsp": {
       "display": "LSP",
-      "count": 8
+      "count": 6
     },
     "output-styles": {
       "display": "Output Styles",
@@ -43,5 +43,5 @@
       "count": 2
     }
   },
-  "generatedAt": "2026-02-12T19:15:54.437Z"
+  "generatedAt": "2026-02-12T19:28:53.708Z"
 }

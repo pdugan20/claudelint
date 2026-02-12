@@ -59,7 +59,6 @@ This rule does not have any configuration options.
 ## Related Rules
 
 - [`mcp-http-invalid-url`](/rules/mcp/mcp-http-invalid-url)
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 
 ## Resources
 

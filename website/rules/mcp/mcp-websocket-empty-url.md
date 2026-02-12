@@ -60,7 +60,6 @@ This rule does not have any configuration options.
 
 - [`mcp-websocket-invalid-url`](/rules/mcp/mcp-websocket-invalid-url)
 - [`mcp-websocket-invalid-protocol`](/rules/mcp/mcp-websocket-invalid-protocol)
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 
 ## Resources
 

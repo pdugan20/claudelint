@@ -57,10 +57,6 @@ Add a non-empty command string to the MCP server configuration. The command shou
 
 This rule does not have any configuration options.
 
-## Related Rules
-
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
-
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-stdio-empty-command.ts)

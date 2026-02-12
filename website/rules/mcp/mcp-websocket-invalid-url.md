@@ -61,7 +61,6 @@ This rule does not have any configuration options.
 
 - [`mcp-websocket-empty-url`](/rules/mcp/mcp-websocket-empty-url)
 - [`mcp-websocket-invalid-protocol`](/rules/mcp/mcp-websocket-invalid-protocol)
-- [`mcp-invalid-server`](/rules/mcp/mcp-invalid-server)
 
 ## Resources
 
