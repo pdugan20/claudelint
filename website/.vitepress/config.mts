@@ -8,7 +8,7 @@ export default defineConfig({
 
   base: '/',
 
-  // TODO: Remove once all pages exist (Phase 2-3 will add rule pages)
+  // Dead links from legacy docs migration; fix in Phase 7 (Docs Cleanup)
   ignoreDeadLinks: true,
 
   head: [
@@ -146,11 +146,15 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright (c) 2024-present Pat Dugan',
+      copyright: 'Copyright (c) 2025-present Pat Dugan',
     },
 
     search: {
       provider: 'local',
+    },
+
+    outline: {
+      level: [2, 3],
     },
   },
 
