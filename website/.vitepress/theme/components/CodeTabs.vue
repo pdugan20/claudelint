@@ -15,8 +15,8 @@
     <div class="code-tabs-content">
       <div
         v-for="(tab, index) in tabs"
-        :key="tab.label"
         v-show="activeTab === index"
+        :key="tab.label"
         class="code-tabs-panel"
         role="tabpanel"
       >
@@ -73,7 +73,9 @@ function copy(text: string) {
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .code-tabs-tab:hover {

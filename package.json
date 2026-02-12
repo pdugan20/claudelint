@@ -29,16 +29,18 @@
     "test:skills:structure": "bash scripts/test/skills/validate-self.sh",
     "test:validators": "jest tests/validators --coverage",
     "test:watch": "jest --watch",
-    "lint": "npm-run-all --parallel lint:ts lint:md lint:pkg:quiet",
-    "lint:fix": "npm-run-all --parallel lint:ts:fix lint:md:fix",
+    "lint": "npm-run-all --parallel lint:ts lint:vue lint:md lint:pkg:quiet",
+    "lint:fix": "npm-run-all --parallel lint:ts:fix lint:vue:fix lint:md:fix",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
     "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
     "lint:pkg": "npmPkgJsonLint .",
     "lint:pkg:quiet": "npmPkgJsonLint . --quiet",
     "lint:ts": "eslint src --ext .ts",
     "lint:ts:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\" \"**/*.json\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"**/*.json\"",
+    "lint:vue": "eslint 'website/.vitepress/**/*.vue'",
+    "lint:vue:fix": "eslint 'website/.vitepress/**/*.vue' --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"**/*.json\" \"website/.vitepress/**/*.vue\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"**/*.json\" \"website/.vitepress/**/*.vue\"",
     "check": "npm-run-all --parallel check:emojis check:logger-spacing check:logger-usage check:milestone-refs check:publint",
     "check:all": "ts-node scripts/check/all.ts",
     "check:self": "ts-node scripts/check/self-validate.ts",
@@ -50,12 +52,13 @@
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
     "check:hardcoded-counts": "ts-node scripts/check/hardcoded-counts.ts",
     "check:links": "node scripts/check/links.js",
-    "check:links:all": "remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md",
+    "check:links:all": "remark --use remark-validate-links --frail website/ README.md CONTRIBUTING.md",
     "check:logger-spacing": "bash scripts/check/logger-spacing.sh",
     "check:logger-usage": "bash scripts/check/logger-usage.sh",
     "check:milestone-refs": "bash scripts/check/milestone-refs.sh",
     "check:model-names": "ts-node scripts/verify/model-names.ts",
     "check:publint": "publint",
+    "check:spelling": "cspell 'website/**/*.md' --no-progress",
     "check:rule-coverage": "ts-node scripts/check/rule-coverage.ts",
     "check:rule-docs": "ts-node scripts/check/rule-docs.ts",
     "check:rule-docs-audit": "ts-node scripts/audit/rule-docs.ts",
@@ -89,6 +92,10 @@
       "npmPkgJsonLint ."
     ],
     "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "website/.vitepress/**/*.vue": [
       "eslint --fix",
       "prettier --write"
     ],
@@ -157,9 +164,11 @@
     "@typescript-eslint/parser": "^8.54.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "cspell": "^9.6.4",
     "emoji-regex": "^10.6.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.7.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "knip": "^5.82.1",
@@ -177,6 +186,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",
     "vitepress": "^1.6.4",
-    "vue": "^3.5.28"
+    "vue": "^3.5.28",
+    "vue-eslint-parser": "^10.2.0"
   }
 }

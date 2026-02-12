@@ -1,0 +1,89 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "files": ["website/**/*.md"],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "website/.vitepress/cache",
+    "website/.vitepress/dist"
+  ],
+  "words": [
+    "claudelint",
+    "claudemd",
+    "claudelintrc",
+    "claudelintignore",
+    "vitepress",
+    "vite",
+    "frontmatter",
+    "subagent",
+    "subagents",
+    "autofix",
+    "SARIF",
+    "monorepo",
+    "monorepos",
+    "pnpm",
+    "programmatically",
+    "ruleset",
+    "rulesets",
+    "shiki",
+    "markdownlint",
+    "commitlint",
+    "husky",
+    "eslint",
+    "cspell",
+    "pluggable",
+    "composable",
+    "composables",
+    "truthy",
+    "falsy",
+    "linter",
+    "linters",
+    "validators",
+    "Dugan",
+    "pdugan",
+    "kebab",
+    "checkbox",
+    "checkboxes",
+    "sandboxing",
+    "unsandboxed",
+    "dogfooding",
+    "rollouts",
+    "streamable",
+    "modelcontextprotocol",
+    "stefanzweifel",
+    "executability",
+    "APFS",
+    "OUTPUTSTYLE",
+    "mycompany",
+    "dont",
+    "nextup"
+  ],
+  "flagWords": [],
+  "dictionaries": ["typescript", "node", "npm", "css", "html", "bash"],
+  "overrides": [
+    {
+      "filename": "website/rules/**/*.md",
+      "words": [
+        "autofixable",
+        "unfixable",
+        "noncompliant",
+        "misconfigured",
+        "settigns",
+        "standarts",
+        "dependecies",
+        "sonnett",
+        "badword",
+        "Bassh",
+        "cret"
+      ]
+    },
+    {
+      "filename": "website/development/custom-rules.md",
+      "words": [
+        "badword"
+      ]
+    }
+  ]
+}

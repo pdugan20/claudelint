@@ -9,11 +9,7 @@
     </div>
     <div class="vd-arrow">&#x2193;</div>
     <div class="vd-validators">
-      <div
-        v-for="v in effectiveValidators"
-        :key="v.name"
-        class="vd-box vd-box-validator"
-      >
+      <div v-for="v in effectiveValidators" :key="v.name" class="vd-box vd-box-validator">
         <a v-if="v.link" :href="v.link" class="vd-link">
           <strong>{{ v.name }}</strong>
           <span class="vd-count">{{ v.rules }} rules</span>
@@ -46,24 +42,24 @@ const props = defineProps<{
 
 const categoryLinks: Record<string, string> = {
   'claude-md': '/validators/claude-md',
-  'skills': '/validators/skills',
-  'settings': '/validators/settings',
-  'hooks': '/validators/hooks',
-  'mcp': '/validators/mcp',
-  'plugin': '/validators/plugin',
-  'agents': '/validators/agents',
-  'lsp': '/validators/lsp',
+  skills: '/validators/skills',
+  settings: '/validators/settings',
+  hooks: '/validators/hooks',
+  mcp: '/validators/mcp',
+  plugin: '/validators/plugin',
+  agents: '/validators/agents',
+  lsp: '/validators/lsp',
   'output-styles': '/validators/output-styles',
-  'commands': '/validators/commands',
+  commands: '/validators/commands',
 };
 
-const effectiveValidators: ValidatorEntry[] = props.validators ?? Object.entries(stats.categories).map(
-  ([key, val]) => ({
+const effectiveValidators: ValidatorEntry[] =
+  props.validators ??
+  Object.entries(stats.categories).map(([key, val]) => ({
     name: (val as { display: string; count: number }).display,
     rules: (val as { display: string; count: number }).count,
     link: categoryLinks[key],
-  })
-);
+  }));
 </script>
 
 <style scoped>

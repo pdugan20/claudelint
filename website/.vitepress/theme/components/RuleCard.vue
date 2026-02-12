@@ -3,7 +3,12 @@
     <code class="rule-card-id">{{ ruleId }}</code>
     <p class="rule-card-desc">{{ description }}</p>
     <div class="rule-card-footer">
-      <span :class="['rule-card-severity', `rule-card-severity-${severity === 'warning' ? 'warning' : severity}`]">
+      <span
+        :class="[
+          'rule-card-severity',
+          `rule-card-severity-${severity === 'warning' ? 'warning' : severity}`,
+        ]"
+      >
         {{ severity === 'error' ? 'Error' : severity === 'info' ? 'Info' : 'Warning' }}
       </span>
       <span v-if="fixable" class="rule-card-fixable">Auto-fixable</span>
@@ -32,7 +37,9 @@ defineProps<{
   border-radius: 8px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .rule-card:hover {

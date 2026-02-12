@@ -1,13 +1,15 @@
 <template>
   <div class="feature-grid">
-    <div
-      v-for="feature in features"
-      :key="feature.title"
-      class="feature-grid-item"
-    >
-      <div v-if="feature.icon" class="feature-grid-icon">{{ feature.icon }}</div>
-      <h3 class="feature-grid-title">{{ feature.title }}</h3>
-      <p class="feature-grid-desc">{{ feature.details }}</p>
+    <div v-for="feature in features" :key="feature.title" class="feature-grid-item">
+      <div v-if="feature.icon" class="feature-grid-icon">
+        {{ feature.icon }}
+      </div>
+      <h3 class="feature-grid-title">
+        {{ feature.title }}
+      </h3>
+      <p class="feature-grid-desc">
+        {{ feature.details }}
+      </p>
     </div>
   </div>
 </template>
@@ -34,7 +36,9 @@ defineProps<{
   padding: 20px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .feature-grid-item:hover {

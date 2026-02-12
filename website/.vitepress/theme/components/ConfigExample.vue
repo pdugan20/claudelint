@@ -9,7 +9,9 @@
     <div class="config-body">
       <pre><code>{{ code }}</code></pre>
     </div>
-    <p v-if="caption" class="config-caption">{{ caption }}</p>
+    <p v-if="caption" class="config-caption">
+      {{ caption }}
+    </p>
   </div>
 </template>
 
@@ -65,7 +67,9 @@ function copyCode() {
   border: 1px solid var(--vp-c-divider);
   border-radius: 4px;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .config-copy:hover {

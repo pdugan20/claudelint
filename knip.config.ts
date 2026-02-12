@@ -32,6 +32,9 @@ const config: KnipConfig = {
     'zod-validation-error',         // Used for better error messages
     '@commitlint/cli',              // Used in husky hooks
     'lint-staged',                  // Used in husky hooks
+    'eslint-plugin-vue',            // Used in eslint.config.mjs for Vue linting
+    'vue-eslint-parser',            // Peer dependency of eslint-plugin-vue
+    'cspell',                       // Used via npm script for spell checking
   ],
 
   // Ignore exports used only within the same file (common for utility modules)

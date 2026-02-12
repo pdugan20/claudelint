@@ -7,6 +7,8 @@ export default defineConfig({
   lang: 'en-US',
 
   base: '/',
+  cleanUrls: true,
+  lastUpdated: true,
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -113,6 +115,7 @@ export default defineConfig({
             { text: 'Types', link: '/api/types' },
             { text: 'Schemas', link: '/api/schemas' },
             { text: 'Formatters', link: '/api/formatters' },
+            { text: 'Recipes', link: '/api/recipes' },
           ],
         },
       ],
@@ -166,5 +169,22 @@ export default defineConfig({
 
   sitemap: {
     hostname: 'https://claudelint.com',
+  },
+
+  transformPageData(pageData) {
+    const title = pageData.frontmatter.title || pageData.title;
+    const description =
+      pageData.frontmatter.description || pageData.description || 'claudelint documentation';
+    const canonicalUrl = `https://claudelint.com/${pageData.relativePath}`
+      .replace(/index\.md$/, '')
+      .replace(/\.md$/, '');
+
+    pageData.frontmatter.head ??= [];
+    pageData.frontmatter.head.push(
+      ['meta', { property: 'og:title', content: `${title} | claudelint` }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:url', content: canonicalUrl }],
+      ['link', { rel: 'canonical', href: canonicalUrl }]
+    );
   },
 });

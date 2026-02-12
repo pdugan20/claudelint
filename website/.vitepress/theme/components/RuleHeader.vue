@@ -1,7 +1,14 @@
 <template>
-  <p class="rule-header-description">{{ description }}</p>
+  <p class="rule-header-description">
+    {{ description }}
+  </p>
   <div class="rule-header-badges">
-    <span :class="['rule-header-badge', severity === 'error' ? 'rule-header-badge-error' : 'rule-header-badge-warning']">
+    <span
+      :class="[
+        'rule-header-badge',
+        severity === 'error' ? 'rule-header-badge-error' : 'rule-header-badge-warning',
+      ]"
+    >
       {{ severity === 'error' ? 'Error' : 'Warning' }}
     </span>
     <span
