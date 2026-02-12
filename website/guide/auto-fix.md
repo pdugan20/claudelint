@@ -121,28 +121,25 @@ version: '1.0.0'
 
 Creates CHANGELOG.md with Keep a Changelog template.
 
-**Created file:**
+**skill-shell-script-no-error-handling** (warning, fixable)
 
-```markdown
-# Changelog
+Adds `set -euo pipefail` to shell scripts that lack error handling.
 
-All notable changes to my-skill will be documented in this file.
+**skill-reference-not-linked** (warning, fixable)
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Converts backtick file references (e.g., `` `scripts/deploy.sh` ``) into markdown links.
 
-## [Unreleased]
+**skill-name-directory-mismatch** (error, fixable)
 
-### Added
+Updates the `name` field in SKILL.md frontmatter to match the parent directory name.
 
-- Initial skill implementation
+### Plugin
 
-## [1.0.0] - 2026-01-27
+**plugin-missing-component-paths** (warning, fixable)
 
-### Added
+Adds `./` prefix to component paths that should be explicit about their location.
 
-- Initial release
-```
+Use `claudelint list-rules --format json | jq '.[] | select(.fixable == true)'` to see all fixable rules.
 
 ## Common Workflows
 
@@ -403,39 +400,6 @@ When auto-fixes are applied in CI:
 - Review the changes in the PR
 - Ensure fixes are correct
 - Don't blindly merge auto-fix commits
-
-## Examples
-
-### Fix All Issues
-
-```bash
-claudelint check-all --fix
-```
-
-### Preview Only Errors
-
-```bash
-claudelint check-all --fix-dry-run --fix-type errors
-```
-
-### Fix Warnings Only
-
-```bash
-claudelint check-all --fix --fix-type warnings
-```
-
-### Combine with Other Options
-
-```bash
-# Verbose output + auto-fix
-claudelint check-all --fix --verbose
-
-# Specific config + auto-fix
-claudelint check-all --fix --config .claudelintrc.custom.json
-
-# No cache + auto-fix (cache is auto-disabled with --fix)
-claudelint check-all --fix --no-cache
-```
 
 ## See Also
 
