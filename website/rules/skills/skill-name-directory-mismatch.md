@@ -1,6 +1,6 @@
 # skill-name-directory-mismatch
 
-<RuleHeader description="Skill name must match parent directory name" severity="error" :fixable="true" category="Skills" />
+<RuleHeader description="Skill name must match parent directory name" severity="error" :fixable="true" :configurable="false" category="Skills" />
 
 ## Rule Details
 

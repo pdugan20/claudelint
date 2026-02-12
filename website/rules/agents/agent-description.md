@@ -1,6 +1,6 @@
 # agent-description
 
-<RuleHeader description="Agent description must be at least 10 characters, written in third person, with no XML tags" severity="error" :fixable="false" category="Agents" />
+<RuleHeader description="Agent description must be at least 10 characters, written in third person, with no XML tags" severity="error" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 

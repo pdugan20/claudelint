@@ -1,6 +1,6 @@
 # agent-name-directory-mismatch
 
-<RuleHeader description="Agent name must match parent directory name" severity="error" :fixable="false" category="Agents" />
+<RuleHeader description="Agent name must match parent directory name" severity="error" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 

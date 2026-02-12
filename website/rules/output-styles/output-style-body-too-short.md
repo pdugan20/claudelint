@@ -1,6 +1,6 @@
 # output-style-body-too-short
 
-<RuleHeader description="Output style body content should meet minimum length requirements" severity="warn" :fixable="false" category="Output Styles" />
+<RuleHeader description="Output style body content should meet minimum length requirements" severity="warn" :fixable="false" :configurable="true" category="Output Styles" />
 
 ## Rule Details
 

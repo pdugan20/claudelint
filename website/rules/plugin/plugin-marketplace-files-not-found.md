@@ -1,6 +1,6 @@
 # plugin-marketplace-files-not-found
 
-<RuleHeader description="Referenced marketplace file does not exist" severity="warn" :fixable="false" category="Plugin" />
+<RuleHeader description="Referenced marketplace file does not exist" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

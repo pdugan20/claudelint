@@ -1,6 +1,6 @@
 # skill-agent
 
-<RuleHeader description="When skill context is &quot;fork&quot;, agent field is required to specify which agent to use" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="When skill context is &quot;fork&quot;, agent field is required to specify which agent to use" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

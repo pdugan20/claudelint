@@ -1,6 +1,6 @@
 # skill-disallowed-tools
 
-<RuleHeader description="Skill disallowed-tools must be an array of tool names" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="Skill disallowed-tools must be an array of tool names" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

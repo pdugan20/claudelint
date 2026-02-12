@@ -1,6 +1,6 @@
 # lsp-server-name-too-short
 
-<RuleHeader description="LSP server names should be descriptive" severity="warn" :fixable="false" category="LSP" />
+<RuleHeader description="LSP server names should be descriptive" severity="warn" :fixable="false" :configurable="true" category="LSP" />
 
 ## Rule Details
 

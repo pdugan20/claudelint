@@ -1,6 +1,6 @@
 # claude-md-glob-pattern-too-broad
 
-<RuleHeader description="Path pattern is overly broad" severity="warn" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Path pattern is overly broad" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

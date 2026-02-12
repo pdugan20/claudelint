@@ -1,6 +1,6 @@
 # claude-md-import-in-code-block
 
-<RuleHeader description="Import statement found inside code block" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Import statement found inside code block" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

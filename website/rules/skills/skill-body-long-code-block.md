@@ -1,6 +1,6 @@
 # skill-body-long-code-block
 
-<RuleHeader description="Long code blocks in SKILL.md should be moved to reference files" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Long code blocks in SKILL.md should be moved to reference files" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

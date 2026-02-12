@@ -1,6 +1,6 @@
 # claude-md-file-not-found
 
-<RuleHeader description="Specified CLAUDE.md file path does not exist" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Specified CLAUDE.md file path does not exist" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

@@ -1,6 +1,6 @@
 # lsp-invalid-transport
 
-<RuleHeader description="LSP transport type must be &quot;stdio&quot; or &quot;socket&quot;" severity="error" :fixable="false" category="LSP" />
+<RuleHeader description="LSP transport type must be &quot;stdio&quot; or &quot;socket&quot;" severity="error" :fixable="false" :configurable="false" category="LSP" />
 
 ## Rule Details
 

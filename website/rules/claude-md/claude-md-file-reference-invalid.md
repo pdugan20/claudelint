@@ -1,6 +1,6 @@
 # claude-md-file-reference-invalid
 
-<RuleHeader description="File path referenced in CLAUDE.md does not exist" severity="warn" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="File path referenced in CLAUDE.md does not exist" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

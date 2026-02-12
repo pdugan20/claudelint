@@ -1,6 +1,6 @@
 # skill-deep-nesting
 
-<RuleHeader description="Skill directory has excessive directory nesting" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill directory has excessive directory nesting" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

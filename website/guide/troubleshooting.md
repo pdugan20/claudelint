@@ -351,17 +351,23 @@ Run this after upgrading claudelint or changing config.
 
 **Global install:**
 
-```bash
-npm install -g claude-code-lint
-claudelint --version
-```
+<CodeTabs :tabs="[
+  { label: 'npm', code: 'npm install -g claude-code-lint' },
+  { label: 'yarn', code: 'yarn global add claude-code-lint' },
+  { label: 'pnpm', code: 'pnpm add -g claude-code-lint' },
+]" />
+
+Then verify: `claudelint --version`
 
 **Project install:**
 
-```bash
-npm install --save-dev claude-code-lint
-npx claude-code-lint --version
-```
+<CodeTabs :tabs="[
+  { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
+  { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
+  { label: 'pnpm', code: 'pnpm add -D claude-code-lint' },
+]" />
+
+Then verify: `npx claude-code-lint --version`
 
 **Or use full path:**
 

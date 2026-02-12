@@ -1,6 +1,6 @@
 # settings-permission-invalid-rule
 
-<RuleHeader description="Permission rules must use valid Tool(pattern) syntax" severity="error" :fixable="false" category="Settings" />
+<RuleHeader description="Permission rules must use valid Tool(pattern) syntax" severity="error" :fixable="false" :configurable="false" category="Settings" />
 
 ## Rule Details
 

@@ -1,15 +1,15 @@
 /**
- * Tests for commands-in-plugin-deprecated rule
+ * Tests for plugin-commands-deprecated rule
  */
 
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
-import { rule } from '../../../src/rules/plugin/commands-in-plugin-deprecated';
+import { rule } from '../../../src/rules/plugin/plugin-commands-deprecated';
 
 const ruleTester = new ClaudeLintRuleTester();
 
-describe('commands-in-plugin-deprecated', () => {
+describe('plugin-commands-deprecated', () => {
   it('should pass validation tests', async () => {
-    await ruleTester.run('commands-in-plugin-deprecated', rule, {
+    await ruleTester.run('plugin-commands-deprecated', rule, {
       valid: [
         // No commands field
         {

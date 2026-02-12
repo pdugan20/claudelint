@@ -1,6 +1,6 @@
 # skill-path-traversal
 
-<RuleHeader description="Potential path traversal pattern detected" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Potential path traversal pattern detected" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

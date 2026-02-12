@@ -1,5 +1,5 @@
 /**
- * Rule: commands-in-plugin-deprecated
+ * Rule: plugin-commands-deprecated
  *
  * Warns that the commands field in plugin.json is deprecated.
  */
@@ -15,8 +15,8 @@ type PluginManifest = z.infer<typeof PluginManifestSchema>;
  */
 export const rule: Rule = {
   meta: {
-    id: 'commands-in-plugin-deprecated',
-    name: 'Commands In Plugin Deprecated',
+    id: 'plugin-commands-deprecated',
+    name: 'Plugin Commands Deprecated',
     description: 'The commands field in plugin.json is deprecated',
     category: 'Plugin',
     severity: 'warn',
@@ -24,7 +24,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '0.2.0',
     docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/commands-in-plugin-deprecated.md',
+      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-commands-deprecated.md',
     docs: {
       recommended: true,
       summary: 'Warns when plugin.json uses the deprecated commands field.',

@@ -157,7 +157,7 @@ async function generateSidebarData(
     const sortedRules = [...rules].sort((a, b) => a.id.localeCompare(b.id));
 
     sidebar.push({
-      text: `${displayName} (${sortedRules.length})`,
+      text: displayName,
       collapsed: true,
       items: sortedRules.map((r) => ({
         text: r.id,

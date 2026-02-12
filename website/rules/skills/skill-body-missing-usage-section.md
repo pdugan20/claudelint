@@ -1,6 +1,6 @@
 # skill-body-missing-usage-section
 
-<RuleHeader description="SKILL.md body lacks a ## Usage section" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="SKILL.md body lacks a ## Usage section" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

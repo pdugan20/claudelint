@@ -1,6 +1,6 @@
 # plugin-version-required
 
-<RuleHeader description="Plugin version is required and cannot be empty" severity="error" :fixable="false" category="Plugin" />
+<RuleHeader description="Plugin version is required and cannot be empty" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

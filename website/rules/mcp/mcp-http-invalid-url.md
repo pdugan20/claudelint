@@ -1,6 +1,6 @@
 # mcp-http-invalid-url
 
-<RuleHeader description="MCP HTTP transport URL must be valid" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP HTTP transport URL must be valid" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

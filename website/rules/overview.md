@@ -12,6 +12,7 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
   severity="error"
   category="CLAUDE.md"
   link="/rules/claude-md/claude-md-size-error"
+  :configurable="true"
 />
 
 <RuleCard

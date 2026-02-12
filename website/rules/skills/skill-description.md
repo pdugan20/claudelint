@@ -1,6 +1,6 @@
 # skill-description
 
-<RuleHeader description="Skill description must be at least 10 characters, written in third person, with no XML tags" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="Skill description must be at least 10 characters, written in third person, with no XML tags" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

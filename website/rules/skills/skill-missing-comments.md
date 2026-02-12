@@ -1,6 +1,6 @@
 # skill-missing-comments
 
-<RuleHeader description="Shell script lacks explanatory comments" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Shell script lacks explanatory comments" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

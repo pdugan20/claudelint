@@ -1,6 +1,6 @@
 # agent-missing-system-prompt
 
-<RuleHeader description="Agent should include a &quot;System Prompt&quot; section" severity="warn" :fixable="false" category="Agents" />
+<RuleHeader description="Agent should include a &quot;System Prompt&quot; section" severity="warn" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 

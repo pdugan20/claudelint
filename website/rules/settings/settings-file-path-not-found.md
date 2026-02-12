@@ -1,6 +1,6 @@
 # settings-file-path-not-found
 
-<RuleHeader description="Referenced file path does not exist" severity="warn" :fixable="false" category="Settings" />
+<RuleHeader description="Referenced file path does not exist" severity="warn" :fixable="false" :configurable="false" category="Settings" />
 
 ## Rule Details
 

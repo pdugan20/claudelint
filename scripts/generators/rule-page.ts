@@ -68,7 +68,7 @@ export function generateRulePage(meta: RuleMetadata): string {
   // Header component with description and badges
   const escapedDesc = meta.description.replace(/"/g, '&quot;');
   parts.push(
-    `<RuleHeader description="${escapedDesc}" severity="${meta.severity}" :fixable="${meta.fixable}" category="${categoryDisplay}" />`,
+    `<RuleHeader description="${escapedDesc}" severity="${meta.severity}" :fixable="${meta.fixable}" :configurable="${!!meta.schema}" category="${categoryDisplay}" />`,
   );
   parts.push('');
 

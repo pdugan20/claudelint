@@ -1,6 +1,6 @@
 # plugin-invalid-manifest
 
-<RuleHeader description="marketplace.json must be valid and reference existing files" severity="error" :fixable="false" category="Plugin" />
+<RuleHeader description="marketplace.json must be valid and reference existing files" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

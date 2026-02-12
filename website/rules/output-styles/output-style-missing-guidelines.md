@@ -1,6 +1,6 @@
 # output-style-missing-guidelines
 
-<RuleHeader description="Output style should include a &quot;Guidelines&quot; or &quot;Format&quot; section" severity="warn" :fixable="false" category="Output Styles" />
+<RuleHeader description="Output style should include a &quot;Guidelines&quot; or &quot;Format&quot; section" severity="warn" :fixable="false" :configurable="false" category="Output Styles" />
 
 ## Rule Details
 

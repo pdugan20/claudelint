@@ -1,6 +1,6 @@
 # claude-md-size-warning
 
-<RuleHeader description="CLAUDE.md file is approaching size limit" severity="warn" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="CLAUDE.md file is approaching size limit" severity="warn" :fixable="false" :configurable="true" category="CLAUDE.md" />
 
 ## Rule Details
 

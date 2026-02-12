@@ -1,6 +1,6 @@
 # hooks-missing-script
 
-<RuleHeader description="Hook scripts must reference existing files" severity="error" :fixable="false" category="Hooks" />
+<RuleHeader description="Hook scripts must reference existing files" severity="error" :fixable="false" :configurable="false" category="Hooks" />
 
 ## Rule Details
 

@@ -1,13 +1,187 @@
+/* claudelint VitePress Theme — Warm Anthropic-Inspired Palette
+ *
+ * Design principle: Match Claude Code docs — warm neutral palette with
+ * near-black text for ALL interactive elements (links, nav, sidebar).
+ * Terracotta accent used ONLY for hero name and CTA buttons.
+ *
+ * --vp-c-brand-1 is set to text color (NOT terracotta) because VitePress
+ * uses it for nav active, sidebar active, content links, edit link,
+ * prev/next pager, outline indicator, etc. — all of which should be dark.
+ */
+
 :root {
-  --vp-c-brand-1: #2563eb;
-  --vp-c-brand-2: #3b82f6;
-  --vp-c-brand-3: #1d4ed8;
-  --vp-c-brand-soft: rgba(37, 99, 235, 0.14);
+  --cl-font-heading: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman',
+    serif;
+
+  /* Brand = dark text (VitePress uses this for links, nav, sidebar, etc.) */
+  --vp-c-brand-1: #1a1a19;
+  --vp-c-brand-2: #2c2a22;
+  --vp-c-brand-3: #3d3929;
+  --vp-c-brand-soft: rgba(26, 26, 25, 0.06);
+
+  /* Backgrounds: warm off-white */
+  --vp-c-bg: #faf9f5;
+  --vp-c-bg-alt: #f5f3ee;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0ede6;
+
+  /* Text: warm near-blacks and grays */
+  --vp-c-text-1: #1a1a19;
+  --vp-c-text-2: #5c5a52;
+  --vp-c-text-3: #8a887f;
+
+  /* Borders: warm grays */
+  --vp-c-divider: #e8e6dc;
+  --vp-c-border: #d4d2c8;
+  --vp-c-gutter: #e8e6dc;
+
+  /* Hero name: terracotta (the ONE place accent color appears prominently) */
+  --vp-home-hero-name-color: #d97757;
+
+  /* CTA buttons: terracotta (separate from brand-1) */
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: #d97757;
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-hover-bg: #c4683f;
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #ffffff;
+  --vp-button-brand-active-bg: #b05c38;
+
+  /* Custom blocks: use text color, not terracotta */
+  --vp-c-tip-1: #5c5a52;
+  --vp-c-tip-2: #3d3929;
+  --vp-c-tip-3: #8a887f;
+  --vp-c-tip-soft: rgba(92, 90, 82, 0.08);
 }
 
 .dark {
-  --vp-c-brand-1: #3b82f6;
-  --vp-c-brand-2: #60a5fa;
-  --vp-c-brand-3: #2563eb;
-  --vp-c-brand-soft: rgba(59, 130, 246, 0.16);
+  /* Brand = light text (mirrors light-mode strategy: brand-1 is the text color,
+     not an accent. Official Claude Code docs dark mode uses white/cream for
+     links, sidebar, nav — no orange accent on interactive elements.) */
+  --vp-c-brand-1: #e8e6dc;
+  --vp-c-brand-2: #d4d2c8;
+  --vp-c-brand-3: #f0eee6;
+  --vp-c-brand-soft: rgba(232, 230, 220, 0.08);
+
+  --vp-c-bg: #1a1a19;
+  --vp-c-bg-alt: #141413;
+  --vp-c-bg-elv: #242420;
+  --vp-c-bg-soft: #242420;
+
+  --vp-c-text-1: #e8e6dc;
+  --vp-c-text-2: #a8a69d;
+  --vp-c-text-3: #6e6c64;
+
+  --vp-c-divider: #2e2e2a;
+  --vp-c-border: #3c3c36;
+  --vp-c-gutter: #000000;
+
+  --vp-home-hero-name-color: #e08b6e;
+
+  --vp-button-brand-bg: #d97757;
+  --vp-button-brand-hover-bg: #e08b6e;
+  --vp-button-brand-active-bg: #c4683f;
+
+  --vp-c-tip-1: #a8a69d;
+  --vp-c-tip-2: #8a887f;
+  --vp-c-tip-3: #6e6c64;
+  --vp-c-tip-soft: rgba(168, 166, 157, 0.08);
+}
+
+/* ===== Typography: Serif Headings ===== */
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4 {
+  font-family: var(--cl-font-heading);
+}
+
+.vp-doc h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.vp-doc h2 {
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.VPHero .name {
+  font-family: var(--cl-font-heading);
+}
+
+.VPHero .name .clip {
+  background: linear-gradient(135deg, #d97757 0%, #c4683f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .VPHero .name .clip {
+  background: linear-gradient(135deg, #e08b6e 0%, #d97757 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== Dark Mode: Terracotta for nav indicators only ===== */
+/* Official Claude docs use orange only for sidebar active + nav active underline,
+   NOT for content links. brand-1 stays cream; these overrides add the accent. */
+
+.dark .VPSidebarItem.is-active > .item .text {
+  color: #d4a574 !important;
+}
+
+.dark .VPSidebarItem.is-active > .item .indicator {
+  background: #d4a574;
+}
+
+.dark .VPNavBarMenuLink.active {
+  border-bottom-color: #d4a574;
+}
+
+.dark .VPDocAsideOutline .outline-link.active {
+  color: #d4a574 !important;
+  transition: color 0.25s;
+}
+
+.dark .VPDocAsideOutline .outline-marker {
+  background-color: #d4a574 !important;
+}
+
+/* ===== Code Blocks: Hide language label ===== */
+
+.vp-doc [class*='language-'] > span.lang {
+  display: none;
+}
+
+/* ===== Content Links: Underline treatment ===== */
+
+/* ===== Rules Sidebar: Lighter category headers ===== */
+
+.rules-page .VPSidebarItem.level-0 > .item > .text {
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
+
+.rules-page .VPSidebarItem.level-0:not(.collapsed) > .item > .text {
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc a {
+  text-decoration: underline;
+  text-decoration-color: var(--vp-c-divider);
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition: text-decoration-color 0.2s;
+}
+
+.vp-doc a:hover {
+  text-decoration-color: var(--vp-c-text-1);
 }

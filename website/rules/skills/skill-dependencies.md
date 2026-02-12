@@ -1,6 +1,6 @@
 # skill-dependencies
 
-<RuleHeader description="Skill dependencies must be an array of strings" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="Skill dependencies must be an array of strings" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

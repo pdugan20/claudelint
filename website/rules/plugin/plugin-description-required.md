@@ -1,6 +1,6 @@
 # plugin-description-required
 
-<RuleHeader description="Plugin description is required and cannot be empty" severity="error" :fixable="false" category="Plugin" />
+<RuleHeader description="Plugin description is required and cannot be empty" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

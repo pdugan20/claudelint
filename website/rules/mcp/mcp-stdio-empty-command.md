@@ -1,6 +1,6 @@
 # mcp-stdio-empty-command
 
-<RuleHeader description="MCP stdio transport command cannot be empty" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP stdio transport command cannot be empty" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

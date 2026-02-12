@@ -1,6 +1,6 @@
 # mcp-websocket-invalid-url
 
-<RuleHeader description="MCP WebSocket transport URL must be valid" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP WebSocket transport URL must be valid" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

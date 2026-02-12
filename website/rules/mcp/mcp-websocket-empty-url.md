@@ -1,6 +1,6 @@
 # mcp-websocket-empty-url
 
-<RuleHeader description="MCP WebSocket transport URL cannot be empty" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP WebSocket transport URL cannot be empty" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

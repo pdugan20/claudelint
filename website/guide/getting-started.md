@@ -12,9 +12,11 @@ claudelint is a comprehensive linter for Claude Code projects. It validates CLAU
 
 Or install globally:
 
-```bash
-npm install -g claude-code-lint
-```
+<CodeTabs :tabs="[
+  { label: 'npm', code: 'npm install -g claude-code-lint' },
+  { label: 'yarn', code: 'yarn global add claude-code-lint' },
+  { label: 'pnpm', code: 'pnpm add -g claude-code-lint' },
+]" />
 
 ## Quick Start
 

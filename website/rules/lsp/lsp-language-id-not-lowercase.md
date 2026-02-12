@@ -1,6 +1,6 @@
 # lsp-language-id-not-lowercase
 
-<RuleHeader description="LSP language IDs should be lowercase" severity="warn" :fixable="false" category="LSP" />
+<RuleHeader description="LSP language IDs should be lowercase" severity="warn" :fixable="false" :configurable="false" category="LSP" />
 
 ## Rule Details
 

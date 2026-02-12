@@ -1,6 +1,6 @@
 # skill-readme-forbidden
 
-<RuleHeader description="Skills must use SKILL.md, not README.md" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="Skills must use SKILL.md, not README.md" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

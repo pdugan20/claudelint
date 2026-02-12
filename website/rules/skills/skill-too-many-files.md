@@ -1,6 +1,6 @@
 # skill-too-many-files
 
-<RuleHeader description="Skill directory has too many files at root level" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill directory has too many files at root level" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

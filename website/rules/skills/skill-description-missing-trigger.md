@@ -1,6 +1,6 @@
 # skill-description-missing-trigger
 
-<RuleHeader description="Skill description should include trigger phrases so the model knows when to load the skill" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill description should include trigger phrases so the model knows when to load the skill" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

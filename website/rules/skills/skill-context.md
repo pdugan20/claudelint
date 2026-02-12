@@ -1,6 +1,6 @@
 # skill-context
 
-<RuleHeader description="Skill context must be one of: fork, inline, auto" severity="error" :fixable="false" category="Skills" />
+<RuleHeader description="Skill context must be one of: fork, inline, auto" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

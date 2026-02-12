@@ -1,6 +1,6 @@
 # claude-md-rules-circular-symlink
 
-<RuleHeader description="Circular symlink detected in import path" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Circular symlink detected in import path" severity="error" :fixable="false" :configurable="true" category="CLAUDE.md" />
 
 ## Rule Details
 

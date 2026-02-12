@@ -6,9 +6,11 @@ This guide covers how to install and use claudelint as a Claude Code plugin.
 
 The plugin's skills run claudelint CLI commands under the hood. You must install the npm package first:
 
-```bash
-npm install --save-dev claude-code-lint
-```
+<CodeTabs :tabs="[
+  { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
+  { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
+  { label: 'pnpm', code: 'pnpm add -D claude-code-lint' },
+]" />
 
 See [Getting Started](/guide/getting-started) for full installation options.
 

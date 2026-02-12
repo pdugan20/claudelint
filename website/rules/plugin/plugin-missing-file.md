@@ -1,6 +1,6 @@
 # plugin-missing-file
 
-<RuleHeader description="Files referenced in plugin.json must exist" severity="error" :fixable="false" category="Plugin" />
+<RuleHeader description="Files referenced in plugin.json must exist" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

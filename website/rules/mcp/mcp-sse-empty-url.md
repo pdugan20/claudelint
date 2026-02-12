@@ -1,6 +1,6 @@
 # mcp-sse-empty-url
 
-<RuleHeader description="MCP SSE transport URL cannot be empty" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP SSE transport URL cannot be empty" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

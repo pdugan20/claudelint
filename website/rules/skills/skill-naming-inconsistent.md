@@ -1,6 +1,6 @@
 # skill-naming-inconsistent
 
-<RuleHeader description="Skill has inconsistent file naming conventions" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill has inconsistent file naming conventions" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

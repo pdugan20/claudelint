@@ -1,6 +1,6 @@
 # agent-tools
 
-<RuleHeader description="Agent tools must be an array of tool names, cannot be used with disallowed-tools" severity="error" :fixable="false" category="Agents" />
+<RuleHeader description="Agent tools must be an array of tool names, cannot be used with disallowed-tools" severity="error" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 

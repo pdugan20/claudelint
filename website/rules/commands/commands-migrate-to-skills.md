@@ -1,6 +1,6 @@
 # commands-migrate-to-skills
 
-<RuleHeader description="Migration guidance for deprecated Commands" severity="warn" :fixable="false" category="Commands" />
+<RuleHeader description="Migration guidance for deprecated Commands" severity="warn" :fixable="false" :configurable="false" category="Commands" />
 
 ## Rule Details
 

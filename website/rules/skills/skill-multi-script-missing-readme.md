@@ -1,6 +1,6 @@
 # skill-multi-script-missing-readme
 
-<RuleHeader description="Skills with multiple scripts should include a README.md" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skills with multiple scripts should include a README.md" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

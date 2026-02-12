@@ -1,6 +1,6 @@
 # mcp-invalid-transport
 
-<RuleHeader description="MCP transport type must be one of the supported values" severity="error" :fixable="false" category="MCP" />
+<RuleHeader description="MCP transport type must be one of the supported values" severity="error" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

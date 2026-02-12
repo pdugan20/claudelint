@@ -1,6 +1,6 @@
 <template>
   <span :class="['rule-badge', `rule-badge-${severity}`]">
-    {{ severity }}
+    {{ severity === 'error' ? 'Error' : severity === 'info' ? 'Info' : 'Warning' }}
   </span>
 </template>
 
@@ -12,28 +12,49 @@ defineProps<{
 
 <style scoped>
 .rule-badge {
-  display: inline-block;
-  padding: 0.2em 0.6em;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 6px;
   font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-weight: 500;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
   flex-shrink: 0;
   white-space: nowrap;
 }
 
-.rule-badge-error {
-  background: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
+.rule-badge::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.rule-badge-warning {
-  background: rgba(217, 119, 6, 0.1);
-  color: #d97706;
+.rule-badge-error::before {
+  background: #dc2626;
 }
 
-.rule-badge-info {
-  background: rgba(37, 99, 235, 0.1);
-  color: #2563eb;
+.dark .rule-badge-error::before {
+  background: #f87171;
+}
+
+.rule-badge-warning::before {
+  background: #d97706;
+}
+
+.dark .rule-badge-warning::before {
+  background: #fbbf24;
+}
+
+.rule-badge-info::before {
+  background: #64748b;
+}
+
+.dark .rule-badge-info::before {
+  background: #94a3b8;
 }
 </style>

@@ -1,6 +1,6 @@
 # claude-md-import-read-failed
 
-<RuleHeader description="Failed to read imported file" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Failed to read imported file" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

@@ -1,6 +1,6 @@
 # skill-body-word-count
 
-<RuleHeader description="SKILL.md body exceeds recommended word count" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="SKILL.md body exceeds recommended word count" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

@@ -1,6 +1,6 @@
 # skill-missing-changelog
 
-<RuleHeader description="Skill directory lacks CHANGELOG.md" severity="warn" :fixable="true" category="Skills" />
+<RuleHeader description="Skill directory lacks CHANGELOG.md" severity="warn" :fixable="true" :configurable="false" category="Skills" />
 
 ## Rule Details
 

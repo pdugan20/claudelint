@@ -1,6 +1,6 @@
 # skill-overly-generic-name
 
-<RuleHeader description="Skill name should be specific and descriptive, not just generic keywords or single-word verbs" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill name should be specific and descriptive, not just generic keywords or single-word verbs" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 

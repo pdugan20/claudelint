@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress';
 import rulesSidebar from '../rules/_sidebar.json';
+import claudeLight from './theme/claude-light.json';
+import claudeDark from './theme/claude-dark.json';
 
 export default defineConfig({
   title: 'claudelint',
@@ -12,6 +14,15 @@ export default defineConfig({
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap',
+      },
+    ],
     ['meta', { property: 'og:type', content: 'website' }],
     [
       'meta',
@@ -165,8 +176,8 @@ export default defineConfig({
 
   markdown: {
     theme: {
-      light: 'github-light',
-      dark: 'github-dark',
+      light: claudeLight as any,
+      dark: claudeDark as any,
     },
   },
 

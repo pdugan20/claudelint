@@ -1,4 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
+import { useRoute } from 'vitepress';
+import { watch } from 'vue';
 import RuleBadge from './components/RuleBadge.vue';
 import RuleCard from './components/RuleCard.vue';
 import CodeTabs from './components/CodeTabs.vue';
@@ -20,5 +22,15 @@ export default {
     app.component('ConfigExample', ConfigExample);
     app.component('RuleCount', RuleCount);
     app.component('RuleHeader', RuleHeader);
+  },
+  setup() {
+    const route = useRoute();
+    const update = () => {
+      if (typeof document !== 'undefined') {
+        document.body.classList.toggle('rules-page', route.path.startsWith('/rules/'));
+      }
+    };
+    update();
+    watch(() => route.path, update);
   },
 };

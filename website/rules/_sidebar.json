@@ -10,7 +10,7 @@
     ]
   },
   {
-    "text": "CLAUDE.md (16)",
+    "text": "CLAUDE.md",
     "collapsed": true,
     "items": [
       {
@@ -80,7 +80,7 @@
     ]
   },
   {
-    "text": "Skills (46)",
+    "text": "Skills",
     "collapsed": true,
     "items": [
       {
@@ -270,7 +270,7 @@
     ]
   },
   {
-    "text": "Settings (5)",
+    "text": "Settings",
     "collapsed": true,
     "items": [
       {
@@ -296,7 +296,7 @@
     ]
   },
   {
-    "text": "Hooks (3)",
+    "text": "Hooks",
     "collapsed": true,
     "items": [
       {
@@ -314,7 +314,7 @@
     ]
   },
   {
-    "text": "MCP (11)",
+    "text": "MCP",
     "collapsed": true,
     "items": [
       {
@@ -364,12 +364,12 @@
     ]
   },
   {
-    "text": "Plugin (12)",
+    "text": "Plugin",
     "collapsed": true,
     "items": [
       {
-        "text": "commands-in-plugin-deprecated",
-        "link": "/rules/plugin/commands-in-plugin-deprecated"
+        "text": "plugin-commands-deprecated",
+        "link": "/rules/plugin/plugin-commands-deprecated"
       },
       {
         "text": "plugin-components-wrong-location",
@@ -418,7 +418,7 @@
     ]
   },
   {
-    "text": "Agents (12)",
+    "text": "Agents",
     "collapsed": true,
     "items": [
       {
@@ -472,7 +472,7 @@
     ]
   },
   {
-    "text": "LSP (6)",
+    "text": "LSP",
     "collapsed": true,
     "items": [
       {
@@ -502,7 +502,7 @@
     ]
   },
   {
-    "text": "Output Styles (3)",
+    "text": "Output Styles",
     "collapsed": true,
     "items": [
       {
@@ -520,7 +520,7 @@
     ]
   },
   {
-    "text": "Commands (2)",
+    "text": "Commands",
     "collapsed": true,
     "items": [
       {

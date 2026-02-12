@@ -1,6 +1,6 @@
 # plugin-name-required
 
-<RuleHeader description="Plugin name is required and cannot be empty" severity="error" :fixable="false" category="Plugin" />
+<RuleHeader description="Plugin name is required and cannot be empty" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

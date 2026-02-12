@@ -1,6 +1,6 @@
 # mcp-sse-transport-deprecated
 
-<RuleHeader description="SSE transport is deprecated, use HTTP or WebSocket instead" severity="warn" :fixable="false" category="MCP" />
+<RuleHeader description="SSE transport is deprecated, use HTTP or WebSocket instead" severity="warn" :fixable="false" :configurable="false" category="MCP" />
 
 ## Rule Details
 

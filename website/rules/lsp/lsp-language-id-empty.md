@@ -1,6 +1,6 @@
 # lsp-language-id-empty
 
-<RuleHeader description="LSP language IDs cannot be empty" severity="error" :fixable="false" category="LSP" />
+<RuleHeader description="LSP language IDs cannot be empty" severity="error" :fixable="false" :configurable="false" category="LSP" />
 
 ## Rule Details
 

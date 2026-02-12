@@ -1,6 +1,6 @@
 # output-style-name-directory-mismatch
 
-<RuleHeader description="Output style name must match parent directory name" severity="error" :fixable="false" category="Output Styles" />
+<RuleHeader description="Output style name must match parent directory name" severity="error" :fixable="false" :configurable="false" category="Output Styles" />
 
 ## Rule Details
 

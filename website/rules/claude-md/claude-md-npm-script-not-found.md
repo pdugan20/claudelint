@@ -1,6 +1,6 @@
 # claude-md-npm-script-not-found
 
-<RuleHeader description="npm run script referenced in CLAUDE.md does not exist in package.json" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="npm run script referenced in CLAUDE.md does not exist in package.json" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

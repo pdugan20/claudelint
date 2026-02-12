@@ -1,6 +1,6 @@
 # skill-reference-not-linked
 
-<RuleHeader description="File reference in backticks should be a markdown link" severity="warn" :fixable="true" category="Skills" />
+<RuleHeader description="File reference in backticks should be a markdown link" severity="warn" :fixable="true" :configurable="false" category="Skills" />
 
 ## Rule Details
 

@@ -1,6 +1,6 @@
 # skill-description-max-length
 
-<RuleHeader description="Skill description exceeds maximum character length" severity="warn" :fixable="false" category="Skills" />
+<RuleHeader description="Skill description exceeds maximum character length" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 

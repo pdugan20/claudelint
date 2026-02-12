@@ -1,6 +1,6 @@
 # claude-md-paths
 
-<RuleHeader description="Claude MD paths must be a non-empty array with at least one path pattern" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Claude MD paths must be a non-empty array with at least one path pattern" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

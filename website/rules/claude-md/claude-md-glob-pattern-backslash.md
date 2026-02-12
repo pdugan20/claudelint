@@ -1,6 +1,6 @@
 # claude-md-glob-pattern-backslash
 
-<RuleHeader description="Path pattern uses backslashes instead of forward slashes" severity="warn" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="Path pattern uses backslashes instead of forward slashes" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />
 
 ## Rule Details
 

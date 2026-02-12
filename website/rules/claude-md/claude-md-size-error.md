@@ -1,6 +1,6 @@
 # claude-md-size-error
 
-<RuleHeader description="CLAUDE.md exceeds maximum file size limit" severity="error" :fixable="false" category="CLAUDE.md" />
+<RuleHeader description="CLAUDE.md exceeds maximum file size limit" severity="error" :fixable="false" :configurable="true" category="CLAUDE.md" />
 
 ## Rule Details
 
