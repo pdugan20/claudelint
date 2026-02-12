@@ -656,27 +656,54 @@ Include:
 - Alternative solutions considered
 - Impact on existing functionality
 
-## Documentation
+## Documentation Website
 
-- Update README.md for user-facing changes
-- Update docs/ for detailed documentation
-- Add JSDoc comments for API changes
-- Include code examples where helpful
+The documentation site is built with [VitePress](https://vitepress.dev/) and lives in the `website/` directory. Rule documentation pages are auto-generated from source code metadata.
+
+### Running Locally
+
+```bash
+# Start the dev server (generates rule docs + launches at localhost:5173)
+npm run docs:dev
+
+# Generate rule pages only (no dev server)
+npm run docs:generate
+
+# Production build
+npm run docs:build
+
+# Preview the production build
+npm run docs:preview
+```
+
+### How It Works
+
+- Rule docs are auto-generated from `meta.docs` in each rule's TypeScript source
+- Running `npm run docs:generate` reads all rules and produces markdown pages in `website/rules/`
+- A sidebar JSON file (`website/rules/_sidebar.json`) is generated for navigation
+- Custom Vue components live in `website/.vitepress/theme/components/`
+- See the [Development Overview](/development/overview) for the full metadata schema
+
+### Making Documentation Changes
+
+- **Rule docs**: Edit the `meta.docs` property in the rule's source file, then run `npm run docs:generate`
+- **Guide/API pages**: Edit markdown files directly in `website/`
+- **Components**: Edit Vue files in `website/.vitepress/theme/components/`
+- **Navigation**: Edit sidebar config in `website/.vitepress/config.mts`
 
 ### Key Documentation
 
 **For contributing code:**
 
-- **[Rule Development Guide](docs/rule-development.md)** - How to write validation rules (START HERE)
-- **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
+- **[Architecture](/development/architecture)** - System architecture and design decisions
+- **[Custom Rules](/development/custom-rules)** - How to write validation rules
 
 **For users:**
 
-- **[Getting Started](docs/getting-started.md)** - Installation and first steps
-- **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
-- **[Rule Reference](docs/rules/)** - Individual documentation for all rules
-- **[Configuration Guide](docs/configuration.md)** - Configuring claudelint
-- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
+- **[Getting Started](/guide/getting-started)** - Installation and first steps
+- **[Configuration](/guide/configuration)** - Configuring claudelint
+- **[Rules Reference](/rules/overview)** - All 120 validation rules
+- **[Troubleshooting](/guide/troubleshooting)** - Common issues and solutions
 
 ## Release Process
 
