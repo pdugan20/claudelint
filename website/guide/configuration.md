@@ -178,7 +178,7 @@ Configure output formatting:
 
 Options:
 
-- `format` - Output format: `"stylish"`, `"json"`, or `"compact"`
+- `format` - Output format: `"stylish"`, `"json"`, `"compact"`, or `"sarif"`
 - `verbose` - Enable verbose output
 - `color` - Enable/disable color output (auto-detected by default)
 
@@ -216,35 +216,7 @@ See [Inline Disable Directives](inline-disables.md) for complete documentation o
 
 ### Inline Disable Comments
 
-Disable specific rules inline using HTML comments:
-
-```markdown
-<!-- Disable for entire file -->
-<!-- claudelint-disable-file import-missing -->
-
-<!-- Disable for next line -->
-<!-- claudelint-disable-next-line import-missing -->
-
-@import non-existent-file.md
-
-<!-- Disable all rules for a block -->
-<!-- claudelint-disable -->
-
-Content here is not validated
-
-<!-- claudelint-enable -->
-```
-
-**Supported directives:**
-
-- `claudelint-disable-file [rule-id]` - Disable entire file
-- `claudelint-disable-next-line [rule-id]` - Disable next line
-- `claudelint-disable-line [rule-id]` - Disable current line
-- `claudelint-disable [rule-id]` / `claudelint-enable [rule-id]` - Disable range
-
-**Rule ID is optional** - omit to disable all rules.
-
-See [Inline Disable Directives](inline-disables.md) for syntax, examples, and best practices.
+You can disable specific rules for individual files, lines, or blocks using HTML comments. See [Inline Disable Directives](inline-disables.md) for full syntax, examples, and best practices.
 
 ### Max Warnings
 
@@ -321,88 +293,9 @@ Default ignores (always applied):
 
 ## CLI Options
 
-Configuration can be overridden with CLI options:
+Configuration file settings can be overridden with CLI flags like `--config`, `--format`, `--strict`, and `--max-warnings`. See the [CLI Reference](./cli-reference.md) for complete documentation of all commands and options.
 
-```bash
-# Specify config file
-claudelint check-all --config .claudelintrc.custom.json
-
-# Override output options
-claudelint check-all --verbose --format json
-
-# Color control
-claudelint check-all --color
-claudelint check-all --no-color
-
-# Explain violations
-claudelint check-all --explain
-
-# Treat warnings as errors
-claudelint check-all --warnings-as-errors
-
-# Strict mode (fail on any issue)
-claudelint check-all --strict
-
-# Max warnings threshold
-claudelint check-all --max-warnings 10
-
-# Debug configuration loading
-claudelint check-all --debug-config
-```
-
-## Debugging Commands
-
-claudelint provides several commands to help debug configuration issues:
-
-### print-config
-
-Print the resolved configuration:
-
-```bash
-# Print as JSON
-claudelint print-config
-
-# Print as human-readable table
-claudelint print-config --format table
-
-# Print specific config file
-claudelint print-config --config /path/to/.claudelintrc.json
-```
-
-### validate-config
-
-Validate configuration file for errors:
-
-```bash
-# Validate config in current directory
-claudelint validate-config
-
-# Validate specific config file
-claudelint validate-config --config /path/to/.claudelintrc.json
-```
-
-Checks for:
-
-- Unknown rule IDs
-- Invalid rule severities
-- Invalid output formats
-- JSON syntax errors
-
-### resolve-config
-
-Show effective configuration for a specific file:
-
-```bash
-# Show config for a file
-claudelint resolve-config CLAUDE.md
-
-# Show as table
-claudelint resolve-config .claude/skills/test/SKILL.md --format table
-```
-
-Useful for debugging file-specific overrides.
-
-See [Troubleshooting Guide](./troubleshooting.md) for complete troubleshooting information.
+To debug configuration issues, use `print-config`, `validate-config`, and `resolve-config`. See [CLI Reference - Config Management](./cli-reference.md#config-management) for details.
 
 ## Example Configuration
 
