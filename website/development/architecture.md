@@ -667,7 +667,7 @@ program
   .action(checkAll);
 
 program
-  .command('check-claude-md')
+  .command('validate-claude-md')
   .description('Validate CLAUDE.md files')
   .option('--path <path>', 'Custom path to CLAUDE.md')
   .action(checkClaudeMd);
@@ -705,7 +705,7 @@ Hooks trigger validation automatically:
       "hooks": [
         {
           "type": "command",
-          "command": "npx claude-code-lint check-claude-md"
+          "command": "npx claude-code-lint validate-claude-md"
         }
       ]
     }

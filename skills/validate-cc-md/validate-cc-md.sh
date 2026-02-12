@@ -15,5 +15,5 @@ if ! npx --no-install claude-code-lint --version &> /dev/null; then
     exit 1
 fi
 
-# Run claudelint check-claude-md
-npx claude-code-lint check-claude-md "$@"
+# Run claudelint validate-claude-md
+npx claude-code-lint validate-claude-md "$@"

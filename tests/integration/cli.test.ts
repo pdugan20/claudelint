@@ -217,10 +217,10 @@ describe('CLI Integration Tests', () => {
   });
 
   describe('specific validator commands', () => {
-    it('should run check-claude-md command', async () => {
+    it('should run validate-claude-md command', async () => {
       await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} check-claude-md`, {
+      const result = execSync(`${claudelintBin} validate-claude-md`, {
         cwd: testProjectDir,
         encoding: 'utf-8',
       });
@@ -385,7 +385,7 @@ describe('CLI Integration Tests', () => {
 
   describe('error handling', () => {
     it('should show helpful error for missing files', () => {
-      const result = spawnSync(claudelintBin, ['check-claude-md', '--path', 'non-existent.md'], {
+      const result = spawnSync(claudelintBin, ['validate-claude-md', '--path', 'non-existent.md'], {
         cwd: testProjectDir,
         encoding: 'utf-8',
       });

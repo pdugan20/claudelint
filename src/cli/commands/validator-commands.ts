@@ -1,7 +1,7 @@
 /**
  * Factory for validator commands
  *
- * Creates standardized validator commands (check-claude-md, validate-skills, etc.)
+ * Creates standardized validator commands (validate-claude-md, validate-skills, etc.)
  * Eliminates code duplication through factory pattern
  */
 
@@ -17,7 +17,7 @@ import { logger } from '../utils/logger';
 export interface ValidatorCommandMetadata {
   /** Validator ID (e.g., 'claude-md', 'skills') */
   id: string;
-  /** Command name (e.g., 'check-claude-md', 'validate-skills') */
+  /** Command name (e.g., 'validate-claude-md', 'validate-skills') */
   command: string;
   /** Command description */
   description: string;
@@ -25,6 +25,8 @@ export interface ValidatorCommandMetadata {
   displayName: string;
   /** Additional command-specific options */
   options?: Array<{ flags: string; description: string }>;
+  /** Hidden alias for backwards compatibility */
+  alias?: string;
 }
 
 /**
@@ -53,6 +55,11 @@ export function createValidatorCommand(
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--no-config', 'Disable configuration file loading');
+
+  // Add hidden alias for backwards compatibility
+  if (metadata.alias) {
+    cmd.alias(metadata.alias);
+  }
 
   // Add command-specific options
   if (metadata.options) {
@@ -116,7 +123,7 @@ export function createValidatorCommand(
  * Register all standard validator commands
  *
  * Creates 10 validator commands:
- * - check-claude-md
+ * - validate-claude-md
  * - validate-skills
  * - validate-settings
  * - validate-hooks
@@ -130,10 +137,11 @@ export function createValidatorCommand(
  * @param program - Commander program instance
  */
 export function registerValidatorCommands(program: Command): void {
-  // check-claude-md
+  // validate-claude-md
   createValidatorCommand(program, {
     id: 'claude-md',
-    command: 'check-claude-md',
+    command: 'validate-claude-md',
+    alias: 'check-claude-md',
     description: 'Validate CLAUDE.md files',
     displayName: 'CLAUDE.md',
     options: [

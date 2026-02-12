@@ -1,6 +1,6 @@
 # CLAUDE.md Quality Criteria
 
-Manual review checklist for evaluating CLAUDE.md quality. Use after running `claudelint check-claude-md` to catch issues that automated validation cannot detect.
+Manual review checklist for evaluating CLAUDE.md quality. Use after running `claudelint validate-claude-md` to catch issues that automated validation cannot detect.
 
 ## How to Use
 
@@ -93,4 +93,4 @@ The following are already handled by claudelint programmatic validation:
 - Section count (`claude-md-content-too-many-sections`)
 - Glob patterns (`claude-md-glob-pattern-too-broad`, `claude-md-glob-pattern-backslash`)
 
-Run `claudelint check-claude-md` for these automated checks.
+Run `claudelint validate-claude-md` for these automated checks.

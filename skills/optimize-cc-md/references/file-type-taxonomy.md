@@ -11,7 +11,7 @@ Complete reference for all configuration files in the Claude Code ecosystem. Use
 | **Location** | Project root, `.claude/CLAUDE.md`, `~/.claude/CLAUDE.md` |
 | **Format** | Markdown with optional `@import` directives |
 | **Purpose** | Project instructions and conventions for Claude |
-| **Validated by** | `claudelint check-claude-md` |
+| **Validated by** | `claudelint validate-claude-md` |
 
 **Precedence** (highest to lowest):
 
@@ -137,7 +137,7 @@ Complete reference for all configuration files in the Claude Code ecosystem. Use
 | **Location** | `.claude/rules/` |
 | **Format** | Markdown with optional glob frontmatter |
 | **Purpose** | Project-specific rules imported via `@import` in CLAUDE.md |
-| **Validated by** | Part of `claudelint check-claude-md` |
+| **Validated by** | Part of `claudelint validate-claude-md` |
 
 **Frontmatter example:**
 

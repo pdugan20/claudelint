@@ -19,7 +19,7 @@ Complete reference for all claudelint commands, options, and usage patterns.
 - [Cache Management](#cache-management)
   - [cache-clear](#cache-clear) - Clear validation cache
 - [Individual Validators](#individual-validators)
-  - [check-claude-md](#check-claude-md) - Validate CLAUDE.md
+  - [validate-claude-md](#validate-claude-md) - Validate CLAUDE.md
   - [validate-skills](#validate-skills) - Validate skills
   - [validate-settings](#validate-settings) - Validate settings
   - [validate-hooks](#validate-hooks) - Validate hooks
@@ -522,14 +522,14 @@ claudelint cache-clear --cache-location /tmp/my-cache
 
 Run specific validators individually instead of all at once.
 
-### check-claude-md
+### validate-claude-md
 
 Validate CLAUDE.md files only.
 
 **Usage:**
 
 ```bash
-claudelint check-claude-md [options]
+claudelint validate-claude-md [options]
 ```
 
 **Options:**
@@ -547,13 +547,13 @@ claudelint check-claude-md [options]
 
 ```bash
 # Basic validation
-claudelint check-claude-md
+claudelint validate-claude-md
 
 # Verbose with explanations
-claudelint check-claude-md --verbose --explain
+claudelint validate-claude-md --verbose --explain
 
 # Custom path
-claudelint check-claude-md --path ./projects/app/CLAUDE.md
+claudelint validate-claude-md --path ./projects/app/CLAUDE.md
 ```
 
 ### validate-skills

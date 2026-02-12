@@ -585,7 +585,7 @@ An action performed by the claudelint CLI.
 **Common Commands:**
 
 - `check-all` - Run all validators
-- `check-claude-md` - Validate CLAUDE.md only
+- `validate-claude-md` - Validate CLAUDE.md only
 - `validate-skills` - Validate skills only
 - `list-rules` - Show all available rules
 - `init` - Create config file

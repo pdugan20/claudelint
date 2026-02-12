@@ -62,7 +62,7 @@ Instead of `check-all`, run individual validators as separate steps:
 
 ```yaml
 - name: Check CLAUDE.md files
-  run: claudelint check-claude-md
+  run: claudelint validate-claude-md
 
 - name: Validate skills
   run: claudelint validate-skills

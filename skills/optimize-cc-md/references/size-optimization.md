@@ -208,7 +208,7 @@ sed -n '50,150p' CLAUDE.md | wc -c
 ### Verify After Changes
 
 ```bash
-npx claude-code-lint check-claude-md --verbose
+npx claude-code-lint validate-claude-md --verbose
 # Shows current size and threshold status
 ```
 

@@ -135,7 +135,7 @@ The skill should suggest:
 
 ### Expected Workflow
 
-1. **Validation:** Run `claudelint check-claude-md`
+1. **Validation:** Run `claudelint validate-claude-md`
 2. **Analysis:** Read CLAUDE.md with Read tool
 3. **Explanation:** Explain issues in plain language
 4. **Prioritization:** Ask user what to fix first

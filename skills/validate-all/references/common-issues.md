@@ -15,7 +15,7 @@ npm install --save-dev claude-code-lint
 **Solution**: Run individual validators for detailed errors
 
 - `claudelint validate-skills` for skill issues
-- `claudelint check-claude-md` for CLAUDE.md issues
+- `claudelint validate-claude-md` for CLAUDE.md issues
 - `claudelint validate-mcp` for MCP config issues
 - `claudelint validate-settings` for settings issues
 - `claudelint validate-hooks` for hooks issues

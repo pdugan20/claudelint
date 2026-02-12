@@ -151,7 +151,7 @@ Only validate CLAUDE.md files:
         "hooks": [
           {
             "type": "command",
-            "command": "claudelint check-claude-md"
+            "command": "claudelint validate-claude-md"
           }
         ]
       }

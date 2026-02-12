@@ -27,13 +27,13 @@ This validator includes <RuleCount category="claude-md" /> rules. See the [CLAUD
 
 ```bash
 # Validate CLAUDE.md files only
-claudelint check-claude-md
+claudelint validate-claude-md
 
 # With verbose output
-claudelint check-claude-md --verbose
+claudelint validate-claude-md --verbose
 
 # With auto-fix
-claudelint check-claude-md --fix
+claudelint validate-claude-md --fix
 ```
 
 ## See Also

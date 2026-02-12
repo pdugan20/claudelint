@@ -39,7 +39,7 @@ Run automated validation and read the file to understand its current state.
 Use the Bash tool to run claudelint validation with verbose output:
 
 ```bash
-npx claude-code-lint check-claude-md --verbose
+npx claude-code-lint validate-claude-md --verbose
 ```
 
 This identifies all CLAUDE.md issues including:
@@ -178,7 +178,7 @@ Edit(
 Run validation again to confirm fixes:
 
 ```bash
-npx claude-code-lint check-claude-md --verbose
+npx claude-code-lint validate-claude-md --verbose
 ```
 
 Show before/after comparison:
@@ -206,7 +206,7 @@ Quick reference:
 **Phase A** - Run validation and read the file:
 
 ```bash
-npx claude-code-lint check-claude-md --verbose
+npx claude-code-lint validate-claude-md --verbose
 ```
 
 Output shows: "Warning: CLAUDE.md is 45KB (threshold: 30KB)". Read the file and note the largest sections: git workflow (12KB), testing standards (8KB), generic advice (~5KB scattered).

@@ -138,7 +138,7 @@ describe('Plugin Integration Tests', () => {
 
     it('should run validate commands', () => {
       const commands = [
-        'check-claude-md',
+        'validate-claude-md',
         'validate-skills',
         'validate-settings',
         'validate-hooks',

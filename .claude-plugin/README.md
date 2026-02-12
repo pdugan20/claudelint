@@ -122,7 +122,7 @@ The npm package also provides CLI commands you can run directly:
 claudelint check-all
 
 # Validate CLAUDE.md
-claudelint check-claude-md
+claudelint validate-claude-md
 
 # Validate skills
 claudelint validate-skills
@@ -150,7 +150,7 @@ See the [npm package README](https://github.com/pdugan20/claude-code-lint#readme
 1. User: "How do I check my CLAUDE.md?"
 2. Claude: "You can use claudelint..."
 3. User: "How do I run it?"
-4. Claude: "Try: claudelint check-claude-md"
+4. Claude: "Try: claudelint validate-claude-md"
 5. User: *runs command manually*
 
 **With this plugin:**

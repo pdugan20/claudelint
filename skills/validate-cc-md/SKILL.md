@@ -9,7 +9,7 @@ allowed-tools:
 
 # Validate CLAUDE.md Files
 
-Runs `claudelint check-claude-md` to validate CLAUDE.md files including:
+Runs `claudelint validate-claude-md` to validate CLAUDE.md files including:
 
 - File size limits (30KB warning, 50KB error)
 - @import directive validation
@@ -19,7 +19,7 @@ Runs `claudelint check-claude-md` to validate CLAUDE.md files including:
 ## Usage
 
 ```bash
-claudelint check-claude-md
+claudelint validate-claude-md
 ```
 
 ## Options
@@ -36,7 +36,7 @@ claudelint check-claude-md
 **User says**: "Claude keeps saying my instructions are too long and won't load them"
 **What happens**:
 
-1. Skill runs `claudelint check-claude-md`
+1. Skill runs `claudelint validate-claude-md`
 2. Shows CLAUDE.md is 52KB (exceeds 50KB hard limit)
 3. Identifies 3 largest sections: API docs (18KB), Git workflow (12KB), Testing guide (8KB)
 4. Shows how to split: create .claude/rules/api.md and add `@import .claude/rules/api.md`
@@ -72,19 +72,19 @@ claudelint check-claude-md
 Validate all CLAUDE.md files:
 
 ```bash
-claudelint check-claude-md
+claudelint validate-claude-md
 ```
 
 Validate specific file:
 
 ```bash
-claudelint check-claude-md --path /path/to/CLAUDE.md
+claudelint validate-claude-md --path /path/to/CLAUDE.md
 ```
 
 Verbose output with explanations:
 
 ```bash
-claudelint check-claude-md --verbose --explain
+claudelint validate-claude-md --verbose --explain
 ```
 
 ## What Gets Validated

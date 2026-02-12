@@ -262,7 +262,7 @@ See [Configuration - Ignoring Files](./configuration.md#ignoring-files) for deta
 Yes, use specific commands:
 
 ```bash
-claudelint check-claude-md
+claudelint validate-claude-md
 claudelint validate-skills
 claudelint validate-settings
 ```
