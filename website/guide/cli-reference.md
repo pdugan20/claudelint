@@ -27,6 +27,9 @@ Complete reference for all claudelint commands, options, and usage patterns.
   - [validate-plugin](#validate-plugin) - Validate plugins
 - [Formatting](#formatting)
   - [format](#format) - Format files
+- [Development](#development)
+  - [watch](#watch) - Watch for changes and re-validate
+  - [install-plugin](#install-plugin) - Plugin installation guide
 - [Exit Codes](#exit-codes)
 - [Examples](#examples)
 
@@ -49,7 +52,7 @@ claudelint check-all [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `-v, --verbose` | Show detailed output including file counts and timing | `false` |
-| `--format <format>` | Output format: `stylish`, `json`, or `compact` | `stylish` |
+| `--format <format>` | Output format: `stylish`, `json`, `compact`, or `sarif` | `stylish` |
 | `--config <path>` | Path to custom config file | Auto-detect |
 | `--strict` | Exit with error on any issues (errors, warnings, or info) | `false` |
 | `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
@@ -66,6 +69,10 @@ claudelint check-all [options]
 | `--debug-config` | Show configuration loading debug info | `false` |
 | `--show-docs-url` | Show documentation URLs for rules | `false` |
 | `--fast` | Fast mode: skip expensive checks | `false` |
+| `--no-deprecated-warnings` | Suppress warnings about deprecated rules | `false` |
+| `--error-on-deprecated` | Treat usage of deprecated rules as errors | `false` |
+| `--workspace <name>` | Validate specific workspace package by name | - |
+| `--workspaces` | Validate all workspace packages | `false` |
 
 **Examples:**
 
@@ -273,7 +280,7 @@ claudelint list-rules [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--category <category>` | Filter by category: `CLAUDE.md`, `Skills`, `Settings`, `Hooks`, `MCP`, `Plugin` | All |
-| `--format <format>` | Output format: `stylish` or `json` | `stylish` |
+| `--format <format>` | Output format: `table` or `json` | `table` |
 
 **Examples:**
 
@@ -540,12 +547,26 @@ claudelint check-claude-md [options]
 
 **Options:**
 
-Same as `check-all` but only runs CLAUDE.md validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to CLAUDE.md | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+| `--explain` | Show detailed explanations and fix suggestions | `false` |
 
-**Example:**
+**Examples:**
 
 ```bash
-claudelint check-claude-md --verbose
+# Basic validation
+claudelint check-claude-md
+
+# Verbose with explanations
+claudelint check-claude-md --verbose --explain
+
+# Custom path
+claudelint check-claude-md --path ./projects/app/CLAUDE.md
 ```
 
 ---
@@ -562,12 +583,26 @@ claudelint validate-skills [options]
 
 **Options:**
 
-Same as `check-all` but only runs skills validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to skills directory | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+| `--skill <name>` | Validate a specific skill by name | All skills |
 
-**Example:**
+**Examples:**
 
 ```bash
-claudelint validate-skills --fix
+# Validate all skills
+claudelint validate-skills
+
+# Validate a specific skill
+claudelint validate-skills --skill my-skill
+
+# Custom skills directory
+claudelint validate-skills --path ./custom/skills
 ```
 
 ---
@@ -584,12 +619,18 @@ claudelint validate-settings [options]
 
 **Options:**
 
-Same as `check-all` but only runs settings validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to settings.json | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
 
 **Example:**
 
 ```bash
-claudelint validate-settings
+claudelint validate-settings --verbose
 ```
 
 ---
@@ -606,12 +647,18 @@ claudelint validate-hooks [options]
 
 **Options:**
 
-Same as `check-all` but only runs hooks validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to hooks.json | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
 
 **Example:**
 
 ```bash
-claudelint validate-hooks
+claudelint validate-hooks --verbose
 ```
 
 ---
@@ -628,12 +675,18 @@ claudelint validate-mcp [options]
 
 **Options:**
 
-Same as `check-all` but only runs MCP validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to MCP config file | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
 
 **Example:**
 
 ```bash
-claudelint validate-mcp
+claudelint validate-mcp --verbose
 ```
 
 ---
@@ -650,12 +703,18 @@ claudelint validate-plugin [options]
 
 **Options:**
 
-Same as `check-all` but only runs plugin validator.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to plugin directory | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
 
 **Example:**
 
 ```bash
-claudelint validate-plugin
+claudelint validate-plugin --verbose
 ```
 
 ---
@@ -664,7 +723,11 @@ claudelint validate-plugin
 
 ### format
 
-Format Claude Code files using markdownlint, prettier, and shellcheck.
+Format Claude Code files using a three-tier formatting pipeline:
+
+1. **markdownlint** - CLAUDE.md and skill markdown files
+2. **prettier** - Markdown, JSON, and YAML files
+3. **shellcheck** - Shell scripts (optional, requires system install)
 
 **Usage:**
 
@@ -676,17 +739,107 @@ claudelint format [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--fix` | Apply formatting fixes | `false` |
+| `--check` | Check formatting without making changes | `false` |
+| `--fix` | Apply formatting fixes | `true` |
+| `-v, --verbose` | Show detailed output per file | `false` |
 
-**Example:**
+**Examples:**
 
 ```bash
-# Preview formatting issues
-claudelint format
+# Check formatting (no changes)
+claudelint format --check
 
-# Apply formatting
+# Apply formatting fixes
 claudelint format --fix
+
+# Verbose output to see per-file results
+claudelint format --verbose
 ```
+
+**File patterns checked:**
+
+- Markdown: `CLAUDE.md`, `.claude/**/*.md`
+- JSON: `.claude/**/*.json`, `.mcp.json`, `.claude-plugin/**/*.json`
+- YAML: `.claude/**/*.{yaml,yml}`
+- Shell: `.claude/**/*.sh`, `.claude/hooks/*`
+
+---
+
+## Development
+
+### watch
+
+Watch for file changes and automatically re-validate. Runs an initial full validation, then monitors the working directory and triggers only the relevant validators when files change.
+
+**Usage:**
+
+```bash
+claudelint watch [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+| `--debounce <ms>` | Debounce interval in milliseconds | `300` |
+
+**File triggers:**
+
+Changes to specific files trigger only the relevant validator:
+
+| File Pattern | Validator Triggered |
+|-------------|-------------------|
+| `CLAUDE.md` | CLAUDE.md validator |
+| `SKILL.md`, `*.sh` | Skills validator |
+| `settings.json` | Settings validator |
+| `hooks.json` | Hooks validator |
+| `.mcp.json` | MCP validator |
+| `plugin.json` | Plugin validator |
+
+Changes to other `.md`, `.json`, or `.sh` files trigger all validators. Files in `node_modules/` and `.claudelint-cache/` are ignored.
+
+**Examples:**
+
+```bash
+# Start watching with defaults
+claudelint watch
+
+# Custom debounce for slower file systems
+claudelint watch --debounce 500
+
+# Watch with specific config
+claudelint watch --config strict.json
+
+# Watch with warnings treated as errors
+claudelint watch --warnings-as-errors
+```
+
+Press `Ctrl+C` to stop watching.
+
+---
+
+### install-plugin
+
+Show instructions for installing claudelint as a Claude Code plugin. Auto-detects whether claudelint is installed locally in `node_modules` and shows the appropriate installation command.
+
+**Usage:**
+
+```bash
+claudelint install-plugin
+```
+
+**No options.** This is an informational command that prints installation instructions.
+
+**Output varies based on context:**
+
+- **Local install detected:** Shows `/plugin install --source ./node_modules/claude-code-lint`
+- **No local install:** Shows both GitHub install (`/plugin install github:pdugan20/claude-code-lint`) and npm-first workflow
+
+See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for detailed setup instructions.
 
 ---
 

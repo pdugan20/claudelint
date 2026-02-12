@@ -9,3 +9,4 @@ claudelint integrates with your existing development workflow through CI/CD pipe
 - [npm Scripts](/integrations/npm-scripts) - Add to your package.json workflow
 - [Claude Code Plugin](/integrations/claude-code-plugin) - Use as a Claude Code plugin
 - [Monorepos](/integrations/monorepos) - Config inheritance and workspace support
+- [SARIF](/integrations/sarif) - SARIF output for GitHub Code Scanning and VS Code

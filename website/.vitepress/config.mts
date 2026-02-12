@@ -99,6 +99,7 @@ export default defineConfig({
               link: '/integrations/claude-code-plugin',
             },
             { text: 'Monorepos', link: '/integrations/monorepos' },
+            { text: 'SARIF', link: '/integrations/sarif' },
           ],
         },
       ],
