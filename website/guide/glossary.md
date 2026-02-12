@@ -155,9 +155,7 @@ claudelint check-all --fix
 
 **Fixable Rules:**
 
-- `skill-missing-version` - Adds `version: "1.0.0"` to frontmatter
-- `skill-missing-shebang` - Adds `#!/usr/bin/env bash` to shell scripts
-- `skill-missing-changelog` - Creates CHANGELOG.md template
+Run `claudelint list-rules --fixable` to see all rules that support auto-fix.
 
 **See:** [Auto-fix Guide](./auto-fix.md)
 
@@ -266,23 +264,27 @@ dist/
 
 Configuration values that customize how a specific rule behaves.
 
-**Example:**
+**Simple form** (severity only):
 
 ```json
 {
   "rules": {
-    "skill-body-too-long": ["error", { "maxLength": 5000 }]
+    "skill-missing-version": "error"
   }
 }
 ```
 
-**Format:**
+**Full form** (severity + options):
 
 ```json
 {
   "rules": {
-    "rule-id": "severity", // Simple
-    "rule-id": ["severity", { "option": "value" }] // With options
+    "claude-md-size-error": {
+      "severity": "error",
+      "options": {
+        "maxSize": 50000
+      }
+    }
   }
 }
 ```
@@ -295,20 +297,23 @@ Configuration values that customize how a specific rule behaves.
 
 ### Validation Result
 
-The output from running validation on one or more files.
+The output from running validation.
 
-**Properties:**
+**Internal interface** (used by validators):
 
-```typescript
-interface ValidationResult {
-  filePath: string; // File that was validated
-  errorCount: number; // Number of errors
-  warningCount: number; // Number of warnings
-  fixableErrorCount: number; // Errors that can be auto-fixed
-  fixableWarningCount: number; // Warnings that can be auto-fixed
-  messages: ValidationMessage[]; // All violations
-}
-```
+- `valid` - Whether validation passed (no errors or warnings)
+- `errors` - List of validation errors found
+- `warnings` - List of validation warnings found
+- `deprecatedRulesUsed` - Deprecated rules encountered during validation
+
+**Public API interface** (`LintResult`, used by programmatic API):
+
+- `filePath` - Absolute path to the file that was linted
+- `messages` - Array of validation messages
+- `suppressedMessages` - Messages suppressed via inline comments
+- `errorCount` / `warningCount` - Counts by severity
+
+**See:** [API - Types](/api/types)
 
 ---
 
@@ -321,6 +326,7 @@ A component that transforms validation results into human-readable output.
 - **stylish** (default) - Colorful, grouped by file
 - **compact** - One violation per line
 - **json** - Machine-readable JSON
+- **sarif** - Static Analysis Results Interchange Format (for CI integrations)
 
 **Usage:**
 
@@ -647,7 +653,7 @@ A parameter passed to a CLI command to modify its behavior.
 
 - `--fix` - Auto-fix violations
 - `--fix-dry-run` - Preview fixes
-- `--format FORMAT` - Output format (stylish, json, compact)
+- `--format FORMAT` - Output format (stylish, json, compact, sarif)
 - `--verbose` - Show detailed output
 - `--strict` - Treat warnings as errors
 - `--max-warnings N` - Fail if more than N warnings
