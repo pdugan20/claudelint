@@ -500,7 +500,7 @@ export const rule: Rule = {
       deprecatedSince: '0.3.0',
       removeInVersion: '1.0.0',           // When it will be removed
       // OR: removeInVersion: null,       // Retained indefinitely
-      url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
+      url: 'https://claudelint.com/rules/category/new-rule-name',
     },
     since: '0.1.0',
   },
@@ -783,8 +783,8 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
       - run: npm ci

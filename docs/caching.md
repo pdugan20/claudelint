@@ -102,7 +102,7 @@ The cache directory is automatically ignored by Git:
 
 ```yaml
 - name: Cache claudelint
-  uses: actions/cache@v3
+  uses: actions/cache@v5
   with:
     path: .claudelint-cache
     key: ${{ runner.os }}-claudelint-${{ hashFiles('**/*.md', '.claude/**/*') }}

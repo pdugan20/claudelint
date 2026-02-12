@@ -364,7 +364,6 @@ agent-model
   Use: agent-default-model
   Deprecated since: 0.3.0
   Will be removed in: 1.0.0
-  Migration guide: https://github.com/pdugan20/claudelint/blob/main/docs/migrations/agent-model.md
 
 Migration steps:
   1. Update your config file to replace deprecated rules

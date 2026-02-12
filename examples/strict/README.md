@@ -95,8 +95,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
       - run: npm install -g claude-code-lint
       - run: claudelint check-all --strict
 ```

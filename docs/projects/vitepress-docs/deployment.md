@@ -617,13 +617,13 @@ export default {
 
 ```yaml
 - name: Setup Node
-  uses: actions/setup-node@v4
+  uses: actions/setup-node@v6
   with:
     node-version: 20
     cache: npm # Caches node_modules
 
 - name: Cache VitePress
-  uses: actions/cache@v4
+  uses: actions/cache@v5
   with:
     path: docs/.vitepress/cache
     key: ${{ runner.os }}-vitepress-${{ hashFiles('**/package-lock.json') }}
@@ -659,7 +659,7 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm ci
       - run: npm run docs:build
       - name: Deploy to Netlify

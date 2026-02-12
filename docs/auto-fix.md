@@ -187,15 +187,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
       - run: npm install -g claude-code-lint
 
       # Validate and auto-fix
       - run: claudelint check-all --fix
 
       # Commit fixes (optional)
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'fix: auto-fix linting issues'
 ```

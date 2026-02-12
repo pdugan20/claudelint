@@ -14,9 +14,9 @@ jobs:
   claudelint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -38,9 +38,9 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -51,7 +51,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: results.sarif
 ```
@@ -86,7 +86,7 @@ Add caching to speed up repeated runs:
 
 ```yaml
 - name: Cache claudelint results
-  uses: actions/cache@v4
+  uses: actions/cache@v5
   with:
     path: .claudelint-cache
     key: claudelint-${{ hashFiles('**/*.md', '**/*.json') }}

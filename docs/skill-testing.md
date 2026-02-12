@@ -415,8 +415,8 @@ jobs:
   automated-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -440,7 +440,7 @@ jobs:
           echo "Manual testing required for release" > MANUAL_TESTS_REQUIRED.txt
           echo "See docs/skill-testing.md for protocol" >> MANUAL_TESTS_REQUIRED.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: manual-test-reminder
           path: MANUAL_TESTS_REQUIRED.txt
