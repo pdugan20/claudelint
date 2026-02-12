@@ -92,7 +92,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/integrations/overview' },
             { text: 'CI/CD', link: '/integrations/ci' },
-            { text: 'Pre-commit Hooks', link: '/integrations/pre-commit' },
+            { text: 'Claude Code Hooks', link: '/integrations/pre-commit' },
             { text: 'npm Scripts', link: '/integrations/npm-scripts' },
             {
               text: 'Claude Code Plugin',
@@ -110,6 +110,7 @@ export default defineConfig({
             { text: 'ClaudeLint Class', link: '/api/claudelint-class' },
             { text: 'Functional API', link: '/api/functional-api' },
             { text: 'Types', link: '/api/types' },
+            { text: 'Schemas', link: '/api/schemas' },
             { text: 'Formatters', link: '/api/formatters' },
           ],
         },

@@ -12,6 +12,8 @@ The Hooks validator checks `.claude/hooks/hooks.json` files for schema complianc
 
 ## Rules
 
+This validator includes <RuleCount category="hooks" /> rules. See the [Hooks rules category](/rules/overview) for the complete list.
+
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [hooks-missing-script](/rules/hooks/hooks-missing-script) | error | Hook script not found |
@@ -28,4 +30,4 @@ claudelint validate-hooks --verbose
 ## See Also
 
 - [Rules Reference](/rules/overview) - All validation rules
-- [Hooks Integration](/integrations/pre-commit) - Using hooks with claudelint
+- [Claude Code Hooks](/integrations/pre-commit) - Using hooks with claudelint

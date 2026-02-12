@@ -15,14 +15,6 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
 />
 
 <RuleCard
-  rule-id="skill-name"
-  description="Skill must have a name in frontmatter"
-  severity="error"
-  category="Skills"
-  link="/rules/skills/skill-name"
-/>
-
-<RuleCard
   rule-id="skill-dangerous-command"
   description="Skill contains potentially dangerous commands"
   severity="error"
@@ -31,11 +23,27 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
 />
 
 <RuleCard
-  rule-id="mcp-invalid-server"
-  description="MCP server configuration is invalid"
+  rule-id="mcp-invalid-transport"
+  description="Unknown or invalid MCP transport type"
   severity="error"
   category="MCP"
-  link="/rules/mcp/mcp-invalid-server"
+  link="/rules/mcp/mcp-invalid-transport"
+/>
+
+<RuleCard
+  rule-id="agent-missing-system-prompt"
+  description="Agent should include a system prompt section"
+  severity="warning"
+  category="Agents"
+  link="/rules/agents/agent-missing-system-prompt"
+/>
+
+<RuleCard
+  rule-id="plugin-invalid-manifest"
+  description="Plugin manifest has structural errors"
+  severity="error"
+  category="Plugin"
+  link="/rules/plugin/plugin-invalid-manifest"
 />
 
 <RuleCard
@@ -47,30 +55,22 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
   :fixable="true"
 />
 
-<RuleCard
-  rule-id="plugin-invalid-manifest"
-  description="Plugin manifest has structural errors"
-  severity="error"
-  category="Plugin"
-  link="/rules/plugin/plugin-invalid-manifest"
-/>
-
 </div>
 
 Browse the sidebar for the complete list of rules organized by category.
 
 ## By Category
 
-- **CLAUDE.md** (<RuleCount category="claude-md" /> rules) - File size, imports, paths, content
-- **Skills** (<RuleCount category="skills" /> rules) - Names, descriptions, security, versioning
-- **MCP** (<RuleCount category="mcp" /> rules) - Server config, URLs, transport types
-- **Plugin** (<RuleCount category="plugin" /> rules) - Manifest, components, versioning
-- **Agents** (<RuleCount category="agents" /> rules) - Names, descriptions, tools, models
-- **LSP** (<RuleCount category="lsp" /> rules) - Transport, language IDs, extensions
-- **Settings** (<RuleCount category="settings" /> rules) - Permissions, environment variables
-- **Hooks** (<RuleCount category="hooks" /> rules) - Event types, script references
-- **Output Styles** (<RuleCount category="output-styles" /> rules) - Name validation
-- **Commands** (<RuleCount category="commands" /> rules) - Migration checks
+- [**CLAUDE.md**](/validators/claude-md) (<RuleCount category="claude-md" /> rules) - File size, imports, paths, content
+- [**Skills**](/validators/skills) (<RuleCount category="skills" /> rules) - Names, descriptions, security, versioning
+- [**MCP**](/validators/mcp) (<RuleCount category="mcp" /> rules) - Server config, URLs, transport types
+- [**Plugin**](/validators/plugin) (<RuleCount category="plugin" /> rules) - Manifest, components, versioning
+- [**Agents**](/validators/agents) (<RuleCount category="agents" /> rules) - Names, descriptions, tools, models
+- [**LSP**](/validators/lsp) (<RuleCount category="lsp" /> rules) - Transport, language IDs, extensions
+- [**Settings**](/validators/settings) (<RuleCount category="settings" /> rules) - Permissions, environment variables
+- [**Hooks**](/validators/hooks) (<RuleCount category="hooks" /> rules) - Event types, script references
+- [**Output Styles**](/validators/output-styles) (<RuleCount category="output-styles" /> rules) - Name validation
+- [**Commands**](/validators/commands) (<RuleCount category="commands" /> rules) - Migration checks
 
 ## Severity Levels
 
@@ -85,3 +85,9 @@ Some rules support automatic fixing:
 ```bash
 claudelint check-all --fix
 ```
+
+## See Also
+
+- [Validators Overview](/validators/overview) - How validators work
+- [Configuration](/guide/configuration) - Customize rule severity
+- [CLI Reference](/guide/cli-reference) - All CLI commands and flags

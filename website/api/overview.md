@@ -20,4 +20,5 @@ for (const result of results) {
 - [ClaudeLint Class](/api/claudelint-class) - Main class-based API
 - [Functional API](/api/functional-api) - Simplified functional interface
 - [Types](/api/types) - TypeScript type definitions
+- [Schemas](/api/schemas) - Configuration schema reference
 - [Formatters](/api/formatters) - Output formatting options

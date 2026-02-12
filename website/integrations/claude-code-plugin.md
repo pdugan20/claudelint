@@ -1,216 +1,130 @@
-# Claude Code Plugin Usage Guide
+# Claude Code Plugin
 
 This guide covers how to install and use claudelint as a Claude Code plugin.
 
-## Prerequisites
+## Installation
 
-The plugin's slash commands run claudelint CLI commands under the hood. You must install the npm package first:
+The plugin's skills run claudelint CLI commands under the hood. You must install the npm package first:
 
 ```bash
-npm install -g claude-code-lint
+npm install --save-dev claude-code-lint
 ```
 
 See [Getting Started](/guide/getting-started) for full installation options.
 
-## Installation
+### From GitHub
 
-### Add the Marketplace
-
-First, add the claudelint marketplace to your Claude Code:
+Install directly from GitHub:
 
 ```bash
-/plugin marketplace add pdugan20/claudelint
+/plugin install github:pdugan20/claude-code-lint
 ```
 
-### Install the Plugin
+### From Local Package
 
-Then install the claudelint plugin:
+If you've installed the npm package, you can load the plugin from your local `node_modules`:
 
 ```bash
-/plugin install claudelint
+/plugin install --source ./node_modules/claude-code-lint
 ```
 
-This makes all 8 claudelint skills available as slash commands in your Claude Code sessions.
+This gives you both the CLI commands and the Claude skills.
 
 ## Available Skills
 
-Once installed, you can use these slash commands:
+Once installed, 9 skills are available as namespaced slash commands:
 
-### `/validate-all` - Comprehensive Validation
+### Validation Skills
 
-Run all validators on your entire project:
+**`/claudelint:validate-all`** — Run all validators on your entire project.
 
-```bash
-/validate-all
-```
-
-This checks:
-
-- CLAUDE.md files (size, imports, frontmatter)
-- Skills (schema, security, documentation)
-- Settings (JSON schema, permissions)
-- Hooks (events, commands)
-- MCP servers (transport, variables)
-- Plugin manifests (version, references)
-
-**Options:**
+Checks CLAUDE.md files, skills, settings, hooks, MCP servers, and plugin manifests.
 
 ```bash
-/validate-all --verbose
-/validate-all --explain
-/validate-all --warnings-as-errors
-/validate-all --format json
+/claudelint:validate-all
+/claudelint:validate-all --verbose
+/claudelint:validate-all --explain
+/claudelint:validate-all --warnings-as-errors
 ```
 
-### `/validate-all-cc-md` - CLAUDE.md Validation
+**`/claudelint:validate-cc-md`** — Validate CLAUDE.md files.
 
-Validate only CLAUDE.md files:
+Checks file size limits (35KB warning, 40KB error), `@import` directives, frontmatter in `.claude/rules/` files, and section organization.
 
 ```bash
-/validate-all-cc-md
+/claudelint:validate-cc-md
+/claudelint:validate-cc-md --path /path/to/CLAUDE.md
+/claudelint:validate-cc-md --explain
 ```
 
-Checks:
+**`/claudelint:validate-skills`** — Validate skill definitions.
 
-- File size limits (30KB warning, 50KB error)
-- @import directive syntax and existence
-- Frontmatter in .claude/rules/ files
-- Section organization
-
-**Options:**
+Checks SKILL.md frontmatter, allowed-tools, file references, security issues (dangerous commands, eval usage), and documentation quality.
 
 ```bash
-/validate-all-cc-md --path /path/to/CLAUDE.md
-/validate-all-cc-md --explain
+/claudelint:validate-skills
+/claudelint:validate-skills --verbose
 ```
 
-### `/validate-all-skills` - Skills Validation
+**`/claudelint:validate-settings`** — Validate settings.json files.
 
-Validate Claude Code skills:
+Checks JSON schema, permission rules, environment variables, and model configuration.
+
+**`/claudelint:validate-hooks`** — Validate hooks.json files.
+
+Checks hook events, types (command, prompt, agent), matcher patterns, and command script references.
+
+**`/claudelint:validate-mcp`** — Validate .mcp.json configuration.
+
+Checks server names, transport types (stdio, SSE, HTTP, WebSocket), environment variables, and variable expansion patterns.
+
+**`/claudelint:validate-plugin`** — Validate plugin.json manifests.
+
+Checks manifest schema, semantic versioning, required fields, and component references.
+
+### Quality and Optimization
+
+**`/claudelint:format-cc`** — Auto-format Claude Code files.
+
+Runs markdownlint on CLAUDE.md and `.claude/**/*.md`, prettier on JSON/YAML files, and shellcheck on shell scripts.
 
 ```bash
-/validate-all-skills
+/claudelint:format-cc
+/claudelint:format-cc --check    # Check without making changes
+/claudelint:format-cc --verbose
 ```
 
-Checks:
+**`/claudelint:optimize-cc-md`** — Interactively optimize CLAUDE.md files.
 
-- SKILL.md schema and frontmatter
-- Security issues (dangerous commands, eval usage)
-- Documentation (CHANGELOG, examples, README)
-- Best practices (shebang, comments, naming)
+Helps reduce file size, organize content, and create `@import` files. Explains violations conversationally and asks before making changes.
 
-**Options:**
-
-```bash
-/validate-all-skills --skill my-skill
-/validate-all-skills --verbose
-```
-
-### `/validate-all-settings` - Settings Validation
-
-Validate settings.json:
-
-```bash
-/validate-all-settings
-```
-
-Checks:
-
-- JSON schema
-- Permission rules
-- Environment variables
-- Model configuration
-
-### `/validate-all-hooks` - Hooks Validation
-
-Validate hooks.json:
-
-```bash
-/validate-all-hooks
-```
-
-Checks:
-
-- Hook events and types
-- Command scripts
-- Matcher configuration
-
-### `/validate-all-mcp` - MCP Server Validation
-
-Validate .mcp.json configuration:
-
-```bash
-/validate-all-mcp
-```
-
-Checks:
-
-- Server names and uniqueness
-- Transport configuration (stdio/SSE)
-- Variable expansion patterns
-- Environment variables
-
-### `/validate-all-plugin` - Plugin Manifest Validation
-
-Validate plugin.json:
-
-```bash
-/validate-all-plugin
-```
-
-Checks:
-
-- Manifest schema
-- Semantic versioning
-- Skill/agent/hook references
-
-### `/format-cc` - Format Claude Files
-
-Auto-format Claude Code files:
-
-```bash
-/format-cc
-```
-
-Runs:
-
-- markdownlint on CLAUDE.md and .claude/\*_/_.md
-- prettier on JSON/YAML files
-- shellcheck on shell scripts
-
-**Options:**
-
-```bash
-/format-cc --check    # Check without making changes
-/format-cc --fix      # Fix issues (default)
-/format-cc --verbose  # Show detailed output
-```
-
-## Typical Workflows
+## Workflows
 
 ### Quick Validation
 
 Start a session and immediately check your project:
 
 ```bash
-/validate-all
+/claudelint:validate-all
 ```
+
+Or just ask Claude naturally — "check my Claude Code project" or "validate my CLAUDE.md" — and Claude will automatically invoke the right skill.
 
 ### Fix Formatting Issues
 
 Before committing changes:
 
 ```bash
-/format-cc
-/validate-all
+/claudelint:format-cc
+/claudelint:validate-all
 ```
 
-### Debug Specific Component
+### Debug a Specific Component
 
 If you're working on skills:
 
 ```bash
-/validate-all-skills --verbose --explain
+/claudelint:validate-skills --verbose --explain
 ```
 
 ### Strict Mode for CI
@@ -218,39 +132,42 @@ If you're working on skills:
 Treat all warnings as errors:
 
 ```bash
-/validate-all --warnings-as-errors --format json
+/claudelint:validate-all --warnings-as-errors --format json
 ```
-
-## Configuration
-
-The plugin respects your project's configuration files:
-
-- `.claudelintrc.json` - Rule configuration
-- `.claudelintignore` - Files to ignore
-- `.claude/hooks/hooks.json` - Auto-validation hooks
-
-See the [Configuration Guide](/guide/configuration) for details.
 
 ## Automatic Validation
 
-Set up a SessionStart hook to validate automatically when Claude Code starts:
+Set up a SessionStart hook to validate automatically when Claude Code starts.
 
 Create `.claude/hooks/hooks.json`:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "SessionStart",
-      "type": "command",
-      "command": "claudelint check-all --format compact",
-      "description": "Validate Claude Code project at session start"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --format compact"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
-See [Hooks Validator](/validators/hooks) for more hook examples.
+See [Claude Code Hooks](/integrations/pre-commit) for more hook examples.
+
+## Configuration
+
+The plugin respects your project's configuration files:
+
+- `.claudelintrc.json` — Rule configuration
+- `.claudelintignore` — Files to ignore
+
+See the [Configuration Guide](/guide/configuration) for details.
 
 ## Troubleshooting
 
@@ -259,7 +176,7 @@ See [Hooks Validator](/validators/hooks) for more hook examples.
 If slash commands aren't available:
 
 1. Check plugin is installed: `/plugin list`
-2. Reinstall if needed: `/plugin uninstall claudelint` then `/plugin install claudelint`
+2. Reinstall if needed: `/plugin uninstall claudelint` then reinstall
 3. Restart Claude Code session
 
 ### Validation Fails
@@ -279,24 +196,6 @@ If you get permission errors:
 2. Install globally if needed: `npm install -g claude-code-lint`
 3. Check PATH includes npm global bin directory
 
-### Hook Doesn't Run
-
-If SessionStart hook isn't triggering:
-
-1. Verify `.claude/hooks/hooks.json` exists
-2. Validate hook config: `/validate-all-hooks`
-3. Check command syntax: `"claudelint check-all --format compact"`
-4. Test command manually first
-
-### Slow Performance
-
-If validation is slow:
-
-1. Use `--fast` mode: `/validate-all --fast`
-2. Add large directories to `.claudelintignore`
-3. Disable expensive rules in `.claudelintrc.json`
-4. Check timing with `--verbose` flag
-
 ### False Positives
 
 If you get warnings/errors that shouldn't apply:
@@ -306,46 +205,6 @@ If you get warnings/errors that shouldn't apply:
 3. Add file overrides for specific patterns
 4. Report issue if rule is incorrect
 
-## Integration with Claude Workflows
-
-### Before Committing
-
-```bash
-/format-cc
-/validate-all --warnings-as-errors
-```
-
-### While Developing
-
-```bash
-/validate-all-skills --skill my-skill --explain
-```
-
-### For CI/CD
-
-```bash
-/validate-all --format json > validation-results.json
-```
-
-### Quick Status Check
-
-```bash
-/validate-all --format compact
-```
-
-## Performance
-
-Plugin skills run the same claudelint CLI commands, so performance is identical:
-
-| Project Size | Skills | Time      |
-| ------------ | ------ | --------- |
-| Small        | 5-10   | 20-40ms   |
-| Medium       | 10-20  | 40-80ms   |
-| Large        | 20-50  | 80-150ms  |
-| Very Large   | 50+    | 150-300ms |
-
-All skills complete quickly enough for interactive use.
-
 ## Uninstalling
 
 To remove the plugin:
@@ -354,15 +213,9 @@ To remove the plugin:
 /plugin uninstall claudelint
 ```
 
-To remove the marketplace:
-
-```bash
-/plugin marketplace remove pdugan20/claudelint
-```
-
 ## See Also
 
 - [Configuration Guide](/guide/configuration) - Customize validation rules
-- [Hooks Validator](/validators/hooks) - Automatic validation
+- [Claude Code Hooks](/integrations/pre-commit) - Automatic validation hooks
 - [Rules Reference](/rules/overview) - What gets validated
 - [CLI Reference](/guide/cli-reference) - All commands and flags

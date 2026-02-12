@@ -58,38 +58,42 @@ jobs:
 
 ### Selective Validators
 
+Instead of `check-all`, run individual validators as separate steps:
+
 ```yaml
-      - name: Check CLAUDE.md files
-        run: claudelint check-claude-md
+- name: Check CLAUDE.md files
+  run: claudelint check-claude-md
 
-      - name: Validate skills
-        run: claudelint validate-skills
+- name: Validate skills
+  run: claudelint validate-skills
 
-      - name: Validate settings
-        run: claudelint validate-settings
+- name: Validate settings
+  run: claudelint validate-settings
 
-      - name: Validate hooks
-        run: claudelint validate-hooks
+- name: Validate hooks
+  run: claudelint validate-hooks
 
-      - name: Validate MCP servers
-        run: claudelint validate-mcp
+- name: Validate MCP servers
+  run: claudelint validate-mcp
 
-      - name: Validate plugin manifest
-        run: claudelint validate-plugin
+- name: Validate plugin manifest
+  run: claudelint validate-plugin
 ```
 
 ### With Caching
 
-```yaml
-      - name: Cache claudelint results
-        uses: actions/cache@v4
-        with:
-          path: .claudelint-cache
-          key: claudelint-${{ hashFiles('**/*.md', '**/*.json') }}
-          restore-keys: claudelint-
+Add caching to speed up repeated runs:
 
-      - name: Run claudelint
-        run: claudelint check-all --cache
+```yaml
+- name: Cache claudelint results
+  uses: actions/cache@v4
+  with:
+    path: .claudelint-cache
+    key: claudelint-${{ hashFiles('**/*.md', '**/*.json') }}
+    restore-keys: claudelint-
+
+- name: Run claudelint
+  run: claudelint check-all --cache
 ```
 
 ## GitLab CI
@@ -177,9 +181,9 @@ Create `.claudelintrc.json` in your project root:
 For monorepo projects with multiple packages:
 
 ```yaml
-      - name: Validate all workspaces
-        run: claudelint check-all --workspaces
+- name: Validate all workspaces
+  run: claudelint check-all --workspaces
 
-      - name: Validate specific package
-        run: claudelint check-all --workspace my-package
+- name: Validate specific package
+  run: claudelint check-all --workspace my-package
 ```

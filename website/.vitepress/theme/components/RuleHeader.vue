@@ -1,7 +1,7 @@
 <template>
   <p class="rule-header-description">{{ description }}</p>
   <div class="rule-header-badges">
-    <span :class="['rule-header-badge', `rule-header-badge-${severity}`]">
+    <span :class="['rule-header-badge', severity === 'error' ? 'rule-header-badge-error' : 'rule-header-badge-warning']">
       {{ severity === 'error' ? 'Error' : 'Warning' }}
     </span>
     <span
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 defineProps<{
   description: string;
-  severity: 'error' | 'warning';
+  severity: 'error' | 'warn' | 'warning';
   fixable: boolean;
   category: string;
 }>();
@@ -29,7 +29,7 @@ defineProps<{
 
 <style scoped>
 .rule-header-description {
-  margin-top: -0.5rem;
+  margin-top: 0.25rem;
   margin-bottom: 1rem;
   font-size: 1.1rem;
   color: var(--vp-c-text-2);

@@ -16,8 +16,6 @@ The Skills validator checks Claude Code skill definitions for correctness, secur
 
 This validator includes <RuleCount category="skills" /> rules. See the [Skills rules category](/rules/overview) for the complete list.
 
-Key rules include:
-
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [skill-missing-version](/rules/skills/skill-missing-version) | warn | Missing version field |

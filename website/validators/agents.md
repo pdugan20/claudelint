@@ -13,7 +13,15 @@ The Agents validator checks Claude Code agent definitions for correctness, inclu
 
 ## Rules
 
-See the [Agents rules category](/rules/overview) for the complete list of <RuleCount category="agents" /> rules.
+This validator includes <RuleCount category="agents" /> rules. See the [Agents rules category](/rules/overview) for the complete list.
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| [agent-name](/rules/agents/agent-name) | error | Invalid agent name format |
+| [agent-description](/rules/agents/agent-description) | error | Missing or invalid description |
+| [agent-model](/rules/agents/agent-model) | error | Invalid model configuration |
+| [agent-name-directory-mismatch](/rules/agents/agent-name-directory-mismatch) | error | Name does not match directory |
+| [agent-skills-not-found](/rules/agents/agent-skills-not-found) | error | Referenced skill not found |
 
 ## CLI Usage
 

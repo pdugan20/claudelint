@@ -1,4 +1,4 @@
-# Hooks Integration
+# Claude Code Hooks
 
 claudelint provides hooks that can automatically validate your Claude Code project at key moments in your workflow.
 
@@ -12,14 +12,18 @@ Create `.claude/hooks/hooks.json` in your project:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-all --format compact",
-      "description": "Validate Claude Code project files at session start"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --format compact"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -29,7 +33,7 @@ When you start a Claude Code session, the hook will:
 
 1. Run `claudelint check-all` automatically
 2. Show a compact summary of errors and warnings
-3. Complete in ~20-120ms depending on project size
+3. Complete quickly depending on project size
 
 ### Output Formats
 
@@ -70,27 +74,6 @@ If you only want to see errors (suppress warnings):
 
 Or configure rules in `.claudelintrc.json` to turn off specific warnings.
 
-## Performance
-
-Hook performance based on project size:
-
-| Skills | Files | Typical Time |
-|--------|-------|--------------|
-| 5-10   | 20-50 | 20-40ms      |
-| 10-20  | 50-100| 40-60ms      |
-| 20-50  | 100-200| 60-120ms    |
-| 50+    | 200+  | 120-200ms    |
-
-The SessionStart hook is fast enough that it won't noticeably delay session startup.
-
-## Disabling the Hook
-
-To temporarily disable validation:
-
-1. **Remove the hook** - Delete `.claude/hooks/hooks.json`
-2. **Comment out the hook** - Not supported in JSON, but you can rename the file to `hooks.json.disabled`
-3. **Configure rules** - Set rules to `"off"` in `.claudelintrc.json`
-
 ## Hook Examples
 
 ### Basic Validation
@@ -99,13 +82,18 @@ Run all validators with compact output:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-all --format compact"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --format compact"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -115,13 +103,18 @@ Show detailed explanations for any issues:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-all --explain"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --explain"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -131,13 +124,18 @@ Treat warnings as errors:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-all --warnings-as-errors"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --warnings-as-errors"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -147,13 +145,18 @@ Only validate CLAUDE.md files:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-claude-md"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-claude-md"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -163,28 +166,39 @@ Run validation and formatting:
 
 ```json
 {
-  "hooks": [
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint check-all --format compact"
-    },
-    {
-      "event": "session-start",
-      "type": "command",
-      "command": "claudelint format --check"
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claudelint check-all --format compact"
+          },
+          {
+            "type": "command",
+            "command": "claudelint format --check"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
+
+## Disabling the Hook
+
+To temporarily disable validation:
+
+1. **Remove the hook** - Delete `.claude/hooks/hooks.json`
+2. **Rename the file** - Rename to `hooks.json.disabled`
+3. **Configure rules** - Set rules to `"off"` in `.claudelintrc.json`
 
 ## Best Practices
 
 1. **Use compact format** - Less verbose output for hooks
-2. **Fast validation** - SessionStart hooks should complete in <200ms
-3. **Configure rules** - Turn off noisy warnings in `.claudelintrc.json`
-4. **Test first** - Run commands manually before adding to hooks
-5. **Version control** - Commit `.claude/hooks/hooks.json` to your repo
+2. **Configure rules** - Turn off noisy warnings in `.claudelintrc.json`
+3. **Test first** - Run commands manually before adding to hooks
+4. **Version control** - Commit `.claude/hooks/hooks.json` to your repo
 
 ## Troubleshooting
 
@@ -193,6 +207,7 @@ Run validation and formatting:
 - Check that `claudelint` is installed globally or in your project
 - Verify the command works when run manually
 - Check hook syntax in `.claude/hooks/hooks.json`
+- Ensure event names are PascalCase (e.g., `SessionStart`, not `session-start`)
 
 ### Hook is too slow
 

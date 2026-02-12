@@ -12,6 +12,8 @@ The Settings validator checks `.claude/settings.json` files for schema complianc
 
 ## Rules
 
+This validator includes <RuleCount category="settings" /> rules. See the [Settings rules category](/rules/overview) for the complete list.
+
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [settings-file-path-not-found](/rules/settings/settings-file-path-not-found) | error | Referenced path does not exist |

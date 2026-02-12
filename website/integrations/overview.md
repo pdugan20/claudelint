@@ -5,7 +5,7 @@ claudelint integrates with your existing development workflow through CI/CD pipe
 ## Integration Options
 
 - [CI/CD](/integrations/ci) - GitHub Actions, GitLab CI, and other CI systems
-- [Pre-commit Hooks](/integrations/pre-commit) - Run validation before every commit
+- [Claude Code Hooks](/integrations/pre-commit) - SessionStart hooks for automatic validation
 - [npm Scripts](/integrations/npm-scripts) - Add to your package.json workflow
 - [Claude Code Plugin](/integrations/claude-code-plugin) - Use as a Claude Code plugin
 - [Monorepos](/integrations/monorepos) - Config inheritance and workspace support

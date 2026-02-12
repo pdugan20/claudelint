@@ -25,11 +25,8 @@ claudelint supports configuration through multiple methods, allowing you to cust
 
 claudelint will automatically search for configuration files in the following order:
 
-1. `.claudelintrc.json` - JSON configuration file
-2. `.claudelintrc.yaml` - YAML configuration file (not yet supported)
-3. `.claudelintrc.yml` - YAML configuration file (not yet supported)
-4. `claudelint.config.js` - JavaScript configuration file (not yet supported)
-5. `package.json` - Configuration in the `claudelint` field
+1. `.claudelintrc.json` - JSON configuration file (recommended)
+2. `package.json` - Configuration in the `claudelint` field
 
 The search starts in the current directory and walks up the directory tree until a configuration file is found or the root is reached.
 
@@ -46,8 +43,7 @@ The search starts in the current directory and walks up the directory tree until
   "overrides": [],
   "ignorePatterns": [],
   "output": {},
-  "reportUnusedDisableDirectives": false,
-  "maxWarnings": 0
+  "reportUnusedDisableDirectives": false
 }
 ```
 
@@ -131,26 +127,7 @@ For rules that support options:
 
 ### Available Rules
 
-#### CLAUDE.md Rules
-
-- `size-error` - File size exceeds error threshold (50KB)
-- `size-warning` - File size exceeds warning threshold (30KB)
-- `import-missing` - @import directive points to non-existent file
-- `import-circular` - Circular @import dependencies detected
-
-#### Skills Rules
-
-- `skill-missing-shebang` - Shell script missing shebang line
-- `skill-missing-comments` - File lacks explanatory comments
-- `skill-dangerous-command` - Dangerous shell command detected (rm -rf, dd, mkfs)
-- `skill-eval-usage` - Use of eval/exec detected
-- `skill-path-traversal` - Potential path traversal vulnerability
-- `skill-missing-changelog` - Skill missing CHANGELOG.md
-- `skill-missing-examples` - Skill missing usage examples
-- `skill-missing-version` - Skill missing version field
-- `skill-too-many-files` - Too many loose files in skill directory
-- `skill-deep-nesting` - Excessive directory nesting in skill
-- `skill-naming-inconsistent` - Inconsistent naming conventions
+See the [Rules Reference](/rules/overview) for the complete list of available rules, or run `claudelint list-rules`.
 
 ### Overrides
 
@@ -279,7 +256,7 @@ Exit with error if warning count exceeds this threshold:
 }
 ```
 
-Set to `0` to allow unlimited warnings, or omit the field.
+Set to `0` to fail on any warning. Omit the field to allow unlimited warnings.
 
 The CLI `--max-warnings` option overrides this config value:
 

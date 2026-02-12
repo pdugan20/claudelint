@@ -12,6 +12,8 @@ The LSP validator checks Language Server Protocol configuration files for transp
 
 ## Rules
 
+This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/overview) for the complete list.
+
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [lsp-server-name-too-short](/rules/lsp/lsp-server-name-too-short) | warn | Server name is too short |

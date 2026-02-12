@@ -13,17 +13,15 @@ The MCP validator checks `.mcp.json` configuration files for transport types, UR
 
 ## Rules
 
+This validator includes <RuleCount category="mcp" /> rules. See the [MCP rules category](/rules/overview) for the complete list.
+
 | Rule | Severity | Description |
 |------|----------|-------------|
-| [mcp-http-invalid-url](/rules/mcp/mcp-http-invalid-url) | error | Invalid HTTP URL |
-| [mcp-sse-invalid-url](/rules/mcp/mcp-sse-invalid-url) | error | Invalid SSE URL |
-| [mcp-websocket-invalid-url](/rules/mcp/mcp-websocket-invalid-url) | error | Invalid WebSocket URL |
-| [mcp-invalid-transport](/rules/mcp/mcp-invalid-transport) | error | Unknown transport type |
 | [mcp-invalid-server](/rules/mcp/mcp-invalid-server) | error | Invalid server configuration |
+| [mcp-invalid-transport](/rules/mcp/mcp-invalid-transport) | error | Unknown transport type |
+| [mcp-stdio-empty-command](/rules/mcp/mcp-stdio-empty-command) | error | Stdio transport command is empty |
+| [mcp-http-invalid-url](/rules/mcp/mcp-http-invalid-url) | error | Invalid HTTP URL |
 | [mcp-invalid-env-var](/rules/mcp/mcp-invalid-env-var) | warn | Invalid environment variable |
-| [mcp-server-key-mismatch](/rules/mcp/mcp-server-key-mismatch) | warn | Server key mismatch |
-
-See the [MCP rules category](/rules/overview) for the complete list of <RuleCount category="mcp" /> rules.
 
 ## CLI Usage
 

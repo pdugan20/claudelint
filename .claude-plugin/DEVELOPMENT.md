@@ -4,21 +4,36 @@ This document explains how to develop and test the claudelint plugin.
 
 ## Plugin Structure
 
-Claude Code plugins follow a specific directory structure:
+Claude Code plugins follow a specific directory structure. **IMPORTANT**: Only `plugin.json` goes inside `.claude-plugin/`. All component directories (`skills/`, `commands/`, `agents/`, `hooks/`) must be at the **repository root**, not inside `.claude-plugin/` or `.claude/`. See the [official plugin docs](https://code.claude.com/docs/en/plugins-reference#plugin-directory-structure).
 
 ```text
-claude-lint/
+claude-lint/                     # Repository root
 ├── .claude-plugin/
-│   ├── plugin.json          # Plugin manifest (REQUIRED location)
-│   └── README.md            # Plugin description
-├── skills/                  # Skills at ROOT level (not .claude/skills/)
+│   ├── plugin.json              # Plugin manifest (ONLY this goes here)
+│   ├── README.md
+│   └── scripts/
+│       └── check-dependency.sh  # SessionStart hook script
+├── skills/                      # Skills at ROOT (not .claude/skills/)
 │   ├── validate-all/
 │   │   └── SKILL.md
 │   ├── validate-cc-md/
 │   │   └── SKILL.md
-│   └── ...
-├── package.json             # npm package config
-└── src/                     # Source code
+│   ├── validate-skills/
+│   │   └── SKILL.md
+│   ├── validate-settings/
+│   │   └── SKILL.md
+│   ├── validate-hooks/
+│   │   └── SKILL.md
+│   ├── validate-mcp/
+│   │   └── SKILL.md
+│   ├── validate-plugin/
+│   │   └── SKILL.md
+│   ├── format-cc/
+│   │   └── SKILL.md
+│   └── optimize-cc-md/
+│       └── SKILL.md
+├── package.json                 # npm package config
+└── src/                         # Source code
 ```
 
 ### Critical Requirements
@@ -28,9 +43,10 @@ claude-lint/
    - NOT in `.claude/` directory
    - This is enforced by Claude Code's plugin loader
 
-2. **Skills MUST be at root level in `skills/` directory**
-   - NOT in `.claude/skills/`
-   - Claude Code auto-discovers from `skills/` at root
+2. **Skills MUST be at root `skills/` directory**
+   - NOT in `.claude/skills/` — that's for standalone (non-plugin) skills
+   - NOT inside `.claude-plugin/`
+   - Claude Code auto-discovers from `skills/` at the plugin root
 
 3. **Author field MUST be an object**
    - NOT a string

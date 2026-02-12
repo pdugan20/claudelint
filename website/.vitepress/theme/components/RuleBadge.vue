@@ -18,6 +18,8 @@ defineProps<{
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .rule-badge-error {
