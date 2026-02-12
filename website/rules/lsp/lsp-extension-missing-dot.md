@@ -1,11 +1,6 @@
-# Rule: lsp-extension-missing-dot
+# lsp-extension-missing-dot
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: LSP
-**Recommended**: Yes
-
-LSP extension mappings must start with a dot
+<RuleHeader description="LSP extension mappings must start with a dot" severity="error" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -63,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

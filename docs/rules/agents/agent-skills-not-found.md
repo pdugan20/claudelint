@@ -132,4 +132,4 @@ Always fix the references or create the missing skills instead of disabling vali
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

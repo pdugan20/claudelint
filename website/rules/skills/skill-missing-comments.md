@@ -1,10 +1,6 @@
-# Rule: skill-missing-comments
+# skill-missing-comments
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Shell script lacks explanatory comments
+<RuleHeader description="Shell script lacks explanatory comments" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -92,4 +88,4 @@ Disable this rule for auto-generated scripts where comments would be immediately
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

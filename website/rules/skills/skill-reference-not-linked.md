@@ -1,10 +1,6 @@
-# Rule: skill-reference-not-linked
+# skill-reference-not-linked
 
-**Severity**: Warn
-**Fixable**: Yes
-**Validator**: Skills
-
-File reference in backticks should be a markdown link
+<RuleHeader description="File reference in backticks should be a markdown link" severity="warn" :fixable="true" category="Skills" />
 
 ## Rule Details
 
@@ -55,4 +51,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

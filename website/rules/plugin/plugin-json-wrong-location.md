@@ -1,11 +1,6 @@
-# Rule: plugin-json-wrong-location
+# plugin-json-wrong-location
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-plugin.json must be in .claude-plugin/ directory, not at repository root
+<RuleHeader description="plugin.json must be in .claude-plugin/ directory, not at repository root" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -53,4 +48,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: settings-permission-invalid-rule
+# settings-permission-invalid-rule
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Settings
-**Recommended**: Yes
-
-Permission rules must use valid Tool(pattern) syntax
+<RuleHeader description="Permission rules must use valid Tool(pattern) syntax" severity="error" :fixable="false" category="Settings" />
 
 ## Rule Details
 
@@ -64,4 +59,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

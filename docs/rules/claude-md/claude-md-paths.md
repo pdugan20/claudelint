@@ -273,4 +273,4 @@ However, if you're creating a custom rule file in `.claude/rules/`, you should a
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

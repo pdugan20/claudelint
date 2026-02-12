@@ -1,10 +1,6 @@
-# Rule: lsp-config-file-not-json
+# lsp-config-file-not-json
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: LSP
-
-LSP configFile should end with .json extension (DEPRECATED: configFile is not in official spec)
+<RuleHeader description="LSP configFile should end with .json extension (DEPRECATED: configFile is not in official spec)" severity="warn" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -59,4 +55,4 @@ This rule is deprecated because `configFile` is not part of the official LSP spe
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

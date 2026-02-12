@@ -87,4 +87,4 @@ Consider disabling this rule if you're maintaining a legacy project that cannot 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

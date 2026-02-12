@@ -64,9 +64,9 @@ cp examples/integration/.pre-commit-config.yaml .
 | [strict/](./strict/) | New projects, CI/CD | High | 17 | ✗ Zero |
 | [integration/](./integration/) | Complete setup | Medium | All tools | ✓ Per tool |
 
-## Custom Plugin Development
+## Custom Rules
 
-See the [Plugin Development Guide](../docs/plugin-development.md) for how to build custom plugins with your own validation rules.
+claudelint supports custom rules via the `.claudelint/rules/` directory. See the [Custom Rules Guide](https://github.com/pdugan20/claudelint/blob/main/website/development/custom-rules.md) for how to extend validation with project-specific checks.
 
 ## Test Fixtures
 

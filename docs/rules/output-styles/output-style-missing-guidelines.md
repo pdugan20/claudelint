@@ -155,4 +155,4 @@ You might disable this rule if your output styles are simple enough that explici
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

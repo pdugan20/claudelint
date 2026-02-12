@@ -142,4 +142,4 @@ You might disable this rule if you intentionally use very minimal output styles 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

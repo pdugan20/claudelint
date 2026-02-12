@@ -1,11 +1,6 @@
-# Rule: plugin-hook-missing-plugin-root
+# plugin-hook-missing-plugin-root
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability
+<RuleHeader description="Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -70,4 +65,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: commands-migrate-to-skills
+# commands-migrate-to-skills
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Commands
-**Recommended**: Yes
-
-Migration guidance for deprecated Commands
+<RuleHeader description="Migration guidance for deprecated Commands" severity="warn" :fixable="false" category="Commands" />
 
 ## Rule Details
 
@@ -63,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

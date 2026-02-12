@@ -1,11 +1,6 @@
-# Rule: mcp-sse-empty-url
+# mcp-sse-empty-url
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: MCP
-**Recommended**: Yes
-
-MCP SSE transport URL cannot be empty
+<RuleHeader description="MCP SSE transport URL cannot be empty" severity="error" :fixable="false" category="MCP" />
 
 ## Rule Details
 
@@ -74,4 +69,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

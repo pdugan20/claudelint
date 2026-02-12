@@ -134,4 +134,4 @@ You should not disable this rule. Circular symlinks will always cause problems i
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

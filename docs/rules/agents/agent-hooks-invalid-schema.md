@@ -167,4 +167,4 @@ You should not disable this rule. Invalid hook schemas will always cause runtime
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -80,4 +80,4 @@ Almost never disable this rule. Only consider disabling if writing system admini
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

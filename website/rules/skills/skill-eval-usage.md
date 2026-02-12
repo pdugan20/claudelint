@@ -1,11 +1,6 @@
-# Rule: skill-eval-usage
+# skill-eval-usage
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Script uses eval/exec which can execute arbitrary code
+<RuleHeader description="Script uses eval/exec which can execute arbitrary code" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ Only disable this rule if you have a well-audited use case where dynamic code ex
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

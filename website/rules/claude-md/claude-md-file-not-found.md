@@ -1,11 +1,6 @@
-# Rule: claude-md-file-not-found
+# claude-md-file-not-found
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Specified CLAUDE.md file path does not exist
+<RuleHeader description="Specified CLAUDE.md file path does not exist" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -49,4 +44,4 @@ Disable this rule only if you are intentionally running claudelint against a pat
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

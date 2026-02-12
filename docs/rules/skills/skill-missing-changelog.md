@@ -115,4 +115,4 @@ Consider disabling if your skill is in very early development (pre-alpha), you u
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

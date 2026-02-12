@@ -1,11 +1,6 @@
-# Rule: skill-agent
+# skill-agent
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-When skill context is "fork", agent field is required to specify which agent to use
+<RuleHeader description="When skill context is &quot;fork&quot;, agent field is required to specify which agent to use" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -65,4 +60,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

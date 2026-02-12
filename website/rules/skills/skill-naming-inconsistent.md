@@ -1,10 +1,6 @@
-# Rule: skill-naming-inconsistent
+# skill-naming-inconsistent
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skill has inconsistent file naming conventions
+<RuleHeader description="Skill has inconsistent file naming conventions" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -72,4 +68,4 @@ If the skill directory contains files from different ecosystems with established
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: skill-readme-forbidden
+# skill-readme-forbidden
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skills must use SKILL.md, not README.md
+<RuleHeader description="Skills must use SKILL.md, not README.md" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 

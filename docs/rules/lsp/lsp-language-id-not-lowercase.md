@@ -134,4 +134,4 @@ Disable this rule if your language server explicitly requires mixed-case or uppe
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

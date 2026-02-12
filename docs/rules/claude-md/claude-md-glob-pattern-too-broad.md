@@ -223,4 +223,4 @@ However, it's generally better to be explicit and use multiple specific patterns
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

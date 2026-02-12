@@ -135,4 +135,4 @@ Fix the format rather than disabling the rule.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

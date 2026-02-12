@@ -1,11 +1,6 @@
-# Rule: skill-dangerous-command
+# skill-dangerous-command
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill script contains dangerous commands that could cause system damage
+<RuleHeader description="Skill script contains dangerous commands that could cause system damage" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -74,4 +69,4 @@ This rule should almost never be disabled. If you are writing a system administr
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

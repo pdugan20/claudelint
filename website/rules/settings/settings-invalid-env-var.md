@@ -1,11 +1,6 @@
-# Rule: settings-invalid-env-var
+# settings-invalid-env-var
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Settings
-**Recommended**: Yes
-
-Environment variables must follow naming conventions
+<RuleHeader description="Environment variables must follow naming conventions" severity="warn" :fixable="false" category="Settings" />
 
 ## Rule Details
 
@@ -67,4 +62,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

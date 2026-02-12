@@ -1,11 +1,6 @@
-# Rule: claude-md-import-missing
+# claude-md-import-missing
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Imported file does not exist
+<RuleHeader description="Imported file does not exist" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -55,4 +50,4 @@ There is no reason to disable this rule. Broken imports always indicate a proble
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

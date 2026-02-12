@@ -1,10 +1,6 @@
-# Rule: mcp-server-key-mismatch
+# mcp-server-key-mismatch
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: MCP
-
-Server key should match server name property (deprecated: names are now object keys)
+<RuleHeader description="Server key should match server name property (deprecated: names are now object keys)" severity="warn" :fixable="false" category="MCP" />
 
 ## Rule Details
 
@@ -56,4 +52,4 @@ This rule is deprecated and can always be safely disabled. It performs no valida
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: skill-body-missing-usage-section
+# skill-body-missing-usage-section
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-SKILL.md body lacks a ## Usage section
+<RuleHeader description="SKILL.md body lacks a ## Usage section" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -70,4 +66,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

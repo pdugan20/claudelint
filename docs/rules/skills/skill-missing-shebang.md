@@ -89,4 +89,4 @@ This rule is auto-fixable and will add the shebang if run with the `--fix` flag.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

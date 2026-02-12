@@ -196,4 +196,4 @@ Never disable this rule. Invalid server configuration causes MCP server initiali
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

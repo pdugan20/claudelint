@@ -160,4 +160,4 @@ However, all new plugins should use skills instead of commands, and existing plu
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

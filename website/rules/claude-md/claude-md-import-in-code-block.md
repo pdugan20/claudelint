@@ -1,11 +1,6 @@
-# Rule: claude-md-import-in-code-block
+# claude-md-import-in-code-block
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Import statement found inside code block
+<RuleHeader description="Import statement found inside code block" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -71,4 +66,4 @@ Disable this rule if your CLAUDE.md includes code block examples that intentiona
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: skill-referenced-file-not-found
+# skill-referenced-file-not-found
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Referenced file in markdown link does not exist
+<RuleHeader description="Referenced file in markdown link does not exist" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -69,4 +64,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

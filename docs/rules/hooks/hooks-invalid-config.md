@@ -117,4 +117,4 @@ Never disable this rule. Invalid hook configuration causes runtime failures, sil
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

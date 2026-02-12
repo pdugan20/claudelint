@@ -1,11 +1,6 @@
-# Rule: claude-md-import-depth-exceeded
+# claude-md-import-depth-exceeded
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Import depth exceeds maximum, possible circular import
+<RuleHeader description="Import depth exceeds maximum, possible circular import" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -82,4 +77,4 @@ Disable this rule only if your project has a legitimate reason for deeply nested
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

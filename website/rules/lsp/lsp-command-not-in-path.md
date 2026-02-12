@@ -1,10 +1,6 @@
-# Rule: lsp-command-not-in-path
+# lsp-command-not-in-path
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: LSP
-
-LSP server commands should be in PATH or use absolute paths
+<RuleHeader description="LSP server commands should be in PATH or use absolute paths" severity="warn" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -68,4 +64,4 @@ Disable this rule if you have consistent PATH configuration across all environme
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

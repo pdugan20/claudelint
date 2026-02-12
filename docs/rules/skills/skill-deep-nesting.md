@@ -104,4 +104,4 @@ Consider disabling if you're mirroring an external project structure or followin
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

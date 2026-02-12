@@ -124,4 +124,4 @@ Never disable this rule. The 40KB limit is a technical constraint of Claude Code
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

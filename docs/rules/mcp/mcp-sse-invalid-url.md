@@ -256,4 +256,4 @@ Additionally, consider that SSE transport is deprecated and you should plan to m
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

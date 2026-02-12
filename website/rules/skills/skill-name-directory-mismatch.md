@@ -1,11 +1,6 @@
-# Rule: skill-name-directory-mismatch
+# skill-name-directory-mismatch
 
-**Severity**: Error
-**Fixable**: Yes
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill name must match parent directory name
+<RuleHeader description="Skill name must match parent directory name" severity="error" :fixable="true" category="Skills" />
 
 ## Rule Details
 
@@ -62,4 +57,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

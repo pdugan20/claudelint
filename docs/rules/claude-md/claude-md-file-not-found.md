@@ -134,4 +134,4 @@ Never disable this rule. If a file doesn't exist, validation cannot proceed. Thi
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

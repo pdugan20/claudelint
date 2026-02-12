@@ -1,11 +1,6 @@
-# Rule: agent-name
+# agent-name
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags
+<RuleHeader description="Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -61,4 +56,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

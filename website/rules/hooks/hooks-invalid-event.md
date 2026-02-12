@@ -1,11 +1,6 @@
-# Rule: hooks-invalid-event
+# hooks-invalid-event
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Hooks
-**Recommended**: Yes
-
-Hook events must be valid event names
+<RuleHeader description="Hook events must be valid event names" severity="warn" :fixable="false" category="Hooks" />
 
 ## Rule Details
 
@@ -58,4 +53,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

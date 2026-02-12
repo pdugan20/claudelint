@@ -137,4 +137,4 @@ Always fix the mismatch by renaming either the directory or the name field.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: skill-too-many-files
+# skill-too-many-files
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skill directory has too many files at root level
+<RuleHeader description="Skill directory has too many files at root level" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -96,4 +92,4 @@ If the skill intentionally provides many standalone scripts that are each invoke
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

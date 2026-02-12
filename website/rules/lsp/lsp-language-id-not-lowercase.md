@@ -1,10 +1,6 @@
-# Rule: lsp-language-id-not-lowercase
+# lsp-language-id-not-lowercase
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: LSP
-
-LSP language IDs should be lowercase
+<RuleHeader description="LSP language IDs should be lowercase" severity="warn" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -62,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

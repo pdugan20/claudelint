@@ -1,11 +1,6 @@
-# Rule: commands-deprecated-directory
+# commands-deprecated-directory
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Commands
-**Recommended**: Yes
-
-Commands directory is deprecated, migrate to Skills
+<RuleHeader description="Commands directory is deprecated, migrate to Skills" severity="warn" :fixable="false" category="Commands" />
 
 ## Rule Details
 
@@ -60,4 +55,4 @@ Disable this rule if you are intentionally maintaining legacy commands alongside
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

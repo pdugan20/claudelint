@@ -1,11 +1,6 @@
-# Rule: plugin-description-required
+# plugin-description-required
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Plugin description is required and cannot be empty
+<RuleHeader description="Plugin description is required and cannot be empty" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -73,4 +68,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: skill-tags
+# skill-tags
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill tags must be an array of strings
+<RuleHeader description="Skill tags must be an array of strings" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -76,4 +71,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -148,4 +148,4 @@ Always fix the hook configuration rather than disabling validation.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

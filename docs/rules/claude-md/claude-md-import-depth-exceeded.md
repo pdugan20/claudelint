@@ -142,4 +142,4 @@ Never disable this rule. Excessive import depth causes performance issues, makes
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

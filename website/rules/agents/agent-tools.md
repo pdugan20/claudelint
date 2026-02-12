@@ -1,11 +1,6 @@
-# Rule: agent-tools
+# agent-tools
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent tools must be an array of tool names, cannot be used with disallowed-tools
+<RuleHeader description="Agent tools must be an array of tool names, cannot be used with disallowed-tools" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -82,4 +77,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

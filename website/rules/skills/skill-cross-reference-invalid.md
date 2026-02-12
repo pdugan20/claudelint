@@ -1,10 +1,6 @@
-# Rule: skill-cross-reference-invalid
+# skill-cross-reference-invalid
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Cross-reference points to non-existent skill
+<RuleHeader description="Cross-reference points to non-existent skill" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 

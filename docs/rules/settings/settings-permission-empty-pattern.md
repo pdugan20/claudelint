@@ -155,4 +155,4 @@ This rule helps maintain clean, clear permission syntax. There's no good reason 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -87,4 +87,4 @@ This rule enforces a critical organizational requirement for output styles. Disa
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: skill-context
+# skill-context
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill context must be one of: fork, inline, auto
+<RuleHeader description="Skill context must be one of: fork, inline, auto" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -85,4 +80,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

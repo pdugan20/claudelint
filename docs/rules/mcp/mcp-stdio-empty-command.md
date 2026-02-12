@@ -282,4 +282,4 @@ Never disable this rule. An empty command will cause the subprocess to fail to l
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

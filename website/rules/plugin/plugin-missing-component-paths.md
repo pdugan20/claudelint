@@ -1,11 +1,6 @@
-# Rule: plugin-missing-component-paths
+# plugin-missing-component-paths
 
-**Severity**: Warn
-**Fixable**: Yes
-**Validator**: Plugin
-**Recommended**: Yes
-
-Plugin component paths should start with ./ to be explicit about their location
+<RuleHeader description="Plugin component paths should start with ./ to be explicit about their location" severity="warn" :fixable="true" category="Plugin" />
 
 ## Rule Details
 
@@ -61,4 +56,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

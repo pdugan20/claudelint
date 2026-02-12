@@ -132,4 +132,4 @@ Never disable this rule. Empty language IDs will break LSP functionality. If you
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: skill-description-quality
+# skill-description-quality
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skill description should start with an action verb and include sufficient context
+<RuleHeader description="Skill description should start with an action verb and include sufficient context" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -71,4 +67,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

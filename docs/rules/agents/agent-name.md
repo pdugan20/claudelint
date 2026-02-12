@@ -141,4 +141,4 @@ Invalid names will cause runtime errors and prevent agents from loading correctl
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

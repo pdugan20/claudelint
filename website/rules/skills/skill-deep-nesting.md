@@ -1,10 +1,6 @@
-# Rule: skill-deep-nesting
+# skill-deep-nesting
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skill directory has excessive directory nesting
+<RuleHeader description="Skill directory has excessive directory nesting" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -81,4 +77,4 @@ Disable this rule if your skill has a legitimate reason for deep nesting, such a
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -58,6 +58,23 @@ Self-validation bug fixes and linter improvements. Bug fixes (7/7), Sprints 1-6 
 
 ## Future Projects
 
+### preset-system (0%)
+
+**Status:** Planned — target 0.3.0
+**Location:** [docs/projects/preset-system/](./preset-system/)
+
+Built-in preset system (Biome model). Ships `claudelint:recommended` and `claudelint:all` presets. Leverages existing `extends` infrastructure. 34 tasks across 7 phases.
+
+**Key deliverables:**
+
+- Rule audit: categorize all 120 rules as recommended or not
+- Preset JSON generation from rule metadata
+- Built-in preset resolution in config loader
+- Init wizard preset selection
+- Documentation and CI quality gates
+
+---
+
 ### vitepress-docs (0%)
 
 **Status:** Planned, not started

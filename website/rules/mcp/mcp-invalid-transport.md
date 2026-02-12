@@ -1,11 +1,6 @@
-# Rule: mcp-invalid-transport
+# mcp-invalid-transport
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: MCP
-**Recommended**: Yes
-
-MCP transport type must be one of the supported values
+<RuleHeader description="MCP transport type must be one of the supported values" severity="error" :fixable="false" category="MCP" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

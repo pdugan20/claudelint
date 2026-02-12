@@ -137,4 +137,4 @@ Disable this rule if your LSP server uses a custom configuration format that int
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

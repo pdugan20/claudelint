@@ -1,11 +1,6 @@
-# Rule: skill-missing-version
+# skill-missing-version
 
-**Severity**: Warn
-**Fixable**: Yes
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill frontmatter lacks version field
+<RuleHeader description="Skill frontmatter lacks version field" severity="warn" :fixable="true" category="Skills" />
 
 ## Rule Details
 
@@ -63,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

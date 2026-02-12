@@ -1,11 +1,6 @@
-# Rule: lsp-language-id-empty
+# lsp-language-id-empty
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: LSP
-**Recommended**: Yes
-
-LSP language IDs cannot be empty
+<RuleHeader description="LSP language IDs cannot be empty" severity="error" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -63,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

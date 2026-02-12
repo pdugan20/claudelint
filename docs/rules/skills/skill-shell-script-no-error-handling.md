@@ -135,4 +135,4 @@ In these cases, add a comment explaining why error handling is not appropriate:
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

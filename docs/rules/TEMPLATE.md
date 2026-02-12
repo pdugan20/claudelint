@@ -77,7 +77,7 @@ Brief guidance on scenarios where you might want to disable this rule.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0
 
 ---
 

@@ -1,10 +1,6 @@
-# Rule: skill-time-sensitive-content
+# skill-time-sensitive-content
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-SKILL.md should avoid time-sensitive references
+<RuleHeader description="SKILL.md should avoid time-sensitive references" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -82,4 +78,4 @@ If the skill documentation intentionally tracks a changelog or release history w
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

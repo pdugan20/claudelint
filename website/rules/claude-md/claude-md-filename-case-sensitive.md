@@ -1,11 +1,6 @@
-# Rule: claude-md-filename-case-sensitive
+# claude-md-filename-case-sensitive
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Filename differs only in case from another file, causing conflicts on case-insensitive filesystems
+<RuleHeader description="Filename differs only in case from another file, causing conflicts on case-insensitive filesystems" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -57,4 +52,4 @@ Disable this rule only if your project exclusively targets Linux and you intenti
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

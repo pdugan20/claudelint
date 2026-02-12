@@ -1,11 +1,6 @@
-# Rule: mcp-invalid-env-var
+# mcp-invalid-env-var
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: MCP
-**Recommended**: Yes
-
-Environment variables must use proper expansion syntax
+<RuleHeader description="Environment variables must use proper expansion syntax" severity="warn" :fixable="false" category="MCP" />
 
 ## Rule Details
 
@@ -93,4 +88,4 @@ Allow lowercase environment variable names:
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

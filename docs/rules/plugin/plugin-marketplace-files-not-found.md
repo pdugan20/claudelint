@@ -228,4 +228,4 @@ However, if you plan to publish your plugin to the marketplace, all referenced f
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

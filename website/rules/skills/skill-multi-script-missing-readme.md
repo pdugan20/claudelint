@@ -1,10 +1,6 @@
-# Rule: skill-multi-script-missing-readme
+# skill-multi-script-missing-readme
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skills with multiple scripts should include a README.md
+<RuleHeader description="Skills with multiple scripts should include a README.md" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -84,4 +80,4 @@ If your multi-script skill is self-documenting through SKILL.md alone and the sc
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

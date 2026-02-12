@@ -1,11 +1,6 @@
-# Rule: skill-path-traversal
+# skill-path-traversal
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Potential path traversal pattern detected
+<RuleHeader description="Potential path traversal pattern detected" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -71,4 +66,4 @@ Disable this rule only if your skill legitimately needs to reference parent dire
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

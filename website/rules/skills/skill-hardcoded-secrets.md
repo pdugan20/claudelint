@@ -1,11 +1,6 @@
-# Rule: skill-hardcoded-secrets
+# skill-hardcoded-secrets
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill file contains hardcoded secrets that should use environment variables
+<RuleHeader description="Skill file contains hardcoded secrets that should use environment variables" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ This rule should almost never be disabled. If you have a test fixture that conta
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

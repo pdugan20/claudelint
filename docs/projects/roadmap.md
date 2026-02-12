@@ -89,6 +89,28 @@ Smoke testing is complete. Interactive testing remains.
 
 ---
 
+### Milestone 10: Preset System (0.3.0)
+
+**Source:** [preset-system project](./preset-system/)
+**Depends on:** M5 complete (stable 0.2.0 release)
+**Effort:** ~2-3 days
+
+Built-in preset system following the Biome model. Ships `claudelint:recommended` (curated subset) and `claudelint:all` (everything on) as extends targets. Leverages existing `extends` infrastructure.
+
+- [ ] **Phase 1**: Rule audit — categorize all 120 rules as recommended/not
+- [ ] **Phase 2**: Metadata migration — move `recommended` from docs to top-level meta
+- [ ] **Phase 3**: Preset generation — build-time JSON generation from registry
+- [ ] **Phase 4**: Config resolution — wire `claudelint:` prefix into extends resolver
+- [ ] **Phase 5**: Init wizard — preset selection instead of hardcoded rules
+- [ ] **Phase 6**: Documentation — user docs, website badges, rule author guide
+- [ ] **Phase 7**: CI quality gates — freshness checks, pre-commit hooks
+
+**Cleanup:**
+
+- [ ] Update status.md: move preset-system from Future to Active/Archived
+
+---
+
 ### Milestone 8: Advanced Analysis
 
 **Source:** dogfood-and-improvements T3-15, T3-16, T3-17
@@ -207,6 +229,7 @@ Zod 4 (2026-02-09), markdownlint 0.40 (2026-02-09), ora 9 (Dependabot PR #6).
 | 7 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-13 |
 | 8 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-15/16/17 |
 | 9 | Various | See individual items |
+| 10 | preset-system | [tracker.md](./preset-system/tracker.md) |
 
 ---
 

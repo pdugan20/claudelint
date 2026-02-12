@@ -132,4 +132,4 @@ Disable this rule only if the plugin is designed to run exclusively in a fixed l
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

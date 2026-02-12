@@ -1,11 +1,6 @@
-# Rule: output-style-name-directory-mismatch
+# output-style-name-directory-mismatch
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Output Styles
-**Recommended**: Yes
-
-Output style name must match parent directory name
+<RuleHeader description="Output style name must match parent directory name" severity="error" :fixable="false" category="Output Styles" />
 
 ## Rule Details
 
@@ -50,4 +45,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

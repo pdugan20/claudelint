@@ -1,10 +1,6 @@
-# Rule: output-style-body-too-short
+# output-style-body-too-short
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Output Styles
-
-Output style body content should meet minimum length requirements
+<RuleHeader description="Output style body content should meet minimum length requirements" severity="warn" :fixable="false" category="Output Styles" />
 
 ## Rule Details
 
@@ -92,4 +88,4 @@ Disable this rule for intentionally minimal output styles that rely on a short d
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: skill-mcp-tool-qualified-name
+# skill-mcp-tool-qualified-name
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-MCP tools in allowed-tools should use qualified mcp__server__tool format for clarity
+<RuleHeader description="MCP tools in allowed-tools should use qualified mcp__server__tool format for clarity" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -71,4 +67,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

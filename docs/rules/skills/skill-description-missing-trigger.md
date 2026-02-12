@@ -93,4 +93,4 @@ Disable this rule if your skills are invoked exclusively through explicit slash 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

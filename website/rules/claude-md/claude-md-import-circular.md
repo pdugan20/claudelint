@@ -1,11 +1,6 @@
-# Rule: claude-md-import-circular
+# claude-md-import-circular
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Circular import detected between Claude.md files
+<RuleHeader description="Circular import detected between Claude.md files" severity="warn" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ There is no reason to disable this rule. Circular imports always indicate a stru
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

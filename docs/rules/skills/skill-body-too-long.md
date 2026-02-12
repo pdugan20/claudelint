@@ -142,4 +142,4 @@ Consider increasing the threshold if your skill genuinely requires more inline d
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

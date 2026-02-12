@@ -107,4 +107,4 @@ If a description seems too restrictive, the requirements (10+ characters, third 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

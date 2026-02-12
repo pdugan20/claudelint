@@ -185,4 +185,4 @@ Always include a valid name field rather than disabling validation. Choosing a g
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

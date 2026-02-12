@@ -46,3 +46,9 @@ Create a `.claudelintrc.json` in your project root:
 />
 
 See the [Rules Overview](/guide/rules-overview) for all available rules.
+
+## Use with Claude Code
+
+claudelint is also available as a Claude Code plugin, giving you interactive slash commands like `/validate-all` and `/validate-all-skills` directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
+
+See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions.

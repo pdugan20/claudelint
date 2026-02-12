@@ -141,4 +141,4 @@ Never disable this rule. Invalid plugin manifests cause installation failures, p
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

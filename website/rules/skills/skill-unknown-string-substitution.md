@@ -1,10 +1,6 @@
-# Rule: skill-unknown-string-substitution
+# skill-unknown-string-substitution
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Unknown string substitution pattern detected
+<RuleHeader description="Unknown string substitution pattern detected" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -68,4 +64,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

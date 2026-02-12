@@ -122,4 +122,4 @@ Consider disabling if you're actively working on splitting the file and want to 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

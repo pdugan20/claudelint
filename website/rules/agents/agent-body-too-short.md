@@ -1,11 +1,6 @@
-# Rule: agent-body-too-short
+# agent-body-too-short
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent body content should meet minimum length requirements
+<RuleHeader description="Agent body content should meet minimum length requirements" severity="warn" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -96,4 +91,4 @@ Disable this rule if your agents use an external system prompt source and the AG
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

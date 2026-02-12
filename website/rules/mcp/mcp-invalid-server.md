@@ -1,10 +1,6 @@
-# Rule: mcp-invalid-server
+# mcp-invalid-server
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: MCP
-
-MCP server names must be unique (deprecated: names are now object keys)
+<RuleHeader description="MCP server names must be unique (deprecated: names are now object keys)" severity="error" :fixable="false" category="MCP" />
 
 ## Rule Details
 
@@ -55,4 +51,4 @@ This rule is deprecated and performs no checks. It can be safely disabled.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

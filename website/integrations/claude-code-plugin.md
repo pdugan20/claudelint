@@ -2,6 +2,16 @@
 
 This guide covers how to install and use claudelint as a Claude Code plugin.
 
+## Prerequisites
+
+The plugin's slash commands run claudelint CLI commands under the hood. You must install the npm package first:
+
+```bash
+npm install -g claude-code-lint
+```
+
+See [Getting Started](/guide/getting-started) for full installation options.
+
 ## Installation
 
 ### Add the Marketplace

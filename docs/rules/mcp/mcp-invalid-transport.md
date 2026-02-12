@@ -183,4 +183,4 @@ Never disable this rule. Invalid transport configuration causes MCP server conne
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

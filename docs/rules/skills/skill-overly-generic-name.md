@@ -165,4 +165,4 @@ If you find yourself wanting to disable this rule frequently, your skill names m
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

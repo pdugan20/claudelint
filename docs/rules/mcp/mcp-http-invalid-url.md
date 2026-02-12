@@ -231,4 +231,4 @@ Never disable this rule. Invalid URLs will cause connection failures when Claude
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

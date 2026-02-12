@@ -1,11 +1,6 @@
-# Rule: plugin-marketplace-files-not-found
+# plugin-marketplace-files-not-found
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Referenced marketplace file does not exist
+<RuleHeader description="Referenced marketplace file does not exist" severity="warn" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -55,4 +50,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

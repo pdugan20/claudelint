@@ -1,10 +1,6 @@
-# Rule: skill-frontmatter-unknown-keys
+# skill-frontmatter-unknown-keys
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Unknown key in SKILL.md frontmatter
+<RuleHeader description="Unknown key in SKILL.md frontmatter" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 

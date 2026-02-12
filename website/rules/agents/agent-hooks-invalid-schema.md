@@ -1,11 +1,6 @@
-# Rule: agent-hooks-invalid-schema
+# agent-hooks-invalid-schema
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Hook configuration in agents.json violates schema requirements
+<RuleHeader description="Hook configuration in agents.json violates schema requirements" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -71,4 +66,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

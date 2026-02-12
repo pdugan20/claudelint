@@ -160,4 +160,4 @@ Always place `plugin.json` at `.claude-plugin/plugin.json` rather than disabling
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: skill-body-long-code-block
+# skill-body-long-code-block
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Long code blocks in SKILL.md should be moved to reference files
+<RuleHeader description="Long code blocks in SKILL.md should be moved to reference files" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -107,4 +103,4 @@ Disable this rule if your skill requires inline code blocks that cannot be meani
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

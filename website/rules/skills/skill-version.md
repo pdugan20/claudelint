@@ -1,11 +1,6 @@
-# Rule: skill-version
+# skill-version
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill version must follow semantic versioning format (e.g., 1.0.0)
+<RuleHeader description="Skill version must follow semantic versioning format (e.g., 1.0.0)" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -89,4 +84,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

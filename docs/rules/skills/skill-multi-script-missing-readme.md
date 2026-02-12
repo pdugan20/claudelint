@@ -122,4 +122,4 @@ However, README.md is the standard location users expect to find setup instructi
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

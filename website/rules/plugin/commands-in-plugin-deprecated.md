@@ -1,11 +1,6 @@
-# Rule: commands-in-plugin-deprecated
+# commands-in-plugin-deprecated
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-The commands field in plugin.json is deprecated
+<RuleHeader description="The commands field in plugin.json is deprecated" severity="warn" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -64,4 +59,4 @@ Disable this rule if you are maintaining a legacy plugin that must support older
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

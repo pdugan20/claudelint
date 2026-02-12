@@ -1,11 +1,6 @@
-# Rule: agent-disallowed-tools
+# agent-disallowed-tools
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent disallowedTools must be an array of tool names
+<RuleHeader description="Agent disallowedTools must be an array of tool names" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -68,4 +63,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

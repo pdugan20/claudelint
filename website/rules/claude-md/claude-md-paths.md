@@ -1,11 +1,6 @@
-# Rule: claude-md-paths
+# claude-md-paths
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Claude MD paths must be a non-empty array with at least one path pattern
+<RuleHeader description="Claude MD paths must be a non-empty array with at least one path pattern" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -82,4 +77,4 @@ There is no reason to disable this rule. Malformed paths always indicate a confi
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

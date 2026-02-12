@@ -1,11 +1,6 @@
-# Rule: claude-md-size-error
+# claude-md-size-error
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-CLAUDE.md exceeds maximum file size limit
+<RuleHeader description="CLAUDE.md exceeds maximum file size limit" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -87,4 +82,4 @@ This rule should always be enabled. Exceeding the size limit can cause Claude Co
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

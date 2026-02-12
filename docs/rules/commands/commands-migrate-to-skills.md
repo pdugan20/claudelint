@@ -96,4 +96,4 @@ This rule provides helpful migration guidance and should generally remain enable
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

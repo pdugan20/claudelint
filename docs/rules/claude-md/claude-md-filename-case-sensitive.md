@@ -91,4 +91,4 @@ Consider disabling this rule if your project will only ever run on Linux systems
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

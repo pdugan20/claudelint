@@ -1,11 +1,6 @@
-# Rule: claude-md-glob-pattern-too-broad
+# claude-md-glob-pattern-too-broad
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Path pattern is overly broad
+<RuleHeader description="Path pattern is overly broad" severity="warn" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -72,4 +67,4 @@ Disable this rule if you intentionally want a rule file to apply to every file i
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: output-style-missing-guidelines
+# output-style-missing-guidelines
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Output Styles
-**Recommended**: Yes
-
-Output style should include a "Guidelines" or "Format" section
+<RuleHeader description="Output style should include a &quot;Guidelines&quot; or &quot;Format&quot; section" severity="warn" :fixable="false" category="Output Styles" />
 
 ## Rule Details
 
@@ -82,4 +77,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

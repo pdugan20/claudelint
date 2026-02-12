@@ -1,11 +1,6 @@
-# Rule: skill-overly-generic-name
+# skill-overly-generic-name
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill name should be specific and descriptive, not just generic keywords or single-word verbs
+<RuleHeader description="Skill name should be specific and descriptive, not just generic keywords or single-word verbs" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -81,4 +76,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,10 +1,6 @@
-# Rule: lsp-config-file-relative-path
+# lsp-config-file-relative-path
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: LSP
-
-LSP configFile should use absolute or explicit relative paths (DEPRECATED: configFile is not in official spec)
+<RuleHeader description="LSP configFile should use absolute or explicit relative paths (DEPRECATED: configFile is not in official spec)" severity="warn" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -70,4 +66,4 @@ This rule is deprecated because `configFile` is not part of the official LSP spe
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

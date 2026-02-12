@@ -78,4 +78,4 @@ Disable this rule if your skill uses tools implicitly through sub-processes or o
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

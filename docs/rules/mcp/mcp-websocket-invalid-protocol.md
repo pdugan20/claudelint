@@ -295,4 +295,4 @@ However, using proper WebSocket protocols prevents confusion and ensures compati
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

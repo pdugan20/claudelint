@@ -140,4 +140,4 @@ Always fix the array format rather than disabling validation.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

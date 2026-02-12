@@ -142,4 +142,4 @@ Consider disabling if your skill is self-explanatory with no arguments, examples
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

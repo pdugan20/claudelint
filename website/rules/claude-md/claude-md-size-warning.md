@@ -1,11 +1,6 @@
-# Rule: claude-md-size-warning
+# claude-md-size-warning
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-CLAUDE.md file is approaching size limit
+<RuleHeader description="CLAUDE.md file is approaching size limit" severity="warn" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -82,4 +77,4 @@ This rule should always be enabled. The early warning helps prevent the hard err
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

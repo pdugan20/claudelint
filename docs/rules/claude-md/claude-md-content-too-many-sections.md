@@ -173,4 +173,4 @@ Consider disabling if your project genuinely requires many top-level sections in
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

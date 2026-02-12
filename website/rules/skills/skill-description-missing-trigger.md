@@ -1,10 +1,6 @@
-# Rule: skill-description-missing-trigger
+# skill-description-missing-trigger
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skill description should include trigger phrases so the model knows when to load the skill
+<RuleHeader description="Skill description should include trigger phrases so the model knows when to load the skill" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -70,4 +66,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

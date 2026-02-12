@@ -124,4 +124,4 @@ Never disable this rule. Circular imports will cause infinite loops, stack overf
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

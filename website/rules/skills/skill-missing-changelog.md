@@ -1,11 +1,6 @@
-# Rule: skill-missing-changelog
+# skill-missing-changelog
 
-**Severity**: Warn
-**Fixable**: Yes
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill directory lacks CHANGELOG.md
+<RuleHeader description="Skill directory lacks CHANGELOG.md" severity="warn" :fixable="true" category="Skills" />
 
 ## Rule Details
 
@@ -51,4 +46,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

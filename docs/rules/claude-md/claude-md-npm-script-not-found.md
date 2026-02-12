@@ -93,4 +93,4 @@ Disable this rule if your CLAUDE.md references scripts from a different package.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

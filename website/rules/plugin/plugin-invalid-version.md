@@ -1,11 +1,6 @@
-# Rule: plugin-invalid-version
+# plugin-invalid-version
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Plugin version must follow semantic versioning format
+<RuleHeader description="Plugin version must follow semantic versioning format" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -74,4 +69,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

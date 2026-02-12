@@ -1,11 +1,6 @@
-# Rule: skill-allowed-tools
+# skill-allowed-tools
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools
+<RuleHeader description="Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -84,4 +79,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: claude-md-glob-pattern-backslash
+# claude-md-glob-pattern-backslash
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Path pattern uses backslashes instead of forward slashes
+<RuleHeader description="Path pattern uses backslashes instead of forward slashes" severity="warn" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -61,4 +56,4 @@ There is no reason to disable this rule. Backslashes in glob patterns are always
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

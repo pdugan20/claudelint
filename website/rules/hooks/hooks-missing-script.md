@@ -1,11 +1,6 @@
-# Rule: hooks-missing-script
+# hooks-missing-script
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Hooks
-**Recommended**: Yes
-
-Hook scripts must reference existing files
+<RuleHeader description="Hook scripts must reference existing files" severity="error" :fixable="false" category="Hooks" />
 
 ## Rule Details
 
@@ -64,4 +59,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

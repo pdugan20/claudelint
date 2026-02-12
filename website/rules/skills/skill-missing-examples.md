@@ -1,11 +1,6 @@
-# Rule: skill-missing-examples
+# skill-missing-examples
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-SKILL.md lacks usage examples
+<RuleHeader description="SKILL.md lacks usage examples" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -76,4 +71,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

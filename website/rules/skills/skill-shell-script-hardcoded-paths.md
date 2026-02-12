@@ -1,10 +1,6 @@
-# Rule: skill-shell-script-hardcoded-paths
+# skill-shell-script-hardcoded-paths
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Shell script contains hardcoded absolute paths that reduce portability
+<RuleHeader description="Shell script contains hardcoded absolute paths that reduce portability" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -67,4 +63,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

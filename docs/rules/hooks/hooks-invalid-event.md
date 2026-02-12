@@ -129,4 +129,4 @@ Never disable this rule. Invalid event names cause hooks to never fire, silent f
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

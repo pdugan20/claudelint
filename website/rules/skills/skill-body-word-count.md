@@ -1,10 +1,6 @@
-# Rule: skill-body-word-count
+# skill-body-word-count
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-SKILL.md body exceeds recommended word count
+<RuleHeader description="SKILL.md body exceeds recommended word count" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 

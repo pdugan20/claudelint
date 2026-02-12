@@ -1,11 +1,6 @@
-# Rule: claude-md-content-too-many-sections
+# claude-md-content-too-many-sections
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-CLAUDE.md has too many sections making it hard to navigate
+<RuleHeader description="CLAUDE.md has too many sections making it hard to navigate" severity="warn" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -145,4 +140,4 @@ Disable this rule if your project intentionally maintains a single large CLAUDE.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

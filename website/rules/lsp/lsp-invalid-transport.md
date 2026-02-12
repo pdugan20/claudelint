@@ -1,11 +1,6 @@
-# Rule: lsp-invalid-transport
+# lsp-invalid-transport
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: LSP
-**Recommended**: Yes
-
-LSP transport type must be "stdio" or "socket"
+<RuleHeader description="LSP transport type must be &quot;stdio&quot; or &quot;socket&quot;" severity="error" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -65,4 +60,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

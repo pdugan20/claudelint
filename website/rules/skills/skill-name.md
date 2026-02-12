@@ -1,11 +1,6 @@
-# Rule: skill-name
+# skill-name
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words
+<RuleHeader description="Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

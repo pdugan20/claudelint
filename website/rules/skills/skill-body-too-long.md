@@ -1,10 +1,6 @@
-# Rule: skill-body-too-long
+# skill-body-too-long
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-SKILL.md body should not exceed 500 lines
+<RuleHeader description="SKILL.md body should not exceed 500 lines" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -85,4 +81,4 @@ Disable this rule if your skill genuinely requires a large inline body and split
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

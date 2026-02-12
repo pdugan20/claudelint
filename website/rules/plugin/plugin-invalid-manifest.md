@@ -1,11 +1,6 @@
-# Rule: plugin-invalid-manifest
+# plugin-invalid-manifest
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-marketplace.json must be valid and reference existing files
+<RuleHeader description="marketplace.json must be valid and reference existing files" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -68,4 +63,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -120,4 +120,4 @@ Never disable this rule. Missing imports cause Claude Code to fail loading conte
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

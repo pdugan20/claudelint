@@ -1,10 +1,6 @@
-# Rule: lsp-server-name-too-short
+# lsp-server-name-too-short
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: LSP
-
-LSP server names should be descriptive
+<RuleHeader description="LSP server names should be descriptive" severity="warn" :fixable="false" category="LSP" />
 
 ## Rule Details
 
@@ -80,4 +76,4 @@ Disable this rule if you have an established convention using short abbreviation
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

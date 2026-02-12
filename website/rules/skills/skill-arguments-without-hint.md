@@ -1,10 +1,6 @@
-# Rule: skill-arguments-without-hint
+# skill-arguments-without-hint
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skills using $ARGUMENTS or positional parameters should include an argument-hint in frontmatter
+<RuleHeader description="Skills using $ARGUMENTS or positional parameters should include an argument-hint in frontmatter" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -67,4 +63,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

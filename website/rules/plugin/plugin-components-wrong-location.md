@@ -1,11 +1,6 @@
-# Rule: plugin-components-wrong-location
+# plugin-components-wrong-location
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Plugin components should be in .claude/ not .claude-plugin/
+<RuleHeader description="Plugin components should be in .claude/ not .claude-plugin/" severity="warn" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -56,4 +51,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

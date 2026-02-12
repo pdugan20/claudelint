@@ -166,4 +166,4 @@ Never disable this rule. Only "stdio" and "socket" are valid transport types acc
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

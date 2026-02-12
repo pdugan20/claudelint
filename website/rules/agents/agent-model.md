@@ -1,11 +1,6 @@
-# Rule: agent-model
+# agent-model
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent model must be one of: sonnet, opus, haiku, inherit
+<RuleHeader description="Agent model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -75,4 +70,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

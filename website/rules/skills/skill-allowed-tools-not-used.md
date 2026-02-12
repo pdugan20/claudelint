@@ -1,10 +1,6 @@
-# Rule: skill-allowed-tools-not-used
+# skill-allowed-tools-not-used
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Tools listed in allowed-tools are never referenced in the skill body
+<RuleHeader description="Tools listed in allowed-tools are never referenced in the skill body" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -69,4 +65,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

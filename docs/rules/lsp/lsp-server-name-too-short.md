@@ -164,4 +164,4 @@ Disable this rule if you prefer short, abbreviated server names or have establis
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

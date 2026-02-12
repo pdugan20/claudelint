@@ -1,11 +1,6 @@
-# Rule: plugin-missing-file
+# plugin-missing-file
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Plugin
-**Recommended**: Yes
-
-Files referenced in plugin.json must exist
+<RuleHeader description="Files referenced in plugin.json must exist" severity="error" :fixable="false" category="Plugin" />
 
 ## Rule Details
 
@@ -63,4 +58,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

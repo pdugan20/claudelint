@@ -79,4 +79,4 @@ Disable this rule if your CLAUDE.md references files that are generated at build
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

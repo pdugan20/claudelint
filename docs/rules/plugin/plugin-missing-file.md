@@ -157,4 +157,4 @@ Never disable this rule. Missing files cause plugin installation failures, compo
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -132,4 +132,4 @@ Disable this rule if your environment guarantees consistent working directory re
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

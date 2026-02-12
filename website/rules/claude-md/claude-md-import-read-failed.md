@@ -1,11 +1,6 @@
-# Rule: claude-md-import-read-failed
+# claude-md-import-read-failed
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Failed to read imported file
+<RuleHeader description="Failed to read imported file" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -57,4 +52,4 @@ There is no reason to disable this rule. An unreadable import always indicates a
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

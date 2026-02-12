@@ -678,7 +678,7 @@ A JavaScript linter that inspired claudelint's architecture.
 - Rule-based validation
 - Configurable severity levels
 - Auto-fix support
-- Plugin system
+- Custom rules for extensibility
 
 **Differences:**
 

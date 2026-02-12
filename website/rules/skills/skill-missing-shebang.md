@@ -1,11 +1,6 @@
-# Rule: skill-missing-shebang
+# skill-missing-shebang
 
-**Severity**: Warn
-**Fixable**: Yes
-**Validator**: Skills
-**Recommended**: Yes
-
-Shell script lacks shebang line
+<RuleHeader description="Shell script lacks shebang line" severity="warn" :fixable="true" category="Skills" />
 
 ## Rule Details
 
@@ -57,4 +52,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -1,11 +1,6 @@
-# Rule: agent-hooks
+# agent-hooks
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent hooks must be an object with event name keys
+<RuleHeader description="Agent hooks must be an object with event name keys" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -70,4 +65,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

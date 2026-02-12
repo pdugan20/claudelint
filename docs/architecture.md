@@ -160,14 +160,13 @@ export class SkillsValidator extends FileValidator {
 - Contributors extended `FileValidator` classes
 - Validators contained validation logic
 - Heavy composition patterns required
-- Plugin system exported validators
 
 **After (Rule-Based):**
 
 - Contributors write individual rules
 - Validators are internal orchestrators
 - Simple, focused rule pattern
-- Plugin system exports rules (ESLint-style)
+- ESLint-style rule exports
 
 See [projects/archive/validator-refactor/](./projects/archive/validator-refactor/) for complete migration history.
 
@@ -674,7 +673,9 @@ program
   .action(checkClaudeMd);
 ```
 
-## Plugin Implementation
+## Claude Code Plugin Integration
+
+claudelint is distributed as a Claude Code plugin, providing skills and hooks that wrap the CLI commands. This is how claudelint integrates into the Claude Code workflow.
 
 Skills wrap CLI commands:
 
@@ -760,8 +761,7 @@ The architecture supports:
 
 1. **Custom validators** - Extend FileValidator for project-specific Claude rules
 2. **Custom rules** - Configure via `.claudelintrc`
-3. **Plugins** - Add validators via plugins (future)
-4. **Tool integration** - Use alongside markdownlint, prettier, Vale, etc.
+3. **Tool integration** - Use alongside markdownlint, prettier, Vale, etc.
 
 ## Rule Registry
 
@@ -775,7 +775,7 @@ The Rule Registry provides:
 
 1. **Centralized Rule Management**
    - Single source of truth for all available rules
-   - Prevents rule ID conflicts across validators and plugins
+   - Prevents rule ID conflicts across validators
    - Enables dynamic rule discovery and querying
 
 2. **Configuration Validation**
@@ -788,12 +788,7 @@ The Rule Registry provides:
    - Powers CLI commands like `claudelint list-rules`
    - Provides metadata for IDE integrations
 
-4. **Plugin Integration**
-   - Allows plugins to register custom rules
-   - Validates plugin rules don't conflict with core rules
-   - Tracks which rules come from which plugins
-
-5. **Versioning and Deprecation**
+4. **Versioning and Deprecation**
    - Tracks when rules were added (`since` field)
    - Manages deprecation lifecycle
    - Suggests migration paths via `replacedBy` field
@@ -812,7 +807,6 @@ interface RuleMetadata {
   replacedBy?: string[]; // Replacement rules
   since: string; // Version added (e.g., '1.0.0')
   docUrl?: string; // Documentation URL
-  source?: string; // 'core' or plugin name
 }
 
 class RuleRegistry {
@@ -842,27 +836,7 @@ RuleRegistry.register({
   fixable: false,
   deprecated: false,
   since: '1.0.0',
-  source: 'core',
 });
-```
-
-**Plugin rules** register during plugin loading:
-
-```typescript
-// claudelint-plugin-custom/index.ts
-export function register(registry: RuleRegistry) {
-  registry.register({
-    id: 'custom-rule',
-    name: 'Custom Rule',
-    description: 'Validates custom requirement',
-    category: 'Custom',
-    severity: 'warning',
-    fixable: true,
-    deprecated: false,
-    since: '1.0.0',
-    source: 'claudelint-plugin-custom',
-  });
-}
 ```
 
 ### Usage Patterns
@@ -941,8 +915,6 @@ Core rules (v1.0):
 - **Commands**: Deprecated directory detection, migration prompts
 
 Rules are ESLint-style and auto-discovered from the filesystem. See the website for current counts.
-
-Plugin rules can be added by third-party packages.
 
 ### Integration with Validators
 
@@ -1285,313 +1257,60 @@ const results = await Promise.all(
 1. **Decoupled registration** - Validators don't know about CLI
 2. **Easy to add validators** - Just import the module
 3. **Dynamic discovery** - CLI finds validators automatically
-4. **Plugin support** - External validators can register
-5. **Testability** - Easy to mock/stub validators
+4. **Testability** - Easy to mock/stub validators
 
-### Plugin Integration
+## Validation Patterns
 
-External plugins can add validators:
+claudelint uses three primary validation patterns across its rules and validators.
 
-```typescript
-// claudelint-plugin-custom/index.ts
-export function register(registry: ValidatorRegistry) {
-  registry.register({
-    id: 'custom-validator',
-    name: 'Custom Validator',
-    constructor: CustomValidator,
-    enabled: true,
-    category: 'Custom',
-  });
-}
-```
+### 1. Zod Schema Validation
 
-## Composition Framework
-
-**Location:** `src/composition/`
-
-A functional approach to building validators through composition of small, reusable validation primitives.
-
-### Overview
-
-The Composition Framework enables building complex validators by combining simple, focused validation functions. Instead of writing monolithic validators with duplicated logic, you compose validators from reusable building blocks.
-
-This approach is inspired by functional programming patterns and provides:
-
-- **Reusability** - Write validation logic once, use everywhere
-- **Testability** - Test small units independently
-- **Type Safety** - Full TypeScript type inference
-- **Maintainability** - Changes localized to specific validators
-- **Composability** - Build complex logic from simple pieces
-
-### Core Types
+Structured configuration files (JSON, YAML frontmatter) are validated against Zod schemas. Schemas serve as the single source of truth for field types, constraints, and allowed values. Rules delegate to these schemas rather than duplicating validation logic.
 
 ```typescript
-// A composable validator function
-type ComposableValidator<T> = (
-  value: T,
-  context: ValidationContext
-) => ValidationResult | Promise<ValidationResult>;
-
-// Context passed to validators
-interface ValidationContext {
-  filePath?: string;
-  line?: number;
-  options: FileValidatorOptions;
-  state?: Map<string, unknown>;
-}
-
-// Result from validation
-interface ValidationResult {
-  valid: boolean;
-  errors: ValidationError[];
-  warnings: ValidationWarning[];
-}
-```
-
-### Composable Validators
-
-The framework provides a library of reusable validators:
-
-**File System Validators:**
-
-- `fileExists(path)` - Validates file exists
-- `directoryExists(path)` - Validates directory exists
-- `isReadable(path)` - Validates file is readable
-
-**Schema Validators:**
-
-- `jsonSchema(schema)` - Validates against Zod schema
-- `objectShape(keys)` - Validates object structure
-
-**String Validators:**
-
-- `regex(pattern, message)` - Validates string matches pattern
-- `minLength(min)` - Validates minimum length
-- `maxLength(max)` - Validates maximum length
-
-**Array Validators:**
-
-- `arrayOf(validator)` - Validates all array items
-- `arrayLength(min, max)` - Validates array length
-
-**Value Validators:**
-
-- `required()` - Validates value exists
-- `oneOf(values)` - Validates value in allowed set
-
-### Composition Operators
-
-Operators combine validators into complex validation logic:
-
-**`compose(...validators)`** - Chain validators sequentially:
-
-```typescript
-const validateSkillName = compose(
-  required(),
-  minLength(3),
-  maxLength(64),
-  regex(/^[a-z0-9-]+$/, 'Must be lowercase with hyphens')
-);
-```
-
-**`optional(validator)`** - Skip validation if value is null/undefined:
-
-```typescript
-const validateOptionalEmail = optional(
-  regex(/^.+@.+\..+$/, 'Invalid email format')
-);
-```
-
-**`conditional(predicate, validator)`** - Conditionally apply validation:
-
-```typescript
-const validateIfProduction = conditional(
-  (_, ctx) => ctx.options.config?.env === 'production',
-  minLength(10)
-);
-```
-
-**`all(...validators)`** - All validators must pass (accumulates errors):
-
-```typescript
-const validateConfig = all(
-  hasRequiredFields(['name', 'version']),
-  hasValidVersion,
-  hasValidDependencies
-);
-```
-
-**`any(...validators)`** - At least one validator must pass:
-
-```typescript
-const validatePathType = any(
-  fileExists,
-  directoryExists
-);
-```
-
-### Practical Examples
-
-**SKILL.md Frontmatter Validation:**
-
-```typescript
-const validateSkillFrontmatter = objectValidator({
-  name: compose(
-    required(),
-    minLength(3),
-    maxLength(64),
-    regex(/^[a-z0-9-]+$/, 'Must be lowercase with hyphens')
-  ),
-  description: compose(
-    required(),
-    minLength(20)
-  ),
-  version: optional(
-    regex(/^\d+\.\d+\.\d+$/, 'Must be semver format')
-  ),
-  'allowed-tools': optional(
-    arrayOf(oneOf(VALID_TOOLS))
-  ),
-  model: optional(
-    oneOf(['sonnet', 'opus', 'haiku', 'inherit'])
-  )
-});
-```
-
-**Settings.json Validation:**
-
-```typescript
-const validateSettings = compose(
-  jsonSchema(SettingsSchema),
-  objectValidator({
-    permissions: optional(
-      arrayOf(validatePermissionRule)
-    ),
-    hooks: optional(
-      arrayOf(validateHook)
-    ),
-    env: optional(
-      objectValidator({}, validateEnvironmentVariable)
-    )
-  })
-);
-```
-
-### Integration with FileValidator
-
-Composable validators integrate seamlessly with existing validators:
-
-```typescript
-class SkillsValidator extends FileValidator {
-  async validate() {
-    // Use composition framework for frontmatter
-    const frontmatterResult = await validateSkillFrontmatter(
-      frontmatter,
-      {
-        filePath: this.filePath,
-        options: this.options
-      }
-    );
-
-    // Merge results into validator
-    this.errors.push(...frontmatterResult.errors);
-    this.warnings.push(...frontmatterResult.warnings);
-
-    return this.getResult();
-  }
-}
-```
-
-### Benefits Over Monolithic Validation
-
-**Before (Monolithic):**
-
-```typescript
-class SkillsValidator extends FileValidator {
-  private validateFrontmatter(fm: any) {
-    if (!fm.name) {
-      this.reportError('Missing name');
-    }
-    if (typeof fm.name !== 'string') {
-      this.reportError('Name must be string');
-    }
-    if (fm.name.length < 3) {
-      this.reportError('Name too short');
-    }
-    if (fm.name.length > 64) {
-      this.reportError('Name too long');
-    }
-    if (!/^[a-z0-9-]+$/.test(fm.name)) {
-      this.reportError('Invalid name format');
-    }
-    // ... 50 more lines
-  }
-}
-```
-
-**After (Composable):**
-
-```typescript
-const validateFrontmatter = objectValidator({
-  name: compose(required(), minLength(3), maxLength(64)),
-  description: compose(required(), minLength(20)),
-  // Clear, declarative validation
+// Schema defines constraints
+const schema = z.object({
+  name: z.string().max(64).regex(/^[a-z0-9-]+$/),
+  version: z.string().regex(/^\d+\.\d+\.\d+$/),
 });
 
-class SkillsValidator extends FileValidator {
-  async validateFrontmatter(fm: any, filePath: string) {
-    const result = await validateFrontmatter(fm, {
-      filePath,
-      options: this.options
-    });
-    this.errors.push(...result.errors);
-    this.warnings.push(...result.warnings);
-  }
+// Rule delegates to schema
+const result = schema.safeParse(data);
+if (!result.success) {
+  context.report({ message: result.error.issues[0].message });
 }
 ```
 
-### Plugin Usage
+### 2. Rule-Per-Check Pattern
 
-Plugins can use the composition framework to create custom validators:
+Each validation concern is implemented as a separate rule with its own metadata (id, severity, category, fixable flag). This enables per-rule configuration, clear error reporting, and independent testing.
 
 ```typescript
-// claudelint-plugin-custom/validators/custom.ts
-import { compose, required, regex } from 'claudelint/composition';
+export const rule: Rule = {
+  meta: { id: 'skill-name', category: 'Skills', severity: 'error' },
+  validate: (content, filePath, context) => {
+    // Single focused check
+  },
+};
+```
 
-const validateProjectId = compose(
-  required(),
-  regex(/^PROJ-\d+$/, 'Must be format PROJ-<number>')
-);
+### 3. File System Checks
 
-export class CustomValidator extends FileValidator {
-  async validate() {
-    const result = await validateProjectId(
-      this.value,
-      { options: this.options }
-    );
-    this.errors.push(...result.errors);
-    return this.getResult();
-  }
+Cross-reference and existence checks verify that referenced files, directories, and paths actually exist. These are used for import validation, script existence checks, and referenced file verification.
+
+```typescript
+// Check that referenced files exist
+const importedPath = resolveImportPath(importStatement);
+if (!fs.existsSync(importedPath)) {
+  context.report({ message: `Referenced file not found: ${importedPath}` });
 }
 ```
 
-### Performance Considerations
-
-- Validators are async to support I/O operations
-- Composition operators can short-circuit (e.g., `compose` stops at first error)
-- Results can be cached for repeated validations
-- Parallel validation via `Promise.all()` in `arrayOf()`
-
-### Future Extensions
-
-- Custom validators from user configs
-- Validation middleware/hooks
-- AI-powered validation suggestions
-- Visual validation rule builder
+These patterns are combined as needed. For example, a skills rule might use Zod schema validation for frontmatter fields and file system checks for referenced files.
 
 ## System Integration
 
-This section demonstrates how the core architectural components (Rule Registry, Validator Registry, and Composition Framework) integrate to provide a cohesive validation experience.
+This section demonstrates how the core architectural components (Rule Registry and Validator Registry) integrate to provide a cohesive validation experience.
 
 ### Component Interaction Overview
 
@@ -1600,20 +1319,11 @@ This section demonstrates how the core architectural components (Rule Registry, 
 │                         CLI / API Entry                         │
 └────────────────────────────────┬────────────────────────────────┘
                                  │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Plugin Loader                             │
-│  • Discovers plugins                                             │
-│  • Loads and validates plugins                                   │
-│  • Calls plugin.register()                                       │
-└────────────────────────────────┬────────────────────────────────┘
-                                 │
                     ┌────────────┴────────────┐
                     ▼                         ▼
       ┌─────────────────────┐   ┌─────────────────────┐
       │  Validator Registry │   │    Rule Registry    │
-      │  • Core validators  │   │  • Core rules       │
-      │  • Plugin validators│   │  • Plugin rules     │
+      │  • All validators   │   │  • All rules        │
       │  • Creates instances│   │  • Metadata lookup  │
       └──────────┬──────────┘   └──────────┬──────────┘
                  │                         │
@@ -1629,8 +1339,7 @@ This section demonstrates how the core architectural components (Rule Registry, 
                  ▼
       ┌─────────────────────────────────────────┐
       │     Individual Validators               │
-      │  • Use Composition Framework            │
-      │  • Register errors via Rule Registry    │
+      │  • Report errors via Rule Registry      │
       │  • Return ValidationResult              │
       └─────────────────────────────────────────┘
 ```
@@ -1666,7 +1375,6 @@ RuleRegistry.register({
   name: 'Missing Shebang',
   category: 'Skills',
   severity: 'error',
-  source: 'core',
 });
 ```
 
@@ -1675,7 +1383,7 @@ RuleRegistry.register({
 ```typescript
 // src/cli.ts
 async function checkAll() {
-  // Get all registered validators (core + plugins)
+  // Get all registered validators
   const validatorMetadata = ValidatorRegistry.getAllMetadata()
     .filter(m => m.enabled);
 
@@ -1706,42 +1414,19 @@ async function checkAll() {
 }
 ```
 
-#### Step 3: Validator Implementation Using Composition
+#### Step 3: Validator Implementation
 
 ```typescript
 // src/validators/skills.ts
-import { compose, required, minLength, regex } from '../composition';
-
-// Define composable validators
-const validateSkillName = compose(
-  required(),
-  minLength(3),
-  maxLength(64),
-  regex(/^[a-z0-9-]+$/, 'Must be lowercase with hyphens')
-);
-
 export class SkillsValidator extends FileValidator {
   async validate() {
     const files = await this.findSkillFiles();
+    const rules = this.getRulesForCategory('Skills');
 
     for (const file of files) {
-      const frontmatter = await this.parseFrontmatter(file);
-
-      // Use composable validator
-      const nameResult = await validateSkillName(
-        frontmatter.name,
-        { filePath: file, options: this.options }
-      );
-
-      // Merge results and report errors using Rule Registry
-      if (!nameResult.valid) {
-        for (const error of nameResult.errors) {
-          const rule = RuleRegistry.get('invalid-skill-name');
-          this.reportError(error.message, {
-            line: error.line,
-            rule: rule?.id
-          });
-        }
+      const content = await fs.readFile(file, 'utf-8');
+      for (const rule of rules) {
+        await rule.validate(content, file, this.context);
       }
     }
 
@@ -1766,7 +1451,6 @@ ${error.filePath}:${error.line}
   Rule: ${rule?.id} (${rule?.name})
   Category: ${rule?.category}
   Severity: ${rule?.severity}
-  Source: ${rule?.source || 'core'}
   ${rule?.docUrl ? `Docs: ${rule.docUrl}` : ''}
     `);
   }
@@ -1782,20 +1466,10 @@ User configuration affects all components:
 {
   "rules": {
     "claude-md-size-error": "error",
-    "missing-shebang": "warning",
-    "require-jira-ticket": "error"  // Plugin rule
-  },
-  "plugins": {
-    "mycompany": {
-      "enabled": true,
-      "options": {
-        "enforceTickets": true
-      }
-    }
+    "missing-shebang": "warning"
   },
   "validators": {
-    "skills": { "enabled": true },
-    "mycompany-style": { "enabled": true }  // Plugin validator
+    "skills": { "enabled": true }
   }
 }
 ```
@@ -1805,8 +1479,7 @@ User configuration affects all components:
 1. CLI reads `.claudelintrc`
 2. Rule Registry validates rule IDs exist
 3. Validator Registry filters disabled validators
-4. Plugin options passed to plugin validators
-5. Results filtered based on rule severity
+4. Results filtered based on rule severity
 
 ### CLI Commands Integration
 
@@ -1823,12 +1496,7 @@ async function listRules() {
   // Get all rules from Registry
   const rules = RuleRegistry.getAll();
 
-  // Group by source
-  const core = rules.filter(r => r.source === 'core');
-  const plugins = rules.filter(r => r.source !== 'core');
-
-  console.log('Core Rules:', core.length);
-  console.log('Plugin Rules:', plugins.length);
+  console.log('Total Rules:', rules.length);
 
   // Display by category
   const byCategory = groupBy(rules, r => r.category);
@@ -1851,22 +1519,19 @@ Orchestrates all components:
 
 ```typescript
 async function checkAll(options) {
-  // 1. Load plugins
-  const plugins = await loadPlugins();
-
-  // 2. Get enabled validators (core + plugins)
+  // 1. Get enabled validators
   const validators = ValidatorRegistry.getAllMetadata()
     .filter(v => isEnabled(v, options));
 
-  // 3. Run validators in parallel
+  // 2. Run validators in parallel
   const results = await Promise.all(
     validators.map(v => runValidator(v, options))
   );
 
-  // 4. Report using Rule Registry metadata
+  // 3. Report using Rule Registry metadata
   reporter.report(results);
 
-  // 5. Exit with appropriate code
+  // 4. Exit with appropriate code
   process.exit(getExitCode(results));
 }
 ```
@@ -1875,20 +1540,18 @@ async function checkAll(options) {
 
 **1. Consistency:**
 
-- All validators (core and plugin) use same API
+- All validators use the same API
 - Errors reported consistently via Rule Registry
-- Common composition patterns across codebase
+- Common validation patterns across codebase
 
 **2. Extensibility:**
 
-- Plugins integrate seamlessly with core
-- No special handling needed for plugin validators
+- Custom rules integrate seamlessly with built-in rules
 - Same CLI output format for all rules
 
 **3. Maintainability:**
 
 - Changes to Rule Registry automatically affect all validators
-- Composition framework reduces code duplication
 - Stable API for custom rules and extensions
 
 **4. Discoverability:**
@@ -1899,7 +1562,7 @@ async function checkAll(options) {
 
 **5. Type Safety:**
 
-- Full TypeScript inference through composition
+- Full TypeScript inference throughout
 - Type-safe rule definitions
 - Registry lookups are type-safe
 

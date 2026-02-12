@@ -113,4 +113,4 @@ realpath "$user_path" | grep -q "^/allowed/dir/" || exit 1
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

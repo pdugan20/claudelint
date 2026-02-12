@@ -137,4 +137,4 @@ You should not disable this rule. Malformed permission rules lead to ambiguous s
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

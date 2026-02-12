@@ -1,11 +1,6 @@
-# Rule: claude-md-rules-circular-symlink
+# claude-md-rules-circular-symlink
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: CLAUDE.md
-**Recommended**: Yes
-
-Circular symlink detected in import path
+<RuleHeader description="Circular symlink detected in import path" severity="error" :fixable="false" category="CLAUDE.md" />
 
 ## Rule Details
 
@@ -72,4 +67,4 @@ Disable this rule only if your project does not use symlinks for any imported fi
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

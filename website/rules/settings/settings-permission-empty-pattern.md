@@ -1,10 +1,6 @@
-# Rule: settings-permission-empty-pattern
+# settings-permission-empty-pattern
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Settings
-
-Tool(pattern) syntax should not have empty patterns
+<RuleHeader description="Tool(pattern) syntax should not have empty patterns" severity="warn" :fixable="false" category="Settings" />
 
 ## Rule Details
 
@@ -91,4 +87,4 @@ Disable this rule or set `allowEmpty: true` if your permission system intentiona
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

@@ -124,4 +124,4 @@ Never disable this rule entirely - even simple agents should have some body cont
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

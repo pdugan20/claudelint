@@ -1,11 +1,6 @@
-# Rule: hooks-invalid-config
+# hooks-invalid-config
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Hooks
-**Recommended**: Yes
-
-Hook configuration must be valid
+<RuleHeader description="Hook configuration must be valid" severity="error" :fixable="false" category="Hooks" />
 
 ## Rule Details
 
@@ -116,4 +111,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

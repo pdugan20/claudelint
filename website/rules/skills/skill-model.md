@@ -1,11 +1,6 @@
-# Rule: skill-model
+# skill-model
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Skills
-**Recommended**: Yes
-
-Skill model must be one of: sonnet, opus, haiku, inherit
+<RuleHeader description="Skill model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -71,4 +66,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

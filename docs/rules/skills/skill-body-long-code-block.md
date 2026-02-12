@@ -120,4 +120,4 @@ Disable this rule if your skills intentionally embed long code blocks that must 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

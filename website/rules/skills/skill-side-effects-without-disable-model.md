@@ -1,10 +1,6 @@
-# Rule: skill-side-effects-without-disable-model
+# skill-side-effects-without-disable-model
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Skills
-
-Skills with side-effect tools (Bash, Write) should set disable-model-invocation to control auto-invocation
+<RuleHeader description="Skills with side-effect tools (Bash, Write) should set disable-model-invocation to control auto-invocation" severity="warn" :fixable="false" category="Skills" />
 
 ## Rule Details
 
@@ -84,4 +80,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

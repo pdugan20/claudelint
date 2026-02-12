@@ -1,11 +1,6 @@
-# Rule: agent-missing-system-prompt
+# agent-missing-system-prompt
 
-**Severity**: Warn
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent should include a "System Prompt" section
+<RuleHeader description="Agent should include a &quot;System Prompt&quot; section" severity="warn" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -66,4 +61,4 @@ Disable this rule if your project uses a different convention for naming the age
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

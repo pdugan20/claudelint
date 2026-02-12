@@ -1,11 +1,6 @@
-# Rule: agent-skills
+# agent-skills
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Agents
-**Recommended**: Yes
-
-Agent skills must be an array of skill names
+<RuleHeader description="Agent skills must be an array of skill names" severity="error" :fixable="false" category="Agents" />
 
 ## Rule Details
 
@@ -68,4 +63,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

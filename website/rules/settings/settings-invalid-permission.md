@@ -1,11 +1,6 @@
-# Rule: settings-invalid-permission
+# settings-invalid-permission
 
-**Severity**: Error
-**Fixable**: No
-**Validator**: Settings
-**Recommended**: Yes
-
-Permission rules must use valid tool names
+<RuleHeader description="Permission rules must use valid tool names" severity="error" :fixable="false" category="Settings" />
 
 ## Rule Details
 
@@ -54,4 +49,4 @@ This rule does not have any configuration options.
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

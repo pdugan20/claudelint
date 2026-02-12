@@ -80,4 +80,4 @@ This rule is auto-fixable and will add `version: "1.0.0"` if run with the `--fix
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0

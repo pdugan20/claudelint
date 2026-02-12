@@ -126,4 +126,4 @@ This is a critical validation rule that should never be disabled. The directory 
 
 ## Version
 
-Available since: v1.0.0
+Available since: v0.2.0
