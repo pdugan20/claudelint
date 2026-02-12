@@ -145,7 +145,7 @@ export class SkillsValidator extends FileValidator {
 - Create new rules in `src/rules/{category}/{rule-id}.ts`
 - Follow the Rule interface and metadata schema
 - Write focused, single-purpose validation checks
-- See [contributing-rules.md](./contributing-rules.md) for the complete guide
+- See [Contributing Guide](/development/contributing#adding-validation-rules) for the complete guide
 
 #### DON'T: Extend Validators
 
@@ -169,7 +169,7 @@ export class SkillsValidator extends FileValidator {
 - Simple, focused rule pattern
 - Plugin system exports rules (ESLint-style)
 
-See [projects/archive/validator-refactor/](./projects/archive/validator-refactor/) for complete migration history.
+See the [validator refactor archive](https://github.com/pdugan20/claudelint/tree/main/docs/projects/archive/validator-refactor) for complete migration history.
 
 ## Rule Implementation Patterns
 
@@ -522,8 +522,7 @@ Validators distinguish between:
 Validators can be configured via:
 
 1. **CLI flags** - `--verbose`, `--warnings-as-errors`, `--path`
-2. **Config file** - `.claudelintrc` (future)
-3. **Package.json** - `claudelint` field (future)
+2. **Config file** - `.claudelintrc.json`
 
 ## Validator Implementations
 
@@ -760,8 +759,7 @@ The architecture supports:
 
 1. **Custom validators** - Extend FileValidator for project-specific Claude rules
 2. **Custom rules** - Configure via `.claudelintrc`
-3. **Plugins** - Add validators via plugins (future)
-4. **Tool integration** - Use alongside markdownlint, prettier, Vale, etc.
+3. **Tool integration** - Use alongside markdownlint, prettier, Vale, etc.
 
 ## Rule Registry
 
@@ -1198,7 +1196,7 @@ claudelint cache-clear
 
 - Local development (frequent runs)
 - Pre-commit hooks (multiple validators)
-- Watch mode (future)
+- Pre-commit hooks (multiple validators)
 
 ## Validator Factory & Registry
 
@@ -1957,7 +1955,7 @@ module.exports.rule = {
 **See Also:**
 
 - [Custom Rules Guide](./custom-rules.md) - Complete documentation
-- [Example Custom Rules](./examples/custom-rules/) - Practical examples
+- [Example Custom Rules](https://github.com/pdugan20/claudelint/tree/main/docs/examples/custom-rules) - Practical examples
 
 **Future Enhancements:**
 

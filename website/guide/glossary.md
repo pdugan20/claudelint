@@ -21,7 +21,7 @@ A single validation check that examines one specific aspect of a file.
 - Can be enabled/disabled in config
 - May support auto-fix
 
-**See:** [Rule Development Guide](./rule-development.md)
+**See:** [Custom Rules Guide](/development/custom-rules)
 
 ---
 
@@ -44,7 +44,7 @@ A component that orchestrates multiple rules for a specific file type or configu
 
 **Relationship:** Validators contain many rules. One validator (e.g., SkillsValidator) runs 20+ rules.
 
-**See:** [Architecture - Validators](./architecture.md#validators)
+**See:** [Architecture - Validators](/development/architecture#validators)
 
 ---
 
@@ -289,7 +289,7 @@ Configuration values that customize how a specific rule behaves.
 }
 ```
 
-**See:** [Rule Options Guide](./rule-options-guide.md)
+**See:** [Configuration Guide](./configuration.md#rules)
 
 ---
 
@@ -335,7 +335,7 @@ claudelint check-all --format compact
 
 You can write custom formatters using the programmatic API.
 
-**See:** [API - Formatters](./api/formatters.md)
+**See:** [API - Formatters](/api/formatters)
 
 ---
 
@@ -364,7 +364,7 @@ claudelint check-all --no-cache
 claudelint cache-clear
 ```
 
-**See:** [Caching Guide](./caching.md)
+**See:** [CLI Reference - Cache Management](./cli-reference.md#cache-management)
 
 ---
 
@@ -494,7 +494,7 @@ module.exports.rule = {
 };
 ```
 
-**See:** [Rule Development - Custom Rules](./rule-development.md#part-2-writing-custom-rules)
+**See:** [Custom Rules Guide](/development/custom-rules)
 
 ---
 
@@ -505,11 +505,11 @@ A validation rule that ships with claudelint. Located in `src/rules/{category}/`
 **Properties:**
 
 - Written in TypeScript
-- Documented in `docs/rules/{category}/{rule-id}.md`
+- Documented via `meta.docs` metadata (auto-generated)
 - Tested in `tests/rules/{category}/{rule-id}.test.ts`
 - Auto-registered on build
 
-**Contributing:** See [Rule Development - Built-in Rules](./rule-development.md#part-3-contributing-built-in-rules)
+**Contributing:** See [Contributing Guide](/development/contributing#adding-validation-rules)
 
 ---
 
@@ -576,7 +576,7 @@ const linter = new ClaudeLint({ fix: true });
 const results = await linter.lintFiles(['**/*.md']);
 ```
 
-**See:** [API - ClaudeLint Class](./api/claudelint-class.md)
+**See:** [API - ClaudeLint Class](/api/claudelint-class)
 
 ---
 
@@ -593,7 +593,7 @@ const results = await lint(['**/*.md'], { fix: true });
 const output = await formatResults(results, 'stylish');
 ```
 
-**See:** [API - Functional API](./api/functional-api.md)
+**See:** [API - Functional API](/api/functional-api)
 
 ---
 
@@ -696,7 +696,7 @@ A markdown linter used alongside claudelint.
 - **Markdownlint** - Generic markdown structure and formatting
 - **claudelint** - Claude-specific validation (imports, size limits, etc.)
 
-**See:** [Formatting Tools](./formatting-tools.md)
+**See:** [CLI Reference - Formatting](./cli-reference.md#formatting)
 
 ---
 
@@ -709,7 +709,7 @@ A code formatter used alongside claudelint.
 - **Prettier** - Code formatting and whitespace
 - **claudelint** - Configuration validation
 
-**See:** [Formatting Tools](./formatting-tools.md)
+**See:** [CLI Reference - Formatting](./cli-reference.md#formatting)
 
 ---
 
@@ -731,6 +731,6 @@ A code formatter used alongside claudelint.
 - [Getting Started](./getting-started.md) - Installation and first steps
 - [Configuration](./configuration.md) - Configuring claudelint
 - [CLI Reference](./cli-reference.md) - Complete command documentation
-- [Rule Development](./rule-development.md) - Writing custom rules
-- [Architecture](./architecture.md) - System design
+- [Custom Rules](/development/custom-rules) - Writing custom rules
+- [Architecture](/development/architecture) - System design
 - [Troubleshooting](./troubleshooting.md) - Common issues and solutions

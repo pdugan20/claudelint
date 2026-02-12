@@ -8,9 +8,6 @@ export default defineConfig({
 
   base: '/',
 
-  // Dead links from legacy docs migration; fix in Phase 7 (Docs Cleanup)
-  ignoreDeadLinks: true,
-
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { property: 'og:type', content: 'website' }],

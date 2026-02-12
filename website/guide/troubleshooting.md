@@ -10,52 +10,52 @@ When claudelint reports an error, the rule ID is shown in the output. Use this t
 
 | Error Code                         | Description                 | Documentation                                                                                |
 | ---------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------- |
-| `claude-md-size-error`             | File exceeds 10MB limit     | [claude-md-size-error.md](./rules/claude-md/claude-md-size-error.md)                         |
-| `claude-md-size-warning`           | File approaching size limit | [claude-md-size-warning.md](./rules/claude-md/claude-md-size-warning.md)                     |
-| `claude-md-import-missing`         | Imported file not found     | [claude-md-import-missing.md](./rules/claude-md/claude-md-import-missing.md)                 |
-| `claude-md-import-circular`        | Circular import detected    | [claude-md-import-circular.md](./rules/claude-md/claude-md-import-circular.md)               |
-| `claude-md-import-depth-exceeded`  | Too many nested imports     | [claude-md-import-depth-exceeded.md](./rules/claude-md/claude-md-import-depth-exceeded.md)   |
-| `claude-md-import-in-code-block`   | Import in code block        | [claude-md-import-in-code-block.md](./rules/claude-md/claude-md-import-in-code-block.md)     |
-| `claude-md-glob-pattern-too-broad` | Glob pattern too broad      | [claude-md-glob-pattern-too-broad.md](./rules/claude-md/claude-md-glob-pattern-too-broad.md) |
-| `claude-md-file-not-found`         | CLAUDE.md not found         | [claude-md-file-not-found.md](./rules/claude-md/claude-md-file-not-found.md)                 |
+| `claude-md-size-error`             | File exceeds 10MB limit     | [claude-md-size-error](/rules/claude-md/claude-md-size-error)                         |
+| `claude-md-size-warning`           | File approaching size limit | [claude-md-size-warning](/rules/claude-md/claude-md-size-warning)                     |
+| `claude-md-import-missing`         | Imported file not found     | [claude-md-import-missing](/rules/claude-md/claude-md-import-missing)                 |
+| `claude-md-import-circular`        | Circular import detected    | [claude-md-import-circular](/rules/claude-md/claude-md-import-circular)               |
+| `claude-md-import-depth-exceeded`  | Too many nested imports     | [claude-md-import-depth-exceeded](/rules/claude-md/claude-md-import-depth-exceeded)   |
+| `claude-md-import-in-code-block`   | Import in code block        | [claude-md-import-in-code-block](/rules/claude-md/claude-md-import-in-code-block)     |
+| `claude-md-glob-pattern-too-broad` | Glob pattern too broad      | [claude-md-glob-pattern-too-broad](/rules/claude-md/claude-md-glob-pattern-too-broad) |
+| `claude-md-file-not-found`         | CLAUDE.md not found         | [claude-md-file-not-found](/rules/claude-md/claude-md-file-not-found)                 |
 
 ### Skills Rules
 
 | Error Code                        | Description                    | Documentation                                                                           |
 | --------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
-| `skill-missing-version`           | Skill lacks version field      | [skill-missing-version.md](./rules/skills/skill-missing-version.md)                     |
-| `skill-version`                   | Invalid version format         | [skill-version.md](./rules/skills/skill-version.md)                                     |
-| `skill-name`                      | Invalid skill name             | [skill-name.md](./rules/skills/skill-name.md)                                           |
-| `skill-name-directory-mismatch`   | Name doesn't match directory   | [skill-name-directory-mismatch.md](./rules/skills/skill-name-directory-mismatch.md)     |
-| `skill-description`               | Missing or invalid description | [skill-description.md](./rules/skills/skill-description.md)                             |
-| `skill-referenced-file-not-found` | Referenced file missing        | [skill-referenced-file-not-found.md](./rules/skills/skill-referenced-file-not-found.md) |
-| `skill-missing-changelog`         | CHANGELOG.md not found         | [skill-missing-changelog.md](./rules/skills/skill-missing-changelog.md)                 |
-| `skill-missing-shebang`           | Shell script lacks shebang     | [skill-missing-shebang.md](./rules/skills/skill-missing-shebang.md)                     |
-| `skill-dangerous-command`         | Dangerous shell command        | [skill-dangerous-command.md](./rules/skills/skill-dangerous-command.md)                 |
+| `skill-missing-version`           | Skill lacks version field      | [skill-missing-version](/rules/skills/skill-missing-version)                     |
+| `skill-version`                   | Invalid version format         | [skill-version](/rules/skills/skill-version)                                     |
+| `skill-name`                      | Invalid skill name             | [skill-name](/rules/skills/skill-name)                                           |
+| `skill-name-directory-mismatch`   | Name doesn't match directory   | [skill-name-directory-mismatch](/rules/skills/skill-name-directory-mismatch)     |
+| `skill-description`               | Missing or invalid description | [skill-description](/rules/skills/skill-description)                             |
+| `skill-referenced-file-not-found` | Referenced file missing        | [skill-referenced-file-not-found](/rules/skills/skill-referenced-file-not-found) |
+| `skill-missing-changelog`         | CHANGELOG.md not found         | [skill-missing-changelog](/rules/skills/skill-missing-changelog)                 |
+| `skill-missing-shebang`           | Shell script lacks shebang     | [skill-missing-shebang](/rules/skills/skill-missing-shebang)                     |
+| `skill-dangerous-command`         | Dangerous shell command        | [skill-dangerous-command](/rules/skills/skill-dangerous-command)                 |
 
 ### Settings Rules
 
 | Error Code                     | Description                   | Documentation                                                                       |
 | ------------------------------ | ----------------------------- | ----------------------------------------------------------------------------------- |
-| `settings-file-path-not-found` | Referenced path doesn't exist | [settings-file-path-not-found.md](./rules/settings/settings-file-path-not-found.md) |
-| `settings-invalid-permission`  | Invalid permission rule       | [settings-invalid-permission.md](./rules/settings/settings-invalid-permission.md)   |
-| `settings-invalid-env-var`     | Invalid environment variable  | [settings-invalid-env-var.md](./rules/settings/settings-invalid-env-var.md)         |
+| `settings-file-path-not-found` | Referenced path doesn't exist | [settings-file-path-not-found](/rules/settings/settings-file-path-not-found) |
+| `settings-invalid-permission`  | Invalid permission rule       | [settings-invalid-permission](/rules/settings/settings-invalid-permission)   |
+| `settings-invalid-env-var`     | Invalid environment variable  | [settings-invalid-env-var](/rules/settings/settings-invalid-env-var)         |
 
 ### Hooks Rules
 
 | Error Code             | Description               | Documentation                                                    |
 | ---------------------- | ------------------------- | ---------------------------------------------------------------- |
-| `hooks-missing-script` | Hook script not found     | [hooks-missing-script.md](./rules/hooks/hooks-missing-script.md) |
-| `hooks-invalid-event`  | Invalid hook event name   | [hooks-invalid-event.md](./rules/hooks/hooks-invalid-event.md)   |
-| `hooks-invalid-config` | Invalid hooks.json schema | [hooks-invalid-config.md](./rules/hooks/hooks-invalid-config.md) |
+| `hooks-missing-script` | Hook script not found     | [hooks-missing-script](/rules/hooks/hooks-missing-script) |
+| `hooks-invalid-event`  | Invalid hook event name   | [hooks-invalid-event](/rules/hooks/hooks-invalid-event)   |
+| `hooks-invalid-config` | Invalid hooks.json schema | [hooks-invalid-config](/rules/hooks/hooks-invalid-config) |
 
 ### MCP Rules
 
 | Error Code                  | Description           | Documentation                                                            |
 | --------------------------- | --------------------- | ------------------------------------------------------------------------ |
-| `mcp-http-invalid-url`      | Invalid HTTP URL      | [mcp-http-invalid-url.md](./rules/mcp/mcp-http-invalid-url.md)           |
-| `mcp-sse-invalid-url`       | Invalid SSE URL       | [mcp-sse-invalid-url.md](./rules/mcp/mcp-sse-invalid-url.md)             |
-| `mcp-websocket-invalid-url` | Invalid WebSocket URL | [mcp-websocket-invalid-url.md](./rules/mcp/mcp-websocket-invalid-url.md) |
+| `mcp-http-invalid-url`      | Invalid HTTP URL      | [mcp-http-invalid-url](/rules/mcp/mcp-http-invalid-url)           |
+| `mcp-sse-invalid-url`       | Invalid SSE URL       | [mcp-sse-invalid-url](/rules/mcp/mcp-sse-invalid-url)             |
+| `mcp-websocket-invalid-url` | Invalid WebSocket URL | [mcp-websocket-invalid-url](/rules/mcp/mcp-websocket-invalid-url) |
 
 For a complete list of all rules, run:
 
@@ -88,7 +88,7 @@ claudelint list-rules
 3. Use external links instead of inline content
 4. Check for accidentally included binary data
 
-**See:** [claude-md-size-error](./rules/claude-md/claude-md-size-error.md)
+**See:** [claude-md-size-error](/rules/claude-md/claude-md-size-error)
 
 #### Error: "Imported file not found"
 
@@ -107,7 +107,7 @@ claudelint list-rules
 3. Check for typos in filename
 4. Ensure proper file extension (.md, .txt, etc.)
 
-**See:** [claude-md-import-missing](./rules/claude-md/claude-md-import-missing.md)
+**See:** [claude-md-import-missing](/rules/claude-md/claude-md-import-missing)
 
 #### Error: "Circular import detected"
 
@@ -131,7 +131,7 @@ claudelint list-rules
 2. Extract shared content to a common file
 3. Remove redundant imports
 
-**See:** [claude-md-import-circular](./rules/claude-md/claude-md-import-circular.md)
+**See:** [claude-md-import-circular](/rules/claude-md/claude-md-import-circular)
 
 ---
 
@@ -164,7 +164,7 @@ version: 1.0.0
 
 **Auto-fix:** Run `claudelint check-all --fix` to automatically add `version: "1.0.0"`.
 
-**See:** [skill-missing-version](./rules/skills/skill-missing-version.md)
+**See:** [skill-missing-version](/rules/skills/skill-missing-version)
 
 #### Error: "Skill name does not match directory name"
 
@@ -184,7 +184,7 @@ name: authentication  <!-- Doesn't match directory 'user-auth' -->
 1. Rename directory to match skill name
 2. Update skill name in frontmatter to match directory
 
-**See:** [skill-name-directory-mismatch](./rules/skills/skill-name-directory-mismatch.md)
+**See:** [skill-name-directory-mismatch](/rules/skills/skill-name-directory-mismatch)
 
 #### Error: "Shell script missing shebang"
 
@@ -202,7 +202,7 @@ Add shebang to first line of script:
 
 **Auto-fix:** Run `claudelint check-all --fix` to automatically add shebang.
 
-**See:** [skill-missing-shebang](./rules/skills/skill-missing-shebang.md)
+**See:** [skill-missing-shebang](/rules/skills/skill-missing-shebang)
 
 ---
 
@@ -226,7 +226,7 @@ Add shebang to first line of script:
 2. Fix the path in settings.json
 3. Remove the reference if no longer needed
 
-**See:** [settings-file-path-not-found](./rules/settings/settings-file-path-not-found.md)
+**See:** [settings-file-path-not-found](/rules/settings/settings-file-path-not-found)
 
 ---
 
@@ -256,7 +256,7 @@ Add shebang to first line of script:
 2. Fix the path in hooks.json
 3. Verify path is relative to project root
 
-**See:** [hooks-missing-script](./rules/hooks/hooks-missing-script.md)
+**See:** [hooks-missing-script](/rules/hooks/hooks-missing-script)
 
 ---
 
@@ -410,7 +410,7 @@ See [Auto-fix Guide](./auto-fix.md) for details.
    claudelint check-all --verbose
    ```
 
-See [Caching Guide](./caching.md) for details.
+See [CLI Reference](./cli-reference.md#cache-management) for cache details.
 
 #### Q: How do I clear the cache?
 
@@ -609,7 +609,7 @@ claudelint check-all || exit 1
 # After:  if [ $? -eq 1 ]; then ...
 ```
 
-See [README - Exit Code Changes](../README.md#exit-code-changes-v10-breaking-change).
+See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 ### Problem: Hook doesn't run at session start
 
@@ -651,7 +651,7 @@ See [README - Exit Code Changes](../README.md#exit-code-changes-v10-breaking-cha
 
 4. Check for syntax errors in the rule file
 
-See [Custom Rules Guide](./rule-development.md#part-2-writing-custom-rules) for details.
+See [Custom Rules Guide](/development/custom-rules) for details.
 
 ### Problem: Custom rule not executing
 

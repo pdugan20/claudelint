@@ -197,7 +197,7 @@ Run validation and formatting:
 
 ## See Also
 
-- [Configuration Guide](./configuration.md) - Customize validation rules
-- [CLI Reference](../README.md#cli-usage) - All available commands and flags
-- [Validators Documentation](./validation-reference.md) - What gets validated
+- [Configuration Guide](/guide/configuration) - Customize validation rules
+- [CLI Reference](/guide/cli-reference) - All available commands and flags
+- [Rules Reference](/rules/overview) - What gets validated
 ````

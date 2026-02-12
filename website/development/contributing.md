@@ -4,13 +4,13 @@ Thank you for your interest in contributing to claudelint! This document provide
 
 ## Quick Start for Contributors
 
-**Want to add a validation rule?** See [docs/contributing-rules.md](docs/contributing-rules.md) - this is our detailed technical guide for writing rules.
+**Want to add a validation rule?** See [Adding Validation Rules](#adding-validation-rules) below.
 
 **Want to contribute in other ways?** Keep reading this document for general contribution guidelines (git workflow, testing, code style, etc.).
 
 ## Code of Conduct
 
-This project adheres to a Code of Conduct that all contributors are expected to follow. Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before contributing.
+This project adheres to a Code of Conduct that all contributors are expected to follow. Please read our [Code of Conduct](https://github.com/pdugan20/claudelint/blob/main/CODE_OF_CONDUCT.md) before contributing.
 
 ## Getting Started
 
@@ -87,7 +87,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
    npm run validate
    ```
 
-**See [docs/scripts.md](docs/scripts.md) for complete npm scripts reference.**
+**See [CLI Reference](/guide/cli-reference) for complete command reference.**
 
 ### Code Style Guidelines
 
@@ -102,7 +102,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 **IMPORTANT**: Library code MUST NOT use `console` directly.
 
-See [docs/architecture/diagnostic-system.md](docs/architecture/diagnostic-system.md) for full details.
+See [Architecture](/development/architecture) for full details.
 
 **Use DiagnosticCollector instead**:
 
@@ -204,7 +204,7 @@ npm run check:model-names
 5. Re-verify: `npm run check:constants`
 6. Update `docs/constants-verification.md` with new date
 
-**See also:** [docs/constants-verification.md](docs/constants-verification.md) for detailed documentation.
+**See also:** the constants verification scripts in `scripts/check/` for detailed documentation.
 
 **Note:** Regular contributors don't need Claude CLI installed. This is only for maintainers doing releases.
 
@@ -259,7 +259,7 @@ claudelint/
 
 claudelint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
 
-**See the comprehensive [Rule Development Guide](docs/rule-development.md) for:**
+**See the [Custom Rules Guide](/development/custom-rules) for:**
 
 - Understanding rules and architecture
 - Writing custom rules (external developers)
@@ -373,7 +373,7 @@ Skills are interactive capabilities that allow Claude to help users validate, op
 
 ### Skill Quality Standards
 
-All skills must follow Anthropic's best practices for skill development. See [docs/skill-development.md](docs/skill-development.md) for complete guide.
+All skills must follow Anthropic's best practices for skill development.
 
 **Required for all skills:**
 
@@ -445,7 +445,7 @@ Use this template for skill PRs:
 - Examples follow scenario format
 - Troubleshooting addresses skill usage issues (not issues skill fixes)
 
-See [docs/skill-development.md](docs/skill-development.md) for detailed requirements and [docs/projects/plugin-and-md-management/skill-improvement-guidelines.md](docs/projects/plugin-and-md-management/skill-improvement-guidelines.md) for Anthropic best practices.
+See the skill quality standards above for detailed requirements.
 
 ## Rule Deprecation Policy
 
@@ -805,7 +805,7 @@ jobs:
 
 ## Getting Help
 
-- Read the [documentation](docs/)
+- Read the [documentation](/)
 - Search [existing issues](https://github.com/pdugan20/claudelint/issues)
 - Ask in [discussions](https://github.com/pdugan20/claudelint/discussions)
 - Open a new issue if needed

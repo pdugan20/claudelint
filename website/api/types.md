@@ -727,4 +727,4 @@ const customResults = results as CustomResult[];
 
 - [ClaudeLint Class](./claudelint-class.md) - Class API documentation
 - [Functional API](./functional-api.md) - Function API documentation
-- [Examples](../../examples/) - Usage examples with types
+- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Usage examples with types

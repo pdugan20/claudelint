@@ -11,7 +11,7 @@ claudelint supports configuration through multiple methods, allowing you to cust
 - [Ignoring Files](#ignoring-files) - Skip validation for certain paths
 - [Inline Disables](./inline-disables.md) - Disable rules in specific files
 - [CLI Configuration](./cli-reference.md) - Command-line flags and options
-- [Debugging Config](./debugging.md) - Troubleshoot configuration issues
+- [Troubleshooting](./troubleshooting.md) - Troubleshoot configuration issues
 
 **Common Tasks:**
 
@@ -19,7 +19,7 @@ claudelint supports configuration through multiple methods, allowing you to cust
 - **Ignore a directory:** See [Ignoring Files](#ignoring-files)
 - **Disable for one line:** See [Inline Disables](./inline-disables.md)
 - **Check current config:** Run `claudelint print-config`
-- **Fix config errors:** See [Debugging Guide](./debugging.md)
+- **Fix config errors:** See [Troubleshooting](./troubleshooting.md)
 
 ## Configuration Files
 
@@ -92,7 +92,7 @@ When extending configs, claudelint merges configurations in this order:
 
 Rules are deep merged (child can override specific rules). Overrides and ignore patterns are concatenated. Circular dependencies are detected and prevented.
 
-See [Monorepo documentation](./monorepo.md) for detailed examples.
+See [Monorepo documentation](/integrations/monorepos) for detailed examples.
 
 ### Rules
 
@@ -425,7 +425,7 @@ claudelint resolve-config .claude/skills/test/SKILL.md --format table
 
 Useful for debugging file-specific overrides.
 
-See [Debugging Guide](debugging.md) for complete troubleshooting information.
+See [Troubleshooting Guide](./troubleshooting.md) for complete troubleshooting information.
 
 ## Example Configuration
 

@@ -449,6 +449,6 @@ npm install --save-dev @company/claudelint-config
 
 ## Related Documentation
 
-- [Configuration Reference](./configuration.md)
-- [Rules Reference](./rules.md)
-- [CLI Reference](./cli.md)
+- [Configuration Reference](/guide/configuration)
+- [Rules Reference](/rules/overview)
+- [CLI Reference](/guide/cli-reference)

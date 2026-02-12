@@ -491,4 +491,4 @@ async function example() {
 - [ClaudeLint Class](./claudelint-class.md) - Full class API
 - [Types](./types.md) - TypeScript type reference
 - [Formatters](./formatters.md) - Formatter documentation
-- [Examples](../../examples/) - Complete examples
+- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Complete examples

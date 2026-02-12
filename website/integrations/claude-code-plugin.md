@@ -219,7 +219,7 @@ The plugin respects your project's configuration files:
 - `.claudelintignore` - Files to ignore
 - `.claude/hooks/hooks.json` - Auto-validation hooks
 
-See [configuration.md](./configuration.md) for details.
+See the [Configuration Guide](/guide/configuration) for details.
 
 ## Automatic Validation
 
@@ -240,7 +240,7 @@ Create `.claude/hooks/hooks.json`:
 }
 ```
 
-See [hooks.md](./hooks.md) for more hook examples.
+See [Hooks Validator](/validators/hooks) for more hook examples.
 
 ## Troubleshooting
 
@@ -259,7 +259,7 @@ If validation returns errors:
 1. Run with `--explain` flag for detailed guidance
 2. Check `.claudelintrc.json` for rule configuration
 3. See error messages for specific line numbers and fixes
-4. Review [validation-reference.md](./validation-reference.md) for rule details
+4. Review [Rules Reference](/rules/overview) for rule details
 
 ### Permission Denied
 
@@ -352,7 +352,7 @@ To remove the marketplace:
 
 ## See Also
 
-- [Configuration Guide](./configuration.md) - Customize validation rules
-- [Hooks Guide](./hooks.md) - Automatic validation
-- [Validators Documentation](./validation-reference.md) - What gets validated
-- [CLI Reference](../README.md#usage) - All commands and flags
+- [Configuration Guide](/guide/configuration) - Customize validation rules
+- [Hooks Validator](/validators/hooks) - Automatic validation
+- [Rules Reference](/rules/overview) - What gets validated
+- [CLI Reference](/guide/cli-reference) - All commands and flags

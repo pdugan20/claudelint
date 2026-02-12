@@ -439,6 +439,6 @@ claudelint check-all --fix --no-cache
 
 ## See Also
 
-- [Validators](validation-reference.md) - See which rules are fixable
-- [Configuration](configuration.md) - Configure validation rules
-- [CLI Reference](../README.md#usage) - All command-line options
+- [Rules Reference](/rules/overview) - See which rules are fixable
+- [Configuration](/guide/configuration) - Configure validation rules
+- [CLI Reference](/guide/cli-reference) - All command-line options

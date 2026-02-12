@@ -1,8 +1,6 @@
 # Custom Rules Guide
 
-> **Note:** This guide has been consolidated into the [Rule Development Guide](./rule-development.md). Please refer to **Part 2: Writing Custom Rules** in that document for the most up-to-date information on creating custom validation rules.
->
-> This file is kept for backward compatibility with existing links.
+> **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
 
 ---
 
@@ -1149,8 +1147,8 @@ validate: async (context) => {
 ## Further Reading
 
 - [Architecture Documentation](./architecture.md) - How custom rules fit into claudelint
-- [Built-in Rules](./rules/) - Examples of rule implementations
-- [Contributing Guide](../CONTRIBUTING.md) - How to contribute rules to claudelint
+- [Built-in Rules](/rules/overview) - Examples of rule implementations
+- [Contributing Guide](./contributing) - How to contribute rules to claudelint
 
 ## Support
 

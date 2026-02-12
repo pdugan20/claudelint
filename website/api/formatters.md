@@ -588,4 +588,4 @@ console.log(output);
 - [ClaudeLint Class](./claudelint-class.md) - Main API documentation
 - [Functional API](./functional-api.md) - Stateless functions
 - [Types](./types.md) - TypeScript type reference
-- [Examples](../../examples/) - Complete usage examples
+- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Complete usage examples

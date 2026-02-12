@@ -1,0 +1,45 @@
+# Skills Validator
+
+The Skills validator checks Claude Code skill definitions for correctness, security, documentation quality, and best practices.
+
+## What It Checks
+
+- SKILL.md frontmatter schema compliance
+- Required fields (name, description)
+- Version format validation
+- Shell script security (dangerous commands, eval usage)
+- Referenced file existence
+- Documentation quality (CHANGELOG, examples, README)
+- Naming conventions
+
+## Rules
+
+This validator includes 46 rules. See the [Skills rules category](/rules/overview) for the complete list.
+
+Key rules include:
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| [skill-missing-version](/rules/skills/skill-missing-version) | warn | Missing version field |
+| [skill-name](/rules/skills/skill-name) | error | Invalid skill name format |
+| [skill-description](/rules/skills/skill-description) | error | Missing or invalid description |
+| [skill-dangerous-command](/rules/skills/skill-dangerous-command) | error | Dangerous shell command detected |
+| [skill-missing-shebang](/rules/skills/skill-missing-shebang) | error | Shell script lacks shebang |
+
+## CLI Usage
+
+```bash
+# Validate all skills
+claudelint validate-skills
+
+# Validate with auto-fix
+claudelint validate-skills --fix
+
+# Verbose output
+claudelint validate-skills --verbose
+```
+
+## See Also
+
+- [Rules Reference](/rules/overview) - All validation rules
+- [Configuration](/guide/configuration) - Customize rule severity

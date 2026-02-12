@@ -604,4 +604,4 @@ if (linter.isPathIgnored('node_modules/package/CLAUDE.md')) {
 - [Functional API](./functional-api.md) - Stateless convenience functions
 - [Formatters](./formatters.md) - Result formatting guide
 - [Types](./types.md) - TypeScript type reference
-- [Examples](../../examples/) - Complete usage examples
+- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Complete usage examples
