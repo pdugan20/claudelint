@@ -283,6 +283,7 @@ claudelint list-rules [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--category <category>` | Filter by category: `CLAUDE.md`, `Skills`, `Settings`, `Hooks`, `MCP`, `Plugin` | All |
+| `--fixable` | Show only rules that support auto-fix | `false` |
 | `--format <format>` | Output format: `table` or `json` | `table` |
 
 **Examples:**
@@ -294,11 +295,14 @@ claudelint list-rules
 # List only Skills rules
 claudelint list-rules --category Skills
 
+# List only fixable rules
+claudelint list-rules --fixable
+
+# Combine filters
+claudelint list-rules --category Skills --fixable
+
 # JSON output
 claudelint list-rules --format json
-
-# Filter and output as JSON
-claudelint list-rules --category CLAUDE.md --format json
 ```
 
 **Output includes:**

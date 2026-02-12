@@ -21,10 +21,15 @@ export function registerListRulesCommand(program: Command): void {
       'Filter by category (CLAUDE.md, Skills, Settings, Hooks, MCP, Plugin)'
     )
     .option('--format <format>', 'Output format: table, json (default: table)')
-    .action((options: { category?: string; format?: string }) => {
-      const rules = options.category
+    .option('--fixable', 'Show only rules that support auto-fix')
+    .action((options: { category?: string; format?: string; fixable?: boolean }) => {
+      let rules = options.category
         ? RuleRegistry.getByCategory(options.category)
         : RuleRegistry.getAll();
+
+      if (options.fixable) {
+        rules = rules.filter((rule) => rule.fixable);
+      }
 
       if (options.format === 'json') {
         logger.log(JSON.stringify(rules, null, 2));

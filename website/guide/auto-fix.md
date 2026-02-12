@@ -139,7 +139,7 @@ Updates the `name` field in SKILL.md frontmatter to match the parent directory n
 
 Adds `./` prefix to component paths that should be explicit about their location.
 
-Use `claudelint list-rules --format json | jq '.[] | select(.fixable == true)'` to see all fixable rules.
+Run `claudelint list-rules --fixable` to see all fixable rules.
 
 ## Common Workflows
 
@@ -273,7 +273,7 @@ Some issues require human judgment:
 - `skill-missing-examples` - Requires understanding skill usage
 - `import-circular` - Requires restructuring imports
 
-Use `claudelint list-rules` to see which rules support auto-fix.
+Use `claudelint list-rules --fixable` to see which rules support auto-fix.
 
 ### Caching Disabled with --fix
 
