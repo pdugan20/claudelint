@@ -32,6 +32,7 @@ const ALLOWLISTED_PATHS = [
   'website/rules/_sidebar.json',
   'src/rules/rule-ids.ts',
   'src/rules/index.ts',
+  'scripts/check/hardcoded-counts.ts',
   'docs/projects/',
   'CHANGELOG.md',
   'node_modules/',
@@ -39,11 +40,23 @@ const ALLOWLISTED_PATHS = [
 ];
 
 /**
- * Patterns that match hardcoded rule counts
+ * Patterns that match hardcoded rule counts.
+ * The \+? handles "N+ rules" format (e.g., "14+ rules", "28+ rules").
  */
 const COUNT_PATTERNS = [
-  /\b(\d+)\s+(?:validation\s+)?rules?\b/gi,
-  /\b(\d+)\s+rules?\s+total\b/gi,
+  /\b(\d+)\+?\s+(?:validation\s+)?rules?\b/gi,
+  /\b(\d+)\+?\s+rules?\s+total\b/gi,
+];
+
+/**
+ * Patterns that reference unreleased versions as if they exist.
+ * Catches "v1.0", "v1.0.0", "After v1.0" etc. but NOT inside
+ * example version strings like "version: v1.0.0" in code blocks
+ * (those are already excluded by the code block map).
+ */
+const VERSION_PATTERNS = [
+  /\b(?:before|after|since|in|from)\s+v1\.0\b/gi,
+  /\bv1\.0\s+\(current\)/gi,
 ];
 
 /**
@@ -121,6 +134,20 @@ async function scanFile(filePath: string): Promise<void> {
           line: i + 1,
           content: line.trim(),
           issue: `Hardcoded rule count "${match[0]}" found. Use <RuleCount> in website/ or generic language in docs/.`,
+        });
+      }
+    }
+
+    for (const pattern of VERSION_PATTERNS) {
+      pattern.lastIndex = 0;
+      let match: RegExpExecArray | null;
+
+      while ((match = pattern.exec(line)) !== null) {
+        violations.push({
+          file: relativePath,
+          line: i + 1,
+          content: line.trim(),
+          issue: `Reference to unreleased version "${match[0]}" found. v1.0 has never been released.`,
         });
       }
     }

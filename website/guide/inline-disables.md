@@ -17,20 +17,21 @@ Use HTML comment syntax to disable rules:
 
 Disable a specific rule for the entire file:
 
-````markdown
+```markdown
 <!-- claudelint-disable-file import-missing -->
 
 @import non-existent-file.md
 @import another-missing-file.md
+```
 
-````text
 Disable all rules for the entire file:
 
 ```markdown
 <!-- claudelint-disable-file -->
 
 This file won't be validated at all.
-```text
+```
+
 ### Disable Next Line
 
 Disable a specific rule for the next line only:
@@ -40,25 +41,29 @@ Disable a specific rule for the next line only:
 @import non-existent-file.md
 
 This line will still be validated.
-```text
+```
+
 Disable all rules for the next line:
 
 ```markdown
 <!-- claudelint-disable-next-line -->
 @import non-existent-file.md
-```text
+```
+
 ### Disable Current Line
 
 Disable a specific rule on the same line as the comment:
 
 ```markdown
-<!-- claudelint-disable-line size-warning --> This is a very long line that would normally trigger a warning
-```text
+<!-- claudelint-disable-line size-warning --> This is a very long line...
+```
+
 Disable all rules on the current line:
 
 ```markdown
 <!-- claudelint-disable-line --> Any violation on this line is ignored
-```text
+```
+
 ### Disable Range
 
 Disable a specific rule for a block of lines:
@@ -71,46 +76,26 @@ Disable a specific rule for a block of lines:
 <!-- claudelint-enable import-missing -->
 
 Validation resumes here.
-```text
+```
+
 Disable all rules for a block:
 
 ```markdown
 <!-- claudelint-disable -->
 Content in this block won't be validated.
 <!-- claudelint-enable -->
-```text
+```
+
 **Note:** Unclosed disable blocks extend to the end of the file:
 
 ```markdown
 <!-- claudelint-disable size-warning -->
 Rest of file won't check for size warnings.
-```text
+```
+
 ## Rule IDs
 
-Valid rule IDs depend on the validator:
-
-**CLAUDE.md rules:**
-
-- `size-error`
-- `size-warning`
-- `import-missing`
-- `import-circular`
-
-**Skills rules:**
-
-- `skill-missing-shebang`
-- `skill-missing-comments`
-- `skill-dangerous-command`
-- `skill-eval-usage`
-- `skill-path-traversal`
-- `skill-missing-changelog`
-- `skill-missing-examples`
-- `skill-missing-version`
-- `skill-too-many-files`
-- `skill-deep-nesting`
-- `skill-naming-inconsistent`
-
-See [Rules Reference](/rules/overview) for complete rule list or run `claudelint list-rules`.
+Valid rule IDs depend on the validator. See [Rules Reference](/rules/overview) for the complete rule list or run `claudelint list-rules`.
 
 ## Unused Disable Detection
 
@@ -124,7 +109,8 @@ Add to `.claudelintrc.json`:
 {
   "reportUnusedDisableDirectives": true
 }
-```text
+```
+
 ### Example
 
 **File:**
@@ -134,14 +120,16 @@ Add to `.claudelintrc.json`:
 
 <!-- claudelint-disable-next-line size-error -->
 This line has no violations, so the disable is unnecessary.
-```text
+```
+
 **Output:**
 
 ```text
 ! Warning: Unused disable directive for 'size-error' [unused-disable]
   at: CLAUDE.md:3
   Fix: Remove the unused disable comment
-```text
+```
+
 ### Why This Matters
 
 Unused disable directives:
@@ -171,13 +159,15 @@ Prefer specific rule IDs over disabling all rules:
 ```markdown
 <!-- claudelint-disable-next-line import-missing -->
 @import future-file.md
-```text
+```
+
 **Bad:**
 
 ```markdown
 <!-- claudelint-disable-next-line -->
 @import future-file.md
-```text
+```
+
 Specific disables:
 
 - Make intent clear
@@ -192,7 +182,8 @@ Add a comment explaining why the disable is necessary:
 <!-- Imported file will be created by build script -->
 <!-- claudelint-disable-next-line import-missing -->
 @import generated-content.md
-```text
+```
+
 ### Place Carefully
 
 Put disable comments as close as possible to the violation:
@@ -206,7 +197,8 @@ Normal content here.
 @import missing-file.md
 
 More content here.
-```text
+```
+
 **Bad:**
 
 ```markdown
@@ -217,7 +209,8 @@ Normal content here.
 
 More content here.
 <!-- claudelint-enable import-missing -->
-```text
+```
+
 ### Review Regularly
 
 Disable directives can become outdated:
@@ -236,7 +229,8 @@ For files that will be created later:
 <!-- File will be added in next PR -->
 <!-- claudelint-disable-next-line import-missing -->
 @import upcoming-feature.md
-```text
+```
+
 ### Generated Content
 
 For imports of generated files:
@@ -247,7 +241,8 @@ For imports of generated files:
 
 @import api-docs/generated.md
 @import api-docs/models.md
-```text
+```
+
 ### Legacy Code
 
 For files being gradually fixed:
@@ -255,7 +250,8 @@ For files being gradually fixed:
 ```markdown
 <!-- TODO: Fix skills organization - tracked in #123 -->
 <!-- claudelint-disable skill-too-many-files -->
-```text
+```
+
 ### False Positives
 
 When a rule incorrectly flags valid code:
@@ -264,7 +260,8 @@ When a rule incorrectly flags valid code:
 <!-- This import uses environment-specific path resolution -->
 <!-- claudelint-disable-next-line import-missing -->
 @import $PLATFORM/config.md
-```text
+```
+
 ## Troubleshooting
 
 ### Disable Not Working
@@ -290,7 +287,8 @@ When a rule incorrectly flags valid code:
 <!-- Correct: no blank lines -->
 <!-- claudelint-disable-next-line import-missing -->
 @import file.md
-```text
+```
+
 ### Unused Disable Warnings
 
 **Problem:** Getting warnings about unused disables
@@ -305,7 +303,8 @@ When a rule incorrectly flags valid code:
    {
      "reportUnusedDisableDirectives": false
    }
-   ```text
+   ```
+
 ### Wrong Line Numbers
 
 **Problem:** Disable comment affects wrong lines
@@ -314,12 +313,13 @@ When a rule incorrectly flags valid code:
 
 **Solution:**
 
-```markdown
-<!-- Line 1: This is the comment line -->
-<!-- Line 2: claudelint-disable-next-line affects line 3 -->
-<!-- Line 3: This line is disabled -->
-Line 4: This line is NOT disabled
 ```text
+Line 1: This is the comment line
+Line 2: claudelint-disable-next-line affects line 3
+Line 3: This line is disabled
+Line 4: This line is NOT disabled
+```
+
 Use `claudelint-disable-line` to disable the current line.
 
 ## Advanced Examples
@@ -332,7 +332,8 @@ Disable multiple rules by using multiple disable comments:
 <!-- claudelint-disable-next-line import-missing -->
 <!-- claudelint-disable-next-line size-warning -->
 @import very-large-non-existent-file.md
-```text
+```
+
 **Note:** Cannot specify multiple rules in a single comment. Each rule needs its own comment.
 
 ### Nested Disables
@@ -349,12 +350,13 @@ Range disables can overlap:
 
 @import file3.md
 <!-- claudelint-enable import-missing -->
-```text
+```
+
 ### Skill Files
 
 Disable directives work in `SKILL.md` files:
 
-```markdown
+````markdown
 ---
 name: my-skill
 description: Test skill
@@ -364,8 +366,9 @@ description: Test skill
 ```bash
 # This script intentionally has no shebang
 echo "test"
-```text
-```text
+```
+````
+
 ## Configuration Reference
 
 ### reportUnusedDisableDirectives
@@ -380,7 +383,8 @@ When `true`, claudelint warns about disable directives that don't suppress any v
 {
   "reportUnusedDisableDirectives": true
 }
-```text
+```
+
 **Recommendation:** Enable this in CI/CD to keep disable directives clean.
 
 ## See Also

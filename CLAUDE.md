@@ -87,6 +87,10 @@ npm run release:rc     # 0.2.0 -> 0.3.0-rc.0
 8. Creates GitHub release
 9. Publishes to npm
 
+### Documentation
+
+**CRITICAL: `docs/` is FROZEN. All documentation edits go to `website/` ONLY. NEVER edit files in `docs/` — they are legacy copies scheduled for deletion in Phase 7 of the VitePress migration.**
+
 ### File Naming Conventions
 
 - Use kebab-case for all files: `my-file.ts`

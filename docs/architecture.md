@@ -74,7 +74,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 **Characteristics:**
 
-- **100+ rules** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
+- **Rules** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
 - **User-configurable** - Can be enabled/disabled, severity changed per-project
 - **Self-contained** - Each rule validates one specific aspect
 - **Metadata-driven** - Include id, name, description, severity, fixable flag
@@ -901,7 +901,7 @@ for (const rule of rules) {
 
 ### Registered Rules
 
-Core rules (v1.0):
+Registered rule categories:
 
 - **Skills**: All skill validation including frontmatter, structure, security, and content checks
 - **CLAUDE.md**: Size limits, import validation, frontmatter, circular dependencies, and content structure

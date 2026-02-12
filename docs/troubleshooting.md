@@ -2,69 +2,6 @@
 
 This guide helps you quickly resolve common issues with claudelint.
 
-## Quick Rule Lookup
-
-When claudelint reports an error, the rule ID is shown in the output. Use this table to find the documentation for that rule:
-
-### CLAUDE.md Rules
-
-| Error Code                         | Description                 | Documentation                                                                                |
-| ---------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------- |
-| `claude-md-size-error`             | File exceeds 10MB limit     | [claude-md-size-error.md](./rules/claude-md/claude-md-size-error.md)                         |
-| `claude-md-size-warning`           | File approaching size limit | [claude-md-size-warning.md](./rules/claude-md/claude-md-size-warning.md)                     |
-| `claude-md-import-missing`         | Imported file not found     | [claude-md-import-missing.md](./rules/claude-md/claude-md-import-missing.md)                 |
-| `claude-md-import-circular`        | Circular import detected    | [claude-md-import-circular.md](./rules/claude-md/claude-md-import-circular.md)               |
-| `claude-md-import-depth-exceeded`  | Too many nested imports     | [claude-md-import-depth-exceeded.md](./rules/claude-md/claude-md-import-depth-exceeded.md)   |
-| `claude-md-import-in-code-block`   | Import in code block        | [claude-md-import-in-code-block.md](./rules/claude-md/claude-md-import-in-code-block.md)     |
-| `claude-md-glob-pattern-too-broad` | Glob pattern too broad      | [claude-md-glob-pattern-too-broad.md](./rules/claude-md/claude-md-glob-pattern-too-broad.md) |
-| `claude-md-file-not-found`         | CLAUDE.md not found         | [claude-md-file-not-found.md](./rules/claude-md/claude-md-file-not-found.md)                 |
-
-### Skills Rules
-
-| Error Code                        | Description                    | Documentation                                                                           |
-| --------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
-| `skill-missing-version`           | Skill lacks version field      | [skill-missing-version.md](./rules/skills/skill-missing-version.md)                     |
-| `skill-version`                   | Invalid version format         | [skill-version.md](./rules/skills/skill-version.md)                                     |
-| `skill-name`                      | Invalid skill name             | [skill-name.md](./rules/skills/skill-name.md)                                           |
-| `skill-name-directory-mismatch`   | Name doesn't match directory   | [skill-name-directory-mismatch.md](./rules/skills/skill-name-directory-mismatch.md)     |
-| `skill-description`               | Missing or invalid description | [skill-description.md](./rules/skills/skill-description.md)                             |
-| `skill-referenced-file-not-found` | Referenced file missing        | [skill-referenced-file-not-found.md](./rules/skills/skill-referenced-file-not-found.md) |
-| `skill-missing-changelog`         | CHANGELOG.md not found         | [skill-missing-changelog.md](./rules/skills/skill-missing-changelog.md)                 |
-| `skill-missing-shebang`           | Shell script lacks shebang     | [skill-missing-shebang.md](./rules/skills/skill-missing-shebang.md)                     |
-| `skill-dangerous-command`         | Dangerous shell command        | [skill-dangerous-command.md](./rules/skills/skill-dangerous-command.md)                 |
-
-### Settings Rules
-
-| Error Code                     | Description                   | Documentation                                                                       |
-| ------------------------------ | ----------------------------- | ----------------------------------------------------------------------------------- |
-| `settings-file-path-not-found` | Referenced path doesn't exist | [settings-file-path-not-found.md](./rules/settings/settings-file-path-not-found.md) |
-| `settings-invalid-permission`  | Invalid permission rule       | [settings-invalid-permission.md](./rules/settings/settings-invalid-permission.md)   |
-| `settings-invalid-env-var`     | Invalid environment variable  | [settings-invalid-env-var.md](./rules/settings/settings-invalid-env-var.md)         |
-
-### Hooks Rules
-
-| Error Code             | Description               | Documentation                                                    |
-| ---------------------- | ------------------------- | ---------------------------------------------------------------- |
-| `hooks-missing-script` | Hook script not found     | [hooks-missing-script.md](./rules/hooks/hooks-missing-script.md) |
-| `hooks-invalid-event`  | Invalid hook event name   | [hooks-invalid-event.md](./rules/hooks/hooks-invalid-event.md)   |
-| `hooks-invalid-config` | Invalid hooks.json schema | [hooks-invalid-config.md](./rules/hooks/hooks-invalid-config.md) |
-
-### MCP Rules
-
-| Error Code                  | Description           | Documentation                                                            |
-| --------------------------- | --------------------- | ------------------------------------------------------------------------ |
-| `mcp-http-invalid-url`      | Invalid HTTP URL      | [mcp-http-invalid-url.md](./rules/mcp/mcp-http-invalid-url.md)           |
-| `mcp-sse-invalid-url`       | Invalid SSE URL       | [mcp-sse-invalid-url.md](./rules/mcp/mcp-sse-invalid-url.md)             |
-| `mcp-websocket-invalid-url` | Invalid WebSocket URL | [mcp-websocket-invalid-url.md](./rules/mcp/mcp-websocket-invalid-url.md) |
-
-For a complete list of all rules, run:
-
-```bash
-claudelint list-rules
-```
-
----
-
 ## Common Errors by Category
 
 ### CLAUDE.md Issues
@@ -491,10 +428,8 @@ Breaking it down:
 To see full documentation for a rule:
 
 1. Note the rule ID from the error (e.g., `skill-referenced-file-not-found`)
-2. Find it in the [Quick Rule Lookup](#quick-rule-lookup) table above
-3. Click the documentation link for detailed explanation
-
-Or use the CLI:
+2. Browse the [rules documentation](./rules/index.md)
+3. Or use the CLI:
 
 ```bash
 claudelint explain skill-referenced-file-not-found
@@ -587,29 +522,20 @@ Common mistakes:
 
 ### Problem: Exit code not as expected
 
-**Before v1.0:**
+**Exit codes:**
 
-- Exit 2 for errors
-- Exit 1 for warnings
+- **0** - Success (no violations)
+- **1** - Linting issues found (errors or warnings)
+- **2** - Fatal error (crash, invalid config)
 
-**After v1.0 (current):**
-
-- Exit 1 for any linting issues (errors OR warnings)
-- Exit 0 for success
-- Exit 2 only for fatal errors (crashes, invalid config)
-
-**Migration:**
+**Usage in CI:**
 
 ```bash
 # Most CI systems check for non-zero exit
 claudelint check-all || exit 1
-
-# If you were checking for exit code 2:
-# Before: if [ $? -eq 2 ]; then ...
-# After:  if [ $? -eq 1 ]; then ...
 ```
 
-See [README - Exit Code Changes](../README.md#exit-code-changes-v10-breaking-change).
+See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 ### Problem: Hook doesn't run at session start
 

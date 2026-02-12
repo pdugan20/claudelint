@@ -42,7 +42,7 @@ A component that orchestrates multiple rules for a specific file type or configu
 - Aggregates results
 - Handles caching
 
-**Relationship:** Validators contain many rules. One validator (e.g., SkillsValidator) runs 20+ rules.
+**Relationship:** Validators contain many rules. Each validator runs all rules for its category.
 
 **See:** [Architecture - Validators](./architecture.md#validators)
 
@@ -178,8 +178,7 @@ A grouping of related rules.
 - **Agents** - Agent configuration
 - **LSP** - Language Server Protocol config
 - **OutputStyles** - Output style configuration
-- **Commands** - Command validation (deprecated)
-- **Custom** - User-defined rules
+- **Commands** - Command validation
 
 **Usage:**
 
@@ -199,7 +198,6 @@ A file that customizes claudelint behavior.
 **Supported Files:**
 
 - `.claudelintrc.json` (recommended)
-- `.claudelintrc.js`
 - `package.json` (with `claudelint` key)
 
 **Example:**
@@ -378,7 +376,7 @@ The main configuration file for Claude Code projects. Contains:
 - `@import` statements for modular content
 - Documentation and guidelines
 
-**Validation:** ClaudeMdValidator runs 14+ rules checking:
+**Validation:** ClaudeMdValidator checks:
 
 - File size (10MB limit)
 - Import syntax and references
@@ -405,7 +403,7 @@ version: 1.0.0
 ---
 ```
 
-**Validation:** SkillsValidator runs 28+ rules checking:
+**Validation:** SkillsValidator checks:
 
 - Frontmatter schema
 - Version format
@@ -662,8 +660,6 @@ The numeric status returned by the CLI indicating success or failure.
 - **0** - Success (no violations)
 - **1** - Linting issues found (errors or warnings)
 - **2** - Fatal error (crash, invalid config)
-
-**Note:** Before v1.0, exit code 2 meant errors and exit code 1 meant warnings. This changed to match industry standards (ESLint, Prettier, etc.).
 
 ---
 

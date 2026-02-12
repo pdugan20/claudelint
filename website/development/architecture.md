@@ -898,7 +898,7 @@ for (const rule of rules) {
 
 ### Registered Rules
 
-Core rules (v1.0):
+Registered rule categories:
 
 - **Skills** (<RuleCount category="skills" /> rules): All skill validation including frontmatter, structure, security, and content checks
 - **CLAUDE.md** (<RuleCount category="claude-md" /> rules): Size limits, import validation, frontmatter, circular dependencies, and content structure

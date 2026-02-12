@@ -10,7 +10,7 @@ The SessionStart hook runs validation when a Claude Code session starts, giving 
 
 Create `.claude/hooks/hooks.json` in your project:
 
-````json
+```json
 {
   "hooks": [
     {
@@ -21,7 +21,8 @@ Create `.claude/hooks/hooks.json` in your project:
     }
   ]
 }
-```text
+```
+
 ### What It Does
 
 When you start a Claude Code session, the hook will:
@@ -38,30 +39,35 @@ Choose the format that works best for you:
 
 ```json
 "command": "claudelint check-all --format compact"
-```text
+```
+
 Output:
 
 ```text
 .claude/skills/my-skill/SKILL.md:15:1 - Warning: Missing CHANGELOG.md [missing-changelog]
 .claude/settings.json:8:3 - Error: Invalid tool name "CustomTool" [unknown-tool]
-```text
+```
+
 **Stylish format (more detailed):**
 
 ```json
 "command": "claudelint check-all --format stylish"
-```text
+```
+
 **JSON format (for programmatic parsing):**
 
 ```json
 "command": "claudelint check-all --format json"
-```text
+```
+
 ### Silent Mode
 
 If you only want to see errors (suppress warnings):
 
 ```json
 "command": "claudelint check-all --format compact 2>&1 | grep -E '^.*Error:'"
-```text
+```
+
 Or configure rules in `.claudelintrc.json` to turn off specific warnings.
 
 ## Performance
@@ -101,7 +107,8 @@ Run all validators with compact output:
     }
   ]
 }
-```text
+```
+
 ### Validation with Explanations
 
 Show detailed explanations for any issues:
@@ -116,7 +123,8 @@ Show detailed explanations for any issues:
     }
   ]
 }
-```text
+```
+
 ### Strict Mode
 
 Treat warnings as errors:
@@ -131,7 +139,8 @@ Treat warnings as errors:
     }
   ]
 }
-```text
+```
+
 ### Validate Specific Components
 
 Only validate CLAUDE.md files:
@@ -146,7 +155,8 @@ Only validate CLAUDE.md files:
     }
   ]
 }
-```text
+```
+
 ### Multiple Hooks
 
 Run validation and formatting:
@@ -166,7 +176,8 @@ Run validation and formatting:
     }
   ]
 }
-```text
+```
+
 ## Best Practices
 
 1. **Use compact format** - Less verbose output for hooks
@@ -200,4 +211,3 @@ Run validation and formatting:
 - [Configuration Guide](/guide/configuration) - Customize validation rules
 - [CLI Reference](/guide/cli-reference) - All available commands and flags
 - [Rules Reference](/rules/overview) - What gets validated
-````
