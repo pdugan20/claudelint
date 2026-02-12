@@ -2,8 +2,6 @@
 
 > **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
 
----
-
 claudelint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements.
 
 ## Quick Start

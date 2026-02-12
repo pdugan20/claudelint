@@ -70,8 +70,6 @@ This guide helps you quickly resolve common issues with claudelint.
 
 **See:** [claude-md-import-circular](/rules/claude-md/claude-md-import-circular)
 
----
-
 ### Skills Issues
 
 #### Error: "Skill frontmatter lacks 'version' field"
@@ -141,8 +139,6 @@ Add shebang to first line of script:
 
 **See:** [skill-missing-shebang](/rules/skills/skill-missing-shebang)
 
----
-
 ### Settings Issues
 
 #### Error: "Referenced file path not found"
@@ -164,8 +160,6 @@ Add shebang to first line of script:
 3. Remove the reference if no longer needed
 
 **See:** [settings-file-path-not-found](/rules/settings/settings-file-path-not-found)
-
----
 
 ### Hooks Issues
 
@@ -197,8 +191,6 @@ Add shebang to first line of script:
 3. Verify path is relative to `.claude/hooks.json`
 
 **See:** [hooks-missing-script](/rules/hooks/hooks-missing-script)
-
----
 
 ## Frequently Asked Questions
 
@@ -251,8 +243,6 @@ claudelint print-config
 
 This shows the resolved configuration with all defaults.
 
----
-
 ### Validation
 
 #### Q: Why am I getting errors for files in node_modules?
@@ -289,8 +279,6 @@ claudelint check-all --verbose
 
 This shows timing information and additional context.
 
----
-
 ### Auto-Fix
 
 #### Q: Which rules can be auto-fixed?
@@ -322,8 +310,6 @@ claudelint check-all --fix --fix-type errors
 ```
 
 See [Auto-fix Guide](./auto-fix.md) for details.
-
----
 
 ### Performance
 
@@ -358,8 +344,6 @@ claudelint cache-clear
 ```
 
 Run this after upgrading claudelint or changing config.
-
----
 
 ### Installation
 
@@ -402,8 +386,6 @@ export PATH=~/.npm-global/bin:$PATH
 npm install -g claude-code-lint
 ```
 
----
-
 ## Error Message Guide
 
 ### Understanding Error Output
@@ -436,8 +418,6 @@ To see full documentation for a rule:
 ```bash
 claudelint check-all --explain
 ```
-
----
 
 ## Configuration Issues
 
@@ -518,8 +498,6 @@ Common mistakes:
 - Missing quotes around keys
 - Incorrect string escaping
 
----
-
 ## CI/CD Issues
 
 ### Problem: Exit code not as expected
@@ -551,8 +529,6 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
    ```bash
    claudelint check-all --format compact
    ```
-
----
 
 ## Custom Rules Issues
 
@@ -605,8 +581,6 @@ See [Custom Rules Guide](/development/custom-rules) for details.
    };
    ```
 
----
-
 ## Getting More Help
 
 If you can't find a solution here:
@@ -627,8 +601,6 @@ If you can't find a solution here:
    - Error message
    - OS and Node version (`node --version`)
    - Output of `claudelint check-all --verbose`
-
----
 
 ## Quick Reference
 

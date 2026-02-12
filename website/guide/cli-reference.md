@@ -36,8 +36,6 @@ Complete reference for all claudelint commands, options, and usage patterns.
   - [install-plugin](#install-plugin) - Plugin installation guide
 - [Exit Codes](#exit-codes)
 
----
-
 ## Primary Commands
 
 ### check-all
@@ -132,8 +130,6 @@ claudelint check-all --strict --max-warnings 0 --format json
 - `1` - Issues found (errors or warnings)
 - `2` - Fatal error (invalid config, command failure)
 
----
-
 ### init
 
 Initialize claudelint configuration for your project. Interactive wizard that detects your project structure and generates appropriate config files.
@@ -166,8 +162,6 @@ claudelint init --yes
 - `.claudelintignore` - Patterns for files to ignore
 - Optional: npm scripts in `package.json`
 
----
-
 ## Config Management
 
 ### print-config
@@ -199,8 +193,6 @@ claudelint print-config --format table
 # Print specific config file
 claudelint print-config --config custom.json
 ```
-
----
 
 ### resolve-config
 
@@ -236,8 +228,6 @@ claudelint resolve-config .claude/skills/test/test.sh
 claudelint resolve-config .claude/CLAUDE.md --format table
 ```
 
----
-
 ### validate-config
 
 Validate a configuration file against the claudelint schema. Checks for unknown rules, invalid options, and schema violations.
@@ -263,8 +253,6 @@ claudelint validate-config
 # Validate specific config
 claudelint validate-config --config custom.json
 ```
-
----
 
 ## Rule Management
 
@@ -313,8 +301,6 @@ claudelint list-rules --format json
 - Category
 - Severity (error, warning)
 - Fixable status
-
----
 
 ## Deprecation Management
 
@@ -384,8 +370,6 @@ Migration steps:
   2. Run validation to test the new configuration
   3. Remove deprecated rule entries from config
 ```
-
----
 
 ### migrate
 
@@ -499,8 +483,6 @@ Next steps:
 - Preserves rule severity and options
 - Handles extends and overrides correctly
 
----
-
 ## Cache Management
 
 ### cache-clear
@@ -535,8 +517,6 @@ claudelint cache-clear --cache-location /tmp/my-cache
 - After changing rules or config
 - If seeing stale validation results
 - Before CI/CD runs (optional)
-
----
 
 ## Individual Validators
 
@@ -576,8 +556,6 @@ claudelint check-claude-md --verbose --explain
 claudelint check-claude-md --path ./projects/app/CLAUDE.md
 ```
 
----
-
 ### validate-skills
 
 Validate Claude Code skills only.
@@ -612,8 +590,6 @@ claudelint validate-skills --skill my-skill
 claudelint validate-skills --path ./custom/skills
 ```
 
----
-
 ### validate-settings
 
 Validate settings.json files only.
@@ -639,8 +615,6 @@ claudelint validate-settings [options]
 ```bash
 claudelint validate-settings --verbose
 ```
-
----
 
 ### validate-hooks
 
@@ -668,8 +642,6 @@ claudelint validate-hooks [options]
 claudelint validate-hooks --verbose
 ```
 
----
-
 ### validate-mcp
 
 Validate MCP server configuration files only.
@@ -695,8 +667,6 @@ claudelint validate-mcp [options]
 ```bash
 claudelint validate-mcp --verbose
 ```
-
----
 
 ### validate-plugin
 
@@ -724,8 +694,6 @@ claudelint validate-plugin [options]
 claudelint validate-plugin --verbose
 ```
 
----
-
 ### validate-agents
 
 Validate Claude agent structure and frontmatter only.
@@ -751,8 +719,6 @@ claudelint validate-agents [options]
 ```bash
 claudelint validate-agents --verbose
 ```
-
----
 
 ### validate-lsp
 
@@ -780,8 +746,6 @@ claudelint validate-lsp [options]
 claudelint validate-lsp --verbose
 ```
 
----
-
 ### validate-output-styles
 
 Validate output style structure and frontmatter only.
@@ -808,8 +772,6 @@ claudelint validate-output-styles [options]
 claudelint validate-output-styles --verbose
 ```
 
----
-
 ### validate-commands
 
 Detect deprecated Commands usage and suggest migration to Skills.
@@ -835,8 +797,6 @@ claudelint validate-commands [options]
 ```bash
 claudelint validate-commands --verbose
 ```
-
----
 
 ## Formatting
 
@@ -881,8 +841,6 @@ claudelint format --verbose
 - JSON: `.claude/**/*.json`, `.mcp.json`, `.claude-plugin/**/*.json`
 - YAML: `.claude/**/*.{yaml,yml}`
 - Shell: `.claude/**/*.sh`, `.claude/hooks/*`
-
----
 
 ## Development
 
@@ -939,8 +897,6 @@ claudelint watch --warnings-as-errors
 
 Press `Ctrl+C` to stop watching.
 
----
-
 ### install-plugin
 
 Show instructions for installing claudelint as a Claude Code plugin. Auto-detects whether claudelint is installed locally in `node_modules` and shows the appropriate installation command.
@@ -959,8 +915,6 @@ claudelint install-plugin
 - **No local install:** Shows both GitHub install (`/plugin install github:pdugan20/claude-code-lint`) and npm-first workflow
 
 See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for detailed setup instructions.
-
----
 
 ## Exit Codes
 
@@ -990,8 +944,6 @@ claudelint uses standard POSIX exit codes:
 - Config file is invalid or cannot be loaded
 - Command syntax is incorrect
 - Internal error or exception occurs
-
----
 
 ## See Also
 

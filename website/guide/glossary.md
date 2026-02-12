@@ -23,8 +23,6 @@ A single validation check that examines one specific aspect of a file.
 
 **See:** [Custom Rules Guide](/development/custom-rules)
 
----
-
 ### Validator
 
 A component that orchestrates multiple rules for a specific file type or configuration area.
@@ -45,8 +43,6 @@ A component that orchestrates multiple rules for a specific file type or configu
 **Relationship:** Validators contain many rules. Each validator runs all rules for its category.
 
 **See:** [Architecture - Validators](/development/architecture#validators)
-
----
 
 ### Severity
 
@@ -75,8 +71,6 @@ The importance level of a rule violation.
 - `--strict` - Treat warnings as errors
 - `--max-warnings N` - Fail if more than N warnings
 
----
-
 ### Violation
 
 An instance where a rule's validation check has failed.
@@ -97,8 +91,6 @@ An instance where a rule's validation check has failed.
 /project/SKILL.md
   12:1  error  Skill frontmatter lacks "version" field  skill-missing-version
 ```
-
----
 
 ### Context
 
@@ -130,8 +122,6 @@ validate: async (context) => {
 };
 ```
 
----
-
 ### Fixer / Auto-Fix
 
 A mechanism that automatically corrects rule violations.
@@ -159,8 +149,6 @@ Run `claudelint list-rules --fixable` to see all rules that support auto-fix.
 
 **See:** [Auto-fix Guide](./auto-fix.md)
 
----
-
 ### Category
 
 A grouping of related rules.
@@ -184,8 +172,6 @@ A grouping of related rules.
 # List rules by category
 claudelint list-rules --category Skills
 ```
-
----
 
 ## Configuration
 
@@ -212,8 +198,6 @@ A file that customizes claudelint behavior.
 
 **See:** [Configuration Guide](./configuration.md)
 
----
-
 ### Inline Disable
 
 A comment in a file that disables specific rules for the next line or entire file.
@@ -236,8 +220,6 @@ From the rule
 
 **See:** [Inline Disables](./inline-disables.md)
 
----
-
 ### Ignore Pattern
 
 A glob pattern that tells claudelint to skip certain files or directories.
@@ -257,8 +239,6 @@ node_modules/
 dist/
 *.log
 ```
-
----
 
 ### Rule Options
 
@@ -291,8 +271,6 @@ Configuration values that customize how a specific rule behaves.
 
 **See:** [Configuration Guide](./configuration.md#rules)
 
----
-
 ## Execution
 
 ### Validation Result
@@ -314,8 +292,6 @@ The output from running validation.
 - `errorCount` / `warningCount` - Counts by severity
 
 **See:** [API - Types](/api/types)
-
----
 
 ### Formatter
 
@@ -340,8 +316,6 @@ claudelint check-all --format compact
 You can write custom formatters using the programmatic API.
 
 **See:** [API - Formatters](/api/formatters)
-
----
 
 ### Cache
 
@@ -370,8 +344,6 @@ claudelint cache-clear
 
 **See:** [CLI Reference - Cache Management](./cli-reference.md#cache-management)
 
----
-
 ## File Types
 
 ### CLAUDE.md
@@ -388,8 +360,6 @@ The main configuration file for Claude Code projects. Contains:
 - Import syntax and references
 - Circular imports
 - Glob patterns
-
----
 
 ### SKILL.md
 
@@ -417,8 +387,6 @@ version: 1.0.0
 - Shell script security
 - Documentation quality
 
----
-
 ### settings.json
 
 Claude Code project settings. Located at `.claude/settings.json`.
@@ -439,8 +407,6 @@ Claude Code project settings. Located at `.claude/settings.json`.
 - File path references
 - Permission rules
 - Environment variables
-
----
 
 ### hooks.json
 
@@ -468,8 +434,6 @@ Defines automation hooks for Claude Code. Located at `.claude/hooks.json` (or `.
 - Valid event names
 - Script file existence
 - Configuration schema
-
----
 
 ## Development
 
@@ -503,8 +467,6 @@ module.exports.rule = {
 
 **See:** [Custom Rules Guide](/development/custom-rules)
 
----
-
 ### Built-in Rule
 
 A validation rule that ships with claudelint. Located in `src/rules/{category}/`.
@@ -517,8 +479,6 @@ A validation rule that ships with claudelint. Located in `src/rules/{category}/`
 - Auto-registered on build
 
 **Contributing:** See [Contributing Guide](/development/contributing#adding-validation-rules)
-
----
 
 ### Rule Metadata
 
@@ -538,8 +498,6 @@ interface RuleMetadata {
   since: string; // Version introduced
 }
 ```
-
----
 
 ### Frontmatter
 
@@ -567,8 +525,6 @@ const result = extractFrontmatter(fileContent);
 const { frontmatter, body } = result;
 ```
 
----
-
 ## Programmatic API
 
 ### ClaudeLint Class
@@ -586,8 +542,6 @@ const results = await linter.lintFiles(['**/*.md']);
 
 **See:** [API - ClaudeLint Class](/api/claudelint-class)
 
----
-
 ### Functional API
 
 Stateless functions for simple linting tasks.
@@ -602,8 +556,6 @@ const output = await formatResults(results, 'stylish');
 ```
 
 **See:** [API - Functional API](/api/functional-api)
-
----
 
 ### RuleRegistry
 
@@ -624,8 +576,6 @@ const skillRules = RuleRegistry.getRulesByCategory('Skills');
 const rule = RuleRegistry.getRule('skill-missing-version');
 ```
 
----
-
 ## CLI
 
 ### Command
@@ -643,8 +593,6 @@ An action performed by the claudelint CLI.
 
 **See:** [CLI Reference](./cli-reference.md)
 
----
-
 ### Flag / Option
 
 A parameter passed to a CLI command to modify its behavior.
@@ -659,8 +607,6 @@ A parameter passed to a CLI command to modify its behavior.
 - `--max-warnings N` - Fail if more than N warnings
 - `--no-cache` - Disable caching
 
----
-
 ### Exit Code
 
 The numeric status returned by the CLI indicating success or failure.
@@ -670,8 +616,6 @@ The numeric status returned by the CLI indicating success or failure.
 - **0** - Success (no violations)
 - **1** - Linting issues found (errors or warnings)
 - **2** - Fatal error (crash, invalid config)
-
----
 
 ## Related Projects
 
@@ -691,8 +635,6 @@ A JavaScript linter that inspired claudelint's architecture.
 - ESLint: JavaScript/TypeScript code
 - claudelint: Claude Code configuration
 
----
-
 ### Markdownlint
 
 A markdown linter used alongside claudelint.
@@ -703,8 +645,6 @@ A markdown linter used alongside claudelint.
 - **claudelint** - Claude-specific validation (imports, size limits, etc.)
 
 **See:** [CLI Reference - Formatting](./cli-reference.md#formatting)
-
----
 
 ### Prettier
 
@@ -717,8 +657,6 @@ A code formatter used alongside claudelint.
 
 **See:** [CLI Reference - Formatting](./cli-reference.md#formatting)
 
----
-
 ## Acronyms
 
 | Acronym  | Full Term                         | Description                                             |
@@ -729,8 +667,6 @@ A code formatter used alongside claudelint.
 | **API**  | Application Programming Interface | Programmatic interface for Node.js                      |
 | **YAML** | YAML Ain't Markup Language        | Data serialization format used in frontmatter           |
 | **JSON** | JavaScript Object Notation        | Data format for config files                            |
-
----
 
 ## See Also
 
