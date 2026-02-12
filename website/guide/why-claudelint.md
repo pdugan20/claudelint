@@ -26,15 +26,15 @@ A serious Claude Code setup quickly becomes a project inside your project. What 
 CLAUDE.md
 ```
 
-These files reference each other — skills declare tool permissions, agents reference skills by name, hooks trigger on specific tool events, and plugins bundle all of it together. Rename a skill, and the agent that references it breaks. Change a hook event name, and automation stops firing. None of these failures produce an error message — they just silently stop working.
+These files reference each other — skills declare tool permissions, agents reference skills by name, hooks trigger on specific tool events, and plugins bundle all of it together. Rename a skill, and the agent that references it breaks. Change a hook event name, and automation stops firing. None of these failures produce an error message — hooks with unmatched matchers are silently ignored, and misconfigured skills or settings fall back to defaults without warning.
 
 ### No built-in guardrails
 
-Claude Code doesn't validate any of this at setup time. There's no schema enforcement, no cross-file reference checking, and no warnings when configuration drifts. Mistakes stay hidden until something breaks at runtime:
+Claude Code doesn't validate most of this at setup time. While it provides JSON schemas for editor-side checking, there's no runtime schema enforcement, no cross-file reference checking, and no warnings when configuration drifts. Mistakes stay hidden until something fails silently or breaks at runtime:
 
-- A misspelled hook event name like `PreToolUse` → `preToolUse` silently does nothing
+- A misspelled hook event name like `PreToolUse` → `preToolUse` is silently ignored — the matcher never matches
 - A skill with `eval` or `rm -rf` in its script creates a security hole
-- A missing `description` field in AGENT.md means Claude can't determine when to use the agent
+- A missing `description` field in AGENT.md means Claude can't determine when to use the agent — no error, just degraded behavior
 - An `.mcp.json` with `type: "sse"` uses a deprecated transport that may stop working
 - A CLAUDE.md that exceeds the context window size limit degrades Claude's performance
 
@@ -45,6 +45,8 @@ Skills are particularly hard to manage at scale. Each skill has frontmatter (nam
 ## How claudelint Helps
 
 claudelint treats your Claude Code configuration as a first-class codebase. It validates every file against <RuleCount category="total" /> rules, checks cross-file references, enforces naming conventions, and flags security issues — the same way ESLint checks your JavaScript or SwiftLint checks your Swift.
+
+Because it's a standard CLI tool, you can run it in CI alongside your existing linters and tests. Instead of discovering a broken hook or misconfigured skill days later when someone triggers it, your pipeline catches the issue on the pull request that introduced it. Configuration problems become build failures — visible, blocking, and fixable before they reach your team.
 
 ## What It Catches
 
