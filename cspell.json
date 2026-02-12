@@ -81,9 +81,7 @@
     },
     {
       "filename": "website/development/custom-rules.md",
-      "words": [
-        "badword"
-      ]
+      "words": ["badword"]
     }
   ]
 }

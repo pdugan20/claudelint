@@ -43,11 +43,7 @@
       "settings": { "foreground": "#e08b6e" }
     },
     {
-      "scope": [
-        "storage.modifier.package",
-        "storage.modifier.import",
-        "storage.type.java"
-      ],
+      "scope": ["storage.modifier.package", "storage.modifier.import", "storage.type.java"],
       "settings": { "foreground": "#e8e6dc" }
     },
     {
@@ -169,19 +165,11 @@
       "settings": { "foreground": "#d4a574" }
     },
     {
-      "scope": [
-        "markup.deleted",
-        "meta.diff.header.from-file",
-        "punctuation.definition.deleted"
-      ],
+      "scope": ["markup.deleted", "meta.diff.header.from-file", "punctuation.definition.deleted"],
       "settings": { "background": "#3d1a1a", "foreground": "#f0a8a8" }
     },
     {
-      "scope": [
-        "markup.inserted",
-        "meta.diff.header.to-file",
-        "punctuation.definition.inserted"
-      ],
+      "scope": ["markup.inserted", "meta.diff.header.to-file", "punctuation.definition.inserted"],
       "settings": { "background": "#1a3a1a", "foreground": "#7ec89e" }
     },
     {
