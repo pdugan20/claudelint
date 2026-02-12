@@ -202,7 +202,7 @@ npm run check:model-names
 3. Update `src/schemas/constants.ts` if needed
 4. Run tests: `npm test`
 5. Re-verify: `npm run check:constants`
-6. Update `docs/constants-verification.md` with new date
+6. Verify changes pass tests
 
 **See also:** the constants verification scripts in `scripts/check/` for detailed documentation.
 
@@ -241,18 +241,35 @@ Examples:
 ```text
 claudelint/
 ├── src/
-│   ├── validators/      # Validator implementations
-│   ├── utils/           # Utility functions
-│   └── cli.ts           # CLI entry point
+│   ├── api/             # Library API layer
+│   ├── cli/             # CLI commands and utilities
+│   ├── rules/           # Validation rules (by category)
+│   │   ├── claude-md/   # CLAUDE.md rules
+│   │   ├── skills/      # Skills rules
+│   │   ├── settings/    # Settings rules
+│   │   ├── hooks/       # Hooks rules
+│   │   ├── mcp/         # MCP rules
+│   │   ├── plugin/      # Plugin rules
+│   │   ├── agents/      # Agents rules
+│   │   ├── lsp/         # LSP rules
+│   │   ├── output-styles/ # Output Styles rules
+│   │   └── commands/    # Commands rules
+│   ├── schemas/         # Zod schemas and constants
+│   ├── types/           # TypeScript types and interfaces
+│   ├── validators/      # Validator orchestrators
+│   └── utils/           # Shared utilities
 ├── tests/
+│   ├── rules/           # Rule unit tests
 │   ├── validators/      # Validator tests
-│   ├── utils/           # Utility tests
-│   └── integration/     # Integration tests
-├── docs/                # Documentation
-├── .claude/             # Claude Code plugin files
-│   ├── skills/          # Plugin skills
-│   └── hooks/           # Plugin hooks
-└── scripts/             # Build and automation scripts
+│   ├── integration/     # CLI integration tests
+│   ├── fixtures/        # Test fixtures
+│   └── utils/           # Utility tests
+├── website/             # VitePress documentation site
+├── skills/              # Claude Code plugin skills
+├── .claude/hooks/       # Claude Code plugin hooks
+├── .claude-plugin/      # Plugin manifest and metadata
+├── scripts/             # Build and automation scripts
+└── schemas/             # Generated JSON schemas
 ```
 
 ## Adding Validation Rules

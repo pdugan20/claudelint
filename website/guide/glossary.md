@@ -42,7 +42,7 @@ A component that orchestrates multiple rules for a specific file type or configu
 
 **Relationship:** Validators contain many rules. Each validator runs all rules for its category.
 
-**See:** [Architecture - Validators](/development/architecture#validators)
+**See:** [Architecture - Validator Implementations](/development/architecture#validator-implementations)
 
 ### Severity
 

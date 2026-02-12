@@ -1,4 +1,4 @@
-# npm Scripts
+# Npm Scripts
 
 Add claudelint to your package.json scripts for easy integration.
 

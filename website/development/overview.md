@@ -2,10 +2,24 @@
 
 Learn how to extend claudelint with custom rules, understand the architecture, and contribute to the project.
 
+## Quick Links
+
+**Adding project-specific validation?**
+Start with the [Custom Rules Guide](/development/custom-rules) to create rules in your `.claudelint/rules/` directory.
+
+**Contributing a built-in rule?**
+See [Contributing](/development/contributing#adding-validation-rules) for the rule checklist and `meta.docs` metadata format.
+
+**Understanding the codebase?**
+Read the [Architecture](/development/architecture) overview, then dive into the [Rule System](/development/rule-system) or [Internals](/development/internals) as needed.
+
 ## Sections
 
-- [Architecture](/development/architecture) - System design and validator framework
+- [Architecture](/development/architecture) - System design, validation philosophy, project structure
+- [Rule System](/development/rule-system) - Rule patterns, registries, and implementation details
+- [Internals](/development/internals) - Caching, parallel validation, progress indicators, CLI
 - [Custom Rules](/development/custom-rules) - Build your own validation rules
+- [Helper Library](/development/helper-library) - Utility functions for custom rules
 - [Contributing](/development/contributing) - Contribution guidelines
 
 ## Rule Documentation Auto-Generation
@@ -17,8 +31,7 @@ Rule documentation pages on this site are **auto-generated from source code meta
 1. Rules define inline documentation via `meta.docs` (type: `RuleDocumentation`)
 2. Running `npm run docs:generate` reads all rules from the registry
 3. Rules with `meta.docs` generate pages from the template in `scripts/generators/rule-page.ts`
-4. Rules without `meta.docs` fall back to copying existing docs from `docs/rules/`
-5. A sidebar JSON file is auto-generated for navigation
+4. A sidebar JSON file is auto-generated for navigation
 
 ### RuleDocumentation Schema
 

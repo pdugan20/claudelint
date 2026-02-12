@@ -72,7 +72,7 @@ Every custom rule must implement the `Rule` interface:
 ```typescript
 interface Rule {
   meta: RuleMetadata;
-  validate: (context: ValidationContext) => Promise<void>;
+  validate: (context: RuleContext) => Promise<void> | void;
 }
 ```
 
@@ -97,20 +97,21 @@ interface RuleMetadata {
 
 ### Validation Function
 
-The `validate` function receives a `ValidationContext` and reports violations:
+The `validate` function receives a `RuleContext` and reports issues:
 
 ```typescript
-interface ValidationContext {
-  filePath: string;        // Path to file being validated
+interface RuleContext {
+  filePath: string;        // Absolute path to file being validated
   fileContent: string;     // Full content of the file
-  report: (violation: Violation) => void;  // Report a violation
+  options: Record<string, unknown>;  // Rule-specific options from config
+  report: (issue: RuleIssue) => void;  // Report a validation issue
 }
 
-interface Violation {
-  message: string;         // Description of the violation
+interface RuleIssue {
+  message: string;         // Description of the issue
   line?: number;           // Line number (optional)
-  column?: number;         // Column number (optional)
-  severity?: 'error' | 'warn';  // Override default severity
+  fix?: string;            // Quick fix suggestion (optional)
+  autoFix?: AutoFix;       // Automatic fix (optional)
 }
 ```
 
@@ -224,7 +225,7 @@ module.exports.rule = {
     name: 'No Trailing Whitespace',
     description: 'Remove trailing whitespace from lines',
     category: 'Custom',
-    severity: 'warning',
+    severity: 'warn',
     fixable: true,  // Mark as fixable
     deprecated: false,
     since: '1.0.0',
@@ -293,7 +294,7 @@ module.exports.rule = {
     name: 'Use Correct Terminology',
     description: 'Replace deprecated terms with preferred ones',
     category: 'Custom',
-    severity: 'warning',
+    severity: 'warn',
     fixable: true,
     deprecated: false,
     since: '1.0.0',
@@ -344,7 +345,7 @@ Custom rules can be configured in `.claudelintrc.json`:
 
 Severity levels:
 
-- `"error"` - Treat violations as errors (exit code 1)
+- `"error"` - Treat violations as errors (exit code 2)
 - `"warn"` - Treat violations as warnings
 - `"off"` - Disable the rule
 
@@ -746,353 +747,9 @@ loader.loadCustomRules('.').then(results => {
 
 ## Helper Library
 
-claudelint provides utility functions to simplify common validation tasks. Import them in your custom rules:
+claudelint provides utility functions for common validation tasks like heading detection, pattern matching, frontmatter parsing, and file system operations.
 
-```javascript
-const {
-  hasHeading,
-  extractHeadings,
-  matchesPattern,
-  countOccurrences,
-  extractFrontmatter,
-  validateSemver,
-  fileExists,
-  readFileContent,
-  parseJSON,
-  parseYAML,
-  findLinesMatching,
-} = require('claudelint/utils');
-```
-
-### Heading Functions
-
-#### hasHeading(content, text, level?)
-
-Check if markdown contains a specific heading.
-
-```javascript
-// Check for any level heading
-if (!hasHeading(context.fileContent, 'Overview')) {
-  context.report({ message: 'Missing Overview section' });
-}
-
-// Check for specific level (1-6)
-if (!hasHeading(context.fileContent, 'Installation', 2)) {
-  context.report({ message: 'Missing ## Installation section' });
-}
-```
-
-#### extractHeadings(content)
-
-Get all headings with their levels and line numbers.
-
-```javascript
-const headings = extractHeadings(context.fileContent);
-
-// Check heading structure
-if (headings.length === 0) {
-  context.report({ message: 'File has no headings' });
-}
-
-// Check first heading is H1
-if (headings[0]?.level !== 1) {
-  context.report({
-    message: 'First heading must be level 1',
-    line: headings[0]?.line,
-  });
-}
-
-// Find specific heading
-const overview = headings.find(h => h.text === 'Overview');
-if (!overview) {
-  context.report({ message: 'Missing Overview heading' });
-}
-```
-
-### Pattern Matching
-
-#### matchesPattern(content, pattern)
-
-Check if content matches a regular expression.
-
-```javascript
-// Check for TODO comments
-if (matchesPattern(context.fileContent, /TODO:|FIXME:/i)) {
-  context.report({ message: 'Found TODO/FIXME comments' });
-}
-
-// Check for hardcoded secrets
-if (matchesPattern(context.fileContent, /api[_-]?key\s*=\s*['"][^'"]+['"]/i)) {
-  context.report({ message: 'Possible hardcoded API key detected' });
-}
-```
-
-#### countOccurrences(content, search)
-
-Count how many times a string or pattern appears.
-
-```javascript
-// Count string occurrences
-const count = countOccurrences(context.fileContent, 'deprecated');
-if (count > 5) {
-  context.report({ message: `Too many deprecated items (${count})` });
-}
-
-// Count regex matches
-const todoCount = countOccurrences(context.fileContent, /\bTODO\b/g);
-if (todoCount > 0) {
-  context.report({ message: `Found ${todoCount} TODO comments` });
-}
-```
-
-#### findLinesMatching(content, pattern)
-
-Find all lines that match a pattern with line numbers.
-
-```javascript
-const matches = findLinesMatching(
-  context.fileContent,
-  /password\s*=\s*['"](.+)['"]/i
-);
-
-matches.forEach(m => {
-  context.report({
-    message: 'Hardcoded password detected',
-    line: m.line,
-    fix: 'Use environment variables for sensitive data',
-  });
-});
-```
-
-### Frontmatter & Metadata
-
-#### extractFrontmatter(content)
-
-Extract YAML frontmatter from markdown files. Returns an object with:
-
-- `frontmatter` - The parsed frontmatter object (or null if none)
-- `content` - The markdown content without frontmatter
-- `hasFrontmatter` - Boolean indicating if frontmatter exists
-
-```javascript
-const result = extractFrontmatter(context.fileContent);
-
-if (!result.hasFrontmatter || !result.frontmatter) {
-  context.report({ message: 'Missing frontmatter' });
-  return;
-}
-
-const fm = result.frontmatter;
-
-// Check required fields
-if (!fm.version) {
-  context.report({ message: 'Frontmatter missing version field' });
-}
-
-if (!fm.name || typeof fm.name !== 'string') {
-  context.report({ message: 'Frontmatter must have name field' });
-}
-
-// Validate field values
-if (fm.deprecated === true && !fm.replacedBy) {
-  context.report({ message: 'Deprecated items must specify replacedBy' });
-}
-```
-
-#### validateSemver(version)
-
-Validate semantic versioning format.
-
-```javascript
-const result = extractFrontmatter(context.fileContent);
-const fm = result.frontmatter;
-
-if (fm?.version && !validateSemver(fm.version)) {
-  context.report({
-    message: `Invalid version format: ${fm.version}`,
-    fix: 'Use semantic versioning (e.g., 1.0.0, 2.1.3-beta)',
-  });
-}
-```
-
-### File System
-
-#### fileExists(filePath)
-
-Check if a file exists (asynchronous).
-
-```javascript
-// Check for required files
-if (!(await fileExists('./README.md'))) {
-  context.report({ message: 'README.md not found' });
-}
-
-// Check referenced files
-const result = extractFrontmatter(context.fileContent);
-const fm = result.frontmatter;
-
-if (fm?.icon && !(await fileExists(fm.icon))) {
-  context.report({
-    message: `Icon file not found: ${fm.icon}`,
-    line: 1,
-  });
-}
-```
-
-#### readFileContent(filePath)
-
-Read file content asynchronously.
-
-```javascript
-validate: async (context) => {
-  // Read related file
-  const configContent = await readFileContent('./config.json');
-
-  if (configContent === null) {
-    context.report({ message: 'Failed to read config.json' });
-    return;
-  }
-
-  const config = parseJSON(configContent);
-  // Validate config matches current file...
-}
-```
-
-### Parsing
-
-#### parseJSON(content)
-
-Safely parse JSON content.
-
-```javascript
-// Parse JSON files
-if (context.filePath.endsWith('.json')) {
-  const data = parseJSON(context.fileContent);
-
-  if (!data) {
-    context.report({ message: 'Invalid JSON' });
-    return;
-  }
-
-  // Validate JSON structure
-  if (!data.name || !data.version) {
-    context.report({ message: 'Missing required fields' });
-  }
-}
-```
-
-#### parseYAML(content)
-
-Safely parse YAML content.
-
-```javascript
-// Parse YAML files
-if (context.filePath.endsWith('.yml') || context.filePath.endsWith('.yaml')) {
-  const data = parseYAML(context.fileContent);
-
-  if (!data) {
-    context.report({ message: 'Invalid YAML' });
-    return;
-  }
-
-  // Validate YAML structure
-  if (Array.isArray(data.rules) && data.rules.length === 0) {
-    context.report({ message: 'Rules array is empty' });
-  }
-}
-```
-
-### Complete Example Using Helpers
-
-```javascript
-// .claudelint/rules/skill-quality.js
-const {
-  extractFrontmatter,
-  validateSemver,
-  hasHeading,
-  extractHeadings,
-  countOccurrences,
-  findLinesMatching,
-} = require('claudelint/utils');
-
-module.exports.rule = {
-  meta: {
-    id: 'skill-quality',
-    name: 'Skill Quality Checks',
-    description: 'Enforce quality standards for skill documentation',
-    category: 'Custom',
-    severity: 'warning',
-    fixable: false,
-    deprecated: false,
-    since: '1.0.0',
-  },
-
-  validate: async (context) => {
-    // Only check skill SKILL.md files
-    if (!context.filePath.endsWith('SKILL.md')) {
-      return;
-    }
-
-    // Check frontmatter
-    const result = extractFrontmatter(context.fileContent);
-    if (!result.hasFrontmatter || !result.frontmatter) {
-      context.report({ message: 'SKILL.md must have frontmatter', line: 1 });
-      return;
-    }
-
-    const fm = result.frontmatter;
-
-    // Validate version
-    if (fm.version && !validateSemver(fm.version)) {
-      context.report({
-        message: `Invalid version format: ${fm.version}`,
-        line: 2,
-      });
-    }
-
-    // Check required headings
-    if (!hasHeading(context.fileContent, 'Usage', 2)) {
-      context.report({ message: 'Missing ## Usage section' });
-    }
-
-    if (!hasHeading(context.fileContent, 'Examples', 2)) {
-      context.report({ message: 'Missing ## Examples section' });
-    }
-
-    // Check heading hierarchy
-    const headings = extractHeadings(context.fileContent);
-    if (headings[0]?.level !== 1) {
-      context.report({
-        message: 'First heading must be level 1',
-        line: headings[0]?.line,
-      });
-    }
-
-    // Check for TODOs
-    const todoCount = countOccurrences(context.fileContent, /TODO:/g);
-    if (todoCount > 3) {
-      context.report({
-        message: `Too many TODO comments (${todoCount})`,
-        fix: 'Complete or remove TODO items',
-      });
-    }
-
-    // Check for sensitive data
-    const secrets = findLinesMatching(
-      context.fileContent,
-      /password|api[_-]?key|secret/i
-    );
-
-    secrets.forEach(match => {
-      context.report({
-        message: 'Possible sensitive data in documentation',
-        line: match.line,
-        fix: 'Use placeholders like YOUR_API_KEY',
-      });
-    });
-  },
-};
-```
+See the [Helper Library Reference](/development/helper-library) for the complete API with examples.
 
 ## Advanced Topics
 
@@ -1144,7 +801,8 @@ validate: async (context) => {
 
 ## Further Reading
 
-- [Architecture Documentation](./architecture.md) - How custom rules fit into claudelint
+- [Helper Library Reference](./helper-library) - Utility functions for custom rules
+- [Architecture Documentation](./architecture) - How custom rules fit into claudelint
 - [Built-in Rules](/rules/overview) - Examples of rule implementations
 - [Contributing Guide](./contributing) - How to contribute rules to claudelint
 

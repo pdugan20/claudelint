@@ -95,7 +95,7 @@ export default defineConfig({
             { text: 'Overview', link: '/integrations/overview' },
             { text: 'CI/CD', link: '/integrations/ci' },
             { text: 'Claude Code Hooks', link: '/integrations/pre-commit' },
-            { text: 'npm Scripts', link: '/integrations/npm-scripts' },
+            { text: 'Npm Scripts', link: '/integrations/npm-scripts' },
             {
               text: 'Claude Code Plugin',
               link: '/integrations/claude-code-plugin',
@@ -125,7 +125,10 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/development/overview' },
             { text: 'Architecture', link: '/development/architecture' },
+            { text: 'Rule System', link: '/development/rule-system' },
+            { text: 'Internals', link: '/development/internals' },
             { text: 'Custom Rules', link: '/development/custom-rules' },
+            { text: 'Helper Library', link: '/development/helper-library' },
             { text: 'Contributing', link: '/development/contributing' },
           ],
         },
