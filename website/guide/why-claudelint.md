@@ -13,11 +13,11 @@ Claude Code projects involve many configuration files - CLAUDE.md, skills, setti
 
 ## The Solution
 
-claudelint provides 120 validation rules across 10 categories, catching these issues before they reach production.
+claudelint provides <RuleCount category="total" /> validation rules across <RuleCount category="categories" /> categories, catching these issues before they reach production.
 
 ## Key Features
 
-- **Comprehensive** - 120 rules across CLAUDE.md, skills, settings, hooks, MCP, plugins, agents, LSP, output styles, and commands
+- **Comprehensive** - <RuleCount category="total" /> rules across CLAUDE.md, skills, settings, hooks, MCP, plugins, agents, LSP, output styles, and commands
 - **Fast** - Parallel validation with smart caching for ~2.4x speedup
 - **Auto-fix** - Automatically fix common issues with `--fix`
 - **Configurable** - Per-rule severity, inline disables, `.claudelintrc.json` config

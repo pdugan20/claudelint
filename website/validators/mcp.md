@@ -23,7 +23,7 @@ The MCP validator checks `.mcp.json` configuration files for transport types, UR
 | [mcp-invalid-env-var](/rules/mcp/mcp-invalid-env-var) | warn | Invalid environment variable |
 | [mcp-server-key-mismatch](/rules/mcp/mcp-server-key-mismatch) | warn | Server key mismatch |
 
-See the [MCP rules category](/rules/overview) for the complete list of 13 rules.
+See the [MCP rules category](/rules/overview) for the complete list of <RuleCount category="mcp" /> rules.
 
 ## CLI Usage
 

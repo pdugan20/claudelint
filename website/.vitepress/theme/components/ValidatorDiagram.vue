@@ -10,7 +10,7 @@
     <div class="vd-arrow">&#x2193;</div>
     <div class="vd-validators">
       <div
-        v-for="v in validators"
+        v-for="v in effectiveValidators"
         :key="v.name"
         class="vd-box vd-box-validator"
       >
@@ -32,13 +32,38 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  validators: Array<{
-    name: string;
-    rules: number;
-    link?: string;
-  }>;
+import stats from '../../../data/rule-stats.json';
+
+interface ValidatorEntry {
+  name: string;
+  rules: number;
+  link?: string;
+}
+
+const props = defineProps<{
+  validators?: ValidatorEntry[];
 }>();
+
+const categoryLinks: Record<string, string> = {
+  'claude-md': '/validators/claude-md',
+  'skills': '/validators/skills',
+  'settings': '/validators/settings',
+  'hooks': '/validators/hooks',
+  'mcp': '/validators/mcp',
+  'plugin': '/validators/plugin',
+  'agents': '/validators/agents',
+  'lsp': '/validators/lsp',
+  'output-styles': '/validators/output-styles',
+  'commands': '/validators/commands',
+};
+
+const effectiveValidators: ValidatorEntry[] = props.validators ?? Object.entries(stats.categories).map(
+  ([key, val]) => ({
+    name: (val as { display: string; count: number }).display,
+    rules: (val as { display: string; count: number }).count,
+    link: categoryLinks[key],
+  })
+);
 </script>
 
 <style scoped>

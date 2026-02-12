@@ -78,6 +78,9 @@ async function generateRuleDocs(): Promise<void> {
   // Generate sidebar data file
   await generateSidebarData(categoryRules);
 
+  // Generate rule stats data file for dynamic counts
+  await generateRuleStats(categoryRules);
+
   log.blank();
   log.info(`Results:`);
   log.info(`  Generated from metadata: ${generated}`);
@@ -166,6 +169,46 @@ async function generateSidebarData(
   const sidebarPath = join(WEBSITE_RULES_DIR, '_sidebar.json');
   await writeFile(sidebarPath, JSON.stringify(sidebar, null, 2) + '\n');
   log.info(`Generated sidebar data: ${sidebarPath}`);
+}
+
+/**
+ * Generate rule stats JSON for dynamic counts in VitePress components
+ */
+async function generateRuleStats(
+  categoryRules: Map<string, { id: string; name: string }[]>,
+): Promise<void> {
+  const dataDir = join(__dirname, '../../website/data');
+  await mkdir(dataDir, { recursive: true });
+
+  const categories: Record<string, { display: string; count: number }> = {};
+  let total = 0;
+
+  // Sort categories by defined order
+  const sortedCategories = [...categoryRules.entries()].sort((a, b) => {
+    const aIdx = CATEGORY_ORDER.indexOf(a[0]);
+    const bIdx = CATEGORY_ORDER.indexOf(b[0]);
+    return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+  });
+
+  for (const [categoryDir, rules] of sortedCategories) {
+    const displayName = CATEGORY_DISPLAY[categoryDir] || categoryDir;
+    categories[categoryDir] = {
+      display: displayName,
+      count: rules.length,
+    };
+    total += rules.length;
+  }
+
+  const stats = {
+    total,
+    categoryCount: sortedCategories.length,
+    categories,
+    generatedAt: new Date().toISOString(),
+  };
+
+  const statsPath = join(dataDir, 'rule-stats.json');
+  await writeFile(statsPath, JSON.stringify(stats, null, 2) + '\n');
+  log.info(`Generated rule stats: ${statsPath}`);
 }
 
 generateRuleDocs().catch((err) => {

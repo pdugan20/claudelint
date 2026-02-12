@@ -1,10 +1,10 @@
 # Rule Index
 
-This directory contains documentation for all 98 claudelint rules.
+This directory contains documentation for all claudelint rules.
 
 ## Rules by Category
 
-### Agents (12 rules)
+### Agents
 
 - [agent-body-too-short](./agents/agent-body-too-short.md) - Agent body content should meet minimum length requirements
 - [agent-description](./agents/agent-description.md) - Agent description must be at least 10 characters, written in third person, with no XML tags
@@ -19,7 +19,7 @@ This directory contains documentation for all 98 claudelint rules.
 - [agent-skills-not-found](./agents/agent-skills-not-found.md) - Referenced skill does not exist in .claude/skills directory
 - [agent-tools](./agents/agent-tools.md) - Agent tools must be an array of tool names, cannot be used with disallowed-tools
 
-### CLAUDE.md (14 rules)
+### CLAUDE.md
 
 - [claude-md-content-too-many-sections](./claude-md/claude-md-content-too-many-sections.md) - CLAUDE.md has too many sections making it hard to navigate
 - [claude-md-file-not-found](./claude-md/claude-md-file-not-found.md) - Specified CLAUDE.md file path does not exist
@@ -36,18 +36,18 @@ This directory contains documentation for all 98 claudelint rules.
 - [claude-md-size-error](./claude-md/claude-md-size-error.md) - CLAUDE.md exceeds maximum file size limit
 - [claude-md-size-warning](./claude-md/claude-md-size-warning.md) - CLAUDE.md file is approaching size limit
 
-### Commands (2 rules)
+### Commands
 
 - [commands-deprecated-directory](./commands/commands-deprecated-directory.md) - Commands directory is deprecated, migrate to Skills
 - [commands-migrate-to-skills](./commands/commands-migrate-to-skills.md) - Migration guidance for deprecated Commands
 
-### Hooks (3 rules)
+### Hooks
 
 - [hooks-invalid-config](./hooks/hooks-invalid-config.md) - Hook configuration must be valid
 - [hooks-invalid-event](./hooks/hooks-invalid-event.md) - Hook events must be valid event names
 - [hooks-missing-script](./hooks/hooks-missing-script.md) - Hook scripts must reference existing files
 
-### LSP (8 rules)
+### LSP
 
 - [lsp-command-not-in-path](./lsp/lsp-command-not-in-path.md) - LSP server commands should be in PATH or use absolute paths
 - [lsp-config-file-not-json](./lsp/lsp-config-file-not-json.md) - LSP configFile should end with .json extension
@@ -58,7 +58,7 @@ This directory contains documentation for all 98 claudelint rules.
 - [lsp-language-id-not-lowercase](./lsp/lsp-language-id-not-lowercase.md) - LSP language IDs should be lowercase
 - [lsp-server-name-too-short](./lsp/lsp-server-name-too-short.md) - LSP server names should be descriptive
 
-### MCP (13 rules)
+### MCP
 
 - [mcp-http-empty-url](./mcp/mcp-http-empty-url.md) - MCP HTTP transport URL cannot be empty
 - [mcp-http-invalid-url](./mcp/mcp-http-invalid-url.md) - MCP HTTP transport URL must be valid
@@ -74,13 +74,13 @@ This directory contains documentation for all 98 claudelint rules.
 - [mcp-websocket-invalid-protocol](./mcp/mcp-websocket-invalid-protocol.md) - WebSocket URLs should use ws:// or wss:// protocol
 - [mcp-websocket-invalid-url](./mcp/mcp-websocket-invalid-url.md) - MCP WebSocket transport URL must be valid
 
-### OutputStyles (3 rules)
+### OutputStyles
 
 - [output-style-body-too-short](./output-styles/output-style-body-too-short.md) - Output style body content should meet minimum length requirements
 - [output-style-missing-guidelines](./output-styles/output-style-missing-guidelines.md) - Output style should include a "Guidelines" or "Format" section
 - [output-style-name-directory-mismatch](./output-styles/output-style-name-directory-mismatch.md) - Output style name must match parent directory name
 
-### Plugin (10 rules)
+### Plugin
 
 - [commands-in-plugin-deprecated](./plugin/commands-in-plugin-deprecated.md) - The commands field in plugin.json is deprecated
 - [plugin-components-wrong-location](./plugin/plugin-components-wrong-location.md) - Plugin components should be in .claude/ not .claude-plugin/
@@ -93,7 +93,7 @@ This directory contains documentation for all 98 claudelint rules.
 - [plugin-name-required](./plugin/plugin-name-required.md) - Plugin name is required and cannot be empty
 - [plugin-version-required](./plugin/plugin-version-required.md) - Plugin version is required and cannot be empty
 
-### Settings (5 rules)
+### Settings
 
 - [settings-file-path-not-found](./settings/settings-file-path-not-found.md) - Referenced file path does not exist
 - [settings-invalid-env-var](./settings/settings-invalid-env-var.md) - Environment variables must follow naming conventions
@@ -101,7 +101,7 @@ This directory contains documentation for all 98 claudelint rules.
 - [settings-permission-empty-pattern](./settings/settings-permission-empty-pattern.md) - Tool(pattern) syntax should not have empty patterns
 - [settings-permission-invalid-rule](./settings/settings-permission-invalid-rule.md) - Permission rules must use valid Tool(pattern) syntax
 
-### Skills (28 rules)
+### Skills
 
 - [skill-agent](./skills/skill-agent.md) - When skill context is "fork", agent field is required to specify which agent to use
 - [skill-allowed-tools](./skills/skill-allowed-tools.md) - Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools
@@ -144,13 +144,13 @@ This directory contains documentation for all 98 claudelint rules.
 
 ## Categories
 
-- [Agents](./agents/) - 12 rules
-- [CLAUDE.md](./claude-md/) - 14 rules
-- [Commands](./commands/) - 2 rules
-- [Hooks](./hooks/) - 3 rules
-- [LSP](./lsp/) - 8 rules
-- [MCP](./mcp/) - 13 rules
-- [OutputStyles](./output-styles/) - 3 rules
-- [Plugin](./plugin/) - 10 rules
-- [Settings](./settings/) - 5 rules
-- [Skills](./skills/) - 28 rules
+- [Agents](./agents/)
+- [CLAUDE.md](./claude-md/)
+- [Commands](./commands/)
+- [Hooks](./hooks/)
+- [LSP](./lsp/)
+- [MCP](./mcp/)
+- [OutputStyles](./output-styles/)
+- [Plugin](./plugin/)
+- [Settings](./settings/)
+- [Skills](./skills/)

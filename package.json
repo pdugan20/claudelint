@@ -48,6 +48,7 @@
     "check:deadcode:production": "knip --production",
     "check:emojis": "node scripts/check/emoji.js",
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
+    "check:hardcoded-counts": "ts-node scripts/check/hardcoded-counts.ts",
     "check:links": "node scripts/check/links.js",
     "check:links:all": "remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md",
     "check:logger-spacing": "bash scripts/check/logger-spacing.sh",

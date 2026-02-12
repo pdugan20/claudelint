@@ -17,7 +17,7 @@ claudelint validates all major Claude Code components through organized validati
 9. LSP Servers
 10. Output Styles
 
-**See also:** [Complete Rule Reference](./rules/index.md) - Individual documentation pages for all 105 validation rules
+**See also:** [Complete Rule Reference](./rules/index.md) - Individual documentation pages for all validation rules
 
 **For contributors:** To write new validation rules, see [contributing-rules.md](./contributing-rules.md).
 
@@ -25,7 +25,7 @@ claudelint validates all major Claude Code components through organized validati
 
 claudelint uses a **rule-based architecture** (similar to ESLint):
 
-- **Rules** (105 total in `src/rules/`) - Individual validation checks that users can configure
+- **Rules** (in `src/rules/`) - Individual validation checks that users can configure
 - **Validators** - Internal orchestrators that collect and run rules by category
 - **Contributors write rules, not validators** - See [contributing-rules.md](./contributing-rules.md)
 

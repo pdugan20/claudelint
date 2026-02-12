@@ -1043,6 +1043,6 @@ claudelint check-all --fast
 ## See Also
 
 - [Configuration Guide](./configuration.md) - Detailed config options
-- [Rules Catalog](/rules/overview) - All 66 validation rules
+- [Rules Catalog](/rules/overview) - All validation rules
 - [Auto-fix Guide](./auto-fix.md) - Using auto-fix safely
 - [Troubleshooting](./troubleshooting.md) - Troubleshooting

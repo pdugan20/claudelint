@@ -160,5 +160,5 @@ See [Configuration Guide](../docs/configuration.md) for all options.
 
 - [CLI Reference](../docs/cli-reference.md) - All commands and flags
 - [Configuration Guide](../docs/configuration.md) - Detailed config options
-- [Rules Catalog](../docs/rules/) - All 66 validation rules
+- [Rules Catalog](../docs/rules/) - All validation rules
 - [Auto-fix Guide](../docs/auto-fix.md) - Using auto-fix safely

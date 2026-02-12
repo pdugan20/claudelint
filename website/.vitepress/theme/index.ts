@@ -5,6 +5,7 @@ import CodeTabs from './components/CodeTabs.vue';
 import FeatureGrid from './components/FeatureGrid.vue';
 import ValidatorDiagram from './components/ValidatorDiagram.vue';
 import ConfigExample from './components/ConfigExample.vue';
+import RuleCount from './components/RuleCount.vue';
 import './style.css';
 
 export default {
@@ -16,5 +17,6 @@ export default {
     app.component('FeatureGrid', FeatureGrid);
     app.component('ValidatorDiagram', ValidatorDiagram);
     app.component('ConfigExample', ConfigExample);
+    app.component('RuleCount', RuleCount);
   },
 };

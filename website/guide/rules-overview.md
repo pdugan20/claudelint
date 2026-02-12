@@ -1,21 +1,21 @@
 # Rules Overview
 
-claudelint includes 120 validation rules across 10 categories.
+claudelint includes <RuleCount category="total" /> validation rules across <RuleCount category="categories" /> categories.
 
 ## Rule Categories
 
 | Category | Rules | Description |
 |----------|-------|-------------|
-| Skills | 46 | Skill naming, security, versioning, structure |
-| CLAUDE.md | 16 | File size, imports, paths, content |
-| MCP | 13 | Server config, URLs, transport types |
-| Plugin | 12 | Manifest, components, versioning |
-| Agents | 12 | Names, descriptions, tools, models |
-| LSP | 8 | Transport, language IDs, extensions |
-| Settings | 5 | Permissions, environment variables |
-| Hooks | 3 | Event types, script references |
-| Output Styles | 3 | Name validation |
-| Commands | 2 | Migration checks |
+| Skills | <RuleCount category="skills" /> | Skill naming, security, versioning, structure |
+| CLAUDE.md | <RuleCount category="claude-md" /> | File size, imports, paths, content |
+| MCP | <RuleCount category="mcp" /> | Server config, URLs, transport types |
+| Plugin | <RuleCount category="plugin" /> | Manifest, components, versioning |
+| Agents | <RuleCount category="agents" /> | Names, descriptions, tools, models |
+| LSP | <RuleCount category="lsp" /> | Transport, language IDs, extensions |
+| Settings | <RuleCount category="settings" /> | Permissions, environment variables |
+| Hooks | <RuleCount category="hooks" /> | Event types, script references |
+| Output Styles | <RuleCount category="output-styles" /> | Name validation |
+| Commands | <RuleCount category="commands" /> | Migration checks |
 
 ## Severity Levels
 

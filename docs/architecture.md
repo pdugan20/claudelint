@@ -74,7 +74,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 **Characteristics:**
 
-- **105 rules total** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
+- **100+ rules** organized into 10 categories (ClaudeMd, Skills, Settings, Hooks, MCP, Plugin, Agents, Output Styles, LSP, Commands)
 - **User-configurable** - Can be enabled/disabled, severity changed per-project
 - **Self-contained** - Each rule validates one specific aspect
 - **Metadata-driven** - Include id, name, description, severity, fixable flag
@@ -244,9 +244,9 @@ export const rule: Rule = {
 
 **Categories using this pattern:**
 
-- Skills (10 rules)
-- Agents (10 rules)
-- Output-styles (3 rules)
+- Skills (schema-delegating rules)
+- Agents (schema-delegating rules)
+- Output-styles (schema-delegating rules)
 
 ### Pattern 2: Standalone Validation Rules
 
@@ -293,10 +293,10 @@ export const rule: Rule = {
 
 **Categories using this pattern:**
 
-- **ClaudeMd** (14 rules - file-level and import validation, semantic checks)
+- **ClaudeMd** (file-level and import validation, semantic checks)
   - Rationale: Most rules validate file properties (size, imports, circular refs) not frontmatter fields
   - Only one field-level rule (paths) already has detailed per-index validation
-- **MCP** (13 rules - transport-specific and cross-cutting validation)
+- **MCP** (transport-specific and cross-cutting validation)
   - Rationale: Nested JSON structure with dynamic keys, not flat frontmatter
   - Rules require transport-type-specific validation and iteration over server entries
 - **Settings** (various cross-reference rules)
@@ -438,7 +438,7 @@ claudelint/
 ├── src/                     # Source code
 │   ├── cli.ts               # CLI entry point
 │   ├── index.ts             # Library exports
-│   ├── rules/               # Validation rules (105 rules)
+│   ├── rules/               # Validation rules (auto-discovered)
 │   │   ├── claude-md/       # CLAUDE.md rules
 │   │   ├── skills/          # Skills rules
 │   │   ├── settings/        # Settings rules
@@ -929,18 +929,18 @@ for (const rule of rules) {
 
 Core rules (v1.0):
 
-- **Skills** (28 rules): All skill validation including frontmatter, structure, security, and content checks
-- **CLAUDE.md** (14 rules): Size limits, import validation, frontmatter, circular dependencies, and content structure
-- **MCP** (13 rules): Server configuration, transport validation, environment variables, and command validation
-- **Agents** (13 rules): Agent configuration, frontmatter validation, model/tool/skill references, and hooks
-- **Plugin** (12 rules): Manifest validation, version checking, file existence, dependency management
-- **LSP** (8 rules): LSP server configuration validation, JSON schema, server names, and commands
-- **Output Styles** (7 rules): Output style frontmatter and structure validation
-- **Settings** (5 rules): Permission rules, environment variables, and schema validation
-- **Hooks** (3 rules): Event names, script existence, configuration schema
-- **Commands** (2 rules): Deprecated directory detection, migration prompts
+- **Skills**: All skill validation including frontmatter, structure, security, and content checks
+- **CLAUDE.md**: Size limits, import validation, frontmatter, circular dependencies, and content structure
+- **MCP**: Server configuration, transport validation, environment variables, and command validation
+- **Agents**: Agent configuration, frontmatter validation, model/tool/skill references, and hooks
+- **Plugin**: Manifest validation, version checking, file existence, dependency management
+- **LSP**: LSP server configuration validation, JSON schema, server names, and commands
+- **Output Styles**: Output style frontmatter and structure validation
+- **Settings**: Permission rules, environment variables, and schema validation
+- **Hooks**: Event names, script existence, configuration schema
+- **Commands**: Deprecated directory detection, migration prompts
 
-**Total:** 105 core rules (ESLint-style auto-discovered from filesystem)
+Rules are ESLint-style and auto-discovered from the filesystem. See the website for current counts.
 
 Plugin rules can be added by third-party packages.
 

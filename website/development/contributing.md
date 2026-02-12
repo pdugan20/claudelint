@@ -702,7 +702,7 @@ npm run docs:preview
 
 - **[Getting Started](/guide/getting-started)** - Installation and first steps
 - **[Configuration](/guide/configuration)** - Configuring claudelint
-- **[Rules Reference](/rules/overview)** - All 120 validation rules
+- **[Rules Reference](/rules/overview)** - All validation rules
 - **[Troubleshooting](/guide/troubleshooting)** - Common issues and solutions
 
 ## Release Process

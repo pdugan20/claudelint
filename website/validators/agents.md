@@ -13,7 +13,7 @@ The Agents validator checks Claude Code agent definitions for correctness, inclu
 
 ## Rules
 
-See the [Agents rules category](/rules/overview) for the complete list of 12 rules.
+See the [Agents rules category](/rules/overview) for the complete list of <RuleCount category="agents" /> rules.
 
 ## CLI Usage
 

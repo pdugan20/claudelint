@@ -1,0 +1,47 @@
+{
+  "total": 120,
+  "categoryCount": 10,
+  "categories": {
+    "claude-md": {
+      "display": "CLAUDE.md",
+      "count": 16
+    },
+    "skills": {
+      "display": "Skills",
+      "count": 46
+    },
+    "settings": {
+      "display": "Settings",
+      "count": 5
+    },
+    "hooks": {
+      "display": "Hooks",
+      "count": 3
+    },
+    "mcp": {
+      "display": "MCP",
+      "count": 13
+    },
+    "plugin": {
+      "display": "Plugin",
+      "count": 12
+    },
+    "agents": {
+      "display": "Agents",
+      "count": 12
+    },
+    "lsp": {
+      "display": "LSP",
+      "count": 8
+    },
+    "output-styles": {
+      "display": "Output Styles",
+      "count": 3
+    },
+    "commands": {
+      "display": "Commands",
+      "count": 2
+    }
+  },
+  "generatedAt": "2026-02-12T02:38:58.941Z"
+}

@@ -14,7 +14,7 @@ The Plugin validator checks `.claude-plugin/plugin.json` manifest files for sche
 
 ## Rules
 
-See the [Plugin rules category](/rules/overview) for the complete list of 12 rules. Key rules include:
+See the [Plugin rules category](/rules/overview) for the complete list of <RuleCount category="plugin" /> rules. Key rules include:
 
 | Rule | Severity | Description |
 |------|----------|-------------|

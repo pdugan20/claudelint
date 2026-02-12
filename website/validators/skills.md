@@ -14,7 +14,7 @@ The Skills validator checks Claude Code skill definitions for correctness, secur
 
 ## Rules
 
-This validator includes 46 rules. See the [Skills rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="skills" /> rules. See the [Skills rules category](/rules/overview) for the complete list.
 
 Key rules include:
 

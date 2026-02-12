@@ -28,7 +28,7 @@ interface SchemaRuleConfig {
  * Organized by category for clarity
  */
 const SCHEMA_RULES: SchemaRuleConfig[] = [
-  // Skills (10 rules)
+  // Skills rules
   {
     id: 'skill-name',
     name: 'Skill Name Format',
@@ -117,7 +117,7 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
     schemaValidation: 'Array of strings',
   },
 
-  // Agents (8 rules)
+  // Agents rules
   {
     id: 'agent-name',
     name: 'Agent Name Format',
@@ -186,7 +186,7 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
     schemaValidation: 'SettingsHooksSchema object',
   },
 
-  // Claude MD (1 rule)
+  // Claude MD rules
   {
     id: 'claude-md-paths',
     name: 'Claude MD Paths Format',
@@ -198,7 +198,7 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
       'Array of strings, min 1 item, each string min 1 character',
   },
 
-  // Output Styles (3 rules)
+  // Output Styles rules
   {
     id: 'output-style-name',
     name: 'Output Style Name Format',
