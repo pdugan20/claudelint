@@ -13,7 +13,7 @@ The CLAUDE.md validator checks your project's CLAUDE.md files for correctness, s
 
 ## Rules
 
-This validator includes <RuleCount category="claude-md" /> rules. See the [CLAUDE.md rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="claude-md" /> rules. See the [CLAUDE.md rules category](/rules/claude-md/claude-md-content-too-many-sections) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

@@ -13,7 +13,7 @@ The MCP validator checks `.mcp.json` configuration files for transport types, UR
 
 ## Rules
 
-This validator includes <RuleCount category="mcp" /> rules. See the [MCP rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="mcp" /> rules. See the [MCP rules category](/rules/mcp/mcp-http-empty-url) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

@@ -14,7 +14,7 @@ The Plugin validator checks `.claude-plugin/plugin.json` manifest files for sche
 
 ## Rules
 
-This validator includes <RuleCount category="plugin" /> rules. See the [Plugin rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="plugin" /> rules. See the [Plugin rules category](/rules/plugin/commands-in-plugin-deprecated) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

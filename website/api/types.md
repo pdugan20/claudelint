@@ -1,32 +1,13 @@
 # TypeScript Types
 
-Complete TypeScript type reference for the ClaudeLint API.
+Complete TypeScript type reference for the claudelint API. All types are exported from `claude-code-lint`.
 
-## Table of Contents
-
-- [Result Types](#result-types)
-  - [LintResult](#lintresult)
-  - [LintMessage](#lintmessage)
-  - [FixInfo](#fixinfo)
-  - [SuggestionInfo](#suggestioninfo)
-- [Options Types](#options-types)
-  - [ClaudeLintOptions](#claudelintoptions)
-  - [LintOptions](#lintoptions)
-  - [LintTextOptions](#linttextoptions)
-  - [ConfigOptions](#configoptions)
-  - [FileInfoOptions](#fileinfooptions)
-  - [LoadFormatterOptions](#loadformatteroptions)
-- [Configuration Types](#configuration-types)
-  - [ClaudeLintConfig](#claudelintconfig)
-  - [RuleConfig](#ruleconfig)
-  - [ConfigOverride](#configoverride)
-- [Formatter Types](#formatter-types)
-  - [Formatter](#formatter)
-  - [FormatterOptions](#formatteroptions)
-- [Metadata Types](#metadata-types)
-  - [RuleMetadata](#rulemetadata)
-  - [FileInfo](#fileinfo)
-- [Type Utilities](#type-utilities)
+```typescript
+import {
+  ClaudeLint, LintResult, LintMessage, ClaudeLintOptions,
+  ClaudeLintConfig, Formatter, RuleMetadata,
+} from 'claude-code-lint';
+```
 
 ## Result Types
 
@@ -45,41 +26,26 @@ interface LintResult {
   fixableWarningCount: number;
   source?: string;
   output?: string;
+  deprecatedRulesUsed?: DeprecatedRuleUsage[];
   stats?: {
     validationTime: number;
   };
 }
 ```
 
-**Properties:**
-
-- `filePath` - Absolute path to the linted file
-- `messages` - Array of validation messages (errors and warnings)
-- `suppressedMessages` - Messages suppressed via inline disable comments
-- `errorCount` - Number of error-level messages
-- `warningCount` - Number of warning-level messages
-- `fixableErrorCount` - Number of errors with automatic fixes
-- `fixableWarningCount` - Number of warnings with automatic fixes
-- `source` - Original source code (when available)
-- `output` - Fixed source code (when fixes applied)
-- `stats` - Performance and diagnostic statistics
-
-**Example:**
-
-```typescript
-const results: LintResult[] = await linter.lintFiles(['**/*.md']);
-
-for (const result of results) {
-  console.log(`${result.filePath}:`);
-  console.log(`  Errors: ${result.errorCount}`);
-  console.log(`  Warnings: ${result.warningCount}`);
-  console.log(`  Fixable: ${result.fixableErrorCount + result.fixableWarningCount}`);
-
-  if (result.output && result.output !== result.source) {
-    console.log('  Has fixes available');
-  }
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| `filePath` | `string` | Absolute path to the linted file |
+| `messages` | `LintMessage[]` | Validation messages (errors and warnings) |
+| `suppressedMessages` | `LintMessage[]` | Messages suppressed via inline disable comments |
+| `errorCount` | `number` | Number of error-level messages |
+| `warningCount` | `number` | Number of warning-level messages |
+| `fixableErrorCount` | `number` | Number of errors with automatic fixes |
+| `fixableWarningCount` | `number` | Number of warnings with automatic fixes |
+| `source` | `string?` | Original source code (when available) |
+| `output` | `string?` | Fixed source code (when fixes applied) |
+| `deprecatedRulesUsed` | `DeprecatedRuleUsage[]?` | Deprecated rules that were triggered |
+| `stats` | `object?` | Performance statistics (`validationTime` in ms) |
 
 ### LintMessage
 
@@ -101,43 +67,19 @@ interface LintMessage {
 }
 ```
 
-**Properties:**
-
-- `ruleId` - Unique identifier for the rule (null for non-rule messages)
-- `severity` - 'error' or 'warning'
-- `message` - Human-readable description of the issue
-- `line` - Line number where issue starts (1-based)
-- `column` - Column number where issue starts (1-based)
-- `endLine` - Line number where issue ends (1-based)
-- `endColumn` - Column number where issue ends (1-based)
-- `fix` - Automatic fix (if available)
-- `suggestions` - Alternative fix suggestions
-- `explanation` - Detailed explanation of why this matters
-- `howToFix` - Step-by-step fix instructions
-
-**Example:**
-
-```typescript
-for (const msg of result.messages) {
-  const location = msg.line ? `:${msg.line}` : '';
-  const severity = msg.severity.toUpperCase();
-
-  console.log(`[${severity}] ${result.filePath}${location}`);
-  console.log(`  ${msg.message}`);
-
-  if (msg.ruleId) {
-    console.log(`  Rule: ${msg.ruleId}`);
-  }
-
-  if (msg.fix) {
-    console.log('  Auto-fix available');
-  }
-
-  if (msg.explanation) {
-    console.log(`  Why: ${msg.explanation}`);
-  }
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| `ruleId` | `string \| null` | Rule identifier (null for non-rule messages) |
+| `severity` | `'error' \| 'warning'` | Severity level |
+| `message` | `string` | Human-readable description of the issue |
+| `line` | `number?` | Line number where issue starts (1-based) |
+| `column` | `number?` | Column number where issue starts (1-based) |
+| `endLine` | `number?` | Line number where issue ends (1-based) |
+| `endColumn` | `number?` | Column number where issue ends (1-based) |
+| `fix` | `FixInfo?` | Automatic fix information |
+| `suggestions` | `SuggestionInfo[]?` | Alternative fix suggestions |
+| `explanation` | `string?` | Detailed explanation of why this matters |
+| `howToFix` | `string?` | Step-by-step fix instructions |
 
 ### FixInfo
 
@@ -150,21 +92,8 @@ interface FixInfo {
 }
 ```
 
-**Properties:**
-
-- `range` - Start and end character offsets in source code [start, end]
+- `range` - Start and end character offsets in source code
 - `text` - Replacement text to insert at the range
-
-**Example:**
-
-```typescript
-for (const msg of result.messages) {
-  if (msg.fix) {
-    const [start, end] = msg.fix.range;
-    console.log(`Replace characters ${start}-${end} with: "${msg.fix.text}"`);
-  }
-}
-```
 
 ### SuggestionInfo
 
@@ -177,29 +106,14 @@ interface SuggestionInfo {
 }
 ```
 
-**Properties:**
-
 - `desc` - Description of what this suggestion does
 - `fix` - The suggested fix information
-
-**Example:**
-
-```typescript
-for (const msg of result.messages) {
-  if (msg.suggestions && msg.suggestions.length > 0) {
-    console.log('Suggestions:');
-    for (const suggestion of msg.suggestions) {
-      console.log(`  - ${suggestion.desc}`);
-    }
-  }
-}
-```
 
 ## Options Types
 
 ### ClaudeLintOptions
 
-Constructor options for the ClaudeLint class.
+Constructor options for the `ClaudeLint` class. Also used by the functional `lint()` wrapper as `LintOptions`.
 
 ```typescript
 interface ClaudeLintOptions {
@@ -234,83 +148,40 @@ interface ClaudeLintOptions {
 }
 ```
 
-**Key Options:**
-
 **Configuration:**
 
-- `config` - Explicit configuration object (overrides config file)
-- `overrideConfigFile` - Path to config file (overrides automatic discovery)
+- `config` - Explicit `ClaudeLintConfig` object (overrides config file)
+- `overrideConfigFile` - Path to config file (overrides auto-discovery)
 
-**Linting Behavior:**
+**Linting behavior:**
 
-- `fix` - Enable auto-fix (boolean or predicate function)
-- `fixTypes` - Types of fixes to apply (e.g., ['problem', 'suggestion'])
-- `allowInlineConfig` - Allow inline disable comments (default: true)
-- `reportUnusedDisableDirectives` - Warn about unused disable comments
+- `fix` - Enable auto-fix: `boolean` or predicate function (default: `false`)
+- `fixTypes` - Types of fixes to apply (e.g., `['problem', 'suggestion']`)
+- `allowInlineConfig` - Allow inline disable comments (default: `true`)
+- `reportUnusedDisableDirectives` - Warn about unused disable comments (default: `false`)
 
-**File Handling:**
+**File handling:**
 
-- `cwd` - Working directory (default: process.cwd())
-- `ignore` - Enable ignore patterns (default: true)
+- `cwd` - Working directory (default: `process.cwd()`)
+- `ignore` - Enable ignore patterns from config (default: `true`)
 - `ignorePatterns` - Additional glob patterns to ignore
-- `errorOnUnmatchedPattern` - Throw if patterns match no files
+- `errorOnUnmatchedPattern` - Throw if patterns match no files (default: `true`)
 
 **Caching:**
 
-- `cache` - Enable result caching
-- `cacheLocation` - Cache directory (default: '.claudelint-cache')
-- `cacheStrategy` - Cache invalidation strategy
+- `cache` - Enable result caching (default: `false`)
+- `cacheLocation` - Cache directory (default: `'.claudelint-cache'`)
+- `cacheStrategy` - `'metadata'` or `'content'` (default: `'metadata'`)
 
-**Progress Callbacks:**
+**Progress callbacks:**
 
-- `onStart` - Called when linting starts
-- `onProgress` - Called for each file
-- `onComplete` - Called when linting completes
+- `onStart` - Called when linting starts with file count
+- `onProgress` - Called for each file with path, index, and total
+- `onComplete` - Called when linting completes with results
 
 **Filtering:**
 
 - `ruleFilter` - Predicate to filter which rules run
-
-**Example:**
-
-```typescript
-const options: ClaudeLintOptions = {
-  fix: true,
-  cwd: '/path/to/project',
-  config: {
-    rules: {
-      'claude-md-size-warning': 'warn',
-    },
-  },
-  ignorePatterns: ['temp-*', '*.backup.md'],
-  onProgress: (file, index, total) => {
-    console.log(`[${index + 1}/${total}] ${file}`);
-  },
-};
-
-const linter = new ClaudeLint(options);
-```
-
-### LintOptions
-
-Options for linting files (inherits all ClaudeLintOptions).
-
-```typescript
-interface LintOptions extends ClaudeLintOptions {
-  // Inherits all properties from ClaudeLintOptions
-}
-```
-
-**Usage:**
-
-```typescript
-const options: LintOptions = {
-  fix: true,
-  errorOnUnmatchedPattern: false,
-};
-
-const results = await linter.lintFiles(['**/*.md'], options);
-```
 
 ### LintTextOptions
 
@@ -323,148 +194,100 @@ interface LintTextOptions {
 }
 ```
 
-**Properties:**
+- `filePath` - Virtual file path that determines which validators run (default: random temp file)
+- `warnIgnored` - Warn if the file path would be ignored
 
-- `filePath` - Virtual file path for rule application (default: random temp file)
-- `warnIgnored` - Warn if file path would be ignored
+### ConfigOptions, FileInfoOptions, LoadFormatterOptions
 
-**Example:**
-
-```typescript
-const options: LintTextOptions = {
-  filePath: 'CLAUDE.md',  // Determines which validators run
-  warnIgnored: true,
-};
-
-const results = await linter.lintText(code, options);
-```
-
-### ConfigOptions
-
-Options for resolving configuration.
+These option types all accept a single optional field:
 
 ```typescript
 interface ConfigOptions {
-  cwd?: string;
+  cwd?: string;  // Working directory (default: process.cwd())
 }
-```
-
-**Example:**
-
-```typescript
-const config = await resolveConfig('test.md', {
-  cwd: '/path/to/project',
-});
-```
-
-### FileInfoOptions
-
-Options for getting file information.
-
-```typescript
-interface FileInfoOptions {
-  cwd?: string;
-}
-```
-
-**Example:**
-
-```typescript
-const info = await getFileInfo('test.md', {
-  cwd: '/path/to/project',
-});
-```
-
-### LoadFormatterOptions
-
-Options for loading a formatter.
-
-```typescript
-interface LoadFormatterOptions {
-  cwd?: string;
-}
-```
-
-**Example:**
-
-```typescript
-const formatter = await linter.loadFormatter('stylish', {
-  cwd: '/path/to/project',
-});
+// FileInfoOptions and LoadFormatterOptions have the same shape
 ```
 
 ## Configuration Types
 
 ### ClaudeLintConfig
 
-Configuration object for rules and overrides.
+Complete claudelint configuration object.
 
 ```typescript
 interface ClaudeLintConfig {
+  extends?: string | string[];
   rules?: Record<string, RuleConfig>;
-  ignorePatterns?: string[];
   overrides?: ConfigOverride[];
+  ignorePatterns?: string[];
+  output?: {
+    format?: string;
+    verbose?: boolean;
+    color?: boolean;
+  };
+  reportUnusedDisableDirectives?: boolean;
+  maxWarnings?: number;
 }
 ```
 
-**Properties:**
-
-- `rules` - Rule configuration map
-- `ignorePatterns` - Glob patterns to ignore
-- `overrides` - File-specific rule overrides
+| Property | Type | Description |
+|----------|------|-------------|
+| `extends` | `string \| string[]` | Extend base configuration(s) |
+| `rules` | `Record<string, RuleConfig>` | Rule configuration map |
+| `overrides` | `ConfigOverride[]` | File-specific rule overrides |
+| `ignorePatterns` | `string[]` | Glob patterns to ignore |
+| `output` | `object` | Output format, verbosity, and color settings |
+| `reportUnusedDisableDirectives` | `boolean` | Warn about unused disable comments |
+| `maxWarnings` | `number` | Maximum warnings before exit code 1 |
 
 **Example:**
 
 ```typescript
 const config: ClaudeLintConfig = {
+  extends: 'recommended',
   rules: {
     'claude-md-size-warning': 'warn',
-    'skill-missing-examples': 'error',
+    'skill-missing-examples': { severity: 'error', options: { minExamples: 2 } },
   },
-  ignorePatterns: [
-    'node_modules/**',
-    'dist/**',
-  ],
+  ignorePatterns: ['node_modules/**', 'dist/**'],
   overrides: [
     {
       files: ['skills/**/*.md'],
-      rules: {
-        'skill-body-too-long': 'off',
-      },
+      rules: { 'skill-body-too-long': 'off' },
     },
   ],
+  maxWarnings: 10,
 };
 ```
 
 ### RuleConfig
 
-Configuration value for a single rule.
+Configuration for a single rule. The `rules` map accepts both shorthand strings and full objects.
 
 ```typescript
-type RuleConfig = 'error' | 'warn' | 'off' | [string, any];
+// Shorthand (in rules map values)
+type RuleConfigShorthand = 'error' | 'warn' | 'off';
+
+// Full form
+interface RuleConfig {
+  severity: 'off' | 'warn' | 'error';
+  options?: Record<string, unknown>;
+}
 ```
 
-**Values:**
-
-- `'error'` - Treat violations as errors
-- `'warn'` - Treat violations as warnings
-- `'off'` - Disable the rule
-- `['error', options]` - Error with rule options
-- `['warn', options]` - Warning with rule options
-
-**Example:**
+**Usage:**
 
 ```typescript
-const rules: Record<string, RuleConfig> = {
-  'claude-md-size-warning': 'warn',
-  'skill-missing-examples': 'off',
-  'skill-body-too-long': ['error', { maxLength: 5000 }],
+const rules = {
+  'claude-md-size-warning': 'warn',                                    // shorthand
+  'skill-missing-examples': 'off',                                     // shorthand
+  'skill-body-too-long': { severity: 'error', options: { maxLength: 5000 } },  // full
 };
 ```
 
 ### ConfigOverride
 
-File-specific configuration override.
+File-specific rule overrides applied by glob pattern.
 
 ```typescript
 interface ConfigOverride {
@@ -473,36 +296,14 @@ interface ConfigOverride {
 }
 ```
 
-**Properties:**
-
-- `files` - Glob patterns to match files
-- `rules` - Rule configuration to apply
-
-**Example:**
-
-```typescript
-const overrides: ConfigOverride[] = [
-  {
-    files: ['skills/**/*.md'],
-    rules: {
-      'skill-missing-examples': 'error',
-      'skill-body-too-long': 'off',
-    },
-  },
-  {
-    files: ['docs/**/*.md'],
-    rules: {
-      'claude-md-size-warning': 'off',
-    },
-  },
-];
-```
+- `files` - Glob patterns to match (uses minimatch)
+- `rules` - Rule configuration to apply to matched files
 
 ## Formatter Types
 
 ### Formatter
 
-Interface for formatting lint results.
+Interface for formatting lint results. Both built-in and custom formatters implement this.
 
 ```typescript
 interface Formatter {
@@ -510,21 +311,19 @@ interface Formatter {
 }
 ```
 
-**Example:**
+### BaseFormatter
+
+Abstract base class for custom formatters with path resolution helpers.
 
 ```typescript
-const customFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    return results
-      .map(r => `${r.filePath}: ${r.errorCount} errors`)
-      .join('\n');
-  },
-};
+abstract class BaseFormatter implements Formatter {
+  abstract format(results: LintResult[]): string;
+  protected getRelativePath(filePath: string): string;
+  protected getSummary(results: LintResult[]): { errors: number; warnings: number; fixable: number };
+}
 ```
 
 ### FormatterOptions
-
-Options for formatter instances.
 
 ```typescript
 interface FormatterOptions {
@@ -533,16 +332,11 @@ interface FormatterOptions {
 }
 ```
 
-**Properties:**
-
-- `cwd` - Working directory for path resolution
-- `color` - Enable color output (if supported)
-
 ## Metadata Types
 
 ### RuleMetadata
 
-Metadata about a validation rule.
+Metadata about a validation rule, returned by `getRules()` and `getRulesMetaForResults()`.
 
 ```typescript
 interface RuleMetadata {
@@ -556,27 +350,15 @@ interface RuleMetadata {
 }
 ```
 
-**Properties:**
-
-- `ruleId` - Unique rule identifier
-- `description` - Brief description
-- `category` - Rule category
-- `severity` - Default severity level
-- `fixable` - Whether rule can auto-fix
-- `explanation` - Detailed explanation
-- `docs` - Documentation URL
-
-**Example:**
-
-```typescript
-const rules = linter.getRules();
-
-for (const [ruleId, meta] of rules) {
-  if (meta.fixable) {
-    console.log(`${ruleId} - ${meta.description} (fixable)`);
-  }
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| `ruleId` | `string` | Unique rule identifier |
+| `description` | `string` | Brief description |
+| `category` | `string` | Rule category (e.g., 'CLAUDE.md', 'Skills') |
+| `severity` | `'error' \| 'warning'` | Default severity level |
+| `fixable` | `boolean` | Whether the rule supports auto-fix |
+| `explanation` | `string?` | Detailed explanation |
+| `docs` | `string?` | Documentation URL |
 
 ### FileInfo
 
@@ -589,142 +371,23 @@ interface FileInfo {
 }
 ```
 
-**Properties:**
+- `ignored` - Whether the file matches ignore patterns
+- `validators` - Names of validators that would run on this file
 
-- `ignored` - Whether file matches ignore patterns
-- `validators` - Names of validators that would run
+## Utility Functions
 
-**Example:**
+These helper functions are also exported from `claude-code-lint`:
 
-```typescript
-const info = await getFileInfo('CLAUDE.md');
-
-if (info.ignored) {
-  console.log('File is ignored');
-} else {
-  console.log('Validators:', info.validators.join(', '));
-}
-```
-
-## Type Utilities
-
-### Type Guards
-
-Check types at runtime:
-
-```typescript
-function isLintMessage(value: any): value is LintMessage {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'severity' in value &&
-    'message' in value
-  );
-}
-
-function hasFixInfo(message: LintMessage): message is LintMessage & { fix: FixInfo } {
-  return message.fix !== undefined;
-}
-```
-
-### Type Narrowing
-
-Use discriminated unions:
-
-```typescript
-function handleMessage(message: LintMessage) {
-  if (message.severity === 'error') {
-    // TypeScript knows severity is 'error'
-    console.error(message.message);
-  } else {
-    // TypeScript knows severity is 'warning'
-    console.warn(message.message);
-  }
-}
-```
-
-### Utility Types
-
-Create derived types:
-
-```typescript
-// Extract only fixable messages
-type FixableMessage = LintMessage & { fix: FixInfo };
-
-// Partial configuration
-type PartialConfig = Partial<ClaudeLintConfig>;
-
-// Required cwd option
-type RequiredCwdOptions = ClaudeLintOptions & { cwd: string };
-
-// Read-only results
-type ReadonlyResults = ReadonlyArray<Readonly<LintResult>>;
-```
-
-### Generic Functions
-
-Type-safe generic functions:
-
-```typescript
-function filterMessages<T extends LintMessage>(
-  messages: T[],
-  predicate: (msg: T) => boolean
-): T[] {
-  return messages.filter(predicate);
-}
-
-// Usage
-const errors = filterMessages(result.messages, msg => msg.severity === 'error');
-```
-
-## Examples
-
-### Full Type Safety
-
-```typescript
-import {
-  ClaudeLint,
-  ClaudeLintOptions,
-  LintResult,
-  LintMessage,
-  RuleMetadata,
-} from 'claude-code-lint';
-
-const options: ClaudeLintOptions = {
-  fix: (message: LintMessage): boolean => {
-    return message.ruleId?.includes('format') ?? false;
-  },
-  onProgress: (file: string, index: number, total: number): void => {
-    console.log(`[${index + 1}/${total}] ${file}`);
-  },
-};
-
-const linter = new ClaudeLint(options);
-const results: LintResult[] = await linter.lintFiles(['**/*.md']);
-
-const rules: Map<string, RuleMetadata> = linter.getRules();
-```
-
-### Type Assertions
-
-```typescript
-import { LintResult } from 'claude-code-lint';
-
-const results = await linter.lintFiles(['**/*.md']);
-
-// Assert specific structure
-const hasErrors: boolean = results.some(r => r.errorCount > 0);
-
-// Type assertion for custom properties
-interface CustomResult extends LintResult {
-  customField: string;
-}
-
-const customResults = results as CustomResult[];
-```
+| Function | Description |
+|----------|-------------|
+| `isBuiltinFormatter(name: string): boolean` | Check if a formatter name is built-in |
+| `isFormatter(obj: unknown): obj is Formatter` | Type guard to validate the Formatter interface |
+| `findConfigFile(startDir: string): string \| null` | Find the nearest config file by walking up the directory tree |
+| `loadConfig(configPath: string): ClaudeLintConfig` | Load and parse a configuration file |
 
 ## See Also
 
-- [ClaudeLint Class](./claudelint-class.md) - Class API documentation
-- [Functional API](./functional-api.md) - Function API documentation
-- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Usage examples with types
+- [ClaudeLint Class](./claudelint-class.md) - Class API reference
+- [Functional API](./functional-api.md) - Stateless function reference
+- [Schemas](./schemas.md) - Configuration file schema reference
+- [Recipes](./recipes.md) - Practical usage patterns and examples

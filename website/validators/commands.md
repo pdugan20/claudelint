@@ -9,7 +9,7 @@ The Commands validator checks for deprecated command directory usage and helps m
 
 ## Rules
 
-This validator includes <RuleCount category="commands" /> rules. See the [Commands rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="commands" /> rules. See the [Commands rules category](/rules/commands/commands-deprecated-directory) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

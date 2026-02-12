@@ -1,14 +1,20 @@
-# Getting Started
+# Introduction
 
 claudelint is a comprehensive linter for Claude Code projects. It validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
 
 ## Installation
 
 <CodeTabs :tabs="[
-  { label: 'npm', code: 'npm install -g claude-code-lint' },
-  { label: 'yarn', code: 'yarn global add claude-code-lint' },
-  { label: 'pnpm', code: 'pnpm add -g claude-code-lint' }
+  { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
+  { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
+  { label: 'pnpm', code: 'pnpm add --save-dev claude-code-lint' }
 ]" />
+
+Or install globally:
+
+```bash
+npm install -g claude-code-lint
+```
 
 ## Quick Start
 
@@ -22,7 +28,7 @@ claudelint check-all
 
 ## What Gets Validated
 
-claudelint checks 10 different aspects of your Claude Code project:
+claudelint checks <RuleCount category="categories" /> different aspects of your Claude Code project:
 
 - **CLAUDE.md** - File size, imports, paths, content structure
 - **Skills** - Names, descriptions, security, versioning
@@ -49,6 +55,10 @@ See the [Rules Overview](/guide/rules-overview) for all available rules.
 
 ## Use with Claude Code
 
-claudelint is also available as a Claude Code plugin, giving you interactive slash commands like `/validate-all` and `/validate-all-skills` directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
+claudelint is also available as a Claude Code plugin, giving you slash commands like `/claudelint:validate-all` and `/claudelint:validate-skills` directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
+
+```bash
+claudelint install-plugin
+```
 
 See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions.

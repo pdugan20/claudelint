@@ -12,7 +12,7 @@ The LSP validator checks Language Server Protocol configuration files for transp
 
 ## Rules
 
-This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/lsp/lsp-command-not-in-path) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

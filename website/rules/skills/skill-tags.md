@@ -53,7 +53,7 @@ description: Deploys the application
 
 ## How To Fix
 
-Ensure the `tags` field is a YAML array of strings. Each tag should be on its own line prefixed with `-`. Remove any non-string values from the array.
+Ensure the `tags` field is a YAML array of strings. Each tag should be on its own line prefixed with a hyphen and space. Remove any non-string values from the array.
 
 ## Options
 

@@ -14,7 +14,7 @@ The Skills validator checks Claude Code skill definitions for correctness, secur
 
 ## Rules
 
-This validator includes <RuleCount category="skills" /> rules. See the [Skills rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="skills" /> rules. See the [Skills rules category](/rules/skills/skill-agent) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

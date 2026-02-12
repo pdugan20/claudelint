@@ -13,7 +13,7 @@ The Agents validator checks Claude Code agent definitions for correctness, inclu
 
 ## Rules
 
-This validator includes <RuleCount category="agents" /> rules. See the [Agents rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="agents" /> rules. See the [Agents rules category](/rules/agents/agent-body-too-short) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

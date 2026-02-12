@@ -12,7 +12,7 @@ The Hooks validator checks `.claude/hooks/hooks.json` files for schema complianc
 
 ## Rules
 
-This validator includes <RuleCount category="hooks" /> rules. See the [Hooks rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="hooks" /> rules. See the [Hooks rules category](/rules/hooks/hooks-invalid-config) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|

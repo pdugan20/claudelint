@@ -10,7 +10,7 @@ The Output Styles validator checks Claude Code output style definitions for name
 
 ## Rules
 
-This validator includes <RuleCount category="output-styles" /> rules. See the [Output Styles rules category](/rules/overview) for the complete list.
+This validator includes <RuleCount category="output-styles" /> rules. See the [Output Styles rules category](/rules/output-styles/output-style-body-too-short) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|
