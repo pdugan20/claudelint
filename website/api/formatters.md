@@ -29,7 +29,7 @@ console.log(output);
 
 ```text
 CLAUDE.md
-  10:1  error    File size exceeds 30,000 characters  claude-md-size-error
+  10:1  error    File exceeds 40KB limit  claude-md-size-error
   25:1  warning  Missing examples section              claude-md-content-too-many-sections
 
 skills/test/SKILL.md
@@ -72,7 +72,7 @@ for (const result of data) {
       {
         "ruleId": "claude-md-size-error",
         "severity": "error",
-        "message": "File size exceeds 30,000 characters",
+        "message": "File exceeds 40KB limit",
         "line": 10
       }
     ],
@@ -106,7 +106,7 @@ console.log(output);
 **Output Example:**
 
 ```text
-CLAUDE.md: line 10, error - File size exceeds 30,000 characters (claude-md-size-error)
+CLAUDE.md: line 10, error - File exceeds 40KB limit (claude-md-size-error)
 CLAUDE.md: line 25, warning - Missing examples section (claude-md-content-too-many-sections)
 skills/test/SKILL.md: line 5, error - Missing description field (skill-description)
 ```
@@ -139,8 +139,8 @@ await writeFile('lint-report.xml', output);
 <testsuites name="claudelint" tests="2" failures="2">
   <testsuite name="CLAUDE.md" tests="2" failures="2">
     <testcase name="claude-md-size-error" classname="CLAUDE.md">
-      <failure message="File size exceeds 30,000 characters">
-        Line 10: File size exceeds 30,000 characters
+      <failure message="File exceeds 40KB limit">
+        Line 10: File exceeds 40KB limit
       </failure>
     </testcase>
     <testcase name="claude-md-content-too-many-sections" classname="CLAUDE.md">

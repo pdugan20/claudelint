@@ -11,7 +11,7 @@ A single validation check that examines one specific aspect of a file.
 **Examples:**
 
 - `skill-missing-version` - Checks if SKILL.md has a version field
-- `claude-md-size-error` - Checks if CLAUDE.md exceeds 10MB
+- `claude-md-size-error` - Checks if CLAUDE.md exceeds 40KB
 - `hooks-invalid-event` - Checks if hook event names are valid
 
 **Properties:**
@@ -378,7 +378,7 @@ The main configuration file for Claude Code projects. Contains:
 
 **Validation:** ClaudeMdValidator checks:
 
-- File size (10MB limit)
+- File size (40KB error / 35KB warning)
 - Import syntax and references
 - Circular imports
 - Glob patterns
@@ -438,17 +438,20 @@ Claude Code project settings. Located at `.claude/settings.json`.
 
 ### hooks.json
 
-Defines automation hooks for Claude Code. Located at `.claude/hooks/hooks.json`.
+Defines automation hooks for Claude Code. Located at `.claude/hooks.json` (or `.claude/hooks/hooks.json`).
 
 **Example:**
 
 ```json
 {
-  "hooks": [
+  "SessionStart": [
     {
-      "event": "SessionStart",
-      "type": "command",
-      "command": "claudelint check-all"
+      "hooks": [
+        {
+          "type": "command",
+          "command": "claudelint check-all"
+        }
+      ]
     }
   ]
 }

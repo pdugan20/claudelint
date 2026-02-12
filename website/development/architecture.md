@@ -382,7 +382,7 @@ If a user might disagree with the check or want to disable it, it MUST be a rule
 
 ### Why This Matters
 
-**Bad (current state with 40 non-configurable checks):**
+**Bad (non-configurable checks):**
 
 ```bash
 $ claudelint .claude/lsp.json
@@ -699,15 +699,15 @@ Hooks trigger validation automatically:
 
 ```json
 {
-  "hooks": [
+  "PreToolUse": [
     {
-      "event": "PreToolUse",
-      "matcher": {
-        "tool": "Write",
-        "pattern": "**/CLAUDE.md"
-      },
-      "type": "command",
-      "command": "npx claude-code-lint check-claude-md"
+      "matcher": "Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "npx claude-code-lint check-claude-md"
+        }
+      ]
     }
   ]
 }
@@ -1166,7 +1166,6 @@ claudelint cache-clear
 **Best for:**
 
 - Local development (frequent runs)
-- Pre-commit hooks (multiple validators)
 - Pre-commit hooks (multiple validators)
 
 ## Validator Factory & Registry

@@ -6,9 +6,9 @@ This guide helps you quickly resolve common issues with claudelint.
 
 ### CLAUDE.md Issues
 
-#### Error: "CLAUDE.md file exceeds 10MB size limit"
+#### Error: "CLAUDE.md file exceeds size limit"
 
-**Cause:** Your CLAUDE.md file is too large for Claude's 10MB context window.
+**Cause:** Your CLAUDE.md file exceeds the recommended 40KB limit (configurable). Files this large should be split into smaller, focused files using `@import`.
 
 **Solutions:**
 
@@ -177,11 +177,14 @@ Add shebang to first line of script:
 
 ```json
 {
-  "hooks": [
+  "SessionStart": [
     {
-      "event": "SessionStart",
-      "type": "script",
-      "command": "./scripts/missing-script.sh"
+      "hooks": [
+        {
+          "type": "command",
+          "command": "./scripts/missing-script.sh"
+        }
+      ]
     }
   ]
 }
@@ -191,7 +194,7 @@ Add shebang to first line of script:
 
 1. Create the missing script
 2. Fix the path in hooks.json
-3. Verify path is relative to project root
+3. Verify path is relative to `.claude/hooks.json`
 
 **See:** [hooks-missing-script](/rules/hooks/hooks-missing-script)
 
@@ -540,7 +543,7 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 **Solutions:**
 
-1. Verify `.claude/hooks/hooks.json` exists
+1. Verify `.claude/hooks.json` (or `.claude/hooks/hooks.json`) exists
 2. Validate: `claudelint validate-hooks`
 3. Check event name is `"SessionStart"` (capital S)
 4. Test command manually first:
