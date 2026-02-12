@@ -67,7 +67,7 @@ export const rule: Rule = {
     severity: 'error',
     fixable: false,
     deprecated: false,
-    since: '1.0.0',
+    since: '0.2.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-invalid-permission.md',
     docs: {

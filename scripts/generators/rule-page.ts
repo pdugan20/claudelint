@@ -61,23 +61,15 @@ export function generateRulePage(meta: RuleMetadata): string {
   const categoryDisplay = CATEGORY_DISPLAY_MAP[meta.category];
   const parts: string[] = [];
 
-  // Title
-  parts.push(`# Rule: ${meta.id}`);
+  // Title (no "Rule:" prefix)
+  parts.push(`# ${meta.id}`);
   parts.push('');
 
-  // Metadata badges
+  // Header component with description and badges
+  const escapedDesc = meta.description.replace(/"/g, '&quot;');
   parts.push(
-    `**Severity**: ${capitalize(meta.severity)}`,
+    `<RuleHeader description="${escapedDesc}" severity="${meta.severity}" :fixable="${meta.fixable}" category="${categoryDisplay}" />`,
   );
-  parts.push(`**Fixable**: ${meta.fixable ? 'Yes' : 'No'}`);
-  parts.push(`**Validator**: ${categoryDisplay}`);
-  if (docs.recommended) {
-    parts.push('**Recommended**: Yes');
-  }
-  parts.push('');
-
-  // Summary
-  parts.push(meta.description);
   parts.push('');
 
   // Rule Details
@@ -197,13 +189,6 @@ export function generateRulePage(meta: RuleMetadata): string {
   parts.push('');
 
   return parts.join('\n');
-}
-
-/**
- * Capitalize first letter of a string
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
