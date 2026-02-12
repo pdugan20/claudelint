@@ -14,10 +14,11 @@ const compat = new FlatCompat({
 });
 
 // Scope the legacy .eslintrc.json config to only TypeScript source files
-const tsConfigs = compat.extends('./.eslintrc.json').map((config) => ({
-  ...config,
-  files: ['src/**/*.ts'],
-}));
+// Only add files to base configs; preserve files from overrides so they keep their scoping
+const tsConfigs = compat.extends('./.eslintrc.json').map((config) => {
+  if (config.files) return config;
+  return { ...config, files: ['src/**/*.ts'] };
+});
 
 export default [
   // TypeScript config scoped to src/

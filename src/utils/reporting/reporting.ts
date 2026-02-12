@@ -473,7 +473,6 @@ export class Reporter {
       'hooks-invalid-event': 'hooks',
       'hooks-missing-script': 'hooks',
       'hooks-invalid-config': 'hooks',
-      'mcp-invalid-server': 'mcp',
       'mcp-invalid-transport': 'mcp',
       'mcp-invalid-env-var': 'mcp',
       'plugin-invalid-manifest': 'plugin',
