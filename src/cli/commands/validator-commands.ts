@@ -115,13 +115,17 @@ export function createValidatorCommand(
 /**
  * Register all standard validator commands
  *
- * Creates 6 validator commands:
+ * Creates 10 validator commands:
  * - check-claude-md
  * - validate-skills
  * - validate-settings
  * - validate-hooks
  * - validate-mcp
  * - validate-plugin
+ * - validate-agents
+ * - validate-lsp
+ * - validate-output-styles
+ * - validate-commands
  *
  * @param program - Commander program instance
  */
@@ -176,5 +180,37 @@ export function registerValidatorCommands(program: Command): void {
     command: 'validate-plugin',
     description: 'Validate plugin manifest files',
     displayName: 'Plugin',
+  });
+
+  // validate-agents
+  createValidatorCommand(program, {
+    id: 'agents',
+    command: 'validate-agents',
+    description: 'Validate Claude agent structure and frontmatter',
+    displayName: 'Agents',
+  });
+
+  // validate-lsp
+  createValidatorCommand(program, {
+    id: 'lsp',
+    command: 'validate-lsp',
+    description: 'Validate LSP configuration files',
+    displayName: 'LSP',
+  });
+
+  // validate-output-styles
+  createValidatorCommand(program, {
+    id: 'output-styles',
+    command: 'validate-output-styles',
+    description: 'Validate output style structure and frontmatter',
+    displayName: 'Output Styles',
+  });
+
+  // validate-commands
+  createValidatorCommand(program, {
+    id: 'commands',
+    command: 'validate-commands',
+    description: 'Detect deprecated Commands usage and suggest migration to Skills',
+    displayName: 'Commands',
   });
 }

@@ -15,7 +15,7 @@ hero:
 
 features:
   - title: Fast & Efficient
-    details: Parallel validation with smart caching for ~2.4x speedup
+    details: Parallel validation with smart caching for fast repeated runs
   - title: Comprehensive Validation
     details: 100+ checks across 10 validator categories
   - title: Auto-fix

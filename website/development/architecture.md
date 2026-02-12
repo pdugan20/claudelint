@@ -1031,7 +1031,7 @@ const results = await Promise.all([
 **After (parallel):**
 
 - All validators: ~18ms (max of all)
-- **Speedup: ~3.5x**
+- **Validation time: ~3.5x faster than sequential**
 
 Actual wall-clock time: ~128ms (including Node.js startup overhead, Promise.all coordination)
 
@@ -1128,7 +1128,7 @@ time claudelint check-all
 time claudelint check-all
 # ~84ms
 
-# Speedup: ~2.4x
+# Warm cache: ~2.4x faster
 ```
 
 **Cache hit rate:** Typically 90%+ on subsequent runs with no file changes.
@@ -1153,7 +1153,7 @@ claudelint cache-clear
 
 **Benefits:**
 
-- Dramatic speedup on repeated runs (~2.4x)
+- Significant speedup on repeated runs
 - Automatic invalidation (no stale results)
 - Negligible disk space (<1MB for typical project)
 

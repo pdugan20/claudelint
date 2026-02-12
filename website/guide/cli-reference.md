@@ -25,6 +25,10 @@ Complete reference for all claudelint commands, options, and usage patterns.
   - [validate-hooks](#validate-hooks) - Validate hooks
   - [validate-mcp](#validate-mcp) - Validate MCP
   - [validate-plugin](#validate-plugin) - Validate plugins
+  - [validate-agents](#validate-agents) - Validate agents
+  - [validate-lsp](#validate-lsp) - Validate LSP
+  - [validate-output-styles](#validate-output-styles) - Validate output styles
+  - [validate-commands](#validate-commands) - Validate commands
 - [Formatting](#formatting)
   - [format](#format) - Format files
 - [Development](#development)
@@ -719,6 +723,118 @@ claudelint validate-plugin --verbose
 
 ---
 
+### validate-agents
+
+Validate Claude agent structure and frontmatter only.
+
+**Usage:**
+
+```bash
+claudelint validate-agents [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to agents directory | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+
+**Example:**
+
+```bash
+claudelint validate-agents --verbose
+```
+
+---
+
+### validate-lsp
+
+Validate LSP configuration files only.
+
+**Usage:**
+
+```bash
+claudelint validate-lsp [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to lsp.json | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+
+**Example:**
+
+```bash
+claudelint validate-lsp --verbose
+```
+
+---
+
+### validate-output-styles
+
+Validate output style structure and frontmatter only.
+
+**Usage:**
+
+```bash
+claudelint validate-output-styles [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to output styles directory | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+
+**Example:**
+
+```bash
+claudelint validate-output-styles --verbose
+```
+
+---
+
+### validate-commands
+
+Detect deprecated Commands usage and suggest migration to Skills.
+
+**Usage:**
+
+```bash
+claudelint validate-commands [options]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--path <path>` | Custom path to commands directory | Auto-detect |
+| `-v, --verbose` | Verbose output | `false` |
+| `--warnings-as-errors` | Treat warnings as errors | `false` |
+| `-c, --config <path>` | Path to configuration file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+
+**Example:**
+
+```bash
+claudelint validate-commands --verbose
+```
+
+---
+
 ## Formatting
 
 ### format
@@ -959,7 +1075,7 @@ claudelint validate-config
 # First run (creates cache)
 claudelint check-all
 
-# Subsequent runs (uses cache, ~2.4x faster)
+# Subsequent runs (uses cache, significantly faster)
 claudelint check-all
 
 # Clear cache if needed
@@ -1112,8 +1228,8 @@ lint-strict:
 
 ### Performance
 
-- **Use caching**: Default behavior, provides ~2.4x speedup
-- **Run validators in parallel**: Automatic, provides ~3.5x speedup
+- **Use caching**: Enabled by default, significantly faster on repeated runs
+- **Run validators in parallel**: Automatic, all validators run concurrently
 - **Clear cache after upgrades**: `claudelint cache-clear`
 - **Use `--fast` mode**: Skip expensive checks in development
 
