@@ -20,3 +20,16 @@ claudelint organizes its 120 validation rules into 10 validator categories. Each
 ## How Validators Work
 
 Each validator scans specific files in your project and runs its rules against them. Validators operate independently and can be configured via `.claudelintrc.json`.
+
+<ValidatorDiagram :validators="[
+  { name: 'CLAUDE.md', rules: 16, link: '/validators/claude-md' },
+  { name: 'Skills', rules: 46, link: '/validators/skills' },
+  { name: 'Settings', rules: 5, link: '/validators/settings' },
+  { name: 'Hooks', rules: 3, link: '/validators/hooks' },
+  { name: 'MCP', rules: 13, link: '/validators/mcp' },
+  { name: 'Plugin', rules: 12, link: '/validators/plugin' },
+  { name: 'Agents', rules: 12, link: '/validators/agents' },
+  { name: 'LSP', rules: 8, link: '/validators/lsp' },
+  { name: 'Output Styles', rules: 3, link: '/validators/output-styles' },
+  { name: 'Commands', rules: 2, link: '/validators/commands' }
+]" />
