@@ -75,7 +75,7 @@ export function resolvePath(basePath: string, relativePath: string): string {
  * Find CLAUDE.md files in standard locations
  */
 export async function findClaudeMdFiles(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = ['CLAUDE.md', '.claude/CLAUDE.md', '.claude/rules/**/*.md', 'CLAUDE.local.md'];
+  const patterns = ['**/CLAUDE.md', '.claude/rules/**/*.md', '**/CLAUDE.local.md'];
 
   const allFiles: string[] = [];
 
@@ -92,7 +92,7 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
  */
 export async function findSkillDirectories(basePath: string = process.cwd()): Promise<string[]> {
   const patterns = [
-    '.claude/skills/*/SKILL.md', // Standard project location
+    '**/.claude/skills/*/SKILL.md', // Standard + nested monorepo packages
     'skills/*/SKILL.md', // Plugin/root-level skills
     '*/SKILL.md', // Direct --path to skills directory
   ];

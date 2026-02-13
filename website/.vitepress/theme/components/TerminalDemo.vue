@@ -37,17 +37,55 @@ interface Line {
   html: string;
 }
 
-const command = 'claudelint check-all';
+const command = 'claudelint check-all --verbose';
 
 const outputLines: Line[] = [
   { type: 'blank', html: '&nbsp;' },
   {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> CLAUDE.md Validator <span class="dim">(41ms)</span>',
+    type: 'section',
+    html: 'claude-md <span class="dim">(3 files)</span>',
   },
   {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> All checks passed!',
+    type: 'detail',
+    html: '  <span class="dim">CLAUDE.md</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">src/CLAUDE.md</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">website/CLAUDE.md</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'section',
+    html: 'skills <span class="dim">(2 files)</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">.claude/skills/deploy/SKILL.md</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">.claude/skills/test-runner/SKILL.md</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'detail',
+    html: 'Skipped <span class="dim">(3):</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">hooks      no hooks.json</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">settings   no settings.json</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">mcp        no .mcp.json</span>',
   },
   { type: 'blank', html: '&nbsp;' },
   {
@@ -73,38 +111,24 @@ const outputLines: Line[] = [
   { type: 'blank', html: '&nbsp;' },
   {
     type: 'summary',
-    html: '<span class="err">1 error</span>, <span class="warn">1 warning</span>',
-  },
-  { type: 'blank', html: '&nbsp;' },
-  {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> Hooks Validator <span class="dim">(12ms)</span>',
-  },
-  {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> All checks passed!',
-  },
-  { type: 'blank', html: '&nbsp;' },
-  {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> MCP Validator <span class="dim">(8ms)</span>',
-  },
-  {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> All checks passed!',
-  },
-  { type: 'blank', html: '&nbsp;' },
-  {
-    type: 'section',
-    html: 'Overall Summary',
+    html: 'Checked 5 files across 2 components <span class="dim">(claude-md, skills)</span> in 72ms.',
   },
   {
     type: 'summary',
-    html: 'Total errors: <span class="err">1</span>',
+    html: '<span class="err">1 problem</span> (1 error, 1 warning)',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'detail',
+    html: 'Timing:',
   },
   {
-    type: 'summary',
-    html: 'Total warnings: <span class="warn">1</span>',
+    type: 'detail',
+    html: '  <span class="dim">claude-md  41ms</span>',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">skills     58ms</span>',
   },
 ];
 

@@ -2,7 +2,7 @@
  * Integration tests for workspace CLI flags
  */
 
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -21,26 +21,31 @@ describe('Workspace CLI Integration', () => {
   });
 
   /**
-   * Helper to execute CLI command
+   * Helper to execute CLI command.
+   * Returns combined stdout+stderr as 'stdout' for backwards compatibility,
+   * plus separate streams for targeted assertions.
    */
   function runCLI(args: string, expectError = false): { stdout: string; stderr: string; code: number } {
-    try {
-      const stdout = execSync(`${claudelintBin} ${args}`, {
-        cwd: tempDir,
-        encoding: 'utf-8',
-        stdio: 'pipe',
-      });
-      return { stdout, stderr: '', code: 0 };
-    } catch (error: any) {
-      if (expectError) {
-        return {
-          stdout: error.stdout?.toString() || '',
-          stderr: error.stderr?.toString() || '',
-          code: error.status || 1,
-        };
-      }
-      throw error;
+    const argList = args.split(' ');
+    const result = spawnSync(claudelintBin, argList, {
+      cwd: tempDir,
+      encoding: 'utf-8',
+    });
+
+    const code = result.status ?? 1;
+
+    if (!expectError && code !== 0) {
+      throw new Error(
+        `CLI exited with code ${code}.\nstdout: ${result.stdout}\nstderr: ${result.stderr}`
+      );
     }
+
+    // Combine stdout+stderr for backwards-compatible assertions
+    return {
+      stdout: (result.stdout || '') + (result.stderr || ''),
+      stderr: result.stderr || '',
+      code,
+    };
   }
 
   /**
@@ -294,20 +299,21 @@ describe('Workspace CLI Integration', () => {
       mkdirSync(nestedDir, { recursive: true });
 
       // Run from nested directory
-      try {
-        const stdout = execSync(`${join(__dirname, '../..', 'bin/claudelint')} check-all --workspaces`, {
-          cwd: nestedDir,
-          encoding: 'utf-8',
-          stdio: 'pipe',
-        });
+      const result = spawnSync(
+        join(__dirname, '../..', 'bin/claudelint'),
+        ['check-all', '--workspaces'],
+        { cwd: nestedDir, encoding: 'utf-8' }
+      );
 
-        expect(stdout).toContain('Validating 3 workspace packages');
-        expect(stdout).toContain('app-1');
-        expect(stdout).toContain('app-2');
-        expect(stdout).toContain('shared');
-      } catch (error: any) {
+      const output = (result.stdout || '') + (result.stderr || '');
+
+      if (result.status === 0) {
+        expect(output).toContain('Validating 3 workspace packages');
+        expect(output).toContain('app-1');
+        expect(output).toContain('app-2');
+        expect(output).toContain('shared');
+      } else {
         // If command fails, check if it at least found the workspace
-        const output = error.stdout?.toString() || '';
         expect(output).toContain('workspace');
       }
     });
@@ -320,18 +326,14 @@ describe('Workspace CLI Integration', () => {
       mkdirSync(deeplyNested, { recursive: true });
 
       // Run from deeply nested directory
-      try {
-        const stdout = execSync(`${join(__dirname, '../..', 'bin/claudelint')} check-all --workspaces`, {
-          cwd: deeplyNested,
-          encoding: 'utf-8',
-          stdio: 'pipe',
-        });
+      const result = spawnSync(
+        join(__dirname, '../..', 'bin/claudelint'),
+        ['check-all', '--workspaces'],
+        { cwd: deeplyNested, encoding: 'utf-8' }
+      );
 
-        expect(stdout).toContain('workspace');
-      } catch (error: any) {
-        const output = error.stdout?.toString() || '';
-        expect(output).toContain('workspace');
-      }
+      const output = (result.stdout || '') + (result.stderr || '');
+      expect(output).toContain('workspace');
     });
 
     it('shows error when run from non-workspace directory', () => {

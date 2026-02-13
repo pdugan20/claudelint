@@ -1,7 +1,22 @@
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import { join } from 'path';
 import { readFileSync, unlinkSync } from 'fs';
 import { tmpdir } from 'os';
+
+/** Run CLI and return combined stdout+stderr output with exit code */
+function runCLI(
+  bin: string,
+  args: string[],
+  cwd: string
+): { output: string; stdout: string; stderr: string; exitCode: number } {
+  const result = spawnSync(bin, args, { cwd, encoding: 'utf-8' });
+  return {
+    output: (result.stdout || '') + (result.stderr || ''),
+    stdout: result.stdout || '',
+    stderr: result.stderr || '',
+    exitCode: result.status ?? 1,
+  };
+}
 
 describe('Plugin Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
@@ -26,12 +41,9 @@ describe('Plugin Integration Tests', () => {
     });
 
     it('should validate successfully', () => {
-      const result = execSync(`${claudelintBin} validate-plugin`, {
-        cwd: projectRoot,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-plugin'], projectRoot);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
   });
 
@@ -95,12 +107,9 @@ describe('Plugin Integration Tests', () => {
     });
 
     it('should validate successfully', () => {
-      const result = execSync(`${claudelintBin} validate-hooks`, {
-        cwd: projectRoot,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-hooks'], projectRoot);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
 
     it('should have SessionStart hook', () => {
@@ -166,8 +175,8 @@ describe('Plugin Integration Tests', () => {
       const tempFile = join(tmpdir(), 'claudelint-test-output.json');
 
       try {
-        // Run command and redirect output to file
-        execSync(`${claudelintBin} check-all --format json > "${tempFile}" 2>&1 || true`, {
+        // Run command and redirect stdout only to file (stderr has status messages)
+        execSync(`${claudelintBin} check-all --format json > "${tempFile}" 2>/dev/null || true`, {
           cwd: projectRoot,
           encoding: 'utf-8',
         });
@@ -189,19 +198,10 @@ describe('Plugin Integration Tests', () => {
     });
 
     it('should support --verbose flag', () => {
-      try {
-        const result = execSync(`${claudelintBin} check-all --verbose`, {
-          cwd: projectRoot,
-          encoding: 'utf-8',
-          stdio: 'pipe',
-        }).toString();
+      const { output } = runCLI(claudelintBin, ['check-all', '--verbose'], projectRoot);
 
-        expect(result).toContain('Timing breakdown');
-      } catch (error: any) {
-        // Even with errors, verbose should show timing
-        const output = error.stdout || '';
-        expect(output).toContain('Timing breakdown');
-      }
+      // Even with errors, verbose should show timing
+      expect(output).toContain('Timing:');
     });
   });
 

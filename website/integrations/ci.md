@@ -26,6 +26,50 @@ jobs:
         run: claudelint check-all
 ```
 
+### GitHub Actions Annotations {#github-actions-annotations}
+
+Use `--format github` to get inline annotations on PR diffs with no extra setup:
+
+```yaml
+name: Lint Claude Config
+on: [push, pull_request]
+
+jobs:
+  claudelint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - run: npm install -g claude-code-lint
+
+      - name: Validate with annotations
+        run: claudelint check-all --format github
+```
+
+Errors and warnings appear directly on the PR diff at the relevant lines. No permissions or upload steps needed.
+
+::: tip When to use `github` vs `sarif`
+`--format github` is the simplest option — annotations appear immediately with no extra config. Use `--format sarif` with Code Scanning upload when you need persistent results, trend tracking, or more than 50 annotations per run (GitHub limits workflow annotations to 50 per run).
+:::
+
+### Problem Matcher (Stylish Format) {#problem-matcher}
+
+If you prefer the default `stylish` format but still want PR annotations, use a problem matcher. Copy the matcher file from the claudelint repo:
+
+```yaml
+- name: Register problem matcher
+  run: echo "::add-matcher::.github/claudelint-problem-matcher.json"
+
+- name: Run claudelint
+  run: npx claudelint check-all
+```
+
+The problem matcher parses stylish output and converts errors/warnings into GitHub annotations. Place `.github/claudelint-problem-matcher.json` in your repo (available in the [claudelint repository](https://github.com/pdugan20/claudelint/blob/main/.github/claudelint-problem-matcher.json)).
+
 ### With SARIF Upload (Inline PR Annotations)
 
 ```yaml
@@ -148,11 +192,14 @@ repos:
 
 | Flag | Description |
 |------|-------------|
+| `--format github` | GitHub Actions annotations (inline on PR diffs) |
 | `--format sarif` | SARIF output for GitHub Code Scanning |
 | `--format json` | JSON output for custom processing |
 | `--format compact` | One-line-per-issue for log parsing |
+| `-q, --quiet` | Suppress warnings, show only errors |
 | `--warnings-as-errors` | Fail on warnings too |
 | `--strict` | Fail on any issue (errors + warnings) |
+| `--allow-empty-input` | Exit 0 when no files found (useful with lint-staged) |
 | `--cache` | Enable result caching (default in `check-all`) |
 | `--no-cache` | Disable caching |
 | `--config <path>` | Custom config file path |

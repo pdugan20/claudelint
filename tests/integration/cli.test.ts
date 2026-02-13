@@ -9,6 +9,21 @@ import { mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'fs';
 import { tmpdir } from 'os';
 import { claudeMd, skill, settings, hooks, mcp, plugin } from '../helpers/fixtures';
 
+/** Run CLI and return combined stdout+stderr output with exit code */
+function runCLI(
+  bin: string,
+  args: string[],
+  cwd: string
+): { output: string; stdout: string; stderr: string; exitCode: number } {
+  const result = spawnSync(bin, args, { cwd, encoding: 'utf-8' });
+  return {
+    output: (result.stdout || '') + (result.stderr || ''),
+    stdout: result.stdout || '',
+    stderr: result.stderr || '',
+    exitCode: result.status ?? 1,
+  };
+}
+
 describe('CLI Integration Tests', () => {
   const projectRoot = join(__dirname, '../..');
   const claudelintBin = join(projectRoot, 'bin/claudelint');
@@ -34,12 +49,9 @@ describe('CLI Integration Tests', () => {
       await skill(testProjectDir, 'test-skill').withMinimalFields().build();
       await settings(testProjectDir).withMinimalSettings().build();
 
-      const result = execSync(`${claudelintBin} check-all`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('No problems found');
     });
 
     it('should report errors for invalid project', async () => {
@@ -91,24 +103,62 @@ describe('CLI Integration Tests', () => {
     it('should show detailed output with --verbose', async () => {
       await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} check-all --verbose`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['check-all', '--verbose'], testProjectDir);
 
-      expect(result).toContain('CLAUDE.md');
+      expect(output).toContain('CLAUDE.md');
     });
 
     it('should show less output without --verbose', async () => {
       await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} check-all`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
 
       // Should have summary but less detail
-      expect(result).toBeTruthy();
+      expect(output).toBeTruthy();
+    });
+
+    it('should show skipped validators with reasons in verbose mode', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--verbose', '--no-color'],
+        testProjectDir
+      );
+
+      // Active validators show file count
+      expect(output).toMatch(/claude-md \(\d+ files?\)/);
+
+      // Skipped section with aligned reasons
+      expect(output).toContain('Skipped (');
+      expect(output).toContain('skills');
+      expect(output).toContain('agents');
+    });
+
+    it('should show file paths for active validators in verbose mode', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--verbose', '--no-color'],
+        testProjectDir
+      );
+
+      // File paths listed under active validators
+      expect(output).toContain('CLAUDE.md');
+    });
+
+    it('should not show per-validator detail for clean validators in verbose mode', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--verbose', '--no-color'],
+        testProjectDir
+      );
+
+      // Clean validators should NOT have "All checks passed!" output
+      expect(output).not.toContain('All checks passed');
     });
   });
 
@@ -142,17 +192,42 @@ describe('CLI Integration Tests', () => {
       expect(output).toMatch(/CLAUDE\.md/);
     });
 
+    it('should output github format with --format github', async () => {
+      await claudeMd(testProjectDir).withSize(50000).build();
+
+      const { stdout } = runCLI(
+        claudelintBin,
+        ['check-all', '--format', 'github'],
+        testProjectDir
+      );
+
+      // GitHub format: ::error or ::warning annotations on stdout
+      expect(stdout).toMatch(/^::error /m);
+      expect(stdout).toContain('file=');
+      expect(stdout).toContain('title=');
+    });
+
+    it('should produce no stdout for clean project with --format github', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { stdout } = runCLI(
+        claudelintBin,
+        ['check-all', '--format', 'github'],
+        testProjectDir
+      );
+
+      // No annotations when clean
+      expect(stdout.trim()).toBe('');
+    });
+
     it('should output stylish format by default', async () => {
       await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} check-all`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
 
-      // Stylish format has validator names and summary
-      expect(result).toContain('CLAUDE.md Validator');
-      expect(result).toContain('Overall Summary');
+      // Stylish format: quiet success shows only the summary line
+      expect(output).toContain('No problems found.');
+      expect(output).toMatch(/Checked \d+ files? across \d+ components?/);
     });
   });
 
@@ -171,12 +246,13 @@ describe('CLI Integration Tests', () => {
         })
       );
 
-      const result = execSync(`${claudelintBin} check-all --config ${configPath}`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--config', configPath],
+        testProjectDir
+      );
 
-      expect(result).toBeTruthy();
+      expect(output).toBeTruthy();
     });
 
     it('should error on invalid config file', () => {
@@ -216,82 +292,150 @@ describe('CLI Integration Tests', () => {
     });
   });
 
-  describe('specific validator commands', () => {
-    it('should run validate-claude-md command', async () => {
+  describe('--timing flag', () => {
+    it('should show timing breakdown with --timing', async () => {
       await claudeMd(testProjectDir).withMinimalContent().build();
 
-      const result = execSync(`${claudelintBin} validate-claude-md`, {
+      const { output } = runCLI(claudelintBin, ['check-all', '--timing'], testProjectDir);
+
+      expect(output).toContain('Timing:');
+      expect(output).toMatch(/\d+ms/);
+    });
+
+    it('should not show timing by default', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
+
+      expect(output).not.toContain('Timing:');
+    });
+  });
+
+  describe('--allow-empty-input flag', () => {
+    it('should exit 0 for empty project with --allow-empty-input', () => {
+      // testProjectDir has no claude files at all
+      const result = spawnSync(claudelintBin, ['check-all', '--allow-empty-input'], {
         cwd: testProjectDir,
         encoding: 'utf-8',
       });
 
-      expect(result).toContain('All checks passed');
+      expect(result.status).toBe(0);
+    });
+
+    it('should show info message for empty project without --allow-empty-input', () => {
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
+
+      expect(output).toContain('No files found to check');
+    });
+
+    it('should not show info message with --allow-empty-input', () => {
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--allow-empty-input'],
+        testProjectDir
+      );
+
+      expect(output).not.toContain('No files found to check');
+    });
+  });
+
+  describe('--quiet flag', () => {
+    it('should suppress warning output with --quiet', async () => {
+      // Create a file that triggers a warning (size between 30k-45k)
+      await claudeMd(testProjectDir).withSize(38000).build();
+
+      const { output } = runCLI(claudelintBin, ['check-all', '--quiet'], testProjectDir);
+
+      // Individual warning details are suppressed
+      expect(output).not.toMatch(/! Warning:/);
+      // Summary still mentions warning count (so users know they exist)
+      expect(output).toContain('warning');
+    });
+
+    it('should still show errors with --quiet', async () => {
+      // Create a file that triggers an error (50k+)
+      await claudeMd(testProjectDir).withSize(50000).build();
+
+      const { output, exitCode } = runCLI(
+        claudelintBin,
+        ['check-all', '--quiet'],
+        testProjectDir
+      );
+
+      // Errors still shown
+      expect(output).toMatch(/error/i);
+      expect(exitCode).toBe(1);
+    });
+
+    it('should exit 0 for warnings-only project with --quiet', async () => {
+      // Create a file that triggers a warning but no error
+      await claudeMd(testProjectDir).withSize(38000).build();
+
+      const result = spawnSync(claudelintBin, ['check-all', '--quiet'], {
+        cwd: testProjectDir,
+        encoding: 'utf-8',
+      });
+
+      // Warnings don't cause exit 1 (they already don't in check-all without --warnings-as-errors)
+      expect(result.status).toBe(0);
+    });
+  });
+
+  describe('specific validator commands', () => {
+    it('should run validate-claude-md command', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      const { output } = runCLI(claudelintBin, ['validate-claude-md'], testProjectDir);
+
+      expect(output).toContain('All checks passed');
     });
 
     it('should run validate-skills command', async () => {
       await skill(testProjectDir, 'test-skill').withMinimalFields().build();
 
-      const result = execSync(`${claudelintBin} validate-skills`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-skills'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
 
     it('should run validate-settings command', async () => {
       await settings(testProjectDir).withMinimalSettings().build();
 
-      const result = execSync(`${claudelintBin} validate-settings`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-settings'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
 
     it('should run validate-hooks command', async () => {
       await hooks(testProjectDir).withMinimalHooks().build();
 
-      const result = execSync(`${claudelintBin} validate-hooks`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-hooks'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
 
     it('should run validate-mcp command', async () => {
       await mcp(testProjectDir).withMinimalConfig().build();
 
-      const result = execSync(`${claudelintBin} validate-mcp`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-mcp'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
 
     it('should run validate-plugin command', async () => {
       await plugin(testProjectDir).withMinimalManifest().build();
 
-      const result = execSync(`${claudelintBin} validate-plugin`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['validate-plugin'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('All checks passed');
     });
   });
 
   describe('init command', () => {
     it('should create config file with --yes flag', () => {
-      const result = execSync(`${claudelintBin} init --yes`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['init', '--yes'], testProjectDir);
 
-      expect(result).toContain('created');
+      expect(output).toContain('created');
 
       // Check that config file was created
       const configPath = join(testProjectDir, '.claudelintrc.json');
@@ -332,14 +476,11 @@ describe('CLI Integration Tests', () => {
         })
       );
 
-      const result = execSync(`${claudelintBin} print-config`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['print-config'], testProjectDir);
 
       // Result should contain configuration info (may not be pure JSON due to headers)
-      expect(result).toBeTruthy();
-      expect(result).toContain('size-error');
+      expect(output).toBeTruthy();
+      expect(output).toContain('size-error');
     });
   });
 
@@ -355,12 +496,13 @@ describe('CLI Integration Tests', () => {
         })
       );
 
-      const result = execSync(`${claudelintBin} validate-config --config ${configPath}`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(
+        claudelintBin,
+        ['validate-config', '--config', configPath],
+        testProjectDir
+      );
 
-      expect(result).toContain('valid');
+      expect(output).toContain('valid');
     });
 
     it('should error on config with unknown rule', () => {
@@ -454,12 +596,9 @@ describe('CLI Integration Tests', () => {
       await settings(testProjectDir).withMinimalSettings().build();
       await hooks(testProjectDir).withMinimalHooks().build();
 
-      const result = execSync(`${claudelintBin} check-all`, {
-        cwd: testProjectDir,
-        encoding: 'utf-8',
-      });
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
 
-      expect(result).toContain('All checks passed');
+      expect(output).toContain('No problems found');
     });
 
     it('should report all errors from multiple validators', async () => {

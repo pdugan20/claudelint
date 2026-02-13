@@ -64,15 +64,25 @@ Output:
 "command": "claudelint check-all --format json"
 ```
 
-### Silent Mode
+### Quiet Mode (Errors Only)
 
-If you only want to see errors (suppress warnings):
+Use `--quiet` to suppress warnings and show only errors:
 
 ```json
-"command": "claudelint check-all --format compact 2>&1 | grep -E '^.*Error:'"
+"command": "claudelint check-all --quiet --format compact"
 ```
 
-Or configure rules in `.claudelintrc.json` to turn off specific warnings.
+The summary line still shows warning counts so you know they exist, but individual warning details are hidden.
+
+### Allow Empty Input
+
+Use `--allow-empty-input` when running claudelint in automated contexts where not every invocation may find files to check (e.g., lint-staged or selective hooks):
+
+```json
+"command": "claudelint check-all --allow-empty-input --format compact"
+```
+
+Without this flag, claudelint shows an informational message when no files are found. With the flag, it exits silently with code 0.
 
 ## Hook Examples
 

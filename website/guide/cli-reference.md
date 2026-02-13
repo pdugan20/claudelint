@@ -52,8 +52,9 @@ claudelint check-all [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `-v, --verbose` | Show detailed output including file counts and timing | `false` |
-| `--format <format>` | Output format: `stylish`, `json`, `compact`, or `sarif` | `stylish` |
+| `-v, --verbose` | Show detailed output including skipped validators and timing | `false` |
+| `-q, --quiet` | Suppress warnings, show only errors | `false` |
+| `--format <format>` | Output format: `stylish`, `json`, `compact`, `sarif`, or `github` | `stylish` |
 | `--config <path>` | Path to custom config file | Auto-detect |
 | `--strict` | Exit with error on any issues (errors, warnings, or info) | `false` |
 | `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
@@ -72,6 +73,8 @@ claudelint check-all [options]
 | `--fast` | Fast mode: skip expensive checks | `false` |
 | `--no-deprecated-warnings` | Suppress warnings about deprecated rules | `false` |
 | `--error-on-deprecated` | Treat usage of deprecated rules as errors | `false` |
+| `--timing` | Show per-validator timing breakdown | `false` |
+| `--allow-empty-input` | Exit 0 when no files are found to check | `false` |
 | `--workspace <name>` | Validate specific workspace package by name | - |
 | `--workspaces` | Validate all workspace packages | `false` |
 
@@ -119,6 +122,21 @@ claudelint check-all --debug-config
 
 # Show rule documentation URLs
 claudelint check-all --show-docs-url
+
+# Suppress warnings (show only errors)
+claudelint check-all --quiet
+
+# Show per-validator timing
+claudelint check-all --timing
+
+# GitHub Actions annotations
+claudelint check-all --format github
+
+# Pipe JSON output (status messages go to stderr)
+claudelint check-all --format json | jq '.[]'
+
+# Allow empty input (useful with lint-staged)
+claudelint check-all --allow-empty-input
 
 # Combine flags
 claudelint check-all --strict --max-warnings 0 --format json
@@ -915,6 +933,35 @@ claudelint install-plugin
 - **No local install:** Shows both GitHub install (`/plugin install github:pdugan20/claudelint`) and npm-first workflow
 
 See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for detailed setup instructions.
+
+## Output Streams
+
+claudelint separates data output from status messages for clean piping:
+
+- **stdout**: Lint results (formatted output from `--format json`, `--format sarif`, `--format github`)
+- **stderr**: Status messages, progress indicators, timing info, "Using config file: ..."
+
+This enables piping to other tools:
+
+```bash
+# Pipe JSON to jq
+claudelint check-all --format json | jq '.[] | select(.errorCount > 0)'
+
+# Save SARIF while still seeing progress
+claudelint check-all --format sarif > results.sarif
+
+# GitHub annotations to stdout, progress to stderr
+claudelint check-all --format github
+```
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `NO_COLOR` | Disable color output (respected per [no-color.org](https://no-color.org) standard) |
+| `FORCE_COLOR` | Force color output even when not a TTY |
+
+Color is auto-detected based on TTY status. The `--color` and `--no-color` flags override environment variables.
 
 ## Exit Codes
 

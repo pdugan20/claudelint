@@ -114,6 +114,22 @@ export interface DeprecatedRuleUsage {
 }
 
 /**
+ * Metadata about what a validator scanned during validation.
+ * Used to distinguish "clean" (files checked, no issues) from
+ * "not applicable" (no files to check).
+ */
+export interface ScanMetadata {
+  /** Number of files scanned */
+  filesScanned: number;
+  /** Actual file paths that were scanned */
+  filesFound: string[];
+  /** Whether the validator was skipped (no applicable files found) */
+  skipped: boolean;
+  /** Reason for skipping (when skipped is true) */
+  skipReason?: string;
+}
+
+/**
  * Result of a validation operation containing errors and warnings
  */
 export interface ValidationResult {
@@ -127,6 +143,8 @@ export interface ValidationResult {
   deprecatedRulesUsed?: DeprecatedRuleUsage[];
   /** Files that were validated (used for cache invalidation) */
   validatedFiles?: string[];
+  /** Metadata about what was scanned by this validator */
+  scanMetadata?: ScanMetadata;
 }
 
 /**
@@ -237,6 +255,9 @@ export abstract class FileValidator {
 
   /** Diagnostic collector for warnings and errors from utility components */
   protected diagnostics = new DiagnosticCollector();
+
+  /** Scan metadata for this validator run */
+  protected _scanMetadata?: ScanMetadata;
 
   /**
    * Creates a new validator instance
@@ -434,6 +455,33 @@ export abstract class FileValidator {
    */
   protected trackValidatedFiles(files: string[]): void {
     this.validatedFiles.push(...files);
+  }
+
+  /**
+   * Mark this validator as skipped (no applicable files found)
+   *
+   * @param reason - Human-readable reason for skipping
+   */
+  protected markSkipped(reason: string): void {
+    this._scanMetadata = {
+      filesScanned: 0,
+      filesFound: [],
+      skipped: true,
+      skipReason: reason,
+    };
+  }
+
+  /**
+   * Mark this validator as having scanned files
+   *
+   * @param files - File paths that were scanned
+   */
+  protected markScanned(files: string[]): void {
+    this._scanMetadata = {
+      filesScanned: files.length,
+      filesFound: files,
+      skipped: false,
+    };
   }
 
   /**
@@ -715,6 +763,7 @@ export abstract class FileValidator {
       deprecatedRulesUsed: deprecatedRulesUsed.length > 0 ? deprecatedRulesUsed : undefined,
       validatedFiles:
         this.validatedFiles.length > 0 ? [...new Set(this.validatedFiles)] : undefined,
+      scanMetadata: this._scanMetadata,
     };
   }
 

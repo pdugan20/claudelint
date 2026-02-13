@@ -26,7 +26,7 @@ export class PluginValidator extends SchemaValidator<typeof PluginManifestSchema
   }
 
   protected getNoFilesMessage(): string {
-    return 'No plugin.json files found';
+    return 'no plugin.json';
   }
 
   protected async validateSemantics(

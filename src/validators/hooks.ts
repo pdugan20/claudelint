@@ -26,7 +26,7 @@ export class HooksValidator extends SchemaValidator<typeof HooksConfigSchema> {
   }
 
   protected getNoFilesMessage(): string {
-    return 'No hooks.json files found';
+    return 'no hooks.json';
   }
 
   protected async validateSemantics(

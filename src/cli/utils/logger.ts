@@ -39,14 +39,18 @@ import chalk from 'chalk';
  * - No Unicode symbols
  * - Just colored text
  * - Clean and professional
+ *
+ * All output goes to stderr. The logger is for CLI status/chrome messages,
+ * not for lint result data. Lint results (formatters) go to stdout so that
+ * piping works cleanly: `claudelint --format json | jq`
  */
 export const logger = {
   /**
    * Success message (green text)
-   * Uses stdout
+   * Uses stderr
    */
   success: (msg: string): void => {
-    console.log(chalk.green(msg));
+    console.error(chalk.green(msg));
   },
 
   /**
@@ -62,37 +66,37 @@ export const logger = {
    * Uses stderr
    */
   warn: (msg: string): void => {
-    console.warn(chalk.yellow(msg));
+    console.error(chalk.yellow(msg));
   },
 
   /**
    * Info message (blue text)
-   * Uses stdout
+   * Uses stderr
    */
   info: (msg: string): void => {
-    console.log(chalk.blue(msg));
+    console.error(chalk.blue(msg));
   },
 
   /**
    * Section header (bold with spacing)
-   * Uses stdout
+   * Uses stderr
    */
   section: (msg: string): void => {
-    console.log(chalk.bold(`\n${msg}\n`));
+    console.error(chalk.bold(`\n${msg}\n`));
   },
 
   /**
    * Plain message without formatting
-   * Uses stdout
+   * Uses stderr
    */
   log: (msg: string): void => {
-    console.log(msg);
+    console.error(msg);
   },
 
   /**
    * Indented detail/sub-information message (2 spaces)
    * Use for detail lines under main messages
-   * Uses stdout
+   * Uses stderr
    *
    * @example
    * logger.info('Running checks...');
@@ -100,13 +104,14 @@ export const logger = {
    * logger.detail('Status: passed');
    */
   detail: (msg: string): void => {
-    console.log(`  ${msg}`);
+    console.error(`  ${msg}`);
   },
 
   /**
    * Blank line for spacing
+   * Uses stderr
    */
   newline: (): void => {
-    console.log();
+    console.error('');
   },
 };

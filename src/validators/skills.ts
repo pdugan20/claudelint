@@ -33,11 +33,15 @@ export class SkillsValidator extends FileValidator {
 
   async validate(): Promise<ValidationResult> {
     const skillDirs = await this.findSkillDirs();
-    this.trackValidatedFiles(skillDirs.map((dir) => join(dir, 'SKILL.md')));
+    const skillFiles = skillDirs.map((dir) => join(dir, 'SKILL.md'));
+    this.trackValidatedFiles(skillFiles);
 
     if (skillDirs.length === 0) {
+      this.markSkipped('no .claude/skills/');
       return this.getResult();
     }
+
+    this.markScanned(skillFiles);
 
     for (const skillDir of skillDirs) {
       await this.validateSkill(skillDir);

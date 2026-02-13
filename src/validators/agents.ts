@@ -32,11 +32,15 @@ export class AgentsValidator extends FileValidator {
 
   async validate(): Promise<ValidationResult> {
     const agentDirs = await this.findAgentDirs();
-    this.trackValidatedFiles(agentDirs.map((dir) => join(dir, 'AGENT.md')));
+    const agentFiles = agentDirs.map((dir) => join(dir, 'AGENT.md'));
+    this.trackValidatedFiles(agentFiles);
 
     if (agentDirs.length === 0) {
+      this.markSkipped('no .claude/agents/');
       return this.getResult();
     }
+
+    this.markScanned(agentFiles);
 
     for (const agentDir of agentDirs) {
       await this.validateAgent(agentDir);

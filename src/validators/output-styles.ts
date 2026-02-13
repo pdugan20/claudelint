@@ -34,8 +34,11 @@ export class OutputStylesValidator extends FileValidator {
     this.trackValidatedFiles(outputStyleFiles);
 
     if (outputStyleFiles.length === 0) {
+      this.markSkipped('no output styles');
       return this.getResult();
     }
+
+    this.markScanned(outputStyleFiles);
 
     for (const outputStyleFile of outputStyleFiles) {
       await this.validateOutputStyle(outputStyleFile);

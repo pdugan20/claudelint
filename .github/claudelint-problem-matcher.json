@@ -1,0 +1,20 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "claudelint",
+      "pattern": [
+        {
+          "regexp": "(Error|Warning): (.+?) \\[(.+?)\\]",
+          "severity": 1,
+          "message": 2,
+          "code": 3
+        },
+        {
+          "regexp": "^\\s+at: (.+?)(?::(\\d+))?$",
+          "file": 1,
+          "line": 2
+        }
+      ]
+    }
+  ]
+}

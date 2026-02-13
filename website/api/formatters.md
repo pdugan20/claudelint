@@ -61,6 +61,19 @@ skills/test/SKILL.md: line 5, error - Missing description field (skill-descripti
 
 See the [SARIF Integration Guide](/integrations/sarif) for setup instructions.
 
+### github
+
+GitHub Actions workflow command format. Produces `::error` and `::warning` annotations that appear inline on PR diffs.
+
+```text
+::error file=CLAUDE.md,line=12,title=claude-md-size-error::File exceeds 40KB limit (66669 bytes)
+::warning file=.claude/skills/deploy/SKILL.md,line=5,title=skill-description::Missing description field
+```
+
+Lightweight alternative to SARIF — no upload step, no `security-events` permission needed. Use `github` for quick annotations; use `sarif` when you need Code Scanning integration and persistent results.
+
+See the [CI/CD Integration Guide](/integrations/ci#github-actions-annotations) for workflow setup.
+
 ## Loading Formatters
 
 ### Class API
@@ -126,6 +139,7 @@ For more custom formatter examples (Markdown, HTML, CSV, GitHub Actions annotati
 | Terminal display | `stylish` |
 | CI/CD artifacts | `json` or `sarif` |
 | GitHub Code Scanning | `sarif` |
+| GitHub Actions PR annotations | `github` |
 | Log files | `compact` |
 | Programmatic parsing | `json` |
 | Custom reporting | [Create a custom formatter](./recipes.md#custom-formatters) |

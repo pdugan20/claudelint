@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+import { join } from 'path';
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
@@ -26,6 +28,14 @@ export class CommandsValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
+    // Check if commands directory exists for scan metadata
+    const commandsDir = join(this.basePath, '.claude', 'commands');
+    if (existsSync(commandsDir)) {
+      this.markScanned([commandsDir]);
+    } else {
+      this.markSkipped('no .claude/commands/');
+    }
+
     // Execute ALL Commands rules via category-based discovery
     // Use basePath as filePath since these rules check the project structure
     await this.executeRulesForCategory('Commands', this.basePath, '');

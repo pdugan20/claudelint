@@ -9,11 +9,12 @@ import { ProgressIndicator } from './progress';
 import { ValidationCache } from '../cache';
 import { ConfigError } from '../config/resolver';
 import { toSarif } from './sarif';
+import { toGitHub } from './github';
 
 /**
  * Output format for validation results
  */
-export type OutputFormat = 'stylish' | 'json' | 'compact' | 'sarif';
+export type OutputFormat = 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
 
 /**
  * Configuration options for Reporter
@@ -21,6 +22,8 @@ export type OutputFormat = 'stylish' | 'json' | 'compact' | 'sarif';
 export interface ReportingOptions {
   /** Enable verbose output with additional details */
   verbose?: boolean;
+  /** Suppress warnings, show only errors */
+  quiet?: boolean;
   /** Treat warnings as errors (affects exit codes) */
   warningsAsErrors?: boolean;
   /** Show detailed explanations for each issue */
@@ -43,11 +46,19 @@ export interface ReportingOptions {
  * IMPORTANT: All console output MUST use the helper methods (log, detail, subDetail, newline).
  * Direct console.log calls with manual spacing are not allowed.
  *
+ * Output streams:
+ * - Result data (errors, warnings, summaries) → stdout via log/detail/subDetail/newline
+ * - Status messages (validator progress) → stderr via writeStatus()
+ * - JSON/SARIF formatted output → stdout via console.log()
+ *
+ * This separation enables clean piping: `claudelint --format json | jq`
+ *
  * Output helpers:
- * - this.log(msg) - Plain output, no indentation
- * - this.detail(msg) - Indented 2 spaces
- * - this.subDetail(msg) - Indented 4 spaces (nested detail)
- * - this.newline() - Blank line
+ * - this.log(msg) - Plain output to stdout, no indentation
+ * - this.detail(msg) - Indented 2 spaces to stdout
+ * - this.subDetail(msg) - Indented 4 spaces to stdout (nested detail)
+ * - this.newline() - Blank line to stdout
+ * - this.writeStatus(msg) - Status message to stderr
  *
  * @example
  * ```typescript
@@ -78,10 +89,18 @@ export class Reporter {
     } else {
       chalk.level = 0; // Disable colors
     }
-    // Initialize progress indicator
+    // Initialize progress indicator (disabled for machine-readable formats)
     this.progressIndicator = new ProgressIndicator({
-      enabled: this.options.format !== 'json' && this.options.format !== 'sarif',
+      enabled: !this.isMachineFormat(),
     });
+  }
+
+  /**
+   * Check if current format is machine-readable (no human chrome)
+   */
+  private isMachineFormat(): boolean {
+    const f = this.options.format;
+    return f === 'json' || f === 'sarif' || f === 'github';
   }
 
   /**
@@ -167,6 +186,10 @@ export class Reporter {
 
   /**
    * Report results after parallel validation
+   *
+   * Quiet success: In non-verbose mode, per-validator output is suppressed
+   * for clean validators. Only validators with issues are shown. The caller
+   * (check-all) always prints a summary line, so clean runs get a single line.
    */
   reportParallelResults(
     results: Array<{ name: string; result: ValidationResult; duration: number }>
@@ -176,10 +199,20 @@ export class Reporter {
       // Store results for JSON output
       this.allResults.push({ validator: name, result });
 
-      if (this.options.format !== 'json' && this.options.format !== 'sarif') {
-        this.newline();
-        this.log(`✓ ${name} (${duration}ms)`);
-        this.reportResult(result, name);
+      if (!this.isMachineFormat()) {
+        // In quiet mode, only errors count as issues (warnings are suppressed)
+        const hasIssues = this.options.quiet
+          ? result.errors.length > 0
+          : result.errors.length > 0 || result.warnings.length > 0;
+
+        // Only show per-validator detail when there are issues to report.
+        // Clean validators are covered by the component status section (verbose)
+        // or the summary line (normal mode).
+        if (hasIssues) {
+          this.writeStatus('');
+          this.writeStatus(`✓ ${name} (${duration}ms)`);
+          this.reportResult(result, name);
+        }
       }
     }
   }
@@ -241,6 +274,16 @@ export class Reporter {
   }
 
   /**
+   * Report all results in GitHub Actions annotation format (call this at the end)
+   */
+  reportAllGitHub(): void {
+    const output = toGitHub(this.allResults);
+    if (output) {
+      console.log(output);
+    }
+  }
+
+  /**
    * Report in stylish format (default)
    */
   private reportStylish(result: ValidationResult, validatorName: string): void {
@@ -255,15 +298,17 @@ export class Reporter {
       result.errors.forEach((error) => this.reportError(error));
     }
 
-    // Report warnings
-    if (result.warnings.length > 0) {
+    // Report warnings (suppressed in quiet mode)
+    if (result.warnings.length > 0 && !this.options.quiet) {
       result.warnings.forEach((warning) => this.reportWarning(warning));
     }
 
-    // Summary
-    const totalIssues = result.errors.length + result.warnings.length;
+    // Summary — in quiet mode, only count errors as visible issues
+    const totalIssues = this.options.quiet
+      ? result.errors.length
+      : result.errors.length + result.warnings.length;
     if (totalIssues === 0) {
-      this.log(this.colorize(chalk.green, '✓ All checks passed!'));
+      this.writeStatus(this.colorize(chalk.green, '✓ All checks passed!'));
     } else {
       this.newline();
       this.reportSummary(result.errors.length, result.warnings.length);
@@ -286,12 +331,15 @@ export class Reporter {
       console.log(`${location}:${line}:0: error: ${error.message} [${ruleId}]`);
     });
 
-    result.warnings.forEach((warning) => {
-      const location = warning.file || validatorName;
-      const line = warning.line || 0;
-      const ruleId = warning.ruleId || 'unknown';
-      console.log(`${location}:${line}:0: warning: ${warning.message} [${ruleId}]`);
-    });
+    // Suppress warnings in quiet mode
+    if (!this.options.quiet) {
+      result.warnings.forEach((warning) => {
+        const location = warning.file || validatorName;
+        const line = warning.line || 0;
+        const ruleId = warning.ruleId || 'unknown';
+        console.log(`${location}:${line}:0: warning: ${warning.message} [${ruleId}]`);
+      });
+    }
   }
 
   /**
@@ -302,7 +350,15 @@ export class Reporter {
   }
 
   /**
-   * Output helper - plain message
+   * Output helper - status message to stderr
+   * Used for validator progress, not result data
+   */
+  private writeStatus(msg: string): void {
+    console.error(msg);
+  }
+
+  /**
+   * Output helper - plain message to stdout
    */
   private log(msg: string): void {
     console.log(msg);

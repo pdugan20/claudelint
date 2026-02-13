@@ -28,6 +28,13 @@ export class ClaudeMdValidator extends FileValidator {
     const files = await this.findFiles();
     this.trackValidatedFiles(files);
 
+    if (files.length === 0) {
+      this.markSkipped('no CLAUDE.md');
+      return this.getResult();
+    }
+
+    this.markScanned(files);
+
     for (const file of files) {
       await this.validateFile(file);
     }

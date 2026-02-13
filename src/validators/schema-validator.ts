@@ -120,8 +120,11 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
     this.trackValidatedFiles(files);
 
     if (files.length === 0) {
+      this.markSkipped(this.getNoFilesMessage());
       return this.getResult();
     }
+
+    this.markScanned(files);
 
     for (const file of files) {
       await this.validateFile(file);
@@ -271,6 +274,6 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
    * Can be overridden by subclasses
    */
   protected getNoFilesMessage(): string {
-    return 'No configuration files found';
+    return 'no configuration files';
   }
 }

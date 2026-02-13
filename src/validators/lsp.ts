@@ -26,7 +26,7 @@ export class LSPValidator extends SchemaValidator<typeof LSPConfigSchema> {
   }
 
   protected getNoFilesMessage(): string {
-    return 'No lsp.json files found';
+    return 'no lsp.json';
   }
 
   protected async validateSemantics(

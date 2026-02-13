@@ -1,7 +1,7 @@
 # Project Status Dashboard
 
-**Last Updated:** 2026-02-10
-**Current stats:** 120 rules, 1280 tests, 181 suites
+**Last Updated:** 2026-02-13
+**Current stats:** 116 rules, 1299 tests
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -53,6 +53,24 @@ Self-validation bug fixes and linter improvements. Bug fixes (7/7), Sprints 1-6 
 - T3-15: Red flags detection (stale commands, dead refs, old TODOs)
 - T3-16: Progressive disclosure validation (1 of N rules done)
 - T3-17: Additive guidance engine
+
+---
+
+### cli-output-ux (0%)
+
+**Status:** Planning — feasibility assessed
+**Location:** [docs/projects/cli-output-ux/](./cli-output-ux/)
+
+CLI output UX improvements to match ESLint/Biome/Prettier conventions. 11 items across 4 phases.
+
+**Key deliverables:**
+
+- Summary line with file counts and component names
+- Quiet success (one-liner instead of per-validator output)
+- Skipped validator visibility in verbose mode
+- `--quiet` flag, `--format github`, problem matcher JSON
+- stderr/stdout separation for clean piping
+- Rich diagnostics with code context (Phase 4, feasibility assessed)
 
 ---
 
@@ -147,4 +165,4 @@ The linter has **120 implemented rules** across 10 categories:
 
 ---
 
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-13

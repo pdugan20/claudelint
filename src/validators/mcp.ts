@@ -26,7 +26,7 @@ export class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
   }
 
   protected getNoFilesMessage(): string {
-    return 'No .mcp.json files found';
+    return 'no .mcp.json';
   }
 
   protected async validateSemantics(

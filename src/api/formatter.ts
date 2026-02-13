@@ -14,7 +14,7 @@ import { resolve, isAbsolute } from 'path';
 /**
  * Built-in formatter names
  */
-export const BUILTIN_FORMATTERS = ['stylish', 'json', 'compact', 'sarif'] as const;
+export const BUILTIN_FORMATTERS = ['stylish', 'json', 'compact', 'sarif', 'github'] as const;
 
 export type BuiltinFormatterName = (typeof BUILTIN_FORMATTERS)[number];
 
@@ -74,6 +74,11 @@ async function loadBuiltinFormatter(name: BuiltinFormatterName): Promise<Formatt
     case 'compact': {
       const { CompactFormatter } = await import('./formatters/compact');
       return new CompactFormatter();
+    }
+
+    case 'github': {
+      const { GitHubFormatter } = await import('./formatters/github');
+      return new GitHubFormatter();
     }
 
     default:

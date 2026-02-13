@@ -2,6 +2,23 @@
 
 claudelint provides full support for monorepo projects with workspace detection and configuration inheritance.
 
+## File Discovery
+
+claudelint recursively discovers files throughout your project tree, matching how Claude Code itself discovers CLAUDE.md files in monorepos:
+
+| File Type | Discovery Pattern | Recursive? |
+|-----------|------------------|------------|
+| `CLAUDE.md` | `**/CLAUDE.md` | Yes |
+| `CLAUDE.local.md` | `**/CLAUDE.local.md` | Yes |
+| Rules | `.claude/rules/**/*.md` | Yes (within .claude/rules/) |
+| Skills | `**/.claude/skills/*/SKILL.md` | Yes |
+| Settings | `.claude/settings.json` | Root only |
+| Hooks | `.claude/hooks/hooks.json` | Root only |
+| MCP | `.mcp.json` | Root only |
+| Agents | `.claude/agents/*/AGENT.md` | Root only |
+
+This means `CLAUDE.md` files in subdirectories (e.g., `packages/api/CLAUDE.md`, `src/CLAUDE.md`) are automatically found and validated. Skills in nested `.claude/skills/` directories are also discovered, matching Claude Code's on-demand subdirectory skill loading.
+
 ## Quick Start
 
 ### 1. Config Inheritance
@@ -102,15 +119,19 @@ When extending configs, claudelint merges configurations in this order:
 
 ```text
 monorepo/
+├── CLAUDE.md                   # Root project context
 ├── .claudelintrc.json          # Root config
 ├── pnpm-workspace.yaml
 ├── packages/
 │   ├── app-1/
+│   │   ├── CLAUDE.md           # Package-specific context
 │   │   └── .claudelintrc.json  # Extends root
 │   └── app-2/
+│       ├── CLAUDE.md           # Package-specific context
 │       └── .claudelintrc.json  # Extends root
 └── libs/
     └── shared/
+        ├── CLAUDE.md           # Package-specific context
         └── .claudelintrc.json  # Extends root
 ```
 
@@ -205,23 +226,27 @@ This runs validation for every package in the workspace and aggregates results.
 Validating 3 workspace packages
 
 === Package: app-1 ===
-Checking CLAUDE.md files...
-✓ All files valid
+Checked 4 files across 3 components (claude-md, settings, hooks) in 32ms. No problems found.
 
 === Package: app-2 ===
-Checking CLAUDE.md files...
-Warning: 1 warning found
+src/CLAUDE.md
+  ✗ Error: File exceeds 40KB limit (66669 bytes) [claude-md-size-error]
+    at: src/CLAUDE.md
+
+Checked 3 files across 2 components (claude-md, skills) in 28ms.
+✖ 1 problem (1 error, 0 warnings)
 
 === Package: shared ===
-Checking CLAUDE.md files...
-All files valid
+Checked 2 files across 2 components (claude-md, settings) in 18ms. No problems found.
 
 === Workspace Summary ===
 Total packages: 3
 Failed packages: 1
-Total errors: 0
-Total warnings: 1
+Total errors: 1
+Total warnings: 0
 ```
+
+The summary line for each package shows exactly which components were validated and how many files were checked, giving you visibility into coverage across the monorepo.
 
 ## Troubleshooting
 

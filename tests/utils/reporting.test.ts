@@ -71,7 +71,8 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('✓ All checks passed!'));
+      // Status messages go to stderr
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('✓ All checks passed!'));
     });
 
     it('should show explanations when explain flag is set', () => {
@@ -345,6 +346,212 @@ describe('Reporter', () => {
 
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('2 errors'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('3 warnings'));
+    });
+  });
+
+  describe('reportParallelResults quiet success', () => {
+    it('should suppress per-validator output for clean validators in non-verbose mode', () => {
+      reporter = new Reporter({ format: 'stylish', color: false });
+
+      const results = [
+        {
+          name: 'Clean Validator',
+          result: { errors: [], warnings: [], valid: true } as ValidationResult,
+          duration: 10,
+        },
+        {
+          name: 'Also Clean',
+          result: { errors: [], warnings: [], valid: true } as ValidationResult,
+          duration: 5,
+        },
+      ];
+
+      reporter.reportParallelResults(results);
+
+      // No per-validator output for clean validators
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Clean Validator')
+      );
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Also Clean')
+      );
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('All checks passed')
+      );
+    });
+
+    it('should show per-validator output for validators with issues', () => {
+      reporter = new Reporter({ format: 'stylish', color: false });
+
+      const results = [
+        {
+          name: 'Clean Validator',
+          result: { errors: [], warnings: [], valid: true } as ValidationResult,
+          duration: 10,
+        },
+        {
+          name: 'Broken Validator',
+          result: {
+            errors: [{ message: 'Something broke', severity: 'error' as const }],
+            warnings: [],
+            valid: false,
+          } as ValidationResult,
+          duration: 20,
+        },
+      ];
+
+      reporter.reportParallelResults(results);
+
+      // Clean validator suppressed
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Clean Validator')
+      );
+      // Broken validator shown
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Broken Validator')
+      );
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Something broke')
+      );
+    });
+
+    it('should suppress clean validators in verbose mode (component status shown separately)', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, verbose: true });
+
+      const results = [
+        {
+          name: 'Clean Validator',
+          result: { errors: [], warnings: [], valid: true } as ValidationResult,
+          duration: 10,
+        },
+        {
+          name: 'Also Clean',
+          result: { errors: [], warnings: [], valid: true } as ValidationResult,
+          duration: 5,
+        },
+      ];
+
+      reporter.reportParallelResults(results);
+
+      // Clean validators should NOT produce per-validator output
+      // (component status and file listings are rendered by check-all, not reporter)
+      const allCalls = consoleErrorSpy.mock.calls.flat().join('\n');
+      expect(allCalls).not.toContain('Clean Validator');
+      expect(allCalls).not.toContain('Also Clean');
+    });
+
+    it('should show validators with issues in per-validator output', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, verbose: true });
+
+      const results = [
+        {
+          name: 'Validator With Error',
+          result: {
+            errors: [{ message: 'Something broke', severity: 'error' as const }],
+            warnings: [],
+            valid: false,
+          } as ValidationResult,
+          duration: 3,
+        },
+      ];
+
+      reporter.reportParallelResults(results);
+
+      // Validators with issues are shown
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Validator With Error')
+      );
+    });
+  });
+
+  describe('--quiet mode', () => {
+    it('should suppress individual warning output in stylish format', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, quiet: true });
+
+      const result: ValidationResult = {
+        errors: [{ message: 'Real error', severity: 'error' }],
+        warnings: [{ message: 'Noisy warning', severity: 'warning' }],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      // Errors still shown
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Real error'));
+      // Warnings suppressed
+      const allLogCalls = consoleLogSpy.mock.calls.flat().join(' ');
+      expect(allLogCalls).not.toContain('Noisy warning');
+    });
+
+    it('should suppress individual warning output in compact format', () => {
+      reporter = new Reporter({ format: 'compact', color: false, quiet: true });
+
+      const result: ValidationResult = {
+        errors: [{ message: 'Real error', file: 'a.md', line: 1, severity: 'error', ruleId: 'claude-md-size-error' }],
+        warnings: [{ message: 'Noisy warning', file: 'b.md', line: 2, severity: 'warning', ruleId: 'claude-md-size-warning' }],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      // Errors still shown
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Real error'));
+      // Warnings suppressed
+      const allLogCalls = consoleLogSpy.mock.calls.flat().join(' ');
+      expect(allLogCalls).not.toContain('Noisy warning');
+    });
+
+    it('should suppress warning-only validators in parallel results', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, quiet: true });
+
+      const results = [
+        {
+          name: 'Warning Only',
+          result: {
+            errors: [],
+            warnings: [{ message: 'Just a warning', severity: 'warning' as const }],
+            valid: true,
+          } as ValidationResult,
+          duration: 10,
+        },
+        {
+          name: 'Has Errors',
+          result: {
+            errors: [{ message: 'Bad stuff', severity: 'error' as const }],
+            warnings: [],
+            valid: false,
+          } as ValidationResult,
+          duration: 20,
+        },
+      ];
+
+      reporter.reportParallelResults(results);
+
+      // Warning-only validator suppressed (treated as clean in quiet mode)
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Warning Only')
+      );
+      // Error validator shown
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Has Errors')
+      );
+    });
+
+    it('should still show "All checks passed" for error-free validators with quiet report()', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, quiet: true });
+
+      const result: ValidationResult = {
+        errors: [],
+        warnings: [{ message: 'Just a warning', severity: 'warning' }],
+        valid: true,
+      };
+
+      reporter.report(result, 'Test');
+
+      // In quiet mode with only warnings, totalIssues is 0 (errors only)
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('All checks passed')
+      );
     });
   });
 });

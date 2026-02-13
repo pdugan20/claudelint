@@ -14,7 +14,7 @@ import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/rules/fixer';
 import { logger } from '../utils/logger';
 import { detectWorkspace } from '../../utils/workspace/detector';
-import { basename } from 'path';
+import { basename, relative as pathRelative } from 'path';
 
 /**
  * Register the check-all command
@@ -26,11 +26,15 @@ export function registerCheckAllCommand(program: Command): void {
     .command('check-all')
     .description('Run all validators (supports monorepo workspaces)')
     .option('-v, --verbose', 'Verbose output')
+    .option('-q, --quiet', 'Suppress warnings, show only errors')
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('--strict', 'Exit with error on any issues (errors, warnings, or info)')
     .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)
     .option('--explain', 'Show detailed explanations and fix suggestions')
-    .option('--format <format>', 'Output format: stylish, json, compact, sarif (default: stylish)')
+    .option(
+      '--format <format>',
+      'Output format: stylish, json, compact, sarif, github (default: stylish)'
+    )
     .option('--color', 'Force color output')
     .option('--no-color', 'Disable color output')
     .option('--config <path>', 'Path to config file')
@@ -42,9 +46,11 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--fix', 'Automatically fix problems')
     .option('--fix-dry-run', 'Preview fixes without applying them')
     .option('--fix-type <type>', 'Fix errors, warnings, or all', 'all')
+    .option('--timing', 'Show per-validator timing breakdown')
     .option('--show-docs-url', 'Show documentation URLs for rules')
     .option('--no-deprecated-warnings', 'Suppress warnings about deprecated rules')
     .option('--error-on-deprecated', 'Treat usage of deprecated rules as errors')
+    .option('--allow-empty-input', 'Exit 0 when no files to check (useful with lint-staged)')
     .option(
       '--workspace <name>',
       'Validate specific workspace package by name (works from any directory)'
@@ -53,11 +59,12 @@ export function registerCheckAllCommand(program: Command): void {
     .action(
       async (options: {
         verbose?: boolean;
+        quiet?: boolean;
         warningsAsErrors?: boolean;
         strict?: boolean;
         maxWarnings?: number;
         explain?: boolean;
-        format?: 'stylish' | 'json' | 'compact' | 'sarif';
+        format?: 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
         color?: boolean;
         config?: string;
         fast?: boolean;
@@ -67,9 +74,11 @@ export function registerCheckAllCommand(program: Command): void {
         fix?: boolean;
         fixDryRun?: boolean;
         fixType?: 'errors' | 'warnings' | 'all';
+        timing?: boolean;
         showDocsUrl?: boolean;
         deprecatedWarnings?: boolean;
         errorOnDeprecated?: boolean;
+        allowEmptyInput?: boolean;
         workspace?: string;
         workspaces?: boolean;
       }) => {
@@ -191,6 +200,7 @@ export function registerCheckAllCommand(program: Command): void {
 
           const reporter = new Reporter({
             verbose: options.verbose || mergedConfig.output?.verbose,
+            quiet: options.quiet,
             warningsAsErrors: options.warningsAsErrors,
             explain: options.explain,
             format: options.format || mergedConfig.output?.format,
@@ -396,15 +406,81 @@ export function registerCheckAllCommand(program: Command): void {
             )
           );
 
-          // Report all results with timing
-          reporter.reportParallelResults(results);
+          // Aggregate results, timings, and scanMetadata
+          let totalFilesScanned = 0;
+          const activeComponents: string[] = [];
+          const activeTimings: Record<string, number> = {};
+          let fixableCount = 0;
 
-          // Aggregate results and timings
-          for (const { name, result, duration } of results) {
+          for (let i = 0; i < results.length; i++) {
+            const { name, result, duration } = results[i];
+            const validatorId = enabledValidators[i].id;
+
             timings[name] = duration;
             totalErrors += result.errors.length;
             totalWarnings += result.warnings.length;
+
+            // Track scan metadata for summary line
+            if (result.scanMetadata && !result.scanMetadata.skipped) {
+              totalFilesScanned += result.scanMetadata.filesScanned;
+              activeComponents.push(validatorId);
+              activeTimings[validatorId] = duration;
+            }
+
+            // Count fixable issues
+            fixableCount += result.errors.filter((e) => e.autoFix).length;
+            fixableCount += result.warnings.filter((w) => w.autoFix).length;
           }
+
+          // Verbose mode: show component status (active with files, skipped with reasons)
+          const isMachine =
+            options.format === 'json' || options.format === 'sarif' || options.format === 'github';
+          if (options.verbose && !isMachine) {
+            const cwd = process.cwd();
+            logger.newline();
+
+            // Active validators with file listings
+            for (let i = 0; i < results.length; i++) {
+              const { result } = results[i];
+              const validatorId = enabledValidators[i].id;
+              const meta = result.scanMetadata;
+
+              if (meta && !meta.skipped) {
+                logger.log(
+                  `${validatorId} (${meta.filesScanned} file${meta.filesScanned === 1 ? '' : 's'})`
+                );
+                for (const file of meta.filesFound) {
+                  // Show relative path from project root
+                  const rel = pathRelative(cwd, file) || file;
+                  logger.detail(rel);
+                }
+                logger.newline();
+              }
+            }
+
+            // Skipped validators with aligned columns
+            const skipped: Array<{ id: string; reason: string }> = [];
+            for (let i = 0; i < results.length; i++) {
+              const { result } = results[i];
+              const validatorId = enabledValidators[i].id;
+              const meta = result.scanMetadata;
+              if (meta && meta.skipped) {
+                skipped.push({ id: validatorId, reason: meta.skipReason || 'no files' });
+              }
+            }
+
+            if (skipped.length > 0) {
+              logger.log(`Skipped (${skipped.length}):`);
+              const maxIdLen = Math.max(...skipped.map((s) => s.id.length));
+              for (const { id, reason } of skipped) {
+                logger.detail(`${id.padEnd(maxIdLen + 2)}${reason}`);
+              }
+              logger.newline();
+            }
+          }
+
+          // Report all results with timing
+          reporter.reportParallelResults(results);
 
           // Apply fixes if requested
           if (options.fix || options.fixDryRun) {
@@ -475,18 +551,44 @@ export function registerCheckAllCommand(program: Command): void {
             reporter.reportAllJSON();
           } else if (options.format === 'sarif') {
             reporter.reportAllSARIF();
+          } else if (options.format === 'github') {
+            reporter.reportAllGitHub();
           } else {
-            logger.section('Overall Summary');
-            logger.log(`Total errors: ${totalErrors}`);
-            logger.log(`Total warnings: ${totalWarnings}`);
-            if (options.verbose) {
-              logger.newline();
-              logger.log('Timing breakdown:');
-              Object.entries(timings).forEach(([name, time]) => {
-                logger.detail(`${name}: ${time}ms`);
-              });
-              logger.newline();
-              logger.log(`Total: ${duration}ms`);
+            // Summary line
+            const componentStr =
+              activeComponents.length > 0
+                ? ` across ${activeComponents.length} component${activeComponents.length === 1 ? '' : 's'} (${activeComponents.join(', ')})`
+                : '';
+            const totalProblems = totalErrors + totalWarnings;
+
+            logger.newline();
+            if (totalProblems === 0) {
+              logger.success(
+                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${componentStr} in ${duration}ms. No problems found.`
+              );
+            } else {
+              logger.log(
+                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${componentStr} in ${duration}ms.`
+              );
+              logger.error(
+                `${totalProblems} problem${totalProblems === 1 ? '' : 's'} (${totalErrors} error${totalErrors === 1 ? '' : 's'}, ${totalWarnings} warning${totalWarnings === 1 ? '' : 's'})`
+              );
+              if (fixableCount > 0) {
+                logger.info(`${fixableCount} potentially fixable with --fix`);
+              }
+            }
+
+            // Timing breakdown (shown with --verbose or --timing)
+            if (options.verbose || options.timing) {
+              const timingEntries = Object.entries(activeTimings);
+              if (timingEntries.length > 0) {
+                const maxIdLen = Math.max(...timingEntries.map(([id]) => id.length));
+                logger.newline();
+                logger.log('Timing:');
+                for (const [id, time] of timingEntries) {
+                  logger.detail(`${id.padEnd(maxIdLen + 2)}${time}ms`);
+                }
+              }
             }
           }
 
@@ -508,6 +610,24 @@ export function registerCheckAllCommand(program: Command): void {
             logger.error(`Warning limit exceeded: ${totalWarnings} > ${maxWarnings}`);
             process.exitCode = 1;
             return;
+          }
+
+          // Handle empty input: when no files were found to check
+          if (totalFilesScanned === 0 && totalErrors === 0 && totalWarnings === 0) {
+            if (options.allowEmptyInput) {
+              process.exitCode = 0;
+              return;
+            }
+            // Without --allow-empty-input, warn the user (but still exit 0)
+            if (
+              options.format !== 'json' &&
+              options.format !== 'sarif' &&
+              options.format !== 'github'
+            ) {
+              logger.info(
+                'No files found to check. Use --allow-empty-input to suppress this message.'
+              );
+            }
           }
 
           // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)

@@ -27,7 +27,7 @@ export class SettingsValidator extends SchemaValidator<typeof SettingsSchema> {
   }
 
   protected getNoFilesMessage(): string {
-    return 'No settings.json files found';
+    return 'no settings.json';
   }
 
   protected async validateSemantics(
