@@ -117,6 +117,7 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
 
   async validate(): Promise<ValidationResult> {
     const files = await this.findFiles();
+    this.trackValidatedFiles(files);
 
     if (files.length === 0) {
       return this.getResult();

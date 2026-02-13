@@ -26,6 +26,7 @@ export class ClaudeMdValidator extends FileValidator {
 
   async validate(): Promise<ValidationResult> {
     const files = await this.findFiles();
+    this.trackValidatedFiles(files);
 
     for (const file of files) {
       await this.validateFile(file);

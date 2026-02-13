@@ -125,6 +125,8 @@ export interface ValidationResult {
   warnings: ValidationWarning[];
   /** List of deprecated rules that were used during validation */
   deprecatedRulesUsed?: DeprecatedRuleUsage[];
+  /** Files that were validated (used for cache invalidation) */
+  validatedFiles?: string[];
 }
 
 /**
@@ -225,6 +227,7 @@ export abstract class FileValidator {
   protected issues: ValidationIssue[] = [];
   protected disabledRules: Map<string, DisabledRule[]> = new Map(); // file path -> disabled rules
   protected deprecatedRulesUsed: Map<RuleId, Rule> = new Map(); // Track deprecated rules used
+  protected validatedFiles: string[] = []; // Track files for cache invalidation
 
   /** Config resolver for accessing rule configuration */
   protected configResolver?: ConfigResolver;
@@ -418,6 +421,19 @@ export abstract class FileValidator {
    */
   protected setCurrentFile(filePath: string): void {
     this.currentFile = filePath;
+  }
+
+  /**
+   * Track files that were validated (for cache invalidation)
+   *
+   * Call this with the list of files discovered by the validator.
+   * The file paths will be included in the ValidationResult so the
+   * cache can detect when files change.
+   *
+   * @param files - File paths that were validated
+   */
+  protected trackValidatedFiles(files: string[]): void {
+    this.validatedFiles.push(...files);
   }
 
   /**
@@ -697,6 +713,8 @@ export abstract class FileValidator {
       errors,
       warnings,
       deprecatedRulesUsed: deprecatedRulesUsed.length > 0 ? deprecatedRulesUsed : undefined,
+      validatedFiles:
+        this.validatedFiles.length > 0 ? [...new Set(this.validatedFiles)] : undefined,
     };
   }
 

@@ -121,7 +121,7 @@ export class Reporter {
 
     // Try cache first (if provided)
     if (cache) {
-      const cached = cache.get(name, [], config);
+      const cached = cache.get(name, config);
       if (cached) {
         const duration = Date.now() - startTime;
         return { name, result: cached, duration };
@@ -133,9 +133,9 @@ export class Reporter {
       const result = await validatorFn();
       const duration = Date.now() - startTime;
 
-      // Store in cache (if provided)
+      // Store in cache (if provided) — file fingerprints come from result.validatedFiles
       if (cache) {
-        cache.set(name, result, [], config);
+        cache.set(name, result, config);
       }
 
       return { name, result, duration };

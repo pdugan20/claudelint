@@ -2,7 +2,11 @@
  * Validation Cache
  *
  * Caches validation results to speed up repeated validations.
- * Cache is content-based (hash of file content + config + version).
+ * Cache invalidation is based on:
+ * - claudelint version (including build fingerprint)
+ * - Validator name
+ * - Configuration (rules, options)
+ * - Validated file modification times (tracked per-entry)
  */
 
 import { createHash } from 'crypto';
@@ -12,6 +16,7 @@ import {
   readFileSync,
   writeFileSync,
   rmSync,
+  unlinkSync,
   readdirSync,
   statSync,
 } from 'fs';
@@ -34,9 +39,14 @@ interface CacheIndex {
 }
 
 interface CacheEntry {
+  /** Hash of (version + validatorName + config) for lookup */
   hash: string;
+  /** When this entry was created */
   timestamp: number;
+  /** Filename of the cached result JSON */
   resultFile: string;
+  /** File paths and their mtimes at cache time (for invalidation) */
+  fileFingerprints: Record<string, string>;
 }
 
 export class ValidationCache {
@@ -76,12 +86,11 @@ export class ValidationCache {
       };
       const version = pkg.version || '0.0.0';
 
-      // Include dist/ directory mtime as build fingerprint
-      // This ensures any rebuild (even without version bump) invalidates the cache
+      // Use dist/index.js mtime as build fingerprint (more reliable than directory mtime)
       try {
-        const distPath = join(__dirname, '..');
-        const distStats = statSync(distPath);
-        return `${version}-${distStats.mtime.getTime()}`;
+        const entryPath = join(__dirname, '..', 'index.js');
+        const entryStats = statSync(entryPath);
+        return `${version}-${entryStats.mtime.getTime()}`;
       } catch {
         return version;
       }
@@ -103,6 +112,7 @@ export class ValidationCache {
         const index = JSON.parse(readFileSync(this.indexPath, 'utf-8')) as CacheIndex;
         // Invalidate if version changed
         if (index.version !== this.version) {
+          this.cleanupStaleFiles(index);
           return { version: this.version, entries: {} };
         }
         return index;
@@ -143,9 +153,12 @@ export class ValidationCache {
   }
 
   /**
-   * Generate cache key for a validator
+   * Generate cache key for a validator (identifies which entry to look up)
+   *
+   * File mtimes are NOT included in the key — they are verified separately
+   * via fileFingerprints stored in the cache entry.
    */
-  private getCacheKey(validatorName: string, projectFiles: string[], config?: unknown): string {
+  getCacheKey(validatorName: string, config?: unknown): string {
     const hash = createHash('sha256');
 
     // Include claudelint version
@@ -159,34 +172,93 @@ export class ValidationCache {
       hash.update(JSON.stringify(config));
     }
 
-    // Include file list and modification times
-    for (const file of projectFiles.sort()) {
-      hash.update(file);
-      if (existsSync(file)) {
-        try {
-          const stats = statSync(file);
-          hash.update(stats.mtime.toISOString());
-        } catch {
-          // File doesn't exist or can't read stats
-        }
-      }
-    }
-
     return hash.digest('hex');
   }
 
   /**
-   * Get cached result for a validator
+   * Compute file fingerprints (path -> mtime) for a list of files
    */
-  get(validatorName: string, projectFiles: string[], config?: unknown): ValidationResult | null {
+  private computeFileFingerprints(files: string[]): Record<string, string> {
+    const fingerprints: Record<string, string> = {};
+    for (const file of files.sort()) {
+      try {
+        if (existsSync(file)) {
+          const stats = statSync(file);
+          fingerprints[file] = stats.mtime.toISOString();
+        }
+      } catch {
+        // File inaccessible — skip (will cause cache miss on next get)
+      }
+    }
+    return fingerprints;
+  }
+
+  /**
+   * Check if stored file fingerprints still match current file state
+   */
+  private areFingerprintsValid(stored: Record<string, string>): boolean {
+    const storedFiles = Object.keys(stored);
+
+    // No files tracked — always valid (e.g., validators that found no files)
+    if (storedFiles.length === 0) {
+      return true;
+    }
+
+    for (const file of storedFiles) {
+      try {
+        if (!existsSync(file)) {
+          // File was deleted since cache was created
+          return false;
+        }
+        const stats = statSync(file);
+        if (stats.mtime.toISOString() !== stored[file]) {
+          // File was modified since cache was created
+          return false;
+        }
+      } catch {
+        // Can't stat file — treat as changed
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Get cached result for a validator
+   *
+   * Returns null (cache miss) if:
+   * - Cache is disabled
+   * - No entry exists for this validator + config combination
+   * - Any validated file has been modified since caching
+   * - Cache file is missing or corrupt
+   */
+  get(validatorName: string, config?: unknown): ValidationResult | null;
+  /**
+   * @deprecated Pass config as second argument. projectFiles parameter is ignored.
+   */
+  get(validatorName: string, projectFiles: string[], config?: unknown): ValidationResult | null;
+  get(
+    validatorName: string,
+    configOrFiles?: unknown,
+    maybeConfig?: unknown
+  ): ValidationResult | null {
     if (!this.options.enabled) {
       return null;
     }
 
-    const cacheKey = this.getCacheKey(validatorName, projectFiles, config);
+    // Handle both old and new signatures
+    const config = Array.isArray(configOrFiles) ? maybeConfig : configOrFiles;
+
+    const cacheKey = this.getCacheKey(validatorName, config);
     const entry = this.index.entries[validatorName];
 
     if (!entry || entry.hash !== cacheKey) {
+      return null;
+    }
+
+    // Verify file fingerprints — the core invalidation check
+    if (!this.areFingerprintsValid(entry.fileFingerprints)) {
       return null;
     }
 
@@ -206,35 +278,61 @@ export class ValidationCache {
 
   /**
    * Store validation result in cache
+   *
+   * File fingerprints are extracted from result.validatedFiles.
+   * If no validatedFiles are present, files referenced in errors/warnings are used.
+   */
+  set(validatorName: string, result: ValidationResult, config?: unknown): void;
+  /**
+   * @deprecated Pass config as third argument. projectFiles parameter is ignored.
    */
   set(
     validatorName: string,
     result: ValidationResult,
     projectFiles: string[],
     config?: unknown
+  ): void;
+  set(
+    validatorName: string,
+    result: ValidationResult,
+    configOrFiles?: unknown,
+    maybeConfig?: unknown
   ): void {
     if (!this.options.enabled) {
       return;
     }
 
+    // Handle both old and new signatures
+    const config = Array.isArray(configOrFiles) ? maybeConfig : configOrFiles;
+
     try {
-      const cacheKey = this.getCacheKey(validatorName, projectFiles, config);
+      const cacheKey = this.getCacheKey(validatorName, config);
       const resultFileName = `${cacheKey}.json`;
       const resultPath = join(this.filesDir, resultFileName);
+
+      // Clean up old result file if entry exists with different hash
+      this.cleanupEntryFile(validatorName);
 
       // Ensure directories exist
       if (!existsSync(this.filesDir)) {
         mkdirSync(this.filesDir, { recursive: true });
       }
 
-      // Write result file
-      writeFileSync(resultPath, JSON.stringify(result, null, 2), 'utf-8');
+      // Extract files to fingerprint from result
+      const filesToTrack = this.extractFilesFromResult(result);
+      const fileFingerprints = this.computeFileFingerprints(filesToTrack);
+
+      // Write result file (strip validatedFiles to save space — we have fingerprints)
+      const storedResult = { ...result };
+      delete storedResult.validatedFiles;
+      writeFileSync(resultPath, JSON.stringify(storedResult, null, 2), 'utf-8');
 
       // Update index
       this.index.entries[validatorName] = {
         hash: cacheKey,
         timestamp: Date.now(),
         resultFile: resultFileName,
+        fileFingerprints,
       };
 
       this.saveIndex();
@@ -245,6 +343,66 @@ export class ValidationCache {
         'CacheManager',
         'CACHE_WRITE_FAILED'
       );
+    }
+  }
+
+  /**
+   * Extract file paths from a validation result for fingerprinting
+   *
+   * Prefers result.validatedFiles (set by validators during file discovery).
+   * Falls back to files referenced in errors and warnings.
+   */
+  private extractFilesFromResult(result: ValidationResult): string[] {
+    // Prefer explicit validatedFiles from the validator
+    if (result.validatedFiles && result.validatedFiles.length > 0) {
+      return result.validatedFiles;
+    }
+
+    // Fallback: extract unique file paths from errors and warnings
+    const files = new Set<string>();
+    for (const error of result.errors) {
+      if (error.file) {
+        files.add(error.file);
+      }
+    }
+    for (const warning of result.warnings) {
+      if (warning.file) {
+        files.add(warning.file);
+      }
+    }
+    return [...files];
+  }
+
+  /**
+   * Delete the cached result file for a validator entry (if it exists)
+   */
+  private cleanupEntryFile(validatorName: string): void {
+    const entry = this.index.entries[validatorName];
+    if (entry) {
+      const oldPath = join(this.filesDir, entry.resultFile);
+      try {
+        if (existsSync(oldPath)) {
+          unlinkSync(oldPath);
+        }
+      } catch {
+        // Best-effort cleanup
+      }
+    }
+  }
+
+  /**
+   * Clean up all result files from a stale index (e.g., after version change)
+   */
+  private cleanupStaleFiles(staleIndex: CacheIndex): void {
+    for (const entry of Object.values(staleIndex.entries)) {
+      const filePath = join(this.filesDir, entry.resultFile);
+      try {
+        if (existsSync(filePath)) {
+          unlinkSync(filePath);
+        }
+      } catch {
+        // Best-effort cleanup
+      }
     }
   }
 

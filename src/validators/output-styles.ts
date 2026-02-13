@@ -31,6 +31,7 @@ export class OutputStylesValidator extends FileValidator {
 
   async validate(): Promise<ValidationResult> {
     const outputStyleFiles = await this.findOutputStyleFiles();
+    this.trackValidatedFiles(outputStyleFiles);
 
     if (outputStyleFiles.length === 0) {
       return this.getResult();
