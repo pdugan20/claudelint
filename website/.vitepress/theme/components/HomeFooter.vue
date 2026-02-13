@@ -110,6 +110,9 @@ const year = new Date().getFullYear();
 </script>
 
 <style scoped>
+/* Footer always uses dark palette regardless of theme mode.
+   These match .dark VP vars but are hardcoded because VP vars
+   switch with theme and would break in light mode. */
 .site-footer {
   background: #1a1a19;
   border-top: 1px solid #2e2e2a;

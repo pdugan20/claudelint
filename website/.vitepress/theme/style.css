@@ -10,8 +10,7 @@
  */
 
 :root {
-  --cl-font-heading: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman',
-    serif;
+  --cl-font-heading: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
 
   /* Brand = dark text (VitePress uses this for links, nav, sidebar, etc.) */
   --vp-c-brand-1: #1a1a19;
@@ -58,6 +57,13 @@
   /* Terminal: warm palette for light mode */
   --cl-terminal-bg: #302b26;
   --cl-terminal-chrome: #29241f;
+
+  /* Severity/status dot colors (shared by RuleBadge, RuleCard, RuleHeader) */
+  --cl-severity-error: #dc2626;
+  --cl-severity-warning: #d97706;
+  --cl-severity-info: #64748b;
+  --cl-status-fixable: #16a34a;
+  --cl-status-configurable: #64748b;
 }
 
 .dark {
@@ -97,6 +103,16 @@
   /* Terminal: original One Dark for dark mode */
   --cl-terminal-bg: #282c34;
   --cl-terminal-chrome: #21252b;
+
+  /* Severity/status dot colors (dark mode) */
+  --cl-severity-error: #f87171;
+  --cl-severity-warning: #fbbf24;
+  --cl-severity-info: #94a3b8;
+  --cl-status-fixable: #4ade80;
+  --cl-status-configurable: #94a3b8;
+
+  /* Dark mode nav accent (terracotta for sidebar/nav indicators only) */
+  --cl-dark-accent: #d4a574;
 }
 
 /* ===== Typography: Serif Headings ===== */
@@ -149,10 +165,6 @@
 @media (max-width: 959px) {
   .VPHero .image {
     display: none !important;
-  }
-
-  .VPHero {
-    padding-bottom: 48px !important;
   }
 }
 
@@ -230,24 +242,24 @@ html {
    NOT for content links. brand-1 stays cream; these overrides add the accent. */
 
 .dark .VPSidebarItem.is-active > .item .text {
-  color: #d4a574 !important;
+  color: var(--cl-dark-accent) !important;
 }
 
 .dark .VPSidebarItem.is-active > .item .indicator {
-  background: #d4a574;
+  background: var(--cl-dark-accent);
 }
 
 .dark .VPNavBarMenuLink.active {
-  border-bottom-color: #d4a574;
+  border-bottom-color: var(--cl-dark-accent);
 }
 
 .dark .VPDocAsideOutline .outline-link.active {
-  color: #d4a574 !important;
+  color: var(--cl-dark-accent) !important;
   transition: color 0.25s;
 }
 
 .dark .VPDocAsideOutline .outline-marker {
-  background-color: #d4a574 !important;
+  background-color: var(--cl-dark-accent) !important;
 }
 
 /* ===== Code Blocks: Hide language label ===== */

@@ -107,27 +107,15 @@ defineProps<{
 }
 
 .rule-card-severity-error::before {
-  background: #dc2626;
-}
-
-.dark .rule-card-severity-error::before {
-  background: #f87171;
+  background: var(--cl-severity-error);
 }
 
 .rule-card-severity-warning::before {
-  background: #d97706;
-}
-
-.dark .rule-card-severity-warning::before {
-  background: #fbbf24;
+  background: var(--cl-severity-warning);
 }
 
 .rule-card-severity-info::before {
-  background: #64748b;
-}
-
-.dark .rule-card-severity-info::before {
-  background: #94a3b8;
+  background: var(--cl-severity-info);
 }
 
 /* --- Fixable pill: green dot + neutral background --- */
@@ -150,12 +138,8 @@ defineProps<{
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #16a34a;
+  background: var(--cl-status-fixable);
   flex-shrink: 0;
-}
-
-.dark .rule-card-fixable::before {
-  background: #4ade80;
 }
 
 /* --- Configurable pill: slate gray dot + neutral background --- */
@@ -178,11 +162,7 @@ defineProps<{
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #64748b;
+  background: var(--cl-status-configurable);
   flex-shrink: 0;
-}
-
-.dark .rule-card-configurable::before {
-  background: #94a3b8;
 }
 </style>

@@ -35,26 +35,14 @@ defineProps<{
 }
 
 .rule-badge-error::before {
-  background: #dc2626;
-}
-
-.dark .rule-badge-error::before {
-  background: #f87171;
+  background: var(--cl-severity-error);
 }
 
 .rule-badge-warning::before {
-  background: #d97706;
-}
-
-.dark .rule-badge-warning::before {
-  background: #fbbf24;
+  background: var(--cl-severity-warning);
 }
 
 .rule-badge-info::before {
-  background: #64748b;
-}
-
-.dark .rule-badge-info::before {
-  background: #94a3b8;
+  background: var(--cl-severity-info);
 }
 </style>

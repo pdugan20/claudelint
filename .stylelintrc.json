@@ -1,0 +1,25 @@
+{
+  "extends": "stylelint-config-recommended-vue",
+  "ignoreFiles": ["**/dist/**", "**/node_modules/**"],
+  "rules": {
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": true,
+    "declaration-block-no-duplicate-properties": true,
+    "color-no-invalid-hex": true,
+    "font-family-no-duplicate-names": true,
+    "block-no-empty": true,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["deep", "global"]
+      }
+    ],
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        "ignorePseudoElements": ["v-deep"]
+      }
+    ],
+    "at-rule-no-unknown": null
+  }
+}

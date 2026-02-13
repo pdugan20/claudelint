@@ -29,8 +29,10 @@
     "test:skills:structure": "bash scripts/test/skills/validate-self.sh",
     "test:validators": "jest tests/validators --coverage",
     "test:watch": "jest --watch",
-    "lint": "npm-run-all --parallel lint:ts lint:vue lint:md lint:pkg:quiet",
-    "lint:fix": "npm-run-all --parallel lint:ts:fix lint:vue:fix lint:md:fix",
+    "lint": "npm-run-all --parallel lint:ts lint:vue lint:css lint:md lint:pkg:quiet",
+    "lint:css": "stylelint 'website/.vitepress/theme/**/*.{css,vue}'",
+    "lint:css:fix": "stylelint 'website/.vitepress/theme/**/*.{css,vue}' --fix",
+    "lint:fix": "npm-run-all --parallel lint:ts:fix lint:vue:fix lint:css:fix lint:md:fix",
     "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
     "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
     "lint:pkg": "npmPkgJsonLint .",
@@ -97,6 +99,11 @@
     ],
     "website/.vitepress/**/*.vue": [
       "eslint --fix",
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "website/.vitepress/**/*.css": [
+      "stylelint --fix",
       "prettier --write"
     ],
     "*.md": [
@@ -176,11 +183,14 @@
     "markdownlint-cli": "^0.47.0",
     "npm-package-json-lint": "^9.1.0",
     "npm-run-all2": "^8.0.4",
+    "postcss-html": "^1.8.1",
     "prettier-plugin-packagejson": "^3.0.0",
     "publint": "^0.3.17",
     "release-it": "^19.2.4",
     "remark-cli": "^12.0.1",
     "remark-validate-links": "^13.1.0",
+    "stylelint": "^17.2.0",
+    "stylelint-config-recommended-vue": "^1.6.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",

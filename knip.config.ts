@@ -35,6 +35,9 @@ const config: KnipConfig = {
     'eslint-plugin-vue',            // Used in eslint.config.mjs for Vue linting
     'vue-eslint-parser',            // Peer dependency of eslint-plugin-vue
     'cspell',                       // Used via npm script for spell checking
+    'stylelint',                     // Used via npm script and lint-staged
+    'stylelint-config-recommended-vue', // Stylelint config preset
+    'postcss-html',                  // PostCSS syntax for stylelint Vue parsing
   ],
 
   // Ignore exports used only within the same file (common for utility modules)

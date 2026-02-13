@@ -69,19 +69,11 @@ defineProps<{
 }
 
 .rule-header-badge-error::before {
-  background: #dc2626;
-}
-
-.dark .rule-header-badge-error::before {
-  background: #f87171;
+  background: var(--cl-severity-error);
 }
 
 .rule-header-badge-warning::before {
-  background: #d97706;
-}
-
-.dark .rule-header-badge-warning::before {
-  background: #fbbf24;
+  background: var(--cl-severity-warning);
 }
 
 /* --- Fixable: green dot --- */
@@ -92,12 +84,8 @@ defineProps<{
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #16a34a;
+  background: var(--cl-status-fixable);
   flex-shrink: 0;
-}
-
-.dark .rule-header-badge-fixable::before {
-  background: #4ade80;
 }
 
 /* --- Configurable: slate gray dot --- */
@@ -108,11 +96,7 @@ defineProps<{
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #64748b;
+  background: var(--cl-status-configurable);
   flex-shrink: 0;
-}
-
-.dark .rule-header-badge-configurable::before {
-  background: #94a3b8;
 }
 </style>
