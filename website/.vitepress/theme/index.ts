@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import { useRoute } from 'vitepress';
 import { watch } from 'vue';
+import Layout from './Layout.vue';
 import RuleBadge from './components/RuleBadge.vue';
 import RuleCard from './components/RuleCard.vue';
 import CodeTabs from './components/CodeTabs.vue';
@@ -13,6 +14,7 @@ import './style.css';
 
 export default {
   extends: DefaultTheme,
+  Layout,
   enhanceApp({ app }) {
     app.component('RuleBadge', RuleBadge);
     app.component('RuleCard', RuleCard);

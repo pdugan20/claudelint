@@ -2,9 +2,8 @@
 layout: home
 
 hero:
-  name: claudelint
-  text: Comprehensive linter for Claude Code
-  tagline: Validate CLAUDE.md, skills, settings, hooks, and more
+  text: The linter for Claude Code
+  tagline: Validate, optimize, and improve CLAUDE.md, skills, settings, hooks, and the rest of your Claude Code configuration.
   actions:
     - theme: brand
       text: Get Started
@@ -12,14 +11,4 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/pdugan20/claudelint
-
-features:
-  - title: Fast & Efficient
-    details: Parallel validation with smart caching for fast repeated runs
-  - title: Comprehensive Validation
-    details: 100+ checks across 10 validator categories
-  - title: Auto-fix
-    details: Automatically fix common issues with --fix flag
-  - title: Developer-Friendly
-    details: Interactive setup, inline disables, multiple output formats
 ---

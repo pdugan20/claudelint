@@ -38,16 +38,16 @@
   /* Hero name: terracotta (the ONE place accent color appears prominently) */
   --vp-home-hero-name-color: #d97757;
 
-  /* CTA buttons: terracotta (separate from brand-1) */
+  /* CTA buttons: dark (matches Anthropic's black button style) */
   --vp-button-brand-border: transparent;
   --vp-button-brand-text: #ffffff;
-  --vp-button-brand-bg: #d97757;
+  --vp-button-brand-bg: #1a1a19;
   --vp-button-brand-hover-border: transparent;
   --vp-button-brand-hover-text: #ffffff;
-  --vp-button-brand-hover-bg: #c4683f;
+  --vp-button-brand-hover-bg: #2c2a22;
   --vp-button-brand-active-border: transparent;
   --vp-button-brand-active-text: #ffffff;
-  --vp-button-brand-active-bg: #b05c38;
+  --vp-button-brand-active-bg: #3d3929;
 
   /* Custom blocks: use text color, not terracotta */
   --vp-c-tip-1: #5c5a52;
@@ -80,9 +80,10 @@
 
   --vp-home-hero-name-color: #e08b6e;
 
-  --vp-button-brand-bg: #d97757;
-  --vp-button-brand-hover-bg: #e08b6e;
-  --vp-button-brand-active-bg: #c4683f;
+  --vp-button-brand-text: #1a1a19;
+  --vp-button-brand-bg: #e8e6dc;
+  --vp-button-brand-hover-bg: #f0eee6;
+  --vp-button-brand-active-bg: #d4d2c8;
 
   --vp-c-tip-1: #a8a69d;
   --vp-c-tip-2: #8a887f;
@@ -112,8 +113,79 @@
   letter-spacing: -0.01em;
 }
 
-.VPHero .name {
+.VPHero .name,
+.VPHero .text {
   font-family: var(--cl-font-heading);
+}
+
+.VPHero .text {
+  font-size: 56px !important;
+  line-height: 1.12 !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.VPHero .tagline {
+  font-size: 1.25rem !important;
+  line-height: 1.5 !important;
+}
+
+@media (min-width: 960px) {
+  .VPHero .text,
+  .VPHero .tagline {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* ===== Hero: Wider layout, vertically centered, terminal bleeds right ===== */
+
+html {
+  overflow-x: hidden !important;
+}
+
+@media (min-width: 960px) {
+  .VPHero .container {
+    max-width: 1400px !important;
+    align-items: center !important;
+    gap: 96px;
+  }
+
+  .VPHero.has-image .main {
+    max-width: 640px !important;
+  }
+
+  .VPHero .image {
+    overflow: visible !important;
+  }
+
+  .VPHero .image-container {
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+}
+
+.VPHero .main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.VPHero .image-container {
+  overflow: visible !important;
+  display: flex !important;
+}
+
+.VPHero .image-container .image-bg {
+  display: none;
+}
+
+/* ===== Buttons: Rounded rect (not pill) to match Anthropic ===== */
+
+.VPButton {
+  border-radius: 10px !important;
 }
 
 .VPHero .name .clip {

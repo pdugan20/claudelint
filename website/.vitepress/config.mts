@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import pkg from '../../package.json';
 import rulesSidebar from '../rules/_sidebar.json';
 import claudeLight from './theme/claude-light.json';
 import claudeDark from './theme/claude-dark.json';
@@ -35,8 +36,7 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content:
-          'Validate CLAUDE.md, skills, settings, hooks, MCP servers, and plugins',
+        content: 'Validate CLAUDE.md, skills, settings, hooks, MCP servers, and plugins',
       },
     ],
   ],
@@ -52,6 +52,19 @@ export default defineConfig({
       { text: 'Integrations', link: '/integrations/overview' },
       { text: 'API', link: '/api/overview' },
       { text: 'Development', link: '/development/overview' },
+      {
+        text: `v${pkg.version}`,
+        items: [
+          {
+            text: 'Changelog',
+            link: 'https://github.com/pdugan20/claudelint/blob/main/CHANGELOG.md',
+          },
+          {
+            text: 'Releases',
+            link: 'https://github.com/pdugan20/claudelint/releases',
+          },
+        ],
+      },
     ],
 
     sidebar: {
@@ -155,14 +168,8 @@ export default defineConfig({
     ],
 
     editLink: {
-      pattern:
-        'https://github.com/pdugan20/claudelint/edit/main/website/:path',
+      pattern: 'https://github.com/pdugan20/claudelint/edit/main/website/:path',
       text: 'Edit this page on GitHub',
-    },
-
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright (c) 2025-present Pat Dugan',
     },
 
     search: {
