@@ -449,10 +449,26 @@ export function registerCheckAllCommand(program: Command): void {
                 logger.log(
                   `${validatorId} (${meta.filesScanned} file${meta.filesScanned === 1 ? '' : 's'})`
                 );
+                const isTestFile = (rel: string) =>
+                  rel.startsWith('tests/') ||
+                  rel.includes('__temp__/') ||
+                  rel.includes('fixtures/');
+
+                const projectFiles: string[] = [];
+                const testFiles: string[] = [];
                 for (const file of meta.filesFound) {
-                  // Show relative path from project root
                   const rel = pathRelative(cwd, file) || file;
+                  if (isTestFile(rel)) {
+                    testFiles.push(rel);
+                  } else {
+                    projectFiles.push(rel);
+                  }
+                }
+                for (const rel of projectFiles) {
                   logger.detail(rel);
+                }
+                if (testFiles.length > 0) {
+                  logger.detail(`... and ${testFiles.length} more in tests/`);
                 }
                 logger.newline();
               }

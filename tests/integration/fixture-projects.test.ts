@@ -104,11 +104,11 @@ describe('Fixture Project Integration Tests', () => {
 
     // Pinned counts -- update intentionally when adding new rules or fixture content
     it('should report expected error count', () => {
-      expect(result.output).toContain('33 errors');
+      expect(result.output).toContain('31 errors');
     });
 
     it('should report expected warning count', () => {
-      expect(result.output).toContain('40 warnings');
+      expect(result.output).toContain('36 warnings');
     });
 
     it('should show summary line with problem count', () => {

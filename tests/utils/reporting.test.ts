@@ -41,7 +41,6 @@ describe('Reporter', () => {
       expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('error'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test error'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 error'));
     });
 
     it('should report validation result with warnings', () => {
@@ -63,7 +62,6 @@ describe('Reporter', () => {
       expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('warning'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test warning'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 warning'));
     });
 
     it('should report success when no errors or warnings', () => {
@@ -329,7 +327,6 @@ describe('Reporter', () => {
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Error 1'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Error 2'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Error 3'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('3 errors'));
     });
 
     it('should report both errors and warnings', () => {
@@ -348,8 +345,11 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('2 errors'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('3 warnings'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Error 1'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Error 2'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 1'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 2'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 3'));
     });
   });
 

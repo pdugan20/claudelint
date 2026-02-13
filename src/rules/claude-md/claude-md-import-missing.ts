@@ -7,7 +7,7 @@
 import { Rule } from '../../types/rule';
 import { extractImportsWithLineNumbers } from '../../utils/formats/markdown';
 import { fileExists, resolvePath } from '../../utils/filesystem/files';
-import { dirname } from 'path';
+import { dirname, relative } from 'path';
 
 export const rule: Rule = {
   meta: {
@@ -71,10 +71,11 @@ export const rule: Rule = {
       // Check if imported file exists
       const exists = await fileExists(resolvedPath);
       if (!exists) {
+        const relPath = relative(process.cwd(), resolvedPath);
         context.report({
-          message: `Imported file not found: ${importInfo.path}. Create the file at ${resolvedPath} or fix the import path.`,
+          message: `Imported file not found: ${importInfo.path}. Create the file at ${relPath} or fix the import path.`,
           line: importInfo.line,
-          fix: `Create the file at ${resolvedPath} or fix the import path`,
+          fix: `Create the file at ${relPath} or fix the import path`,
         });
       }
     }

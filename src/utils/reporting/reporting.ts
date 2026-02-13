@@ -311,10 +311,21 @@ export class Reporter {
       return;
     }
 
+    // Deduplicate identical issues
+    const seen = new Set<string>();
+    const deduped: Issue[] = [];
+    for (const issue of issues) {
+      const key = `${issue.file || ''}:${issue.line || ''}:${issue.ruleId || ''}:${issue.message}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        deduped.push(issue);
+      }
+    }
+
     // Group issues by file path
     const cwd = process.cwd();
     const groups = new Map<string, Issue[]>();
-    for (const issue of issues) {
+    for (const issue of deduped) {
       const key = issue.file || '';
       if (!groups.has(key)) {
         groups.set(key, []);
@@ -330,20 +341,62 @@ export class Reporter {
         this.log(this.colorize(chalk.underline, rel));
       }
 
+      // Dynamic line number padding: only reserve space when at least one issue has a line
+      const hasLineNumbers = fileIssues.some((i) => i.line != null);
+      const maxLineWidth = hasLineNumbers
+        ? Math.max(...fileIssues.filter((i) => i.line).map((i) => String(i.line!).length))
+        : 0;
+      const locPad = hasLineNumbers ? maxLineWidth + 2 : 0;
+
+      // Track per-ruleId counts for collapsing repetitive warnings
+      const ruleIdCounts = new Map<string, number>();
       for (const issue of fileIssues) {
-        const loc = issue.line ? `${issue.line}` : '';
+        if (issue.ruleId) {
+          ruleIdCounts.set(issue.ruleId, (ruleIdCounts.get(issue.ruleId) || 0) + 1);
+        }
+      }
+      const ruleIdShown = new Map<string, number>();
+
+      for (const issue of fileIssues) {
+        // Collapse: when 3+ issues share the same ruleId, show first 2 then a summary
+        if (issue.ruleId) {
+          const count = ruleIdCounts.get(issue.ruleId) || 0;
+          const shown = ruleIdShown.get(issue.ruleId) || 0;
+          if (count >= 3 && shown >= 2) {
+            if (shown === 2) {
+              const remaining = count - 2;
+              this.detail(
+                `${' '.repeat(locPad)}${this.colorize(chalk.gray, `... and ${remaining} more ${issue.ruleId}`)}`
+              );
+            }
+            ruleIdShown.set(issue.ruleId, shown + 1);
+            continue;
+          }
+          ruleIdShown.set(issue.ruleId, shown + 1);
+        }
+
+        // Dynamic location formatting
+        let loc: string;
+        if (issue.line) {
+          loc = String(issue.line).padEnd(locPad);
+        } else if (hasLineNumbers) {
+          loc = ' '.repeat(locPad);
+        } else {
+          loc = '';
+        }
+
         const severity =
           issue.kind === 'error'
             ? this.colorize(chalk.red, 'error')
             : this.colorize(chalk.yellow, 'warning');
-        const ruleId = issue.ruleId ? this.colorize(chalk.gray, `[${issue.ruleId}]`) : '';
+        const ruleId = issue.ruleId ? this.colorize(chalk.dim, issue.ruleId) : '';
         const sevPad = issue.kind === 'error' ? '  ' : '';
-        this.detail(`${loc.padEnd(6)}${severity}${sevPad}  ${issue.message}  ${ruleId}`);
+        this.detail(`${loc}${severity}${sevPad}  ${issue.message}  ${ruleId}`);
 
-        const isExplainMode = this.options.explain || this.options.verbose;
+        const isExplainMode = this.options.explain === true;
 
         // Show fix if it adds information beyond the message
-        // Skip here when explain/verbose mode will show it in the detail block below
+        // Skip here when explain mode will show it in the detail block below
         const showFix =
           issue.fix &&
           !isExplainMode &&
@@ -361,7 +414,7 @@ export class Reporter {
           }
         }
 
-        // Show explanations in verbose/explain mode
+        // Show explanations in explain mode only
         if (isExplainMode) {
           if (issue.explanation) {
             this.subDetail(this.colorize(chalk.cyan, 'Why this matters:'));
@@ -381,10 +434,6 @@ export class Reporter {
         }
       }
     }
-
-    // Per-validator summary
-    this.newline();
-    this.reportSummary(result.errors.length, result.warnings.length);
 
     // Deprecation warnings (if enabled)
     if (this.options.deprecatedWarnings !== false && result.deprecatedRulesUsed) {
@@ -458,25 +507,6 @@ export class Reporter {
    */
   private newline(): void {
     console.log();
-  }
-
-  /**
-   * Report summary of errors and warnings
-   */
-  private reportSummary(errorCount: number, warningCount: number): void {
-    const parts: string[] = [];
-
-    if (errorCount > 0) {
-      parts.push(this.colorize(chalk.red, `${errorCount} error${errorCount === 1 ? '' : 's'}`));
-    }
-
-    if (warningCount > 0) {
-      parts.push(
-        this.colorize(chalk.yellow, `${warningCount} warning${warningCount === 1 ? '' : 's'}`)
-      );
-    }
-
-    this.log(parts.join(', '));
   }
 
   /**

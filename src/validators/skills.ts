@@ -84,11 +84,8 @@ export class SkillsValidator extends FileValidator {
     // This includes: string substitutions, referenced files, and all other validations
     await this.executeRulesForCategory('Skills', skillMdPath, content);
 
-    // Check best practices
-    await this.checkBestPractices(skillDir);
-
-    // Check security and safety
-    await this.checkSecurityAndSafety(skillDir);
+    // Check script files (best practices + security/safety in a single pass)
+    await this.checkScriptFiles(skillDir);
 
     // Report unused disable directives if configured
     if (this.options.config?.reportUnusedDisableDirectives) {
@@ -114,27 +111,7 @@ export class SkillsValidator extends FileValidator {
     }
   }
 
-  private async checkBestPractices(skillDir: string): Promise<void> {
-    try {
-      const entries = await readdir(skillDir, { withFileTypes: true });
-      const shellScripts = entries.filter((entry) => entry.isFile() && entry.name.endsWith('.sh'));
-
-      for (const script of shellScripts) {
-        const scriptPath = join(skillDir, script.name);
-        const content = await readFileContent(scriptPath);
-
-        // Execute ALL Skills rules on script files via category-based discovery
-        // Rules filter themselves based on file type (SKILL.md vs script files)
-        await this.executeRulesForCategory('Skills', scriptPath, content);
-      }
-    } catch {
-      // Intentionally ignore directory/file read errors here
-      // Best practices checks are optional - if we can't read files,
-      // we skip these checks rather than failing validation
-    }
-  }
-
-  private async checkSecurityAndSafety(skillDir: string): Promise<void> {
+  private async checkScriptFiles(skillDir: string): Promise<void> {
     try {
       const entries = await readdir(skillDir, { withFileTypes: true });
       const scriptFiles = entries.filter(
@@ -150,7 +127,7 @@ export class SkillsValidator extends FileValidator {
         await this.executeRulesForCategory('Skills', scriptPath, content);
       }
     } catch {
-      // Directory read error - ignore
+      // Directory read error - skip
     }
   }
 }
