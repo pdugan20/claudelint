@@ -37,9 +37,10 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      // All output goes to console.log
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('✗ Error: Test error'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('at: test.md:10'));
+      // ESLint-style file grouping: file header, then indented issue
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('error'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test error'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 error'));
     });
 
@@ -58,7 +59,10 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('! Warning: Test warning'));
+      // ESLint-style file grouping: file header, then indented issue
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('warning'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test warning'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 warning'));
     });
 

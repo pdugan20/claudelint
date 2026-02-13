@@ -194,7 +194,7 @@ describe('Fixture Project Integration Tests', () => {
     });
 
     it('should detect errors in MCP config', () => {
-      expect(result.output).toContain('MCP Validator');
+      expect(result.output).toContain('mcp');
       expect(result.output).toContain('bad-transport');
     });
 

@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { relative } from 'path';
 import {
   ValidationError,
   ValidationWarning,
@@ -192,10 +193,10 @@ export class Reporter {
    * (check-all) always prints a summary line, so clean runs get a single line.
    */
   reportParallelResults(
-    results: Array<{ name: string; result: ValidationResult; duration: number }>
+    results: Array<{ name: string; id?: string; result: ValidationResult; duration: number }>
   ): void {
     // Report each validator's results
-    for (const { name, result, duration } of results) {
+    for (const { name, id, result, duration } of results) {
       // Store results for JSON output
       this.allResults.push({ validator: name, result });
 
@@ -209,8 +210,9 @@ export class Reporter {
         // Clean validators are covered by the component status section (verbose)
         // or the summary line (normal mode).
         if (hasIssues) {
+          const label = id || name;
           this.writeStatus('');
-          this.writeStatus(`✓ ${name} (${duration}ms)`);
+          this.writeStatus(`${label} (${duration}ms)`);
           this.reportResult(result, name);
         }
       }
@@ -284,35 +286,105 @@ export class Reporter {
   }
 
   /**
-   * Report in stylish format (default)
+   * Report in stylish format (default) — ESLint-style file grouping
    */
-  private reportStylish(result: ValidationResult, validatorName: string): void {
-    if (this.options.verbose) {
-      this.newline();
-      this.log(this.colorize(chalk.blue, `${validatorName} Validation Results:`));
-      this.newline();
+  private reportStylish(result: ValidationResult, _validatorName: string): void {
+    // Collect all visible issues into a unified list
+    type Issue = (ValidationError | ValidationWarning) & { kind: 'error' | 'warning' };
+    const issues: Issue[] = [];
+
+    for (const error of result.errors) {
+      issues.push({ ...error, kind: 'error' });
+    }
+    if (!this.options.quiet) {
+      for (const warning of result.warnings) {
+        issues.push({ ...warning, kind: 'warning' });
+      }
     }
 
-    // Report errors
-    if (result.errors.length > 0) {
-      result.errors.forEach((error) => this.reportError(error));
-    }
-
-    // Report warnings (suppressed in quiet mode)
-    if (result.warnings.length > 0 && !this.options.quiet) {
-      result.warnings.forEach((warning) => this.reportWarning(warning));
-    }
-
-    // Summary — in quiet mode, only count errors as visible issues
-    const totalIssues = this.options.quiet
-      ? result.errors.length
-      : result.errors.length + result.warnings.length;
-    if (totalIssues === 0) {
+    if (issues.length === 0) {
       this.writeStatus(this.colorize(chalk.green, '✓ All checks passed!'));
-    } else {
-      this.newline();
-      this.reportSummary(result.errors.length, result.warnings.length);
+      // Deprecation warnings (if enabled)
+      if (this.options.deprecatedWarnings !== false && result.deprecatedRulesUsed) {
+        this.reportDeprecatedRules(result.deprecatedRulesUsed);
+      }
+      return;
     }
+
+    // Group issues by file path
+    const cwd = process.cwd();
+    const groups = new Map<string, Issue[]>();
+    for (const issue of issues) {
+      const key = issue.file || '';
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key)!.push(issue);
+    }
+
+    // Render each file group
+    for (const [filePath, fileIssues] of groups) {
+      this.newline();
+      if (filePath) {
+        const rel = relative(cwd, filePath) || filePath;
+        this.log(this.colorize(chalk.underline, rel));
+      }
+
+      for (const issue of fileIssues) {
+        const loc = issue.line ? `${issue.line}` : '';
+        const severity =
+          issue.kind === 'error'
+            ? this.colorize(chalk.red, 'error')
+            : this.colorize(chalk.yellow, 'warning');
+        const ruleId = issue.ruleId ? this.colorize(chalk.gray, `[${issue.ruleId}]`) : '';
+        const sevPad = issue.kind === 'error' ? '  ' : '';
+        this.detail(`${loc.padEnd(6)}${severity}${sevPad}  ${issue.message}  ${ruleId}`);
+
+        const isExplainMode = this.options.explain || this.options.verbose;
+
+        // Show fix if it adds information beyond the message
+        // Skip here when explain/verbose mode will show it in the detail block below
+        const showFix =
+          issue.fix &&
+          !isExplainMode &&
+          !issue.message.includes(issue.fix) &&
+          !issue.fix.includes(issue.message);
+        if (showFix) {
+          this.subDetail(this.colorize(chalk.gray, `Fix: ${issue.fix}`));
+        }
+
+        // Show docs URL if enabled
+        if (this.options.showDocsUrl && issue.ruleId) {
+          const docsUrl = this.getDocsUrl(issue.ruleId);
+          if (docsUrl) {
+            this.subDetail(this.colorize(chalk.blue, `Docs: ${docsUrl}`));
+          }
+        }
+
+        // Show explanations in verbose/explain mode
+        if (isExplainMode) {
+          if (issue.explanation) {
+            this.subDetail(this.colorize(chalk.cyan, 'Why this matters:'));
+            this.subDetail(this.colorize(chalk.gray, issue.explanation));
+          }
+          if (issue.howToFix) {
+            this.subDetail(this.colorize(chalk.cyan, 'How to fix:'));
+            issue.howToFix.split('\n').forEach((hline) => {
+              this.subDetail(this.colorize(chalk.gray, hline));
+            });
+          }
+          if (issue.fix) {
+            this.subDetail(
+              this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, issue.fix)
+            );
+          }
+        }
+      }
+    }
+
+    // Per-validator summary
+    this.newline();
+    this.reportSummary(result.errors.length, result.warnings.length);
 
     // Deprecation warnings (if enabled)
     if (this.options.deprecatedWarnings !== false && result.deprecatedRulesUsed) {
@@ -324,8 +396,11 @@ export class Reporter {
    * Report in compact format (one line per issue)
    */
   private reportCompact(result: ValidationResult, validatorName: string): void {
+    const cwd = process.cwd();
+    const relPath = (file?: string) => (file ? relative(cwd, file) || file : validatorName);
+
     result.errors.forEach((error) => {
-      const location = error.file || validatorName;
+      const location = relPath(error.file);
       const line = error.line || 0;
       const ruleId = error.ruleId || 'unknown';
       console.log(`${location}:${line}:0: error: ${error.message} [${ruleId}]`);
@@ -334,7 +409,7 @@ export class Reporter {
     // Suppress warnings in quiet mode
     if (!this.options.quiet) {
       result.warnings.forEach((warning) => {
-        const location = warning.file || validatorName;
+        const location = relPath(warning.file);
         const line = warning.line || 0;
         const ruleId = warning.ruleId || 'unknown';
         console.log(`${location}:${line}:0: warning: ${warning.message} [${ruleId}]`);
@@ -386,90 +461,6 @@ export class Reporter {
   }
 
   /**
-   * Report a single error
-   */
-  private reportError(error: ValidationError): void {
-    const location = this.formatLocation(error.file, error.line);
-    const ruleId = error.ruleId ? this.colorize(chalk.gray, `[${error.ruleId}]`) : '';
-    this.log(this.colorize(chalk.red, `✗ Error: ${error.message}`) + (ruleId ? ` ${ruleId}` : ''));
-    if (location) {
-      this.detail(this.colorize(chalk.gray, `at: ${location}`));
-    }
-
-    // Show documentation URL if enabled and rule ID is available
-    if (this.options.showDocsUrl && error.ruleId) {
-      const docsUrl = this.getDocsUrl(error.ruleId);
-      if (docsUrl) {
-        this.detail(this.colorize(chalk.blue, `→ Docs: ${docsUrl}`));
-      }
-    }
-
-    // Show detailed information if --explain is set or if info is available
-    if (this.options.explain || this.options.verbose) {
-      if (error.explanation) {
-        this.detail(this.colorize(chalk.cyan, 'Why this matters:'));
-        this.detail(this.colorize(chalk.gray, error.explanation));
-      }
-      if (error.howToFix) {
-        this.detail(this.colorize(chalk.cyan, 'How to fix:'));
-        error.howToFix.split('\n').forEach((line) => {
-          this.detail(this.colorize(chalk.gray, line));
-        });
-      }
-      if (error.fix) {
-        this.detail(this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, error.fix));
-      }
-      this.newline();
-    } else if (error.fix) {
-      // Show quick fix even without --explain
-      this.detail(this.colorize(chalk.gray, `Fix: ${error.fix}`));
-    }
-  }
-
-  /**
-   * Report a single warning
-   */
-  private reportWarning(warning: ValidationWarning): void {
-    const location = this.formatLocation(warning.file, warning.line);
-    const ruleId = warning.ruleId ? this.colorize(chalk.gray, `[${warning.ruleId}]`) : '';
-    this.log(
-      this.colorize(chalk.yellow, `! Warning: ${warning.message}`) + (ruleId ? ` ${ruleId}` : '')
-    );
-    if (location) {
-      this.detail(this.colorize(chalk.gray, `at: ${location}`));
-    }
-
-    // Show documentation URL if enabled and rule ID is available
-    if (this.options.showDocsUrl && warning.ruleId) {
-      const docsUrl = this.getDocsUrl(warning.ruleId);
-      if (docsUrl) {
-        this.detail(this.colorize(chalk.blue, `→ Docs: ${docsUrl}`));
-      }
-    }
-
-    // Show detailed information if --explain is set or if info is available
-    if (this.options.explain || this.options.verbose) {
-      if (warning.explanation) {
-        this.detail(this.colorize(chalk.cyan, 'Why this matters:'));
-        this.detail(this.colorize(chalk.gray, warning.explanation));
-      }
-      if (warning.howToFix) {
-        this.detail(this.colorize(chalk.cyan, 'How to fix:'));
-        warning.howToFix.split('\n').forEach((line) => {
-          this.detail(this.colorize(chalk.gray, line));
-        });
-      }
-      if (warning.fix) {
-        this.detail(this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, warning.fix));
-      }
-      this.newline();
-    } else if (warning.fix) {
-      // Show quick fix even without --explain
-      this.detail(this.colorize(chalk.gray, `Fix: ${warning.fix}`));
-    }
-  }
-
-  /**
    * Report summary of errors and warnings
    */
   private reportSummary(errorCount: number, warningCount: number): void {
@@ -486,16 +477,6 @@ export class Reporter {
     }
 
     this.log(parts.join(', '));
-  }
-
-  /**
-   * Format file location for display
-   */
-  private formatLocation(file?: string, line?: number): string | null {
-    if (!file) {
-      return null;
-    }
-    return line ? `${file}:${line}` : file;
   }
 
   /**

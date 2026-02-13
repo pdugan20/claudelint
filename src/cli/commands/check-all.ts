@@ -479,8 +479,17 @@ export function registerCheckAllCommand(program: Command): void {
             }
           }
 
-          // Report all results with timing
-          reporter.reportParallelResults(results);
+          // Visual separator between discovery section and issues
+          if (options.verbose && !isMachine && (totalErrors > 0 || totalWarnings > 0)) {
+            logger.log('Problems:');
+          }
+
+          // Report all results with timing — enrich with validator IDs
+          const enrichedResults = results.map((r, i) => ({
+            ...r,
+            id: enabledValidators[i].id,
+          }));
+          reporter.reportParallelResults(enrichedResults);
 
           // Apply fixes if requested
           if (options.fix || options.fixDryRun) {
