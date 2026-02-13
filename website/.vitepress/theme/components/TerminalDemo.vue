@@ -10,11 +10,21 @@
       <div class="terminal-dots-spacer" />
     </div>
     <div ref="bodyRef" class="terminal-body">
-      <div v-for="(line, i) in visibleLines" :key="i" :class="['terminal-line', line.type]">
+      <!-- Command line with typing animation -->
+      <div v-if="animationStarted" class="terminal-line input">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <span class="prompt">$</span> {{ typedText
+        }}<span v-if="showTypingCursor" class="terminal-cursor terminal-cursor-inline" />
+      </div>
+
+      <!-- Output lines -->
+      <div v-for="(line, i) in visibleOutputLines" :key="i" :class="['terminal-line', line.type]">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <span v-html="line.html" />
       </div>
-      <span v-if="done" class="terminal-cursor" />
+
+      <!-- Final blinking cursor after all output -->
+      <span v-if="outputDone" class="terminal-cursor" />
     </div>
   </div>
 </template>
@@ -27,8 +37,9 @@ interface Line {
   html: string;
 }
 
-const lines: Line[] = [
-  { type: 'input', html: '<span class="prompt">$</span> claudelint check-all' },
+const command = 'claudelint check-all';
+
+const outputLines: Line[] = [
   { type: 'blank', html: '&nbsp;' },
   {
     type: 'pass',
@@ -97,16 +108,22 @@ const lines: Line[] = [
   },
 ];
 
+const animationStarted = ref(false);
+const typedChars = ref(0);
 const visibleCount = ref(0);
-const done = computed(() => visibleCount.value >= lines.length);
-const visibleLines = computed(() => lines.slice(0, visibleCount.value));
 const terminalRef = ref<HTMLElement | null>(null);
 const bodyRef = ref<HTMLElement | null>(null);
 let observer: IntersectionObserver | null = null;
 let timeouts: ReturnType<typeof setTimeout>[] = [];
 
-// Auto-scroll terminal body as new lines are added to the DOM
-watch(visibleCount, () => {
+const typedText = computed(() => command.slice(0, typedChars.value));
+const typingDone = computed(() => typedChars.value >= command.length);
+const outputDone = computed(() => visibleCount.value >= outputLines.length);
+const showTypingCursor = computed(() => animationStarted.value && !typingDone.value);
+const visibleOutputLines = computed(() => outputLines.slice(0, visibleCount.value));
+
+// Auto-scroll terminal body as new content appears
+watch([typedChars, visibleCount], () => {
   nextTick(() => {
     if (bodyRef.value) {
       bodyRef.value.scrollTop = bodyRef.value.scrollHeight;
@@ -115,22 +132,36 @@ watch(visibleCount, () => {
 });
 
 function startAnimation() {
-  const baseDelay = 80;
-  const inputDelay = 400;
+  const typingSpeed = 60;
+  const initialPause = 200;
+  const enterPause = 300;
+  const outputSpeed = 80;
 
-  lines.forEach((line, i) => {
-    let delay: number;
-    if (i === 0) {
-      delay = inputDelay;
-    } else if (i === 1) {
-      delay = inputDelay + 300;
-    } else {
-      delay = inputDelay + 300 + (i - 1) * baseDelay;
-    }
+  // Phase 0: Show prompt with cursor
+  animationStarted.value = true;
 
-    const t = setTimeout(() => {
-      visibleCount.value = i + 1;
-    }, delay);
+  // Phase 1: Type command character by character
+  for (let i = 0; i < command.length; i++) {
+    const t = setTimeout(
+      () => {
+        typedChars.value = i + 1;
+      },
+      initialPause + i * typingSpeed
+    );
+    timeouts.push(t);
+  }
+
+  const typingEnd = initialPause + command.length * typingSpeed;
+
+  // Phase 2: Output lines appear after enter pause
+  const outputStart = typingEnd + enterPause;
+  outputLines.forEach((_line, i) => {
+    const t = setTimeout(
+      () => {
+        visibleCount.value = i + 1;
+      },
+      outputStart + i * outputSpeed
+    );
     timeouts.push(t);
   });
 }
@@ -140,7 +171,7 @@ onMounted(() => {
 
   observer = new IntersectionObserver(
     (entries) => {
-      if (entries[0]?.isIntersecting && visibleCount.value === 0) {
+      if (entries[0]?.isIntersecting && !animationStarted.value) {
         startAnimation();
         observer?.disconnect();
       }
@@ -239,6 +270,11 @@ onUnmounted(() => {
   animation: lineIn 0.2s ease both;
 }
 
+/* Input line should not animate in */
+.terminal-line.input {
+  animation: none;
+}
+
 @keyframes lineIn {
   from {
     opacity: 0;
@@ -292,6 +328,10 @@ onUnmounted(() => {
   background: #abb2bf;
   vertical-align: text-bottom;
   animation: blink 1s step-end infinite;
+}
+
+.terminal-cursor-inline {
+  margin-left: 1px;
 }
 
 @keyframes blink {

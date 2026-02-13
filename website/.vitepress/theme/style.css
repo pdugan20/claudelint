@@ -100,10 +100,6 @@
   --vp-c-tip-3: #6e6c64;
   --vp-c-tip-soft: rgba(168, 166, 157, 0.08);
 
-  /* Terminal: original One Dark for dark mode */
-  --cl-terminal-bg: #282c34;
-  --cl-terminal-chrome: #21252b;
-
   /* Severity/status dot colors (dark mode) */
   --cl-severity-error: #f87171;
   --cl-severity-warning: #fbbf24;
