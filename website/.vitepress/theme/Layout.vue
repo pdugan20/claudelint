@@ -13,7 +13,7 @@ const { frontmatter } = useData();
     <template v-if="frontmatter.layout === 'home'" #home-hero-image>
       <TerminalDemo />
     </template>
-    <template #layout-bottom>
+    <template v-if="frontmatter.layout === 'home'" #layout-bottom>
       <HomeFooter />
     </template>
   </Layout>

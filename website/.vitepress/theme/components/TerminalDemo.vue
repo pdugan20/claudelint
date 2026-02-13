@@ -160,9 +160,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* One Dark terminal palette */
+/* Terminal palette (switches via CSS vars in style.css) */
 .terminal {
-  background: #282c34;
+  background: var(--cl-terminal-bg);
   border-radius: 10px;
   overflow: hidden;
   box-shadow:
@@ -179,7 +179,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  background: #21252b;
+  background: var(--cl-terminal-chrome);
 }
 
 .terminal-dots {
@@ -306,9 +306,7 @@ onUnmounted(() => {
 
 @media (max-width: 959px) {
   .terminal {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    display: none;
   }
 }
 </style>

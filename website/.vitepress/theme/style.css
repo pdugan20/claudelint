@@ -54,6 +54,10 @@
   --vp-c-tip-2: #3d3929;
   --vp-c-tip-3: #8a887f;
   --vp-c-tip-soft: rgba(92, 90, 82, 0.08);
+
+  /* Terminal: warm palette for light mode */
+  --cl-terminal-bg: #302b26;
+  --cl-terminal-chrome: #29241f;
 }
 
 .dark {
@@ -89,6 +93,10 @@
   --vp-c-tip-2: #8a887f;
   --vp-c-tip-3: #6e6c64;
   --vp-c-tip-soft: rgba(168, 166, 157, 0.08);
+
+  /* Terminal: original One Dark for dark mode */
+  --cl-terminal-bg: #282c34;
+  --cl-terminal-chrome: #21252b;
 }
 
 /* ===== Typography: Serif Headings ===== */
@@ -136,6 +144,21 @@
     max-width: 100% !important;
     width: 100% !important;
   }
+}
+
+@media (max-width: 959px) {
+  .VPHero .image {
+    display: none !important;
+  }
+
+  .VPHero {
+    padding-bottom: 48px !important;
+  }
+}
+
+/* Tighten hero bottom to match visual top spacing */
+.VPHero {
+  padding-bottom: 48px !important;
 }
 
 /* ===== Hero: Wider layout, vertically centered, terminal bleeds right ===== */
