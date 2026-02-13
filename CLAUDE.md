@@ -30,7 +30,7 @@ npm run docs:build       # Production website build
 **Do NOT hand-edit these files — they are overwritten by scripts:**
 
 - `src/rules/index.ts` — rule registry (`npm run generate:types`)
-- `src/types/rule-ids.ts` — rule ID union type (`npm run generate:types`)
+- `src/rules/rule-ids.ts` — rule ID union type (`npm run generate:types`)
 - `website/rules/**/*.md` — rule documentation pages (`npm run docs:generate`)
 - `website/rules/_sidebar.json` — rules sidebar nav (`npm run docs:generate`)
 - `website/data/rule-stats.json` — rule count data (`npm run docs:generate`)

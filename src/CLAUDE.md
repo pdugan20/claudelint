@@ -45,7 +45,7 @@ export const rule: Rule = {
 
 1. Create `src/rules/<category>/<rule-name>.ts` following the pattern above
 2. Create `tests/rules/<rule-name>.test.ts` with passing/failing cases
-3. Run `npm run generate:types` to register the rule in `src/rules/index.ts` and `src/types/rule-ids.ts`
+3. Run `npm run generate:types` to register the rule in `src/rules/index.ts` and `src/rules/rule-ids.ts`
 4. Run `npm run docs:generate` to create the website documentation page
 5. Run `npm run check:rule-coverage` to verify docs/tests exist
 
