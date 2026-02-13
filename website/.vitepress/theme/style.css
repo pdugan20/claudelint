@@ -290,6 +290,12 @@ html {
   background-color: var(--cl-dark-accent) !important;
 }
 
+/* ===== Interactive borders: Use theme-consistent borders ===== */
+
+.VPSwitch:hover {
+  border-color: var(--vp-c-text-3) !important;
+}
+
 /* ===== Search: Use theme-consistent borders ===== */
 
 .DocSearch-Button:hover {
