@@ -86,7 +86,7 @@
 
   --vp-c-divider: #2e2e2a;
   --vp-c-border: #3c3c36;
-  --vp-c-gutter: #000000;
+  --vp-c-gutter: #2e2e2a;
 
   --vp-home-hero-name-color: #e08b6e;
 
@@ -107,6 +107,12 @@
   --cl-status-fixable: #4ade80;
   --cl-status-configurable: #94a3b8;
 
+  /* Search: subtle warm border + terracotta accents (matches Anthropic) */
+  --vp-local-search-result-selected-border: var(--vp-c-border);
+  --vp-local-search-result-selected-bg: var(--vp-c-bg-soft);
+  --vp-local-search-highlight-bg: #d4a574;
+  --vp-local-search-highlight-text: #1a1a19;
+
   /* Dark mode nav accent (terracotta for sidebar/nav indicators only) */
   --cl-dark-accent: #d4a574;
 }
@@ -122,14 +128,14 @@
 
 .vp-doc h1 {
   font-size: 2.25rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
 .vp-doc h2 {
   font-size: 1.65rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 
@@ -141,7 +147,7 @@
 .VPHero .text {
   font-size: 56px !important;
   line-height: 1.12 !important;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -233,6 +239,32 @@ html {
   -webkit-text-fill-color: transparent;
 }
 
+/* ===== Nav: Always show bottom border (VitePress hides it on home) ===== */
+
+.VPNavBar .divider-line {
+  background-color: var(--vp-c-gutter) !important;
+}
+
+/* ===== Nav: Active/hover underline (matches Claude Code docs) ===== */
+
+.VPNavBarMenuLink {
+  color: var(--vp-c-text-2) !important;
+  border-bottom: 2px solid transparent !important;
+  transition:
+    color 0.25s,
+    border-bottom-color 0.25s !important;
+}
+
+.VPNavBarMenuLink:hover {
+  color: var(--vp-c-text-1) !important;
+  border-bottom-color: var(--vp-c-border) !important;
+}
+
+.VPNavBarMenuLink.active {
+  color: var(--vp-c-text-1) !important;
+  border-bottom-color: var(--vp-c-text-1) !important;
+}
+
 /* ===== Dark Mode: Terracotta for nav indicators only ===== */
 /* Official Claude docs use orange only for sidebar active + nav active underline,
    NOT for content links. brand-1 stays cream; these overrides add the accent. */
@@ -256,6 +288,20 @@ html {
 
 .dark .VPDocAsideOutline .outline-marker {
   background-color: var(--cl-dark-accent) !important;
+}
+
+/* ===== Search: Use theme-consistent borders ===== */
+
+.DocSearch-Button:hover {
+  border-color: var(--vp-c-border) !important;
+}
+
+.search-bar:focus-within {
+  border-color: var(--vp-c-border) !important;
+}
+
+.DocSearch-Form {
+  border-color: var(--vp-c-border) !important;
 }
 
 /* ===== Code Blocks: Hide language label ===== */

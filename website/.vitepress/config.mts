@@ -21,7 +21,7 @@ export default defineConfig({
       'link',
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap',
       },
     ],
     ['meta', { property: 'og:type', content: 'website' }],
@@ -43,15 +43,16 @@ export default defineConfig({
 
   themeConfig: {
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
       {
         text: 'Validators',
         link: '/validators/overview',
+        activeMatch: '^/validators/',
       },
-      { text: 'Rules', link: '/rules/overview' },
-      { text: 'Integrations', link: '/integrations/overview' },
-      { text: 'API', link: '/api/overview' },
-      { text: 'Development', link: '/development/overview' },
+      { text: 'Rules', link: '/rules/overview', activeMatch: '^/rules/' },
+      { text: 'Integrations', link: '/integrations/overview', activeMatch: '^/integrations/' },
+      { text: 'API', link: '/api/overview', activeMatch: '^/api/' },
+      { text: 'Development', link: '/development/overview', activeMatch: '^/development/' },
       {
         text: `v${pkg.version}`,
         items: [
