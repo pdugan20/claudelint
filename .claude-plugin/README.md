@@ -59,7 +59,7 @@ This plugin gives Claude the ability to check your Claude Code projects for erro
 Install directly from GitHub:
 
 ```bash
-/plugin install github:pdugan20/claude-code-lint
+/plugin install github:pdugan20/claudelint
 ```
 
 **Note**: You must also install the npm package (see below) for the validators to work.
@@ -130,7 +130,7 @@ claudelint validate-skills
 # And more...
 ```
 
-See the [npm package README](https://github.com/pdugan20/claude-code-lint#readme) for complete CLI documentation.
+See the [npm package README](https://github.com/pdugan20/claudelint#readme) for complete CLI documentation.
 
 ## What Gets Validated
 
@@ -162,8 +162,8 @@ See the [npm package README](https://github.com/pdugan20/claude-code-lint#readme
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/pdugan20/claude-code-lint/issues)
-- **Documentation**: [Project README](https://github.com/pdugan20/claude-code-lint#readme)
+- **Issues**: [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
+- **Documentation**: [Project README](https://github.com/pdugan20/claudelint#readme)
 - **CLI Reference**: See npm package documentation
 
 ## License

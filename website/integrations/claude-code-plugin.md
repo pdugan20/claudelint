@@ -19,7 +19,7 @@ See [Getting Started](/guide/getting-started) for full installation options.
 Install directly from GitHub:
 
 ```bash
-/plugin install github:pdugan20/claude-code-lint
+/plugin install github:pdugan20/claudelint
 ```
 
 ### From Local Package

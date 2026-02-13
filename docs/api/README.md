@@ -181,7 +181,7 @@ Complete examples are available in the [examples directory](../../examples/):
 ## Support
 
 - **Documentation**: [Full documentation](../../README.md)
-- **Issues**: [GitHub Issues](https://github.com/pdugan20/claude-lint/issues)
+- **Issues**: [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
 - **CLI Reference**: [CLI documentation](../cli-reference.md)
 
 ## Next Steps

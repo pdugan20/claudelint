@@ -45,7 +45,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"**/*.json\" \"website/.vitepress/**/*.vue\"",
     "check": "npm-run-all --parallel check:emojis check:logger-spacing check:logger-usage check:milestone-refs check:publint",
     "check:all": "ts-node scripts/check/all.ts",
-    "check:self": "ts-node scripts/check/self-validate.ts",
+    "check:self": "npm run build && node bin/claudelint check-all",
     "check:consistency": "ts-node scripts/check/consistency.ts",
     "check:constants": "npm-run-all check:tool-names check:model-names",
     "check:deadcode": "knip",

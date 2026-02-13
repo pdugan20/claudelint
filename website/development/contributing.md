@@ -84,7 +84,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 6. Run validation on the project itself (dogfooding):
 
    ```bash
-   npm run validate
+   npm run check:self
    ```
 
 **See [CLI Reference](/guide/cli-reference) for complete command reference.**

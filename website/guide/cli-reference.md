@@ -912,7 +912,7 @@ claudelint install-plugin
 **Output varies based on context:**
 
 - **Local install detected:** Shows `/plugin install --source ./node_modules/claude-code-lint`
-- **No local install:** Shows both GitHub install (`/plugin install github:pdugan20/claude-code-lint`) and npm-first workflow
+- **No local install:** Shows both GitHub install (`/plugin install github:pdugan20/claudelint`) and npm-first workflow
 
 See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for detailed setup instructions.
 
