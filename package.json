@@ -78,6 +78,7 @@
     "check:rule-implementations": "ts-node scripts/verify/rule-implementations.ts",
     "check:rule-option-docs": "ts-node scripts/check/rule-option-docs.ts",
     "check:rule-option-interfaces": "ts-node scripts/check/rule-option-interfaces.ts",
+    "check:rule-patterns": "ts-node scripts/check/rule-patterns.ts",
     "check:rule-structure": "ts-node scripts/verify/rule-structure.ts",
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
@@ -106,6 +107,9 @@
     "src/**/*.ts": [
       "eslint --fix",
       "prettier --write"
+    ],
+    "src/rules/**/*.ts": [
+      "ts-node scripts/check/rule-patterns.ts"
     ],
     "website/.vitepress/**/*.vue": [
       "eslint --fix",
@@ -182,8 +186,6 @@
     "@types/text-table": "^0.2.5",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
     "cspell": "^9.6.4",
     "emoji-regex": "^10.6.0",
     "eslint": "^9.39.2",

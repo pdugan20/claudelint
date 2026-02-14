@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-02-10
 **Purpose:** Single sequenced tracker for all remaining work across all projects.
-**Current stats:** 120 rules, 1280 tests, 181 suites
+**Current stats:** 116 rules, 1512 tests, 196 suites
 
 ---
 
@@ -86,6 +86,56 @@ Smoke testing is complete. Interactive testing remains.
 - [ ] Update `npm-release-setup/tracker.md` header to "Complete"
 - [ ] Move `npm-release-setup/` to `archive/npm-release-setup/`
 - [ ] Update status.md: move from Active to Archived
+
+---
+
+### Milestone 11: CLI Best Practices Overhaul
+
+**Source:** [cli-best-practices project](./cli-best-practices/)
+**Depends on:** None (can run in parallel with other milestones)
+**Effort:** ~2-3 days
+
+CLI and npm package best practices overhaul. Fixes gaps found by auditing against ESLint, Biome, Prettier, clig.dev, and nodejs-cli-apps-best-practices.
+
+- [ ] **Phase 1**: Quick wins — default command, `exports`, fix `postinstall`, `FORCE_COLOR`, version format
+- [ ] **Phase 2**: Flag architecture — shared types, config loader, option builders, reporter builder
+- [ ] **Phase 3**: Missing CLI flags — `--output-file`, `--rule`, `--changed`, `--ignore-pattern`, etc.
+- [ ] **Phase 4**: Help text — grouped options, usage examples, doc links, command grouping
+- [ ] **Phase 5**: Init wizard modernization — detect newer components, registry-based defaults, `--force`
+- [ ] **Phase 6**: stdin support — `--stdin`, `--stdin-filename`, virtual file interface
+- [ ] **Phase 7**: Update notifications and signal handling — `update-notifier`, SIGINT/SIGTERM
+- [ ] **Phase 8**: Tests and enforcement — integration tests, package validation, env var tests
+- [ ] **Phase 9**: Website documentation — CLI reference, getting started, troubleshooting updates
+
+**Cleanup:**
+
+- [ ] Update status.md: move cli-best-practices from Active to Archived
+
+---
+
+### Milestone 12: Rule Reliability & Parsing Hardening
+
+**Source:** [rule-reliability project](./rule-reliability/)
+**Depends on:** None (can run in parallel with other milestones)
+**Effort:** ~2-3 days
+**Unblocks:** Milestone 10 (cleaner rule implementations for preset audit)
+
+Fixes hand-rolled YAML parsing, fragile code block stripping, regex correctness bugs, symlink loops, and dead dependencies. Based on comprehensive audit of all 116 rules.
+
+- [x] **Phase 1**: Shared utility hardening -- `stripCodeBlocks()`, fix `extractBodyContent`, regex escaping, line ending normalization
+- [x] **Phase 2**: Consolidate hand-rolled parsing -- 5 rules migrated to shared utilities
+- [x] **Phase 3**: Regex correctness -- `$VARIABLE` partial token fix, `matchAll()` migration, XML tag backtracking cap
+- [x] **Phase 4**: Filesystem & security -- symlink protection, secret detection filtering, URL variable detection
+- [x] **Phase 5**: Cleanup & validation -- remove dead `ajv` deps, full test suite, docs regeneration
+- [x] **Phase 6**: Banned-pattern CI script -- `check:rule-patterns`, migrate remaining `lastIndex` usages
+- [x] **Phase 7**: ESLint restrictions -- `no-restricted-syntax`, `no-restricted-imports` for rule files
+- [x] **Phase 8**: Rule authoring docs -- shared utility guidance in `src/CLAUDE.md`
+- [x] **Phase 9**: Enrich RuleContext -- lazy `frontmatter`, `bodyContent`, `contentWithoutCode` fields
+- [x] **Phase 10**: Pre-commit integration & final verification
+
+**Cleanup:**
+
+- [x] Update status.md: move rule-reliability from Active to Archived
 
 ---
 
@@ -230,7 +280,9 @@ Zod 4 (2026-02-09), markdownlint 0.40 (2026-02-09), ora 9 (Dependabot PR #6).
 | 8 | dogfood-and-improvements | [progress-tracker.md](./dogfood-and-improvements/progress-tracker.md) T3-15/16/17 |
 | 9 | Various | See individual items |
 | 10 | preset-system | [tracker.md](./preset-system/tracker.md) |
+| 11 | cli-best-practices | [progress-tracker.md](./cli-best-practices/progress-tracker.md) |
+| 12 | rule-reliability | [progress-tracker.md](./rule-reliability/progress-tracker.md) |
 
 ---
 
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-14

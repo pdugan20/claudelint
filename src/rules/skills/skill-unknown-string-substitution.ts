@@ -8,6 +8,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
+import { stripCodeBlocks } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -75,17 +76,17 @@ export const rule: Rule = {
     }
 
     // Strip fenced code blocks and inline code to avoid false positives on shell variables in examples
-    const contentWithoutCodeBlocks = fileContent
-      .replace(/```[\s\S]*?```/g, '')
-      .replace(/`[^`]+`/g, '');
+    const contentWithoutCodeBlocks = stripCodeBlocks(fileContent);
 
-    // Valid substitutions: $ARGUMENTS, $0, $1, etc., ${CLAUDE_SESSION_ID}
-    // Pattern matches $UPPERCASE_WORDS that are NOT followed by {
-    const invalidSubstitutionRegex = /\$[A-Z_]+(?!\{)/g;
+    // P3-1: Two-pass approach to avoid matching partial tokens inside ${...}
+    // First strip ${...} braced substitutions (these are always valid)
+    const withoutBraced = contentWithoutCodeBlocks.replace(/\$\{[^}]*\}/g, '');
+
+    // Then find bare $UPPERCASE tokens
+    const bareVarRegex = /\$[A-Z_]+\b/g;
     const validSubstitutions = ['$ARGUMENTS'];
 
-    let match;
-    while ((match = invalidSubstitutionRegex.exec(contentWithoutCodeBlocks)) !== null) {
+    for (const match of withoutBraced.matchAll(bareVarRegex)) {
       const substitution = match[0];
       // Allow $ARGUMENTS and $0-$9 patterns
       if (!validSubstitutions.includes(substitution) && !/^\$\d+$/.test(substitution)) {

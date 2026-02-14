@@ -77,8 +77,8 @@ export const rule: Rule = {
 
       const url = server.url;
 
-      // Skip validation if URL contains variable expansion
-      if (url.includes('${') || url.includes('$')) {
+      // P4-3: Skip validation only for env var placeholders, not any URL containing $
+      if (/\$\{[A-Z_]+\}|\$[A-Z_]+\b/.test(url)) {
         continue;
       }
 

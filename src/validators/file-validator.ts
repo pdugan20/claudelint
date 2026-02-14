@@ -5,6 +5,7 @@ import { ClaudeLintConfig } from '../utils/config/types';
 import { formatError } from '../utils/validators/helpers';
 import { RuleId } from '../rules/rule-ids';
 import { RuleCategory, Rule, isRuleDeprecated, getDeprecationInfo } from '../types/rule';
+import { extractFrontmatter, extractBodyContent, stripCodeBlocks } from '../utils/formats/markdown';
 import { ConfigResolver } from '../utils/config/resolver';
 import { RuleRegistry } from '../utils/rules/registry';
 import { DiagnosticCollector } from '../utils/diagnostics';
@@ -875,7 +876,11 @@ export abstract class FileValidator {
     // Get rule options from config (or defaults)
     const options = this.getRuleOptions<Record<string, unknown>>(rule.meta.id) || {};
 
-    // Create context for the rule
+    // Create context for the rule with lazy-computed pre-parsed fields
+    let cachedFrontmatter: Record<string, unknown> | undefined | null = null;
+    let cachedBodyContent: string | undefined | null = null;
+    let cachedContentWithoutCode: string | undefined | null = null;
+
     const context = {
       filePath,
       fileContent,
@@ -901,6 +906,29 @@ export abstract class FileValidator {
           howToFix,
           autoFix: issue.autoFix,
         });
+      },
+      get frontmatter(): Record<string, unknown> | undefined {
+        if (cachedFrontmatter === null) {
+          const result = extractFrontmatter(fileContent);
+          cachedFrontmatter =
+            result.frontmatter && typeof result.frontmatter === 'object'
+              ? result.frontmatter
+              : undefined;
+        }
+        return cachedFrontmatter ?? undefined;
+      },
+      get bodyContent(): string | undefined {
+        if (cachedBodyContent === null) {
+          const body = extractBodyContent(fileContent);
+          cachedBodyContent = body || undefined;
+        }
+        return cachedBodyContent ?? undefined;
+      },
+      get contentWithoutCode(): string | undefined {
+        if (cachedContentWithoutCode === null) {
+          cachedContentWithoutCode = stripCodeBlocks(fileContent);
+        }
+        return cachedContentWithoutCode ?? undefined;
       },
     };
 

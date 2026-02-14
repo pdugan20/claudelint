@@ -162,6 +162,8 @@ export interface RuleIssue {
  * Context passed to rule validation function
  *
  * Provides all information needed to validate a file and report issues.
+ * Pre-parsed fields (frontmatter, bodyContent, contentWithoutCode) are
+ * lazy-computed on first access to avoid unnecessary work.
  */
 export interface RuleContext {
   /** Absolute path to file being validated */
@@ -178,6 +180,27 @@ export interface RuleContext {
    * Issues are collected and formatted for output
    */
   report: (issue: RuleIssue) => void;
+
+  /**
+   * Parsed YAML frontmatter (lazy-computed on first access).
+   * Returns undefined if the file has no frontmatter or is not a Markdown file.
+   * Use this instead of importing extractFrontmatter() directly.
+   */
+  readonly frontmatter?: Record<string, unknown>;
+
+  /**
+   * Body content after frontmatter (lazy-computed on first access).
+   * Returns undefined if the file has no frontmatter.
+   * Use this instead of importing extractBodyContent() directly.
+   */
+  readonly bodyContent?: string;
+
+  /**
+   * File content with code blocks stripped (lazy-computed on first access).
+   * Preserves line count by replacing code lines with empty lines.
+   * Use this instead of importing stripCodeBlocks() directly.
+   */
+  readonly contentWithoutCode?: string;
 }
 
 /**

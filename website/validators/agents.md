@@ -26,8 +26,11 @@ This validator includes <RuleCount category="agents" /> rules. See the [Agents r
 ## CLI Usage
 
 ```bash
-claudelint check-all
-claudelint check-all --verbose
+# Validate all agents
+claudelint validate-agents
+
+# Verbose output
+claudelint validate-agents --verbose
 ```
 
 ## See Also

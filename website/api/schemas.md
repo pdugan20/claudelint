@@ -108,9 +108,10 @@ Valid values for the `type` field in MCP server configuration.
 
 ## SKILL.md Frontmatter
 
-::: info References
-**Validator:** [Skills](/validators/skills) | **Official docs:** [Skills frontmatter reference](https://code.claude.com/docs/en/skills#frontmatter-reference)
-:::
+<SchemaRef
+  validator="Skills" validator-link="/validators/skills"
+  docs="Skills frontmatter reference" docs-link="https://code.claude.com/docs/en/skills#frontmatter-reference"
+/>
 
 | Field | Type | Required | Constraints |
 |-------|------|----------|-------------|
@@ -139,9 +140,10 @@ Valid values for the `type` field in MCP server configuration.
 
 ## AGENT.md Frontmatter
 
-::: info References
-**Validator:** [Agents](/validators/agents) | **Official docs:** [Subagent frontmatter fields](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields)
-:::
+<SchemaRef
+  validator="Agents" validator-link="/validators/agents"
+  docs="Subagent frontmatter fields" docs-link="https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields"
+/>
 
 | Field | Type | Required | Constraints |
 |-------|------|----------|-------------|
@@ -160,9 +162,10 @@ Valid values for the `type` field in MCP server configuration.
 
 ## Hooks Configuration
 
-::: info References
-**Validator:** [Hooks](/validators/hooks) | **Official docs:** [Hooks](https://code.claude.com/docs/en/hooks)
-:::
+<SchemaRef
+  validator="Hooks" validator-link="/validators/hooks"
+  docs="Hooks" docs-link="https://code.claude.com/docs/en/hooks"
+/>
 
 Hooks use an object-keyed format where each key is a [hook event](#hook-events) name (PascalCase):
 
@@ -226,9 +229,10 @@ The `.claude/hooks/hooks.json` file wraps the hooks object with an optional desc
 
 ## MCP Configuration
 
-::: info References
-**Validator:** [MCP](/validators/mcp) | **Official docs:** [MCP servers](https://code.claude.com/docs/en/mcp)
-:::
+<SchemaRef
+  validator="MCP" validator-link="/validators/mcp"
+  docs="MCP servers" docs-link="https://code.claude.com/docs/en/mcp"
+/>
 
 The `.mcp.json` file supports two formats:
 
@@ -289,9 +293,10 @@ The `.mcp.json` file supports two formats:
 
 ## Plugin Manifest
 
-::: info References
-**Validator:** [Plugin](/validators/plugin) | **Official docs:** [Plugin manifest schema](https://code.claude.com/docs/en/plugins-reference#complete-schema)
-:::
+<SchemaRef
+  validator="Plugin" validator-link="/validators/plugin"
+  docs="Plugin manifest schema" docs-link="https://code.claude.com/docs/en/plugins-reference#complete-schema"
+/>
 
 The `plugin.json` file lives in the `.claude-plugin/` directory.
 
@@ -325,9 +330,11 @@ The `author` field must be an object (string format is not supported by Claude C
 
 ## Settings
 
-::: info References
-**Validator:** [Settings](/validators/settings) | **Official docs:** [Settings](https://code.claude.com/docs/en/settings) | **JSON Schema:** [claude-code-settings.json](https://json.schemastore.org/claude-code-settings.json)
-:::
+<SchemaRef
+  validator="Settings" validator-link="/validators/settings"
+  docs="Settings" docs-link="https://code.claude.com/docs/en/settings"
+  schema="claude-code-settings.json" schema-link="https://json.schemastore.org/claude-code-settings.json"
+/>
 
 The `settings.json` file can be located at:
 
@@ -370,9 +377,10 @@ claudelint validates the top-level structure and nested objects. Key sections in
 
 ## LSP Configuration
 
-::: info References
-**Validator:** [LSP](/validators/lsp) | **Official docs:** [LSP servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers)
-:::
+<SchemaRef
+  validator="LSP" validator-link="/validators/lsp"
+  docs="LSP servers" docs-link="https://code.claude.com/docs/en/plugins-reference#lsp-servers"
+/>
 
 The `.lsp.json` file maps server names to their configurations:
 
@@ -406,9 +414,10 @@ The `.lsp.json` file maps server names to their configurations:
 
 ## Output Style Frontmatter
 
-::: info References
-**Validator:** [Output Styles](/validators/output-styles) | **Official docs:** [Output styles](https://code.claude.com/docs/en/output-styles#frontmatter)
-:::
+<SchemaRef
+  validator="Output Styles" validator-link="/validators/output-styles"
+  docs="Output styles" docs-link="https://code.claude.com/docs/en/output-styles#frontmatter"
+/>
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -418,9 +427,9 @@ The `.lsp.json` file maps server names to their configurations:
 
 ## Rules File Frontmatter
 
-::: info References
-**Official docs:** [Path-specific rules](https://code.claude.com/docs/en/memory#path-specific-rules)
-:::
+<SchemaRef
+  docs="Path-specific rules" docs-link="https://code.claude.com/docs/en/memory#path-specific-rules"
+/>
 
 Files in `.claude/rules/` can include frontmatter to scope rules to specific paths:
 

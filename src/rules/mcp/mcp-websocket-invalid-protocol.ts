@@ -84,7 +84,7 @@ export const rule: Rule = {
       const url = server.url;
 
       // Skip validation if URL contains variable expansion
-      if (url.includes('${') || url.includes('$')) {
+      if (/\$\{[A-Z_]+\}|\$[A-Z_]+\b/.test(url)) {
         continue;
       }
 

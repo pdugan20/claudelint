@@ -83,11 +83,7 @@ export const rule: Rule = {
 
     const skillDir = dirname(filePath);
 
-    // Reset lastIndex since MARKDOWN_LINK_REGEX is a global regex
-    MARKDOWN_LINK_REGEX.lastIndex = 0;
-    let match;
-
-    while ((match = MARKDOWN_LINK_REGEX.exec(fileContent)) !== null) {
+    for (const match of fileContent.matchAll(MARKDOWN_LINK_REGEX)) {
       const [, , referencedPath] = match;
       const fullPath = resolvePath(skillDir, referencedPath);
 

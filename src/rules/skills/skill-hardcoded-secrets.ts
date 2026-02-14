@@ -116,8 +116,17 @@ export const rule: Rule = {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        // Skip comments that discuss secret patterns (e.g., documentation)
-        if (/^\s*#.*example|^\s*#.*placeholder|^\s*\/\//i.test(line)) {
+        // P4-2: Skip comment lines that discuss secret patterns (documentation, examples)
+        // Check for comment-only lines first (shell #, JS //, block /* */, HTML <!-- -->)
+        if (/^\s*(?:#|\/\/|\/\*|\*|<!--)/.test(line)) {
+          if (/(?:example|placeholder|fake|dummy|mock|sample)\b/i.test(line)) {
+            continue;
+          }
+        }
+        // Skip lines where the surrounding context (not the secret value) indicates it's a fixture
+        // e.g., "fake_api_key=sk-ant-..." or "# test key" above
+        const lineWithoutSecret = line.replace(pattern, '');
+        if (/(?:fake|dummy|mock|sample|placeholder)\b/i.test(lineWithoutSecret)) {
           continue;
         }
 

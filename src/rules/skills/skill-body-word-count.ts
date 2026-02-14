@@ -8,6 +8,7 @@
 
 import { z } from 'zod';
 import { Rule, RuleContext } from '../../types/rule';
+import { extractBodyContent } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -89,9 +90,8 @@ export const rule: Rule = {
       return;
     }
 
-    // Strip frontmatter to get body only
-    const bodyMatch = fileContent.match(/^---[\s\S]*?---\s*([\s\S]*)$/);
-    const body = bodyMatch ? bodyMatch[1] : fileContent;
+    // Use shared utility for frontmatter-aware body extraction
+    const body = extractBodyContent(fileContent) || fileContent;
 
     // Count words (split on whitespace, filter empties)
     const wordCount = body.split(/\s+/).filter((w) => w.length > 0).length;

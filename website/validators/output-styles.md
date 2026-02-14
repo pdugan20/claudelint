@@ -21,8 +21,11 @@ This validator includes <RuleCount category="output-styles" /> rules. See the [O
 ## CLI Usage
 
 ```bash
-claudelint check-all
-claudelint check-all --verbose
+# Validate all output styles
+claudelint validate-output-styles
+
+# Verbose output
+claudelint validate-output-styles --verbose
 ```
 
 ## See Also

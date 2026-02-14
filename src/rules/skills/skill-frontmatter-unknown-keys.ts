@@ -6,6 +6,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
+import { extractFrontmatter } from '../../utils/formats/markdown';
 
 const KNOWN_KEYS = new Set([
   'name',
@@ -85,20 +86,13 @@ export const rule: Rule = {
       return;
     }
 
-    // Extract frontmatter
-    const frontmatterMatch = fileContent.match(/^---\s*\n([\s\S]*?)\n---/);
-    if (!frontmatterMatch) {
+    // Use shared utility backed by js-yaml for proper YAML parsing
+    const { frontmatter } = extractFrontmatter(fileContent);
+    if (!frontmatter || typeof frontmatter !== 'object') {
       return;
     }
 
-    // Parse top-level keys from YAML (simple regex, not full YAML parser)
-    // Matches lines that start with a word (not indented = top-level key)
-    const keyRegex = /^([a-zA-Z][a-zA-Z0-9_-]*):/gm;
-    const frontmatter = frontmatterMatch[1];
-
-    let match;
-    while ((match = keyRegex.exec(frontmatter)) !== null) {
-      const key = match[1];
+    for (const key of Object.keys(frontmatter)) {
       if (!KNOWN_KEYS.has(key)) {
         context.report({
           message: `Unknown frontmatter key: "${key}"`,

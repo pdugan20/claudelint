@@ -16,13 +16,15 @@ export interface FrontmatterResult<T = Record<string, unknown>> {
 export function extractFrontmatter<T = Record<string, unknown>>(
   content: string
 ): FrontmatterResult<T> {
+  // P1-4: Normalize Windows line endings to avoid \r in captured groups
+  const normalized = content.replace(/\r\n/g, '\n');
   const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
+  const match = normalized.match(frontmatterRegex);
 
   if (!match) {
     return {
       frontmatter: null,
-      content,
+      content: normalized,
       hasFrontmatter: false,
     };
   }
@@ -131,7 +133,9 @@ export function getFrontmatterFieldLine(content: string, fieldName: string): num
 
   for (let i = 0; i < lines.length; i++) {
     // Match field at start of line (accounting for whitespace)
-    const fieldRegex = new RegExp(`^\\s*${fieldName}\\s*:`);
+    // P1-3: Escape regex metacharacters in fieldName to prevent injection
+    const escaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const fieldRegex = new RegExp(`^\\s*${escaped}\\s*:`);
     if (fieldRegex.test(lines[i])) {
       return i + 2; // +1 for 0-indexed, +1 for opening ---
     }
@@ -155,16 +159,16 @@ export function getFrontmatterFieldLine(content: string, fieldName: string): num
  * }
  */
 export function extractBodyContent(content: string): string {
-  const parts = content.split('---');
+  // P1-2: Use regex-based frontmatter boundary detection instead of naive split('---')
+  // which breaks when YAML values contain '---'
+  const normalized = content.replace(/\r\n/g, '\n');
+  const match = normalized.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/);
 
-  // Need at least 3 parts: empty, frontmatter, body
-  // Format: ---\nfrontmatter\n---\nbody
-  if (parts.length < 3) {
+  if (!match) {
     return '';
   }
 
-  // Join everything after the second --- (in case body contains ---)
-  return parts.slice(2).join('---').trim();
+  return match[1].trim();
 }
 
 /**
@@ -184,4 +188,46 @@ export function extractBodyContent(content: string): string {
  */
 export function hasMarkdownSection(body: string, sectionRegex: RegExp): boolean {
   return sectionRegex.test(body);
+}
+
+/**
+ * Strips fenced code blocks and inline code from markdown content.
+ *
+ * Uses line-by-line state tracking (not regex replacement) to correctly handle
+ * unclosed fences, tilde fences (~~~), and nested backtick syntax. Code lines
+ * are replaced with empty strings to preserve line numbers for downstream rules.
+ */
+export function stripCodeBlocks(content: string): string {
+  const lines = content.split('\n');
+  const result: string[] = [];
+  let inCodeBlock = false;
+  let fenceChar = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+
+    if (!inCodeBlock) {
+      // Check for opening fence: ``` or ~~~
+      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
+        inCodeBlock = true;
+        fenceChar = trimmed[0];
+        result.push('');
+        continue;
+      }
+      // Strip inline code from non-fenced lines
+      result.push(lines[i].replace(/`[^`]*`/g, ''));
+    } else {
+      // Check for closing fence: must match the opening fence character
+      if (
+        (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
+        (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
+      ) {
+        inCodeBlock = false;
+        fenceChar = '';
+      }
+      result.push('');
+    }
+  }
+
+  return result.join('\n');
 }

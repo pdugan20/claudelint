@@ -26,8 +26,11 @@ This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules c
 ## CLI Usage
 
 ```bash
-claudelint check-all
-claudelint check-all --verbose
+# Validate LSP configuration
+claudelint validate-lsp
+
+# Verbose output
+claudelint validate-lsp --verbose
 ```
 
 ## See Also

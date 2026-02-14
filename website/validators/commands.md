@@ -19,8 +19,11 @@ This validator includes <RuleCount category="commands" /> rules. See the [Comman
 ## CLI Usage
 
 ```bash
-claudelint check-all
-claudelint check-all --verbose
+# Check for deprecated commands
+claudelint validate-commands
+
+# Verbose output
+claudelint validate-commands --verbose
 ```
 
 ## See Also

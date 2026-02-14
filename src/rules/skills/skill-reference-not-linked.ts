@@ -77,18 +77,13 @@ export const rule: Rule = {
     }
 
     // Collect all linked references to avoid false positives
-    LINKED_BACKTICK_REF.lastIndex = 0;
     const linkedPaths = new Set<string>();
-    let linkedMatch;
-    while ((linkedMatch = LINKED_BACKTICK_REF.exec(fileContent)) !== null) {
+    for (const linkedMatch of fileContent.matchAll(LINKED_BACKTICK_REF)) {
       linkedPaths.add(linkedMatch[0]);
     }
 
     // Find backtick file references not inside markdown links
-    BACKTICK_FILE_REF.lastIndex = 0;
-    let match;
-
-    while ((match = BACKTICK_FILE_REF.exec(fileContent)) !== null) {
+    for (const match of fileContent.matchAll(BACKTICK_FILE_REF)) {
       const referencedPath = match[1];
       const matchIndex = match.index;
 

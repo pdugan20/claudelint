@@ -7,6 +7,7 @@
 
 import { z } from 'zod';
 import { Rule, RuleContext } from '../../types/rule';
+import { extractFrontmatter } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {
@@ -77,19 +78,13 @@ export const rule: Rule = {
       return;
     }
 
-    // Extract frontmatter
-    const frontmatterMatch = fileContent.match(/^---\s*\n([\s\S]*?)\n---/);
-    if (!frontmatterMatch) {
+    // Use shared utility backed by js-yaml for proper YAML parsing
+    const { frontmatter } = extractFrontmatter<{ description?: string }>(fileContent);
+    if (!frontmatter?.description) {
       return;
     }
 
-    // Find description in frontmatter
-    const descriptionMatch = frontmatterMatch[1].match(/^description:\s*(.+(?:\n(?!\S).*)*)/m);
-    if (!descriptionMatch) {
-      return;
-    }
-
-    const description = descriptionMatch[1].trim();
+    const description = String(frontmatter.description);
     const maxLength = (options.maxLength as number) ?? 1024;
 
     if (description.length > maxLength) {

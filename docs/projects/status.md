@@ -1,7 +1,7 @@
 # Project Status Dashboard
 
-**Last Updated:** 2026-02-13
-**Current stats:** 116 rules, 1299 tests
+**Last Updated:** 2026-02-14
+**Current stats:** 116 rules, 1512 tests
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -56,21 +56,59 @@ Self-validation bug fixes and linter improvements. Bug fixes (7/7), Sprints 1-6 
 
 ---
 
-### cli-output-ux (0%)
+### cli-output-ux (~93%)
 
-**Status:** Planning — feasibility assessed
+**Status:** Phases 1-3 Complete. Phase 4 (rich diagnostics) not started.
 **Location:** [docs/projects/cli-output-ux/](./cli-output-ux/)
 
-CLI output UX improvements to match ESLint/Biome/Prettier conventions. 11 items across 4 phases.
+CLI output UX features: summary lines, quiet success, verbose discovery, GitHub formatter, problem matcher, stderr/stdout separation.
+
+**Completed:** 13/14 items (Phases 1-3)
+
+**Remaining:**
+
+- Phase 4: Rich diagnostics with code context (feasibility assessed, not started)
+
+---
+
+### cli-output-overhaul (~28%)
+
+**Status:** Phase 1 Complete. Phases 2-5 remaining.
+**Location:** [docs/projects/cli-output-overhaul/](./cli-output-overhaul/)
+
+Output quality overhaul: column alignment via text-table, message content cleanup (74 messages to shorten/rewrite), explain mode enhancement, enforcement guards.
 
 **Key deliverables:**
 
-- Summary line with file counts and component names
-- Quiet success (one-liner instead of per-validator output)
-- Skipped validator visibility in verbose mode
-- `--quiet` flag, `--format github`, problem matcher JSON
-- stderr/stdout separation for clean piping
-- Rich diagnostics with code context (Phase 4, feasibility assessed)
+- `text-table` column alignment (ESLint pattern)
+- Remove per-line Fix: labels (fixability in summary only)
+- Shorten 54 verbose messages, rewrite 20 worst offenders
+- Wire `meta.docs` fields into `--explain` output
+- Pre-commit enforcement for message length and content guidelines
+- Snapshot tests for reporter output formatting
+
+---
+
+### cli-best-practices (0%)
+
+**Status:** Planned -- 60 tasks across 9 phases
+**Location:** [docs/projects/cli-best-practices/](./cli-best-practices/)
+
+CLI and npm package best practices overhaul. Audited against ESLint, Biome, Prettier, clig.dev, and nodejs-cli-apps-best-practices.
+
+**Key deliverables:**
+
+- Default command (`claudelint` runs `check-all`)
+- package.json `exports` field, fix `postinstall` to `prepare`
+- `FORCE_COLOR` env var support (documented but not implemented)
+- Flag architecture refactoring (shared types, option builders, reporter builder)
+- Missing CLI flags (`--output-file`, `--rule`, `--changed`, `--ignore-pattern`, etc.)
+- Help text with grouped options, usage examples, and doc links
+- Init wizard modernization (registry-based defaults, detect newer components)
+- `--stdin` / `--stdin-filename` for editor integration and pipes
+- Update notifications via `update-notifier`
+- SIGINT/SIGTERM signal handling for `check-all`
+- Comprehensive tests and website docs updates
 
 ---
 
@@ -120,6 +158,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Complete | Fixed 7 schema issues from Anthropic comparison audit. |
 | [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Complete | 9 fluent builders, enhanced fixtures, pinned integration tests. |
 | [official-spec-alignment](./archive/official-spec-alignment/) | Complete | 5 new rules (B5-B9), self-fixed all 9 skills. |
+| [rule-reliability](./rule-reliability/) | Complete | 30/30 tasks: parsing hardening, regex fixes, regression prevention (CI script, ESLint rules, enriched RuleContext). |
 
 ---
 
@@ -165,4 +204,4 @@ The linter has **120 implemented rules** across 10 categories:
 
 ---
 
-**Last Updated:** 2026-02-13
+**Last Updated:** 2026-02-14

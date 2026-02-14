@@ -5,6 +5,8 @@ import {
   hasMarkdownSection,
   extractImports,
   extractImportsWithLineNumbers,
+  getFrontmatterFieldLine,
+  stripCodeBlocks,
 } from '../../src/utils/formats/markdown';
 
 describe('Markdown utilities', () => {
@@ -35,6 +37,19 @@ description: A test skill
       expect(result.hasFrontmatter).toBe(false);
       expect(result.frontmatter).toBeNull();
       expect(result.content).toBe(content);
+    });
+
+    it('should handle Windows \\r\\n line endings', () => {
+      const content = '---\r\nname: test\r\ndescription: A test\r\n---\r\n\r\n# Content';
+
+      const result = extractFrontmatter<{ name: string; description: string }>(content);
+
+      expect(result.hasFrontmatter).toBe(true);
+      expect(result.frontmatter).toEqual({
+        name: 'test',
+        description: 'A test',
+      });
+      expect(result.content).toBe('# Content');
     });
   });
 
@@ -105,6 +120,27 @@ Content with leading/trailing space
       const body = extractBodyContent(content);
 
       expect(body).toBe('Content with leading/trailing space');
+    });
+
+    it('should handle frontmatter YAML containing --- in a value', () => {
+      const content = `---
+name: test
+description: "A --- separator in a value"
+---
+
+Body content here`;
+
+      const body = extractBodyContent(content);
+
+      expect(body).toBe('Body content here');
+    });
+
+    it('should handle Windows \\r\\n line endings', () => {
+      const content = '---\r\nname: test\r\n---\r\n\r\nBody here';
+
+      const body = extractBodyContent(content);
+
+      expect(body).toBe('Body here');
     });
   });
 
@@ -326,6 +362,158 @@ Check @api/reference for details.`;
       const imports = extractImportsWithLineNumbers(content);
 
       expect(imports).toEqual([{ path: 'docs/guide', line: 4 }]);
+    });
+  });
+
+  describe('getFrontmatterFieldLine', () => {
+    it('should find a field line number', () => {
+      const content = `---
+name: test
+description: A test
+version: 1.0.0
+---
+
+# Content`;
+
+      expect(getFrontmatterFieldLine(content, 'description')).toBe(3);
+      expect(getFrontmatterFieldLine(content, 'version')).toBe(4);
+    });
+
+    it('should handle field names with regex metacharacters', () => {
+      const content = `---
+name: test
+metadata[0]: value
+---
+
+# Content`;
+
+      // Should not throw, and should find the field
+      expect(getFrontmatterFieldLine(content, 'metadata[0]')).toBe(3);
+    });
+
+    it('should return default when no frontmatter', () => {
+      expect(getFrontmatterFieldLine('# No frontmatter', 'name')).toBe(1);
+    });
+
+    it('should return default when field not found', () => {
+      const content = `---
+name: test
+---
+
+# Content`;
+
+      expect(getFrontmatterFieldLine(content, 'nonexistent')).toBe(2);
+    });
+  });
+
+  describe('stripCodeBlocks', () => {
+    it('should strip backtick fenced code blocks', () => {
+      const content = `Line 1
+\`\`\`typescript
+const x = 1;
+\`\`\`
+Line 5`;
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('Line 1\n\n\n\nLine 5');
+    });
+
+    it('should strip tilde fenced code blocks', () => {
+      const content = `Line 1
+~~~python
+print("hello")
+~~~
+Line 5`;
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('Line 1\n\n\n\nLine 5');
+    });
+
+    it('should handle unclosed fences by treating rest as code', () => {
+      const content = `Line 1
+\`\`\`
+code here
+more code`;
+
+      const result = stripCodeBlocks(content);
+
+      // Everything after the opening fence is treated as code
+      expect(result).toBe('Line 1\n\n\n');
+    });
+
+    it('should strip inline code from non-fenced lines', () => {
+      const content = 'Use `foo` and `bar` for testing';
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('Use  and  for testing');
+    });
+
+    it('should preserve line count', () => {
+      const content = `Line 1
+\`\`\`
+code line 1
+code line 2
+code line 3
+\`\`\`
+Line 7`;
+
+      const result = stripCodeBlocks(content);
+      const originalLines = content.split('\n').length;
+      const resultLines = result.split('\n').length;
+
+      expect(resultLines).toBe(originalLines);
+    });
+
+    it('should not strip inline code inside fenced blocks', () => {
+      const content = `Outside \`inline\` here
+\`\`\`
+inside \`code\` block
+\`\`\`
+Outside again`;
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('Outside  here\n\n\n\nOutside again');
+    });
+
+    it('should pass through content with no code blocks', () => {
+      const content = 'Just plain text\nwith multiple lines\nand no code';
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe(content);
+    });
+
+    it('should not close backtick fence with tilde fence', () => {
+      const content = `\`\`\`
+code
+~~~
+still code
+\`\`\`
+outside`;
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('\n\n\n\n\noutside');
+    });
+
+    it('should handle multiple code blocks', () => {
+      const content = `Text 1
+\`\`\`
+block 1
+\`\`\`
+Text 2
+~~~
+block 2
+~~~
+Text 3`;
+
+      const result = stripCodeBlocks(content);
+
+      expect(result).toBe('Text 1\n\n\n\nText 2\n\n\n\nText 3');
     });
   });
 });

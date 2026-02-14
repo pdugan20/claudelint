@@ -54,6 +54,21 @@
   --vp-c-tip-3: #8a887f;
   --vp-c-tip-soft: rgba(92, 90, 82, 0.08);
 
+  --vp-c-info-1: #5c5a52;
+  --vp-c-info-2: #3d3929;
+  --vp-c-info-3: #8a887f;
+  --vp-c-info-soft: rgba(92, 90, 82, 0.08);
+
+  --vp-c-warning-1: #8a7a52;
+  --vp-c-warning-2: #6b5d3a;
+  --vp-c-warning-3: #a89a72;
+  --vp-c-warning-soft: rgba(138, 122, 82, 0.08);
+
+  --vp-c-danger-1: #8a5252;
+  --vp-c-danger-2: #6b3a3a;
+  --vp-c-danger-3: #a87272;
+  --vp-c-danger-soft: rgba(138, 82, 82, 0.08);
+
   /* Terminal: warm palette for light mode */
   --cl-terminal-bg: #302b26;
   --cl-terminal-chrome: #29241f;
@@ -99,6 +114,21 @@
   --vp-c-tip-2: #8a887f;
   --vp-c-tip-3: #6e6c64;
   --vp-c-tip-soft: rgba(168, 166, 157, 0.08);
+
+  --vp-c-info-1: #a8a69d;
+  --vp-c-info-2: #8a887f;
+  --vp-c-info-3: #6e6c64;
+  --vp-c-info-soft: rgba(168, 166, 157, 0.08);
+
+  --vp-c-warning-1: #c4b88a;
+  --vp-c-warning-2: #a89a72;
+  --vp-c-warning-3: #8a7a52;
+  --vp-c-warning-soft: rgba(196, 184, 138, 0.08);
+
+  --vp-c-danger-1: #c48a8a;
+  --vp-c-danger-2: #a87272;
+  --vp-c-danger-3: #8a5252;
+  --vp-c-danger-soft: rgba(196, 138, 138, 0.08);
 
   /* Severity/status dot colors (dark mode) */
   --cl-severity-error: #f87171;
@@ -247,7 +277,8 @@ html {
 
 /* ===== Nav: Active/hover underline (matches Claude Code docs) ===== */
 
-.VPNavBarMenuLink {
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .text {
   color: var(--vp-c-text-2) !important;
   border-bottom: 2px solid transparent !important;
   transition:
@@ -255,7 +286,8 @@ html {
     border-bottom-color 0.25s !important;
 }
 
-.VPNavBarMenuLink:hover {
+.VPNavBarMenuLink:hover,
+.VPNavBarMenuGroup:hover .text {
   color: var(--vp-c-text-1) !important;
   border-bottom-color: var(--vp-c-border) !important;
 }
@@ -263,6 +295,12 @@ html {
 .VPNavBarMenuLink.active {
   color: var(--vp-c-text-1) !important;
   border-bottom-color: var(--vp-c-text-1) !important;
+}
+
+/* ===== Light Mode: Visible sidebar indicator bar ===== */
+
+.VPSidebarItem.is-active > .item .indicator {
+  background: var(--vp-c-text-1);
 }
 
 /* ===== Dark Mode: Terracotta for nav indicators only ===== */

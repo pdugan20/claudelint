@@ -7,6 +7,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
+import { stripCodeBlocks } from '../../utils/formats/markdown';
 
 // Standard HTML/markdown tags that are safe to use
 const ALLOWED_TAGS = new Set([
@@ -133,10 +134,11 @@ export const rule: Rule = {
     }
 
     // Strip fenced code blocks and inline code to avoid false positives
-    const contentWithoutCode = fileContent.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '');
+    const contentWithoutCode = stripCodeBlocks(fileContent);
 
     // Match XML-like tags (opening or self-closing)
-    const xmlTagRegex = /<\/?([a-zA-Z][a-zA-Z0-9_-]*)\b[^>]*\/?>/g;
+    // P3-3: Cap attribute length at 200 chars to prevent backtracking on malformed input
+    const xmlTagRegex = /<\/?([a-zA-Z][a-zA-Z0-9_-]*)\b[^>]{0,200}\/?>/g;
 
     const reportedTags = new Set<string>();
     let match;

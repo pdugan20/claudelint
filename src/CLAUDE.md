@@ -51,6 +51,27 @@ export const rule: Rule = {
 
 **Do NOT hand-edit `src/rules/index.ts` or `src/rules/rule-ids.ts`** — these are auto-generated.
 
+### Shared Utilities for Rule Authors
+
+Rules that parse Markdown/YAML content **must** use shared utilities from `../../utils/formats/markdown`. Do not hand-roll parsing logic.
+
+| Utility | Purpose | Import from |
+|---|---|---|
+| `extractFrontmatter<T>()` | Parse YAML frontmatter into typed object | `utils/formats/markdown` |
+| `extractBodyContent()` | Get content after frontmatter closing `---` | `utils/formats/markdown` |
+| `stripCodeBlocks()` | Remove fenced + inline code blocks (preserves line count) | `utils/formats/markdown` |
+| `getFrontmatterFieldLine()` | Find line number for a specific frontmatter field | `utils/formats/markdown` |
+
+**Anti-patterns (enforced by `npm run check:rule-patterns` and ESLint):**
+
+- Do not use `lastIndex` with global regex -- use `matchAll()` instead
+- Do not strip code blocks with `/```[\s\S]*?```/g` -- use `stripCodeBlocks()`
+- Do not split frontmatter with `.split('---')` -- use `extractBodyContent()`
+- Do not import `js-yaml` directly -- use `extractFrontmatter()`
+- Do not use `url.includes('$')` for env var detection -- use `/\$\{[A-Z_]+\}|\$[A-Z_]+\b/`
+
+Pre-parsed data is also available on `context.frontmatter`, `context.bodyContent`, and `context.contentWithoutCode` (lazy-computed).
+
 ## Schemas
 
 - **Zod schemas**: `src/schemas/` — used at runtime for validation

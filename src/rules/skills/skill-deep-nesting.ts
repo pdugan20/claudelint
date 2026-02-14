@@ -23,10 +23,21 @@ export interface SkillDeepNestingOptions {
 /**
  * Get maximum directory depth recursively
  */
+// P4-1: Hard safety cap to prevent stack overflow from unexpected deep structures
+const MAX_RECURSION_DEPTH = 20;
+
 async function getMaxDirectoryDepth(dir: string, currentDepth = 0): Promise<number> {
+  // P4-1: Hard recursion cap independent of configurable maxDepth
+  if (currentDepth >= MAX_RECURSION_DEPTH) {
+    return currentDepth;
+  }
+
   try {
     const entries = await readdir(dir, { withFileTypes: true });
-    const subdirs = entries.filter((entry) => entry.isDirectory() && entry.name !== 'node_modules');
+    // P4-1: Skip symlinks to prevent infinite loops from symlink cycles
+    const subdirs = entries.filter(
+      (entry) => entry.isDirectory() && !entry.isSymbolicLink() && entry.name !== 'node_modules'
+    );
 
     if (subdirs.length === 0) {
       return currentDepth;

@@ -81,9 +81,8 @@ function extractFileReferences(content: string): FileRef[] {
         // Skip comment lines
         if (trimmed.startsWith('#')) continue;
 
-        let match;
-        FILE_PATH_REGEX.lastIndex = 0;
-        while ((match = FILE_PATH_REGEX.exec(line)) !== null) {
+        // P3-2: Use matchAll() instead of manual lastIndex resets
+        for (const match of line.matchAll(FILE_PATH_REGEX)) {
           refs.push({ path: match[0], line: i + 1, sourceText: line });
         }
       }
@@ -91,13 +90,9 @@ function extractFileReferences(content: string): FileRef[] {
     }
 
     // Outside code blocks: check inline code (backticks) only
-    const inlineCodeRegex = /`([^`]+)`/g;
-    let inlineMatch;
-    while ((inlineMatch = inlineCodeRegex.exec(line)) !== null) {
+    for (const inlineMatch of line.matchAll(/`([^`]+)`/g)) {
       const code = inlineMatch[1];
-      FILE_PATH_REGEX.lastIndex = 0;
-      let pathMatch;
-      while ((pathMatch = FILE_PATH_REGEX.exec(code)) !== null) {
+      for (const pathMatch of code.matchAll(FILE_PATH_REGEX)) {
         refs.push({ path: pathMatch[0], line: i + 1, sourceText: code });
       }
     }

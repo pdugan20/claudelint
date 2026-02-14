@@ -46,6 +46,25 @@
       "rules": {
         "no-console": "error"
       }
+    },
+    {
+      "files": ["src/rules/**/*.ts"],
+      "rules": {
+        "no-restricted-syntax": ["error",
+          {
+            "selector": "MemberExpression[property.name='lastIndex']",
+            "message": "Use matchAll() instead of lastIndex management. See src/CLAUDE.md rule authoring guide."
+          }
+        ],
+        "no-restricted-imports": ["error", {
+          "paths": [
+            {
+              "name": "js-yaml",
+              "message": "Use extractFrontmatter() from utils/formats/markdown instead of importing js-yaml directly."
+            }
+          ]
+        }]
+      }
     }
   ]
 }

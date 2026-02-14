@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { extractBodyContent } from '../../utils/formats/markdown';
 
 const TIME_SENSITIVE_PATTERNS = [
   /\btoday\b/i,
@@ -97,12 +98,11 @@ export const rule: Rule = {
     }
 
     // Extract body content (everything after frontmatter)
-    const parts = fileContent.split('---');
-    if (parts.length < 3) {
+    const body = extractBodyContent(fileContent);
+    if (!body) {
       return; // No body content or invalid frontmatter
     }
 
-    const body = parts.slice(2).join('---');
     const lines = body.split('\n');
 
     // Check for time-sensitive content

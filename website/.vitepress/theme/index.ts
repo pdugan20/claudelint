@@ -10,6 +10,7 @@ import ValidatorDiagram from './components/ValidatorDiagram.vue';
 import ConfigExample from './components/ConfigExample.vue';
 import RuleCount from './components/RuleCount.vue';
 import RuleHeader from './components/RuleHeader.vue';
+import SchemaRef from './components/SchemaRef.vue';
 import './style.css';
 
 export default {
@@ -24,6 +25,7 @@ export default {
     app.component('ConfigExample', ConfigExample);
     app.component('RuleCount', RuleCount);
     app.component('RuleHeader', RuleHeader);
+    app.component('SchemaRef', SchemaRef);
   },
   setup() {
     const route = useRoute();

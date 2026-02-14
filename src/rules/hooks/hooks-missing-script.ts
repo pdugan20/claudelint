@@ -103,8 +103,8 @@ async function validateCommandScript(
     return;
   }
 
-  // Skip validation for commands with variables
-  if (command.includes('${') || command.includes('$')) {
+  // Skip validation for commands with variable expansion
+  if (/\$\{[A-Z_]+\}|\$[A-Z_]+\b/.test(command)) {
     return;
   }
 
