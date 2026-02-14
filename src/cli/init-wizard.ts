@@ -9,6 +9,8 @@ import { existsSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 import { ClaudeLintConfig } from '../utils/config/types';
+import { RuleSeverity } from '../types/rule';
+import { RuleRegistry } from '../utils/rules/registry';
 import { logger } from './utils/logger';
 import {
   isShellCheckAvailable,
@@ -21,6 +23,9 @@ interface ProjectInfo {
   hasSkills: boolean;
   hasSettings: boolean;
   hasHooks: boolean;
+  hasAgents: boolean;
+  hasOutputStyles: boolean;
+  hasCommands: boolean;
   hasMCP: boolean;
   hasPlugin: boolean;
   hasCLAUDEmd: boolean;
@@ -44,6 +49,7 @@ interface WizardAnswers {
 
 export class InitWizard {
   private cwd: string;
+  private force: boolean = false;
 
   constructor(cwd: string = process.cwd()) {
     this.cwd = cwd;
@@ -52,8 +58,10 @@ export class InitWizard {
   /**
    * Run the init wizard
    */
-  async run(options: { yes?: boolean } = {}): Promise<void> {
+  async run(options: { yes?: boolean; force?: boolean } = {}): Promise<void> {
     logger.section('Welcome to claudelint configuration wizard!');
+
+    this.force = options.force ?? false;
 
     // Detect project structure
     const projectInfo = this.detectProject();
@@ -68,7 +76,7 @@ export class InitWizard {
       logger.info('Using default configuration (--yes flag)...');
       this.createDefaultConfig(projectInfo);
       logger.success('Configuration created successfully!');
-      this.displayNextSteps();
+      this.displayNextSteps(projectInfo);
       return;
     }
 
@@ -80,7 +88,7 @@ export class InitWizard {
 
     logger.newline();
     logger.success('Configuration created successfully!');
-    this.displayNextSteps();
+    this.displayNextSteps(projectInfo);
   }
 
   /**
@@ -92,6 +100,9 @@ export class InitWizard {
       hasSkills: existsSync(join(this.cwd, '.claude/skills')),
       hasSettings: existsSync(join(this.cwd, '.claude/settings.json')),
       hasHooks: existsSync(join(this.cwd, '.claude/hooks')),
+      hasAgents: existsSync(join(this.cwd, '.claude/agents')),
+      hasOutputStyles: existsSync(join(this.cwd, '.claude/output-styles')),
+      hasCommands: existsSync(join(this.cwd, '.claude/commands')),
       hasMCP: existsSync(join(this.cwd, '.mcp.json')),
       hasPlugin: existsSync(join(this.cwd, 'plugin.json')),
       hasCLAUDEmd: existsSync(join(this.cwd, 'CLAUDE.md')),
@@ -111,6 +122,11 @@ export class InitWizard {
     logger.detail(`${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
     logger.detail(`${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
     logger.detail(`${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);
+    logger.detail(`${info.hasAgents ? chalk.green('[YES]') : chalk.gray('[NO]')} Agents`);
+    logger.detail(
+      `${info.hasOutputStyles ? chalk.green('[YES]') : chalk.gray('[NO]')} Output styles`
+    );
+    logger.detail(`${info.hasCommands ? chalk.green('[YES]') : chalk.gray('[NO]')} Commands`);
     logger.detail(`${info.hasMCP ? chalk.green('[YES]') : chalk.gray('[NO]')} MCP servers`);
     logger.detail(`${info.hasPlugin ? chalk.green('[YES]') : chalk.gray('[NO]')} Plugin manifest`);
     logger.newline();
@@ -201,18 +217,30 @@ export class InitWizard {
   }
 
   /**
+   * Build rules object from registry: recommended rules use their default severity, others are 'off'
+   */
+  private buildRulesFromRegistry(): Record<string, RuleSeverity> {
+    const allRules = RuleRegistry.getAll();
+    const rules: Record<string, RuleSeverity> = {};
+
+    for (const meta of allRules) {
+      if (meta.docs?.recommended) {
+        rules[meta.id] = meta.severity;
+      } else {
+        rules[meta.id] = 'off';
+      }
+    }
+
+    return rules;
+  }
+
+  /**
    * Create default configuration
    */
   private createDefaultConfig(_info: ProjectInfo): void {
-    // Generate .claudelintrc.json
+    // Generate .claudelintrc.json with registry-derived rules
     const config: ClaudeLintConfig = {
-      rules: {
-        'size-error': 'error',
-        'size-warning': 'warn',
-        'import-missing': 'error',
-        'skill-dangerous-command': 'error',
-        'skill-missing-changelog': 'off',
-      },
+      rules: this.buildRulesFromRegistry(),
       output: {
         format: 'stylish',
         verbose: false,
@@ -231,15 +259,9 @@ export class InitWizard {
    * Generate configuration files from answers
    */
   private generateConfig(answers: WizardAnswers, _info: ProjectInfo): void {
-    // Build config from answers
+    // Build config from answers with registry-derived rules
     const config: ClaudeLintConfig = {
-      rules: {
-        'size-error': 'error',
-        'size-warning': 'warn',
-        'import-missing': 'error',
-        'skill-dangerous-command': 'error',
-        'skill-missing-changelog': 'off',
-      },
+      rules: this.buildRulesFromRegistry(),
       output: {
         format: answers.outputFormat || 'stylish',
         verbose: false,
@@ -271,14 +293,15 @@ export class InitWizard {
   private writeConfig(config: ClaudeLintConfig): void {
     const configPath = join(this.cwd, '.claudelintrc.json');
 
-    if (existsSync(configPath)) {
+    if (existsSync(configPath) && !this.force) {
       logger.newline();
-      logger.warn('.claudelintrc.json already exists, skipping...');
+      logger.warn('.claudelintrc.json already exists, skipping... (use --force to overwrite)');
       return;
     }
 
+    const verb = existsSync(configPath) ? 'Overwrote' : 'Created';
     writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
-    logger.success('Created .claudelintrc.json');
+    logger.success(`${verb} .claudelintrc.json`);
   }
 
   /**
@@ -357,12 +380,20 @@ export class InitWizard {
   /**
    * Display next steps
    */
-  private displayNextSteps(): void {
+  private displayNextSteps(info: ProjectInfo): void {
+    const ruleCount = RuleRegistry.getAll().length;
+
     logger.log(chalk.bold('Next steps:'));
     logger.newline();
-    logger.detail('1. Review .claudelintrc.json and customize rules');
-    logger.detail('2. Run validation: npx claudelint check-all');
-    logger.detail('3. See docs: https://github.com/pdugan20/claudelint#readme');
+    logger.detail(`1. Review .claudelintrc.json (${ruleCount} rules available)`);
+
+    if (info.hasCLAUDEmd || info.hasClaudeDir) {
+      logger.detail('2. Run validation: claudelint');
+    } else {
+      logger.detail('2. Create a CLAUDE.md file, then run: claudelint');
+    }
+
+    logger.detail('3. See docs: https://claudelint.com');
     logger.newline();
     logger.log(chalk.bold('To enable interactive skills in Claude Code:'));
     logger.newline();

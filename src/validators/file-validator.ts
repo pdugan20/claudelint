@@ -159,6 +159,20 @@ export interface BaseValidatorOptions {
   warningsAsErrors?: boolean;
   /** Configuration object */
   config?: ClaudeLintConfig;
+  /** Content provided via stdin (bypasses file reading) */
+  stdinContent?: string;
+  /** Filename for stdin content (used for validator matching and reporting) */
+  stdinFilename?: string;
+}
+
+/**
+ * Virtual file representing stdin content with a filename
+ */
+export interface VirtualFile {
+  /** File path (for reporting and validator matching) */
+  path: string;
+  /** File content (pre-read from stdin) */
+  content: string;
 }
 
 /**
@@ -277,6 +291,26 @@ export abstract class FileValidator {
    * @returns Promise resolving to validation results
    */
   abstract validate(): Promise<ValidationResult>;
+
+  /**
+   * Check if this validator is running in stdin mode
+   */
+  protected isStdinMode(): boolean {
+    return this.options.stdinContent !== undefined;
+  }
+
+  /**
+   * Get the virtual file from stdin options, if available
+   */
+  protected getVirtualFile(): VirtualFile | null {
+    if (this.options.stdinContent !== undefined && this.options.stdinFilename) {
+      return {
+        path: this.options.stdinFilename,
+        content: this.options.stdinContent,
+      };
+    }
+    return null;
+  }
 
   /**
    * Merge schema validation results into this validator

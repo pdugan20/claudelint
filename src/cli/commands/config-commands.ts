@@ -22,7 +22,8 @@ export function registerConfigCommands(program: Command): void {
     .command('init')
     .description('Initialize claudelint configuration')
     .option('-y, --yes', 'Use default configuration without prompts')
-    .action(async (options: { yes?: boolean }) => {
+    .option('--force', 'Overwrite existing configuration files')
+    .action(async (options: { yes?: boolean; force?: boolean }) => {
       const wizard = new InitWizard();
       await wizard.run(options);
     });

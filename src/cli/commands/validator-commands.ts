@@ -10,6 +10,9 @@ import { ValidatorRegistry } from '../../utils/validators/factory';
 import { Reporter } from '../../utils/reporting/reporting';
 import { loadAndValidateConfig } from '../utils/config-loader';
 import { logger } from '../utils/logger';
+import { ValidatorOptions } from '../types';
+import { addCommonOptions } from '../utils/option-builders';
+import { buildReporterOptions } from '../utils/reporter-options';
 
 /**
  * Metadata for creating a validator command
@@ -50,13 +53,11 @@ export function createValidatorCommand(
   const cmd = program
     .command(metadata.command)
     .description(metadata.description)
-    .option('--path <path>', `Custom path to ${metadata.displayName}`)
-    .option('-v, --verbose', 'Verbose output')
-    .option('--warnings-as-errors', 'Treat warnings as errors')
-    .option('-c, --config <path>', 'Path to configuration file')
-    .option('--no-config', 'Disable configuration file loading')
-    .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)
-    .option('--no-collapse', 'Show all issues without collapsing repeated rules');
+    .option('--path <path>', `Custom path to ${metadata.displayName}`);
+
+  // Register shared options
+  addCommonOptions(cmd);
+  cmd.option('--no-collapse', 'Show all issues without collapsing repeated rules');
 
   // Add hidden alias for backwards compatibility
   if (metadata.alias) {
@@ -71,72 +72,56 @@ export function createValidatorCommand(
   }
 
   // Add action handler
-  cmd.action(
-    async (options: {
-      path?: string;
-      verbose?: boolean;
-      warningsAsErrors?: boolean;
-      explain?: boolean;
-      skill?: string;
-      config?: string | false;
-      maxWarnings?: number;
-      collapse?: boolean;
-    }) => {
-      try {
-        // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
-        const config = loadAndValidateConfig(options);
+  cmd.action(async (options: ValidatorOptions) => {
+    try {
+      // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
+      const config = loadAndValidateConfig(options);
 
-        // Create validator with options and config
-        const validator = ValidatorRegistry.create(metadata.id, { ...options, config });
+      // Create validator with options and config
+      const validator = ValidatorRegistry.create(metadata.id, { ...options, config });
 
-        // Create reporter
-        const reporter = new Reporter({
-          verbose: options.verbose,
-          warningsAsErrors: options.warningsAsErrors,
-          explain: options.explain,
-          collapseRepetitive: options.collapse !== false,
-        });
+      // Create reporter with CLI options taking precedence over config
+      const reporter = new Reporter(buildReporterOptions(options, config));
 
-        reporter.section(`Validating ${metadata.displayName}...`);
+      reporter.section(`Validating ${metadata.displayName}...`);
 
-        // Run validation
-        const result = await validator.validate();
+      // Run validation
+      const result = await validator.validate();
 
-        // Report results
-        reporter.report(result, metadata.displayName);
+      // Report results
+      reporter.report(result, metadata.displayName);
 
-        // Check max warnings threshold
-        const maxWarnings = options.maxWarnings ?? -1;
-        if (maxWarnings >= 0) {
-          const warningCount = result.warnings.length;
-          if (warningCount > maxWarnings) {
-            logger.newline();
-            logger.error(`Warning limit exceeded: ${warningCount} > ${maxWarnings}`);
-            process.exitCode = 1;
-            return;
-          }
-          // Under threshold — warnings are acceptable, only fail on errors
-          if (result.errors.length === 0) {
-            process.exitCode = 0;
-            return;
-          }
-        }
-
-        // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
-        process.exitCode = reporter.getExitCode(result);
-      } catch (error) {
-        logger.newline();
-        logger.error('Validation failed:');
-        logger.error(error instanceof Error ? error.message : String(error));
-        if (options.verbose && error instanceof Error && error.stack) {
+      // Check max warnings threshold
+      const maxWarnings = options.maxWarnings ?? -1;
+      if (maxWarnings >= 0) {
+        const warningCount = result.warnings.length;
+        if (warningCount > maxWarnings) {
           logger.newline();
-          logger.error('Stack trace:');
-          logger.error(error.stack);
+          logger.error(`Warning limit exceeded: ${warningCount} > ${maxWarnings}`);
+          process.exitCode = 1;
+          return;
         }
-        process.exit(2);
+        // Under threshold — warnings are acceptable, only fail on errors
+        if (result.errors.length === 0) {
+          process.exitCode = 0;
+          return;
+        }
       }
+
+      // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
+      process.exitCode = reporter.getExitCode(result);
+    } catch (error) {
+      logger.newline();
+      logger.error('Validation failed:');
+      logger.error(error instanceof Error ? error.message : String(error));
+      if (options.verbose && error instanceof Error && error.stack) {
+        logger.newline();
+        logger.error('Stack trace:');
+        logger.error(error.stack);
+      }
+      process.exit(2);
     }
-  );
+  });
 
   return cmd;
 }

@@ -83,9 +83,15 @@ export class Reporter {
    */
   constructor(options: ReportingOptions = {}) {
     this.options = options;
-    // Auto-detect color support
+    // Auto-detect color support (NO_COLOR wins over FORCE_COLOR per spec)
     if (this.options.color === undefined) {
-      this.options.color = process.stdout.isTTY && !process.env.NO_COLOR;
+      if (process.env.NO_COLOR) {
+        this.options.color = false;
+      } else if (process.env.FORCE_COLOR) {
+        this.options.color = true;
+      } else {
+        this.options.color = !!process.stdout.isTTY;
+      }
     }
     // Set chalk color level
     if (this.options.color) {
@@ -286,6 +292,38 @@ export class Reporter {
     if (output) {
       console.log(output);
     }
+  }
+
+  /**
+   * Get formatted output as a string (for --output-file)
+   *
+   * Supports JSON, SARIF, and GitHub formats. Returns null for
+   * stylish/compact formats which output incrementally.
+   */
+  getFormattedOutputString(): string | null {
+    const format = this.options.format || 'stylish';
+    if (format === 'json') {
+      const output = {
+        valid: this.allResults.every((r) => r.result.valid),
+        errorCount: this.allResults.reduce((sum, r) => sum + r.result.errors.length, 0),
+        warningCount: this.allResults.reduce((sum, r) => sum + r.result.warnings.length, 0),
+        validators: this.allResults.map((r) => ({
+          name: r.validator,
+          valid: r.result.valid,
+          errors: r.result.errors,
+          warnings: r.result.warnings,
+        })),
+      };
+      return JSON.stringify(output, null, 2);
+    }
+    if (format === 'sarif') {
+      return toSarif(this.allResults);
+    }
+    if (format === 'github') {
+      return toGitHub(this.allResults) || '';
+    }
+    // stylish/compact formats write incrementally — not supported for file output
+    return null;
   }
 
   /**

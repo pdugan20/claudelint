@@ -5,6 +5,13 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "claudelint": "bin/claudelint"
   },
@@ -75,7 +82,7 @@
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "check:tool-names": "ts-node scripts/verify/tool-names.ts",
-    "validate": "npm-run-all lint format:check build test",
+    "validate": "npm-run-all lint format:check build test check:publint",
     "validate:all": "npm-run-all lint format:check build test check:all",
     "release": "release-it",
     "release:alpha": "release-it --preRelease=alpha",
@@ -88,7 +95,7 @@
     "sync:versions": "ts-node scripts/util/sync-versions.ts",
     "sync:versions:check": "ts-node scripts/check/version-sync.ts",
     "setup:hooks": "bash scripts/util/setup-hooks.sh",
-    "postinstall": "node scripts/util/postinstall.js && bash scripts/util/setup-hooks.sh || true",
+    "prepare": "bash scripts/util/setup-hooks.sh || true",
     "prepublishOnly": "npm run build"
   },
   "lint-staged": {
@@ -147,7 +154,6 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@types/inquirer": "^9.0.9",
     "chalk": "^5.3.0",
     "commander": "^14.0.3",
     "diff": "^8.0.3",
@@ -169,6 +175,7 @@
     "@eslint/js": "^9.39.2",
     "@release-it/conventional-changelog": "^10.0.4",
     "@types/diff": "^8.0.0",
+    "@types/inquirer": "^9.0.9",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.2.2",

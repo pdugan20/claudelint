@@ -12,6 +12,7 @@ import { ValidatorRegistry } from '../../utils/validators/factory';
 import { Reporter } from '../../utils/reporting/reporting';
 import { loadAndValidateConfig } from '../utils/config-loader';
 import { logger } from '../utils/logger';
+import { WatchOptions } from '../types';
 
 /** File patterns that trigger specific validators */
 const VALIDATOR_TRIGGERS: Record<string, string[]> = {
@@ -53,106 +54,95 @@ export function registerWatchCommand(program: Command): void {
     .option('-c, --config <path>', 'Path to configuration file')
     .option('--no-config', 'Disable configuration file loading')
     .option('--debounce <ms>', 'Debounce interval in milliseconds', '300')
-    .action(
-      async (options: {
-        verbose?: boolean;
-        warningsAsErrors?: boolean;
-        config?: string | false;
-        debounce?: string;
-      }) => {
-        const debounceMs = parseInt(options.debounce || '300', 10);
-        const cwd = process.cwd();
+    .action(async (options: WatchOptions) => {
+      const debounceMs = parseInt(options.debounce || '300', 10);
+      const cwd = process.cwd();
 
-        logger.info('Watching for changes...');
-        logger.info(`Directory: ${cwd}`);
-        logger.info('Press Ctrl+C to stop');
-        logger.newline();
+      logger.info('Watching for changes...');
+      logger.info(`Directory: ${cwd}`);
+      logger.info('Press Ctrl+C to stop');
+      logger.newline();
 
-        // Run initial validation
-        await runAllValidators(options);
+      // Run initial validation
+      await runAllValidators(options);
 
-        // Set up file watcher
-        let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-        let pendingFiles = new Set<string>();
-        let watcher: FSWatcher;
+      // Set up file watcher
+      let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+      let pendingFiles = new Set<string>();
+      let watcher: FSWatcher;
 
-        try {
-          watcher = watch(cwd, { recursive: true }, (_event, filename) => {
-            if (!filename) return;
+      try {
+        watcher = watch(cwd, { recursive: true }, (_event, filename) => {
+          if (!filename) return;
 
-            const fullPath = resolve(cwd, filename);
-            const ext = extname(filename);
+          const fullPath = resolve(cwd, filename);
+          const ext = extname(filename);
 
-            // Only watch relevant file types
-            if (!['.md', '.json', '.sh'].includes(ext)) return;
+          // Only watch relevant file types
+          if (!['.md', '.json', '.sh'].includes(ext)) return;
 
-            // Skip node_modules and cache
-            if (filename.includes('node_modules') || filename.includes('.claudelint-cache')) {
-              return;
-            }
+          // Skip node_modules and cache
+          if (filename.includes('node_modules') || filename.includes('.claudelint-cache')) {
+            return;
+          }
 
-            pendingFiles.add(fullPath);
+          pendingFiles.add(fullPath);
 
-            // Debounce to batch rapid changes
-            if (debounceTimer) {
-              clearTimeout(debounceTimer);
-            }
+          // Debounce to batch rapid changes
+          if (debounceTimer) {
+            clearTimeout(debounceTimer);
+          }
 
-            debounceTimer = setTimeout(() => {
-              const files = Array.from(pendingFiles);
-              pendingFiles = new Set<string>();
+          debounceTimer = setTimeout(() => {
+            const files = Array.from(pendingFiles);
+            pendingFiles = new Set<string>();
 
-              // Determine which validators to run
-              const validatorIds = new Set<string>();
-              for (const file of files) {
-                const relPath = relative(cwd, file);
-                const triggered = getTriggeredValidators(relPath);
+            // Determine which validators to run
+            const validatorIds = new Set<string>();
+            for (const file of files) {
+              const relPath = relative(cwd, file);
+              const triggered = getTriggeredValidators(relPath);
 
-                if (triggered.length === 0) {
-                  // Unknown file type - run all validators
-                  for (const id of Object.keys(VALIDATOR_TRIGGERS)) {
-                    validatorIds.add(id);
-                  }
-                } else {
-                  for (const id of triggered) {
-                    validatorIds.add(id);
-                  }
+              if (triggered.length === 0) {
+                // Unknown file type - run all validators
+                for (const id of Object.keys(VALIDATOR_TRIGGERS)) {
+                  validatorIds.add(id);
+                }
+              } else {
+                for (const id of triggered) {
+                  validatorIds.add(id);
                 }
               }
+            }
 
-              logger.newline();
-              const relFiles = files.map((f) => relative(cwd, f)).join(', ');
-              logger.info(`Change detected: ${relFiles}`);
+            logger.newline();
+            const relFiles = files.map((f) => relative(cwd, f)).join(', ');
+            logger.info(`Change detected: ${relFiles}`);
 
-              void runSelectedValidators(options, Array.from(validatorIds));
-            }, debounceMs);
-          });
-        } catch (error) {
-          logger.error(
-            `Failed to start watcher: ${error instanceof Error ? error.message : String(error)}`
-          );
-          process.exit(2);
-        }
-
-        // Handle SIGINT
-        process.on('SIGINT', () => {
-          logger.newline();
-          logger.info('Stopping watcher...');
-          watcher.close();
-          process.exit(0);
+            void runSelectedValidators(options, Array.from(validatorIds));
+          }, debounceMs);
         });
+      } catch (error) {
+        logger.error(
+          `Failed to start watcher: ${error instanceof Error ? error.message : String(error)}`
+        );
+        process.exit(2);
       }
-    );
+
+      // Handle SIGINT
+      process.on('SIGINT', () => {
+        logger.newline();
+        logger.info('Stopping watcher...');
+        watcher.close();
+        process.exit(0);
+      });
+    });
 }
 
 /**
  * Run all validators
  */
-async function runAllValidators(options: {
-  verbose?: boolean;
-  warningsAsErrors?: boolean;
-  config?: string | false;
-}): Promise<void> {
+async function runAllValidators(options: WatchOptions): Promise<void> {
   const config = loadAndValidateConfig(options);
   const reporter = new Reporter({
     verbose: options.verbose,
@@ -185,14 +175,7 @@ async function runAllValidators(options: {
 /**
  * Run specific validators
  */
-async function runSelectedValidators(
-  options: {
-    verbose?: boolean;
-    warningsAsErrors?: boolean;
-    config?: string | false;
-  },
-  validatorIds: string[]
-): Promise<void> {
+async function runSelectedValidators(options: WatchOptions, validatorIds: string[]): Promise<void> {
   const config = loadAndValidateConfig(options);
   const reporter = new Reporter({
     verbose: options.verbose,

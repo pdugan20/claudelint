@@ -1,3 +1,7 @@
+---
+outline: 2
+---
+
 # Troubleshooting Guide
 
 This guide helps you quickly resolve common issues with claudelint.
@@ -6,7 +10,7 @@ This guide helps you quickly resolve common issues with claudelint.
 
 ### CLAUDE.md Issues
 
-#### Error: "CLAUDE.md file exceeds size limit"
+#### File exceeds size limit
 
 **Cause:** Your CLAUDE.md file exceeds the recommended 40KB limit (configurable). Files this large should be split into smaller, focused files using `@import`.
 
@@ -27,7 +31,7 @@ This guide helps you quickly resolve common issues with claudelint.
 
 **See:** [claude-md-size-error](/rules/claude-md/claude-md-size-error)
 
-#### Error: "Imported file not found"
+#### Imported file not found
 
 **Cause:** `@import` statement references a file that doesn't exist.
 
@@ -46,7 +50,7 @@ This guide helps you quickly resolve common issues with claudelint.
 
 **See:** [claude-md-import-missing](/rules/claude-md/claude-md-import-missing)
 
-#### Error: "Circular import detected"
+#### Circular import detected
 
 **Cause:** File A imports File B, which imports File A (directly or indirectly).
 
@@ -72,7 +76,7 @@ This guide helps you quickly resolve common issues with claudelint.
 
 ### Skills Issues
 
-#### Error: "Skill frontmatter lacks 'version' field"
+#### Missing version field
 
 **Cause:** SKILL.md missing required `version` field in frontmatter.
 
@@ -101,7 +105,7 @@ version: 1.0.0
 
 **See:** [skill-missing-version](/rules/skills/skill-missing-version)
 
-#### Error: "Skill name does not match directory name"
+#### Name-directory mismatch
 
 **Cause:** Skill's `name` field doesn't match its directory.
 
@@ -121,7 +125,7 @@ name: authentication  <!-- Doesn't match directory 'user-auth' -->
 
 **See:** [skill-name-directory-mismatch](/rules/skills/skill-name-directory-mismatch)
 
-#### Error: "Shell script missing shebang"
+#### Missing shebang
 
 **Cause:** Executable `.sh` file doesn't start with `#!/bin/bash` or similar.
 
@@ -141,7 +145,7 @@ Add shebang to first line of script:
 
 ### Settings Issues
 
-#### Error: "Referenced file path not found"
+#### Referenced path not found
 
 **Cause:** Settings file references a path that doesn't exist.
 
@@ -163,7 +167,7 @@ Add shebang to first line of script:
 
 ### Hooks Issues
 
-#### Error: "Hook script not found"
+#### Hook script not found
 
 **Cause:** hooks.json references a script that doesn't exist.
 
@@ -196,7 +200,7 @@ Add shebang to first line of script:
 
 ### Configuration
 
-#### Q: How do I disable a specific rule?
+#### Disable a rule
 
 Set the rule to `"off"` in `.claudelintrc.json`:
 
@@ -210,7 +214,7 @@ Set the rule to `"off"` in `.claudelintrc.json`:
 
 See [Configuration Guide](./configuration.md) for details.
 
-#### Q: How do I disable a rule for one file?
+#### Disable for one file
 
 Use inline disable comments:
 
@@ -222,7 +226,7 @@ Use inline disable comments:
 
 See [Inline Disables](./inline-disables.md) for details.
 
-#### Q: Where should I put my config file?
+#### Config file location
 
 claudelint searches for config files starting from the current directory and moving up:
 
@@ -233,7 +237,7 @@ Supported files:
 
 Place it in your project root for best results.
 
-#### Q: How do I see which config is being used?
+#### View resolved config
 
 Run:
 
@@ -245,7 +249,7 @@ This shows the resolved configuration with all defaults.
 
 ### Validation
 
-#### Q: Why am I getting errors for files in node_modules?
+#### Errors in node_modules
 
 Add a `.claudelintignore` file:
 
@@ -257,7 +261,7 @@ coverage/
 
 See [Configuration - Ignoring Files](./configuration.md#ignoring-files) for details.
 
-#### Q: Can I run only one validator?
+#### Run a single validator
 
 Yes, use specific commands:
 
@@ -269,7 +273,7 @@ claudelint validate-settings
 
 See [CLI Reference](./cli-reference.md) for all commands.
 
-#### Q: How do I get more detailed error output?
+#### Detailed error output
 
 Use the `--verbose` flag:
 
@@ -281,7 +285,7 @@ This shows timing information and additional context.
 
 ### Auto-Fix
 
-#### Q: Which rules can be auto-fixed?
+#### Fixable rules
 
 Run:
 
@@ -291,7 +295,7 @@ claudelint list-rules --fixable
 
 This shows all rules that support auto-fix.
 
-#### Q: How do I preview fixes without applying them?
+#### Preview fixes
 
 Use `--fix-dry-run`:
 
@@ -301,9 +305,7 @@ claudelint check-all --fix-dry-run
 
 This shows what would be fixed without making changes.
 
-#### Q: Can I auto-fix only errors (not warnings)?
-
-Yes:
+#### Fix only errors
 
 ```bash
 claudelint check-all --fix --fix-type errors
@@ -313,7 +315,7 @@ See [Auto-fix Guide](./auto-fix.md) for details.
 
 ### Performance
 
-#### Q: Validation is slow, how can I speed it up?
+#### Speed up validation
 
 1. **Use caching** (enabled by default):
 
@@ -337,7 +339,7 @@ See [Auto-fix Guide](./auto-fix.md) for details.
 
 See [CLI Reference](./cli-reference.md#cache-management) for cache details.
 
-#### Q: How do I clear the cache?
+#### Clear the cache
 
 ```bash
 claudelint cache-clear
@@ -347,7 +349,7 @@ Run this after upgrading claudelint or changing config.
 
 ### Installation
 
-#### Q: Command not found after installation
+#### Command not found
 
 **Global install:**
 
@@ -375,7 +377,7 @@ Then verify: `npx claude-code-lint --version`
 ./node_modules/.bin/claudelint --version
 ```
 
-#### Q: Permission denied when installing globally
+#### Permission denied
 
 **macOS/Linux:**
 
@@ -394,7 +396,7 @@ npm install -g claude-code-lint
 
 ## Error Message Guide
 
-### Understanding Error Output
+### Understanding error output
 
 claudelint error messages follow this format:
 
@@ -413,7 +415,7 @@ Breaking it down:
 - **Message**: `Referenced skill not found: authentication` - What's wrong
 - **Rule ID**: `skill-referenced-file-not-found` - Which rule triggered this
 
-### Looking Up Rule Details
+### Looking up rule details
 
 To see full documentation for a rule:
 
@@ -427,7 +429,7 @@ claudelint check-all --explain
 
 ## Configuration Issues
 
-### Problem: Config file not found
+### Config file not found
 
 **Error:** `No configuration found`
 
@@ -457,7 +459,7 @@ claudelint check-all --explain
    claudelint check-all --config /path/to/config.json
    ```
 
-### Problem: Rules not being applied
+### Rules not being applied
 
 **Error:** Rules show in `list-rules` but don't trigger
 
@@ -486,7 +488,7 @@ claudelint check-all --explain
    claudelint print-config
    ```
 
-### Problem: JSON parsing error
+### JSON parsing error
 
 **Error:** `Unexpected token } in JSON`
 
@@ -506,7 +508,7 @@ Common mistakes:
 
 ## CI/CD Issues
 
-### Problem: Exit code not as expected
+### Unexpected exit codes
 
 **Exit codes:**
 
@@ -523,7 +525,7 @@ claudelint check-all || exit 1
 
 See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
-### Problem: Hook doesn't run at session start
+### Hook not running at session start
 
 **Solutions:**
 
@@ -538,7 +540,7 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 ## Cache Issues
 
-### Problem: Stale results after upgrading claudelint
+### Stale results after upgrade
 
 **Symptom:** After upgrading claudelint, you still see old validation results or missing new rules.
 
@@ -552,7 +554,7 @@ claudelint cache-clear
 
 This removes the entire `.claudelint-cache/` directory. The next run rebuilds the cache from scratch.
 
-### Problem: Cache not invalidating after file changes
+### Cache not invalidating
 
 **Symptom:** You edited a file but claudelint still reports old results.
 
@@ -578,7 +580,7 @@ This removes the entire `.claudelint-cache/` directory. The next run rebuilds th
    touch CLAUDE.md
    ```
 
-### Problem: Cache directory growing large
+### Large cache directory
 
 **Symptom:** `.claudelint-cache/` accumulates many files over time.
 
@@ -596,7 +598,7 @@ Add `.claudelint-cache/` to your `.gitignore` to keep it out of version control:
 .claudelint-cache/
 ```
 
-### Problem: Auto-fix not applying changes
+### Auto-fix not applying
 
 **Symptom:** Running `--fix` reports issues but doesn't modify files.
 
@@ -624,7 +626,7 @@ See [CLI Reference - Cache Management](./cli-reference.md#cache-management) for 
 
 ## Custom Rules Issues
 
-### Problem: Custom rule not loading
+### Custom rule not loading
 
 **Error:** `Failed to load custom rule`
 
@@ -649,7 +651,7 @@ See [CLI Reference - Cache Management](./cli-reference.md#cache-management) for 
 
 See [Custom Rules Guide](/development/custom-rules) for details.
 
-### Problem: Custom rule not executing
+### Custom rule not executing
 
 **Solutions:**
 
@@ -672,6 +674,118 @@ See [Custom Rules Guide](/development/custom-rules) for details.
      // ...
    };
    ```
+
+## Environment Variables
+
+### Update notification in CI
+
+**Symptom:** You see "Update available: X.X.X -> Y.Y.Y" in CI output.
+
+**Cause:** claudelint checks for newer versions once every 24 hours.
+
+**Solution:**
+
+Set one of these environment variables to suppress notifications:
+
+```bash
+# In your CI config
+CI=true claudelint check-all
+
+# Or explicitly
+NO_UPDATE_NOTIFIER=1 claudelint check-all
+```
+
+### No color in CI
+
+**Symptom:** Output is plain text without color formatting.
+
+**Cause:** Color is auto-detected based on TTY status. CI environments typically don't have a TTY.
+
+**Solution:**
+
+Force color output:
+
+```bash
+FORCE_COLOR=1 claudelint check-all
+
+# Or use the flag
+claudelint check-all --color
+```
+
+### Unwanted color in logs
+
+**Symptom:** ANSI escape codes appearing in redirected output or log files.
+
+**Solution:**
+
+Disable color output:
+
+```bash
+NO_COLOR=1 claudelint check-all
+
+# Or use the flag
+claudelint check-all --no-color
+```
+
+## stdin and Editor Integration
+
+### stdin not reading input
+
+**Symptom:** `claudelint check-all --stdin` hangs or times out.
+
+**Cause:** stdin mode expects piped input. Running it interactively (without piped data) will timeout after 5 seconds.
+
+**Solution:**
+
+Pipe content into stdin:
+
+```bash
+cat CLAUDE.md | claudelint check-all --stdin --stdin-filename CLAUDE.md
+```
+
+### No matching validator
+
+**Symptom:** `Exit code 2` with error about no matching validator.
+
+**Cause:** The `--stdin-filename` doesn't match any validator's file patterns.
+
+**Solution:**
+
+Use a filename that matches a known pattern:
+
+```bash
+# CLAUDE.md files
+cat content.md | claudelint check-all --stdin --stdin-filename CLAUDE.md
+
+# Settings
+cat settings.json | claudelint check-all --stdin --stdin-filename .claude/settings.json
+
+# Hooks
+cat hooks.json | claudelint check-all --stdin --stdin-filename .claude/hooks.json
+```
+
+## Incremental Linting
+
+### Slow on large projects
+
+**Symptom:** `claudelint check-all` takes a long time because it checks every file.
+
+**Solution:**
+
+Use VCS-aware flags to check only changed files:
+
+```bash
+# Check only uncommitted changes
+claudelint check-all --changed
+
+# Check only files changed since a branch
+claudelint check-all --since main
+
+# Check only files changed since a tag
+claudelint check-all --since v0.1.0
+```
+
+These flags require a git repository. If you're not in a git repo, you'll see a helpful error message.
 
 ## Getting More Help
 
@@ -696,7 +810,7 @@ If you can't find a solution here:
 
 ## Quick Reference
 
-### Most Common Commands
+### Common commands
 
 ```bash
 # Initialize config
@@ -721,7 +835,7 @@ claudelint cache-clear
 claudelint --help
 ```
 
-### Common Config Patterns
+### Common config patterns
 
 ```json
 {

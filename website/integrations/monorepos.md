@@ -251,7 +251,7 @@ The summary line for each package shows exactly which categories were validated 
 
 ## Troubleshooting
 
-### Error: No workspace detected
+### No workspace detected
 
 ```text
 Error: No workspace detected in current directory.
@@ -261,7 +261,7 @@ Please run this command from a monorepo root directory.
 
 **Solution:** Run the command from your monorepo root (where pnpm-workspace.yaml or package.json with workspaces field exists).
 
-### Error: Workspace package not found
+### Package not found
 
 ```text
 Error: Workspace package not found: my-pkg
@@ -274,7 +274,7 @@ Available packages:
 
 **Solution:** Use the exact directory name of the package (shown in "Available packages" list).
 
-### Error: Extended config not found
+### Extended config not found
 
 ```text
 Error: Extended config not found: ./base.json
@@ -284,7 +284,7 @@ Referenced from: /path/to/dir
 
 **Solution:** Check that the relative path is correct and the file exists.
 
-### Error: Circular dependency detected
+### Circular dependency
 
 ```text
 Error: Circular dependency detected in config extends:
@@ -297,11 +297,11 @@ Error: Circular dependency detected in config extends:
 
 ## FAQ
 
-### Can I use extends without workspaces?
+### Extends without workspaces
 
 Yes! Config inheritance works in any repository, not just monorepos.
 
-### Can I extend from npm packages?
+### Extend from npm packages
 
 Yes! Install the package and reference it:
 
@@ -315,27 +315,27 @@ npm install --save-dev @company/claudelint-config
 }
 ```
 
-### Does extends work recursively?
+### Recursive extends
 
 Yes! Configs can extend other configs that also use extends. Circular dependencies are detected and prevented.
 
-### Can I override inherited rules?
+### Override inherited rules
 
 Yes! Rules in the child config always override rules from extended configs.
 
-### What happens if I don't specify a config in a package?
+### No config in a package
 
 claudelint searches up the directory tree for the nearest .claudelintrc.json file, just like ESLint.
 
-### Can I use --workspace with non-monorepo projects?
+### --workspace without a monorepo
 
 No. The --workspace and --workspaces flags require a workspace configuration (pnpm-workspace.yaml or package.json workspaces).
 
-### How do I ignore patterns in extended configs?
+### Ignore patterns in extended configs
 
 Ignore patterns are concatenated and deduplicated. Both parent and child patterns apply.
 
-### Can I disable a rule that's enabled in the base config?
+### Disable an inherited rule
 
 Yes! Set it to "off" in the child config:
 
@@ -394,7 +394,7 @@ packages/
 
 ## Examples
 
-### Example: Strict for Apps, Relaxed for Tests
+### Strict apps, relaxed tests
 
 **Root config:**
 
@@ -425,7 +425,7 @@ packages/
 }
 ```
 
-### Example: Shared Company Config
+### Shared company config
 
 **Publish shared config:**
 

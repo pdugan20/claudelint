@@ -1,3 +1,7 @@
+---
+outline: 2
+---
+
 # Custom Rules Guide
 
 > **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
@@ -117,7 +121,7 @@ interface RuleIssue {
 
 ## Example Custom Rules
 
-### Example 1: Enforce Maximum File Size
+### Maximum file size
 
 ```javascript
 // .claudelint/rules/max-file-size.js
@@ -143,7 +147,7 @@ module.exports.rule = {
 };
 ```
 
-### Example 2: Require Specific Heading
+### Require specific heading
 
 ```javascript
 // .claudelint/rules/require-overview.js
@@ -170,7 +174,7 @@ module.exports.rule = {
 };
 ```
 
-### Example 3: Pattern Matching
+### Pattern matching
 
 ```javascript
 // .claudelint/rules/no-absolute-paths.js
@@ -215,7 +219,7 @@ interface AutoFix {
 }
 ```
 
-### Example: Auto-Fix Trailing Whitespace
+### Trailing whitespace fix
 
 ```javascript
 // .claudelint/rules/no-trailing-whitespace.js
@@ -276,7 +280,7 @@ claudelint check-all --fix --dry-run
 claudelint check-all --fix
 ```
 
-### Best Practices for Auto-Fix
+### Auto-fix best practices
 
 1. **Always mark fixable rules**: Set `fixable: true` in meta when providing autoFix
 2. **Make fixes idempotent**: Running the fix multiple times should produce the same result
@@ -284,7 +288,7 @@ claudelint check-all --fix
 4. **One fix per violation**: Don't try to fix multiple unrelated issues in one autoFix
 5. **Use simple transformations**: Complex fixes are better done manually
 
-### Example: Pattern Replacement Fix
+### Pattern replacement fix
 
 ```javascript
 // .claudelint/rules/use-correct-term.js
@@ -377,7 +381,7 @@ Common load failures:
 
 ## Best Practices
 
-### 1. Use Descriptive IDs and Names
+### Descriptive IDs and names
 
 ```javascript
 // Good
@@ -393,7 +397,7 @@ meta: {
 }
 ```
 
-### 2. Provide Helpful Error Messages
+### Helpful error messages
 
 ```javascript
 // Good
@@ -408,11 +412,11 @@ context.report({
 });
 ```
 
-### 3. Make Rules Focused
+### Focused rules
 
 Each rule should check one thing. Don't combine multiple validations into a single rule.
 
-### 4. Handle Edge Cases
+### Handle edge cases
 
 ```javascript
 validate: async (context) => {
@@ -430,12 +434,12 @@ validate: async (context) => {
 }
 ```
 
-### 5. Use Appropriate Severity
+### Appropriate severity
 
 - `error` - For violations that must be fixed (security, breaking conventions)
 - `warn` - For suggestions or style preferences
 
-### 6. Test Your Rules
+### Test your rules
 
 Create test cases for your custom rules:
 
@@ -483,7 +487,7 @@ describe('no-profanity rule', () => {
 - Check for duplicate IDs across your custom rules
 - Prefix custom rules with a namespace (e.g., `team-no-profanity`)
 
-### TypeScript Compilation Errors
+### TypeScript errors
 
 **Problem:** `Parameter 'context' implicitly has an 'any' type`
 
@@ -572,7 +576,7 @@ validate: async (context) => {
 },
 ```
 
-### Regular Expression Issues
+### Regex issues
 
 **Problem:** Pattern doesn't match expected content
 
@@ -598,7 +602,7 @@ todos.forEach(match => {
 });
 ```
 
-### Frontmatter Parsing Fails
+### Frontmatter parsing
 
 **Problem:** `extractFrontmatter()` returns `null`
 
@@ -619,7 +623,7 @@ tags: [example, test]
 ---
 ```
 
-### File Existence Checks Failing
+### File existence checks
 
 **Problem:** `fileExists()` returns false for existing files
 
@@ -768,7 +772,7 @@ validate: async (context) => {
 }
 ```
 
-### Multi-line Pattern Matching
+### Multi-line matching
 
 ```javascript
 validate: async (context) => {

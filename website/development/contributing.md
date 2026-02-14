@@ -1,3 +1,7 @@
+---
+outline: 2
+---
+
 # Contributing to claudelint
 
 Thank you for your interest in contributing to claudelint! This document provides guidelines for contributing to the project.
@@ -20,7 +24,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 - npm or yarn
 - Git
 
-### Setup Development Environment
+### Dev environment setup
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
@@ -89,7 +93,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 **See [CLI Reference](/guide/cli-reference) for complete command reference.**
 
-### Code Style Guidelines
+### Code style
 
 - Follow TypeScript best practices
 - Use `unknown` instead of `any` for unknown types
@@ -98,7 +102,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 - Write descriptive variable and function names
 - Use proper type guards when narrowing types
 
-### Diagnostic Collection Guidelines
+### Diagnostic collection
 
 **IMPORTANT**: Library code MUST NOT use `console` directly.
 
@@ -158,7 +162,7 @@ Library code is checked in CI and pre-commit hooks:
 npm run check:logger-usage
 ```
 
-### Testing Guidelines
+### Testing
 
 - Write unit tests for all new validators
 - Add integration tests for CLI commands
@@ -166,7 +170,7 @@ npm run check:logger-usage
 - Test error conditions and edge cases
 - Use descriptive test names
 
-### Verifying Constants (Maintainers Only)
+### Verifying constants
 
 Constants like `ToolNames` and `ModelNames` must stay synchronized with Claude Code. We verify these by querying the Claude Code CLI.
 
@@ -208,7 +212,7 @@ npm run check:model-names
 
 **Note:** Regular contributors don't need Claude CLI installed. This is only for maintainers doing releases.
 
-### Commit Message Guidelines
+### Commit messages
 
 Follow conventional commit format:
 
@@ -299,7 +303,7 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 8. ✓ Run `npm run docs:generate` to verify documentation generates
 9. ✓ Run validation on project: `npm run validate`
 
-### Rule Documentation Metadata
+### Rule docs metadata
 
 Rule documentation is **auto-generated** from `meta.docs` in each rule's source file. When you add or modify a rule, include a `docs` property so the documentation site stays in sync automatically.
 
@@ -388,7 +392,7 @@ Run `npm run docs:generate` after adding metadata to verify the generated page l
 
 Skills are interactive capabilities that allow Claude to help users validate, optimize, and fix their Claude Code projects through natural conversation.
 
-### Skill Quality Standards
+### Quality standards
 
 All skills must follow Anthropic's best practices for skill development.
 
@@ -408,7 +412,7 @@ All skills must follow Anthropic's best practices for skill development.
 
 1. **Progressive disclosure** - For skills with >3,000 words, use references/ directory
 
-### Submitting a New Skill
+### Submitting a skill
 
 Before submitting a PR:
 
@@ -433,7 +437,7 @@ Before submitting a PR:
    - Add to .claude-plugin/README.md
    - Include in PR description
 
-### Skill PR Requirements
+### PR requirements
 
 Use this template for skill PRs:
 
@@ -468,7 +472,7 @@ See the skill quality standards above for detailed requirements.
 
 When a rule needs to be changed or removed, follow this deprecation policy to give users time to migrate their configurations.
 
-### When to Deprecate Rules
+### When to deprecate
 
 Deprecate a rule when:
 
@@ -479,7 +483,7 @@ Deprecate a rule when:
 
 **Do not deprecate** for minor fixes, bug fixes, or improved error messages - these should be updated in place.
 
-### How to Mark a Rule as Deprecated
+### Marking rules deprecated
 
 Add a `deprecated` field to the rule's metadata. Use boolean for simple cases, or `DeprecationInfo` object for full metadata:
 
@@ -596,7 +600,7 @@ deprecated: {
 
 Users: Can keep using but should migrate to new approach when possible.
 
-### User-Facing Commands
+### User commands
 
 Users can manage deprecated rules with these commands:
 
@@ -701,14 +705,14 @@ npm run docs:preview
 - Custom Vue components live in `website/.vitepress/theme/components/`
 - See the [Development Overview](/development/overview) for the full metadata schema
 
-### Making Documentation Changes
+### Editing documentation
 
 - **Rule docs**: Edit the `meta.docs` property in the rule's source file, then run `npm run docs:generate`
 - **Guide/API pages**: Edit markdown files directly in `website/`
 - **Components**: Edit Vue files in `website/.vitepress/theme/components/`
 - **Navigation**: Edit sidebar config in `website/.vitepress/config.mts`
 
-### Key Documentation
+### Key docs
 
 **For contributing code:**
 
@@ -773,7 +777,7 @@ npm run docs:preview
 
 ## CI Integration (Optional)
 
-### Constants Verification in CI
+### CI verification
 
 You can optionally run constants verification in CI, but be aware of trade-offs:
 

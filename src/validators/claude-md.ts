@@ -25,6 +25,15 @@ export class ClaudeMdValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
+    // Handle stdin mode
+    const virtualFile = this.getVirtualFile();
+    if (virtualFile) {
+      this.trackValidatedFiles([virtualFile.path]);
+      this.markScanned([virtualFile.path]);
+      await this.validateFileContent(virtualFile.path, virtualFile.content);
+      return this.getResult();
+    }
+
     const files = await this.findFiles();
     this.trackValidatedFiles(files);
 
@@ -53,9 +62,6 @@ export class ClaudeMdValidator extends FileValidator {
   }
 
   private async validateFile(filePath: string): Promise<void> {
-    // Set current file for config resolution
-    this.setCurrentFile(filePath);
-
     // Check file exists first (operational error if missing)
     const exists = await fileExists(filePath);
     if (!exists) {
@@ -64,6 +70,12 @@ export class ClaudeMdValidator extends FileValidator {
 
     // Read content
     const content = await readFileContent(filePath);
+    await this.validateFileContent(filePath, content);
+  }
+
+  private async validateFileContent(filePath: string, content: string): Promise<void> {
+    // Set current file for config resolution
+    this.setCurrentFile(filePath);
 
     // Parse disable comments
     this.parseDisableComments(filePath, content);

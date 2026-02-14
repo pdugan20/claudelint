@@ -40,7 +40,20 @@ const program = new Command();
 program
   .name('claudelint')
   .description('A comprehensive linter for Claude Code projects')
-  .version(version);
+  .version(`claudelint v${version}`)
+  .addHelpText(
+    'after',
+    `
+Examples:
+  claudelint                                Lint the current project
+  claudelint --fix                          Lint and auto-fix problems
+  claudelint --format json -o report.json   Save JSON report to file
+  claudelint --changed                      Lint only uncommitted changes
+  claudelint init                           Set up configuration
+  claudelint explain <rule-id>              Get detailed rule documentation
+
+Documentation: https://claudelint.com`
+  );
 
 // Register all commands
 // =====================
@@ -66,3 +79,11 @@ registerExplainCommand(program);
 
 // Parse command line arguments
 program.parse();
+
+// Check for updates (non-blocking, respects NO_UPDATE_NOTIFIER and CI)
+import { checkForUpdate } from './cli/utils/update-check';
+const updateMessage = checkForUpdate(version);
+if (updateMessage) {
+  // Use stderr so it doesn't interfere with JSON/piped output
+  process.stderr.write(`\n${updateMessage}\n`);
+}

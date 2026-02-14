@@ -295,6 +295,23 @@ Default ignores (always applied):
 
 Configuration file settings can be overridden with CLI flags like `--config`, `--format`, `--strict`, and `--max-warnings`. See the [CLI Reference](./cli-reference.md) for complete documentation of all commands and options.
 
+### CLI Rule Overrides
+
+The `--rule` flag lets you override rule severity directly from the command line, without editing your config file:
+
+```bash
+# Override a single rule
+claudelint check-all --rule skill-name:error
+
+# Override multiple rules
+claudelint check-all --rule skill-name:error --rule claude-md-size-warning:off
+
+# Disable a rule temporarily
+claudelint check-all --rule skill-missing-version:off
+```
+
+The format is `rule-id:severity` where severity is `off`, `warn`, or `error`. CLI overrides take the highest precedence, above both config files and extends chains.
+
 To debug configuration issues, use `print-config`, `validate-config`, and `resolve-config`. See [CLI Reference - Config Management](./cli-reference.md#config-management) for details.
 
 ## Example Configuration
@@ -339,3 +356,17 @@ claudelint searches for configuration files starting from the current directory 
 - Global configuration in home directory
 
 The first configuration file found is used. Files lower in the tree take precedence over files higher up.
+
+## Programmatic API
+
+claudelint exposes a programmatic API for use in custom tooling and scripts. The package uses the `exports` field for clean module resolution:
+
+```javascript
+// CommonJS
+const { ClaudeLint } = require('claude-code-lint');
+
+// ESM / TypeScript
+import { ClaudeLint } from 'claude-code-lint';
+```
+
+The `prepare` script runs only on `git clone` + `npm install` (not when installed as a dependency), so claudelint installs cleanly without side effects.

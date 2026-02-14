@@ -116,6 +116,15 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
   }
 
   async validate(): Promise<ValidationResult> {
+    // Handle stdin mode
+    const virtualFile = this.getVirtualFile();
+    if (virtualFile) {
+      this.trackValidatedFiles([virtualFile.path]);
+      this.markScanned([virtualFile.path]);
+      await this.validateFileContent(virtualFile.path, virtualFile.content);
+      return this.getResult();
+    }
+
     const files = await this.findFiles();
     this.trackValidatedFiles(files);
 
@@ -163,39 +172,44 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
    */
   private async validateFile(filePath: string): Promise<void> {
     try {
-      // Step 1: Read file
       const content = await fs.readFile(filePath, 'utf-8');
-
-      // Step 2: Parse JSON
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(content);
-      } catch (parseError) {
-        const message = parseError instanceof Error ? parseError.message : String(parseError);
-        this.report(`Invalid JSON syntax: ${message}`, filePath);
-        return;
-      }
-
-      // Step 3: Validate against Zod schema
-      const schema = this.getSchema();
-      const result = schema.safeParse(parsed);
-
-      if (!result.success) {
-        // Report all schema validation errors
-        result.error.issues.forEach((issue) => {
-          const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
-          this.report(`${path}${issue.message}`, filePath);
-        });
-        return;
-      }
-
-      // Step 4: Run custom semantic validation
-      // This receives the parsed, validated config object
-      await this.validateSemantics(filePath, result.data as z.TypeOf<T>);
+      await this.validateFileContent(filePath, content);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.report(`Error validating file: ${message}`, filePath);
     }
+  }
+
+  /**
+   * Validate file content (used by both file-based and stdin modes)
+   */
+  private async validateFileContent(filePath: string, content: string): Promise<void> {
+    // Step 1: Parse JSON
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(content);
+    } catch (parseError) {
+      const message = parseError instanceof Error ? parseError.message : String(parseError);
+      this.report(`Invalid JSON syntax: ${message}`, filePath);
+      return;
+    }
+
+    // Step 2: Validate against Zod schema
+    const schema = this.getSchema();
+    const result = schema.safeParse(parsed);
+
+    if (!result.success) {
+      // Report all schema validation errors
+      result.error.issues.forEach((issue) => {
+        const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
+        this.report(`${path}${issue.message}`, filePath);
+      });
+      return;
+    }
+
+    // Step 3: Run custom semantic validation
+    // This receives the parsed, validated config object
+    await this.validateSemantics(filePath, result.data as z.TypeOf<T>);
   }
 
   /**

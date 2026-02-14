@@ -41,11 +41,13 @@ Complete reference for all claudelint commands, options, and usage patterns.
 
 ### check-all
 
-Run all validators on your Claude Code project. This is the primary command you'll use most often.
+Run all validators on your Claude Code project. This is the **default command** -- running `claudelint` with no arguments is equivalent to `claudelint check-all`.
 
 **Usage:**
 
 ```bash
+# These are equivalent:
+claudelint
 claudelint check-all [options]
 ```
 
@@ -77,6 +79,16 @@ claudelint check-all [options]
 | `--error-on-deprecated` | Treat usage of deprecated rules as errors | `false` |
 | `--timing` | Show per-validator timing breakdown | `false` |
 | `--allow-empty-input` | Exit 0 when no files are found to check | `false` |
+| `-o, --output-file <path>` | Write results to file (in addition to stdout) | - |
+| `--ignore-pattern <pattern>` | Additional pattern to ignore (repeatable) | - |
+| `--no-ignore` | Disable ignore file and pattern processing | `false` |
+| `--rule <rule:severity>` | Override rule severity from CLI (repeatable) | - |
+| `--cache-strategy <strategy>` | Cache invalidation strategy: `metadata` or `content` | `metadata` |
+| `--changed` | Only check files with uncommitted git changes | `false` |
+| `--since <ref>` | Only check files changed since a git ref (branch, tag, or SHA) | - |
+| `--stats` | Include per-rule statistics in output | `false` |
+| `--stdin` | Read input from stdin instead of files | `false` |
+| `--stdin-filename <path>` | Provide filename context for stdin input (e.g., `CLAUDE.md`) | - |
 | `--workspace <name>` | Validate specific workspace package by name | - |
 | `--workspaces` | Validate all workspace packages | `false` |
 
@@ -143,6 +155,25 @@ claudelint check-all --format json | jq '.[]'
 # Allow empty input (useful with lint-staged)
 claudelint check-all --allow-empty-input
 
+# Write results to a file
+claudelint check-all --format json --output-file report.json
+
+# Override a rule severity from the CLI
+claudelint check-all --rule skill-name:error --rule claude-md-size-warning:off
+
+# Only check files with uncommitted changes
+claudelint check-all --changed
+
+# Only check files changed since a branch or tag
+claudelint check-all --since main
+claudelint check-all --since v0.1.0
+
+# Validate from stdin (editor integration)
+cat CLAUDE.md | claudelint check-all --stdin --stdin-filename CLAUDE.md
+
+# Use content-based cache invalidation
+claudelint check-all --cache-strategy content
+
 # Combine flags
 claudelint check-all --strict --max-warnings 0 --format json
 ```
@@ -168,6 +199,7 @@ claudelint init [options]
 | Option | Description |
 |--------|-------------|
 | `-y, --yes` | Use default configuration without prompts (non-interactive mode) |
+| `--force` | Overwrite existing configuration files |
 
 **Examples:**
 
@@ -177,6 +209,9 @@ claudelint init
 
 # Non-interactive with defaults
 claudelint init --yes
+
+# Overwrite existing config
+claudelint init --yes --force
 ```
 
 **What it creates:**
@@ -1032,8 +1067,12 @@ claudelint check-all --format github
 |----------|-------------|
 | `NO_COLOR` | Disable color output (respected per [no-color.org](https://no-color.org) standard) |
 | `FORCE_COLOR` | Force color output even when not a TTY |
+| `CI` | Suppress update notifications when running in CI environments |
+| `NO_UPDATE_NOTIFIER` | Suppress update notifications explicitly |
 
 Color is auto-detected based on TTY status. The `--color` and `--no-color` flags override environment variables.
+
+claudelint checks the npm registry for newer versions once every 24 hours and displays a notification if an update is available. Set `CI=true` or `NO_UPDATE_NOTIFIER=1` to suppress this behavior.
 
 ## Exit Codes
 
@@ -1044,6 +1083,7 @@ claudelint uses standard POSIX exit codes:
 | `0` | Success | No issues found, all checks passed |
 | `1` | Issues found | Errors or warnings detected (depending on flags) |
 | `2` | Fatal error | Invalid config, command failure, or internal error |
+| `130` | Interrupted | Process terminated by SIGINT (Ctrl+C) or SIGTERM |
 
 **Exit code 1 is returned when:**
 

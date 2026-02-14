@@ -24,8 +24,8 @@ Or install globally:
 # Initialize configuration
 claudelint init
 
-# Validate your project
-claudelint check-all
+# Validate your project (check-all is the default command)
+claudelint
 ```
 
 ## What Gets Validated
