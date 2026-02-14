@@ -22,6 +22,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when a WebSocket MCP server URL does not use ws:// or wss:// protocol.',
+      rationale:
+        'Using http:// or https:// instead of ws:// or wss:// causes WebSocket connection failures.',
       details:
         'This rule parses the url field of MCP servers with type "websocket" and checks that the ' +
         'protocol is ws: or wss:. Using an incorrect protocol such as http:// or https:// may ' +

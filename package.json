@@ -52,6 +52,8 @@
     "check:deadcode:production": "knip --production",
     "check:emojis": "node scripts/check/emoji.js",
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
+    "check:message-content": "ts-node scripts/check/message-content.ts",
+    "check:message-length": "ts-node scripts/check/message-length.ts",
     "check:hardcoded-counts": "ts-node scripts/check/hardcoded-counts.ts",
     "check:links": "node scripts/check/links.js",
     "check:links:all": "remark --use remark-validate-links --frail website/ README.md CONTRIBUTING.md",
@@ -155,6 +157,7 @@
     "minimatch": "^10.1.1",
     "ora": "^9.3.0",
     "prettier": "^3.1.1",
+    "text-table": "^0.2.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -167,6 +170,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.2.2",
+    "@types/text-table": "^0.2.5",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "ajv": "^8.17.1",

@@ -24,6 +24,7 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that the agent model field is a recognized ' + 'model name.',
+      rationale: 'An unrecognized model name causes the agent framework to fail at initialization.',
       details:
         'This rule enforces that the `model` field in agent ' +
         'markdown frontmatter is one of the allowed values: ' +

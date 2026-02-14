@@ -24,6 +24,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Detects @import directives that reference files which do not exist.',
+      rationale:
+        'A broken import means Claude Code silently skips the content, leading to incomplete instructions.',
       details:
         'When a CLAUDE.md file uses `@import` to include another file, the referenced file ' +
         'must exist on disk. A missing import means Claude Code will silently skip the content, ' +
@@ -73,7 +75,7 @@ export const rule: Rule = {
       if (!exists) {
         const relPath = relative(process.cwd(), resolvedPath);
         context.report({
-          message: `Imported file not found: ${importInfo.path}. Create the file at ${relPath} or fix the import path.`,
+          message: `Imported file not found: ${importInfo.path}`,
           line: importInfo.line,
           fix: `Create the file at ${relPath} or fix the import path`,
         });

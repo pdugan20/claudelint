@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures the output style name in frontmatter matches its parent directory name.',
+      rationale:
+        'A name/directory mismatch prevents style discovery, causing unexpected fallback behavior.',
       details:
         'This rule checks that the name field in the frontmatter of output style markdown files matches ' +
         'the name of the parent directory. This naming convention is required for proper organization and ' +

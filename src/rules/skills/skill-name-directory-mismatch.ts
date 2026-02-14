@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Enforces that the skill `name` in frontmatter matches its parent directory name.',
+      rationale:
+        'A name/directory mismatch causes confusion and may break skill discovery and cross-referencing.',
       details:
         'The skill name declared in SKILL.md frontmatter must match the directory the skill lives in. ' +
         'A mismatch between the two causes confusion when browsing skills on disk versus invoking them ' +

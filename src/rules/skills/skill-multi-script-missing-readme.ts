@@ -42,6 +42,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-multi-script-missing-readme.md',
     docs: {
       summary: 'Warns when a skill with multiple script files does not include a README.md.',
+      rationale:
+        'Multi-script skills without documentation are hard for contributors to understand and maintain.',
       details:
         'Complex skills that contain many script files (`.sh`, `.py`, `.js`, etc.) benefit from ' +
         'a README.md that documents setup, usage, dependencies, and troubleshooting. ' +
@@ -131,7 +133,7 @@ export const rule: Rule = {
 
         if (!readmeExists) {
           context.report({
-            message: `Skill has ${scriptFiles.length} scripts but no README.md. Complex skills should include a README with setup and usage instructions. (threshold: ${maxScripts})`,
+            message: `${scriptFiles.length} scripts but no README.md`,
           });
         }
       }

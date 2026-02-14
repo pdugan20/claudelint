@@ -73,7 +73,7 @@ describe('skill-description-missing-trigger', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Skill description should include trigger phrases',
+              message: 'Description missing trigger phrases',
             },
           ],
         },

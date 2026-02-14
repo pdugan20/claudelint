@@ -98,7 +98,7 @@ describe('claude-md-import-depth-exceeded', () => {
           options: { maxDepth: 2 },
           errors: [
             {
-              message: 'exceeds maximum of 2',
+              message: 'exceeds maximum (2)',
             },
           ],
         },

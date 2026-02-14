@@ -23,6 +23,7 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that MCP SSE transport URLs are well-formed.',
+      rationale: 'An invalid URL prevents Claude Code from connecting to the SSE MCP server.',
       details:
         'This rule checks that the url field of MCP servers with type "sse" is a valid URL by ' +
         'attempting to parse it with the URL constructor. URLs containing variable expansions (${ or $) ' +

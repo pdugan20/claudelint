@@ -26,6 +26,7 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Requires that plugin.json contains a non-empty version field.',
+      rationale: 'A missing version prevents update detection and may cause installation failures.',
       details:
         'This rule checks that the plugin.json file has a version property that is a non-empty string. ' +
         'The version is used for dependency management and marketplace distribution. A missing or empty ' +

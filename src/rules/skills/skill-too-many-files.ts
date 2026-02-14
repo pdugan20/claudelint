@@ -37,6 +37,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-too-many-files.md',
     docs: {
       summary: 'Warns when a skill directory has too many files at the root level.',
+      rationale:
+        'A crowded skill directory is hard to navigate and suggests the skill should be decomposed.',
       details:
         'Skill directories with a large number of loose files become difficult to navigate and maintain. ' +
         'This rule counts files at the root level of the skill directory (excluding known documentation ' +
@@ -123,9 +125,7 @@ export const rule: Rule = {
       // Warn if more than max allowed loose files
       if (rootFiles.length > maxFiles) {
         context.report({
-          message:
-            `Skill directory has ${rootFiles.length} files at root level (>${maxFiles} is hard to maintain). ` +
-            `Consider organizing scripts into subdirectories like: bin/, lib/, tests/`,
+          message: `Too many root files (${rootFiles.length}/${maxFiles})`,
         });
       }
     } catch {

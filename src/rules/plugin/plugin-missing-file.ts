@@ -30,6 +30,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that files and directories referenced in plugin.json exist on disk.',
+      rationale:
+        'Missing referenced files cause the plugin to fail at runtime when Claude Code tries to load them.',
       details:
         'This rule checks that every path referenced in plugin.json actually exists. It validates ' +
         'skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. For ' +

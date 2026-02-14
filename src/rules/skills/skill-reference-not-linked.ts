@@ -31,6 +31,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when backtick-enclosed file paths in SKILL.md are not formatted as markdown links.',
+      rationale:
+        'Unlinked file references cannot be navigated and may become stale without detection.',
       details:
         'SKILL.md files often reference supporting files in directories like `references/`, `examples/`, ' +
         '`scripts/`, and `templates/`. When these paths appear in backticks (e.g., `references/guide.md`) ' +
@@ -98,9 +100,7 @@ export const rule: Rule = {
 
       const fullMatch = match[0]; // includes backticks
       context.report({
-        message:
-          `File reference \`${referencedPath}\` should be a markdown link. ` +
-          `Use [${referencedPath}](./${referencedPath}) instead.`,
+        message: `File reference \`${referencedPath}\` not linked`,
         autoFix: {
           ruleId: 'skill-reference-not-linked',
           description: `Convert \`${referencedPath}\` to markdown link`,

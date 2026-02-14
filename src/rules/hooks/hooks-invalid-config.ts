@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates hook configuration structure and required fields.',
+      rationale:
+        'Malformed hook configs cause runtime errors when Claude Code tries to execute them.',
       details:
         'This rule validates the structure of hook definitions inside settings files. ' +
         'It checks that each hook handler has a valid type (command, prompt, or agent), ' +
@@ -163,7 +165,7 @@ function validateHookHandler(
   // Validate hook type
   if (!(VALID_HOOK_TYPES as readonly string[]).includes(hook.type as string)) {
     context.report({
-      message: `Invalid hook type: ${String(hook.type)}. Must be one of: ${VALID_HOOK_TYPES.join(', ')}`,
+      message: `Invalid hook type: ${String(hook.type)}`,
     });
   }
 
@@ -197,7 +199,7 @@ function validateHookHandler(
   // Validate timeout if present
   if (hook.timeout !== undefined && typeof hook.timeout === 'number' && hook.timeout <= 0) {
     context.report({
-      message: `Invalid timeout value: ${hook.timeout}. Must be positive`,
+      message: `Invalid timeout: ${hook.timeout}`,
     });
   }
 }

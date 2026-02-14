@@ -24,6 +24,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that the `paths` field in rule file frontmatter is a non-empty array of strings.',
+      rationale:
+        'An invalid paths field prevents the rule from matching any files, silently disabling the scoped rule.',
       details:
         'Rule files in `.claude/rules/` use YAML frontmatter to declare which file paths the rule ' +
         'applies to via the `paths` field. When present, this field must be a non-empty array ' +

@@ -71,6 +71,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Errors when CLAUDE.md references `npm run` scripts that do not exist in package.json.',
+      rationale:
+        'Claude Code will fail at runtime when it tries to execute a non-existent npm script from CLAUDE.md.',
       details:
         'CLAUDE.md files frequently instruct Claude Code to run npm scripts for testing, linting, ' +
         'or building. If a referenced script does not exist in the nearest `package.json`, Claude ' +

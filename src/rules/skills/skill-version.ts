@@ -25,6 +25,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Enforces that the `version` field in SKILL.md frontmatter follows semantic versioning.',
+      rationale:
+        'Non-semver versions break automated version comparison and dependency resolution.',
       details:
         "The `version` frontmatter field communicates the skill's release state to users. When present, " +
         'it must follow semantic versioning format (e.g., `1.0.0`, `0.3.1`). This rule delegates to ' +

@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when shell script files are missing a shebang line.',
+      rationale:
+        "Without a shebang, the OS uses a default shell that may not support the script's syntax.",
       details:
         'Shell scripts must start with a shebang line (e.g., `#!/bin/bash` or `#!/usr/bin/env bash`) ' +
         'to specify which interpreter should execute them. Without a shebang, the script may fail or ' +
@@ -73,9 +75,7 @@ export const rule: Rule = {
       const scriptName = filePath.split('/').pop() || filePath;
 
       context.report({
-        message:
-          `Shell script "${scriptName}" lacks shebang line. ` +
-          'Add "#!/bin/bash" or "#!/usr/bin/env bash" as the first line.',
+        message: `Missing shebang in "${scriptName}"`,
         fix: 'Add #!/usr/bin/env bash as first line',
         autoFix: {
           ruleId: 'skill-missing-shebang',

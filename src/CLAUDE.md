@@ -80,6 +80,33 @@ Coverage thresholds: 70% branches, 80% functions/lines/statements.
 - `src/utils/` — shared utilities (markdown parsing, frontmatter extraction, etc.)
 - `src/types/` — TypeScript type definitions
 
+## Rule Message Guidelines
+
+Messages in `context.report({ message })` are shown in the default CLI table. They must be concise problem statements.
+
+**Max length**: 100 characters (enforced by `npm run check:message-length`).
+
+**Message content rules** (enforced by `npm run check:message-content`):
+
+- State the problem only. No fix instructions, rationale, or examples.
+- Do not start with imperative verbs (Add, Use, Create, Remove, Consider).
+- Do not include "so that", "to ensure", "which means", "e.g.,", "for example".
+- Do not dump lists of valid values. Put those in the `fix` field or `docs.howToFix`.
+
+**Where content belongs**:
+
+| Content type | Field | Shown in |
+|---|---|---|
+| Problem statement | `message` | Default table output |
+| How to fix | `fix` or `docs.howToFix` | `--explain` mode (Fix:) |
+| Why it matters | `docs.rationale` | `--explain` mode (Why:) |
+| Full explanation | `docs.details` | `claudelint explain <rule>` |
+| Code examples | `docs.examples` | `claudelint explain <rule>` |
+
+**Good**: `File exceeds 40KB limit (50001 bytes)`
+
+**Bad**: `File exceeds 40KB limit (50001 bytes). Split content into smaller files using @imports to keep the file manageable.`
+
 ## Conventions
 
 - All rule IDs are kebab-case and prefixed by category: `skill-name`, `hook-event-type`

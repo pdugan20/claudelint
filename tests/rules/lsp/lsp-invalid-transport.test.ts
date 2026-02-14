@@ -51,7 +51,7 @@ describe('lsp-invalid-transport', () => {
               transport: 'http',
             },
           }),
-          errors: [{ message: 'Invalid transport type "http"' }],
+          errors: [{ message: 'Invalid transport "http"' }],
         },
       ],
     });

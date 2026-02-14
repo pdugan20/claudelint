@@ -40,6 +40,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when plugin component paths do not start with "./".',
+      rationale:
+        'Paths without "./" prefix are ambiguous and may be misinterpreted as absolute or module paths.',
       details:
         'Component paths in plugin.json (skills, agents, commands, outputStyles) should start with ' +
         '"./" to make it explicit that they are relative to the plugin root. Paths without the ' +
@@ -90,7 +92,7 @@ export const rule: Rule = {
       for (const path of paths) {
         if (!path.startsWith('./')) {
           context.report({
-            message: `Plugin ${field} path "${path}" should start with "./"`,
+            message: `${field} path missing "./" prefix: "${path}"`,
             fix: `Change "${path}" to "./${path}"`,
           });
         }

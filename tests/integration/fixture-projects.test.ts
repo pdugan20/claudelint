@@ -68,16 +68,16 @@ describe('Fixture Project Integration Tests', () => {
       expect(result.output).toContain('No problems found.');
     });
 
-    it('should show summary line with file counts and components', () => {
-      // Summary line format: "Checked N files across M components (...) in Xms."
-      expect(result.output).toMatch(/Checked \d+ files? across \d+ components? \(/);
+    it('should show summary line with file counts and categories', () => {
+      // Summary line format: "Checked N files across M categories (...) in Xms."
+      expect(result.output).toMatch(/Checked \d+ files? across \d+ categor(?:y|ies) \(/);
       expect(result.output).toMatch(/in \d+ms\./);
     });
 
     it('should validate all active config categories', () => {
       // With quiet success, per-validator lines are suppressed on clean runs.
-      // The summary line lists all active (non-skipped) components by validator ID.
-      expect(result.output).toMatch(/across \d+ components? \(/);
+      // The summary line lists all active (non-skipped) categories by validator ID.
+      expect(result.output).toMatch(/across \d+ categor(?:y|ies) \(/);
       expect(result.output).toContain('claude-md');
       expect(result.output).toContain('skills');
       expect(result.output).toContain('agents');
@@ -200,7 +200,7 @@ describe('Fixture Project Integration Tests', () => {
 
     it('should detect errors in plugin manifest', () => {
       expect(result.output).toContain('expected string, received undefined');
-      expect(result.output).toContain('Must be valid semantic version');
+      expect(result.output).toContain('Invalid semantic version format');
     });
 
     it('should detect warnings for deprecated commands', () => {

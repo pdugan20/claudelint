@@ -27,6 +27,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Warns when path patterns in rule file frontmatter are overly broad, matching all files.',
+      rationale:
+        'A catch-all pattern defeats the purpose of file-scoped rules, applying guidelines where they are irrelevant.',
       details:
         'Files in `.claude/rules/` include YAML frontmatter with a `paths` field that controls ' +
         'which files the rule applies to. Using `**` or `*` as a path pattern matches every file ' +
@@ -95,7 +97,7 @@ export const rule: Rule = {
       for (const pattern of frontmatter.paths) {
         if (pattern === '**' || pattern === '*') {
           context.report({
-            message: `Path pattern is very broad: ${pattern}. Consider being more specific.`,
+            message: `Overly broad path pattern: ${pattern}`,
           });
         }
       }

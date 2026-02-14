@@ -33,7 +33,7 @@ export function noReservedWords(words: string[] = ['anthropic', 'claude']) {
 export function thirdPerson() {
   return {
     check: (val: string) => !/\b(I|you)\s/i.test(val),
-    message: 'Must be written in third person (avoid "I" and "you")',
+    message: 'Must be written in third person',
   };
 }
 
@@ -56,7 +56,7 @@ export function semver() {
     .string()
     .regex(
       /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
-      'Must be valid semantic version (e.g., 1.0.0, 2.1.3-beta)'
+      'Invalid semantic version format'
     );
 }
 

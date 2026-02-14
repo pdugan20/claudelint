@@ -28,6 +28,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when a skill description exceeds the maximum character length.',
+      rationale:
+        'Long descriptions are truncated in skill listings and menus, hiding important context.',
       details:
         'Long descriptions reduce readability in skill listings and menus. ' +
         'This rule checks the `description` field in SKILL.md frontmatter and reports when it exceeds ' +
@@ -92,7 +94,7 @@ export const rule: Rule = {
 
     if (description.length > maxLength) {
       context.report({
-        message: `Skill description is ${description.length} characters (max: ${maxLength}). Shorten the description for better readability in skill listings.`,
+        message: `Description too long (${description.length}/${maxLength} characters)`,
       });
     }
   },

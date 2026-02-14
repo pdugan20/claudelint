@@ -22,6 +22,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when an MCP server uses the deprecated SSE transport type.',
+      rationale:
+        'SSE transport will be removed in a future release; migrate to HTTP streamable transport now to avoid breakage.',
       details:
         'The Server-Sent Events (SSE) transport for MCP servers is deprecated in favor of the ' +
         'HTTP streamable transport. This rule emits a warning whenever a server has type set to ' +
@@ -83,8 +85,7 @@ export const rule: Rule = {
 
       if (server.type === 'sse') {
         context.report({
-          message:
-            'SSE transport is deprecated. Consider using HTTP or WebSocket transport instead.',
+          message: 'SSE transport is deprecated',
         });
       }
     }

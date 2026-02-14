@@ -37,6 +37,8 @@ RUN_BUILD=1             # Always
 RUN_VALIDATOR_TESTS=0
 RUN_MARKDOWNLINT=0
 RUN_HARDCODED_COUNTS=0
+RUN_MSG_LENGTH=0
+RUN_MSG_CONTENT=0
 
 if [ "$FORCE_ALL" = "1" ]; then
   RUN_EMOJIS=1
@@ -49,6 +51,8 @@ if [ "$FORCE_ALL" = "1" ]; then
   RUN_VALIDATOR_TESTS=1
   RUN_MARKDOWNLINT=1
   RUN_HARDCODED_COUNTS=1
+  RUN_MSG_LENGTH=1
+  RUN_MSG_CONTENT=1
 else
   [ "$HAS_TS" -gt 0 ] || [ "$HAS_MD" -gt 0 ] && RUN_EMOJIS=1
   [ "$HAS_CLI" -gt 0 ] && RUN_LOGGER_SPACING=1
@@ -60,6 +64,8 @@ else
   [ "$HAS_VALIDATORS" -gt 0 ] && RUN_VALIDATOR_TESTS=1
   [ "$HAS_MD" -gt 0 ] && RUN_MARKDOWNLINT=1
   [ "$HAS_MD" -gt 0 ] && RUN_HARDCODED_COUNTS=1
+  [ "$HAS_RULES" -gt 0 ] && RUN_MSG_LENGTH=1
+  [ "$HAS_RULES" -gt 0 ] && RUN_MSG_CONTENT=1
 fi
 
 # Count enabled checks for progress display
@@ -76,9 +82,11 @@ TOTAL=0
 [ "$RUN_VALIDATOR_TESTS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MARKDOWNLINT" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_HARDCODED_COUNTS" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_MSG_LENGTH" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_MSG_CONTENT" = "1" ] && TOTAL=$((TOTAL + 1))
 
 STEP=0
-echo "Running pre-commit checks ($TOTAL of 12 enabled)..."
+echo "Running pre-commit checks ($TOTAL of 14 enabled)..."
 if [ "$FORCE_ALL" = "1" ]; then
   echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
@@ -129,28 +137,42 @@ if [ "$RUN_RULE_IMPLS" = "1" ]; then
   echo ""
 fi
 
-# 6. Rule coverage
+# 6. Message length
+if [ "$RUN_MSG_LENGTH" = "1" ]; then
+  run_check "Checking message lengths"
+  npm run check:message-length || fail_check "Message length violations found. Shorten messages and move details to fix/docs fields."
+  echo ""
+fi
+
+# 7. Message content
+if [ "$RUN_MSG_CONTENT" = "1" ]; then
+  run_check "Checking message content"
+  npm run check:message-content || fail_check "Message content anti-patterns found. Move fix instructions to fix field."
+  echo ""
+fi
+
+# 8. Rule coverage
 if [ "$RUN_RULE_COVERAGE" = "1" ]; then
   run_check "Checking rule coverage"
   npm run check:rule-coverage || fail_check "Rule coverage check failed."
   echo ""
 fi
 
-# 7. Milestone references
+# 9. Milestone references
 if [ "$RUN_MILESTONE_REFS" = "1" ]; then
   run_check "Checking for stale milestone references"
   npm run check:milestone-refs || fail_check "Stale milestone references found. Use descriptive labels instead."
   echo ""
 fi
 
-# 8. Schema sync
+# 10. Schema sync
 if [ "$RUN_SCHEMA_SYNC" = "1" ]; then
   run_check "Checking schema sync"
   npm run check:schema-sync || fail_check "Schema sync check failed."
   echo ""
 fi
 
-# 9. Build (always runs - TypeScript must compile)
+# 11. Build (always runs - TypeScript must compile)
 if [ "$RUN_BUILD" = "1" ]; then
   run_check "Building project"
   npm run build || fail_check "Build failed. Please fix TypeScript errors before committing."
@@ -159,21 +181,21 @@ if [ "$RUN_BUILD" = "1" ]; then
   echo ""
 fi
 
-# 10. Validator tests
+# 12. Validator tests
 if [ "$RUN_VALIDATOR_TESTS" = "1" ]; then
   run_check "Running validator tests"
   npx jest tests/validators --passWithNoTests || fail_check "Validator tests failed."
   echo ""
 fi
 
-# 11. Markdownlint
+# 13. Markdownlint
 if [ "$RUN_MARKDOWNLINT" = "1" ]; then
   run_check "Linting markdown files"
   npm run lint:md || fail_check "Markdownlint failed. Run 'npm run lint:md:fix' to auto-fix."
   echo ""
 fi
 
-# 12. Hardcoded rule counts
+# 14. Hardcoded rule counts
 if [ "$RUN_HARDCODED_COUNTS" = "1" ]; then
   run_check "Checking for hardcoded rule counts"
   npm run check:hardcoded-counts || fail_check "Hardcoded rule counts found. Use <RuleCount> in website/ or generic language in docs/."

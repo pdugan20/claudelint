@@ -35,7 +35,7 @@ describe('lsp-language-id-not-lowercase', () => {
               },
             },
           }),
-          errors: [{ message: 'Language ID "TypeScript" for extension ".ts"' }],
+          errors: [{ message: 'Language ID "TypeScript" is not lowercase' }],
         },
       ],
     });

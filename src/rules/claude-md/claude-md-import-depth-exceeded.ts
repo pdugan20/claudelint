@@ -39,6 +39,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Errors when the @import nesting depth exceeds the configured maximum.',
+      rationale:
+        'Deeply nested import chains are hard to follow and may indicate undetected circular dependencies.',
       details:
         'Deeply nested import chains make CLAUDE.md configurations difficult to understand and ' +
         'may indicate accidental circular dependencies that the circular-import rule has not yet ' +
@@ -111,7 +113,7 @@ async function checkImportDepth(
 ): Promise<void> {
   if (depth > maxDepth) {
     context.report({
-      message: `Import depth exceeds maximum of ${maxDepth}. Possible circular import.`,
+      message: `Import depth exceeds maximum (${maxDepth})`,
     });
     return;
   }

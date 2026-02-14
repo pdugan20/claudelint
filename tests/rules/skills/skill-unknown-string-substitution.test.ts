@@ -39,7 +39,7 @@ name: my-skill
 Use $UNKNOWN_VAR for something.`,
           errors: [
             {
-              message: 'Unknown string substitution: $UNKNOWN_VAR. Valid substitutions: $ARGUMENTS, $0-$9, ${VARIABLE}',
+              message: 'Unknown string substitution: $UNKNOWN_VAR',
             },
           ],
         },

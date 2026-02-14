@@ -47,21 +47,21 @@ describe('skill-body-missing-usage-section', () => {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\nThis skill does things.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'lacks a "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" section' }],
         },
         // Has Examples but no Usage
         {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Examples\n\nExample here.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'lacks a "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" section' }],
         },
         // Has other sections but no Usage
         {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Overview\n\nOverview.\n\n## Notes\n\nNotes here.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'lacks a "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" section' }],
         },
       ],
     });

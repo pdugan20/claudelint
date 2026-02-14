@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures language IDs in LSP extension mappings are not empty.',
+      rationale:
+        'An empty language ID prevents proper language detection, disabling syntax highlighting and diagnostics.',
       details:
         'This rule checks the values in the `extensionToLanguage` mapping of each LSP ' +
         'server entry in `lsp.json` and reports an error when a language ID is an empty ' +

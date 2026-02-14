@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when a hook configuration uses an unknown or invalid event name.',
+      rationale:
+        'Unrecognized event names mean the hook will never fire, silently failing to provide the intended automation.',
       details:
         'This rule validates that the keys in the hooks object of settings.json correspond to recognized ' +
         'Claude Code hook events. Valid events include PreToolUse, PostToolUse, PostToolUseFailure, ' +
@@ -72,7 +74,7 @@ export const rule: Rule = {
       for (const eventName of Object.keys(config.hooks as Record<string, unknown>)) {
         if (!(VALID_HOOK_EVENTS as readonly string[]).includes(eventName)) {
           context.report({
-            message: `Unknown hook event: ${eventName}. Valid events: ${VALID_HOOK_EVENTS.join(', ')}`,
+            message: `Unknown hook event: ${eventName}`,
           });
         }
       }

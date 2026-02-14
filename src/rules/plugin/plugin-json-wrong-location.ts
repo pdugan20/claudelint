@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures plugin.json is inside the .claude-plugin/ directory.',
+      rationale:
+        'A misplaced plugin.json is not discovered by Claude Code, making the plugin invisible.',
       details:
         'The plugin.json manifest must be located at .claude-plugin/plugin.json for Claude Code ' +
         'to discover the plugin. Placing it at the repository root or any other location will ' +

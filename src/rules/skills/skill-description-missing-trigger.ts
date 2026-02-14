@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when a skill description lacks trigger phrases that help the model know when to load the skill.',
+      rationale:
+        'Without trigger phrases, Claude Code cannot match user requests to the skill, making it undiscoverable.',
       details:
         'Per the Anthropic skills guide, descriptions should include trigger phrases such as ' +
         '"Use when...", "Use for...", "Use this to...", or quoted trigger words so the AI model can ' +
@@ -81,8 +83,7 @@ export const rule: Rule = {
     if (!hasUseWhen && !hasUseFor && !hasQuotedPhrases && !hasUseToOrThis) {
       const line = getFrontmatterFieldLine(context.fileContent, 'description');
       context.report({
-        message:
-          'Skill description should include trigger phrases (e.g., "Use when...", "Use for...", or quoted trigger phrases) so the model knows when to load the skill',
+        message: 'Description missing trigger phrases',
         line,
         fix: 'Add trigger phrases like "Use when the user asks to..." or "Use for validating..."',
       });

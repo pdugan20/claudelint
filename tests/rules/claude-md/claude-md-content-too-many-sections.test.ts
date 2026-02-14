@@ -73,7 +73,7 @@ Even more content.`,
           filePath: '/project/CLAUDE.md',
           errors: [
             {
-              message: 'CLAUDE.md has 25 sections',
+              message: 'Too many sections (25, max 20)',
             },
           ],
         },
@@ -87,7 +87,7 @@ Even more content.`,
           filePath: '/project/CLAUDE.md',
           errors: [
             {
-              message: '50 sections',
+              message: 'Too many sections (50, max 20)',
             },
           ],
         },
@@ -102,7 +102,7 @@ Even more content.`,
           options: { maxSections: 10 },
           errors: [
             {
-              message: '11 sections',
+              message: 'Too many sections (11, max 10)',
             },
           ],
         },

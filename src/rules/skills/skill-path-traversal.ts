@@ -29,6 +29,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Detects path traversal patterns in skill scripts that could access files outside the intended directory.',
+      rationale:
+        'Path traversal patterns are a security risk, potentially allowing access to sensitive files outside the skill.',
       details:
         'This rule scans skill script files (.sh, .py, .js, .ts) for path traversal sequences ' +
         'such as `../` or `..\\`. These patterns can be exploited to escape the skill working directory ' +

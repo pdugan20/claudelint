@@ -60,7 +60,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: 'commands" field in plugin.json is deprecated',
+              message: '"commands" field is deprecated',
             },
           ],
         },
@@ -75,7 +75,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: 'commands" field in plugin.json is deprecated',
+              message: '"commands" field is deprecated',
             },
           ],
         },
@@ -91,7 +91,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: 'commands" field in plugin.json is deprecated',
+              message: '"commands" field is deprecated',
             },
           ],
         },

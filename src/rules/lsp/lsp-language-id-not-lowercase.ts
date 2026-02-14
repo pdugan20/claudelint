@@ -25,6 +25,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-language-id-not-lowercase.md',
     docs: {
       summary: 'Warns when language IDs in LSP extension mappings are not lowercase.',
+      rationale:
+        'Mixed-case language IDs cause mismatches between editor expectations and server behavior.',
       details:
         'This rule checks the values in the `extensionToLanguage` mapping of each LSP ' +
         'server entry in `lsp.json` and warns when a language ID contains uppercase ' +
@@ -85,7 +87,7 @@ export const rule: Rule = {
     }
 
     // Check each server's extensionToLanguage mapping
-    for (const [serverName, serverConfig] of Object.entries(config)) {
+    for (const [_serverName, serverConfig] of Object.entries(config)) {
       if (!isObject(serverConfig)) {
         continue;
       }
@@ -98,14 +100,14 @@ export const rule: Rule = {
       }
 
       // Check each language ID in this server's mapping
-      for (const [extension, languageId] of Object.entries(serverConfig.extensionToLanguage)) {
+      for (const [_extension, languageId] of Object.entries(serverConfig.extensionToLanguage)) {
         if (!isString(languageId)) {
           continue;
         }
 
         if (languageId !== languageId.toLowerCase()) {
           context.report({
-            message: `Language ID "${languageId}" for extension "${extension}" in server "${serverName}" should be lowercase.`,
+            message: `Language ID "${languageId}" is not lowercase`,
           });
         }
       }

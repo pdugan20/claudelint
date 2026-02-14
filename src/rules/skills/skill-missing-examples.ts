@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Warns when SKILL.md lacks usage examples such as code blocks or an Example section.',
+      rationale:
+        'Skills without examples are harder for both users and the AI model to understand and use correctly.',
       details:
         'Skills should include concrete usage examples so users understand how to invoke them ' +
         'and what to expect. This rule checks for the presence of fenced code blocks (```) or ' +
@@ -81,9 +83,7 @@ export const rule: Rule = {
 
     if (!hasCodeBlocks && !hasExampleSection) {
       context.report({
-        message:
-          'SKILL.md lacks usage examples. ' +
-          'Add code blocks or an "Example" section to help users understand how to use this skill.',
+        message: 'Missing usage examples',
       });
     }
   },

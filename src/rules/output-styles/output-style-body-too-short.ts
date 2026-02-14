@@ -42,6 +42,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when output style body content is too short.',
+      rationale:
+        'Sparse output style definitions lack enough detail for models to apply formatting consistently.',
       details:
         'This rule checks the body of output style markdown files (everything after ' +
         'the YAML frontmatter) and warns when the content is shorter than the configured ' +
@@ -116,7 +118,7 @@ export const rule: Rule = {
 
     if (body.length < minLength) {
       context.report({
-        message: `Output style body content is very short (${body.length} characters). Consider adding more examples and guidelines. (minimum: ${minLength})`,
+        message: `Body too short (${body.length}/${minLength} characters)`,
       });
     }
   },

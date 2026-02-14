@@ -27,6 +27,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Detects circular @import chains between CLAUDE.md files that would cause infinite loops.',
+      rationale:
+        'Circular imports cause infinite recursion during import resolution, crashing the tool.',
       details:
         'When CLAUDE.md files use `@import` directives to include other files, it is possible to ' +
         'create circular dependencies where file A imports file B, which imports file A again. ' +

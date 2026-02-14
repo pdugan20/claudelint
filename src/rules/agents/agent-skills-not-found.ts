@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that skills referenced in agent frontmatter ' + 'exist on disk.',
+      rationale:
+        'Referencing a nonexistent skill causes the agent to fail when it tries to load or invoke it at runtime.',
       details:
         'This rule checks that every skill name listed in the ' +
         '`skills` array of agent frontmatter has a corresponding ' +

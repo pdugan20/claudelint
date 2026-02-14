@@ -38,6 +38,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-naming-inconsistent.md',
     docs: {
       summary: 'Warns when files in a skill directory mix different naming conventions.',
+      rationale:
+        'Mixed naming conventions (e.g. camelCase and kebab-case) reduce readability and predictability.',
       details:
         'Consistent file naming improves readability and predictability. This rule scans the skill ' +
         'directory for files using `.sh`, `.py`, `.js`, and `.md` extensions, classifies them as ' +
@@ -124,9 +126,7 @@ export const rule: Rule = {
 
         if (conventions.length > 1) {
           context.report({
-            message:
-              `Inconsistent file naming conventions detected: ${conventions.join(', ')}. ` +
-              'Choose one naming convention (kebab-case recommended) and apply it consistently.',
+            message: `Inconsistent naming: ${conventions.join(', ')}`,
           });
         }
       }

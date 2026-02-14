@@ -25,6 +25,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Enforces that the `model` field in SKILL.md frontmatter is one of the allowed values.',
+      rationale:
+        'An invalid model value causes a runtime error when Claude Code tries to invoke the skill.',
       details:
         'The `model` frontmatter field controls which Claude model executes the skill. ' +
         'Only a fixed set of values is valid: `sonnet`, `opus`, `haiku`, or `inherit`. ' +

@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when plugin components are placed in .claude-plugin/ instead of .claude/.',
+      rationale:
+        'Components in .claude-plugin/ may not be discovered by Claude Code; that directory is for metadata only.',
       details:
         'Plugin components such as skills, agents, hooks, and commands should be located in the ' +
         '.claude/ directory. The .claude-plugin/ directory is reserved for plugin metadata like ' +

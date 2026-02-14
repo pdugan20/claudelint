@@ -66,7 +66,7 @@ describe('settings-invalid-env-var', () => {
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'should be uppercase with underscores',
+              message: 'Non-standard env var name',
             },
           ],
         },
@@ -81,7 +81,7 @@ describe('settings-invalid-env-var', () => {
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'should be uppercase with underscores',
+              message: 'Non-standard env var name',
             },
           ],
         },
@@ -172,7 +172,7 @@ describe('settings-invalid-env-var', () => {
           filePath: '/test/settings.json',
           errors: [
             {
-              message: 'should be uppercase with underscores',
+              message: 'Non-standard env var name',
             },
             {
               message: 'Possible hardcoded secret',

@@ -32,6 +32,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that the plugin version follows semantic versioning format.',
+      rationale:
+        'Non-semver versions break dependency resolution and make it impossible to communicate breaking changes.',
       details:
         'This rule checks that the version field in plugin.json conforms to the Semantic Versioning ' +
         '(semver) specification. Valid formats include major.minor.patch (e.g., 1.0.0), optional ' +
@@ -94,7 +96,7 @@ export const rule: Rule = {
     // Validate semver format
     if (!SEMVER_PATTERN.test(plugin.version)) {
       context.report({
-        message: `Invalid semantic version: ${plugin.version}. Must follow semver format (e.g., 1.0.0, 2.1.3-beta)`,
+        message: `Invalid semantic version: "${plugin.version}"`,
       });
     }
   },

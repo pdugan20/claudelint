@@ -59,7 +59,7 @@ description: A test skill
           errors: [
             {
               message:
-                'Skills must use SKILL.md, not README.md. Remove README.md from the skill directory.',
+                'README.md found; skills must use SKILL.md',
             },
           ],
         },

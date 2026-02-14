@@ -41,6 +41,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures CLAUDE.md files do not exceed the maximum file size limit.',
+      rationale:
+        'Oversized files cause slow loading and may exceed context window limits, degrading AI response quality.',
       details:
         'Large CLAUDE.md files cause performance issues and may exceed context window limits ' +
         'when loaded by Claude Code. This rule triggers an error when the file reaches or exceeds ' +

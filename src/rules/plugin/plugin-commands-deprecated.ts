@@ -28,6 +28,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when plugin.json uses the deprecated commands field.',
+      rationale:
+        'The commands field is deprecated; skills provide better structure, versioning, and documentation.',
       details:
         'The "commands" field in plugin.json is deprecated and has been replaced by "skills". ' +
         'Skills provide better structure, versioning, and documentation capabilities. This rule ' +
@@ -77,9 +79,7 @@ export const rule: Rule = {
     // Warn if commands field is present and non-empty
     if (plugin.commands && plugin.commands.length > 0) {
       context.report({
-        message:
-          'The "commands" field in plugin.json is deprecated. Please migrate to "skills" instead. ' +
-          'Skills provide better structure, versioning, and documentation.',
+        message: '"commands" field is deprecated',
       });
     }
   },

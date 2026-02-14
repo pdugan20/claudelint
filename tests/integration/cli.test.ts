@@ -227,7 +227,7 @@ describe('CLI Integration Tests', () => {
 
       // Stylish format: quiet success shows only the summary line
       expect(output).toContain('No problems found.');
-      expect(output).toMatch(/Checked \d+ files? across \d+ components?/);
+      expect(output).toMatch(/Checked \d+ files? across \d+ categor(?:y|ies)/);
     });
   });
 

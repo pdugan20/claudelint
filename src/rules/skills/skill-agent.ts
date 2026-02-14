@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Requires the agent field when a skill uses fork context mode.',
+      rationale:
+        'A fork-mode skill without an agent field has no subagent to delegate to, causing a runtime failure.',
       details:
         'When a skill sets `context: fork`, it runs in a separate agent process. ' +
         'The `agent` field must be specified to tell the system which agent to use for the forked context. ' +

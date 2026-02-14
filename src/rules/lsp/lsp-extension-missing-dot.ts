@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures file extension mappings in LSP config start with a dot.',
+      rationale:
+        'Extensions without a leading dot fail to match files, preventing language server features from activating.',
       details:
         'This rule validates keys in the `extensionToLanguage` mapping of each LSP ' +
         'server entry in `lsp.json`. File extensions must begin with a dot (e.g., ' +
@@ -86,7 +88,7 @@ export const rule: Rule = {
     }
 
     // Check each server's extensionToLanguage mapping
-    for (const [serverName, serverConfig] of Object.entries(config)) {
+    for (const [_serverName, serverConfig] of Object.entries(config)) {
       if (!isObject(serverConfig)) {
         continue;
       }
@@ -102,7 +104,7 @@ export const rule: Rule = {
       for (const extension of Object.keys(serverConfig.extensionToLanguage)) {
         if (!extension.startsWith('.')) {
           context.report({
-            message: `Extension "${extension}" in server "${serverName}" must start with a dot (e.g., ".ts").`,
+            message: `Extension "${extension}" missing leading dot`,
           });
         }
       }

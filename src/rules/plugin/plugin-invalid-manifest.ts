@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that marketplace.json is well-formed and consistent with plugin.json.',
+      rationale:
+        'A mismatched version or invalid schema in marketplace.json causes marketplace publishing failures.',
       details:
         'This rule checks the marketplace.json file that accompanies a plugin.json. It verifies that ' +
         'marketplace.json contains valid JSON, conforms to the MarketplaceMetadataSchema, and that its ' +

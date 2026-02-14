@@ -57,6 +57,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates environment variable expansion syntax in MCP server configurations.',
+      rationale:
+        'Malformed variable expansions resolve to empty strings at runtime, causing silent connection failures.',
       details:
         'This rule checks that environment variable references in MCP transport fields (command, args, ' +
         'url, and env values) use proper ${VAR} expansion syntax and that variable names match a ' +
@@ -201,7 +203,7 @@ function validateVariableExpansion(
     // Validate variable name against pattern
     if (!varNameRegex.test(actualVarName)) {
       context.report({
-        message: `Environment variable name "${actualVarName}" in ${contextDesc} does not match pattern: ${pattern}`,
+        message: `Invalid environment variable name: "${actualVarName}"`,
       });
     }
   }
@@ -212,7 +214,7 @@ function validateVariableExpansion(
     // Skip if this is part of a properly formatted expansion
     if (!value.includes(`\${${match[1]}}`)) {
       context.report({
-        message: `Simple variable expansion $${match[1]} in ${contextDesc}. Consider using \${${match[1]}} format.`,
+        message: `Unbraced variable expansion: $${match[1]}`,
       });
     }
   }

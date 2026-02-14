@@ -24,6 +24,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Warns when shell scripts lack error handling such as `set -e` or `set -euo pipefail`.',
+      rationale:
+        'Without set -e, shell scripts continue after errors, producing incorrect results silently.',
       details:
         'Without proper error handling, shell scripts continue executing after a command fails, ' +
         'which can cause cascading issues and data corruption. This rule checks `.sh` and `.bash` ' +
@@ -91,9 +93,7 @@ export const rule: Rule = {
       const scriptName = filePath.split('/').pop() || filePath;
 
       context.report({
-        message:
-          `Shell script "${scriptName}" lacks error handling. ` +
-          'Add "set -euo pipefail" near the top of the script to exit on errors.',
+        message: `Missing error handling in "${scriptName}"`,
         fix: 'Add set -euo pipefail after the shebang line',
         autoFix: {
           ruleId: 'skill-shell-script-no-error-handling',

@@ -78,7 +78,7 @@ description: Test output style
 # Examples
 
 Some examples without guidelines section.`,
-          errors: [{ message: 'should include a "Guidelines" or "Format" section' }],
+          errors: [{ message: 'Missing "Guidelines" or "Format" section' }],
         },
         {
           filePath: '.claude/output-styles/test-style/test-style.md',
@@ -87,7 +87,7 @@ name: test-style
 description: Test output style
 ---
 `,
-          errors: [{ message: 'should include a "Guidelines" or "Format" section' }],
+          errors: [{ message: 'Missing "Guidelines" or "Format" section' }],
         },
       ],
     });

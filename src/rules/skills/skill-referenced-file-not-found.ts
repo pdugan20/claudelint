@@ -31,6 +31,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Errors when a relative markdown link in SKILL.md points to a file that does not exist.',
+      rationale:
+        'Broken file links cause runtime errors when the skill tries to reference non-existent resources.',
       details:
         'Skills may reference supporting files using relative markdown links like ' +
         '`[guide](./docs/guide.md)`. If those files are missing, the skill documentation is broken. ' +

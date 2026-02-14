@@ -26,6 +26,8 @@ export const rule: Rule = {
       summary:
         'Validates that hook definitions in agent configuration ' +
         'conform to the required schema.',
+      rationale:
+        'Invalid hook schemas cause silent failures or runtime errors when the agent framework processes events.',
       details:
         'This rule checks that hooks declared in agents.json have ' +
         'the correct structure and all required fields. Hook objects ' +

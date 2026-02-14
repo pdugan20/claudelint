@@ -29,6 +29,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that MCP server transport types are supported values.',
+      rationale:
+        'An unrecognized transport type prevents Claude Code from establishing any connection to the MCP server.',
       details:
         'This rule checks that the type field of each MCP server is one of the supported transport ' +
         'types: stdio, sse, http, or websocket. An unrecognized transport type will prevent Claude ' +
@@ -88,7 +90,7 @@ export const rule: Rule = {
           const transportType = server.type as string;
           if (!(VALID_MCP_TRANSPORT_TYPES as readonly string[]).includes(transportType)) {
             context.report({
-              message: `Invalid MCP transport type: ${transportType}. Must be one of: ${VALID_MCP_TRANSPORT_TYPES.join(', ')}`,
+              message: `Invalid transport type: ${transportType}`,
             });
           }
         }

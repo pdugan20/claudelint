@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that agent files include a "System Prompt" ' + 'markdown section.',
+      rationale:
+        'Without a structured system prompt section, the agent lacks clear behavioral instructions for consistent responses.',
       details:
         'This rule checks that AGENT.md files contain a heading ' +
         'matching "System Prompt" (case-insensitive, levels 1-3). ' +
@@ -83,7 +85,7 @@ export const rule: Rule = {
 
     if (!hasMarkdownSection(body, systemPromptRegex)) {
       context.report({
-        message: 'Agent should include a "System Prompt" section with detailed instructions.',
+        message: 'Missing "System Prompt" section',
       });
     }
   },

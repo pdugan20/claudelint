@@ -43,7 +43,7 @@ describe('skill-missing-comments', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'no explanatory comments',
+              message: 'No comments in',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-missing-comments', () => {
           filePath: '/test/long-script.sh',
           errors: [
             {
-              message: 'no explanatory comments',
+              message: 'No comments in',
             },
           ],
         },

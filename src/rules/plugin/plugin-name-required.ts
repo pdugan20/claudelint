@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Requires that plugin.json contains a non-empty name field.',
+      rationale:
+        'A missing name prevents the plugin from being discovered, installed, or referenced by Claude Code.',
       details:
         'This rule checks that the plugin.json file has a name property that is a non-empty string. ' +
         'The plugin name is the primary identifier used in the marketplace and by Claude Code when ' +

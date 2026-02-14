@@ -28,6 +28,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when file paths referenced in settings.json do not exist.',
+      rationale:
+        'Missing file paths cause runtime errors when Claude Code attempts to load the referenced resource.',
       details:
         'This rule validates that file paths in `settings.json` properties such as ' +
         '`apiKeyHelper` and `outputStyle` point to files that actually exist on disk. ' +

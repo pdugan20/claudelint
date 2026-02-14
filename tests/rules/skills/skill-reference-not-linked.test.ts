@@ -95,7 +95,7 @@ description: Test skill
 See \`references/size-optimization.md\` for details.`,
           errors: [
             {
-              message: 'should be a markdown link',
+              message: 'not linked',
             },
           ],
         },
@@ -119,7 +119,7 @@ description: Test skill
 Check \`examples/bar.sh\` for usage patterns.`,
           errors: [
             {
-              message: 'should be a markdown link',
+              message: 'not linked',
             },
           ],
         },
@@ -143,7 +143,7 @@ description: Test skill
 Run \`scripts/deploy.sh\` to deploy.`,
           errors: [
             {
-              message: 'should be a markdown link',
+              message: 'not linked',
             },
           ],
         },
@@ -167,7 +167,7 @@ description: Test skill
 Use \`templates/config.yaml\` as a starting point.`,
           errors: [
             {
-              message: 'should be a markdown link',
+              message: 'not linked',
             },
           ],
         },

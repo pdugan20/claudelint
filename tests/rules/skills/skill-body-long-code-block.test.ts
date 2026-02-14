@@ -87,7 +87,7 @@ ${Array.from({ length: 25 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
 \`\`\`
 `,
           filePath,
-          errors: [{ message: 'Code block is 25 lines (max 20)' }],
+          errors: [{ message: 'Code block too long (25/20 lines)' }],
         },
         // Multiple code blocks, only long one flagged
         {
@@ -107,7 +107,7 @@ ${Array.from({ length: 30 }, (_, i) => `"field${i}": "value${i}"`).join(',\n')}
 \`\`\`
 `,
           filePath,
-          errors: [{ message: 'Code block is 30 lines (max 20)' }],
+          errors: [{ message: 'Code block too long (30/20 lines)' }],
         },
       ],
     });

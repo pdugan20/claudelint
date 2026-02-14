@@ -29,6 +29,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when a SKILL.md body exceeds the maximum word count.',
+      rationale:
+        'Excessive word counts waste context window tokens and reduce focus on actionable instructions.',
       details:
         'This rule counts the words in the body of SKILL.md files (everything after the YAML frontmatter) ' +
         'and warns when the count exceeds a configurable threshold. ' +
@@ -98,7 +100,7 @@ export const rule: Rule = {
 
     if (wordCount > maxWords) {
       context.report({
-        message: `SKILL.md body is ${wordCount} words (max: ${maxWords}). Move detailed content to reference files for progressive disclosure.`,
+        message: `Body too long (${wordCount}/${maxWords} words)`,
       });
     }
   },

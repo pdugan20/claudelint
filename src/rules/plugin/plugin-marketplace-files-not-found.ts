@@ -28,6 +28,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Verifies that files referenced in marketplace.json actually exist on disk.',
+      rationale:
+        'Missing marketplace files cause broken links or images in the plugin marketplace listing.',
       details:
         'Plugins can include a marketplace.json file that references assets such as an icon, ' +
         'screenshots, a readme, and a changelog. This rule checks that each referenced file path ' +

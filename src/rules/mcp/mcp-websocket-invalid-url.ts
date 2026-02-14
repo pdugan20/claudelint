@@ -23,6 +23,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that MCP WebSocket transport URLs are well-formed.',
+      rationale:
+        'An invalid URL prevents Claude Code from establishing a WebSocket connection to the MCP server.',
       details:
         'This rule checks that the url field of MCP servers with type "websocket" is a valid URL ' +
         'by attempting to parse it with the URL constructor. URLs containing variable expansions ' +

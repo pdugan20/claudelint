@@ -61,6 +61,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-allowed-tools-not-used.md',
     docs: {
       summary: 'Warns when tools declared in allowed-tools are never referenced in the skill body.',
+      rationale:
+        'Unused allowed-tools entries add noise and suggest the skill is misconfigured or incomplete.',
       details:
         'This rule checks each tool listed in the `allowed-tools` frontmatter array against the SKILL.md body content. ' +
         'If a tool name is never mentioned in the body, it is likely stale configuration left over from a previous version. ' +
@@ -113,9 +115,7 @@ export const rule: Rule = {
       const baseName = getBaseToolName(tool);
       if (!isToolReferencedInBody(baseName, body)) {
         context.report({
-          message:
-            `Tool "${tool}" is listed in allowed-tools but never referenced in the skill body. ` +
-            'Remove unused tools or add usage instructions.',
+          message: `Unused tool in allowed-tools: "${tool}"`,
           line,
         });
       }

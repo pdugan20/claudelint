@@ -43,7 +43,7 @@ describe('skill-dangerous-command', () => {
           filePath: '/test/dangerous.sh',
           errors: [
             {
-              message: 'Dangerous command detected',
+              message: 'Dangerous command in',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-dangerous-command', () => {
           filePath: '/test/forkbomb.sh',
           errors: [
             {
-              message: 'Dangerous command detected',
+              message: 'Dangerous command in',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('skill-dangerous-command', () => {
           filePath: '/test/wipe.sh',
           errors: [
             {
-              message: 'Dangerous command detected',
+              message: 'Dangerous command in',
             },
           ],
         },
@@ -76,7 +76,7 @@ describe('skill-dangerous-command', () => {
           filePath: '/test/format.sh',
           errors: [
             {
-              message: 'Dangerous command detected',
+              message: 'Dangerous command in',
             },
           ],
         },
@@ -87,7 +87,7 @@ describe('skill-dangerous-command', () => {
           filePath: '/test/write.sh',
           errors: [
             {
-              message: 'Dangerous command detected',
+              message: 'Dangerous command in',
             },
           ],
         },

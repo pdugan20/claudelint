@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when the deprecated .claude/commands directory is detected.',
+      rationale:
+        'Commands are deprecated and no longer receive updates; skills provide frontmatter, versioning, and better tooling.',
       details:
         'Commands were the original way to add custom slash commands to Claude Code, ' +
         'but they have been superseded by Skills. Skills provide better structure with ' +
@@ -78,10 +80,7 @@ export const rule: Rule = {
     const exists = await directoryExists(commandsDir);
     if (exists) {
       context.report({
-        message:
-          'Commands directory (.claude/commands) is deprecated. Please migrate to Skills (.claude/skills). ' +
-          'Skills provide better structure, versioning, and documentation. ' +
-          'See: https://docs.anthropic.com/claude-code/skills',
+        message: 'Commands directory is deprecated',
       });
     }
   },

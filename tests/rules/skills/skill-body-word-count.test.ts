@@ -44,8 +44,7 @@ description: A test skill
 ${words}`,
           errors: [
             {
-              message:
-                'SKILL.md body is 5001 words (max: 5000). Move detailed content to reference files for progressive disclosure.',
+              message: 'Body too long (5001/5000 words)',
             },
           ],
         },

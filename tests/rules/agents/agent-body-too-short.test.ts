@@ -50,7 +50,7 @@ description: Test agent
 ---
 
 Short body.`,
-          errors: [{ message: 'Agent body content is very short' }],
+          errors: [{ message: 'Body too short' }],
         },
         {
           filePath: '.claude/agents/test-agent/AGENT.md',
@@ -61,7 +61,7 @@ description: Test agent
 ---
 
 This is a medium-length body that is longer than 50 characters.`,
-          errors: [{ message: 'minimum: 100' }],
+          errors: [{ message: '/100 characters)' }],
         },
         {
           filePath: '.claude/agents/test-agent/AGENT.md',
@@ -70,7 +70,7 @@ name: test-agent
 description: Test agent
 ---
 `,
-          errors: [{ message: 'Agent body content is very short' }],
+          errors: [{ message: 'Body too short' }],
         },
       ],
     });

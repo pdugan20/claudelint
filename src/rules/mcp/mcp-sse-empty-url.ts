@@ -21,6 +21,7 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures that MCP SSE transport servers have a non-empty URL.',
+      rationale: 'A blank URL prevents Claude Code from connecting to the SSE endpoint.',
       details:
         'This rule checks that MCP servers configured with type "sse" include a url field that is ' +
         'present and non-empty. A missing or blank URL means Claude Code cannot connect to the ' +

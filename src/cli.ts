@@ -26,6 +26,7 @@ import { registerMigrateCommand } from './cli/commands/migrate';
 import { registerCacheClearCommand } from './cli/commands/cache-clear';
 import { registerInstallPluginCommand } from './cli/commands/install-plugin';
 import { registerWatchCommand } from './cli/commands/watch';
+import { registerExplainCommand } from './cli/commands/explain';
 
 // Read version from package.json
 const packageJsonPath = join(__dirname, '../package.json');
@@ -61,6 +62,7 @@ registerMigrateCommand(program);
 registerCacheClearCommand(program);
 registerInstallPluginCommand(program);
 registerWatchCommand(program);
+registerExplainCommand(program);
 
 // Parse command line arguments
 program.parse();

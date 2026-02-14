@@ -31,6 +31,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates environment variable naming and detects potential hardcoded secrets.',
+      rationale:
+        'Malformed env var names fail silently at runtime; hardcoded secrets risk accidental exposure in version control.',
       details:
         'This rule checks the `env` object in `settings.json` for three issues: ' +
         '(1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` ' +
@@ -108,7 +110,7 @@ export const rule: Rule = {
       // Validate key format (should be uppercase with underscores)
       if (!ENV_VAR_NAME_PATTERN.test(key)) {
         context.report({
-          message: `Environment variable name should be uppercase with underscores: ${key}`,
+          message: `Non-standard env var name: ${key}`,
         });
       }
 
@@ -128,7 +130,7 @@ export const rule: Rule = {
       ) {
         if (!value.startsWith('${') && value.length > 10) {
           context.report({
-            message: `Possible hardcoded secret in environment variable: ${key}. Consider using variable expansion.`,
+            message: `Possible hardcoded secret: ${key}`,
           });
         }
       }

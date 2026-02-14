@@ -28,6 +28,8 @@ export const rule: Rule = {
       summary:
         'Detects import paths that differ only in letter case, causing conflicts on ' +
         'case-insensitive filesystems.',
+      rationale:
+        'Case-only filename conflicts cause different behavior on macOS/Windows vs. Linux, breaking cross-platform teams.',
       details:
         'On case-insensitive filesystems like macOS (HFS+/APFS) and Windows (NTFS), files named ' +
         '`Rules.md` and `rules.md` resolve to the same file. However, on Linux (ext4), they are ' +
@@ -107,9 +109,7 @@ async function checkCaseSensitivity(
 
     if (existingPath && existingPath !== resolvedPath) {
       context.report({
-        message:
-          `Case-sensitive filename collision detected: "${basename(resolvedPath)}" and "${basename(existingPath)}" differ only in case. ` +
-          `This may cause issues on case-insensitive filesystems (macOS, Windows).`,
+        message: `Case collision: "${basename(resolvedPath)}" vs "${basename(existingPath)}"`,
         line: importInfo.line,
       });
     } else {

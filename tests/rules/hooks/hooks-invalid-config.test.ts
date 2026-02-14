@@ -151,7 +151,7 @@ describe('hooks-invalid-config', () => {
           }),
           filePath: '/test/hooks.json',
           errors: [
-            { message: 'Invalid timeout value' },
+            { message: 'Invalid timeout' },
           ],
         },
 
@@ -164,7 +164,7 @@ describe('hooks-invalid-config', () => {
           }),
           filePath: '/test/hooks.json',
           errors: [
-            { message: 'Invalid timeout value' },
+            { message: 'Invalid timeout' },
           ],
         },
 

@@ -83,7 +83,7 @@ describe('skill-description-quality', () => {
             '# Bad Skill',
           ].join('\n'),
           filePath: '/test/skills/bad-skill/SKILL.md',
-          errors: [{ message: 'should start with an action verb' }],
+          errors: [{ message: 'Should start with action verb' }],
         },
         // Description starting with article
         {
@@ -96,7 +96,7 @@ describe('skill-description-quality', () => {
             '# Bad Skill',
           ].join('\n'),
           filePath: '/test/skills/bad-skill/SKILL.md',
-          errors: [{ message: 'should start with an action verb' }],
+          errors: [{ message: 'Should start with action verb' }],
         },
         // Description too brief (under 4 words)
         {
@@ -109,7 +109,7 @@ describe('skill-description-quality', () => {
             '# Brief Skill',
           ].join('\n'),
           filePath: '/test/skills/brief-skill/SKILL.md',
-          errors: [{ message: 'too brief' }],
+          errors: [{ message: 'Description too brief' }],
         },
         // Description with both problems
         {
@@ -122,7 +122,7 @@ describe('skill-description-quality', () => {
             '# Bad Skill',
           ].join('\n'),
           filePath: '/test/skills/bad-skill/SKILL.md',
-          errors: [{ message: 'should start with an action verb' }, { message: 'too brief' }],
+          errors: [{ message: 'Should start with action verb' }, { message: 'Description too brief' }],
         },
       ],
     });

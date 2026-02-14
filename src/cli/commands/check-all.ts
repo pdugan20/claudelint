@@ -408,7 +408,7 @@ export function registerCheckAllCommand(program: Command): void {
 
           // Aggregate results, timings, and scanMetadata
           let totalFilesScanned = 0;
-          const activeComponents: string[] = [];
+          const activeCategories: string[] = [];
           const activeTimings: Record<string, number> = {};
           let fixableCount = 0;
 
@@ -423,7 +423,7 @@ export function registerCheckAllCommand(program: Command): void {
             // Track scan metadata for summary line
             if (result.scanMetadata && !result.scanMetadata.skipped) {
               totalFilesScanned += result.scanMetadata.filesScanned;
-              activeComponents.push(validatorId);
+              activeCategories.push(validatorId);
               activeTimings[validatorId] = duration;
             }
 
@@ -580,26 +580,32 @@ export function registerCheckAllCommand(program: Command): void {
             reporter.reportAllGitHub();
           } else {
             // Summary line
-            const componentStr =
-              activeComponents.length > 0
-                ? ` across ${activeComponents.length} component${activeComponents.length === 1 ? '' : 's'} (${activeComponents.join(', ')})`
+            const categoryStr =
+              activeCategories.length > 0
+                ? ` across ${activeCategories.length} ${activeCategories.length === 1 ? 'category' : 'categories'} (${activeCategories.join(', ')})`
                 : '';
             const totalProblems = totalErrors + totalWarnings;
 
             logger.newline();
             if (totalProblems === 0) {
               logger.success(
-                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${componentStr} in ${duration}ms. No problems found.`
+                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${categoryStr} in ${duration}ms. No problems found.`
               );
             } else {
               logger.log(
-                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${componentStr} in ${duration}ms.`
+                `Checked ${totalFilesScanned} file${totalFilesScanned === 1 ? '' : 's'}${categoryStr} in ${duration}ms.`
               );
               logger.error(
                 `${totalProblems} problem${totalProblems === 1 ? '' : 's'} (${totalErrors} error${totalErrors === 1 ? '' : 's'}, ${totalWarnings} warning${totalWarnings === 1 ? '' : 's'})`
               );
               if (fixableCount > 0) {
                 logger.info(`${fixableCount} potentially fixable with --fix`);
+              }
+
+              // Explain mode footer: point to Tier 3 explain subcommand
+              const explainFooter = reporter.getExplainFooter();
+              if (explainFooter) {
+                logger.log(explainFooter);
               }
             }
 

@@ -29,6 +29,8 @@ export const rule: Rule = {
       summary:
         'Validates that agent tools is a properly formatted array ' +
         'and is not used alongside disallowedTools.',
+      rationale:
+        'Using both tools and disallowedTools creates contradictory restrictions; a malformed array causes runtime errors.',
       details:
         'This rule enforces two constraints on the `tools` field ' +
         'in agent markdown frontmatter. First, `tools` must be a ' +

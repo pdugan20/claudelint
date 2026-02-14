@@ -74,7 +74,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -84,7 +84,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -94,7 +94,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -104,7 +104,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -114,7 +114,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -124,7 +124,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },
@@ -134,7 +134,7 @@ describe('skill-overly-generic-name', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'too generic (single-word verb)',
+              message: 'is too generic',
             },
           ],
         },

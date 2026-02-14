@@ -53,6 +53,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when allowed-tools entries appear to be MCP tools but lack the qualified mcp__server__tool format.',
+      rationale:
+        'Unqualified MCP tool names will not be recognized, silently preventing the tool from being available.',
       details:
         'MCP (Model Context Protocol) tools should use the fully qualified `mcp__<server>__<tool>` naming format ' +
         'in the `allowed-tools` list. Unqualified tool names can be ambiguous when multiple MCP servers ' +
@@ -109,9 +111,7 @@ export const rule: Rule = {
       // This tool entry is not a recognized built-in and not in mcp__ format.
       // It's likely an unqualified MCP tool reference.
       context.report({
-        message:
-          `Tool "${tool}" is not a recognized built-in tool. ` +
-          'If this is an MCP tool, use the qualified format: mcp__<server>__<tool>',
+        message: `Unrecognized tool: "${tool}"`,
         line,
       });
     }

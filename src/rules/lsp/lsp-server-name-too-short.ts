@@ -43,6 +43,7 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when LSP server names are too short to be descriptive.',
+      rationale: 'Short, cryptic server names make LSP configurations hard to maintain and debug.',
       details:
         'This rule checks the top-level keys in `lsp.json`, which serve as server names, ' +
         'and warns when any name is shorter than the configured minimum length. ' +
@@ -117,7 +118,7 @@ export const rule: Rule = {
     for (const serverName of Object.keys(config)) {
       if (serverName.length < minLength) {
         context.report({
-          message: `LSP server name "${serverName}" is too short (${serverName.length} characters). Use descriptive names like "typescript-language-server". (minimum: ${minLength})`,
+          message: `Server name too short (${serverName.length}/${minLength} characters): "${serverName}"`,
         });
       }
     }

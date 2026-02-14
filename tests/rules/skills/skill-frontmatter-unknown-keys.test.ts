@@ -52,8 +52,7 @@ author: John Doe
 # My Skill`,
           errors: [
             {
-              message:
-                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
+              message: 'Unknown frontmatter key: "author"',
             },
           ],
         },
@@ -77,12 +76,10 @@ priority: high
 # My Skill`,
           errors: [
             {
-              message:
-                'Unknown frontmatter key "author". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
+              message: 'Unknown frontmatter key: "author"',
             },
             {
-              message:
-                'Unknown frontmatter key "priority". Valid keys: agent, allowed-tools, argument-hint, compatibility, context, dependencies, description, disable-model-invocation, disallowed-tools, hooks, license, metadata, model, name, tags, user-invocable, version',
+              message: 'Unknown frontmatter key: "priority"',
             },
           ],
         },

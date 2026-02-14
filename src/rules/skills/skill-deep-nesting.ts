@@ -65,6 +65,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when a skill directory has excessive nesting depth.',
+      rationale:
+        'Deep directory nesting makes skill contents harder to discover and increases path complexity.',
       details:
         'This rule measures the maximum directory nesting depth within a skill directory starting from ' +
         'where the SKILL.md file resides. Deeply nested directories are harder to navigate, slower to scan, ' +
@@ -121,9 +123,7 @@ export const rule: Rule = {
 
       if (depth > maxDepth) {
         context.report({
-          message:
-            `Skill directory has ${depth} levels of nesting (>${maxDepth} is hard to navigate). ` +
-            `Consider flattening the directory structure.`,
+          message: `Nesting too deep (${depth}/${maxDepth} levels)`,
         });
       }
     } catch {

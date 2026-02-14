@@ -71,7 +71,7 @@ echo "test"
           filePath: 'CLAUDE.md',
           errors: [
             {
-              message: 'Import statement found inside code block',
+              message: 'Import inside code block',
             },
           ],
         },

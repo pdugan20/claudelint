@@ -30,6 +30,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that allowed-tools is a proper array and is not used alongside disallowed-tools.',
+      rationale:
+        'Using both allowed-tools and disallowed-tools creates conflicting permissions that are hard to reason about.',
       details:
         'This rule enforces two constraints on the `allowed-tools` frontmatter field. ' +
         'First, it must be an array of valid tool name strings. ' +

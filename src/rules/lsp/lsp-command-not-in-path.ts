@@ -25,6 +25,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-command-not-in-path.md',
     docs: {
       summary: 'Warns when LSP server commands are not in PATH or lack absolute paths.',
+      rationale:
+        'PATH-dependent commands may fail in CI, containers, or other environments with different PATH configurations.',
       details:
         'This rule checks each LSP server entry in `lsp.json` for its `command` field ' +
         'and warns when the command does not start with `/` (absolute path) or `./` ' +
@@ -106,7 +108,7 @@ export const rule: Rule = {
       // Warn if command doesn't start with / or ./
       if (!commandName.startsWith('/') && !commandName.startsWith('./')) {
         context.report({
-          message: `LSP server "${serverName}" command "${commandName}" should be in PATH or use absolute path.`,
+          message: `Command "${commandName}" not found for server "${serverName}"`,
         });
       }
     }

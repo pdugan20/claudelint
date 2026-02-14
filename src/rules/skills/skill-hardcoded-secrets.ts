@@ -49,6 +49,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Detects hardcoded API keys, tokens, passwords, and other secrets in skill files.',
+      rationale:
+        'Hardcoded secrets are exposed when the plugin is shared or published, creating a security vulnerability.',
       details:
         'This rule scans SKILL.md files and associated scripts (.sh, .bash, .py, .js, .ts) for known ' +
         'secret patterns including Anthropic, OpenAI, GitHub, AWS, Stripe, and Slack API keys, ' +
@@ -121,7 +123,7 @@ export const rule: Rule = {
 
         if (pattern.test(line)) {
           context.report({
-            message: `Hardcoded secret detected: ${name}. Use environment variables instead.`,
+            message: `Hardcoded secret: ${name}`,
             line: i + 1,
           });
           break; // One report per pattern type per file

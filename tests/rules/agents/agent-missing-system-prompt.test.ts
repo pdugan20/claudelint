@@ -64,7 +64,7 @@ description: Test agent
 # Instructions
 
 Some other content without system prompt section.`,
-          errors: [{ message: 'should include a "System Prompt" section' }],
+          errors: [{ message: 'Missing "System Prompt" section' }],
         },
         {
           filePath: '.claude/agents/test-agent/AGENT.md',
@@ -73,7 +73,7 @@ name: test-agent
 description: Test agent
 ---
 `,
-          errors: [{ message: 'should include a "System Prompt" section' }],
+          errors: [{ message: 'Missing "System Prompt" section' }],
         },
       ],
     });

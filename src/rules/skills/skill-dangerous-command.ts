@@ -41,6 +41,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Detects dangerous shell commands in skill scripts that could cause system damage or data loss.',
+      rationale:
+        'Dangerous commands like rm -rf / or chmod 777 risk data loss or security compromise when executed.',
       details:
         'This rule scans skill script files (.sh, .py, .js, .ts) for known dangerous command patterns. ' +
         'It checks for destructive operations such as `rm -rf /`, fork bombs, raw disk writes with `dd`, ' +
@@ -110,9 +112,7 @@ export const rule: Rule = {
         const scriptName = filePath.split('/').pop() || filePath;
 
         context.report({
-          message:
-            `Dangerous command detected in "${scriptName}": ${message}. ` +
-            'This command could cause data loss or system damage.',
+          message: `Dangerous command in "${scriptName}": ${message}`,
           fix: 'Remove or replace the dangerous command with a safer alternative',
         });
       }

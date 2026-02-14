@@ -31,7 +31,7 @@ function isScriptPathMissingRoot(command: string): boolean {
  * Check inline hooks object for missing plugin root
  */
 function checkInlineHooks(hooks: Record<string, unknown>, report: (msg: string) => void): void {
-  for (const [eventName, eventHooks] of Object.entries(hooks)) {
+  for (const [, eventHooks] of Object.entries(hooks)) {
     if (!Array.isArray(eventHooks)) continue;
 
     for (const hook of eventHooks) {
@@ -39,9 +39,7 @@ function checkInlineHooks(hooks: Record<string, unknown>, report: (msg: string) 
 
       if (hasProperty(hook, 'command') && isString(hook.command)) {
         if (isScriptPathMissingRoot(hook.command)) {
-          report(
-            `Hook "${eventName}" references script path without \${CLAUDE_PLUGIN_ROOT}: ${hook.command}`
-          );
+          report(`Hooks path missing \${CLAUDE_PLUGIN_ROOT}: ${hook.command}`);
         }
       }
     }
@@ -65,6 +63,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Requires plugin hook scripts to use ${CLAUDE_PLUGIN_ROOT} for portable path references.',
+      rationale:
+        'Relative paths break when the plugin is installed elsewhere; ${CLAUDE_PLUGIN_ROOT} ensures portability.',
       details:
         'Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) ' +
         'will break when the plugin is installed in a different location. This rule ensures that ' +
@@ -118,7 +118,7 @@ export const rule: Rule = {
       // If it's a path to hooks.json, check it uses CLAUDE_PLUGIN_ROOT
       if (isScriptPathMissingRoot(hooks)) {
         context.report({
-          message: `Plugin hooks path should use \${CLAUDE_PLUGIN_ROOT}: ${hooks}`,
+          message: `Hooks path missing \${CLAUDE_PLUGIN_ROOT}: ${hooks}`,
         });
       }
     } else if (isObject(hooks)) {

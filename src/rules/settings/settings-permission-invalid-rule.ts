@@ -73,6 +73,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that permission rules use correct Tool(pattern) syntax.',
+      rationale:
+        'Invalid Tool(pattern) syntax causes the permission rule to be silently ignored, leaving tools unrestricted.',
       details:
         'This rule checks the syntax of permission rule strings in settings.json. Each rule must ' +
         'be either a plain tool name like "Bash" or a tool name with a pattern like "Bash(npm run *)". ' +

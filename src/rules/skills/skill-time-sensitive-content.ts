@@ -35,6 +35,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when SKILL.md body contains time-sensitive references that will become outdated.',
+      rationale:
+        'Time-sensitive references like specific dates or versions become stale, producing incorrect guidance.',
       details:
         'Skills should contain evergreen content that remains accurate over time. References to ' +
         'specific dates ("January 15, 2025"), relative time ("last week", "this month"), or ISO ' +
@@ -109,10 +111,7 @@ export const rule: Rule = {
       for (const pattern of TIME_SENSITIVE_PATTERNS) {
         if (pattern.test(line)) {
           context.report({
-            message:
-              `Time-sensitive content detected: "${line.trim()}". ` +
-              'Avoid using specific dates or time references that become outdated. ' +
-              'Use relative terms like "recent versions" or update the content regularly.',
+            message: `Time-sensitive content: "${line.trim()}"`,
             line: i + 1,
           });
           break; // Only warn once per line

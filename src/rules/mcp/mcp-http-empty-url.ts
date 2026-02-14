@@ -21,6 +21,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures that MCP HTTP transport servers have a non-empty URL.',
+      rationale:
+        'A blank URL prevents Claude Code from connecting to the MCP server, causing silent failures at runtime.',
       details:
         'This rule checks that MCP servers configured with type "http" include a url field that is ' +
         'present and non-empty. A missing or blank URL means Claude Code cannot connect to the remote ' +

@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Provides step-by-step migration guidance from Commands to Skills.',
+      rationale:
+        'Unmigrated commands miss skill features like frontmatter, argument hints, and tool restrictions.',
       details:
         'This rule complements `commands-deprecated-directory` by providing detailed, ' +
         'actionable migration instructions when a `.claude/commands` directory is detected. ' +
@@ -81,11 +83,7 @@ export const rule: Rule = {
     const exists = await directoryExists(commandsDir);
     if (exists) {
       context.report({
-        message:
-          'To migrate: 1) Create skill directories in .claude/skills/<skill-name>, ' +
-          '2) Move command scripts to <skill-name>/<skill-name>.sh, ' +
-          '3) Add SKILL.md with frontmatter and documentation, ' +
-          '4) Update plugin.json to reference skills instead of commands',
+        message: 'Commands not yet migrated to skills',
       });
     }
   },

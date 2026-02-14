@@ -44,6 +44,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-shell-script-hardcoded-paths.md',
     docs: {
       summary: 'Warns when shell scripts contain hardcoded absolute paths that reduce portability.',
+      rationale:
+        'Hardcoded absolute paths break the skill on any machine with a different directory structure.',
       details:
         'Hardcoded absolute paths like `/Users/john/project` or `/home/deploy/app` make shell scripts ' +
         'non-portable across different systems, users, and environments. This rule scans `.sh` and ' +
@@ -121,9 +123,7 @@ export const rule: Rule = {
         }
 
         context.report({
-          message:
-            `Hardcoded path "${path}" reduces portability. ` +
-            'Use environment variables ($HOME, $PWD) or relative paths instead.',
+          message: `Hardcoded path: "${path}"`,
           line: i + 1,
         });
         return; // One warning per file is sufficient

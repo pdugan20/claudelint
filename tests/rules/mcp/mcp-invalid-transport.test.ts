@@ -82,7 +82,7 @@ describe('mcp-invalid-transport', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Invalid MCP transport type: grpc',
+              message: 'Invalid transport type: grpc',
             },
           ],
         },
@@ -98,7 +98,7 @@ describe('mcp-invalid-transport', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Invalid MCP transport type: tcp',
+              message: 'Invalid transport type: tcp',
             },
           ],
         },
@@ -117,10 +117,10 @@ describe('mcp-invalid-transport', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Invalid MCP transport type: invalid1',
+              message: 'Invalid transport type: invalid1',
             },
             {
-              message: 'Invalid MCP transport type: invalid2',
+              message: 'Invalid transport type: invalid2',
             },
           ],
         },

@@ -162,6 +162,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Checks that skill descriptions start with an action verb and include sufficient context.',
+      rationale:
+        'Low-quality descriptions make it harder for the model to determine when and how to invoke the skill.',
       details:
         'Good skill descriptions follow the pattern "[Action Verb] [what it does] [context/technology]". ' +
         'This rule performs two checks: (1) the description must start with a recognized action verb in ' +
@@ -221,9 +223,7 @@ export const rule: Rule = {
     // Check 1: starts with action verb (imperative or third-person)
     if (firstWord && !isActionVerb(firstWord)) {
       context.report({
-        message:
-          `Description should start with an action verb (e.g., "Validate", "Generate", "Run"). ` +
-          `Found: "${words[0]}"`,
+        message: `Should start with action verb, found: "${words[0]}"`,
         line,
         fix: `Rewrite to start with an imperative verb: "${description}" -> "Verb ${description}"`,
       });
@@ -232,9 +232,7 @@ export const rule: Rule = {
     // Check 2: sufficient context (at least MIN_WORD_COUNT words)
     if (words.length < MIN_WORD_COUNT) {
       context.report({
-        message:
-          `Description is too brief (${words.length} words). ` +
-          `Include what the skill does and what domain/technology it targets (at least ${MIN_WORD_COUNT} words).`,
+        message: `Description too brief (${words.length}/${MIN_WORD_COUNT} words)`,
         line,
         fix: 'Expand description to include the use case or technology context',
       });

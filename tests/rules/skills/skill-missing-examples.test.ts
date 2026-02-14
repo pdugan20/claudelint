@@ -49,7 +49,7 @@ describe('skill-missing-examples', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'lacks usage examples',
+              message: 'Missing usage examples',
             },
           ],
         },
@@ -60,7 +60,7 @@ describe('skill-missing-examples', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'lacks usage examples',
+              message: 'Missing usage examples',
             },
           ],
         },
@@ -71,7 +71,7 @@ describe('skill-missing-examples', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'lacks usage examples',
+              message: 'Missing usage examples',
             },
           ],
         },

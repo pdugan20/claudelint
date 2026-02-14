@@ -13,6 +13,7 @@ Complete reference for all claudelint commands, options, and usage patterns.
   - [validate-config](#validate-config) - Validate config file
 - [Rule Management](#rule-management)
   - [list-rules](#list-rules) - Browse available rules
+  - [explain](#explain) - Full documentation for a rule
 - [Deprecation Management](#deprecation-management)
   - [check-deprecated](#check-deprecated) - Check for deprecated rules
   - [migrate](#migrate) - Migrate deprecated rules
@@ -59,7 +60,7 @@ claudelint check-all [options]
 | `--strict` | Exit with error on any issues (errors, warnings, or info) | `false` |
 | `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
 | `--warnings-as-errors` | Treat all warnings as errors | `false` |
-| `--explain` | Show detailed explanations and fix suggestions | `false` |
+| `--explain` | Show Why: and Fix: lines under each issue (Tier 2 progressive disclosure) | `false` |
 | `--fix` | Automatically fix problems | `false` |
 | `--fix-dry-run` | Preview fixes without applying them | `false` |
 | `--fix-type <type>` | Fix `errors`, `warnings`, or `all` | `all` |
@@ -320,6 +321,53 @@ claudelint list-rules --format json
 - Severity (error, warning)
 - Fixable status
 
+### explain
+
+Display the full documentation for a specific rule, including summary, details, examples, fix instructions, and metadata. This is Tier 3 of the progressive disclosure model.
+
+**Usage:**
+
+```bash
+claudelint explain <rule-id>
+```
+
+**Arguments:**
+
+- `<rule-id>` - The ID of the rule to explain (e.g., `skill-name`, `claude-md-size-error`)
+
+**Examples:**
+
+```bash
+# Show full docs for a rule
+claudelint explain skill-frontmatter-unknown-keys
+
+# Show docs for a CLAUDE.md rule
+claudelint explain claude-md-import-missing
+```
+
+**Output includes:**
+
+- Rule title and summary
+- Detailed explanation
+- How to fix
+- Incorrect and correct examples
+- Metadata (severity, category, fixable, since version, docs URL)
+- When not to use (if applicable)
+- Related rules
+
+**Exit Codes:**
+
+- `0` - Rule found and documentation displayed
+- `1` - Rule not found (shows available rule categories)
+
+**Progressive disclosure model:**
+
+| Tier | Command | What it shows |
+|------|---------|---------------|
+| 1 | `claudelint check-all` | Problem + rule ID (table format) |
+| 2 | `claudelint check-all --explain` | Why: + Fix: lines per issue |
+| 3 | `claudelint explain <rule-id>` | Full documentation page |
+
 ## Deprecation Management
 
 ### check-deprecated
@@ -559,7 +607,7 @@ claudelint validate-claude-md [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
-| `--explain` | Show detailed explanations and fix suggestions | `false` |
+| `--explain` | Show Why: and Fix: lines under each issue (Tier 2 progressive disclosure) | `false` |
 
 **Examples:**
 

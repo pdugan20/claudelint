@@ -73,6 +73,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Errors when non-standard XML tags are found in SKILL.md content outside of code blocks.',
+      rationale:
+        'Non-standard XML tags may be interpreted as prompt structure by the AI, causing unexpected behavior.',
       details:
         'Claude interprets XML tags as structural delimiters in its prompt processing. Rogue XML-like ' +
         'tags (e.g., `<instructions>`, `<system>`) in SKILL.md can cause prompt injection or unexpected ' +
@@ -153,10 +155,7 @@ export const rule: Rule = {
       reportedTags.add(tagName);
 
       context.report({
-        message:
-          `XML tag <${tagName}> found in SKILL.md. XML tags can cause prompt injection ` +
-          'since Claude interprets them as structural delimiters. ' +
-          'Remove the tag or move it inside a code block.',
+        message: `XML tag <${tagName}> outside code block`,
       });
     }
   },

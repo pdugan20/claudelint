@@ -110,7 +110,7 @@ Content.`,
           filePath: '/project/.claude/rules/handlers.md',
           errors: [
             {
-              message: 'Use forward slashes',
+              message: 'Path pattern uses backslashes',
             },
           ],
         },

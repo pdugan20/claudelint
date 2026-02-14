@@ -43,7 +43,7 @@ describe('skill-missing-shebang', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'lacks shebang line',
+              message: 'Missing shebang in',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-missing-shebang', () => {
           filePath: '/test/empty.sh',
           errors: [
             {
-              message: 'lacks shebang line',
+              message: 'Missing shebang in',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('skill-missing-shebang', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'lacks shebang line',
+              message: 'Missing shebang in',
             },
           ],
         },

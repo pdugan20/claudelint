@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Requires plugin.json to include a non-empty description field.',
+      rationale:
+        'A missing description prevents users from understanding what the plugin does before installing it.',
       details:
         'The description field in plugin.json tells users what the plugin does. This rule ensures ' +
         'the field is present, is a string, and is not empty or whitespace-only. A clear description ' +

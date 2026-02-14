@@ -27,6 +27,8 @@ export const rule: Rule = {
       summary:
         'Validates that agent disallowedTools is a properly formatted ' +
         'array of tool name strings.',
+      rationale:
+        'A malformed disallowedTools field causes runtime errors when the agent framework parses tool restrictions.',
       details:
         'This rule enforces that the `disallowedTools` field in agent ' +
         'markdown frontmatter is a valid array of strings. Each entry ' +

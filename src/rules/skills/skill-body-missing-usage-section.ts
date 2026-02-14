@@ -22,6 +22,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-body-missing-usage-section.md',
     docs: {
       summary: 'Warns when a SKILL.md body lacks a "## Usage" section.',
+      rationale:
+        'A missing Usage section leaves users and the AI model without clear invocation instructions.',
       details:
         'A dedicated `## Usage` section helps users and AI models understand how to invoke and interact ' +
         'with the skill. This rule checks the body content of SKILL.md files for a level-2 heading that ' +
@@ -68,9 +70,7 @@ export const rule: Rule = {
 
     if (!hasUsageSection) {
       context.report({
-        message:
-          'SKILL.md body lacks a "## Usage" section. ' +
-          'Add a usage section to help users understand how to invoke this skill.',
+        message: 'Missing "## Usage" section',
         fix: 'Add a "## Usage" section with invocation examples',
       });
     }

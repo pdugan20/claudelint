@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Errors when an imported file exists but cannot be read due to permission or encoding issues.',
+      rationale:
+        'An unreadable import silently drops instructions, leaving Claude Code with incomplete project guidance.',
       details:
         'This rule complements `claude-md-import-missing` by catching a different failure mode: ' +
         'the imported file exists on disk, but reading its contents fails. Common causes include ' +

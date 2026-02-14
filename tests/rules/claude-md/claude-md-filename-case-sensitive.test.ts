@@ -80,7 +80,7 @@ describe('claude-md-filename-case-sensitive', () => {
           filePath: mainFile,
           errors: [
             {
-              message: 'Case-sensitive filename collision',
+              message: 'Case collision',
             },
           ],
         },

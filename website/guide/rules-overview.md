@@ -39,6 +39,22 @@ Auto-fixable rules include:
 - `skill-missing-version` - Adds version field to frontmatter
 - `skill-missing-changelog` - Creates CHANGELOG.md
 
+## Understanding Output
+
+claudelint uses a three-tier progressive disclosure model. Each tier shows more detail:
+
+| Tier | Command | What you see |
+|------|---------|--------------|
+| 1 (Default) | `claudelint check-all` | Problem statement + rule ID in a table |
+| 2 (Explain) | `claudelint check-all --explain` | Why: and Fix: lines under each issue |
+| 3 (Full docs) | `claudelint explain <rule-id>` | Complete documentation, examples, metadata |
+
+**Tier 1** keeps output scannable. Messages are short problem statements (under 100 characters) without fix instructions or rationale.
+
+**Tier 2** adds context. The `Why:` line explains consequences (from `docs.rationale`) and the `Fix:` line shows how to resolve it (from the `fix` field or `docs.howToFix`).
+
+**Tier 3** shows the full rule page: summary, detailed explanation, incorrect/correct examples, metadata, and related rules.
+
 ## Disabling Rules
 
 ### Per-project

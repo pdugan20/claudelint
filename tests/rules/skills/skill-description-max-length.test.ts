@@ -41,7 +41,7 @@ description: ${longDescription}
 # My Skill`,
           errors: [
             {
-              message: `Skill description is 1025 characters (max: 1024). Shorten the description for better readability in skill listings.`,
+              message: `Description too long (1025/1024 characters)`,
             },
           ],
         },

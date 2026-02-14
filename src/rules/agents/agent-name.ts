@@ -24,6 +24,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that agent names follow the lowercase-with-hyphens naming convention.',
+      rationale:
+        'Inconsistent naming breaks agent discovery and conflicts with reserved syntax in the agent framework.',
       details:
         'This rule enforces naming constraints on the name field in agent markdown frontmatter. The ' +
         'name must be lowercase with hyphens, under 64 characters, and must not contain XML tags. ' +

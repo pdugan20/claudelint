@@ -40,82 +40,122 @@ interface Line {
 const command = 'claudelint check-all --verbose';
 
 const outputLines: Line[] = [
-  { type: 'blank', html: '&nbsp;' },
+  // ── File discovery ──
   {
     type: 'section',
     html: 'claude-md <span class="dim">(3 files)</span>',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">CLAUDE.md</span>',
+    html: '  CLAUDE.md',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">src/CLAUDE.md</span>',
+    html: '  src/CLAUDE.md',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">website/CLAUDE.md</span>',
+    html: '  website/CLAUDE.md',
   },
   { type: 'blank', html: '&nbsp;' },
   {
     type: 'section',
-    html: 'skills <span class="dim">(2 files)</span>',
+    html: 'skills <span class="dim">(4 files)</span>',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">.claude/skills/deploy/SKILL.md</span>',
+    html: '  .claude/skills/deploy/SKILL.md',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">.claude/skills/test-runner/SKILL.md</span>',
+    html: '  .claude/skills/test-runner/SKILL.md',
+  },
+  {
+    type: 'detail',
+    html: '  <span class="dim">... and 2 more in tests/</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  // ── Skipped validators ──
+  {
+    type: 'detail',
+    html: 'Skipped <span class="dim">(4)</span>:',
+  },
+  {
+    type: 'detail',
+    html: '  settings  <span class="dim">no settings.json</span>',
+  },
+  {
+    type: 'detail',
+    html: '  hooks     <span class="dim">no hooks.json</span>',
+  },
+  {
+    type: 'detail',
+    html: '  mcp       <span class="dim">no .mcp.json</span>',
+  },
+  {
+    type: 'detail',
+    html: '  plugin    <span class="dim">no plugin.json</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  // ── Problems ──
+  {
+    type: 'section',
+    html: 'Problems:',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'section',
+    html: 'claude-md <span class="dim">(32ms)</span>',
   },
   { type: 'blank', html: '&nbsp;' },
   {
     type: 'detail',
-    html: 'Skipped <span class="dim">(3):</span>',
+    html: '<span class="underline">CLAUDE.md</span> <span class="dim">(1 warning)</span>',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">hooks      no hooks.json</span>',
-  },
-  {
-    type: 'detail',
-    html: '  <span class="dim">settings   no settings.json</span>',
-  },
-  {
-    type: 'detail',
-    html: '  <span class="dim">mcp        no .mcp.json</span>',
+    html: '  14  <span class="warn">warning</span>  npm script "format" not in package.json  <span class="dim">claude-md-npm-script-not-found</span>',
   },
   { type: 'blank', html: '&nbsp;' },
   {
-    type: 'pass',
-    html: '<span class="check">&#10003;</span> Skills Validator <span class="dim">(58ms)</span>',
-  },
-  {
-    type: 'detail',
-    html: '<span class="cross">&#10007;</span> <span class="err">Error: Skill directory lacks CHANGELOG.md</span> <span class="dim">[skill-missing-changelog]</span>',
-  },
-  {
-    type: 'detail',
-    html: '  <span class="dim">Fix: Create CHANGELOG.md</span>',
-  },
-  {
-    type: 'detail',
-    html: '<span class="warn-icon">!</span> <span class="warn">Warning: Skill name "deploy" is too generic</span> <span class="dim">[skill-overly-generic-name]</span>',
-  },
-  {
-    type: 'detail',
-    html: '  <span class="dim">Fix: Use descriptive names like "deploy-app"</span>',
+    type: 'section',
+    html: 'skills <span class="dim">(58ms)</span>',
   },
   { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'detail',
+    html: '<span class="underline">.claude/skills/deploy/SKILL.md</span> <span class="dim">(1 error, 2 warnings)</span>',
+  },
+  {
+    type: 'detail',
+    html: '  0  <span class="err">error</span>    Name "deploy" is overly generic  <span class="dim">skill-overly-generic-name</span>',
+  },
+  {
+    type: 'detail',
+    html: '  3  <span class="warn">warning</span>  Description too brief (3/5 words)  <span class="dim">skill-description-quality</span>',
+  },
+  {
+    type: 'detail',
+    html: '  3  <span class="warn">warning</span>  Description missing trigger phrases  <span class="dim">skill-description-missing-trigger</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'detail',
+    html: '<span class="underline">.claude/skills/test-runner/SKILL.md</span> <span class="dim">(1 warning)</span>',
+  },
+  {
+    type: 'detail',
+    html: '  0  <span class="warn">warning</span>  Missing "## Usage" section  <span class="dim">skill-body-missing-usage-section</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  // ── Summary + timing ──
   {
     type: 'summary',
-    html: 'Checked 5 files across 2 components <span class="dim">(claude-md, skills)</span> in 72ms.',
+    html: 'Checked 7 files across 2 categories <span class="dim">(claude-md, skills)</span> in 72ms.',
   },
   {
     type: 'summary',
-    html: '<span class="err">1 problem</span> (1 error, 1 warning)',
+    html: '<span class="err">5 problems</span> (1 error, 4 warnings)',
   },
   { type: 'blank', html: '&nbsp;' },
   {
@@ -124,11 +164,11 @@ const outputLines: Line[] = [
   },
   {
     type: 'detail',
-    html: '  <span class="dim">claude-md  41ms</span>',
+    html: '  claude-md  32ms',
   },
   {
     type: 'detail',
-    html: '  <span class="dim">skills     58ms</span>',
+    html: '  skills     58ms',
   },
 ];
 
@@ -159,7 +199,7 @@ function startAnimation() {
   const typingSpeed = 60;
   const initialPause = 200;
   const enterPause = 300;
-  const outputSpeed = 80;
+  const outputSpeed = 60;
 
   // Phase 0: Show prompt with cursor
   animationStarted.value = true;
@@ -343,6 +383,11 @@ onUnmounted(() => {
 
 .terminal-line :deep(.dim) {
   color: #5c6370;
+}
+
+.terminal-line :deep(.underline) {
+  text-decoration: underline;
+  color: #e5e5e5;
 }
 
 .terminal-cursor {

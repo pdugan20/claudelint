@@ -43,7 +43,7 @@ describe('skill-eval-usage', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'uses "eval" command',
+              message: '"eval" used in "script.sh"',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-eval-usage', () => {
           filePath: '/test/script.py',
           errors: [
             {
-              message: 'uses eval() or exec()',
+              message: 'eval()/exec() used in "script.py"',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('skill-eval-usage', () => {
           filePath: '/test/script.py',
           errors: [
             {
-              message: 'uses eval() or exec()',
+              message: 'eval()/exec() used in "script.py"',
             },
           ],
         },
@@ -76,7 +76,7 @@ describe('skill-eval-usage', () => {
           filePath: '/test/dangerous.sh',
           errors: [
             {
-              message: 'uses "eval" command',
+              message: '"eval" used in "dangerous.sh"',
             },
           ],
         },

@@ -22,6 +22,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures that MCP stdio transport servers have a non-empty command field.',
+      rationale:
+        'Without a valid command, the stdio MCP server cannot be started, causing a runtime failure.',
       details:
         'This rule validates that every MCP server using the stdio transport has a command property ' +
         'that is present, is a string, and is not empty or whitespace-only. A server is considered ' +

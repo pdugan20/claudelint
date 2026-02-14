@@ -28,6 +28,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that the agent name in frontmatter matches its ' + 'parent directory name.',
+      rationale:
+        'A name/directory mismatch prevents agent discovery, causing the agent to not appear when invoked by name.',
       details:
         'This rule checks that the `name` field in AGENT.md ' +
         'frontmatter exactly matches the name of the directory ' +

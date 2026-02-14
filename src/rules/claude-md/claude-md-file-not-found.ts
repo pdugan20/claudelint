@@ -22,6 +22,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures the specified CLAUDE.md file exists at the expected path.',
+      rationale:
+        'Without a CLAUDE.md file, Claude Code operates with no project-level guidance, reducing quality of assistance.',
       details:
         'This rule verifies that the CLAUDE.md file targeted for linting actually exists on ' +
         'disk. Without a CLAUDE.md file, Claude Code has no project-level instructions to load, ' +

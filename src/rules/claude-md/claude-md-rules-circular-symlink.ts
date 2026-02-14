@@ -42,6 +42,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Detects circular symlinks in import paths that would cause infinite resolution loops.',
+      rationale:
+        'Circular symlinks cause infinite recursion during import resolution, hanging or crashing the tool.',
       details:
         'Symbolic links can create cycles where a symlink points to a path that eventually ' +
         'resolves back to itself. When Claude Code attempts to resolve `@import` directives, a ' +

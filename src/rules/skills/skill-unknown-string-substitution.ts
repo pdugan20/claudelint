@@ -23,6 +23,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-unknown-string-substitution.md',
     docs: {
       summary: 'Warns when SKILL.md contains unrecognized string substitution patterns.',
+      rationale:
+        'Unrecognized substitutions are passed through literally, producing broken commands at runtime.',
       details:
         'Skills support a limited set of string substitution variables: `$ARGUMENTS`, positional ' +
         'parameters `$0` through `$9`, and `${VARIABLE}` syntax. Other `$UPPERCASE` patterns outside ' +
@@ -88,9 +90,7 @@ export const rule: Rule = {
       // Allow $ARGUMENTS and $0-$9 patterns
       if (!validSubstitutions.includes(substitution) && !/^\$\d+$/.test(substitution)) {
         context.report({
-          message:
-            `Unknown string substitution: ${substitution}. ` +
-            `Valid substitutions: $ARGUMENTS, $0-$9, \${VARIABLE}`,
+          message: `Unknown string substitution: ${substitution}`,
         });
       }
     }

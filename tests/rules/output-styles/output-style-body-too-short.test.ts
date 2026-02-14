@@ -42,7 +42,7 @@ description: Test output style
 ---
 
 Short body.`,
-          errors: [{ message: 'Output style body content is very short' }],
+          errors: [{ message: 'Body too short' }],
         },
         {
           filePath: '.claude/output-styles/test-style/test-style.md',
@@ -53,7 +53,7 @@ description: Test output style
 ---
 
 This is a medium-length body that is longer than 50 characters but not 150.`,
-          errors: [{ message: 'minimum: 150' }],
+          errors: [{ message: '/150 characters)' }],
         },
         {
           filePath: '.claude/output-styles/test-style/test-style.md',
@@ -62,7 +62,7 @@ name: test-style
 description: Test output style
 ---
 `,
-          errors: [{ message: 'Output style body content is very short' }],
+          errors: [{ message: 'Body too short' }],
         },
       ],
     });

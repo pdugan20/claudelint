@@ -38,6 +38,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when a SKILL.md body exceeds the maximum number of lines.',
+      rationale:
+        'Overly long skill bodies consume excessive context window space and slow down skill loading.',
       details:
         'This rule checks the body content of SKILL.md files (everything after the YAML frontmatter) ' +
         'and warns when it exceeds a configurable line count threshold. ' +
@@ -109,9 +111,7 @@ export const rule: Rule = {
     // Check if body is too long
     if (lines.length > maxLines) {
       context.report({
-        message:
-          `SKILL.md body is very long (${lines.length} lines). ` +
-          'Consider moving detailed documentation to the references/ directory and linking to it for progressive disclosure.',
+        message: `Body too long (${lines.length} lines)`,
       });
     }
   },

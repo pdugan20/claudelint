@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that the dependencies field in SKILL.md frontmatter is a proper array of strings.',
+      rationale:
+        'A malformed dependencies field prevents proper dependency resolution and skill loading order.',
       details:
         'The `dependencies` field declares other skills or packages that this skill depends on. ' +
         'It must be a YAML array of strings. Malformed values (e.g., a single string, a number, or nested objects) ' +

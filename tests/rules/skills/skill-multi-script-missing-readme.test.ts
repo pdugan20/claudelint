@@ -82,7 +82,7 @@ Test skill with ${scriptCount} scripts.`
     const content = await require('fs/promises').readFile(filePath, 'utf-8');
     const errors = await runRule(filePath, content);
     expect(errors).toHaveLength(1);
-    expect(errors[0].message).toContain('Skill has 4 scripts but no README.md');
+    expect(errors[0].message).toContain('4 scripts but no README.md');
   });
 
   it('should respect custom maxScripts option', async () => {
@@ -90,7 +90,7 @@ Test skill with ${scriptCount} scripts.`
     const content = await require('fs/promises').readFile(filePath, 'utf-8');
     const errors = await runRule(filePath, content, { maxScripts: 1 });
     expect(errors).toHaveLength(1);
-    expect(errors[0].message).toContain('threshold: 1');
+    expect(errors[0].message).toContain('2 scripts but no README.md');
   });
 
   it('should count different script extensions', async () => {
@@ -120,7 +120,7 @@ Test skill with mixed scripts.`
     const content = await require('fs/promises').readFile(skillMdPath, 'utf-8');
     const errors = await runRule(skillMdPath, content);
     expect(errors).toHaveLength(1);
-    expect(errors[0].message).toContain('Skill has 4 scripts but no README.md');
+    expect(errors[0].message).toContain('4 scripts but no README.md');
   });
 
   it('should skip validation for non-SKILL.md files', async () => {

@@ -37,9 +37,9 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      // ESLint-style file grouping: file header, then indented issue
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('error'));
+      // ESLint-style file grouping: file header with count, then indented issue
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('test.md'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 error'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test error'));
     });
 
@@ -58,9 +58,9 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      // ESLint-style file grouping: file header, then indented issue
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md');
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('warning'));
+      // ESLint-style file grouping: file header with count, then indented issue
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('test.md'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('1 warning'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Test warning'));
     });
 
@@ -97,12 +97,81 @@ describe('Reporter', () => {
 
       reporter.report(result, 'Test');
 
-      // All output goes to console.log
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Why this matters:'));
+      // All output goes to console.log with Tier 2 labels
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Why:'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('This is why it matters'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('How to fix:'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('This is how to fix it'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Fix: Apply this fix'));
+      // Fix: uses issue.fix (rule-specific) over issue.howToFix (docs fallback)
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Fix:'));
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Apply this fix'));
+    });
+
+    it('should use howToFix as Fix: fallback when no issue.fix', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, explain: true });
+
+      const result: ValidationResult = {
+        errors: [
+          {
+            message: 'Test error',
+            severity: 'error',
+            ruleId: 'claude-md-size-error',
+            howToFix: 'General fix instructions',
+          },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('Fix:');
+      expect(allOutput).toContain('General fix instructions');
+    });
+
+    it('should omit Why: line when no explanation available', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, explain: true });
+
+      const result: ValidationResult = {
+        errors: [
+          {
+            message: 'Test error',
+            severity: 'error',
+            ruleId: 'claude-md-size-error',
+            fix: 'Apply this fix',
+          },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).not.toContain('Why:');
+      expect(allOutput).toContain('Fix:');
+    });
+
+    it('should omit Fix: line when no fix or howToFix available', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, explain: true });
+
+      const result: ValidationResult = {
+        errors: [
+          {
+            message: 'Test error',
+            severity: 'error',
+            ruleId: 'claude-md-size-error',
+            explanation: 'This is why it matters',
+          },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('Why:');
+      expect(allOutput).not.toContain('Fix:');
     });
   });
 
@@ -350,6 +419,191 @@ describe('Reporter', () => {
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 1'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 2'));
       expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Warning 3'));
+    });
+  });
+
+  describe('text-table formatting', () => {
+    beforeEach(() => {
+      reporter = new Reporter({ format: 'stylish', color: false });
+    });
+
+    it('should align columns consistently with text-table', () => {
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Short message', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'A longer message with more text', file: '/test/file.md', line: 100, severity: 'error', ruleId: 'claude-md-size-warning' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      // Both lines should contain the rule ID (text-table aligns them)
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('claude-md-size-error');
+      expect(allOutput).toContain('claude-md-size-warning');
+      // Line numbers should be right-aligned (100 pushes the column wider than 5)
+      expect(allOutput).toMatch(/\s+5\s+error/);
+      expect(allOutput).toMatch(/100\s+error/);
+    });
+
+    it('should handle mixed line-number and no-line-number issues in same file', () => {
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Has line', file: '/test/file.md', line: 10, severity: 'error', ruleId: 'claude-md-size-error' },
+        ],
+        warnings: [
+          { message: 'No line', file: '/test/file.md', severity: 'warning', ruleId: 'claude-md-size-warning' },
+        ],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('Has line');
+      expect(allOutput).toContain('No line');
+      // Both should have rule IDs aligned
+      expect(allOutput).toContain('claude-md-size-error');
+      expect(allOutput).toContain('claude-md-size-warning');
+    });
+
+    it('should truncate long messages at 80 characters', () => {
+      const longMessage = 'A'.repeat(100);
+      const result: ValidationResult = {
+        errors: [
+          { message: longMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size-error' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      // Should be truncated with "..."
+      expect(allOutput).toContain('...');
+      // Should NOT contain the full 100-char message
+      expect(allOutput).not.toContain(longMessage);
+    });
+
+    it('should not truncate messages under 80 characters', () => {
+      const shortMessage = 'This is a short message';
+      const result: ValidationResult = {
+        errors: [
+          { message: shortMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size-error' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain(shortMessage);
+    });
+
+    it('should align collapse lines as table rows', () => {
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Error 1', file: '/test/file.md', line: 1, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 2', file: '/test/file.md', line: 2, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 3', file: '/test/file.md', line: 3, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 4', file: '/test/file.md', line: 4, severity: 'error', ruleId: 'claude-md-import-missing' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      // First 2 shown individually
+      expect(allOutput).toContain('Error 1');
+      expect(allOutput).toContain('Error 2');
+      // Remaining collapsed
+      expect(allOutput).toContain('... and 2 more claude-md-import-missing');
+      // 3rd and 4th not shown individually
+      expect(allOutput).not.toContain('Error 3');
+      expect(allOutput).not.toContain('Error 4');
+    });
+
+    it('should deduplicate identical issues', () => {
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      // Should only appear once
+      const matches = allOutput.match(/Same error/g);
+      expect(matches).toHaveLength(1);
+    });
+
+    it('should not show Fix: labels in default output', () => {
+      const result: ValidationResult = {
+        errors: [
+          {
+            message: 'Test error',
+            file: '/test/file.md',
+            severity: 'error',
+            ruleId: 'claude-md-size-error',
+            fix: 'Do something different',
+          },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('Test error');
+      expect(allOutput).not.toContain('Fix:');
+    });
+
+    it('should show Fix: labels in explain mode', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, explain: true });
+
+      const result: ValidationResult = {
+        errors: [
+          {
+            message: 'Test error',
+            file: '/test/file.md',
+            severity: 'error',
+            ruleId: 'claude-md-size-error',
+            fix: 'Do something different',
+          },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      reporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      expect(allOutput).toContain('Fix:');
+      expect(allOutput).toContain('Do something different');
+    });
+  });
+
+  describe('getExplainFooter', () => {
+    it('should return footer hint when explain mode is enabled', () => {
+      reporter = new Reporter({ format: 'stylish', color: false, explain: true });
+      const footer = reporter.getExplainFooter();
+      expect(footer).toBe("Run 'claudelint explain <rule-id>' for detailed rule documentation.");
+    });
+
+    it('should return null when explain mode is not enabled', () => {
+      reporter = new Reporter({ format: 'stylish', color: false });
+      expect(reporter.getExplainFooter()).toBeNull();
     });
   });
 

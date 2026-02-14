@@ -25,6 +25,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when an output style lacks a Guidelines or Format section.',
+      rationale:
+        'Without a structured guidelines section, style definitions are ambiguous and hard for models to apply.',
       details:
         'This rule checks the body of output style markdown files for a heading ' +
         'that matches "Guidelines", "Rules", or "Format" (case-insensitive, headings ' +
@@ -89,7 +91,7 @@ export const rule: Rule = {
 
     if (!hasMarkdownSection(body, guidelinesRegex)) {
       context.report({
-        message: 'Output style should include a "Guidelines" or "Format" section.',
+        message: 'Missing "Guidelines" or "Format" section',
       });
     }
   },

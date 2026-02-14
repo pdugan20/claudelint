@@ -37,6 +37,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when code blocks in a SKILL.md body exceed a configurable line threshold.',
+      rationale:
+        'Oversized code blocks bloat the skill payload and waste context window tokens during execution.',
       details:
         'This rule scans the body of SKILL.md files for fenced code blocks (triple backticks) and ' +
         'reports any that exceed the maximum line count. Long code blocks inflate the skill file size, ' +
@@ -120,9 +122,7 @@ export const rule: Rule = {
           // End of code block — check length
           if (codeBlockLineCount > maxLines) {
             context.report({
-              message:
-                `Code block is ${codeBlockLineCount} lines (max ${maxLines}). ` +
-                'Move long code examples to the references/ directory.',
+              message: `Code block too long (${codeBlockLineCount}/${maxLines} lines)`,
               line: frontmatterLines + codeBlockStart + 1,
             });
           }

@@ -43,7 +43,7 @@ describe('skill-body-too-long', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'body is very long',
+              message: 'Body too long',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-body-too-long', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'body is very long',
+              message: 'Body too long',
             },
           ],
         },
@@ -66,7 +66,7 @@ describe('skill-body-too-long', () => {
           options: { maxLines: 200 },
           errors: [
             {
-              message: 'body is very long',
+              message: 'Body too long',
             },
           ],
         },

@@ -25,6 +25,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that agent skills is a properly formatted array ' + 'of skill name strings.',
+      rationale:
+        'A malformed skills array prevents the agent framework from correctly resolving and loading skill definitions.',
       details:
         'This rule enforces that the `skills` field in agent ' +
         'markdown frontmatter is a valid array of strings. Each ' +

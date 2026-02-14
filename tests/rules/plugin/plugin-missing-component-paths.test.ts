@@ -52,7 +52,7 @@ describe('plugin-missing-component-paths', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"skills/validate-all" should start with "./"',
+              message: 'skills path missing "./" prefix: "skills/validate-all"',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('plugin-missing-component-paths', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"skills" should start with "./"',
+              message: 'skills path missing "./" prefix: "skills"',
             },
           ],
         },
@@ -79,10 +79,10 @@ describe('plugin-missing-component-paths', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: 'skills path "skills/lint"',
+              message: 'skills path missing "./" prefix: "skills/lint"',
             },
             {
-              message: 'agents path "agents/reviewer"',
+              message: 'agents path missing "./" prefix: "agents/reviewer"',
             },
           ],
         },
@@ -95,7 +95,7 @@ describe('plugin-missing-component-paths', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"skills/invalid" should start with "./"',
+              message: 'skills path missing "./" prefix: "skills/invalid"',
             },
           ],
         },

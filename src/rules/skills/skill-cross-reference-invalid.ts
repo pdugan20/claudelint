@@ -23,6 +23,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-cross-reference-invalid.md',
     docs: {
       summary: 'Validates that cross-references between skills point to SKILL.md files that exist.',
+      rationale:
+        'Broken cross-references lead to dead links and confuse users trying to navigate between skills.',
       details:
         'Skills can link to other skills using relative markdown links (e.g., `[Other Skill](../other/SKILL.md)`). ' +
         'This rule checks that each cross-reference target actually exists on disk. Broken cross-references ' +

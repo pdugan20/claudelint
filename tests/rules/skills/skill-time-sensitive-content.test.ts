@@ -43,7 +43,7 @@ describe('skill-time-sensitive-content', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Time-sensitive content detected',
+              message: 'Time-sensitive content:',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-time-sensitive-content', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Time-sensitive content detected',
+              message: 'Time-sensitive content:',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('skill-time-sensitive-content', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Time-sensitive content detected',
+              message: 'Time-sensitive content:',
             },
           ],
         },
@@ -76,7 +76,7 @@ describe('skill-time-sensitive-content', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Time-sensitive content detected',
+              message: 'Time-sensitive content:',
             },
           ],
         },
@@ -87,7 +87,7 @@ describe('skill-time-sensitive-content', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Time-sensitive content detected',
+              message: 'Time-sensitive content:',
             },
           ],
         },

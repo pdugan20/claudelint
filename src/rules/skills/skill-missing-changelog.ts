@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when a skill directory is missing a CHANGELOG.md file.',
+      rationale:
+        'Without a changelog, users cannot track what changed between versions or assess upgrade risk.',
       details:
         'A changelog helps users understand what changed between versions and track the evolution of a skill. ' +
         'This rule checks that a `CHANGELOG.md` file exists in the same directory as the SKILL.md file. ' +

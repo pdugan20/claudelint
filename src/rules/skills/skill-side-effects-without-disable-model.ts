@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when skills with side-effect tools do not set `disable-model-invocation` to true.',
+      rationale:
+        'Without disable-model-invocation, the AI may autonomously trigger destructive side-effect tools.',
       details:
         'Skills that include side-effect tools (Bash, Write, Edit, NotebookEdit) in their ' +
         '`allowed-tools` list can potentially execute destructive operations. Setting ' +
@@ -100,8 +102,7 @@ export const rule: Rule = {
     if (frontmatter['disable-model-invocation'] !== true) {
       const line = getFrontmatterFieldLine(context.fileContent, 'allowed-tools');
       context.report({
-        message:
-          'Skill has side-effect tools in allowed-tools but disable-model-invocation is not set to true',
+        message: 'Side-effect tools without disable-model-invocation',
         line,
         fix: 'Add disable-model-invocation: true to frontmatter to prevent automatic model invocation',
       });

@@ -49,7 +49,7 @@ describe('lsp-command-not-in-path', () => {
               extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
-          errors: [{ message: 'should be in PATH or use absolute path' }],
+          errors: [{ message: 'Command "typescript-language-server" not found' }],
         },
       ],
     });

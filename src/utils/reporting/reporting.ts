@@ -336,12 +336,22 @@ export class Reporter {
 
     const isExplainMode = this.options.explain === true;
 
+    // Compute global max line number width for consistent column alignment across file groups
+    const maxLineWidth = Math.max(1, ...deduped.map((issue) => String(issue.line || 0).length));
+
     // Render each file group using text-table for column alignment
     for (const [filePath, fileIssues] of groups) {
       this.newline();
       if (filePath) {
         const rel = relative(cwd, filePath) || filePath;
-        this.log(this.colorize(chalk.underline, rel));
+        // Count errors and warnings for this file
+        const errCount = fileIssues.filter((i) => i.kind === 'error').length;
+        const warnCount = fileIssues.filter((i) => i.kind === 'warning').length;
+        const counts: string[] = [];
+        if (errCount > 0) counts.push(`${errCount} error${errCount !== 1 ? 's' : ''}`);
+        if (warnCount > 0) counts.push(`${warnCount} warning${warnCount !== 1 ? 's' : ''}`);
+        const countSuffix = counts.length > 0 ? ` (${counts.join(', ')})` : '';
+        this.log(this.colorize(chalk.underline, rel) + this.colorize(chalk.dim, countSuffix));
       }
 
       // Track per-ruleId counts for collapsing repetitive warnings
@@ -354,8 +364,9 @@ export class Reporter {
       const ruleIdShown = new Map<string, number>();
 
       // Build table rows (plain strings — colors applied after table generation)
-      // Columns: [indent, lineNum, severity, message, ruleId]
+      // Columns: [indent, lineNum, severity, message] — rule ID appended separately with fixed gap
       const rows: string[][] = [];
+      const rowRuleIds: string[] = [];
       // Track metadata for each row (for coloring and explain-mode content)
       const rowMeta: Array<{
         kind: 'issue' | 'collapse';
@@ -371,7 +382,8 @@ export class Reporter {
           if (count >= 3 && shown >= 2) {
             if (shown === 2) {
               const remaining = count - 2;
-              rows.push(['', '', '', `... and ${remaining} more ${issue.ruleId}`, '']);
+              rows.push(['', '', '', `... and ${remaining} more ${issue.ruleId}`]);
+              rowRuleIds.push('');
               rowMeta.push({ kind: 'collapse' });
             }
             ruleIdShown.set(issue.ruleId, shown + 1);
@@ -387,22 +399,25 @@ export class Reporter {
             ? issue.message.slice(0, maxMsgLen - 3) + '...'
             : issue.message;
 
-        rows.push(['', issue.line ? String(issue.line) : '', issue.kind, msg, issue.ruleId || '']);
+        const lineStr = String(issue.line || 0).padStart(maxLineWidth);
+        rows.push(['', lineStr, issue.kind, msg]);
+        rowRuleIds.push(issue.ruleId || '');
         rowMeta.push({ kind: 'issue', issue, severityKind: issue.kind });
       }
 
       if (rows.length === 0) continue;
 
-      // Generate aligned table (plain strings — no ANSI codes)
+      // Generate aligned table for the first 4 columns (plain strings — no ANSI codes)
       const tableOutput = table(rows, {
-        align: ['l', 'r', 'l', 'l', 'l'],
+        align: ['l', 'r', 'l', 'l'],
       });
 
-      // Output each line with colors applied post-hoc
+      // Output each line with colors and rule ID appended with fixed 2-space gap
       const tableLines = tableOutput.split('\n');
       for (let i = 0; i < tableLines.length; i++) {
         let line = tableLines[i];
         const meta = rowMeta[i];
+        const ruleId = rowRuleIds[i] || '';
 
         if (!meta) {
           this.log(line);
@@ -419,11 +434,9 @@ export class Reporter {
             line = line.replace(/\bwarning\b/, this.colorize(chalk.yellow, 'warning'));
           }
 
-          // Apply dim to rule ID (match at end of line, after last 2-space gap)
-          const ruleId = rows[i]?.[4];
+          // Append rule ID with fixed 2-space gap (not padded to widest message)
           if (ruleId) {
-            const escaped = ruleId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            line = line.replace(new RegExp(`${escaped}\\s*$`), this.colorize(chalk.dim, ruleId));
+            line = line.trimEnd() + '  ' + this.colorize(chalk.dim, ruleId);
           }
 
           this.log(line);
@@ -436,23 +449,24 @@ export class Reporter {
             }
           }
 
-          // Show explanations in explain mode only
+          // Show explanations in explain mode only (Tier 2: Why + Fix)
           if (isExplainMode && meta.issue) {
             const iss = meta.issue;
             if (iss.explanation) {
-              this.subDetail(this.colorize(chalk.cyan, 'Why this matters:'));
-              this.subDetail(this.colorize(chalk.gray, iss.explanation));
-            }
-            if (iss.howToFix) {
-              this.subDetail(this.colorize(chalk.cyan, 'How to fix:'));
-              iss.howToFix.split('\n').forEach((hline) => {
-                this.subDetail(this.colorize(chalk.gray, hline));
-              });
-            }
-            if (iss.fix) {
-              this.subDetail(
-                this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, iss.fix)
+              this.log(
+                `        ${this.colorize(chalk.cyan, 'Why:')} ${this.colorize(chalk.gray, iss.explanation)}`
               );
+            }
+            // Fix priority: issue.fix (rule-specific) > issue.howToFix (from docs.howToFix)
+            const fixText = iss.fix || iss.howToFix;
+            if (fixText) {
+              const fixLines = fixText.split('\n');
+              this.log(
+                `        ${this.colorize(chalk.cyan, 'Fix:')} ${this.colorize(chalk.gray, fixLines[0])}`
+              );
+              for (let j = 1; j < fixLines.length; j++) {
+                this.log(`             ${this.colorize(chalk.gray, fixLines[j])}`);
+              }
             }
           }
         }
@@ -617,6 +631,19 @@ export class Reporter {
 
       this.newline();
     }
+  }
+
+  /**
+   * Get the explain mode footer hint (Tier 2 → Tier 3 pointer).
+   * Returns the hint string if explain mode is enabled, null otherwise.
+   * Caller should print this after the summary line.
+   */
+  getExplainFooter(): string | null {
+    if (!this.options.explain) return null;
+    return this.colorize(
+      chalk.gray,
+      "Run 'claudelint explain <rule-id>' for detailed rule documentation."
+    );
   }
 
   /**

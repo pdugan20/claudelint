@@ -24,6 +24,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that the context field in SKILL.md frontmatter uses a valid mode.',
+      rationale:
+        'An invalid context mode causes a runtime error when Claude Code tries to execute the skill.',
       details:
         'The `context` field controls how a skill is executed. It must be one of the recognized modes: ' +
         '`fork` (runs in a separate agent process), `inline` (runs in the current conversation context), ' +

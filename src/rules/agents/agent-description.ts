@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that agent descriptions meet minimum length and formatting requirements.',
+      rationale:
+        'Short or poorly formatted descriptions make it hard for users to understand agent purpose when browsing.',
       details:
         'This rule enforces constraints on the description field in agent markdown frontmatter. The ' +
         'description must be at least 10 characters, written in third person, and must not contain XML ' +

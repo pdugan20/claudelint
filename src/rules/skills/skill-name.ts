@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Enforces that skill names use lowercase-with-hyphens format and are under 64 characters.',
+      rationale:
+        'Non-standard names break URL generation, directory lookups, and cross-referencing between skills.',
       details:
         'Skill names serve as identifiers throughout the Claude Code ecosystem. ' +
         'This rule validates that the `name` field in SKILL.md frontmatter follows a strict format: ' +

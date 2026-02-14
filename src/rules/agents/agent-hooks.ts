@@ -25,6 +25,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that agent hooks are a properly formatted object ' + 'with event name keys.',
+      rationale:
+        'Malformed hook objects cause runtime errors when the agent framework tries to register event handlers.',
       details:
         'This rule enforces that the `hooks` field in agent markdown ' +
         'frontmatter is a valid object keyed by event names. The ' +

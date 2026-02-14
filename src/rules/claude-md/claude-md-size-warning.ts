@@ -43,6 +43,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when a CLAUDE.md file is approaching the maximum file size limit.',
+      rationale:
+        'An early warning gives time to reorganize content before hitting the hard size limit that triggers errors.',
       details:
         'This rule issues a warning when a CLAUDE.md file reaches or exceeds the warning ' +
         'threshold (default 35KB), signaling that the file is approaching the hard error limit ' +

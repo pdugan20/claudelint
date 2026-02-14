@@ -22,6 +22,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures that MCP WebSocket transport servers have a non-empty URL.',
+      rationale:
+        'A blank URL prevents Claude Code from establishing a WebSocket connection, causing runtime failures.',
       details:
         'This rule checks that MCP servers configured with type "websocket" include a url field ' +
         'that is present and non-empty. A missing or blank URL means Claude Code cannot establish ' +

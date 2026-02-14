@@ -24,6 +24,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Errors when a README.md file exists alongside SKILL.md in a skill directory.',
+      rationale:
+        'Claude Code loads SKILL.md, not README.md; a conflicting README causes confusion about which file is canonical.',
       details:
         'Anthropic explicitly requires skills to use SKILL.md as their primary documentation file, ' +
         'not README.md. Having both files creates ambiguity about which one is the source of truth ' +
@@ -67,8 +69,7 @@ export const rule: Rule = {
 
     if (fs.existsSync(readmePath)) {
       context.report({
-        message:
-          'Skills must use SKILL.md, not README.md. Remove README.md from the skill directory.',
+        message: 'README.md found; skills must use SKILL.md',
       });
     }
   },

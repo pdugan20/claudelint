@@ -48,19 +48,19 @@ describe('skill-shell-script-no-error-handling', () => {
         {
           content: '#!/bin/bash\necho "hello"\nexit 0',
           filePath: '/test/skills/my-skill/run.sh',
-          errors: [{ message: 'lacks error handling' }],
+          errors: [{ message: 'Missing error handling in' }],
         },
         // Only has shebang, no error handling
         {
           content: '#!/usr/bin/env bash\nnpm test\nnpm build',
           filePath: '/test/skills/my-skill/run.sh',
-          errors: [{ message: 'lacks error handling' }],
+          errors: [{ message: 'Missing error handling in' }],
         },
         // .bash extension without error handling
         {
           content: '#!/bin/bash\necho "no protection"',
           filePath: '/test/skills/my-skill/run.bash',
-          errors: [{ message: 'lacks error handling' }],
+          errors: [{ message: 'Missing error handling in' }],
         },
       ],
     });

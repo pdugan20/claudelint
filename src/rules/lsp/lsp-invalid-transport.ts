@@ -28,6 +28,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that LSP server transport types are either "stdio" or "socket".',
+      rationale:
+        'An invalid transport type causes a runtime error when Claude Code tries to start the LSP server.',
       details:
         'This rule checks the transport field of each server defined in lsp.json. Only "stdio" and ' +
         '"socket" are valid transport types. If the transport field is omitted, the server defaults to ' +
@@ -87,7 +89,7 @@ export const rule: Rule = {
       const transport = serverConfig.transport;
       if (isString(transport) && !VALID_TRANSPORTS.includes(transport)) {
         context.report({
-          message: `Invalid transport type "${transport}" for server "${serverName}". Must be "stdio" or "socket".`,
+          message: `Invalid transport "${transport}" for server "${serverName}"`,
         });
       }
     }

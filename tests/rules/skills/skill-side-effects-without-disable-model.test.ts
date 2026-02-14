@@ -61,7 +61,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'disable-model-invocation is not set to true',
+              message: 'Side-effect tools without disable-model-invocation',
             },
           ],
         },
@@ -72,7 +72,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'disable-model-invocation is not set to true',
+              message: 'Side-effect tools without disable-model-invocation',
             },
           ],
         },
@@ -83,7 +83,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'disable-model-invocation is not set to true',
+              message: 'Side-effect tools without disable-model-invocation',
             },
           ],
         },
@@ -94,7 +94,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'disable-model-invocation is not set to true',
+              message: 'Side-effect tools without disable-model-invocation',
             },
           ],
         },
@@ -105,7 +105,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'disable-model-invocation is not set to true',
+              message: 'Side-effect tools without disable-model-invocation',
             },
           ],
         },

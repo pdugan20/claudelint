@@ -41,6 +41,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Warns when a CLAUDE.md file has too many heading sections, suggesting it should be split.',
+      rationale:
+        'A bloated CLAUDE.md is hard for both humans and the AI to navigate, reducing instruction effectiveness.',
       details:
         'Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to ' +
         'navigate. When the number of markdown headings exceeds the configured threshold (default: 20), ' +
@@ -118,10 +120,7 @@ export const rule: Rule = {
 
     if (sectionCount > maxSections) {
       context.report({
-        message:
-          `CLAUDE.md has ${sectionCount} sections (>${maxSections} is hard to navigate). ` +
-          `Consider organizing content into separate files in .claude/rules/ directory. ` +
-          `For example: .claude/rules/git.md, .claude/rules/api.md, .claude/rules/testing.md`,
+        message: `Too many sections (${sectionCount}, max ${maxSections})`,
         fix: 'Split content into topic-specific files in .claude/rules/ directory',
       });
     }

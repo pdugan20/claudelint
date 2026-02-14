@@ -25,6 +25,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Enforces that the `tags` field in SKILL.md frontmatter is a valid array of strings.',
+      rationale:
+        'A malformed tags field prevents proper categorization and search in skill listings.',
       details:
         'The `tags` frontmatter field helps categorize and discover skills. When present, it must be ' +
         'a YAML array of strings. This rule delegates to the skill frontmatter Zod schema for validation, ' +

@@ -43,7 +43,7 @@ describe('skill-path-traversal', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'Potential path traversal detected',
+              message: 'Path traversal in',
             },
           ],
         },
@@ -54,7 +54,7 @@ describe('skill-path-traversal', () => {
           filePath: '/test/script.py',
           errors: [
             {
-              message: 'Potential path traversal detected',
+              message: 'Path traversal in',
             },
           ],
         },
@@ -65,7 +65,7 @@ describe('skill-path-traversal', () => {
           filePath: '/test/script.sh',
           errors: [
             {
-              message: 'Potential path traversal detected',
+              message: 'Path traversal in',
             },
           ],
         },
@@ -76,7 +76,7 @@ describe('skill-path-traversal', () => {
           filePath: '/test/script.js',
           errors: [
             {
-              message: 'Potential path traversal detected',
+              message: 'Path traversal in',
             },
           ],
         },
@@ -87,7 +87,7 @@ describe('skill-path-traversal', () => {
           filePath: '/test/script.ts',
           errors: [
             {
-              message: 'Potential path traversal detected',
+              message: 'Path traversal in',
             },
           ],
         },

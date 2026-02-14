@@ -26,6 +26,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Errors when a hook command references a script file that does not exist.',
+      rationale:
+        'A missing script causes the hook to fail at runtime, breaking the automation workflow.',
       details:
         'This rule checks that hook commands pointing to relative script paths (starting with ./ or ../) ' +
         'reference files that actually exist on disk. It skips validation for inline shell commands ' +

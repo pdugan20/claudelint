@@ -87,7 +87,7 @@ describe('mcp-invalid-env-var', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Simple variable expansion $HOME',
+              message: 'Unbraced variable expansion: $HOME',
             },
           ],
         },
@@ -148,7 +148,7 @@ describe('mcp-invalid-env-var', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Simple variable expansion $BIN',
+              message: 'Unbraced variable expansion: $BIN',
             },
             {
               message: 'Empty value for environment variable: KEY1',
@@ -193,7 +193,7 @@ describe('mcp-invalid-env-var', () => {
           options: { pattern: '^[a-z_][a-z0-9_]*$' },
           errors: [
             {
-              message: 'Environment variable name "MY_VAR" in command does not match pattern: ^[a-z_][a-z0-9_]*$',
+              message: 'Invalid environment variable name: "MY_VAR"',
             },
           ],
         },
@@ -230,7 +230,7 @@ describe('mcp-invalid-env-var', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Environment variable name "my_var" in command does not match pattern: ^[A-Z_][A-Z0-9_]*$',
+              message: 'Invalid environment variable name: "my_var"',
             },
           ],
         },
@@ -254,7 +254,7 @@ describe('mcp-invalid-env-var', () => {
           filePath: 'test.mcp.json',
           errors: [
             {
-              message: 'Environment variable name "my_var" in command does not match pattern: ^[A-Z_][A-Z0-9_]*$',
+              message: 'Invalid environment variable name: "my_var"',
             },
           ],
         },

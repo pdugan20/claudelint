@@ -27,6 +27,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Warns when path patterns in rule file frontmatter use backslashes instead of forward slashes.',
+      rationale:
+        'Backslashes are treated as escape characters by glob implementations, so patterns silently fail on macOS/Linux.',
       details:
         'Files in `.claude/rules/` can include YAML frontmatter with a `paths` field that specifies ' +
         'glob patterns for when the rule should apply. Glob patterns should always use forward ' +
@@ -88,7 +90,7 @@ export const rule: Rule = {
       for (const pattern of frontmatter.paths) {
         if (typeof pattern === 'string' && pattern.includes('\\')) {
           context.report({
-            message: `Path pattern uses backslashes: ${pattern}. Use forward slashes even on Windows.`,
+            message: `Path pattern uses backslashes: ${pattern}`,
           });
         }
       }

@@ -27,6 +27,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when skill frontmatter is missing a version field.',
+      rationale:
+        'Without a version, users cannot track updates or ensure compatibility with their setup.',
       details:
         'Version numbers help users and Claude track skill updates and ensure compatibility. ' +
         'This rule checks that the `version` field is present in the SKILL.md frontmatter. ' +

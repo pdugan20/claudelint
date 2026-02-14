@@ -41,6 +41,8 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-frontmatter-unknown-keys.md',
     docs: {
       summary: 'Warns when SKILL.md frontmatter contains unrecognized keys.',
+      rationale:
+        'Unknown keys are silently ignored, which often indicates a typo in a valid key name.',
       details:
         'SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, ' +
         'dependencies, allowed-tools, disallowed-tools, model, context, agent, argument-hint, ' +

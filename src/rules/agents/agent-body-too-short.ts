@@ -43,6 +43,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Validates that agent body content meets a minimum length threshold.',
+      rationale:
+        'Sparse agent definitions lack the detailed instructions needed for consistent, high-quality responses.',
       details:
         'This rule checks that the markdown body of an AGENT.md file ' +
         '(the content after frontmatter) contains enough substantive ' +
@@ -110,7 +112,7 @@ export const rule: Rule = {
 
     if (body.length < minLength) {
       context.report({
-        message: `Agent body content is very short (${body.length} characters). Consider adding more detailed instructions. (minimum: ${minLength})`,
+        message: `Body too short (${body.length}/${minLength} characters)`,
       });
     }
   },

@@ -41,6 +41,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when Tool(pattern) permission entries have empty inline patterns.',
+      rationale:
+        'An empty pattern like Bash() is likely a mistake and causes unexpected permission matching behavior.',
       details:
         'This rule checks permission entries in `settings.json` across the `allow`, ' +
         '`deny`, and `ask` arrays for the `Tool(pattern)` syntax and warns when the ' +
@@ -160,7 +162,7 @@ export const rule: Rule = {
           // Warn if inline pattern is empty
           if (inlinePattern.length === 0) {
             context.report({
-              message: `Empty inline pattern in permissions.${name}: "${ruleString}". Use "${toolPatternMatch[1]}" instead of "${ruleString}"`,
+              message: `Empty inline pattern in permissions.${name}: "${ruleString}"`,
             });
           }
         }

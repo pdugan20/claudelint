@@ -73,6 +73,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Ensures permission rules reference valid Claude Code tool names.',
+      rationale:
+        'Permissions referencing non-existent tools have no effect, giving a false sense of security.',
       details:
         'This rule validates that tool names used in the permissions.allow, permissions.deny, and ' +
         'permissions.ask arrays in settings.json are recognized Claude Code tools. Valid tools include ' +
@@ -129,12 +131,12 @@ export const rule: Rule = {
       { name: 'ask', rules: config.permissions.ask || [] },
     ];
 
-    for (const { name, rules } of arrays) {
+    for (const { rules } of arrays) {
       for (const ruleString of rules) {
         const tool = extractToolName(ruleString);
         if (!isValidTool(tool)) {
           context.report({
-            message: `Invalid tool name in permissions.${name}: "${tool}". Valid tools: ${VALID_TOOLS.join(', ')}, or mcp__* for MCP servers`,
+            message: `Invalid tool name: "${tool}"`,
           });
         }
       }

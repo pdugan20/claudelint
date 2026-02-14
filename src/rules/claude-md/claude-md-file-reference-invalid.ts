@@ -121,6 +121,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Warns when file paths referenced in CLAUDE.md do not exist on disk.',
+      rationale:
+        'Stale file references mislead Claude Code into reading or modifying files that no longer exist.',
       details:
         'CLAUDE.md files often reference project files using inline code (backticks) or in bash ' +
         'code blocks. When these file paths point to files that do not exist, the instructions ' +

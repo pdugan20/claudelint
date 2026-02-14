@@ -41,6 +41,8 @@ export const rule: Rule = {
     },
     docs: {
       summary: 'Warns when shell scripts exceed a line threshold but lack explanatory comments.',
+      rationale:
+        'Uncommented long scripts are opaque to reviewers and make debugging failures much harder.',
       details:
         'Shell scripts that are longer than a configurable threshold (default: 10 non-empty lines) ' +
         'should include comments explaining their purpose, approach, and any non-obvious logic. ' +
@@ -102,9 +104,7 @@ export const rule: Rule = {
       const scriptName = filePath.split('/').pop() || filePath;
 
       context.report({
-        message:
-          `Shell script "${scriptName}" has ${nonEmptyLines.length} lines but no explanatory comments. ` +
-          'Add comments to explain what the script does and how it works.',
+        message: `No comments in "${scriptName}" (${nonEmptyLines.length} lines)`,
         fix: 'Add explanatory comments to the script',
       });
     }

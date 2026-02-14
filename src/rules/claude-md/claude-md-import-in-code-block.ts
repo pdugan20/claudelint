@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Errors when @import statements appear inside fenced code blocks where they are not processed.',
+      rationale:
+        'Imports inside code fences are treated as literal text and silently ignored, leaving instructions incomplete.',
       details:
         'Claude Code processes `@import` directives to include content from other files. However, ' +
         'when an `@import` appears inside a fenced code block (``` or ~~~), it is treated as ' +
@@ -99,10 +101,7 @@ export const rule: Rule = {
           const importPath = match[1];
 
           context.report({
-            message:
-              `Import statement found inside code block: ${importPath}. ` +
-              `Imports in code blocks are not processed by Claude Code. ` +
-              `Move the import outside of the code block.`,
+            message: `Import inside code block: ${importPath}`,
             line: i + 1,
           });
         }

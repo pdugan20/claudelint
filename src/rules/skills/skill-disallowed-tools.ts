@@ -26,6 +26,8 @@ export const rule: Rule = {
       recommended: true,
       summary:
         'Validates that the disallowed-tools field in SKILL.md frontmatter is a proper array of tool names.',
+      rationale:
+        'A malformed disallowed-tools field is silently ignored, leaving dangerous tools accessible.',
       details:
         'The `disallowed-tools` field specifies tools that the skill must not use during execution. ' +
         'It must be a YAML array of valid tool name strings. Malformed values (e.g., a single string or ' +

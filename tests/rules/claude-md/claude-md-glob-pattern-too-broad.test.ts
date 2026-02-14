@@ -75,7 +75,7 @@ Content.`,
           filePath: '/project/.claude/rules/all.md',
           errors: [
             {
-              message: 'Path pattern is very broad: **',
+              message: 'Overly broad path pattern: **',
             },
           ],
         },
@@ -90,7 +90,7 @@ Content.`,
           filePath: '/project/.claude/rules/all.md',
           errors: [
             {
-              message: 'Path pattern is very broad: *',
+              message: 'Overly broad path pattern: *',
             },
           ],
         },
@@ -107,10 +107,10 @@ Content.`,
           filePath: '/project/.claude/rules/everything.md',
           errors: [
             {
-              message: 'very broad: **',
+              message: 'Overly broad path pattern: **',
             },
             {
-              message: 'very broad: *',
+              message: 'Overly broad path pattern: *',
             },
           ],
         },
@@ -127,7 +127,7 @@ Content.`,
           filePath: '/project/.claude/rules/mixed.md',
           errors: [
             {
-              message: 'Consider being more specific',
+              message: 'Overly broad path pattern: **',
             },
           ],
         },

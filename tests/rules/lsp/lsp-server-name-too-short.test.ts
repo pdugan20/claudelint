@@ -46,7 +46,7 @@ describe('lsp-server-name-too-short', () => {
               extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
-          errors: [{ message: 'server name "a" is too short' }],
+          errors: [{ message: 'Server name too short (1/2 characters): "a"' }],
         },
         {
           filePath: '.claude/lsp.json',
@@ -57,7 +57,7 @@ describe('lsp-server-name-too-short', () => {
               extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
-          errors: [{ message: 'minimum: 10' }],
+          errors: [{ message: 'Server name too short (5/10 characters): "short"' }],
         },
       ],
     });

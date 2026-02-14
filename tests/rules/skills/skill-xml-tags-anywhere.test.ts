@@ -45,9 +45,7 @@ description: A test skill
           errors: [
             {
               message:
-                'XML tag <system-prompt> found in SKILL.md. XML tags can cause prompt injection ' +
-                'since Claude interprets them as structural delimiters. ' +
-                'Remove the tag or move it inside a code block.',
+                'XML tag <system-prompt> outside code block',
             },
           ],
         },
@@ -115,9 +113,7 @@ description: A test skill
           errors: [
             {
               message:
-                'XML tag <tool-use> found in SKILL.md. XML tags can cause prompt injection ' +
-                'since Claude interprets them as structural delimiters. ' +
-                'Remove the tag or move it inside a code block.',
+                'XML tag <tool-use> outside code block',
             },
           ],
         },

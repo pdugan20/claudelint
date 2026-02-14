@@ -24,6 +24,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Flags skill names that are too generic to convey what the skill does.',
+      rationale:
+        'Generic names like "helper" or "utils" provide no clue about functionality, confusing users and the AI.',
       details:
         'Skill names should clearly describe their functionality. Names that consist entirely of ' +
         'generic keywords (e.g., "utils", "helper", "manager") or are single-word verbs (e.g., "build", ' +
@@ -120,7 +122,7 @@ export const rule: Rule = {
     if (nameParts.length === 1 && genericVerbs.includes(nameParts[0].toLowerCase())) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name');
       context.report({
-        message: `Skill name "${name}" is too generic (single-word verb). Use descriptive names like "${name}-files" or "${name}-config" that indicate what is being ${name}ed.`,
+        message: `Name "${name}" is too generic`,
         line,
       });
       return;
@@ -132,7 +134,7 @@ export const rule: Rule = {
     if (isOnlyGeneric) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name');
       context.report({
-        message: `Skill name "${name}" is too generic. Use descriptive names that indicate specific functionality (e.g., "project-utils" instead of "utils").`,
+        message: `Name "${name}" is too generic`,
         line,
       });
     }

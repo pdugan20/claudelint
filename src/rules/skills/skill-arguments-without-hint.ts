@@ -29,6 +29,8 @@ export const rule: Rule = {
     docs: {
       summary:
         'Warns when a skill uses $ARGUMENTS or positional parameters but lacks an argument-hint in frontmatter.',
+      rationale:
+        'Without an argument-hint, users have no guidance on what arguments the skill expects.',
       details:
         'The `argument-hint` frontmatter field provides placeholder text that helps users understand ' +
         'what arguments a skill expects when invoked. This rule detects when the skill body references ' +
@@ -81,8 +83,7 @@ export const rule: Rule = {
     if (!frontmatter['argument-hint']) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name') || 2;
       context.report({
-        message:
-          'Skill uses $ARGUMENTS or positional parameters but is missing argument-hint in frontmatter',
+        message: 'Uses $ARGUMENTS but missing argument-hint',
         line,
         fix: 'Add argument-hint: "<description of expected arguments>" to frontmatter',
       });

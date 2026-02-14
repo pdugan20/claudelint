@@ -30,6 +30,8 @@ export const rule: Rule = {
     docs: {
       recommended: true,
       summary: 'Detects use of eval() and exec() in skill scripts that can execute arbitrary code.',
+      rationale:
+        'eval/exec can execute arbitrary code, creating a code injection vulnerability in the skill.',
       details:
         'This rule warns when shell scripts use the `eval` command or Python scripts use `eval()` or `exec()`. ' +
         'These functions dynamically execute strings as code, which poses serious security risks including ' +
@@ -86,9 +88,7 @@ export const rule: Rule = {
     if (filePath.endsWith('.sh')) {
       if (SHELL_EVAL_REGEX.test(fileContent)) {
         context.report({
-          message:
-            `Shell script "${scriptName}" uses "eval" command. ` +
-            'Avoid eval as it can execute arbitrary code and poses security risks.',
+          message: `"eval" used in "${scriptName}"`,
         });
       }
     }
@@ -97,9 +97,7 @@ export const rule: Rule = {
     if (filePath.endsWith('.py')) {
       if (PYTHON_EVAL_EXEC_REGEX.test(fileContent)) {
         context.report({
-          message:
-            `Python script "${scriptName}" uses eval() or exec(). ` +
-            'These functions can execute arbitrary code and pose security risks.',
+          message: `eval()/exec() used in "${scriptName}"`,
         });
       }
     }
