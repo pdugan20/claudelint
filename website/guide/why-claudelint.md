@@ -51,17 +51,17 @@ Because it's a standard CLI tool, you can run it in CI alongside your existing l
 ## What It Catches
 
 ```text
-CLAUDE.md
-  1:1  error  File size (42KB) exceeds 40KB limit  claude-md-size-error
+CLAUDE.md (1 error)
+  0  error  File size (42KB) exceeds 40KB limit  claude-md-size-error
 
-skills/deploy/SKILL.md
-  3:1  error  Missing required 'description' field  skill-description
+skills/deploy/SKILL.md (1 error)
+  0  error  Missing required 'description' field  skill-description
 
-.claude/hooks/hooks.json
-  5:1  error  Invalid hook event 'preToolUse' (did you mean 'PreToolUse'?)  hooks-invalid-event
+.claude/hooks/hooks.json (1 error)
+  5  error  Invalid hook event 'preToolUse' (did you mean 'PreToolUse'?)  hooks-invalid-event
 
-skills/cleanup/cleanup.sh
-  8:1  error  Dangerous command detected: rm -rf  skill-dangerous-command
+skills/cleanup/cleanup.sh (1 error)
+  8  error  Dangerous command detected: rm -rf  skill-dangerous-command
 
 4 problems (4 errors, 0 warnings)
 ```

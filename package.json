@@ -63,6 +63,7 @@
     "check:model-names": "ts-node scripts/verify/model-names.ts",
     "check:publint": "publint",
     "check:spelling": "cspell 'website/**/*.md' --no-progress",
+    "check:orphaned-rule-docs": "ts-node scripts/check/orphaned-rule-docs.ts",
     "check:rule-coverage": "ts-node scripts/check/rule-coverage.ts",
     "check:rule-docs": "ts-node scripts/check/rule-docs.ts",
     "check:rule-docs-audit": "ts-node scripts/audit/rule-docs.ts",

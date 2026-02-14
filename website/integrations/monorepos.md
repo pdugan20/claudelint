@@ -226,18 +226,19 @@ This runs validation for every package in the workspace and aggregates results.
 Validating 3 workspace packages
 
 === Package: app-1 ===
-Checked 4 files across 3 components (claude-md, settings, hooks) in 32ms. No problems found.
+Checked 4 files across 3 categories (claude-md, settings, hooks) in 32ms. No problems found.
 
 === Package: app-2 ===
-src/CLAUDE.md
-  ✗ Error: File exceeds 40KB limit (66669 bytes) [claude-md-size-error]
-    at: src/CLAUDE.md
+claude-md (28ms)
 
-Checked 3 files across 2 components (claude-md, skills) in 28ms.
-✖ 1 problem (1 error, 0 warnings)
+  src/CLAUDE.md (1 error)
+     0  error  File exceeds 40KB limit (66669 bytes)  claude-md-size-error
+
+Checked 3 files across 2 categories (claude-md, skills) in 28ms.
+1 problem (1 error, 0 warnings)
 
 === Package: shared ===
-Checked 2 files across 2 components (claude-md, settings) in 18ms. No problems found.
+Checked 2 files across 2 categories (claude-md, settings) in 18ms. No problems found.
 
 === Workspace Summary ===
 Total packages: 3
@@ -246,7 +247,7 @@ Total errors: 1
 Total warnings: 0
 ```
 
-The summary line for each package shows exactly which components were validated and how many files were checked, giving you visibility into coverage across the monorepo.
+The summary line for each package shows exactly which categories were validated and how many files were checked, giving you visibility into coverage across the monorepo.
 
 ## Troubleshooting
 

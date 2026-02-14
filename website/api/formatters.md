@@ -9,12 +9,12 @@ Formatters transform lint results into human-readable or machine-parseable outpu
 Human-readable output with colors. Best for terminal display.
 
 ```text
-CLAUDE.md
-  10:1  error    File exceeds 40KB limit                  claude-md-size-error
-  25:1  warning  Missing examples section                 claude-md-content-too-many-sections
+CLAUDE.md (1 error, 1 warning)
+  10  error    File exceeds 40KB limit                  claude-md-size-error
+  25  warning  Missing examples section                 claude-md-content-too-many-sections
 
-skills/test/SKILL.md
-  5:1   error    Missing description field                skill-description
+skills/test/SKILL.md (1 error)
+   5  error    Missing description field                skill-description
 
 3 problems (2 errors, 1 warning)
 ```

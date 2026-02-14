@@ -399,16 +399,16 @@ npm install -g claude-code-lint
 claudelint error messages follow this format:
 
 ```text
-/path/to/file.md
-  12:1  error  Referenced skill not found: authentication  skill-referenced-file-not-found
+/path/to/file.md (1 error)
+  12  error  Referenced skill not found: authentication  skill-referenced-file-not-found
 
-x 1 problem (1 error, 0 warnings)
+1 problem (1 error, 0 warnings)
 ```
 
 Breaking it down:
 
-- **Path**: `/path/to/file.md` - File with the issue
-- **Location**: `12:1` - Line 12, column 1
+- **Path**: `/path/to/file.md (1 error)` - File with the issue and count
+- **Line**: `12` - Line number (0 for file-level issues)
 - **Severity**: `error` or `warning`
 - **Message**: `Referenced skill not found: authentication` - What's wrong
 - **Rule ID**: `skill-referenced-file-not-found` - Which rule triggered this
@@ -535,6 +535,92 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
    ```bash
    claudelint check-all --format compact
    ```
+
+## Cache Issues
+
+### Problem: Stale results after upgrading claudelint
+
+**Symptom:** After upgrading claudelint, you still see old validation results or missing new rules.
+
+**Cause:** The cache stores results keyed by claudelint version and build fingerprint. In rare cases (e.g., reinstalling the same version), stale entries may persist.
+
+**Solution:**
+
+```bash
+claudelint cache-clear
+```
+
+This removes the entire `.claudelint-cache/` directory. The next run rebuilds the cache from scratch.
+
+### Problem: Cache not invalidating after file changes
+
+**Symptom:** You edited a file but claudelint still reports old results.
+
+**Cause:** Cache invalidation is mtime-based. If a file's modification time didn't change (e.g., `git checkout` restoring a file to its previous state, or a tool that preserves timestamps), the cache considers it unchanged.
+
+**Solutions:**
+
+1. Clear the cache:
+
+   ```bash
+   claudelint cache-clear
+   ```
+
+2. Or bypass the cache for a single run:
+
+   ```bash
+   claudelint check-all --no-cache
+   ```
+
+3. Touch the file to update its mtime:
+
+   ```bash
+   touch CLAUDE.md
+   ```
+
+### Problem: Cache directory growing large
+
+**Symptom:** `.claudelint-cache/` accumulates many files over time.
+
+**Cause:** Each unique combination of validator + config + version creates a separate cache entry. Old entries from previous versions are not automatically pruned.
+
+**Solution:**
+
+```bash
+claudelint cache-clear
+```
+
+Add `.claudelint-cache/` to your `.gitignore` to keep it out of version control:
+
+```text
+.claudelint-cache/
+```
+
+### Problem: Auto-fix not applying changes
+
+**Symptom:** Running `--fix` reports issues but doesn't modify files.
+
+**Cause:** Caching is automatically disabled during `--fix` and `--fix-dry-run` to ensure fixes are always applied. If fixes still aren't applying, the issue is likely that the rule doesn't support auto-fix.
+
+**Solution:**
+
+Check which rules are fixable:
+
+```bash
+claudelint list-rules --fixable
+```
+
+Only rules with `fixable: true` will apply changes with `--fix`.
+
+### Cache CLI reference
+
+| Command / Flag | Description |
+|----------------|-------------|
+| `claudelint cache-clear` | Remove all cached results |
+| `--no-cache` | Disable caching for this run |
+| `--cache-location <path>` | Use a custom cache directory (default: `.claudelint-cache`) |
+
+See [CLI Reference - Cache Management](./cli-reference.md#cache-management) for full details.
 
 ## Custom Rules Issues
 

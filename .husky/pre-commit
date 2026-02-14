@@ -21,6 +21,7 @@ HAS_JS=$(echo "$STAGED_FILES" | grep -c '\.js$' || true)
 HAS_CI=$(echo "$STAGED_FILES" | grep -c '^\.github/' || true)
 HAS_SCHEMAS=$(echo "$STAGED_FILES" | grep -c -E '(^schemas/|^src/schemas/)' || true)
 HAS_VALIDATORS=$(echo "$STAGED_FILES" | grep -c -E '(^src/validators/|^tests/validators/)' || true)
+HAS_RULE_DOCS=$(echo "$STAGED_FILES" | grep -c -E '(^website/rules/|^src/rules/)' || true)
 
 FORCE_ALL="${CLAUDELINT_PRECOMMIT_ALL:-0}"
 
@@ -39,6 +40,7 @@ RUN_MARKDOWNLINT=0
 RUN_HARDCODED_COUNTS=0
 RUN_MSG_LENGTH=0
 RUN_MSG_CONTENT=0
+RUN_ORPHANED_DOCS=0
 
 if [ "$FORCE_ALL" = "1" ]; then
   RUN_EMOJIS=1
@@ -53,6 +55,7 @@ if [ "$FORCE_ALL" = "1" ]; then
   RUN_HARDCODED_COUNTS=1
   RUN_MSG_LENGTH=1
   RUN_MSG_CONTENT=1
+  RUN_ORPHANED_DOCS=1
 else
   [ "$HAS_TS" -gt 0 ] || [ "$HAS_MD" -gt 0 ] && RUN_EMOJIS=1
   [ "$HAS_CLI" -gt 0 ] && RUN_LOGGER_SPACING=1
@@ -66,6 +69,7 @@ else
   [ "$HAS_MD" -gt 0 ] && RUN_HARDCODED_COUNTS=1
   [ "$HAS_RULES" -gt 0 ] && RUN_MSG_LENGTH=1
   [ "$HAS_RULES" -gt 0 ] && RUN_MSG_CONTENT=1
+  [ "$HAS_RULE_DOCS" -gt 0 ] && RUN_ORPHANED_DOCS=1
 fi
 
 # Count enabled checks for progress display
@@ -84,9 +88,10 @@ TOTAL=0
 [ "$RUN_HARDCODED_COUNTS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MSG_LENGTH" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MSG_CONTENT" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_ORPHANED_DOCS" = "1" ] && TOTAL=$((TOTAL + 1))
 
 STEP=0
-echo "Running pre-commit checks ($TOTAL of 14 enabled)..."
+echo "Running pre-commit checks ($TOTAL of 15 enabled)..."
 if [ "$FORCE_ALL" = "1" ]; then
   echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
@@ -199,6 +204,13 @@ fi
 if [ "$RUN_HARDCODED_COUNTS" = "1" ]; then
   run_check "Checking for hardcoded rule counts"
   npm run check:hardcoded-counts || fail_check "Hardcoded rule counts found. Use <RuleCount> in website/ or generic language in docs/."
+  echo ""
+fi
+
+# 15. Orphaned rule docs
+if [ "$RUN_ORPHANED_DOCS" = "1" ]; then
+  run_check "Checking for orphaned rule docs"
+  npm run check:orphaned-rule-docs || fail_check "Orphaned rule docs found. Delete stale files or regenerate with: npm run docs:generate"
   echo ""
 fi
 

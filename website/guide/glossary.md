@@ -88,8 +88,8 @@ An instance where a rule's validation check has failed.
 **Example Output:**
 
 ```text
-/project/SKILL.md
-  12:1  error  Skill frontmatter lacks "version" field  skill-missing-version
+/project/SKILL.md (1 error)
+  12  error  Skill frontmatter lacks "version" field  skill-missing-version
 ```
 
 ### Context
