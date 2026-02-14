@@ -37,6 +37,22 @@ export interface RuleDocumentation {
     correct: ExampleBlock[];
   };
 
+  /**
+   * Terse rationale for terminal display (~120 chars).
+   * Explains WHY this rule exists in 1-2 sentences.
+   * Used by `--explain` (Tier 2). Distinct from `details` which is for web/Tier 3 docs.
+   *
+   * Guidelines:
+   * - 1-2 sentences, ideally under 120 characters
+   * - Answer "why does this matter?" not "what does this check?"
+   * - Focus on the consequence of NOT following the rule
+   * - No markdown formatting (plain text only)
+   *
+   * @example "Unknown keys are silently ignored; typos prevent configuration from taking effect."
+   * @example "Backslash path separators fail on Unix systems, breaking cross-platform imports."
+   */
+  rationale?: string;
+
   /** Step-by-step fix instructions */
   howToFix?: string;
 

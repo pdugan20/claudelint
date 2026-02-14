@@ -31,7 +31,7 @@ export const rule: Rule = {
         'Detects path traversal patterns in skill scripts that could access files outside the intended directory.',
       details:
         'This rule scans skill script files (.sh, .py, .js, .ts) for path traversal sequences ' +
-        'such as `../` or `..\\ `. These patterns can be exploited to escape the skill working directory ' +
+        'such as `../` or `..\\`. These patterns can be exploited to escape the skill working directory ' +
         'and access or modify files elsewhere on the filesystem. ' +
         'Path traversal is a common attack vector in web applications and script-based tools. ' +
         'All file path references in skills should use absolute paths or resolve paths safely.',
@@ -87,9 +87,7 @@ export const rule: Rule = {
     // Check for path traversal patterns
     if (PATH_TRAVERSAL_REGEX.test(fileContent)) {
       context.report({
-        message:
-          `Potential path traversal detected in "${scriptName}" (../ or ..\\). ` +
-          'Ensure file paths are properly validated to prevent directory traversal attacks.',
+        message: `Path traversal in "${scriptName}"`,
       });
     }
   },

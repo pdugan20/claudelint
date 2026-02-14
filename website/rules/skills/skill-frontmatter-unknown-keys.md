@@ -46,7 +46,7 @@ allowed-tools:
 
 ## How To Fix
 
-Check the unknown key for typos and correct it to the intended field name. If the key is intentional custom metadata, consider placing it under the `metadata` field instead.
+Valid keys: name, description, version, tags, dependencies, allowed-tools, disallowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, metadata. Check for typos or place custom data under the `metadata` field.
 
 ## Options
 

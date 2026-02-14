@@ -67,8 +67,10 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Check the unknown key for typos and correct it to the intended field name. ' +
-        'If the key is intentional custom metadata, consider placing it under the `metadata` field instead.',
+        'Valid keys: name, description, version, tags, dependencies, allowed-tools, ' +
+        'disallowed-tools, model, context, agent, argument-hint, disable-model-invocation, ' +
+        'user-invocable, hooks, license, compatibility, metadata. ' +
+        'Check for typos or place custom data under the `metadata` field.',
       relatedRules: ['skill-description', 'skill-dependencies', 'skill-allowed-tools'],
     },
   },
@@ -97,9 +99,7 @@ export const rule: Rule = {
       const key = match[1];
       if (!KNOWN_KEYS.has(key)) {
         context.report({
-          message:
-            `Unknown frontmatter key "${key}". ` +
-            `Valid keys: ${[...KNOWN_KEYS].sort().join(', ')}`,
+          message: `Unknown frontmatter key: "${key}"`,
         });
       }
     }

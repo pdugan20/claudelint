@@ -50,7 +50,7 @@ export const rule: Rule = {
       },
       howToFix:
         'Create a `CHANGELOG.md` file in the skill directory alongside SKILL.md. ' +
-        'Follow the Keep a Changelog format (https://keepachangelog.com/) and ' +
+        'Follow the [Keep a Changelog](https://keepachangelog.com/) format and ' +
         'document notable changes for each version of the skill.',
       relatedRules: ['skill-missing-version'],
     },

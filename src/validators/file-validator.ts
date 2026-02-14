@@ -854,11 +854,17 @@ export abstract class FileValidator {
         howToFix?: string;
         autoFix?: AutoFix;
       }) => {
+        // Auto-populate explain fields from rule metadata when not explicitly set
+        // Tier 2 (--explain): use terse rationale, fall back to summary
+        const docs = (rule as Rule).meta?.docs;
+        const explanation = issue.explanation || docs?.rationale || docs?.summary;
+        const howToFix = issue.howToFix || docs?.howToFix;
+
         // Report issue using existing FileValidator.report()
         this.report(issue.message, filePath, issue.line, rule.meta.id, {
           fix: issue.fix,
-          explanation: issue.explanation,
-          howToFix: issue.howToFix,
+          explanation,
+          howToFix,
           autoFix: issue.autoFix,
         });
       },

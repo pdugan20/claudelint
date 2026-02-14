@@ -54,7 +54,7 @@ export const rule: Rule = {
       },
       howToFix:
         'Ensure the `tags` field is a YAML array of strings. Each tag should be on its own line ' +
-        'prefixed with `- `. Remove any non-string values from the array.',
+        'prefixed with `-`. Remove any non-string values from the array.',
       relatedRules: ['skill-name', 'skill-description'],
     },
   },

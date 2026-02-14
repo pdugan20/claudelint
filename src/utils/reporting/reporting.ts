@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { relative } from 'path';
+import table from 'text-table';
 import {
   ValidationError,
   ValidationWarning,
@@ -286,7 +287,7 @@ export class Reporter {
   }
 
   /**
-   * Report in stylish format (default) — ESLint-style file grouping
+   * Report in stylish format (default) — ESLint-style file grouping with text-table alignment
    */
   private reportStylish(result: ValidationResult, _validatorName: string): void {
     // Collect all visible issues into a unified list
@@ -333,20 +334,15 @@ export class Reporter {
       groups.get(key)!.push(issue);
     }
 
-    // Render each file group
+    const isExplainMode = this.options.explain === true;
+
+    // Render each file group using text-table for column alignment
     for (const [filePath, fileIssues] of groups) {
       this.newline();
       if (filePath) {
         const rel = relative(cwd, filePath) || filePath;
         this.log(this.colorize(chalk.underline, rel));
       }
-
-      // Dynamic line number padding: only reserve space when at least one issue has a line
-      const hasLineNumbers = fileIssues.some((i) => i.line != null);
-      const maxLineWidth = hasLineNumbers
-        ? Math.max(...fileIssues.filter((i) => i.line).map((i) => String(i.line!).length))
-        : 0;
-      const locPad = hasLineNumbers ? maxLineWidth + 2 : 0;
 
       // Track per-ruleId counts for collapsing repetitive warnings
       const ruleIdCounts = new Map<string, number>();
@@ -357,6 +353,16 @@ export class Reporter {
       }
       const ruleIdShown = new Map<string, number>();
 
+      // Build table rows (plain strings — colors applied after table generation)
+      // Columns: [indent, lineNum, severity, message, ruleId]
+      const rows: string[][] = [];
+      // Track metadata for each row (for coloring and explain-mode content)
+      const rowMeta: Array<{
+        kind: 'issue' | 'collapse';
+        issue?: Issue;
+        severityKind?: 'error' | 'warning';
+      }> = [];
+
       for (const issue of fileIssues) {
         // Collapse: when 3+ issues share the same ruleId, show first 2 then a summary
         if (issue.ruleId) {
@@ -365,9 +371,8 @@ export class Reporter {
           if (count >= 3 && shown >= 2) {
             if (shown === 2) {
               const remaining = count - 2;
-              this.detail(
-                `${' '.repeat(locPad)}${this.colorize(chalk.gray, `... and ${remaining} more ${issue.ruleId}`)}`
-              );
+              rows.push(['', '', '', `... and ${remaining} more ${issue.ruleId}`, '']);
+              rowMeta.push({ kind: 'collapse' });
             }
             ruleIdShown.set(issue.ruleId, shown + 1);
             continue;
@@ -375,61 +380,80 @@ export class Reporter {
           ruleIdShown.set(issue.ruleId, shown + 1);
         }
 
-        // Dynamic location formatting
-        let loc: string;
-        if (issue.line) {
-          loc = String(issue.line).padEnd(locPad);
-        } else if (hasLineNumbers) {
-          loc = ' '.repeat(locPad);
+        // Truncate long messages to keep the table readable
+        const maxMsgLen = 80;
+        const msg =
+          issue.message.length > maxMsgLen
+            ? issue.message.slice(0, maxMsgLen - 3) + '...'
+            : issue.message;
+
+        rows.push(['', issue.line ? String(issue.line) : '', issue.kind, msg, issue.ruleId || '']);
+        rowMeta.push({ kind: 'issue', issue, severityKind: issue.kind });
+      }
+
+      if (rows.length === 0) continue;
+
+      // Generate aligned table (plain strings — no ANSI codes)
+      const tableOutput = table(rows, {
+        align: ['l', 'r', 'l', 'l', 'l'],
+      });
+
+      // Output each line with colors applied post-hoc
+      const tableLines = tableOutput.split('\n');
+      for (let i = 0; i < tableLines.length; i++) {
+        let line = tableLines[i];
+        const meta = rowMeta[i];
+
+        if (!meta) {
+          this.log(line);
+          continue;
+        }
+
+        if (meta.kind === 'collapse') {
+          this.log(this.colorize(chalk.gray, line));
         } else {
-          loc = '';
-        }
-
-        const severity =
-          issue.kind === 'error'
-            ? this.colorize(chalk.red, 'error')
-            : this.colorize(chalk.yellow, 'warning');
-        const ruleId = issue.ruleId ? this.colorize(chalk.dim, issue.ruleId) : '';
-        const sevPad = issue.kind === 'error' ? '  ' : '';
-        this.detail(`${loc}${severity}${sevPad}  ${issue.message}  ${ruleId}`);
-
-        const isExplainMode = this.options.explain === true;
-
-        // Show fix if it adds information beyond the message
-        // Skip here when explain mode will show it in the detail block below
-        const showFix =
-          issue.fix &&
-          !isExplainMode &&
-          !issue.message.includes(issue.fix) &&
-          !issue.fix.includes(issue.message);
-        if (showFix) {
-          this.subDetail(this.colorize(chalk.gray, `Fix: ${issue.fix}`));
-        }
-
-        // Show docs URL if enabled
-        if (this.options.showDocsUrl && issue.ruleId) {
-          const docsUrl = this.getDocsUrl(issue.ruleId);
-          if (docsUrl) {
-            this.subDetail(this.colorize(chalk.blue, `Docs: ${docsUrl}`));
+          // Apply severity color
+          if (meta.severityKind === 'error') {
+            line = line.replace(/\berror\b/, this.colorize(chalk.red, 'error'));
+          } else {
+            line = line.replace(/\bwarning\b/, this.colorize(chalk.yellow, 'warning'));
           }
-        }
 
-        // Show explanations in explain mode only
-        if (isExplainMode) {
-          if (issue.explanation) {
-            this.subDetail(this.colorize(chalk.cyan, 'Why this matters:'));
-            this.subDetail(this.colorize(chalk.gray, issue.explanation));
+          // Apply dim to rule ID (match at end of line, after last 2-space gap)
+          const ruleId = rows[i]?.[4];
+          if (ruleId) {
+            const escaped = ruleId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            line = line.replace(new RegExp(`${escaped}\\s*$`), this.colorize(chalk.dim, ruleId));
           }
-          if (issue.howToFix) {
-            this.subDetail(this.colorize(chalk.cyan, 'How to fix:'));
-            issue.howToFix.split('\n').forEach((hline) => {
-              this.subDetail(this.colorize(chalk.gray, hline));
-            });
+
+          this.log(line);
+
+          // Show docs URL if enabled
+          if (this.options.showDocsUrl && meta.issue?.ruleId) {
+            const docsUrl = this.getDocsUrl(meta.issue.ruleId);
+            if (docsUrl) {
+              this.subDetail(this.colorize(chalk.blue, `Docs: ${docsUrl}`));
+            }
           }
-          if (issue.fix) {
-            this.subDetail(
-              this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, issue.fix)
-            );
+
+          // Show explanations in explain mode only
+          if (isExplainMode && meta.issue) {
+            const iss = meta.issue;
+            if (iss.explanation) {
+              this.subDetail(this.colorize(chalk.cyan, 'Why this matters:'));
+              this.subDetail(this.colorize(chalk.gray, iss.explanation));
+            }
+            if (iss.howToFix) {
+              this.subDetail(this.colorize(chalk.cyan, 'How to fix:'));
+              iss.howToFix.split('\n').forEach((hline) => {
+                this.subDetail(this.colorize(chalk.gray, hline));
+              });
+            }
+            if (iss.fix) {
+              this.subDetail(
+                this.colorize(chalk.green, 'Fix: ') + this.colorize(chalk.white, iss.fix)
+              );
+            }
           }
         }
       }

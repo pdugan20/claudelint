@@ -29,7 +29,7 @@ Skill directory with CHANGELOG.md
 
 ## How To Fix
 
-Create a `CHANGELOG.md` file in the skill directory alongside SKILL.md. Follow the Keep a Changelog format (<https://keepachangelog.com/>) and document notable changes for each version of the skill.
+Create a `CHANGELOG.md` file in the skill directory alongside SKILL.md. Follow the [Keep a Changelog](https://keepachangelog.com/) format and document notable changes for each version of the skill.
 
 ## Options
 
