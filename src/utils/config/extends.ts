@@ -6,9 +6,20 @@
  */
 
 import { existsSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, join } from 'path';
 import { ClaudeLintConfig, loadConfig, mergeConfig } from './types';
 import { ConfigError } from './resolver';
+
+/**
+ * Built-in preset mappings
+ *
+ * Maps claudelint: prefixed names to their bundled JSON preset files.
+ * These ship in the presets/ directory of the npm package.
+ */
+const BUILTIN_PRESETS: Record<string, string> = {
+  'claudelint:recommended': join(__dirname, '../../../presets/recommended.json'),
+  'claudelint:all': join(__dirname, '../../../presets/all.json'),
+};
 
 /**
  * Resolve extends path to absolute file path
@@ -29,6 +40,18 @@ import { ConfigError } from './resolver';
  * // => '/path/node_modules/claudelint-config-standard/index.json'
  */
 export function resolveConfigPath(extendsValue: string, fromDir: string): string {
+  // Built-in presets (claudelint:recommended, claudelint:all)
+  if (extendsValue.startsWith('claudelint:')) {
+    const presetPath = BUILTIN_PRESETS[extendsValue];
+    if (!presetPath) {
+      throw new ConfigError(
+        `Unknown built-in preset: ${extendsValue}\n` +
+          `Available presets: ${Object.keys(BUILTIN_PRESETS).join(', ')}`
+      );
+    }
+    return presetPath;
+  }
+
   // Relative paths (starts with ./ or ../)
   if (extendsValue.startsWith('./') || extendsValue.startsWith('../')) {
     const resolved = resolve(fromDir, extendsValue);

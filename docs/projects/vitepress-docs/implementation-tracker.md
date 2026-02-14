@@ -2,7 +2,7 @@
 
 **Start Date**: 2026-02-11
 **Target Completion**: 6 weeks from start
-**Current Phase**: Pre-Phase (Validation)
+**Current Phase**: Phase 6 (Deployment & Launch)
 
 Track progress through each phase of VitePress documentation website implementation.
 
@@ -228,7 +228,7 @@ Add `meta.docs` to most commonly violated rules:
 ## Phase 3: Metadata Completion (Weeks 3-4)
 
 **Goal**: Add metadata to 100% of rules
-**Deliverable**: All 120 rules auto-generated from source code
+**Deliverable**: All 116 rules auto-generated from source code
 
 ### Remaining Rules (91 rules across all categories)
 
@@ -242,7 +242,7 @@ Add `meta.docs` to most commonly violated rules:
 ### Validation
 
 - [x] Run full generation: `npm run docs:generate`
-- [x] Verify all 120 rules auto-generated from metadata
+- [x] Verify all 116 rules auto-generated from metadata
 - [x] No fallback to manual docs (0 copied from existing)
 - [x] All examples render correctly (quadruple fences for nested code blocks)
 - [x] All options documented (optionExamples where applicable)
@@ -472,7 +472,7 @@ Add `meta.docs` to most commonly violated rules:
   - [ ] Verify every user-facing doc has been migrated
   - [ ] Verify no content was lost during migration
   - [ ] Check all internal links resolve correctly
-- [ ] Confirm auto-generation covers all 117 rules
+- [ ] Confirm auto-generation covers all 116 rules
   - [ ] Run `npm run docs:generate` and verify output
   - [ ] Spot-check 10 rule pages for quality
 
@@ -507,25 +507,29 @@ Add `meta.docs` to most commonly violated rules:
 
 ### By Phase
 
-- [x] Pre-Phase: Validation (9/9 tasks = 100%)
-- [x] Phase 1: VitePress Setup + Manual Sync (27/29 tasks = 93%)
-- [x] Phase 2: Metadata Foundation (43/43 tasks = 100%)
-- [x] Phase 3: Metadata Completion (12/12 tasks = 100%)
-- [x] Phase 4: Custom Components (18/21 tasks = 86%)
-- [x] Phase 5: Enhanced Features (10/15 tasks = 67%)
-- [ ] Phase 6: Deployment & Launch (0/32 tasks = 0%)
-- [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 tasks = 0%)
+- [x] Pre-Phase: Validation (9/9 = 100%)
+- [x] Phase 1: VitePress Setup + Manual Sync (27/29 = 93%, 2 require browser testing)
+- [x] Phase 2: Metadata Foundation (43/43 = 100%)
+- [x] Phase 3: Metadata Completion (12/12 = 100%)
+- [x] Phase 4: Custom Components (18/21 = 86%, 3 require browser testing)
+- [x] Phase 5: Enhanced Features (10/15 = 67%, remainder deferred to post-launch)
+- [ ] Phase 6: Deployment & Launch (0/32 = 0%)
+- [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 = 0%)
 
-**Total Progress**: 119/161 tasks (74%)
+**Total Progress**: 119/161 tasks (74%) — Phases 1-5 complete, Phase 6-7 remaining
 
 ### By Category
 
-- **Validation**: 9/9 tasks (100%)
-- **Setup & Infrastructure**: 27/29 tasks (93%)
-- **Auto-Generation & Metadata**: 55/55 tasks (100%)
-- **Components & Features**: 28/36 tasks (78%)
-- **Deployment & Launch**: 0/32 tasks (0%)
-- **Docs Cleanup**: 0/14 tasks (0%)
+- **Validation**: 9/9 (100%)
+- **Setup & Infrastructure**: 27/29 (93%)
+- **Auto-Generation & Metadata**: 55/55 (100%)
+- **Components & Features**: 28/36 (78%)
+- **Deployment & Launch**: 0/32 (0%)
+- **Docs Cleanup**: 0/14 (0%)
+
+### Note on Rule Counts
+
+The tracker originally referenced 120 rules. Through deprecation and consolidation, the current count is 116 rules. All 116 are auto-generated from source metadata.
 
 ---
 
@@ -542,27 +546,29 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Milestone 1: Site Running with Existing Docs
 
-- [ ] Phase 1 complete
-- [ ] VitePress installed and configured in website/ folder
-- [ ] Existing docs synced to VitePress
-- [ ] Dev server running at localhost:5173
-- [ ] Basic navigation working
+- [x] Phase 1 complete
+- [x] VitePress installed and configured in website/ folder
+- [x] Existing docs synced to VitePress
+- [x] Dev server running at localhost:5173
+- [x] Basic navigation working
 - **Target**: End of Week 1
+- **Completed**: 2026-02-11
 
 ### Milestone 2: Auto-Generation Working
 
-- [ ] Phase 2 complete
-- [ ] Auto-generation infrastructure built
-- [ ] 25% of rules have TypeScript metadata
-- [ ] Rule docs auto-generating from code
-- [ ] Fallback to manual docs working
+- [x] Phase 2 complete
+- [x] Auto-generation infrastructure built
+- [x] 25% of rules have TypeScript metadata
+- [x] Rule docs auto-generating from code
+- [x] Fallback to manual docs working
 - **Target**: End of Week 2
+- **Completed**: 2026-02-11
 
 ### Milestone 3: 100% Auto-Generated Docs
 
 - [x] Phase 3 complete
-- [x] All 120 rules have metadata
-- [x] All rule docs auto-generated (120/120 from metadata, 0 fallback)
+- [x] All 116 rules have metadata
+- [x] All rule docs auto-generated (116/116 from metadata, 0 fallback)
 - [x] Generation script handles nested code blocks (quadruple fences)
 - **Target**: End of Week 4
 - **Completed**: 2026-02-11

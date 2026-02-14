@@ -78,6 +78,35 @@ The `extends` field allows you to inherit configuration from other config files 
 }
 ```
 
+**Built-in presets:**
+
+claudelint ships with two built-in presets you can use directly:
+
+```json
+{
+  "extends": "claudelint:recommended"
+}
+```
+
+- **`claudelint:recommended`** - A curated subset of rules focused on correctness, security, and broad applicability. Best for most projects.
+- **`claudelint:all`** - Every rule at its source-defined severity. Equivalent to running with no config file, but explicit.
+
+You can extend a preset and override individual rules:
+
+```json
+{
+  "extends": "claudelint:recommended",
+  "rules": {
+    "skill-missing-changelog": "off",
+    "skill-body-too-long": "error"
+  }
+}
+```
+
+::: tip
+Running `claudelint init` will prompt you to choose between Recommended, All, or Manual configuration.
+:::
+
 **Merge behavior:**
 
 When extending configs, claudelint merges configurations in this order:

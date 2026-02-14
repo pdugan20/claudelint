@@ -63,6 +63,34 @@ describe('resolveConfigPath', () => {
     });
   });
 
+  describe('built-in presets', () => {
+    it('resolves claudelint:recommended to file path', () => {
+      const resolved = resolveConfigPath('claudelint:recommended', tempDir);
+      expect(resolved).toMatch(/presets\/recommended\.json$/);
+    });
+
+    it('resolves claudelint:all to file path', () => {
+      const resolved = resolveConfigPath('claudelint:all', tempDir);
+      expect(resolved).toMatch(/presets\/all\.json$/);
+    });
+
+    it('throws ConfigError for unknown claudelint: preset', () => {
+      expect(() => {
+        resolveConfigPath('claudelint:unknown', tempDir);
+      }).toThrow(ConfigError);
+
+      expect(() => {
+        resolveConfigPath('claudelint:unknown', tempDir);
+      }).toThrow(/Unknown built-in preset/);
+    });
+
+    it('lists available presets in error message', () => {
+      expect(() => {
+        resolveConfigPath('claudelint:nonexistent', tempDir);
+      }).toThrow(/claudelint:recommended/);
+    });
+  });
+
   describe('node_modules packages', () => {
     it('throws when package not installed', () => {
       expect(() => {

@@ -657,6 +657,27 @@ A code formatter used alongside claudelint.
 
 **See:** [CLI Reference - Formatting](./cli-reference.md#formatting)
 
+### Claude Code `/doctor`
+
+Claude Code's built-in diagnostic command (`/doctor` in-session or `claude doctor` from the terminal).
+
+**Division of Responsibility:**
+
+- **`/doctor`** - Runtime health checks (installation, binary path, auto-updates, MCP connectivity, search functionality, config file parsing, keybinding issues)
+- **claudelint** - Static analysis (cross-file references, naming conventions, security issues, best practices, content quality, deprecation warnings)
+
+**Where they overlap:**
+
+Both tools check MCP configuration, settings files, plugin structure, and CLAUDE.md size. `/doctor` validates "can Claude Code load this?" while claudelint validates "is this well-structured, correct, and following best practices?"
+
+**What only claudelint catches:**
+
+- Skills validation (<RuleCount category="skills" /> rules) — `/doctor` does not validate skills
+- Cross-file reference integrity (broken imports, missing files)
+- Security issues (hardcoded secrets, dangerous commands, path traversal)
+- Naming conventions and content quality
+- Deprecated patterns and migration guidance
+
 ## Acronyms
 
 | Acronym  | Full Term                         | Description                                             |

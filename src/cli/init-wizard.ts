@@ -40,7 +40,7 @@ interface ToolInfo {
 }
 
 interface WizardAnswers {
-  useDefaults: boolean;
+  configStyle: 'recommended' | 'all' | 'manual';
   ignorePatterns?: string[];
   customIgnorePattern?: string;
   outputFormat?: 'stylish' | 'json' | 'compact' | 'sarif';
@@ -73,8 +73,8 @@ export class InitWizard {
 
     // Use defaults if --yes flag
     if (options.yes) {
-      logger.info('Using default configuration (--yes flag)...');
-      this.createDefaultConfig(projectInfo);
+      logger.info('Using recommended preset (--yes flag)...');
+      this.createPresetConfig('recommended', projectInfo);
       logger.success('Configuration created successfully!');
       this.displayNextSteps(projectInfo);
       return;
@@ -171,10 +171,24 @@ export class InitWizard {
   private async promptConfiguration(info: ProjectInfo): Promise<WizardAnswers> {
     const answers = await inquirer.prompt([
       {
-        type: 'confirm',
-        name: 'useDefaults',
-        message: 'Use recommended defaults?',
-        default: true,
+        type: 'list',
+        name: 'configStyle',
+        message: 'Which configuration would you like to start with?',
+        choices: [
+          {
+            name: 'Recommended (curated rules for most projects)',
+            value: 'recommended',
+          },
+          {
+            name: 'All rules (everything enabled)',
+            value: 'all',
+          },
+          {
+            name: 'Manual (start from scratch)',
+            value: 'manual',
+          },
+        ],
+        default: 'recommended',
       },
       {
         type: 'checkbox',
@@ -187,7 +201,7 @@ export class InitWizard {
           { name: '*.log', value: '*.log', checked: true },
           { name: 'Custom pattern...', value: '__custom__' },
         ],
-        when: (answers: Partial<WizardAnswers>) => !answers.useDefaults,
+        when: (answers: Partial<WizardAnswers>) => answers.configStyle === 'manual',
       },
       {
         type: 'input',
@@ -202,7 +216,7 @@ export class InitWizard {
         message: 'Default output format:',
         choices: ['stylish', 'compact', 'json'],
         default: 'stylish',
-        when: (answers: Partial<WizardAnswers>) => !answers.useDefaults,
+        when: (answers: Partial<WizardAnswers>) => answers.configStyle === 'manual',
       },
       {
         type: 'confirm',
@@ -235,22 +249,17 @@ export class InitWizard {
   }
 
   /**
-   * Create default configuration
+   * Create configuration using a built-in preset
    */
-  private createDefaultConfig(_info: ProjectInfo): void {
-    // Generate .claudelintrc.json with registry-derived rules
+  private createPresetConfig(preset: 'recommended' | 'all', info: ProjectInfo): void {
     const config: ClaudeLintConfig = {
-      rules: this.buildRulesFromRegistry(),
-      output: {
-        format: 'stylish',
-        verbose: false,
-      },
+      extends: `claudelint:${preset}`,
     };
 
     this.writeConfig(config);
     this.writeIgnoreFile([]);
 
-    if (_info.hasPackageJson) {
+    if (info.hasPackageJson) {
       this.addNpmScripts();
     }
   }
@@ -259,14 +268,22 @@ export class InitWizard {
    * Generate configuration files from answers
    */
   private generateConfig(answers: WizardAnswers, _info: ProjectInfo): void {
-    // Build config from answers with registry-derived rules
-    const config: ClaudeLintConfig = {
-      rules: this.buildRulesFromRegistry(),
-      output: {
-        format: answers.outputFormat || 'stylish',
-        verbose: false,
-      },
-    };
+    let config: ClaudeLintConfig;
+
+    if (answers.configStyle === 'recommended' || answers.configStyle === 'all') {
+      config = {
+        extends: `claudelint:${answers.configStyle}`,
+      };
+    } else {
+      // Manual: inline all rules with recommended on, others off
+      config = {
+        rules: this.buildRulesFromRegistry(),
+        output: {
+          format: answers.outputFormat || 'stylish',
+          verbose: false,
+        },
+      };
+    }
 
     this.writeConfig(config);
 

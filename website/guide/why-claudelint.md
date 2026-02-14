@@ -30,7 +30,7 @@ These files reference each other — skills declare tool permissions, agents ref
 
 ### No built-in guardrails
 
-Claude Code doesn't validate most of this at setup time. While it provides JSON schemas for editor-side checking, there's no runtime schema enforcement, no cross-file reference checking, and no warnings when configuration drifts. Mistakes stay hidden until something fails silently or breaks at runtime:
+Claude Code's built-in `/doctor` command checks runtime health — installation, MCP connectivity, config file parsing, and search functionality — but it doesn't validate cross-file references, enforce naming conventions, or flag security issues in skills. Mistakes stay hidden until something fails silently or breaks at runtime:
 
 - A misspelled hook event name like `PreToolUse` → `preToolUse` is silently ignored — the matcher never matches
 - A skill with `eval` or `rm -rf` in its script creates a security hole

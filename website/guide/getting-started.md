@@ -45,12 +45,20 @@ claudelint checks <RuleCount category="categories" /> different aspects of your 
 
 ## Configuration
 
-Create a `.claudelintrc.json` in your project root:
+Run `claudelint init` to set up configuration interactively. The quickest option is the **Recommended** preset, which enables a curated subset of rules:
+
+```json
+{
+  "extends": "claudelint:recommended"
+}
+```
+
+You can also create a `.claudelintrc.json` manually with per-rule overrides:
 
 <ConfigExample
   filename=".claudelintrc.json"
-  :code='JSON.stringify({ rules: { "claude-md-size-error": "error", "skill-name": "error", "skill-description": "warning" } }, null, 2)'
-  caption="Override rule severity levels per project"
+  :code='JSON.stringify({ extends: "claudelint:recommended", rules: { "skill-missing-changelog": "off", "skill-body-too-long": "error" } }, null, 2)'
+  caption="Extend a preset and override specific rules"
 />
 
 See the [Rules Overview](/guide/rules-overview) for all available rules.

@@ -441,9 +441,9 @@ describe('CLI Integration Tests', () => {
       const configPath = join(testProjectDir, '.claudelintrc.json');
       expect(existsSync(configPath)).toBe(true);
 
-      // Verify config is valid JSON
+      // Verify config is valid JSON with preset extends
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-      expect(config).toHaveProperty('rules');
+      expect(config).toHaveProperty('extends', 'claudelint:recommended');
     });
   });
 

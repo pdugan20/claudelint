@@ -18,9 +18,11 @@
   "scripts": {
     "generate:json-schemas": "ts-node scripts/generate/json-schemas.ts",
     "generate:schema-rules": "ts-node scripts/generate/schema-rules.ts",
+    "generate:presets": "ts-node scripts/generate/presets.ts",
     "generate:types": "ts-node scripts/generate/rule-types.ts",
     "prebuild": "ts-node scripts/generate/rule-types.ts",
     "build": "tsc",
+    "postbuild": "ts-node scripts/generate/presets.ts",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "docs:generate": "ts-node scripts/generate/rule-docs.ts",
@@ -31,7 +33,7 @@
     "test:schemas": "jest tests/schemas --coverage",
     "test:skills:automated": "npm-run-all test:skills:structure test:skills:cli",
     "test:skills:cli": "bash scripts/test/skills/test-cli-commands.sh",
-    "test:skills:manual": "echo 'See docs/skill-testing.md for manual test protocol. Run scripts/generate-manual-test-protocol.sh to generate checklist.'",
+    "test:skills:manual": "echo 'See docs/testing/manual-testing-runbook.md for manual test protocol.'",
     "test:skills:metadata": "jest tests/skills/metadata.test.ts",
     "test:skills:structure": "bash scripts/test/skills/validate-self.sh",
     "test:validators": "jest tests/validators --coverage",
@@ -152,6 +154,7 @@
   "files": [
     "dist",
     "bin",
+    "presets",
     ".claude-plugin",
     "skills",
     "README.md",

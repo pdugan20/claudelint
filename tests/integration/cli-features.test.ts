@@ -64,9 +64,9 @@ describe('CLI features integration', () => {
       expect(output.toLowerCase()).toContain('created');
       expect(existsSync(join(tempDir, '.claudelintrc.json'))).toBe(true);
 
-      // Verify config has registry-derived rules
+      // Verify config uses preset extends
       const config = JSON.parse(readFileSync(join(tempDir, '.claudelintrc.json'), 'utf-8'));
-      expect(Object.keys(config.rules).length).toBeGreaterThan(5);
+      expect(config.extends).toBe('claudelint:recommended');
     });
   });
 

@@ -73,8 +73,8 @@ describe('InitWizard', () => {
     });
   });
 
-  describe('registry-derived rules (P5-2)', () => {
-    it('generates config with rules from the registry', async () => {
+  describe('preset-based config (--yes flag)', () => {
+    it('generates config with extends: claudelint:recommended', async () => {
       const wizard = new InitWizard(testDir);
       await wizard.run({ yes: true });
 
@@ -82,35 +82,15 @@ describe('InitWizard', () => {
       expect(existsSync(configPath)).toBe(true);
 
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-      const ruleIds = Object.keys(config.rules);
-
-      // Should have all registered rules
-      const registeredRules = RuleRegistry.getAll();
-      expect(ruleIds.length).toBe(registeredRules.length);
+      expect(config.extends).toBe('claudelint:recommended');
     });
 
-    it('sets recommended rules to their default severity', async () => {
+    it('does not inline individual rules when using preset', async () => {
       const wizard = new InitWizard(testDir);
       await wizard.run({ yes: true });
 
       const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
-
-      const recommendedRules = RuleRegistry.getAll().filter((r) => r.docs?.recommended);
-      for (const rule of recommendedRules) {
-        expect(config.rules[rule.id]).toBe(rule.severity);
-      }
-    });
-
-    it('sets non-recommended rules to off', async () => {
-      const wizard = new InitWizard(testDir);
-      await wizard.run({ yes: true });
-
-      const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
-
-      const nonRecommended = RuleRegistry.getAll().filter((r) => !r.docs?.recommended);
-      for (const rule of nonRecommended) {
-        expect(config.rules[rule.id]).toBe('off');
-      }
+      expect(config.rules).toBeUndefined();
     });
   });
 
@@ -134,12 +114,10 @@ describe('InitWizard', () => {
       const wizard = new InitWizard(testDir);
       await wizard.run({ yes: true, force: true });
 
-      // Should overwrite with new registry-derived rules
+      // Should overwrite with preset config
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-      expect(config.rules).not.toHaveProperty('old');
-
-      const registeredRules = RuleRegistry.getAll();
-      expect(Object.keys(config.rules).length).toBe(registeredRules.length);
+      expect(config.rules).toBeUndefined();
+      expect(config.extends).toBe('claudelint:recommended');
     });
   });
 
