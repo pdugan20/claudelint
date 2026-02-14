@@ -1,28 +1,25 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
 import { join, resolve } from 'path';
-import { loadIgnorePatterns } from '../config/ignore';
+import { filterIgnored } from '../config/ignore';
 
 /**
  * Find files matching a glob pattern
  */
 export async function findFiles(pattern: string, cwd: string = process.cwd()): Promise<string[]> {
-  // Load ignore patterns from .claudelintignore
-  const customIgnores = loadIgnorePatterns(cwd);
-
-  // Combine with default ignores
-  const defaultIgnores = ['node_modules/**', '.git/**', 'dist/**', 'coverage/**'];
-  const allIgnores = [...defaultIgnores, ...customIgnores];
-
+  // Glob with only perf defaults (skip obvious large dirs).
+  // Full .gitignore-style filtering (including .claudelintignore) is
+  // handled by node-ignore in the post-filter step below.
   const files = await glob(pattern, {
     cwd,
     absolute: true,
     nodir: true,
     dot: true,
-    ignore: allIgnores,
+    ignore: ['node_modules/**', '.git/**'],
   });
 
-  return files;
+  // Post-filter through node-ignore for full .gitignore spec compliance
+  return filterIgnored(files, cwd);
 }
 
 /**

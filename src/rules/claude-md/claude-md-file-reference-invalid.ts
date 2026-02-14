@@ -14,7 +14,7 @@ import { existsSync } from 'fs';
  * Pattern to match file-like paths: must contain a / and a dot-extension,
  * or end with /. Excludes URLs, template variables, and common non-path patterns.
  */
-const FILE_PATH_REGEX = /(?:\.\/|[\w-]+\/)+[\w./-]+/g;
+const FILE_PATH_REGEX = /(?:\.\/|\.?[\w-]+\/)+[\w./-]+/g;
 
 /**
  * Patterns to exclude from file reference checking.
@@ -177,13 +177,19 @@ export const rule: Rule = {
     if (!filePath.endsWith('.md')) return;
 
     const baseDir = dirname(filePath);
+    const projectRoot = process.cwd();
     const refs = extractFileReferences(fileContent);
 
     for (const ref of refs) {
       if (shouldSkipPath(ref.path, ref.sourceText)) continue;
 
-      const resolved = resolve(baseDir, ref.path);
-      if (!existsSync(resolved)) {
+      // Check relative to the file's directory AND relative to the project root.
+      // CLAUDE.md files typically reference paths from the project root (how Claude
+      // Code interprets them), but nested CLAUDE.md files (src/CLAUDE.md, etc.)
+      // may also use paths relative to their own location.
+      const resolvedFromFile = resolve(baseDir, ref.path);
+      const resolvedFromRoot = resolve(projectRoot, ref.path);
+      if (!existsSync(resolvedFromFile) && !existsSync(resolvedFromRoot)) {
         context.report({
           message: `File reference "${ref.path}" does not exist`,
           line: ref.line,

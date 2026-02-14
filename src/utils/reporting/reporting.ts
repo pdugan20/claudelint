@@ -40,6 +40,8 @@ export interface ReportingOptions {
   deprecatedWarnings?: boolean;
   /** Treat deprecated rule usage as errors (default: false) */
   errorOnDeprecated?: boolean;
+  /** Collapse repetitive same-rule issues into "... and N more" (default: true) */
+  collapseRepetitive?: boolean;
 }
 
 /**
@@ -376,7 +378,7 @@ export class Reporter {
 
       for (const issue of fileIssues) {
         // Collapse: when 3+ issues share the same ruleId, show first 2 then a summary
-        if (issue.ruleId) {
+        if (this.options.collapseRepetitive !== false && issue.ruleId) {
           const count = ruleIdCounts.get(issue.ruleId) || 0;
           const shown = ruleIdShown.get(issue.ruleId) || 0;
           if (count >= 3 && shown >= 2) {

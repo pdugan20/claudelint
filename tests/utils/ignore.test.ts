@@ -1,4 +1,10 @@
-import { parseIgnoreFile, shouldIgnore, loadIgnorePatterns } from '../../src/utils/config/ignore';
+import {
+  parseIgnoreFile,
+  createIgnoreFilter,
+  isIgnored,
+  filterIgnored,
+  DEFAULT_IGNORES,
+} from '../../src/utils/config/ignore';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';
@@ -52,70 +58,147 @@ pattern3
     });
   });
 
-  describe('shouldIgnore', () => {
-    it('should match default ignore patterns', () => {
-      expect(shouldIgnore('node_modules/foo/bar.js', [])).toBe(true);
-      expect(shouldIgnore('.git/config', [])).toBe(true);
-      expect(shouldIgnore('dist/bundle.js', [])).toBe(true);
-      expect(shouldIgnore('build/output.js', [])).toBe(true);
-    });
-
-    it('should match custom patterns', () => {
-      const patterns = ['.cache/', '*.log', 'temp/**'];
-
-      expect(shouldIgnore('.cache/data.json', patterns)).toBe(true);
-      expect(shouldIgnore('error.log', patterns)).toBe(true);
-      expect(shouldIgnore('temp/foo/bar.txt', patterns)).toBe(true);
-      expect(shouldIgnore('src/main.ts', patterns)).toBe(false);
-    });
-
-    it('should match wildcard patterns', () => {
-      const patterns = ['*.tmp', 'test-*.js'];
-
-      expect(shouldIgnore('data.tmp', patterns)).toBe(true);
-      expect(shouldIgnore('test-unit.js', patterns)).toBe(true);
-      expect(shouldIgnore('data.txt', patterns)).toBe(false);
-    });
-
-    it('should match directory patterns', () => {
-      const patterns = ['logs/', 'temp/'];
-
-      expect(shouldIgnore('logs/', patterns)).toBe(true);
-      expect(shouldIgnore('logs/error.log', patterns)).toBe(true);
-      expect(shouldIgnore('temp/data.json', patterns)).toBe(true);
-      expect(shouldIgnore('src/logs.ts', patterns)).toBe(false);
-    });
-
-    it('should match double-star patterns', () => {
-      const patterns = ['**/*.test.js', 'src/**/*.tmp'];
-
-      expect(shouldIgnore('foo/bar/baz.test.js', patterns)).toBe(true);
-      expect(shouldIgnore('src/components/header.tmp', patterns)).toBe(true);
-      expect(shouldIgnore('src/main.js', patterns)).toBe(false);
+  describe('DEFAULT_IGNORES', () => {
+    it('should include all standard directories', () => {
+      expect(DEFAULT_IGNORES).toContain('node_modules');
+      expect(DEFAULT_IGNORES).toContain('.git');
+      expect(DEFAULT_IGNORES).toContain('dist');
+      expect(DEFAULT_IGNORES).toContain('build');
+      expect(DEFAULT_IGNORES).toContain('coverage');
     });
   });
 
-  describe('loadIgnorePatterns', () => {
-    it('should load patterns from .claudelintignore file', async () => {
+  describe('createIgnoreFilter', () => {
+    it('should create a filter with default ignores', () => {
       const testDir = getTestDir();
-      const ignoreFilePath = join(testDir, '.claudelintignore');
+      const ig = createIgnoreFilter(testDir);
+
+      expect(ig.ignores('node_modules/foo/bar.js')).toBe(true);
+      expect(ig.ignores('.git/config')).toBe(true);
+      expect(ig.ignores('dist/bundle.js')).toBe(true);
+      expect(ig.ignores('build/output.js')).toBe(true);
+      expect(ig.ignores('coverage/lcov.info')).toBe(true);
+      expect(ig.ignores('src/main.ts')).toBe(false);
+    });
+
+    it('should load custom patterns from .claudelintignore', async () => {
+      const testDir = getTestDir();
       await writeFile(
-        ignoreFilePath,
+        join(testDir, '.claudelintignore'),
         `.cache/
 *.log
 temp/**
 `
       );
 
-      const patterns = loadIgnorePatterns(testDir);
-      expect(patterns).toEqual(['.cache/', '*.log', 'temp/**']);
+      const ig = createIgnoreFilter(testDir);
+
+      expect(ig.ignores('.cache/data.json')).toBe(true);
+      expect(ig.ignores('error.log')).toBe(true);
+      expect(ig.ignores('temp/foo/bar.txt')).toBe(true);
+      expect(ig.ignores('src/main.ts')).toBe(false);
     });
 
-    it('should return empty array if no ignore file exists', () => {
+    it('should handle trailing-slash directory patterns', async () => {
+      const testDir = getTestDir();
+      await writeFile(
+        join(testDir, '.claudelintignore'),
+        `tests/fixtures/
+examples/
+`
+      );
+
+      const ig = createIgnoreFilter(testDir);
+
+      // Trailing slash in .gitignore means "match directory contents"
+      expect(ig.ignores('tests/fixtures/project/CLAUDE.md')).toBe(true);
+      expect(ig.ignores('tests/fixtures/deep/nested/file.ts')).toBe(true);
+      expect(ig.ignores('examples/demo/config.json')).toBe(true);
+      expect(ig.ignores('src/tests/fixtures.ts')).toBe(false);
+    });
+
+    it('should handle negation patterns', async () => {
+      const testDir = getTestDir();
+      await writeFile(
+        join(testDir, '.claudelintignore'),
+        `*.log
+!important.log
+`
+      );
+
+      const ig = createIgnoreFilter(testDir);
+
+      expect(ig.ignores('error.log')).toBe(true);
+      expect(ig.ignores('debug.log')).toBe(true);
+      expect(ig.ignores('important.log')).toBe(false);
+    });
+  });
+
+  describe('isIgnored', () => {
+    it('should check if a relative path is ignored', () => {
       const testDir = getTestDir();
 
-      const patterns = loadIgnorePatterns(testDir);
-      expect(patterns).toEqual([]);
+      expect(isIgnored('node_modules/foo/bar.js', testDir)).toBe(true);
+      expect(isIgnored('src/main.ts', testDir)).toBe(false);
+    });
+
+    it('should respect custom .claudelintignore', async () => {
+      const testDir = getTestDir();
+      await writeFile(join(testDir, '.claudelintignore'), 'secret/\n');
+
+      expect(isIgnored('secret/keys.json', testDir)).toBe(true);
+      expect(isIgnored('public/index.html', testDir)).toBe(false);
+    });
+  });
+
+  describe('filterIgnored', () => {
+    it('should filter out ignored absolute paths', () => {
+      const testDir = getTestDir();
+      const paths = [
+        join(testDir, 'src/main.ts'),
+        join(testDir, 'node_modules/foo/index.js'),
+        join(testDir, 'dist/bundle.js'),
+        join(testDir, 'src/utils.ts'),
+      ];
+
+      const result = filterIgnored(paths, testDir);
+
+      expect(result).toEqual([
+        join(testDir, 'src/main.ts'),
+        join(testDir, 'src/utils.ts'),
+      ]);
+    });
+
+    it('should keep paths outside baseDir', () => {
+      const testDir = getTestDir();
+      const outsidePath = '/some/other/project/file.ts';
+      const insidePath = join(testDir, 'node_modules/foo.js');
+
+      const result = filterIgnored([outsidePath, insidePath], testDir);
+
+      expect(result).toEqual([outsidePath]);
+    });
+
+    it('should respect .claudelintignore patterns', async () => {
+      const testDir = getTestDir();
+      await writeFile(
+        join(testDir, '.claudelintignore'),
+        `tests/fixtures/
+`
+      );
+
+      const paths = [
+        join(testDir, 'src/main.ts'),
+        join(testDir, 'tests/fixtures/project/CLAUDE.md'),
+        join(testDir, 'tests/unit/main.test.ts'),
+      ];
+
+      const result = filterIgnored(paths, testDir);
+
+      expect(result).toEqual([
+        join(testDir, 'src/main.ts'),
+        join(testDir, 'tests/unit/main.test.ts'),
+      ]);
     });
   });
 });

@@ -620,4 +620,68 @@ describe('CLI Integration Tests', () => {
       expect(output).toContain('error');
     });
   });
+
+  describe('--no-collapse flag', () => {
+    it('should collapse repetitive issues by default', async () => {
+      // Create CLAUDE.md with 4 references to nonexistent files (triggers 4 same-rule warnings)
+      await claudeMd(testProjectDir)
+        .withContent(
+          '# Project\n\nSee `src/fake1.ts` for details.\n\nSee `src/fake2.ts` for details.\n\nSee `src/fake3.ts` for details.\n\nSee `src/fake4.ts` for details.'
+        )
+        .build();
+
+      const { output } = runCLI(claudelintBin, ['check-all', '--no-color'], testProjectDir);
+
+      expect(output).toContain('... and');
+    });
+
+    it('should show all issues with --no-collapse', async () => {
+      await claudeMd(testProjectDir)
+        .withContent(
+          '# Project\n\nSee `src/fake1.ts` for details.\n\nSee `src/fake2.ts` for details.\n\nSee `src/fake3.ts` for details.\n\nSee `src/fake4.ts` for details.'
+        )
+        .build();
+
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--no-color', '--no-collapse'],
+        testProjectDir
+      );
+
+      expect(output).not.toContain('... and');
+      // All 4 references shown
+      expect(output).toContain('fake1.ts');
+      expect(output).toContain('fake2.ts');
+      expect(output).toContain('fake3.ts');
+      expect(output).toContain('fake4.ts');
+    });
+  });
+
+  describe('--max-warnings on individual validators', () => {
+    it('should exit 0 when warnings are under the limit', async () => {
+      await claudeMd(testProjectDir).withSize(38000).build(); // Triggers size warning
+
+      const result = spawnSync(
+        claudelintBin,
+        ['validate-claude-md', '--max-warnings', '10'],
+        { cwd: testProjectDir, encoding: 'utf-8' }
+      );
+
+      expect(result.status).toBe(0);
+    });
+
+    it('should exit 1 when warnings exceed the limit', async () => {
+      await claudeMd(testProjectDir).withSize(38000).build(); // Triggers size warning
+
+      const result = spawnSync(
+        claudelintBin,
+        ['validate-claude-md', '--max-warnings', '0'],
+        { cwd: testProjectDir, encoding: 'utf-8' }
+      );
+
+      expect(result.status).toBe(1);
+      const output = (result.stdout || '') + (result.stderr || '');
+      expect(output).toContain('Warning limit exceeded');
+    });
+  });
 });

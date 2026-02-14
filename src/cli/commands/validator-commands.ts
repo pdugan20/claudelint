@@ -54,7 +54,9 @@ export function createValidatorCommand(
     .option('-v, --verbose', 'Verbose output')
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('-c, --config <path>', 'Path to configuration file')
-    .option('--no-config', 'Disable configuration file loading');
+    .option('--no-config', 'Disable configuration file loading')
+    .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)
+    .option('--no-collapse', 'Show all issues without collapsing repeated rules');
 
   // Add hidden alias for backwards compatibility
   if (metadata.alias) {
@@ -77,6 +79,8 @@ export function createValidatorCommand(
       explain?: boolean;
       skill?: string;
       config?: string | false;
+      maxWarnings?: number;
+      collapse?: boolean;
     }) => {
       try {
         // Load and validate config (ESLint pattern: load by default, --no-config to opt-out)
@@ -90,6 +94,7 @@ export function createValidatorCommand(
           verbose: options.verbose,
           warningsAsErrors: options.warningsAsErrors,
           explain: options.explain,
+          collapseRepetitive: options.collapse !== false,
         });
 
         reporter.section(`Validating ${metadata.displayName}...`);
@@ -99,6 +104,23 @@ export function createValidatorCommand(
 
         // Report results
         reporter.report(result, metadata.displayName);
+
+        // Check max warnings threshold
+        const maxWarnings = options.maxWarnings ?? -1;
+        if (maxWarnings >= 0) {
+          const warningCount = result.warnings.length;
+          if (warningCount > maxWarnings) {
+            logger.newline();
+            logger.error(`Warning limit exceeded: ${warningCount} > ${maxWarnings}`);
+            process.exitCode = 1;
+            return;
+          }
+          // Under threshold — warnings are acceptable, only fail on errors
+          if (result.errors.length === 0) {
+            process.exitCode = 0;
+            return;
+          }
+        }
 
         // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
         process.exitCode = reporter.getExitCode(result);

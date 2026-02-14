@@ -30,6 +30,7 @@ export function registerCheckAllCommand(program: Command): void {
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('--strict', 'Exit with error on any issues (errors, warnings, or info)')
     .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)
+    .option('--no-collapse', 'Show all issues without collapsing repeated rules')
     .option('--explain', 'Show detailed explanations and fix suggestions')
     .option(
       '--format <format>',
@@ -63,6 +64,7 @@ export function registerCheckAllCommand(program: Command): void {
         warningsAsErrors?: boolean;
         strict?: boolean;
         maxWarnings?: number;
+        collapse?: boolean;
         explain?: boolean;
         format?: 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
         color?: boolean;
@@ -208,6 +210,8 @@ export function registerCheckAllCommand(program: Command): void {
             showDocsUrl: options.showDocsUrl,
             deprecatedWarnings: options.deprecatedWarnings !== false,
             errorOnDeprecated: options.errorOnDeprecated,
+            collapseRepetitive:
+              options.collapse !== false && mergedConfig.output?.collapseRepetitive !== false,
           });
 
           // Handle workspace-scoped validation

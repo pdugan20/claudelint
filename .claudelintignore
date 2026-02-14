@@ -1,0 +1,9 @@
+# Test fixtures contain intentionally invalid files
+tests/fixtures/
+tests/__temp__/
+
+# Example projects are demo configs, not real project files
+examples/
+
+# Frozen legacy docs (scheduled for deletion)
+docs/

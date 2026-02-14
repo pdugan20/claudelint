@@ -152,6 +152,7 @@
     "commander": "^14.0.3",
     "diff": "^8.0.3",
     "glob": "^13.0.0",
+    "ignore": "^7.0.5",
     "inquirer": "^13.2.2",
     "js-yaml": "^4.1.0",
     "markdownlint": "^0.40.0",

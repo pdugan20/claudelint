@@ -55,6 +55,7 @@ export interface ClaudeLintConfig {
     format?: 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
     verbose?: boolean;
     color?: boolean;
+    collapseRepetitive?: boolean;
   };
   /** Warn about unused disable directives */
   reportUnusedDisableDirectives?: boolean;

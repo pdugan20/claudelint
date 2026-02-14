@@ -59,6 +59,7 @@ claudelint check-all [options]
 | `--config <path>` | Path to custom config file | Auto-detect |
 | `--strict` | Exit with error on any issues (errors, warnings, or info) | `false` |
 | `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 | `--warnings-as-errors` | Treat all warnings as errors | `false` |
 | `--explain` | Show Why: and Fix: lines under each issue (Tier 2 progressive disclosure) | `false` |
 | `--fix` | Automatically fix problems | `false` |
@@ -93,6 +94,9 @@ claudelint check-all --strict
 
 # Limit warnings to 5
 claudelint check-all --max-warnings 5
+
+# Show all issues without collapsing repeated rules
+claudelint check-all --no-collapse
 
 # JSON output (for CI/CD)
 claudelint check-all --format json
@@ -607,6 +611,8 @@ claudelint validate-claude-md [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 | `--explain` | Show Why: and Fix: lines under each issue (Tier 2 progressive disclosure) | `false` |
 
 **Examples:**
@@ -641,6 +647,8 @@ claudelint validate-skills [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 | `--skill <name>` | Validate a specific skill by name | All skills |
 
 **Examples:**
@@ -675,6 +683,8 @@ claudelint validate-settings [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -701,6 +711,8 @@ claudelint validate-hooks [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -727,6 +739,8 @@ claudelint validate-mcp [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -753,6 +767,8 @@ claudelint validate-plugin [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -779,6 +795,8 @@ claudelint validate-agents [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -805,6 +823,8 @@ claudelint validate-lsp [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -831,6 +851,8 @@ claudelint validate-output-styles [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 
@@ -857,6 +879,8 @@ claudelint validate-commands [options]
 | `--warnings-as-errors` | Treat warnings as errors | `false` |
 | `-c, --config <path>` | Path to configuration file | Auto-detect |
 | `--no-config` | Disable configuration file loading | - |
+| `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
+| `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
 
 **Example:**
 

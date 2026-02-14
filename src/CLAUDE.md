@@ -49,7 +49,7 @@ export const rule: Rule = {
 4. Run `npm run docs:generate` to create the website documentation page
 5. Run `npm run check:rule-coverage` to verify docs/tests exist
 
-**Do NOT hand-edit `src/rules/index.ts` or `src/types/rule-ids.ts`** — these are auto-generated.
+**Do NOT hand-edit `src/rules/index.ts` or `src/rules/rule-ids.ts`** — these are auto-generated.
 
 ## Schemas
 

@@ -812,4 +812,55 @@ describe('Reporter', () => {
       );
     });
   });
+
+  describe('--no-collapse (collapseRepetitive: false)', () => {
+    it('should show all issues when collapseRepetitive is false', () => {
+      const noCollapseReporter = new Reporter({ format: 'stylish', color: false, collapseRepetitive: false });
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Error 1', file: '/test/file.md', line: 1, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 2', file: '/test/file.md', line: 2, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 3', file: '/test/file.md', line: 3, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 4', file: '/test/file.md', line: 4, severity: 'error', ruleId: 'claude-md-import-missing' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      noCollapseReporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      // All 4 errors shown individually
+      expect(allOutput).toContain('Error 1');
+      expect(allOutput).toContain('Error 2');
+      expect(allOutput).toContain('Error 3');
+      expect(allOutput).toContain('Error 4');
+      // No collapse line
+      expect(allOutput).not.toContain('... and');
+    });
+
+    it('should collapse by default (collapseRepetitive not set)', () => {
+      const defaultReporter = new Reporter({ format: 'stylish', color: false });
+      const result: ValidationResult = {
+        errors: [
+          { message: 'Error 1', file: '/test/file.md', line: 1, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 2', file: '/test/file.md', line: 2, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 3', file: '/test/file.md', line: 3, severity: 'error', ruleId: 'claude-md-import-missing' },
+          { message: 'Error 4', file: '/test/file.md', line: 4, severity: 'error', ruleId: 'claude-md-import-missing' },
+        ],
+        warnings: [],
+        valid: false,
+      };
+
+      defaultReporter.report(result, 'Test');
+
+      const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
+      // First 2 shown, rest collapsed
+      expect(allOutput).toContain('Error 1');
+      expect(allOutput).toContain('Error 2');
+      expect(allOutput).toContain('... and 2 more claude-md-import-missing');
+      expect(allOutput).not.toContain('Error 3');
+      expect(allOutput).not.toContain('Error 4');
+    });
+  });
 });
