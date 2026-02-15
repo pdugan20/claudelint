@@ -159,7 +159,7 @@ claudelint check-all --allow-empty-input
 claudelint check-all --format json --output-file report.json
 
 # Override a rule severity from the CLI
-claudelint check-all --rule skill-name:error --rule claude-md-size-warning:off
+claudelint check-all --rule skill-name:error --rule claude-md-size:off
 
 # Only check files with uncommitted changes
 claudelint check-all --changed
@@ -372,7 +372,7 @@ claudelint explain <rule-id>
 
 **Arguments:**
 
-- `<rule-id>` - The ID of the rule to explain (e.g., `skill-name`, `claude-md-size-error`)
+- `<rule-id>` - The ID of the rule to explain (e.g., `skill-name`, `claude-md-size`)
 
 **Examples:**
 

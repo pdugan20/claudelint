@@ -29,7 +29,7 @@ Share configuration across packages using the `extends` field:
 {
   "extends": "./base-config.json",
   "rules": {
-    "claude-md-size-error": "warn"
+    "claude-md-size": "warn"
   }
 }
 ```
@@ -140,7 +140,7 @@ monorepo/
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
+    "claude-md-size": "warn",
     "skill-missing-version": "error"
   },
   "ignorePatterns": [
@@ -156,7 +156,7 @@ monorepo/
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "claude-md-size-error": "warn"
+    "claude-md-size": "warn"
   }
 }
 ```
@@ -232,7 +232,7 @@ Checked 4 files across 3 categories (claude-md, settings, hooks) in 32ms. No pro
 claude-md (28ms)
 
   src/CLAUDE.md (1 error)
-     0  error  File exceeds 40KB limit (66669 bytes)  claude-md-size-error
+     0  error  File exceeds 40KB limit (66669 bytes)  claude-md-size
 
 Checked 3 files across 2 categories (claude-md, skills) in 28ms.
 1 problem (1 error, 0 warnings)
@@ -401,7 +401,7 @@ packages/
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error"
+    "claude-md-size": "warn"
   }
 }
 ```
@@ -420,7 +420,7 @@ packages/
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
-    "claude-md-size-error": "warn"
+    "claude-md-size": "warn"
   }
 }
 ```
@@ -442,7 +442,7 @@ packages/
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
+    "claude-md-size": "warn",
     "skill-missing-version": "error",
     "skill-missing-changelog": "error"
   }
@@ -459,7 +459,7 @@ npm install --save-dev @company/claudelint-config
 {
   "extends": "@company/claudelint-config",
   "rules": {
-    "claude-md-size-error": "warn"
+    "claude-md-size": "warn"
   }
 }
 ```

@@ -1,10 +1,10 @@
 {
-  "total": 116,
+  "total": 115,
   "categoryCount": 10,
   "categories": {
     "claude-md": {
       "display": "CLAUDE.md",
-      "count": 16
+      "count": 15
     },
     "skills": {
       "display": "Skills",
@@ -43,5 +43,5 @@
       "count": 2
     }
   },
-  "generatedAt": "2026-02-15T03:45:58.314Z"
+  "generatedAt": "2026-02-15T04:51:05.597Z"
 }

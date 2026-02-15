@@ -1,7 +1,6 @@
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "claude-md-import-missing": "error",
     "claude-md-import-circular": "error",
     "skill-missing-shebang": "warn",
@@ -20,14 +19,13 @@
     {
       "files": ["*.test.ts", "*.spec.ts"],
       "rules": {
-        "claude-md-size-warning": "off"
+        "claude-md-size": "off"
       }
     },
     {
       "files": [".claude/skills/**/SKILL.md"],
       "rules": {
-        "claude-md-size-error": "off",
-        "claude-md-size-warning": "off"
+        "claude-md-size": "off"
       }
     }
   ],

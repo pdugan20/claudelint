@@ -143,7 +143,7 @@ describe('SARIF Formatter', () => {
             {
               message: 'Size error',
               severity: 'error' as const,
-              ruleId: 'claude-md-size-error' as const,
+              ruleId: 'claude-md-size' as const,
             },
           ],
           warnings: [],

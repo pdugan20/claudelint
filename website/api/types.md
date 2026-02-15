@@ -246,7 +246,7 @@ interface ClaudeLintConfig {
 const config: ClaudeLintConfig = {
   extends: 'recommended',
   rules: {
-    'claude-md-size-warning': 'warn',
+    'claude-md-size': 'warn',
     'skill-missing-examples': { severity: 'error', options: { minExamples: 2 } },
   },
   ignorePatterns: ['node_modules/**', 'dist/**'],
@@ -279,7 +279,7 @@ interface RuleConfig {
 
 ```typescript
 const rules = {
-  'claude-md-size-warning': 'warn',                                    // shorthand
+  'claude-md-size': 'warn',                                    // shorthand
   'skill-missing-examples': 'off',                                     // shorthand
   'skill-body-too-long': { severity: 'error', options: { maxLength: 5000 } },  // full
 };

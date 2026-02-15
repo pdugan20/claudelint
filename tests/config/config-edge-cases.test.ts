@@ -33,7 +33,7 @@ describe('Config edge cases', () => {
 
     it('should throw on trailing commas', () => {
       const configPath = join(testDir, '.claudelintrc.json');
-      writeFileSync(configPath, '{ "rules": { "claude-md-size-error": "error", } }');
+      writeFileSync(configPath, '{ "rules": { "claude-md-size": "error", } }');
 
       expect(() => loadConfig(configPath)).toThrow();
     });
@@ -70,15 +70,15 @@ describe('Config edge cases', () => {
       writeFileSync(
         configPath,
         JSON.stringify({
-          ruls: { 'claude-md-size-error': 'error' },
+          ruls: { 'claude-md-size': 'error' },
           unknownField: true,
-          rules: { 'claude-md-size-error': 'warn' },
+          rules: { 'claude-md-size': 'warn' },
         })
       );
 
       const config = loadConfig(configPath);
       // The unknown keys are loaded but ignored by the resolver
-      expect(config.rules).toEqual({ 'claude-md-size-error': 'warn' });
+      expect(config.rules).toEqual({ 'claude-md-size': 'warn' });
     });
   });
 
@@ -89,7 +89,7 @@ describe('Config edge cases', () => {
       writeFileSync(
         rcPath,
         JSON.stringify({
-          rules: { 'claude-md-size-error': 'warn' },
+          rules: { 'claude-md-size': 'warn' },
         })
       );
 
@@ -99,7 +99,7 @@ describe('Config edge cases', () => {
         JSON.stringify({
           name: 'test-pkg',
           claudelint: {
-            rules: { 'claude-md-size-error': 'error' },
+            rules: { 'claude-md-size': 'error' },
           },
         })
       );
@@ -108,7 +108,7 @@ describe('Config edge cases', () => {
       expect(found).toBe(rcPath);
 
       const config = loadConfig(found!);
-      expect(config.rules!['claude-md-size-error']).toBe('warn');
+      expect(config.rules!['claude-md-size']).toBe('warn');
     });
 
     it('should find package.json when no .claudelintrc.json exists', () => {
@@ -118,7 +118,7 @@ describe('Config edge cases', () => {
         JSON.stringify({
           name: 'test-pkg',
           claudelint: {
-            rules: { 'claude-md-size-error': 'error' },
+            rules: { 'claude-md-size': 'error' },
           },
         })
       );

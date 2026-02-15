@@ -63,7 +63,7 @@ describe('Workspace CLI Integration', () => {
       join(tempDir, '.claudelintrc.json'),
       JSON.stringify({
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       })
     );
@@ -173,7 +173,7 @@ describe('Workspace CLI Integration', () => {
 
       expect(result.code).toBe(1); // Should fail due to size error
       expect(result.stdout).toContain('app-1');
-      expect(result.stdout).toContain('claude-md-size-error');
+      expect(result.stdout).toContain('claude-md-size');
     });
   });
 

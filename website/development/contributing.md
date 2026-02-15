@@ -382,7 +382,7 @@ docs: {
   ],
   whenNotToUse:
     'This rule should always be enabled.',
-  relatedRules: ['claude-md-size-warning', 'claude-md-import-missing'],
+  relatedRules: ['claude-md-import-missing'],
 }
 ```
 

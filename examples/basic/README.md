@@ -20,14 +20,14 @@ This is a **permissive configuration** that:
 
 ### Errors (fail validation)
 
-- `size-error` - CLAUDE.md exceeds 40KB limit
+- `size` - CLAUDE.md approaching or exceeding size limit
 - `import-missing` - @import points to non-existent file
 - `skill-dangerous-command` - Dangerous shell commands detected
 - `settings-invalid-schema` - Settings file doesn't match schema
 
 ### Warnings (non-blocking)
 
-- `size-warning` - CLAUDE.md approaching size limit (35KB)
+- `size` - CLAUDE.md approaching size limit (35KB)
 - `skill-missing-shebang` - Shell script missing shebang
 
 ## Usage
@@ -50,7 +50,7 @@ Edit `.claudelintrc.json` to adjust rules:
 ```json
 {
   "rules": {
-    "claude-md-size-warning": "off",           // Disable this rule
+    "claude-md-size": "off",                    // Disable this rule
     "claude-md-import-missing": "warn",         // Downgrade to warning
     "skill-missing-shebang": "error"  // Upgrade to error
   }

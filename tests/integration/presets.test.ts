@@ -43,14 +43,14 @@ describe('preset integration', () => {
       const configPath = createConfig('.claudelintrc.json', {
         extends: 'claudelint:recommended',
         rules: {
-          'claude-md-size-error': 'off',
+          'claude-md-size': 'off',
         },
       });
 
       const config = loadConfigWithExtends(configPath);
 
       // User override should win
-      expect(config.rules!['claude-md-size-error']).toBe('off');
+      expect(config.rules!['claude-md-size']).toBe('off');
     });
 
     it('allows adding rules not in recommended', () => {
@@ -131,7 +131,7 @@ describe('preset integration', () => {
       const configPath = createConfig('.claudelintrc.json', {
         extends: ['claudelint:recommended', './team.json'],
         rules: {
-          'claude-md-size-warning': 'off',
+          'claude-md-size': 'off',
         },
       });
 
@@ -142,7 +142,7 @@ describe('preset integration', () => {
       // Has team override
       expect(config.rules!['skill-dangerous-command']).toBe('error');
       // Has user override
-      expect(config.rules!['claude-md-size-warning']).toBe('off');
+      expect(config.rules!['claude-md-size']).toBe('off');
     });
   });
 });

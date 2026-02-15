@@ -23,7 +23,7 @@ describe('Diagnostic Propagation', () => {
       // Setup config with invalid rule options (schema validation should fail)
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: -100, // Invalid: must be positive
@@ -39,7 +39,7 @@ describe('Diagnostic Propagation', () => {
       expect(result.warnings.length).toBeGreaterThan(0);
       const configWarning = result.warnings.find((w) => w.message.includes('Invalid options'));
       expect(configWarning).toBeDefined();
-      expect(configWarning?.message).toContain('claude-md-size-warning');
+      expect(configWarning?.message).toContain('claude-md-size');
     });
 
     it('should propagate warnings for multiple invalid rules', async () => {
@@ -50,16 +50,10 @@ describe('Diagnostic Propagation', () => {
 
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: -100, // Invalid
-            },
-          },
-          'claude-md-size-error': {
-            severity: 'error',
-            options: {
-              maxSize: 'not a number', // Invalid type
             },
           },
         },
@@ -68,11 +62,10 @@ describe('Diagnostic Propagation', () => {
       const validator = new ClaudeMdValidator({ path: filePath, config });
       const result = await validator.validate();
 
-      // Should have warnings for both invalid rules
-      expect(result.warnings.length).toBeGreaterThanOrEqual(2);
+      // Should have warning for invalid rule options
+      expect(result.warnings.length).toBeGreaterThanOrEqual(1);
       const messages = result.warnings.map((w) => w.message).join(' ');
-      expect(messages).toContain('claude-md-size-warning');
-      expect(messages).toContain('claude-md-size-error');
+      expect(messages).toContain('claude-md-size');
     });
   });
 
@@ -86,7 +79,7 @@ describe('Diagnostic Propagation', () => {
 
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: -1, // Invalid - triggers warning
@@ -122,7 +115,7 @@ describe('Diagnostic Propagation', () => {
 
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: { maxSize: -1 },
           },
@@ -156,7 +149,7 @@ describe('Diagnostic Propagation', () => {
 
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: { maxSize: -1 },
           },

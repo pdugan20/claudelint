@@ -19,7 +19,7 @@ const linter = new ClaudeLint({
   fix: true,
   cwd: process.cwd(),
   config: {
-    rules: { 'claude-md-size-warning': 'warn' },
+    rules: { 'claude-md-size': 'warn' },
   },
 });
 ```

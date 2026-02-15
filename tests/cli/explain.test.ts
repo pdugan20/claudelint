@@ -70,10 +70,10 @@ describe('explain command', () => {
   });
 
   it('should include metadata fields in output', () => {
-    const { stdout, exitCode } = runExplain('claude-md-size-error');
+    const { stdout, exitCode } = runExplain('claude-md-size');
 
     expect(exitCode).toBe(0);
-    expect(stdout).toContain('error');
+    expect(stdout).toContain('warning');
     expect(stdout).toContain('CLAUDE.md');
     expect(stdout).toContain('no'); // fixable: no
   });
@@ -107,9 +107,9 @@ describe('explain command', () => {
     expect(skills.stdout).toContain('https://claudelint.com/rules/skills/skill-name');
 
     // CLAUDE.md category
-    const claudeMd = runExplain('claude-md-size-error');
+    const claudeMd = runExplain('claude-md-size');
     expect(claudeMd.stdout).toContain(
-      'https://claudelint.com/rules/claude-md/claude-md-size-error'
+      'https://claudelint.com/rules/claude-md/claude-md-size'
     );
 
     // MCP category

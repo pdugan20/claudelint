@@ -1,7 +1,6 @@
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "error",
+    "claude-md-size": "error",
     "claude-md-import-missing": "error",
     "claude-md-import-circular": "error",
     "skill-missing-shebang": "error",

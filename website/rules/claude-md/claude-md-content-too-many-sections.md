@@ -131,7 +131,7 @@ Disable this rule if your project intentionally maintains a single large CLAUDE.
 ## Related Rules
 
 - [`claude-md-import-missing`](/rules/claude-md/claude-md-import-missing)
-- [`claude-md-size-warning`](/rules/claude-md/claude-md-size-warning)
+- [`claude-md-size`](/rules/claude-md/claude-md-size)
 
 ## Resources
 

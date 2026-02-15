@@ -29,23 +29,23 @@ describe('Problem Matcher', () => {
     });
 
     it('should match error lines from stylish format', () => {
-      const line = '✗ Error: File exceeds 40KB limit (66669 bytes) [claude-md-size-error]';
+      const line = '✗ Error: File exceeds 40KB limit (66669 bytes) [claude-md-size]';
       const match = line.match(regex);
 
       expect(match).not.toBeNull();
       expect(match![1]).toBe('Error');
       expect(match![2]).toBe('File exceeds 40KB limit (66669 bytes)');
-      expect(match![3]).toBe('claude-md-size-error');
+      expect(match![3]).toBe('claude-md-size');
     });
 
     it('should match warning lines from stylish format', () => {
-      const line = '! Warning: File approaching size limit (38000 bytes) [claude-md-size-warning]';
+      const line = '! Warning: File approaching size limit (38000 bytes) [claude-md-size]';
       const match = line.match(regex);
 
       expect(match).not.toBeNull();
       expect(match![1]).toBe('Warning');
       expect(match![2]).toBe('File approaching size limit (38000 bytes)');
-      expect(match![3]).toBe('claude-md-size-warning');
+      expect(match![3]).toBe('claude-md-size');
     });
 
     it('should match errors with complex messages', () => {

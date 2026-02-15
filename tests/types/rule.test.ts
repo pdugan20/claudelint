@@ -17,7 +17,7 @@ describe('Rule Type', () => {
     it('should return true for valid rule', () => {
       const rule: Rule = {
         meta: {
-          id: 'claude-md-size-error' as RuleId,
+          id: 'claude-md-size' as RuleId,
           name: 'Test Rule',
           description: 'Test description',
           category: 'CLAUDE.md',
@@ -42,7 +42,7 @@ describe('Rule Type', () => {
     it('should return false for invalid rule (missing validate)', () => {
       const invalid = {
         meta: {
-          id: 'claude-md-size-error' as RuleId,
+          id: 'claude-md-size' as RuleId,
           name: 'Test Rule',
           description: 'Test description',
           category: 'CLAUDE.md',
@@ -83,7 +83,7 @@ describe('Rule Type', () => {
 
     const nonDeprecatedRule: Rule = {
       meta: {
-        id: 'claude-md-size-error' as RuleId,
+        id: 'claude-md-size' as RuleId,
         name: 'Current Rule',
         description: 'Not deprecated',
         category: 'CLAUDE.md',
@@ -197,16 +197,14 @@ describe('Rule Type', () => {
             deprecated: {
               reason: 'Split into multiple focused rules',
               replacedBy: [
-                'claude-md-size-error' as RuleId,
-                'claude-md-size-warning' as RuleId,
+                'claude-md-size' as RuleId,
                 'plugin-invalid-manifest' as RuleId,
               ],
             },
           },
         };
         expect(getReplacementRuleIds(rule)).toEqual([
-          'claude-md-size-error',
-          'claude-md-size-warning',
+          'claude-md-size',
           'plugin-invalid-manifest',
         ]);
       });

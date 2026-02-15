@@ -50,19 +50,8 @@ describe('BaseValidator config integration', () => {
     RuleRegistry.clear();
 
     RuleRegistry.register({
-      id: 'claude-md-size-error',
-      name: 'Size Error',
-      description: 'Test rule without options',
-      category: 'CLAUDE.md',
-      severity: 'error',
-      fixable: false,
-      deprecated: false,
-      since: '1.0.0',
-    });
-
-    RuleRegistry.register({
-      id: 'claude-md-size-warning',
-      name: 'Size Warning',
+      id: 'claude-md-size',
+      name: 'Size',
       description: 'Test rule with options',
       category: 'CLAUDE.md',
       severity: 'warn',
@@ -100,35 +89,33 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({});
 
       validator.testSetCurrentFile('test.md');
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(true);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(true);
     });
 
     it('should return true for enabled rules', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(true);
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-warning')).toBe(true);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(true);
     });
 
     it('should return false for disabled rules', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'off',
+          'claude-md-size': 'off',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(false);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(false);
     });
 
     it('should return true for unconfigured rules that exist in registry', () => {
@@ -142,19 +129,19 @@ describe('BaseValidator config integration', () => {
 
       validator.testSetCurrentFile('test.md');
       // Rule exists in registry but not configured = enabled by default
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(true);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(true);
     });
 
     it('should respect file-specific overrides', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -163,10 +150,10 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('README.md');
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(true);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(true);
 
       validator.testSetCurrentFile('test.skill.md');
-      expect(validator.testIsRuleEnabledInConfig('claude-md-size-error')).toBe(false);
+      expect(validator.testIsRuleEnabledInConfig('claude-md-size')).toBe(false);
     });
   });
 
@@ -176,7 +163,7 @@ describe('BaseValidator config integration', () => {
 
       validator.testSetCurrentFile('test.md');
       const options = validator.testGetRuleOptions<{ maxSize?: number; reportZeroSize?: boolean }>(
-        'claude-md-size-warning'
+        'claude-md-size'
       );
 
       expect(options).toEqual({
@@ -189,7 +176,7 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({});
 
       validator.testSetCurrentFile('test.md');
-      const options = validator.testGetRuleOptions('claude-md-size-error');
+      const options = validator.testGetRuleOptions('claude-md-import-circular');
 
       expect(options).toBeUndefined();
     });
@@ -197,7 +184,7 @@ describe('BaseValidator config integration', () => {
     it('should return configured options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 50000,
@@ -211,7 +198,7 @@ describe('BaseValidator config integration', () => {
 
       validator.testSetCurrentFile('test.md');
       const options = validator.testGetRuleOptions<{ maxSize?: number; reportZeroSize?: boolean }>(
-        'claude-md-size-warning'
+        'claude-md-size'
       );
 
       expect(options).toEqual({
@@ -223,7 +210,7 @@ describe('BaseValidator config integration', () => {
     it('should respect file-specific override options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'warn',
             options: {
               maxSize: 30000,
@@ -234,7 +221,7 @@ describe('BaseValidator config integration', () => {
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-warning': {
+              'claude-md-size': {
                 severity: 'error',
                 options: {
                   maxSize: 60000,
@@ -248,11 +235,11 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('README.md');
-      let options = validator.testGetRuleOptions<{ maxSize?: number }>('claude-md-size-warning');
+      let options = validator.testGetRuleOptions<{ maxSize?: number }>('claude-md-size');
       expect(options?.maxSize).toBe(30000);
 
       validator.testSetCurrentFile('test.skill.md');
-      options = validator.testGetRuleOptions<{ maxSize?: number }>('claude-md-size-warning');
+      options = validator.testGetRuleOptions<{ maxSize?: number }>('claude-md-size');
       expect(options?.maxSize).toBe(60000);
     });
   });
@@ -261,14 +248,14 @@ describe('BaseValidator config integration', () => {
     it('should report error when rule severity is error', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      validator.testReport('Test error', 'test.md', 1, 'claude-md-size-error');
+      validator.testReport('Test error', 'test.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.errors.length).toBe(1);
@@ -278,14 +265,14 @@ describe('BaseValidator config integration', () => {
     it('should skip issue when rule is disabled in config', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'off',
+          'claude-md-size': 'off',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      validator.testReport('Test error', 'test.md', 1, 'claude-md-size-error');
+      validator.testReport('Test error', 'test.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.errors.length).toBe(0);
@@ -294,13 +281,13 @@ describe('BaseValidator config integration', () => {
     it('should respect file-specific overrides', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -310,11 +297,11 @@ describe('BaseValidator config integration', () => {
 
       // File not matching override - should report error
       validator.testSetCurrentFile('README.md');
-      validator.testReport('Test error 1', 'README.md', 1, 'claude-md-size-error');
+      validator.testReport('Test error 1', 'README.md', 1, 'claude-md-size');
 
       // File matching override - should skip error
       validator.testSetCurrentFile('test.skill.md');
-      validator.testReport('Test error 2', 'test.skill.md', 1, 'claude-md-size-error');
+      validator.testReport('Test error 2', 'test.skill.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.errors.length).toBe(1);
@@ -324,7 +311,7 @@ describe('BaseValidator config integration', () => {
     it('should respect inline disable comments even with config', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -334,11 +321,11 @@ describe('BaseValidator config integration', () => {
       // Parse disable comments first
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-line claude-md-size-error -->\n'
+        '<!-- claudelint-disable-line claude-md-size -->\n'
       );
 
       validator.testSetCurrentFile(filePath);
-      validator.testReport('Test error', filePath, 1, 'claude-md-size-error');
+      validator.testReport('Test error', filePath, 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.errors.length).toBe(0);
@@ -347,14 +334,14 @@ describe('BaseValidator config integration', () => {
     it('should report warning when rule severity is warn', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      validator.testReport('Test warning', 'test.md', 1, 'claude-md-size-warning');
+      validator.testReport('Test warning', 'test.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.warnings.length).toBe(1);
@@ -364,14 +351,14 @@ describe('BaseValidator config integration', () => {
     it('should skip warning when rule is disabled in config', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': 'off',
+          'claude-md-size': 'off',
         },
       };
 
       const validator = new TestValidator({ config });
 
       validator.testSetCurrentFile('test.md');
-      validator.testReport('Test warning', 'test.md', 1, 'claude-md-size-warning');
+      validator.testReport('Test warning', 'test.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.warnings.length).toBe(0);
@@ -380,13 +367,13 @@ describe('BaseValidator config integration', () => {
     it('should respect file-specific overrides for warnings', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
         },
         overrides: [
           {
             files: ['docs/**'],
             rules: {
-              'claude-md-size-warning': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -396,11 +383,11 @@ describe('BaseValidator config integration', () => {
 
       // File not matching override - should report warning
       validator.testSetCurrentFile('README.md');
-      validator.testReport('Test warning 1', 'README.md', 1, 'claude-md-size-warning');
+      validator.testReport('Test warning 1', 'README.md', 1, 'claude-md-size');
 
       // File matching override - should skip warning
       validator.testSetCurrentFile('docs/guide.md');
-      validator.testReport('Test warning 2', 'docs/guide.md', 1, 'claude-md-size-warning');
+      validator.testReport('Test warning 2', 'docs/guide.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.warnings.length).toBe(1);
@@ -413,12 +400,12 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({});
 
       validator.testSetCurrentFile('test.md');
-      validator.testReport('Error 1', 'test.md', 1, 'claude-md-size-error');
-      validator.testReport('Warning 1', 'test.md', 2, 'claude-md-size-warning');
+      validator.testReport('Warning 1', 'test.md', 1, 'claude-md-size');
+      validator.testReport('Warning 2', 'test.md', 2, 'claude-md-import-circular');
 
       const result = validator.getResult();
-      expect(result.errors.length).toBe(1);
-      expect(result.warnings.length).toBe(1);
+      expect(result.errors.length).toBe(1); // import-circular defaults to error
+      expect(result.warnings.length).toBe(1); // claude-md-size defaults to warn
     });
 
     it('should return default options when no config provided', () => {
@@ -426,7 +413,7 @@ describe('BaseValidator config integration', () => {
 
       validator.testSetCurrentFile('test.md');
       const options = validator.testGetRuleOptions<{ maxSize?: number; reportZeroSize?: boolean }>(
-        'claude-md-size-warning'
+        'claude-md-size'
       );
 
       // Should use defaults from registry
@@ -439,14 +426,14 @@ describe('BaseValidator config integration', () => {
     it('should work before setCurrentFile is called', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
       const validator = new TestValidator({ config });
 
       // Don't call setCurrentFile - should still work with file parameter
-      validator.testReport('Error', 'test.md', 1, 'claude-md-size-error');
+      validator.testReport('Error', 'test.md', 1, 'claude-md-size');
 
       const result = validator.getResult();
       // Config is checked based on file parameter, not currentFile
@@ -458,8 +445,7 @@ describe('BaseValidator config integration', () => {
     it('should respect both config disables and inline disables', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
           'claude-md-import-circular': 'off', // Disabled via config
         },
       };
@@ -467,32 +453,32 @@ describe('BaseValidator config integration', () => {
       const validator = new TestValidator({ config });
       const filePath = 'test.md';
 
-      // Parse disable comment for size-error
+      // Parse disable comment for claude-md-size on line 1
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-line claude-md-size-error -->\n'
+        '<!-- claudelint-disable-line claude-md-size -->\n'
       );
 
       validator.testSetCurrentFile(filePath);
 
-      // size-error: disabled via inline comment
-      validator.testReport('Error 1', filePath, 1, 'claude-md-size-error');
+      // claude-md-size on line 1: disabled via inline comment
+      validator.testReport('Warning 1', filePath, 1, 'claude-md-size');
 
-      // size-warning: enabled, should report
-      validator.testReport('Warning 1', filePath, 2, 'claude-md-size-warning');
+      // claude-md-size on line 2: enabled, should report
+      validator.testReport('Warning 2', filePath, 2, 'claude-md-size');
 
       // import-circular: disabled via config
-      validator.testReport('Error 2', filePath, 3, 'claude-md-import-circular');
+      validator.testReport('Error 1', filePath, 3, 'claude-md-import-circular');
 
       const result = validator.getResult();
-      expect(result.errors.length).toBe(0); // Both disabled
-      expect(result.warnings.length).toBe(1); // Only size-warning reported
+      expect(result.errors.length).toBe(0); // import-circular disabled via config
+      expect(result.warnings.length).toBe(1); // Only line 2 claude-md-size reported
     });
 
     it('should prioritize inline disable over config enable', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error', // Enabled in config
+          'claude-md-size': 'error', // Enabled in config
         },
       };
 
@@ -502,11 +488,11 @@ describe('BaseValidator config integration', () => {
       // Inline disable should take priority
       validator.testParseDisableComments(
         filePath,
-        '<!-- claudelint-disable-file claude-md-size-error -->\n'
+        '<!-- claudelint-disable-file claude-md-size -->\n'
       );
 
       validator.testSetCurrentFile(filePath);
-      validator.testReport('Error', filePath, 1, 'claude-md-size-error');
+      validator.testReport('Error', filePath, 1, 'claude-md-size');
 
       const result = validator.getResult();
       expect(result.errors.length).toBe(0); // Inline disable wins

@@ -36,7 +36,7 @@ All package configs extend the root config using `extends`:
 
 ### 2. Package-Specific Overrides
 
-- app-1: Makes size warnings into errors
+- app-1: Makes size rule an error
 - app-2: Disables changelog requirement
 - shared: Uses root config as-is
 
@@ -84,8 +84,7 @@ This validates app-1 with its extended config (root + app-1 overrides).
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "skill-missing-version": "error",
     "skill-missing-changelog": "warn"
   }
@@ -97,8 +96,7 @@ This validates app-1 with its extended config (root + app-1 overrides).
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "error",
+    "claude-md-size": "error",
     "skill-missing-version": "error",
     "skill-missing-changelog": "warn"
   }
@@ -110,8 +108,7 @@ This validates app-1 with its extended config (root + app-1 overrides).
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "skill-missing-version": "error",
     "skill-missing-changelog": "off"
   }

@@ -1,6 +1,6 @@
 {
   "extends": "./base-config.json",
   "rules": {
-    "claude-md-size-warning": "off"
+    "claude-md-size": "off"
   }
 }

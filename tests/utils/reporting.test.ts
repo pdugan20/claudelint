@@ -85,7 +85,7 @@ describe('Reporter', () => {
           {
             message: 'Test error',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             explanation: 'This is why it matters',
             howToFix: 'This is how to fix it',
             fix: 'Apply this fix',
@@ -113,7 +113,7 @@ describe('Reporter', () => {
           {
             message: 'Test error',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             howToFix: 'General fix instructions',
           },
         ],
@@ -136,7 +136,7 @@ describe('Reporter', () => {
           {
             message: 'Test error',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             fix: 'Apply this fix',
           },
         ],
@@ -159,7 +159,7 @@ describe('Reporter', () => {
           {
             message: 'Test error',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             explanation: 'This is why it matters',
           },
         ],
@@ -188,7 +188,7 @@ describe('Reporter', () => {
             file: 'test.md',
             line: 10,
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
           },
         ],
         warnings: [],
@@ -198,7 +198,7 @@ describe('Reporter', () => {
       reporter.report(result, 'Test');
 
       // Compact format: file:line:0: error: message [rule-id]
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:10:0: error: Test error [claude-md-size-error]');
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:10:0: error: Test error [claude-md-size]');
     });
 
     it('should report warnings in compact format', () => {
@@ -210,7 +210,7 @@ describe('Reporter', () => {
             file: 'test.md',
             line: 5,
             severity: 'warning',
-            ruleId: 'claude-md-size-warning',
+            ruleId: 'claude-md-size',
           },
         ],
         valid: true,
@@ -219,7 +219,7 @@ describe('Reporter', () => {
       reporter.report(result, 'Test');
 
       // Compact format: file:line:0: warning: message [rule-id]
-      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:5:0: warning: Test warning [claude-md-size-warning]');
+      expect(consoleLogSpy).toHaveBeenCalledWith('test.md:5:0: warning: Test warning [claude-md-size]');
     });
   });
 
@@ -243,14 +243,14 @@ describe('Reporter', () => {
 
     it('should output all results as JSON', () => {
       const result1: ValidationResult = {
-        errors: [{ message: 'Error 1', severity: 'error', ruleId: 'claude-md-size-error' }],
+        errors: [{ message: 'Error 1', severity: 'error', ruleId: 'claude-md-size' }],
         warnings: [],
         valid: false,
       };
 
       const result2: ValidationResult = {
         errors: [],
-        warnings: [{ message: 'Warning 1', severity: 'warning', ruleId: 'claude-md-size-warning' }],
+        warnings: [{ message: 'Warning 1', severity: 'warning', ruleId: 'claude-md-size' }],
         valid: true,
       };
 
@@ -383,7 +383,7 @@ describe('Reporter', () => {
     it('should report multiple errors', () => {
       const result: ValidationResult = {
         errors: [
-          { message: 'Error 1', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Error 1', severity: 'error', ruleId: 'claude-md-size' },
           { message: 'Error 2', severity: 'error', ruleId: 'claude-md-import-missing' },
           { message: 'Error 3', severity: 'error', ruleId: 'claude-md-import-circular' },
         ],
@@ -430,8 +430,8 @@ describe('Reporter', () => {
     it('should align columns consistently with text-table', () => {
       const result: ValidationResult = {
         errors: [
-          { message: 'Short message', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
-          { message: 'A longer message with more text', file: '/test/file.md', line: 100, severity: 'error', ruleId: 'claude-md-size-warning' },
+          { message: 'Short message', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size' },
+          { message: 'A longer message with more text', file: '/test/file.md', line: 100, severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [],
         valid: false,
@@ -441,8 +441,7 @@ describe('Reporter', () => {
 
       // Both lines should contain the rule ID (text-table aligns them)
       const allOutput = consoleLogSpy.mock.calls.flat().join('\n');
-      expect(allOutput).toContain('claude-md-size-error');
-      expect(allOutput).toContain('claude-md-size-warning');
+      expect(allOutput).toContain('claude-md-size');
       // Line numbers should be right-aligned (100 pushes the column wider than 5)
       expect(allOutput).toMatch(/\s+5\s+error/);
       expect(allOutput).toMatch(/100\s+error/);
@@ -451,10 +450,10 @@ describe('Reporter', () => {
     it('should handle mixed line-number and no-line-number issues in same file', () => {
       const result: ValidationResult = {
         errors: [
-          { message: 'Has line', file: '/test/file.md', line: 10, severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Has line', file: '/test/file.md', line: 10, severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [
-          { message: 'No line', file: '/test/file.md', severity: 'warning', ruleId: 'claude-md-size-warning' },
+          { message: 'No line', file: '/test/file.md', severity: 'warning', ruleId: 'claude-md-size' },
         ],
         valid: false,
       };
@@ -465,15 +464,14 @@ describe('Reporter', () => {
       expect(allOutput).toContain('Has line');
       expect(allOutput).toContain('No line');
       // Both should have rule IDs aligned
-      expect(allOutput).toContain('claude-md-size-error');
-      expect(allOutput).toContain('claude-md-size-warning');
+      expect(allOutput).toContain('claude-md-size');
     });
 
     it('should truncate long messages at 80 characters', () => {
       const longMessage = 'A'.repeat(100);
       const result: ValidationResult = {
         errors: [
-          { message: longMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: longMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [],
         valid: false,
@@ -492,7 +490,7 @@ describe('Reporter', () => {
       const shortMessage = 'This is a short message';
       const result: ValidationResult = {
         errors: [
-          { message: shortMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: shortMessage, file: '/test/file.md', severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [],
         valid: false,
@@ -532,8 +530,8 @@ describe('Reporter', () => {
     it('should deduplicate identical issues', () => {
       const result: ValidationResult = {
         errors: [
-          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
-          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size' },
+          { message: 'Same error', file: '/test/file.md', line: 5, severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [],
         valid: false,
@@ -554,7 +552,7 @@ describe('Reporter', () => {
             message: 'Test error',
             file: '/test/file.md',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             fix: 'Do something different',
           },
         ],
@@ -578,7 +576,7 @@ describe('Reporter', () => {
             message: 'Test error',
             file: '/test/file.md',
             severity: 'error',
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             fix: 'Do something different',
           },
         ],
@@ -745,8 +743,8 @@ describe('Reporter', () => {
       reporter = new Reporter({ format: 'compact', color: false, quiet: true });
 
       const result: ValidationResult = {
-        errors: [{ message: 'Real error', file: 'a.md', line: 1, severity: 'error', ruleId: 'claude-md-size-error' }],
-        warnings: [{ message: 'Noisy warning', file: 'b.md', line: 2, severity: 'warning', ruleId: 'claude-md-size-warning' }],
+        errors: [{ message: 'Real error', file: 'a.md', line: 1, severity: 'error', ruleId: 'claude-md-size' }],
+        warnings: [{ message: 'Noisy warning', file: 'b.md', line: 2, severity: 'warning', ruleId: 'claude-md-size' }],
         valid: false,
       };
 

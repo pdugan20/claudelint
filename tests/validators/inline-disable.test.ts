@@ -9,7 +9,7 @@ describe('Inline rule disabling', () => {
   describe('claudelint-disable-file', () => {
     it('should disable rule for entire file', async () => {
       const filePath = join(getTestDir(), 'CLAUDE.md');
-      const content = `<!-- claudelint-disable-file claude-md-size-warning -->
+      const content = `<!-- claudelint-disable-file claude-md-size -->
 # Large File
 
 ${'x'.repeat(36000)}`;

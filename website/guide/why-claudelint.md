@@ -52,7 +52,7 @@ Because it's a standard CLI tool, you can run it in CI alongside your existing l
 
 ```text
 CLAUDE.md (1 error)
-  0  error  File size (42KB) exceeds 40KB limit  claude-md-size-error
+  0  error  File size (42KB) exceeds 40KB limit  claude-md-size
 
 skills/deploy/SKILL.md (1 error)
   0  error  Missing required 'description' field  skill-description

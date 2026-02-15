@@ -18,7 +18,7 @@ describe('Migration Script', () => {
       const configPath = join(testDir, '.claudelintrc.json');
       const config = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -36,7 +36,7 @@ describe('Migration Script', () => {
       const configPath = join(testDir, '.claudelintrc.json');
       const config = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -69,7 +69,7 @@ describe('Migration Script', () => {
         version: '1.0.0',
         claudelint: {
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         },
       };
@@ -144,7 +144,7 @@ describe('Migration Script', () => {
       const configPath = join(testDir, '.claudelintrc.json');
       const originalConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -177,7 +177,7 @@ describe('Migration Script', () => {
       const config = {
         extends: '../base.json',
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -193,13 +193,13 @@ describe('Migration Script', () => {
       const configPath = join(testDir, '.claudelintrc.json');
       const config = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'warn',
         },
         overrides: [
           {
             files: ['**/*.md'],
             rules: {
-              'claude-md-size-warning': 'warn',
+              'claude-md-size': 'warn',
             },
           },
         ],

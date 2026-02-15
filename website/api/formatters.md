@@ -10,7 +10,7 @@ Human-readable output with colors. Best for terminal display.
 
 ```text
 CLAUDE.md (1 error, 1 warning)
-  10  error    File exceeds 40KB limit                  claude-md-size-error
+  10  error    File exceeds 40KB limit                  claude-md-size
   25  warning  Missing examples section                 claude-md-content-too-many-sections
 
 skills/test/SKILL.md (1 error)
@@ -31,7 +31,7 @@ Machine-parseable JSON output. Best for programmatic consumption and CI/CD artif
     "filePath": "CLAUDE.md",
     "messages": [
       {
-        "ruleId": "claude-md-size-error",
+        "ruleId": "claude-md-size",
         "severity": "error",
         "message": "File exceeds 40KB limit",
         "line": 10
@@ -50,7 +50,7 @@ Machine-parseable JSON output. Best for programmatic consumption and CI/CD artif
 One violation per line. Best for grep-able output and log files.
 
 ```text
-CLAUDE.md: line 10, error - File exceeds 40KB limit (claude-md-size-error)
+CLAUDE.md: line 10, error - File exceeds 40KB limit (claude-md-size)
 CLAUDE.md: line 25, warning - Missing examples section (claude-md-content-too-many-sections)
 skills/test/SKILL.md: line 5, error - Missing description field (skill-description)
 ```
@@ -66,7 +66,7 @@ See the [SARIF Integration Guide](/integrations/sarif) for setup instructions.
 GitHub Actions workflow command format. Produces `::error` and `::warning` annotations that appear inline on PR diffs.
 
 ```text
-::error file=CLAUDE.md,line=12,title=claude-md-size-error::File exceeds 40KB limit (66669 bytes)
+::error file=CLAUDE.md,line=12,title=claude-md-size::File exceeds 40KB limit (66669 bytes)
 ::warning file=.claude/skills/deploy/SKILL.md,line=5,title=skill-description::Missing description field
 ```
 

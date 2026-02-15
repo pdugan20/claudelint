@@ -145,7 +145,7 @@ All examples can be customized:
 ```json
 {
   "rules": {
-    "claude-md-size-warning": "off",           // Disable rule
+    "claude-md-size": "off",                    // Disable rule
     "claude-md-import-missing": "warn",         // Downgrade to warning
     "skill-missing-shebang": "error"  // Upgrade to error
   },

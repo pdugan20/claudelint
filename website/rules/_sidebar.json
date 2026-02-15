@@ -70,12 +70,8 @@
         "link": "/rules/claude-md/claude-md-rules-circular-symlink"
       },
       {
-        "text": "claude-md-size-error",
-        "link": "/rules/claude-md/claude-md-size-error"
-      },
-      {
-        "text": "claude-md-size-warning",
-        "link": "/rules/claude-md/claude-md-size-warning"
+        "text": "claude-md-size",
+        "link": "/rules/claude-md/claude-md-size"
       }
     ]
   },

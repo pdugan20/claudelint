@@ -61,7 +61,7 @@ async function selectiveAutoFix() {
       // Only fix formatting/style issues, not structural problems
       const formattingRules = [
         'skill-missing-shebang',
-        'claude-md-size-warning',
+        'claude-md-size',
       ];
 
       return message.ruleId && formattingRules.includes(message.ruleId);

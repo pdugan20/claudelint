@@ -13,10 +13,10 @@ describe('result-builder', () => {
       const validationResult: ValidationResult = {
         valid: false,
         errors: [
-          { message: 'Error 1', severity: 'error', ruleId: 'claude-md-size-error' },
+          { message: 'Error 1', severity: 'error', ruleId: 'claude-md-size' },
         ],
         warnings: [
-          { message: 'Warning 1', severity: 'warning', ruleId: 'claude-md-size-warning' },
+          { message: 'Warning 1', severity: 'warning', ruleId: 'claude-md-size' },
         ],
       };
 
@@ -37,7 +37,7 @@ describe('result-builder', () => {
             message: 'Fixable error',
             severity: 'error',
             autoFix: {
-              ruleId: 'claude-md-size-error',
+              ruleId: 'claude-md-size',
               description: 'Fix',
               filePath: '/file.md',
               apply: (c: string) => c,

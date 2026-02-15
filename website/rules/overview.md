@@ -7,11 +7,11 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
 
 <RuleCard
-  rule-id="claude-md-size-error"
-  description="CLAUDE.md exceeds the maximum allowed size"
-  severity="error"
+  rule-id="claude-md-size"
+  description="CLAUDE.md exceeds the maximum allowed size (40KB default)"
+  severity="warning"
   category="CLAUDE.md"
-  link="/rules/claude-md/claude-md-size-error"
+  link="/rules/claude-md/claude-md-size"
   :configurable="true"
 />
 

@@ -29,7 +29,7 @@ This guide helps you quickly resolve common issues with claudelint.
 3. Use external links instead of inline content
 4. Check for accidentally included binary data
 
-**See:** [claude-md-size-error](/rules/claude-md/claude-md-size-error)
+**See:** [claude-md-size](/rules/claude-md/claude-md-size)
 
 #### Imported file not found
 
@@ -841,7 +841,7 @@ claudelint --help
 {
   "rules": {
     "skill-missing-version": "off",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "skill-dangerous-command": "error"
   },
   "extends": [],

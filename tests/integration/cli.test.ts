@@ -54,25 +54,13 @@ describe('CLI Integration Tests', () => {
       expect(output).toContain('No problems found');
     });
 
-    it('should report errors for invalid project', async () => {
-      // Create CLAUDE.md that's too large
+    it('should report warnings for oversized project', async () => {
+      // Create CLAUDE.md that exceeds 40KB (triggers claude-md-size warning)
       await claudeMd(testProjectDir).withSize(50000).build();
 
-      let output = '';
-      let exitCode = 0;
+      const { output } = runCLI(claudelintBin, ['check-all'], testProjectDir);
 
-      try {
-        execSync(`${claudelintBin} check-all`, {
-          cwd: testProjectDir,
-          encoding: 'utf-8',
-        });
-      } catch (error: any) {
-        output = error.stdout || error.stderr || '';
-        exitCode = error.status || 1;
-      }
-
-      expect(exitCode).toBe(1);
-      expect(output).toContain('error');
+      expect(output).toContain('warning');
     });
 
     it('should exit with code 0 for valid project', async () => {
@@ -178,15 +166,11 @@ describe('CLI Integration Tests', () => {
     it('should output compact format with --format compact', async () => {
       await claudeMd(testProjectDir).withSize(50000).build();
 
-      let output = '';
-      try {
-        execSync(`${claudelintBin} check-all --format compact`, {
-          cwd: testProjectDir,
-          encoding: 'utf-8',
-        });
-      } catch (error: any) {
-        output = error.stdout || error.stderr || '';
-      }
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--format', 'compact'],
+        testProjectDir
+      );
 
       // Compact format shows file:line
       expect(output).toMatch(/CLAUDE\.md/);
@@ -201,8 +185,8 @@ describe('CLI Integration Tests', () => {
         testProjectDir
       );
 
-      // GitHub format: ::error or ::warning annotations on stdout
-      expect(stdout).toMatch(/^::error /m);
+      // GitHub format: ::warning annotations on stdout (claude-md-size has severity: warn)
+      expect(stdout).toMatch(/^::warning /m);
       expect(stdout).toContain('file=');
       expect(stdout).toContain('title=');
     });
@@ -241,7 +225,7 @@ describe('CLI Integration Tests', () => {
         configPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-warning': 'off',
+            'claude-md-size': 'off',
           },
         })
       );
@@ -279,8 +263,8 @@ describe('CLI Integration Tests', () => {
 
   describe('--warnings-as-errors flag', () => {
     it('should treat warnings as errors with --warnings-as-errors', async () => {
-      // Create a file that triggers a warning
-      await claudeMd(testProjectDir).withSize(38000).build(); // Triggers size-warning
+      // Create a file that triggers a warning (exceeds 40KB threshold)
+      await claudeMd(testProjectDir).withSize(45000).build(); // Triggers claude-md-size warning
 
       const result = spawnSync(claudelintBin, ['check-all', '--warnings-as-errors'], {
         cwd: testProjectDir,
@@ -341,8 +325,8 @@ describe('CLI Integration Tests', () => {
 
   describe('--quiet flag', () => {
     it('should suppress warning output with --quiet', async () => {
-      // Create a file that triggers a warning (size between 30k-45k)
-      await claudeMd(testProjectDir).withSize(38000).build();
+      // Create a file that triggers a warning (exceeds 40KB threshold)
+      await claudeMd(testProjectDir).withSize(45000).build();
 
       const { output } = runCLI(claudelintBin, ['check-all', '--quiet'], testProjectDir);
 
@@ -353,8 +337,8 @@ describe('CLI Integration Tests', () => {
     });
 
     it('should still show errors with --quiet', async () => {
-      // Create a file that triggers an error (50k+)
-      await claudeMd(testProjectDir).withSize(50000).build();
+      // Create invalid settings that trigger actual errors (severity: error)
+      await settings(testProjectDir).buildInvalid();
 
       const { output, exitCode } = runCLI(
         claudelintBin,
@@ -368,8 +352,8 @@ describe('CLI Integration Tests', () => {
     });
 
     it('should exit 0 for warnings-only project with --quiet', async () => {
-      // Create a file that triggers a warning but no error
-      await claudeMd(testProjectDir).withSize(38000).build();
+      // Create a file that triggers a warning but no error (exceeds 40KB threshold)
+      await claudeMd(testProjectDir).withSize(45000).build();
 
       const result = spawnSync(claudelintBin, ['check-all', '--quiet'], {
         cwd: testProjectDir,
@@ -491,7 +475,7 @@ describe('CLI Integration Tests', () => {
         configPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -572,18 +556,13 @@ describe('CLI Integration Tests', () => {
     it('should enable color output', async () => {
       await claudeMd(testProjectDir).withSize(50000).build();
 
-      let output = '';
-      try {
-        execSync(`${claudelintBin} check-all --color`, {
-          cwd: testProjectDir,
-          encoding: 'utf-8',
-        });
-      } catch (error: any) {
-        output = error.stdout || error.stderr || '';
-      }
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--color'],
+        testProjectDir
+      );
 
-      // Should contain ANSI color codes (may not work in all environments)
-      // We'll just check that the command runs
+      // Should contain output (warnings from oversized file)
       expect(output).toBeTruthy();
     });
   });
@@ -659,7 +638,7 @@ describe('CLI Integration Tests', () => {
 
   describe('--max-warnings on individual validators', () => {
     it('should exit 0 when warnings are under the limit', async () => {
-      await claudeMd(testProjectDir).withSize(38000).build(); // Triggers size warning
+      await claudeMd(testProjectDir).withSize(45000).build(); // Triggers claude-md-size warning
 
       const result = spawnSync(
         claudelintBin,
@@ -671,7 +650,7 @@ describe('CLI Integration Tests', () => {
     });
 
     it('should exit 1 when warnings exceed the limit', async () => {
-      await claudeMd(testProjectDir).withSize(38000).build(); // Triggers size warning
+      await claudeMd(testProjectDir).withSize(45000).build(); // Triggers claude-md-size warning
 
       const result = spawnSync(
         claudelintBin,

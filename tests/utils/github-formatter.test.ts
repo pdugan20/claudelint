@@ -24,7 +24,7 @@ describe('toGitHub', () => {
               file: 'CLAUDE.md',
               line: 1,
               severity: 'error' as const,
-              ruleId: 'claude-md-size-error' as const,
+              ruleId: 'claude-md-size' as const,
             },
           ],
           warnings: [],
@@ -36,7 +36,7 @@ describe('toGitHub', () => {
     const output = toGitHub(results);
 
     expect(output).toBe(
-      '::error file=CLAUDE.md,line=1,title=claude-md-size-error::File exceeds size limit'
+      '::error file=CLAUDE.md,line=1,title=claude-md-size::File exceeds size limit'
     );
   });
 
@@ -122,7 +122,7 @@ describe('toGitHub', () => {
               message: 'Error from V1',
               file: 'a.md',
               severity: 'error' as const,
-              ruleId: 'claude-md-size-error' as const,
+              ruleId: 'claude-md-size' as const,
             },
           ],
           warnings: [],

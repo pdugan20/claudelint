@@ -4,7 +4,7 @@ The CLAUDE.md validator checks your project's CLAUDE.md files for correctness, s
 
 ## What It Checks
 
-- File size limits (warning at 35KB, error at 40KB)
+- File size limits (40KB default)
 - `@import` directive syntax and referenced file existence
 - Circular import detection
 - Import depth limits (max 5 levels)
@@ -17,8 +17,7 @@ This validator includes <RuleCount category="claude-md" /> rules. See the [CLAUD
 
 | Rule | Severity | Description |
 |------|----------|-------------|
-| [claude-md-size-error](/rules/claude-md/claude-md-size-error) | error | File exceeds maximum size limit |
-| [claude-md-size-warning](/rules/claude-md/claude-md-size-warning) | warn | File approaching size limit |
+| [claude-md-size](/rules/claude-md/claude-md-size) | warn | File exceeds maximum size limit (40KB default) |
 | [claude-md-import-missing](/rules/claude-md/claude-md-import-missing) | error | Imported file not found |
 | [claude-md-import-circular](/rules/claude-md/claude-md-import-circular) | error | Circular import detected |
 | [claude-md-file-not-found](/rules/claude-md/claude-md-file-not-found) | error | CLAUDE.md file not found |

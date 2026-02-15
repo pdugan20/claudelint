@@ -93,21 +93,21 @@ export const rule: Rule = {
 
 **Use when:** Validating file-level properties, cross-references, or complex logic that doesn't fit in schemas.
 
-This is the actual pattern from `src/rules/claude-md/claude-md-size-error.ts`:
+This is the actual pattern from `src/rules/claude-md/claude-md-size.ts`:
 
 ```typescript
-// src/rules/claude-md/claude-md-size-error.ts
+// src/rules/claude-md/claude-md-size.ts
 import { Rule } from '../../types/rule';
 import { getFileSize } from '../../utils/filesystem/files';
 import { z } from 'zod';
 
 export const rule: Rule = {
   meta: {
-    id: 'claude-md-size-error',
-    name: 'CLAUDE.md File Size Error',
+    id: 'claude-md-size',
+    name: 'CLAUDE.md File Size',
     description: 'CLAUDE.md exceeds maximum file size limit',
     category: 'CLAUDE.md',
-    severity: 'error',
+    severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
@@ -175,8 +175,7 @@ Rules auto-register when their module is imported. The `src/rules/index.ts` file
 
 ```typescript
 // src/rules/index.ts (auto-generated)
-import './claude-md/claude-md-size-error';
-import './claude-md/claude-md-size-warning';
+import './claude-md/claude-md-size';
 import './skills/skill-allowed-tools';
 // ... all other rules
 ```

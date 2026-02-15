@@ -30,7 +30,7 @@ describe('CompactFormatter', () => {
         filePath: '/path/to/file.md',
         messages: [
           {
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             severity: 'error',
             message: 'File too large',
             line: 10,
@@ -47,7 +47,7 @@ describe('CompactFormatter', () => {
 
     const output = formatter.format(results);
 
-    expect(output).toBe('/path/to/file.md:10:5: Error - File too large (claude-md-size-error)\n');
+    expect(output).toBe('/path/to/file.md:10:5: Error - File too large (claude-md-size)\n');
   });
 
   it('should format a warning without column', () => {

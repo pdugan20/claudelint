@@ -22,8 +22,7 @@ All major rules enabled as errors:
 
 ### CLAUDE.md Rules
 
-- `size-error` - File exceeds 40KB
-- `size-warning` - File exceeds 35KB (treated as error)
+- `size` - File approaching or exceeding size limit (treated as error)
 - `import-missing` - Import points to non-existent file
 - `import-circular` - Circular import dependencies
 
@@ -137,7 +136,7 @@ If strict mode is too aggressive, selectively disable rules:
   "rules": {
     "skill-missing-comments": "warn",   // Downgrade to warning
     "skill-missing-changelog": "off",   // Disable entirely
-    "claude-md-size-warning": "warn"              // Keep as warning, not error
+    "claude-md-size": "warn"                       // Keep as warning, not error
   },
   "maxWarnings": 10  // Allow up to 10 warnings
 }
@@ -197,7 +196,7 @@ cp examples/basic/.claudelintrc.json .
 claudelint check-all
 
 # Upgrade warnings to errors one by one
-# Edit .claudelintrc.json: "claude-md-size-warning": "error"
+# Edit .claudelintrc.json: "claude-md-size": "error"
 
 # Eventually switch to strict config
 cp examples/strict/.claudelintrc.json .

@@ -57,7 +57,7 @@ The `extends` field allows you to inherit configuration from other config files 
 {
   "extends": "../.claudelintrc.json",
   "rules": {
-    "claude-md-size-error": "warn"
+    "claude-md-size": "warn"
   }
 }
 ```
@@ -126,8 +126,7 @@ Rules can be configured with a severity level or a full configuration object:
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "claude-md-import-missing": "off"
   }
 }
@@ -144,8 +143,8 @@ For rules that support options:
 ```json
 {
   "rules": {
-    "claude-md-size-error": {
-      "severity": "error",
+    "claude-md-size": {
+      "severity": "warn",
       "options": {
         "maxSize": 50000
       }
@@ -168,13 +167,13 @@ Override rules for specific file patterns:
     {
       "files": ["*.test.ts", "*.spec.ts"],
       "rules": {
-        "claude-md-size-warning": "off"
+        "claude-md-size": "off"
       }
     },
     {
       "files": [".claude/skills/**/SKILL.md"],
       "rules": {
-        "claude-md-size-error": "off"
+        "claude-md-size": "off"
       }
     }
   ]
@@ -279,7 +278,7 @@ You can also configure claudelint in your `package.json`:
   "version": "1.0.0",
   "claudelint": {
     "rules": {
-      "claude-md-size-warning": "off"
+      "claude-md-size": "off"
     }
   }
 }
@@ -333,7 +332,7 @@ The `--rule` flag lets you override rule severity directly from the command line
 claudelint check-all --rule skill-name:error
 
 # Override multiple rules
-claudelint check-all --rule skill-name:error --rule claude-md-size-warning:off
+claudelint check-all --rule skill-name:error --rule claude-md-size:off
 
 # Disable a rule temporarily
 claudelint check-all --rule skill-missing-version:off
@@ -350,8 +349,7 @@ Complete example `.claudelintrc.json`:
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "claude-md-import-missing": "error",
     "claude-md-import-circular": "error",
     "skill-missing-shebang": "warn",
@@ -361,7 +359,7 @@ Complete example `.claudelintrc.json`:
     {
       "files": ["*.test.ts"],
       "rules": {
-        "claude-md-size-warning": "off"
+        "claude-md-size": "off"
       }
     }
   ],

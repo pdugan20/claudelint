@@ -11,7 +11,7 @@ A single validation check that examines one specific aspect of a file.
 **Examples:**
 
 - `skill-missing-version` - Checks if SKILL.md has a version field
-- `claude-md-size-error` - Checks if CLAUDE.md exceeds 40KB
+- `claude-md-size` - Checks if CLAUDE.md exceeds 40KB
 - `hooks-invalid-event` - Checks if hook event names are valid
 
 **Properties:**
@@ -190,7 +190,7 @@ A file that customizes claudelint behavior.
 {
   "rules": {
     "skill-missing-version": "error",
-    "claude-md-size-warning": "warn"
+    "claude-md-size": "warn"
   },
   "ignorePatterns": ["node_modules/", "dist/"]
 }
@@ -259,8 +259,8 @@ Configuration values that customize how a specific rule behaves.
 ```json
 {
   "rules": {
-    "claude-md-size-error": {
-      "severity": "error",
+    "claude-md-size": {
+      "severity": "warn",
       "options": {
         "maxSize": 50000
       }
@@ -356,7 +356,7 @@ The main configuration file for Claude Code projects. Contains:
 
 **Validation:** ClaudeMdValidator checks:
 
-- File size (40KB error / 35KB warning)
+- File size (40KB limit)
 - Import syntax and references
 - Circular imports
 - Glob patterns

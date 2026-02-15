@@ -44,7 +44,7 @@ describe('ValidationCache with extends', () => {
         rootConfigPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -74,7 +74,7 @@ describe('ValidationCache with extends', () => {
         rootConfigPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'warn', // Changed from 'error'
+            'claude-md-size': 'warn', // Changed from 'error'
           },
         })
       );
@@ -94,7 +94,7 @@ describe('ValidationCache with extends', () => {
         rootConfigPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -124,7 +124,7 @@ describe('ValidationCache with extends', () => {
         JSON.stringify({
           extends: './root.json',
           rules: {
-            'claude-md-size-warning': 'warn', // Added new rule
+            'claude-md-size': 'warn', // Added new rule
           },
         })
       );
@@ -143,7 +143,7 @@ describe('ValidationCache with extends', () => {
         grandparentPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -181,7 +181,7 @@ describe('ValidationCache with extends', () => {
         grandparentPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'warn', // Changed
+            'claude-md-size': 'warn', // Changed
           },
         })
       );
@@ -200,7 +200,7 @@ describe('ValidationCache with extends', () => {
         rootPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -219,7 +219,7 @@ describe('ValidationCache with extends', () => {
       // Store in cache
       const result1 = createMockResult();
       result1.errors.push({
-        ruleId: 'claude-md-size-error',
+        ruleId: 'claude-md-size',
         message: 'Test error',
         severity: 'error',
         file: '/test',
@@ -244,7 +244,7 @@ describe('ValidationCache with extends', () => {
         rootPath,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -284,7 +284,7 @@ describe('ValidationCache with extends', () => {
         config1Path,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'error',
+            'claude-md-size': 'error',
           },
         })
       );
@@ -294,7 +294,7 @@ describe('ValidationCache with extends', () => {
         config2Path,
         JSON.stringify({
           rules: {
-            'claude-md-size-error': 'warn', // Different severity
+            'claude-md-size': 'warn', // Different severity
           },
         })
       );
@@ -304,7 +304,7 @@ describe('ValidationCache with extends', () => {
 
       // Store result with config1
       const result1 = createMockResult();
-      result1.errors.push({ ruleId: 'claude-md-size-error', message: 'Error 1', severity: 'error', file: '/test', line: 1 });
+      result1.errors.push({ ruleId: 'claude-md-size', message: 'Error 1', severity: 'error', file: '/test', line: 1 });
       result1.valid = false;
       cache.set('validator1', result1, [], config1);
 

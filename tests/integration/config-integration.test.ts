@@ -24,7 +24,7 @@ describe('Config Integration Tests', () => {
       // Configure size-error with custom maxSize of 20KB
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 20000,
@@ -38,7 +38,7 @@ describe('Config Integration Tests', () => {
 
       // Should error because file (25KB) exceeds custom limit (20KB)
       expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
+      expect(result.errors[0].ruleId).toBe('claude-md-size');
       expect(result.errors[0].message).toContain('20KB');
     });
 
@@ -53,7 +53,7 @@ describe('Config Integration Tests', () => {
       // Configure size-error with custom maxSize of 30KB (higher than file size)
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 30000,
@@ -66,7 +66,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not error because file (25KB) is under custom limit (30KB)
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-error');
+      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size');
       expect(sizeErrors.length).toBe(0);
     });
 
@@ -81,7 +81,7 @@ describe('Config Integration Tests', () => {
       // Disable size-error rule
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'off',
+          'claude-md-size': 'off',
         },
       };
 
@@ -89,7 +89,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not error because rule is disabled
-      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size-error');
+      const sizeErrors = result.errors.filter((e) => e.ruleId === 'claude-md-size');
       expect(sizeErrors.length).toBe(0);
     });
 
@@ -105,10 +105,10 @@ describe('Config Integration Tests', () => {
       const validator = new ClaudeMdValidator({ path: filePath });
       const result = await validator.validate();
 
-      // Should error with default threshold
-      expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
-      expect(result.errors[0].message).toContain('40KB');
+      // Should warn with default threshold (claude-md-size has severity: warn)
+      expect(result.warnings.length).toBe(1);
+      expect(result.warnings[0].ruleId).toBe('claude-md-size');
+      expect(result.warnings[0].message).toContain('40KB');
     });
   });
 
@@ -124,7 +124,7 @@ describe('Config Integration Tests', () => {
       // Configure size-warning with custom maxSize of 20KB
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'warn',
             options: {
               maxSize: 20000,
@@ -138,7 +138,7 @@ describe('Config Integration Tests', () => {
 
       // Should warn because file (25KB) exceeds custom limit (20KB)
       expect(result.warnings.length).toBe(1);
-      expect(result.warnings[0].ruleId).toBe('claude-md-size-warning');
+      expect(result.warnings[0].ruleId).toBe('claude-md-size');
     });
 
     it('should not report warning when rule is disabled', async () => {
@@ -152,7 +152,7 @@ describe('Config Integration Tests', () => {
       // Disable size-warning rule
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': 'off',
+          'claude-md-size': 'off',
         },
       };
 
@@ -160,7 +160,7 @@ describe('Config Integration Tests', () => {
       const result = await validator.validate();
 
       // Should not warn because rule is disabled
-      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-size-warning');
+      const sizeWarnings = result.warnings.filter((w) => w.ruleId === 'claude-md-size');
       expect(sizeWarnings.length).toBe(0);
     });
   });
@@ -180,7 +180,7 @@ describe('Config Integration Tests', () => {
       // Configure different limits for .claude/rules/*.md files
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 20000, // 20KB for main files
@@ -191,7 +191,7 @@ describe('Config Integration Tests', () => {
           {
             files: ['**/.claude/rules/*.md'],
             rules: {
-              'claude-md-size-error': {
+              'claude-md-size': {
                 severity: 'error',
                 options: {
                   maxSize: 30000, // 30KB for rules files
@@ -205,13 +205,13 @@ describe('Config Integration Tests', () => {
       // Validate main file (should error - 25KB > 20KB)
       const mainValidator = new ClaudeMdValidator({ path: mainFile, config });
       const mainResult = await mainValidator.validate();
-      const mainErrors = mainResult.errors.filter((e) => e.ruleId === 'claude-md-size-error');
+      const mainErrors = mainResult.errors.filter((e) => e.ruleId === 'claude-md-size');
       expect(mainErrors.length).toBe(1);
 
       // Validate rules file (should pass - 25KB < 30KB)
       const rulesValidator = new ClaudeMdValidator({ path: rulesFile, config });
       const rulesResult = await rulesValidator.validate();
-      const rulesErrors = rulesResult.errors.filter((e) => e.ruleId === 'claude-md-size-error');
+      const rulesErrors = rulesResult.errors.filter((e) => e.ruleId === 'claude-md-size');
       expect(rulesErrors.length).toBe(0);
     });
   });
@@ -225,7 +225,7 @@ describe('Config Integration Tests', () => {
       // Configure with invalid negative maxSize
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: -1000, // Invalid
@@ -251,7 +251,7 @@ describe('Config Integration Tests', () => {
       // Configure with invalid string maxSize
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 'large' as unknown as number, // Invalid type
@@ -282,9 +282,9 @@ describe('Config Integration Tests', () => {
       const validator = new ClaudeMdValidator({ path: filePath });
       const result = await validator.validate();
 
-      // Should use default behavior (error at 40KB)
-      expect(result.errors.length).toBe(1);
-      expect(result.errors[0].ruleId).toBe('claude-md-size-error');
+      // Should use default behavior (warn at 40KB)
+      expect(result.warnings.length).toBe(1);
+      expect(result.warnings[0].ruleId).toBe('claude-md-size');
     });
   });
 

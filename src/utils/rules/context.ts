@@ -35,7 +35,7 @@ export interface RuleContext {
    *
    * @example
    * ```typescript
-   * // Config: { "claude-md-size-error": { "severity": "error", "options": { "maxSize": 60000 } } }
+   * // Config: { "claude-md-size": { "severity": "warn", "options": { "maxSize": 60000 } } }
    * // context.options = [{ maxSize: 60000 }]
    * const maxSize = context.options[0]?.maxSize || 50000;
    * ```

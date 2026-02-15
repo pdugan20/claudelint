@@ -87,7 +87,7 @@ Work through each section. For any "No" answer, consider whether the CLAUDE.md s
 
 The following are already handled by claudelint programmatic validation:
 
-- File size limits (`claude-md-size-warning`, `claude-md-size-error`)
+- File size limits (`claude-md-size`)
 - Import validation (`claude-md-import-missing`, `claude-md-import-circular`)
 - Path validation (`claude-md-paths`, `claude-md-file-not-found`)
 - Section count (`claude-md-content-too-many-sections`)

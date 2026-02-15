@@ -98,7 +98,7 @@ export const rule: Rule = {
       whenNotToUse:
         'Disable this rule if your project intentionally maintains a single large CLAUDE.md ' +
         'file and the team finds the flat structure easier to manage.',
-      relatedRules: ['claude-md-import-missing', 'claude-md-size-warning'],
+      relatedRules: ['claude-md-import-missing', 'claude-md-size'],
     },
   },
 

@@ -159,7 +159,7 @@ describe('FileValidator - Deprecation Tracking', () => {
     it('should not track non-deprecated rules', async () => {
       const normalRule: Rule = {
         meta: {
-          id: 'claude-md-size-error' as RuleId,
+          id: 'claude-md-size' as RuleId,
           name: 'Normal Rule',
           description: 'Test',
           category: 'CLAUDE.md',

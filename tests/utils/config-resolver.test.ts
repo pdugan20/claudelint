@@ -13,19 +13,8 @@ describe('ConfigResolver', () => {
 
     // Register test rules using actual rule IDs for testing
     RuleRegistry.register({
-      id: 'claude-md-size-error',
-      name: 'Size Error',
-      description: 'Test rule without options',
-      category: 'CLAUDE.md',
-      severity: 'error',
-      fixable: false,
-      deprecated: false,
-      since: '1.0.0',
-    });
-
-    RuleRegistry.register({
-      id: 'claude-md-size-warning',
-      name: 'Size Warning',
+      id: 'claude-md-size',
+      name: 'Size',
       description: 'Test rule with options',
       category: 'CLAUDE.md',
       severity: 'warn',
@@ -62,8 +51,8 @@ describe('ConfigResolver', () => {
     it('should resolve base rules for a file', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
+          'skill-missing-shebang': 'error',
         },
       };
 
@@ -71,14 +60,14 @@ describe('ConfigResolver', () => {
       const resolved = resolver.resolveForFile('CLAUDE.md');
 
       expect(resolved.size).toBe(2);
-      expect(resolved.get('claude-md-size-error')).toEqual({
-        ruleId: 'claude-md-size-error',
-        severity: 'error',
+      expect(resolved.get('claude-md-size')).toEqual({
+        ruleId: 'claude-md-size',
+        severity: 'warn',
         options: [],
       });
-      expect(resolved.get('claude-md-size-warning')).toEqual({
-        ruleId: 'claude-md-size-warning',
-        severity: 'warn',
+      expect(resolved.get('skill-missing-shebang')).toEqual({
+        ruleId: 'skill-missing-shebang',
+        severity: 'error',
         options: [],
       });
     });
@@ -86,14 +75,13 @@ describe('ConfigResolver', () => {
     it('should apply file-specific overrides', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
         },
         overrides: [
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
               'skill-missing-shebang': 'error',
             },
           },
@@ -103,27 +91,26 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
       const resolved = resolver.resolveForFile('test.skill.md');
 
-      expect(resolved.get('claude-md-size-error')?.severity).toBe('off');
-      expect(resolved.get('claude-md-size-warning')?.severity).toBe('warn');
+      expect(resolved.get('claude-md-size')?.severity).toBe('off');
       expect(resolved.get('skill-missing-shebang')?.severity).toBe('error');
     });
 
     it('should respect override priority (last override wins)', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['**/*.md'],
             rules: {
-              'claude-md-size-error': 'warn',
+              'claude-md-size': 'warn',
             },
           },
           {
             files: ['docs/**/*.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -133,17 +120,17 @@ describe('ConfigResolver', () => {
 
       // First override matches
       const resolved1 = resolver.resolveForFile('README.md');
-      expect(resolved1.get('claude-md-size-error')?.severity).toBe('warn');
+      expect(resolved1.get('claude-md-size')?.severity).toBe('warn');
 
       // Both overrides match, last one wins
       const resolved2 = resolver.resolveForFile('docs/guide.md');
-      expect(resolved2.get('claude-md-size-error')?.severity).toBe('off');
+      expect(resolved2.get('claude-md-size')?.severity).toBe('off');
     });
 
     it('should cache resolved configurations', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -165,13 +152,13 @@ describe('ConfigResolver', () => {
     it('should match exact filenames', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['CLAUDE.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -180,22 +167,22 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
 
       const resolved1 = resolver.resolveForFile('CLAUDE.md');
-      expect(resolved1.get('claude-md-size-error')?.severity).toBe('off');
+      expect(resolved1.get('claude-md-size')?.severity).toBe('off');
 
       const resolved2 = resolver.resolveForFile('README.md');
-      expect(resolved2.get('claude-md-size-error')?.severity).toBe('error');
+      expect(resolved2.get('claude-md-size')?.severity).toBe('error');
     });
 
     it('should match wildcard patterns', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -204,22 +191,22 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
 
       const resolved1 = resolver.resolveForFile('test.skill.md');
-      expect(resolved1.get('claude-md-size-error')?.severity).toBe('off');
+      expect(resolved1.get('claude-md-size')?.severity).toBe('off');
 
       const resolved2 = resolver.resolveForFile('test.md');
-      expect(resolved2.get('claude-md-size-error')?.severity).toBe('error');
+      expect(resolved2.get('claude-md-size')?.severity).toBe('error');
     });
 
     it('should match recursive patterns', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -228,22 +215,22 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
 
       const resolved1 = resolver.resolveForFile('skills/example.skill.md');
-      expect(resolved1.get('claude-md-size-error')?.severity).toBe('off');
+      expect(resolved1.get('claude-md-size')?.severity).toBe('off');
 
       const resolved2 = resolver.resolveForFile('skills/nested/deep/test.skill.md');
-      expect(resolved2.get('claude-md-size-error')?.severity).toBe('off');
+      expect(resolved2.get('claude-md-size')?.severity).toBe('off');
     });
 
     it('should match directory patterns', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['docs/**'],
             rules: {
-              'claude-md-size-error': 'warn',
+              'claude-md-size': 'warn',
             },
           },
         ],
@@ -252,10 +239,10 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
 
       const resolved1 = resolver.resolveForFile('docs/guide.md');
-      expect(resolved1.get('claude-md-size-error')?.severity).toBe('warn');
+      expect(resolved1.get('claude-md-size')?.severity).toBe('warn');
 
       const resolved2 = resolver.resolveForFile('README.md');
-      expect(resolved2.get('claude-md-size-error')?.severity).toBe('error');
+      expect(resolved2.get('claude-md-size')?.severity).toBe('error');
     });
   });
 
@@ -263,8 +250,7 @@ describe('ConfigResolver', () => {
     it('should parse string severity format', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
           'skill-missing-shebang': 'off',
         },
       };
@@ -272,13 +258,8 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
       const resolved = resolver.resolveForFile('test.md');
 
-      expect(resolved.get('claude-md-size-error')).toEqual({
-        ruleId: 'claude-md-size-error',
-        severity: 'error',
-        options: [],
-      });
-      expect(resolved.get('claude-md-size-warning')).toEqual({
-        ruleId: 'claude-md-size-warning',
+      expect(resolved.get('claude-md-size')).toEqual({
+        ruleId: 'claude-md-size',
         severity: 'warn',
         options: [],
       });
@@ -292,7 +273,7 @@ describe('ConfigResolver', () => {
     it('should parse object format with options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 200,
@@ -305,8 +286,8 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
       const resolved = resolver.resolveForFile('test.md');
 
-      expect(resolved.get('claude-md-size-warning')).toEqual({
-        ruleId: 'claude-md-size-warning',
+      expect(resolved.get('claude-md-size')).toEqual({
+        ruleId: 'claude-md-size',
         severity: 'error',
         options: [{ maxSize: 200, enabled: false }],
       });
@@ -315,7 +296,7 @@ describe('ConfigResolver', () => {
     it('should wrap options in array following ESLint convention', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: { maxSize: 150 },
           },
@@ -325,7 +306,7 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
       const resolved = resolver.resolveForFile('test.md');
 
-      const options = resolved.get('claude-md-size-warning')?.options;
+      const options = resolved.get('claude-md-size')?.options;
       expect(Array.isArray(options)).toBe(true);
       expect(options).toEqual([{ maxSize: 150 }]);
     });
@@ -335,7 +316,7 @@ describe('ConfigResolver', () => {
     it('should validate options against schema', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 200,
@@ -354,7 +335,7 @@ describe('ConfigResolver', () => {
     it('should reject invalid options that fail schema validation', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: -100, // Invalid: must be positive
@@ -372,16 +353,16 @@ describe('ConfigResolver', () => {
       const warnings = diagnostics.getWarnings();
       expect(warnings.length).toBeGreaterThan(0);
       expect(warnings[0].message).toContain('Invalid options');
-      expect(warnings[0].message).toContain('claude-md-size-warning');
+      expect(warnings[0].message).toContain('claude-md-size');
       expect(warnings[0].source).toBe('ConfigResolver');
       expect(warnings[0].code).toBe('CONFIG_INVALID_OPTIONS');
-      expect(resolved.has('claude-md-size-warning')).toBe(false);
+      expect(resolved.has('claude-md-size')).toBe(false);
     });
 
     it('should reject options with wrong types', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 'not a number', // Invalid: should be number
@@ -398,16 +379,16 @@ describe('ConfigResolver', () => {
       const warnings = diagnostics.getWarnings();
       expect(warnings.length).toBeGreaterThan(0);
       expect(warnings[0].message).toContain('Invalid options');
-      expect(warnings[0].message).toContain('claude-md-size-warning');
+      expect(warnings[0].message).toContain('claude-md-size');
       expect(warnings[0].source).toBe('ConfigResolver');
       expect(warnings[0].code).toBe('CONFIG_INVALID_OPTIONS');
-      expect(resolved.has('claude-md-size-warning')).toBe(false);
+      expect(resolved.has('claude-md-size')).toBe(false);
     });
 
     it('should allow valid partial options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 150, // Only one of two optional fields
@@ -420,7 +401,7 @@ describe('ConfigResolver', () => {
 
       expect(() => resolver.resolveForFile('test.md')).not.toThrow();
       const resolved = resolver.resolveForFile('test.md');
-      expect(resolved.get('claude-md-size-warning')?.options).toEqual([{ maxSize: 150 }]);
+      expect(resolved.get('claude-md-size')?.options).toEqual([{ maxSize: 150 }]);
     });
   });
 
@@ -428,27 +409,25 @@ describe('ConfigResolver', () => {
     it('should return true for enabled rules', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
-          'claude-md-size-warning': 'warn',
+          'claude-md-size': 'warn',
         },
       };
 
       const resolver = new ConfigResolver(config);
 
-      expect(resolver.isRuleEnabled('claude-md-size-error', 'test.md')).toBe(true);
-      expect(resolver.isRuleEnabled('claude-md-size-warning', 'test.md')).toBe(true);
+      expect(resolver.isRuleEnabled('claude-md-size', 'test.md')).toBe(true);
     });
 
     it('should return false for disabled rules', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'off',
+          'claude-md-size': 'off',
         },
       };
 
       const resolver = new ConfigResolver(config);
 
-      expect(resolver.isRuleEnabled('claude-md-size-error', 'test.md')).toBe(false);
+      expect(resolver.isRuleEnabled('claude-md-size', 'test.md')).toBe(false);
     });
 
     it('should return true for unconfigured rules that exist in registry', () => {
@@ -459,7 +438,7 @@ describe('ConfigResolver', () => {
       const resolver = new ConfigResolver(config);
 
       // Rule exists in registry but not configured = enabled by default
-      expect(resolver.isRuleEnabled('claude-md-size-error', 'test.md')).toBe(true);
+      expect(resolver.isRuleEnabled('claude-md-size', 'test.md')).toBe(true);
     });
 
     it('should return false for unconfigured rules that do not exist in registry', () => {
@@ -477,13 +456,13 @@ describe('ConfigResolver', () => {
     it('should respect file-specific overrides', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
         overrides: [
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-error': 'off',
+              'claude-md-size': 'off',
             },
           },
         ],
@@ -491,8 +470,8 @@ describe('ConfigResolver', () => {
 
       const resolver = new ConfigResolver(config);
 
-      expect(resolver.isRuleEnabled('claude-md-size-error', 'README.md')).toBe(true);
-      expect(resolver.isRuleEnabled('claude-md-size-error', 'test.skill.md')).toBe(false);
+      expect(resolver.isRuleEnabled('claude-md-size', 'README.md')).toBe(true);
+      expect(resolver.isRuleEnabled('claude-md-size', 'test.skill.md')).toBe(false);
     });
   });
 
@@ -500,7 +479,7 @@ describe('ConfigResolver', () => {
     it('should return configured options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 200,
@@ -511,7 +490,7 @@ describe('ConfigResolver', () => {
       };
 
       const resolver = new ConfigResolver(config);
-      const options = resolver.getRuleOptions('claude-md-size-warning', 'test.md');
+      const options = resolver.getRuleOptions('claude-md-size', 'test.md');
 
       expect(options).toEqual([{ maxSize: 200, enabled: false }]);
     });
@@ -522,7 +501,7 @@ describe('ConfigResolver', () => {
       };
 
       const resolver = new ConfigResolver(config);
-      const options = resolver.getRuleOptions('claude-md-size-warning', 'test.md');
+      const options = resolver.getRuleOptions('claude-md-size', 'test.md');
 
       // Should return default options from registry
       expect(options).toEqual([{ maxSize: 100, enabled: true }]);
@@ -531,12 +510,12 @@ describe('ConfigResolver', () => {
     it('should return empty array for rules without options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'skill-missing-shebang': 'error',
         },
       };
 
       const resolver = new ConfigResolver(config);
-      const options = resolver.getRuleOptions('claude-md-size-error', 'test.md');
+      const options = resolver.getRuleOptions('skill-missing-shebang', 'test.md');
 
       expect(options).toEqual([]);
     });
@@ -547,7 +526,7 @@ describe('ConfigResolver', () => {
       };
 
       const resolver = new ConfigResolver(config);
-      const options = resolver.getRuleOptions('claude-md-size-error', 'test.md');
+      const options = resolver.getRuleOptions('skill-missing-shebang', 'test.md');
 
       expect(options).toEqual([]);
     });
@@ -555,7 +534,7 @@ describe('ConfigResolver', () => {
     it('should respect file-specific override options', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-warning': {
+          'claude-md-size': {
             severity: 'error',
             options: {
               maxSize: 100,
@@ -566,7 +545,7 @@ describe('ConfigResolver', () => {
           {
             files: ['**/*.skill.md'],
             rules: {
-              'claude-md-size-warning': {
+              'claude-md-size': {
                 severity: 'warn',
                 options: {
                   maxSize: 300,
@@ -579,10 +558,10 @@ describe('ConfigResolver', () => {
 
       const resolver = new ConfigResolver(config);
 
-      const options1 = resolver.getRuleOptions('claude-md-size-warning', 'README.md');
+      const options1 = resolver.getRuleOptions('claude-md-size', 'README.md');
       expect(options1).toEqual([{ maxSize: 100 }]);
 
-      const options2 = resolver.getRuleOptions('claude-md-size-warning', 'test.skill.md');
+      const options2 = resolver.getRuleOptions('claude-md-size', 'test.skill.md');
       expect(options2).toEqual([{ maxSize: 300 }]);
     });
   });
@@ -591,7 +570,7 @@ describe('ConfigResolver', () => {
     it('should cache resolved configurations per file', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -610,7 +589,7 @@ describe('ConfigResolver', () => {
     it('should clear cache when requested', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 
@@ -629,7 +608,7 @@ describe('ConfigResolver', () => {
     it('should provide accurate cache statistics', () => {
       const config: ClaudeLintConfig = {
         rules: {
-          'claude-md-size-error': 'error',
+          'claude-md-size': 'error',
         },
       };
 

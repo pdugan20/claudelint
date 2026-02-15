@@ -397,12 +397,12 @@ describe('ClaudeLint', () => {
             filePath: 'file1.md',
             messages: [
               {
-                ruleId: 'claude-md-size-error',
+                ruleId: 'claude-md-size',
                 severity: 'error',
                 message: 'Test error',
               },
               {
-                ruleId: 'claude-md-size-warning',
+                ruleId: 'claude-md-size',
                 severity: 'warning',
                 message: 'Test warning',
               },

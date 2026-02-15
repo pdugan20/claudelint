@@ -1,17 +1,17 @@
 /**
- * Tests for claude-md-size-warning rule
+ * Tests for claude-md-size rule
  */
 
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
-import { rule } from '../../../src/rules/claude-md/claude-md-size-warning';
+import { rule } from '../../../src/rules/claude-md/claude-md-size';
 import { writeFileSync, unlinkSync, mkdirSync, rmdirSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
 const ruleTester = new ClaudeLintRuleTester();
 
-describe('claude-md-size-warning', () => {
-  const testDir = join(tmpdir(), 'claude-lint-test-size-warning');
+describe('claude-md-size', () => {
+  const testDir = join(tmpdir(), 'claude-lint-test-size');
 
   beforeEach(() => {
     try {
@@ -23,7 +23,7 @@ describe('claude-md-size-warning', () => {
 
   afterEach(() => {
     try {
-      const files = ['small.md', 'approaching.md', 'at-threshold.md'];
+      const files = ['small.md', 'large.md', 'exact-threshold.md'];
       files.forEach((file) => {
         try {
           unlinkSync(join(testDir, file));
@@ -38,39 +38,38 @@ describe('claude-md-size-warning', () => {
   });
 
   it('should pass validation tests', async () => {
-    // Create test files with specific sizes
     const smallFile = join(testDir, 'small.md');
-    const approachingFile = join(testDir, 'approaching.md');
-    const atThresholdFile = join(testDir, 'at-threshold.md');
+    const largeFile = join(testDir, 'large.md');
+    const exactThresholdFile = join(testDir, 'exact-threshold.md');
 
     writeFileSync(smallFile, 'Small content'.repeat(100)); // ~1.3KB
-    writeFileSync(approachingFile, 'x'.repeat(36000)); // 36KB
-    writeFileSync(atThresholdFile, 'x'.repeat(35000)); // Exactly 35KB
+    writeFileSync(largeFile, 'x'.repeat(45000)); // 45KB
+    writeFileSync(exactThresholdFile, 'x'.repeat(40000)); // Exactly 40KB
 
-    await ruleTester.run('claude-md-size-warning', rule, {
+    await ruleTester.run('claude-md-size', rule, {
       valid: [
-        // Small file well under threshold
+        // Small file under threshold
         {
-          content: 'Small',
+          content: 'Small content',
           filePath: smallFile,
         },
 
         // Custom maxSize option (higher threshold)
         {
           content: 'Content',
-          filePath: approachingFile,
-          options: { maxSize: 40000 },
+          filePath: largeFile,
+          options: { maxSize: 50000 },
         },
       ],
 
       invalid: [
-        // File approaching default threshold (35KB)
+        // File exceeds default threshold (40KB)
         {
-          content: 'Content',
-          filePath: approachingFile,
+          content: 'Large content',
+          filePath: largeFile,
           errors: [
             {
-              message: 'approaching size limit',
+              message: 'File exceeds 40KB limit',
             },
           ],
         },
@@ -78,10 +77,10 @@ describe('claude-md-size-warning', () => {
         // File at exact threshold (should warn)
         {
           content: 'Content',
-          filePath: atThresholdFile,
+          filePath: exactThresholdFile,
           errors: [
             {
-              message: 'approaching',
+              message: 'exceeds',
             },
           ],
         },
@@ -89,11 +88,11 @@ describe('claude-md-size-warning', () => {
         // Custom maxSize exceeded
         {
           content: 'Content',
-          filePath: approachingFile,
+          filePath: largeFile,
           options: { maxSize: 30000 },
           errors: [
             {
-              message: 'approaching size limit',
+              message: 'exceeds 30KB',
             },
           ],
         },

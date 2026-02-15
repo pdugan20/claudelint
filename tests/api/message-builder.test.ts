@@ -31,12 +31,12 @@ describe('message-builder', () => {
       const error: ValidationError = {
         message: 'Too large',
         severity: 'error',
-        ruleId: 'claude-md-size-error',
+        ruleId: 'claude-md-size',
       };
 
       const result = buildLintMessage(error, 'error');
 
-      expect(result.ruleId).toBe('claude-md-size-error');
+      expect(result.ruleId).toBe('claude-md-size');
     });
 
     it('should include line when present', () => {
@@ -82,7 +82,7 @@ describe('message-builder', () => {
         message: 'Fixable issue',
         severity: 'error',
         autoFix: {
-          ruleId: 'claude-md-size-error',
+          ruleId: 'claude-md-size',
           description: 'Fix it',
           filePath: '/test.md',
           apply: (content: string) => content,
@@ -163,10 +163,10 @@ describe('message-builder', () => {
   describe('createInternalError', () => {
     it('should create an internal error with ruleId', () => {
       const error = new Error('Something broke');
-      const result = createInternalError(error, '/file.md', 'claude-md-size-error');
+      const result = createInternalError(error, '/file.md', 'claude-md-size');
 
       expect(result.severity).toBe('error');
-      expect(result.ruleId).toBe('claude-md-size-error');
+      expect(result.ruleId).toBe('claude-md-size');
       expect(result.message).toContain('Internal error');
       expect(result.explanation).toContain('/file.md');
     });

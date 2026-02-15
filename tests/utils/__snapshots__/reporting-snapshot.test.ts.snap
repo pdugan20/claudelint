@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Reporter snapshot should produce stable compact format output 1`] = `
-"../../../../../project/CLAUDE.md:5:0: error: Test error message [claude-md-size-error]
-../../../../../project/CLAUDE.md:10:0: warning: Test warning message [claude-md-size-warning]"
+"../../../../../project/CLAUDE.md:5:0: error: Test error message [claude-md-size]
+../../../../../project/CLAUDE.md:10:0: warning: Test warning message [claude-md-size]"
 `;
 
 exports[`Reporter snapshot should produce stable explain mode output 1`] = `
 "
 ../../../../../project/CLAUDE.md (1 error, 1 warning)
-  0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size-error
+  0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size
         Why: Oversized files cause slow loading and may exceed context window limits.
         Fix: Split content into smaller files in .claude/rules/ and use @imports
   0  warning  Too many sections (21, max 20)  claude-md-content-too-many-sections
@@ -27,7 +27,7 @@ exports[`Reporter snapshot should produce stable output with collapse rows 1`] =
 exports[`Reporter snapshot should produce stable output with message truncation 1`] = `
 "
 ../../../../../project/CLAUDE.md (1 error)
-  1  error  This is a very long error message that exceeds the eighty character truncatio...  claude-md-size-error"
+  1  error  This is a very long error message that exceeds the eighty character truncatio...  claude-md-size"
 `;
 
 exports[`Reporter snapshot should produce stable output with mixed line numbers and no-line issues 1`] = `
@@ -41,7 +41,7 @@ exports[`Reporter snapshot should produce stable output with mixed line numbers 
 exports[`Reporter snapshot should produce stable stylish output for a mixed set of issues 1`] = `
 "
 ../../../../../project/CLAUDE.md (4 errors, 1 warning)
-   0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size-error
+   0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size
   12  error    Imported file not found: config.md  claude-md-import-missing
   15  error    Imported file not found: rules.md  claude-md-import-missing
                ... and 1 more claude-md-import-missing

@@ -119,8 +119,7 @@ Rules can be configured in `.claudelintrc.json`:
 ```json
 {
   "rules": {
-    "claude-md-size-error": "error",
-    "claude-md-size-warning": "warn",
+    "claude-md-size": "warn",
     "claude-md-import-missing": "error",
     "claude-md-import-circular": "error"
   }

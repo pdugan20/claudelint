@@ -30,7 +30,7 @@ describe('GitHubFormatter', () => {
         filePath: 'CLAUDE.md',
         messages: [
           {
-            ruleId: 'claude-md-size-error',
+            ruleId: 'claude-md-size',
             severity: 'error',
             message: 'File too large',
             line: 10,
@@ -48,7 +48,7 @@ describe('GitHubFormatter', () => {
     const output = formatter.format(results);
 
     expect(output).toBe(
-      '::error file=CLAUDE.md,line=10,col=1,title=claude-md-size-error::File too large'
+      '::error file=CLAUDE.md,line=10,col=1,title=claude-md-size::File too large'
     );
   });
 
