@@ -1,8 +1,8 @@
 /**
  * Rule: skill-body-missing-usage-section
  *
- * Warns when SKILL.md body lacks a ## Usage section. A dedicated usage
- * section helps users understand how to invoke and interact with the skill.
+ * Warns when SKILL.md body lacks a ## Usage or ## Instructions section.
+ * A dedicated section helps users understand how to invoke and interact with the skill.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -12,7 +12,7 @@ export const rule: Rule = {
   meta: {
     id: 'skill-body-missing-usage-section',
     name: 'Skill Body Missing Usage Section',
-    description: 'SKILL.md body lacks a ## Usage section',
+    description: 'SKILL.md body lacks a ## Usage or ## Instructions section',
     category: 'Skills',
     severity: 'warn',
     fixable: false,
@@ -21,14 +21,14 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-body-missing-usage-section.md',
     docs: {
-      summary: 'Warns when a SKILL.md body lacks a "## Usage" section.',
+      summary: 'Warns when a SKILL.md body lacks a "## Usage" or "## Instructions" section.',
       rationale:
-        'A missing Usage section leaves users and the AI model without clear invocation instructions.',
+        'A missing Usage or Instructions section leaves users and the AI model without clear invocation instructions.',
       details:
-        'A dedicated `## Usage` section helps users and AI models understand how to invoke and interact ' +
-        'with the skill. This rule checks the body content of SKILL.md files for a level-2 heading that ' +
-        'starts with "Usage". Without this section, users must read through the entire file to figure out ' +
-        'how to use the skill, reducing discoverability and usability.',
+        'A dedicated `## Usage` or `## Instructions` section helps users and AI models understand how to ' +
+        'invoke and interact with the skill. This rule checks the body content of SKILL.md files for a ' +
+        'level-2 heading that starts with "Usage" or "Instructions". Without this section, users must read ' +
+        'through the entire file to figure out how to use the skill, reducing discoverability and usability.',
       examples: {
         incorrect: [
           {
@@ -43,11 +43,16 @@ export const rule: Rule = {
             code: '---\nname: deploy\ndescription: Deploys the application\n---\n\n# Deploy\n\n## Usage\n\nRun `/deploy staging` to deploy to the staging environment.\n\n## Configuration\n\nSet environment variables.',
             language: 'markdown',
           },
+          {
+            description: 'SKILL.md body with an Instructions section',
+            code: '---\nname: deploy\ndescription: Deploys the application\n---\n\n# Deploy\n\n## Instructions\n\n### Step 1: Configure environment\nSet the target environment variable.\n\n### Step 2: Run deployment\nExecute the deploy command.',
+            language: 'markdown',
+          },
         ],
       },
       howToFix:
-        'Add a `## Usage` section to the body of your SKILL.md file. Include invocation examples, ' +
-        'expected arguments, and any flags or options the skill supports.',
+        'Add a `## Usage` or `## Instructions` section to the body of your SKILL.md file. Include ' +
+        'invocation examples, expected arguments, and any flags or options the skill supports.',
       relatedRules: ['skill-body-too-long', 'skill-body-word-count'],
     },
   },
@@ -66,12 +71,12 @@ export const rule: Rule = {
       return; // No body to check (handled by other rules)
     }
 
-    const hasUsageSection = /^##\s+Usage/im.test(body);
+    const hasUsageSection = /^##\s+(Usage|Instructions)/im.test(body);
 
     if (!hasUsageSection) {
       context.report({
-        message: 'Missing "## Usage" section',
-        fix: 'Add a "## Usage" section with invocation examples',
+        message: 'Missing "## Usage" or "## Instructions" section',
+        fix: 'Add a "## Usage" or "## Instructions" section with invocation examples',
       });
     }
   },

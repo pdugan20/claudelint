@@ -35,10 +35,6 @@ Remove the README.md file from the skill directory. Migrate any useful content f
 
 This rule does not have any configuration options.
 
-## Related Rules
-
-- [`skill-multi-script-missing-readme`](/rules/skills/skill-multi-script-missing-readme)
-
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-readme-forbidden.ts)

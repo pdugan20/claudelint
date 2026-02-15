@@ -1,10 +1,10 @@
 # skill-body-missing-usage-section
 
-<RuleHeader description="SKILL.md body lacks a ## Usage section" severity="warn" :fixable="false" :configurable="false" category="Skills" />
+<RuleHeader description="SKILL.md body lacks a ## Usage or ## Instructions section" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 
-A dedicated `## Usage` section helps users and AI models understand how to invoke and interact with the skill. This rule checks the body content of SKILL.md files for a level-2 heading that starts with "Usage". Without this section, users must read through the entire file to figure out how to use the skill, reducing discoverability and usability.
+A dedicated `## Usage` or `## Instructions` section helps users and AI models understand how to invoke and interact with the skill. This rule checks the body content of SKILL.md files for a level-2 heading that starts with "Usage" or "Instructions". Without this section, users must read through the entire file to figure out how to use the skill, reducing discoverability and usability.
 
 ### Incorrect
 
@@ -46,9 +46,28 @@ Run `/deploy staging` to deploy to the staging environment.
 Set environment variables.
 ```
 
+SKILL.md body with an Instructions section
+
+```markdown
+---
+name: deploy
+description: Deploys the application
+---
+
+# Deploy
+
+## Instructions
+
+### Step 1: Configure environment
+Set the target environment variable.
+
+### Step 2: Run deployment
+Execute the deploy command.
+```
+
 ## How To Fix
 
-Add a `## Usage` section to the body of your SKILL.md file. Include invocation examples, expected arguments, and any flags or options the skill supports.
+Add a `## Usage` or `## Instructions` section to the body of your SKILL.md file. Include invocation examples, expected arguments, and any flags or options the skill supports.
 
 ## Options
 

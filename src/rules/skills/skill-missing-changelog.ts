@@ -25,7 +25,6 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-changelog.md',
     docs: {
-      recommended: true,
       summary: 'Warns when a skill directory is missing a CHANGELOG.md file.',
       rationale:
         'Without a changelog, users cannot track what changed between versions or assess upgrade risk.',

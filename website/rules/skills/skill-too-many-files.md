@@ -82,7 +82,6 @@ If the skill intentionally provides many standalone scripts that are each invoke
 
 ## Related Rules
 
-- [`skill-multi-script-missing-readme`](/rules/skills/skill-multi-script-missing-readme)
 - [`skill-naming-inconsistent`](/rules/skills/skill-naming-inconsistent)
 
 ## Resources

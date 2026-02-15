@@ -97,7 +97,6 @@
     "skill-missing-shebang": "warn",
     "skill-missing-version": "warn",
     "skill-model": "error",
-    "skill-multi-script-missing-readme": "warn",
     "skill-name": "error",
     "skill-name-directory-mismatch": "error",
     "skill-naming-inconsistent": "warn",

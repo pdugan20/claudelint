@@ -29,6 +29,18 @@ describe('skill-body-missing-usage-section', () => {
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## usage\n\nDetails here.',
           filePath: '/test/skills/my-skill/SKILL.md',
         },
+        // Has ## Instructions section (Anthropic recommended alternative)
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Instructions\n\n### Step 1\nDo this first.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
+        // Instructions case insensitive
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## instructions\n\nDo this.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
         // Non-SKILL.md file (skipped)
         {
           content: '# No usage section here',
@@ -47,21 +59,21 @@ describe('skill-body-missing-usage-section', () => {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\nThis skill does things.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
         },
-        // Has Examples but no Usage
+        // Has Examples but no Usage or Instructions
         {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Examples\n\nExample here.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
         },
-        // Has other sections but no Usage
+        // Has other sections but no Usage or Instructions
         {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Overview\n\nOverview.\n\n## Notes\n\nNotes here.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" section' }],
+          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
         },
       ],
     });

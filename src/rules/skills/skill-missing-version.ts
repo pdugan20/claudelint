@@ -25,7 +25,6 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-version.md',
     docs: {
-      recommended: true,
       summary: 'Warns when skill frontmatter is missing a version field.',
       rationale:
         'Without a version, users cannot track updates or ensure compatibility with their setup.',

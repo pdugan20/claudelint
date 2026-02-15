@@ -76,7 +76,9 @@ export const rule: Rule = {
       summary:
         'Errors when non-standard XML tags are found in SKILL.md content outside of code blocks.',
       rationale:
-        'Non-standard XML tags may be interpreted as prompt structure by the AI, causing unexpected behavior.',
+        "Anthropic forbids XML tags in skill frontmatter because it appears in Claude's system prompt. " +
+        'This rule extends that protection to the SKILL.md body as a defense-in-depth measure, since body ' +
+        "content is also loaded into Claude's context when the skill is invoked.",
       details:
         'Claude interprets XML tags as structural delimiters in its prompt processing. Rogue XML-like ' +
         'tags (e.g., `<instructions>`, `<system>`) in SKILL.md can cause prompt injection or unexpected ' +

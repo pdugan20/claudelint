@@ -52,7 +52,6 @@ export const rule: Rule = {
       howToFix:
         'Remove the README.md file from the skill directory. Migrate any useful content ' +
         'from README.md into SKILL.md.',
-      relatedRules: ['skill-multi-script-missing-readme'],
     },
   },
 

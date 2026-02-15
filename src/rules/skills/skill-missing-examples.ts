@@ -23,7 +23,6 @@ export const rule: Rule = {
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-examples.md',
     docs: {
-      recommended: true,
       summary:
         'Warns when SKILL.md lacks usage examples such as code blocks or an Example section.',
       rationale:

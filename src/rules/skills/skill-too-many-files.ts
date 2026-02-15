@@ -91,7 +91,7 @@ export const rule: Rule = {
       whenNotToUse:
         'If the skill intentionally provides many standalone scripts that are each invoked independently, ' +
         'you may increase the threshold or disable this rule.',
-      relatedRules: ['skill-multi-script-missing-readme', 'skill-naming-inconsistent'],
+      relatedRules: ['skill-naming-inconsistent'],
     },
     schema: z.object({
       maxFiles: z.number().positive().int().optional(),

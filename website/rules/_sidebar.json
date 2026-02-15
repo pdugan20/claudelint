@@ -192,10 +192,6 @@
         "link": "/rules/skills/skill-model"
       },
       {
-        "text": "skill-multi-script-missing-readme",
-        "link": "/rules/skills/skill-multi-script-missing-readme"
-      },
-      {
         "text": "skill-name",
         "link": "/rules/skills/skill-name"
       },
