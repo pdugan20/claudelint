@@ -132,7 +132,7 @@ const outputLines: Line[] = [
   },
   {
     type: 'detail',
-    html: '  3  <span class="warn">warning</span>  Description too brief (3/5 words)  <span class="dim">skill-description-quality</span>',
+    html: '  3  <span class="warn">warning</span>  Description has only 3 words, minimum is 6  <span class="dim">skill-description-quality</span>',
   },
   {
     type: 'detail',

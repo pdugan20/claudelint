@@ -8,6 +8,48 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
 
+/** Generic keywords that should not be used alone as a skill name. */
+const GENERIC_KEYWORDS = [
+  'helper',
+  'util',
+  'utils',
+  'tool',
+  'tools',
+  'script',
+  'scripts',
+  'manager',
+  'handler',
+  'processor',
+  'service',
+  'common',
+  'shared',
+  'main',
+  'core',
+  'base',
+];
+
+/** Single-word verbs that need additional specificity in a skill name. */
+const GENERIC_VERBS = [
+  'format',
+  'validate',
+  'test',
+  'build',
+  'deploy',
+  'run',
+  'execute',
+  'process',
+  'handle',
+  'manage',
+  'create',
+  'update',
+  'delete',
+  'check',
+  'analyze',
+  'generate',
+  'convert',
+  'transform',
+];
+
 export const rule: Rule = {
   meta: {
     id: 'skill-overly-generic-name',
@@ -76,50 +118,8 @@ export const rule: Rule = {
     const name = frontmatter.name as string;
     const nameParts = name.split('-');
 
-    // Generic keywords that should not be used alone
-    const genericKeywords = [
-      'helper',
-      'util',
-      'utils',
-      'tool',
-      'tools',
-      'script',
-      'scripts',
-      'manager',
-      'handler',
-      'processor',
-      'service',
-      'common',
-      'shared',
-      'main',
-      'core',
-      'base',
-    ];
-
-    // Single-word verbs that need specificity
-    const genericVerbs = [
-      'format',
-      'validate',
-      'test',
-      'build',
-      'deploy',
-      'run',
-      'execute',
-      'process',
-      'handle',
-      'manage',
-      'create',
-      'update',
-      'delete',
-      'check',
-      'analyze',
-      'generate',
-      'convert',
-      'transform',
-    ];
-
     // Check if name is only a single generic verb
-    if (nameParts.length === 1 && genericVerbs.includes(nameParts[0].toLowerCase())) {
+    if (nameParts.length === 1 && GENERIC_VERBS.includes(nameParts[0].toLowerCase())) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name');
       context.report({
         message: `Name "${name}" is too generic`,
@@ -129,7 +129,7 @@ export const rule: Rule = {
     }
 
     // Check if name is ONLY generic keywords (no descriptive parts)
-    const isOnlyGeneric = nameParts.every((part) => genericKeywords.includes(part.toLowerCase()));
+    const isOnlyGeneric = nameParts.every((part) => GENERIC_KEYWORDS.includes(part.toLowerCase()));
 
     if (isOnlyGeneric) {
       const line = getFrontmatterFieldLine(context.fileContent, 'name');

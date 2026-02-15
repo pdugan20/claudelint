@@ -16,7 +16,7 @@ describe('skill-description-quality', () => {
           content: [
             '---',
             'name: my-skill',
-            'description: Validate Claude Code project configuration files',
+            'description: Validate Claude Code project configuration files automatically',
             '---',
             '',
             '# My Skill',
@@ -40,24 +40,36 @@ describe('skill-description-quality', () => {
           content: [
             '---',
             'name: codegen',
-            'description: Generate TypeScript types from API schemas',
+            'description: Generate TypeScript types from API schema definitions',
             '---',
             '',
             '# Codegen',
           ].join('\n'),
           filePath: '/test/skills/codegen/SKILL.md',
         },
-        // Description starting with "Interactively"
+        // Unusual verb not in any allowlist (should pass with blocklist approach)
         {
           content: [
             '---',
-            'name: optimizer',
-            'description: Interactively helps users optimize their CLAUDE.md files',
+            'name: scaffold',
+            'description: Scaffold a new project with boilerplate and configuration files',
             '---',
             '',
-            '# Optimizer',
+            '# Scaffold',
           ].join('\n'),
-          filePath: '/test/skills/optimizer/SKILL.md',
+          filePath: '/test/skills/scaffold/SKILL.md',
+        },
+        // Another unusual verb
+        {
+          content: [
+            '---',
+            'name: orchestrate',
+            'description: Orchestrate multi-service deployments across cloud environments',
+            '---',
+            '',
+            '# Orchestrate',
+          ].join('\n'),
+          filePath: '/test/skills/orchestrate/SKILL.md',
         },
         // No frontmatter (skipped)
         {
@@ -72,12 +84,12 @@ describe('skill-description-quality', () => {
       ],
 
       invalid: [
-        // Description not starting with action verb
+        // Description starting with article "This"
         {
           content: [
             '---',
             'name: bad-skill',
-            'description: This skill validates project configuration files',
+            'description: This skill validates project configuration files and reports issues',
             '---',
             '',
             '# Bad Skill',
@@ -85,12 +97,12 @@ describe('skill-description-quality', () => {
           filePath: '/test/skills/bad-skill/SKILL.md',
           errors: [{ message: 'Should start with action verb' }],
         },
-        // Description starting with article
+        // Description starting with article "A"
         {
           content: [
             '---',
             'name: bad-skill',
-            'description: A tool for validating project configs',
+            'description: A tool for validating project configuration files',
             '---',
             '',
             '# Bad Skill',
@@ -98,31 +110,109 @@ describe('skill-description-quality', () => {
           filePath: '/test/skills/bad-skill/SKILL.md',
           errors: [{ message: 'Should start with action verb' }],
         },
-        // Description too brief (under 4 words)
+        // Description starting with article "The"
+        {
+          content: [
+            '---',
+            'name: bad-skill',
+            'description: The deployment pipeline for production server environments',
+            '---',
+            '',
+            '# Bad Skill',
+          ].join('\n'),
+          filePath: '/test/skills/bad-skill/SKILL.md',
+          errors: [{ message: 'Should start with action verb' }],
+        },
+        // Description starting with pronoun "My"
+        {
+          content: [
+            '---',
+            'name: bad-skill',
+            'description: My custom script for running all project tests',
+            '---',
+            '',
+            '# Bad Skill',
+          ].join('\n'),
+          filePath: '/test/skills/bad-skill/SKILL.md',
+          errors: [{ message: 'Should start with action verb' }],
+        },
+        // Description starting with filler "Just"
+        {
+          content: [
+            '---',
+            'name: bad-skill',
+            'description: Just runs the tests for this project quickly',
+            '---',
+            '',
+            '# Bad Skill',
+          ].join('\n'),
+          filePath: '/test/skills/bad-skill/SKILL.md',
+          errors: [{ message: 'Should start with action verb' }],
+        },
+        // Description too brief (under 6 words)
         {
           content: [
             '---',
             'name: brief-skill',
-            'description: Run all tests',
+            'description: Run all project tests',
             '---',
             '',
             '# Brief Skill',
           ].join('\n'),
           filePath: '/test/skills/brief-skill/SKILL.md',
-          errors: [{ message: 'Description too brief' }],
+          errors: [{ message: 'Description has only 4 words' }],
         },
-        // Description with both problems
+        // Description with both problems (non-verb start + too brief)
         {
           content: [
             '---',
             'name: bad-skill',
-            'description: I do it',
+            'description: The deploy tool',
             '---',
             '',
             '# Bad Skill',
           ].join('\n'),
           filePath: '/test/skills/bad-skill/SKILL.md',
-          errors: [{ message: 'Should start with action verb' }, { message: 'Description too brief' }],
+          errors: [
+            { message: 'Should start with action verb' },
+            { message: 'Description has only 3 words' },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('should respect custom minWords option', async () => {
+    await ruleTester.run('skill-description-quality', rule, {
+      valid: [
+        // 4 words passes with minWords: 4
+        {
+          content: [
+            '---',
+            'name: my-skill',
+            'description: Deploy the staging app',
+            '---',
+            '',
+            '# My Skill',
+          ].join('\n'),
+          filePath: '/test/skills/my-skill/SKILL.md',
+          options: { minWords: 4 },
+        },
+      ],
+      invalid: [
+        // 4 words fails with minWords: 8
+        {
+          content: [
+            '---',
+            'name: my-skill',
+            'description: Deploy the staging app',
+            '---',
+            '',
+            '# My Skill',
+          ].join('\n'),
+          filePath: '/test/skills/my-skill/SKILL.md',
+          options: { minWords: 8 },
+          errors: [{ message: 'Description has only 4 words, minimum is 8' }],
         },
       ],
     });

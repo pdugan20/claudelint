@@ -9,7 +9,8 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { stripCodeBlocks } from '../../utils/formats/markdown';
 
-// Standard HTML/markdown tags that are safe to use
+// Standard HTML/markdown tags that are safe to use.
+// Tracks the HTML Living Standard — update when new elements are widely adopted.
 const ALLOWED_TAGS = new Set([
   'a',
   'b',

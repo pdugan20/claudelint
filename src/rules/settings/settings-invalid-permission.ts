@@ -9,28 +9,11 @@
  */
 
 import { Rule } from '../../types/rule';
+import { VALID_TOOLS } from '../../schemas/constants';
 import { SettingsSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type SettingsConfig = z.infer<typeof SettingsSchema>;
-
-// Valid Claude Code tools based on official schema
-const VALID_TOOLS = [
-  'Bash',
-  'Edit',
-  'ExitPlanMode',
-  'Glob',
-  'Grep',
-  'KillShell',
-  'NotebookEdit',
-  'Read',
-  'Skill',
-  'Task',
-  'TodoWrite',
-  'WebFetch',
-  'WebSearch',
-  'Write',
-] as const;
 
 /**
  * Extract tool name from permission rule string
@@ -52,7 +35,7 @@ function isValidTool(tool: string): boolean {
     return true;
   }
   // Check against known tools
-  return VALID_TOOLS.includes(tool as (typeof VALID_TOOLS)[number]);
+  return (VALID_TOOLS as readonly string[]).includes(tool);
 }
 
 /**

@@ -194,6 +194,7 @@ exports[`preset generation snapshot stability recommended.json matches snapshot 
   "skill-dangerous-command",
   "skill-dependencies",
   "skill-description",
+  "skill-description-quality",
   "skill-disallowed-tools",
   "skill-eval-usage",
   "skill-hardcoded-secrets",

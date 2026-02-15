@@ -1,149 +1,56 @@
 /**
  * Rule: skill-description-quality
  *
- * Warns when skill description does not start with an action verb in imperative
- * mood or lacks sufficient context. Good descriptions follow the pattern:
+ * Warns when skill description starts with a non-verb word (article, pronoun,
+ * determiner) or lacks sufficient context. Good descriptions follow the pattern:
  * "[Action Verb] [what it does] [context/technology]"
  *
- * Consolidates the former skill-description-structure and skill-description-missing-context rules.
+ * Uses a blocklist approach: a small set of known non-verb starters is rejected,
+ * rather than maintaining an allowlist of valid verbs. This avoids false positives
+ * for unusual but valid verbs (e.g., "Scaffold", "Orchestrate", "Transpile").
  */
 
 import { Rule, RuleContext } from '../../types/rule';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
+import { z } from 'zod';
 
 /**
- * Common imperative-mood action verbs used in skill descriptions.
- * Lowercase for case-insensitive matching.
+ * Words that should never start a skill description. These are articles,
+ * pronouns, determiners, prepositions, and filler words that indicate the
+ * description is not in imperative/action form.
  */
-const ACTION_VERBS = new Set([
-  'add',
-  'analyze',
-  'apply',
-  'audit',
-  'automate',
-  'backup',
-  'build',
-  'check',
-  'clean',
-  'compile',
-  'compress',
-  'configure',
-  'connect',
-  'convert',
-  'create',
-  'debug',
-  'delete',
-  'deploy',
-  'detect',
-  'diagnose',
-  'document',
-  'download',
-  'enforce',
-  'evaluate',
-  'execute',
-  'export',
-  'extract',
-  'fetch',
-  'filter',
-  'find',
-  'fix',
-  'format',
-  'generate',
-  'help',
-  'import',
-  'index',
-  'initialize',
-  'inspect',
-  'install',
-  'interactively',
-  'lint',
-  'list',
-  'load',
-  'log',
-  'manage',
-  'merge',
-  'migrate',
-  'minify',
-  'modify',
-  'monitor',
-  'move',
-  'notify',
-  'open',
-  'optimize',
-  'organize',
-  'package',
-  'parse',
-  'patch',
-  'process',
-  'profile',
-  'provision',
-  'publish',
-  'query',
-  'read',
-  'rebuild',
-  'refactor',
-  'remove',
-  'rename',
-  'render',
-  'replace',
-  'report',
-  'reset',
-  'resolve',
-  'restart',
-  'restore',
-  'retrieve',
-  'review',
-  'run',
-  'scan',
-  'schedule',
-  'search',
-  'send',
-  'serve',
-  'set',
-  'setup',
-  'show',
-  'sort',
-  'split',
-  'start',
-  'stop',
-  'store',
-  'submit',
-  'summarize',
-  'sync',
-  'tag',
-  'test',
-  'trace',
-  'track',
-  'transform',
-  'translate',
-  'trigger',
-  'update',
-  'upgrade',
-  'upload',
-  'use',
-  'validate',
-  'verify',
-  'visualize',
-  'watch',
-  'write',
+const NON_VERB_STARTERS = new Set([
+  'a',
+  'an',
+  'the',
+  'this',
+  'that',
+  'these',
+  'those',
+  'my',
+  'our',
+  'your',
+  'its',
+  'their',
+  'some',
+  'any',
+  'every',
+  'for',
+  'with',
+  'about',
+  'just',
+  'simply',
+  'basically',
+  'it',
+  'we',
+  'i',
 ]);
 
-/**
- * Minimum word count for a description to be considered to have sufficient context.
- */
-const MIN_WORD_COUNT = 4;
+const DEFAULT_MIN_WORDS = 6;
 
-/**
- * Check if a word is an action verb (supports both imperative and third-person forms).
- * "validate" -> true, "validates" -> true, "this" -> false
- */
-function isActionVerb(word: string): boolean {
-  const lower = word.toLowerCase();
-  if (ACTION_VERBS.has(lower)) return true;
-  // Try stripping third-person 's' suffix: "validates" -> "validate"
-  if (lower.endsWith('es') && ACTION_VERBS.has(lower.slice(0, -2))) return true;
-  if (lower.endsWith('s') && ACTION_VERBS.has(lower.slice(0, -1))) return true;
-  return false;
+export interface SkillDescriptionQualityOptions {
+  /** Minimum word count for descriptions (default: 6) */
+  minWords?: number;
 }
 
 export const rule: Rule = {
@@ -159,26 +66,32 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl:
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description-quality.md',
+    schema: z.object({
+      minWords: z.number().positive().int().optional(),
+    }),
+    defaultOptions: {
+      minWords: DEFAULT_MIN_WORDS,
+    },
     docs: {
+      recommended: true,
       summary:
         'Checks that skill descriptions start with an action verb and include sufficient context.',
       rationale:
         'Low-quality descriptions make it harder for the model to determine when and how to invoke the skill.',
       details:
         'Good skill descriptions follow the pattern "[Action Verb] [what it does] [context/technology]". ' +
-        'This rule performs two checks: (1) the description must start with a recognized action verb in ' +
-        'imperative or third-person form (e.g., "Deploy", "Validates", "Run"), and (2) the description ' +
-        'must contain at least 4 words to provide meaningful context. ' +
-        'This consolidates the former skill-description-structure and skill-description-missing-context rules.',
+        'This rule performs two checks: (1) the description must not start with an article, pronoun, or ' +
+        'filler word (e.g., "The", "This", "A", "Just"), and (2) the description must contain at least ' +
+        '6 words (configurable via `minWords`) to provide meaningful context.',
       examples: {
         incorrect: [
           {
-            description: 'Description not starting with an action verb',
+            description: 'Description starting with an article',
             code: '---\nname: deploy\ndescription: The deployment pipeline for production\n---',
           },
           {
-            description: 'Description too brief (fewer than 4 words)',
-            code: '---\nname: deploy\ndescription: Deploy app\n---',
+            description: 'Description too brief (fewer than 6 words)',
+            code: '---\nname: deploy\ndescription: Deploy the app\n---',
           },
         ],
         correct: [
@@ -191,6 +104,17 @@ export const rule: Rule = {
             code: '---\nname: lint\ndescription: Validates TypeScript code against project style guidelines\n---',
           },
         ],
+      },
+      options: {
+        minWords: {
+          type: 'number',
+          description: 'Minimum word count for descriptions (default: 6)',
+          default: DEFAULT_MIN_WORDS,
+          examples: [
+            { description: 'Require longer descriptions', config: { minWords: 8 } },
+            { description: 'Allow shorter descriptions', config: { minWords: 4 } },
+          ],
+        },
       },
       howToFix:
         'Rewrite the description to start with an imperative or third-person action verb ' +
@@ -217,22 +141,24 @@ export const rule: Rule = {
 
     const description = frontmatter['description'];
     const words = description.trim().split(/\s+/);
-    const firstWord = words[0]?.toLowerCase();
+    const firstWord = words[0];
     const line = getFrontmatterFieldLine(context.fileContent, 'description');
+    const minWords =
+      (context.options as SkillDescriptionQualityOptions).minWords ?? DEFAULT_MIN_WORDS;
 
-    // Check 1: starts with action verb (imperative or third-person)
-    if (firstWord && !isActionVerb(firstWord)) {
+    // Check 1: should not start with a non-verb word
+    if (firstWord && NON_VERB_STARTERS.has(firstWord.toLowerCase())) {
       context.report({
-        message: `Should start with action verb, found: "${words[0]}"`,
+        message: `Should start with action verb, found: "${firstWord}"`,
         line,
         fix: `Rewrite to start with an imperative verb: "${description}" -> "Verb ${description}"`,
       });
     }
 
-    // Check 2: sufficient context (at least MIN_WORD_COUNT words)
-    if (words.length < MIN_WORD_COUNT) {
+    // Check 2: sufficient context (at least minWords words)
+    if (words.length < minWords) {
       context.report({
-        message: `Description too brief (${words.length}/${MIN_WORD_COUNT} words)`,
+        message: `Description has only ${words.length} words, minimum is ${minWords}`,
         line,
         fix: 'Expand description to include the use case or technology context',
       });

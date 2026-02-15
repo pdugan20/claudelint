@@ -71,6 +71,7 @@
     "skill-dangerous-command": "error",
     "skill-dependencies": "error",
     "skill-description": "error",
+    "skill-description-quality": "warn",
     "skill-disallowed-tools": "error",
     "skill-eval-usage": "warn",
     "skill-hardcoded-secrets": "error",
