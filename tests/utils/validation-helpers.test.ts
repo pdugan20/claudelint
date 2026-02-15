@@ -34,7 +34,7 @@ describe('validation-helpers', () => {
 
     it('should pass for valid agent hook', () => {
       const hooks = {
-        Setup: [
+        SessionStart: [
           {
             hooks: [{ type: 'agent', agent: 'setup-agent' }],
           },
@@ -107,7 +107,7 @@ describe('validation-helpers', () => {
 
     it('should error when agent hook missing agent field', () => {
       const hooks = {
-        Setup: [
+        SessionStart: [
           {
             hooks: [{ type: 'agent' }],
           },

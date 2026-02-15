@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-This rule checks that hooks declared in agents.json have the correct structure and all required fields. Hook objects must include valid event names (e.g., PreToolUse, PostToolUse) and properly structured matchers. Validation is performed by AgentsValidator.validateFrontmatter() using the shared validateSettingsHooks() utility. Invalid hook schemas cause runtime failures when the agent framework attempts to register event handlers.
+This rule checks that hooks declared in agents.json have the correct structure and all required fields. Hook objects must include valid event names (e.g., PreToolUse, PostToolUse, SessionStart, TaskCompleted) and properly structured matchers. Validation is performed by AgentsValidator.validateFrontmatter() using the shared validateSettingsHooks() utility. Invalid hook schemas cause runtime failures when the agent framework attempts to register event handlers.
 
 ### Incorrect
 
@@ -48,7 +48,7 @@ Properly structured hook with all required fields
 
 ## How To Fix
 
-Ensure each hook entry has a valid event name key (PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, or Notification) and that each matcher object includes the required `command` field.
+Ensure each hook entry has a valid event name key (PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, PreCompact, SessionStart, SessionEnd, TeammateIdle, or TaskCompleted) and that each matcher object includes the required fields.
 
 ## Options
 

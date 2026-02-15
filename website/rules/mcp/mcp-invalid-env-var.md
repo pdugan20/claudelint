@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-This rule checks that environment variable references in MCP transport fields (command, args, url, and env values) use proper ${VAR} expansion syntax and that variable names match a configurable naming pattern. It warns on empty env values, empty expansion syntax like ${}, variable names that do not match the expected pattern, and bare $VAR references that should use the ${VAR} format. The special variable ${CLAUDE_PLUGIN_ROOT} is always excluded from pattern validation.
+This rule checks that environment variable references in MCP transport fields (command, args, url, headers, and env values) use proper ${VAR} expansion syntax and that variable names match a configurable naming pattern. It warns on empty env values, empty expansion syntax like ${}, variable names that do not match the expected pattern, and bare $VAR references that should use the ${VAR} format. The special variable ${CLAUDE_PLUGIN_ROOT} is always excluded from pattern validation.
 
 ### Incorrect
 

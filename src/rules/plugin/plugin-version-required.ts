@@ -1,10 +1,10 @@
 /**
  * Rule: plugin-version-required
  *
- * Validates that plugin version is required and non-empty
+ * Validates that plugin version is present and non-empty
  *
- * The plugin version is a required field used for dependency management
- * and marketplace distribution. It must not be empty or whitespace-only.
+ * The plugin version is a recommended field used for dependency management
+ * and marketplace distribution. It should not be empty or whitespace-only.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -15,9 +15,9 @@ export const rule: Rule = {
   meta: {
     id: 'plugin-version-required',
     name: 'Plugin Version Required',
-    description: 'Plugin version is required and cannot be empty',
+    description: 'Plugin version is recommended and should not be empty',
     category: 'Plugin',
-    severity: 'error',
+    severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
@@ -25,12 +25,14 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-version-required.md',
     docs: {
       recommended: true,
-      summary: 'Requires that plugin.json contains a non-empty version field.',
-      rationale: 'A missing version prevents update detection and may cause installation failures.',
+      summary: 'Warns when plugin.json is missing a version field.',
+      rationale:
+        'A missing version prevents update detection and complicates marketplace distribution.',
       details:
         'This rule checks that the plugin.json file has a version property that is a non-empty string. ' +
-        'The version is used for dependency management and marketplace distribution. A missing or empty ' +
-        'version prevents proper version tracking, update detection, and may cause installation failures.',
+        'The version is used for dependency management and marketplace distribution. While only `name` is ' +
+        'strictly required by Claude Code, including a version is strongly recommended for version tracking ' +
+        'and update detection.',
       examples: {
         incorrect: [
           {
@@ -53,8 +55,8 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Add a version field to plugin.json with a non-empty string value, ideally following semver ' +
-        'format (e.g., "1.0.0").',
+        'Add a version field to plugin.json with a non-empty string value following semver ' +
+        'format (e.g., "1.0.0"). While optional per the spec, it is strongly recommended.',
       relatedRules: ['plugin-invalid-manifest'],
     },
   },
@@ -78,7 +80,7 @@ export const rule: Rule = {
       plugin.version.trim().length === 0
     ) {
       context.report({
-        message: 'Plugin version is required and cannot be empty',
+        message: 'Plugin version is recommended but missing or empty',
       });
     }
   },

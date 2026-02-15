@@ -154,6 +154,15 @@ describe('SettingsHookSchema', () => {
       });
       expect(result.success).toBe(true);
     });
+
+    it('should accept async flag on command hook', () => {
+      const result = SettingsHookSchema.safeParse({
+        type: 'command',
+        command: 'echo test',
+        async: true,
+      });
+      expect(result.success).toBe(true);
+    });
   });
 });
 

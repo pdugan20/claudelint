@@ -30,7 +30,7 @@ export const rule: Rule = {
       rationale:
         'Components in .claude-plugin/ may not be discovered by Claude Code; that directory is for metadata only.',
       details:
-        'Plugin components such as skills, agents, hooks, and commands should be located in the ' +
+        'Plugin components such as skills, agents, hooks, commands, mcpServers, lspServers, and outputStyles should be located in the ' +
         '.claude/ directory. The .claude-plugin/ directory is reserved for plugin metadata like ' +
         'plugin.json and marketplace.json. Placing components in .claude-plugin/ may cause them ' +
         'to not be discovered correctly by Claude Code.',
@@ -60,7 +60,7 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Move the component directories (skills, agents, hooks, commands) from .claude-plugin/ ' +
+        'Move the component directories (skills, agents, hooks, commands, mcpServers, lspServers, outputStyles) from .claude-plugin/ ' +
         'to .claude/ and update any path references in plugin.json accordingly.',
       relatedRules: ['plugin-json-wrong-location', 'plugin-missing-file'],
     },
@@ -77,7 +77,15 @@ export const rule: Rule = {
     const pluginRoot = dirname(filePath);
 
     // Check each component type
-    const componentsToCheck = ['skills', 'agents', 'hooks', 'commands'];
+    const componentsToCheck = [
+      'skills',
+      'agents',
+      'hooks',
+      'commands',
+      'mcpServers',
+      'lspServers',
+      'outputStyles',
+    ];
     for (const component of componentsToCheck) {
       const wrongPath = join(pluginRoot, '.claude-plugin', component);
       if (await fileExists(wrongPath)) {

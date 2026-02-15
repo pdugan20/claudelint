@@ -31,7 +31,9 @@ export const rule: Rule = {
         'This rule enforces that the `hooks` field in agent markdown ' +
         'frontmatter is a valid object keyed by event names. The ' +
         'supported event names are PreToolUse, PostToolUse, ' +
-        'PostToolUseFailure, PermissionRequest, and Notification. ' +
+        'PostToolUseFailure, PermissionRequest, UserPromptSubmit, ' +
+        'Notification, Stop, SubagentStart, SubagentStop, PreCompact, ' +
+        'SessionStart, SessionEnd, TeammateIdle, and TaskCompleted. ' +
         'Each key maps to an array of hook matchers. Validation is ' +
         'delegated to the AgentFrontmatterSchema.shape.hooks Zod ' +
         'schema. Correctly structured hooks allow the agent ' +

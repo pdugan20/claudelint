@@ -41,13 +41,34 @@
     "permissionMode": {
       "type": "string",
       "description": "Permission mode for the subagent",
-      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan"]
+      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan", "delegate"]
     },
     "skills": {
       "type": "array",
       "description": "Skills to load into the subagent's context at startup",
       "items": {
         "type": "string"
+      }
+    },
+    "maxTurns": {
+      "type": "integer",
+      "description": "Maximum number of agentic turns",
+      "exclusiveMinimum": 0
+    },
+    "mcpServers": {
+      "type": "array",
+      "description": "List of MCP server names available to the agent",
+      "items": {
+        "type": "string"
+      }
+    },
+    "memory": {
+      "type": "object",
+      "description": "Memory configuration for the agent",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
       }
     },
     "hooks": {
@@ -71,7 +92,8 @@
                   "timeout": { "type": "number" },
                   "statusMessage": { "type": "string" },
                   "once": { "type": "boolean" },
-                  "model": { "type": "string" }
+                  "model": { "type": "string" },
+                  "async": { "type": "boolean" }
                 },
                 "required": ["type"]
               }

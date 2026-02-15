@@ -26,7 +26,6 @@
         "SubagentStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SubagentStop": { "$ref": "#/$defs/matcherGroupArray" },
         "PreCompact": { "$ref": "#/$defs/matcherGroupArray" },
-        "Setup": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionEnd": { "$ref": "#/$defs/matcherGroupArray" },
         "TeammateIdle": { "$ref": "#/$defs/matcherGroupArray" },
@@ -96,6 +95,10 @@
         "model": {
           "type": "string",
           "description": "Model to use for prompt-type hooks"
+        },
+        "async": {
+          "type": "boolean",
+          "description": "Whether the hook runs asynchronously without blocking"
         }
       },
       "allOf": [

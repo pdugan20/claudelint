@@ -61,7 +61,7 @@ export const rule: Rule = {
         'Malformed variable expansions resolve to empty strings at runtime, causing silent connection failures.',
       details:
         'This rule checks that environment variable references in MCP transport fields (command, args, ' +
-        'url, and env values) use proper ${VAR} expansion syntax and that variable names match a ' +
+        'url, headers, and env values) use proper ${VAR} expansion syntax and that variable names match a ' +
         'configurable naming pattern. It warns on empty env values, empty expansion syntax like ${}, ' +
         'variable names that do not match the expected pattern, and bare $VAR references that should ' +
         'use the ${VAR} format. The special variable ${CLAUDE_PLUGIN_ROOT} is always excluded from ' +
@@ -150,6 +150,13 @@ function validateTransport(context: Parameters<Rule['validate']>[0], server: MCP
   // Validate URL-based transports
   if ('url' in server && server.url) {
     validateVariableExpansion(context, server.url, 'URL');
+  }
+
+  // Validate headers (SSE, HTTP transports)
+  if ('headers' in server && server.headers) {
+    for (const [key, value] of Object.entries(server.headers)) {
+      validateVariableExpansion(context, value, `header ${key}`);
+    }
   }
 
   // Validate environment variables

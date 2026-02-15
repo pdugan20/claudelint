@@ -99,7 +99,46 @@ describe('plugin-missing-component-paths', () => {
             },
           ],
         },
+        // New component types: hooks, mcpServers, lspServers (string paths)
+        {
+          content: JSON.stringify({
+            name: 'my-plugin',
+            hooks: 'hooks.json',
+            mcpServers: 'mcp.json',
+            lspServers: 'lsp.json',
+          }),
+          filePath: '/test/plugin.json',
+          errors: [
+            {
+              message: 'hooks path missing "./" prefix: "hooks.json"',
+            },
+            {
+              message: 'mcpServers path missing "./" prefix: "mcp.json"',
+            },
+            {
+              message: 'lspServers path missing "./" prefix: "lsp.json"',
+            },
+          ],
+        },
       ],
+    });
+  });
+
+  it('should skip inline object configs for hooks/mcpServers/lspServers', async () => {
+    await ruleTester.run('plugin-missing-component-paths', rule, {
+      valid: [
+        // Inline object (not a string path) should be skipped
+        {
+          content: JSON.stringify({
+            name: 'my-plugin',
+            hooks: { PreToolUse: [] },
+            mcpServers: { myServer: { command: 'node' } },
+            lspServers: { tsserver: { command: 'typescript-language-server' } },
+          }),
+          filePath: '/test/plugin.json',
+        },
+      ],
+      invalid: [],
     });
   });
 });

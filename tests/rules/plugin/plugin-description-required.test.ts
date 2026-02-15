@@ -34,7 +34,7 @@ describe('plugin-description-required', () => {
             name: 'my-plugin',
             version: '1.0.0',
           }),
-          errors: [{ message: 'Plugin description is required and cannot be empty' }],
+          errors: [{ message: 'Plugin description is recommended but missing or empty' }],
         },
       ],
     });
@@ -51,7 +51,7 @@ describe('plugin-description-required', () => {
             version: '1.0.0',
             description: '',
           }),
-          errors: [{ message: 'Plugin description is required and cannot be empty' }],
+          errors: [{ message: 'Plugin description is recommended but missing or empty' }],
         },
       ],
     });
@@ -68,7 +68,7 @@ describe('plugin-description-required', () => {
             version: '1.0.0',
             description: '   ',
           }),
-          errors: [{ message: 'Plugin description is required and cannot be empty' }],
+          errors: [{ message: 'Plugin description is recommended but missing or empty' }],
         },
       ],
     });

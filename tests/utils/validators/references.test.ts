@@ -11,6 +11,18 @@ describe('reference validators', () => {
       expect(validateToolName('Grep')).toBeNull();
     });
 
+    it('should return null for parameterized tool syntax', () => {
+      expect(validateToolName('Task(my-agent)')).toBeNull();
+      expect(validateToolName('Bash(npm run build)')).toBeNull();
+      expect(validateToolName('Read(.env)')).toBeNull();
+    });
+
+    it('should return error for invalid parameterized tool', () => {
+      const result = validateToolName('FakeTool(arg)');
+      expect(result).not.toBeNull();
+      expect(result!.message).toContain('FakeTool');
+    });
+
     it('should return error for invalid tool name', () => {
       const result = validateToolName('InvalidTool');
 

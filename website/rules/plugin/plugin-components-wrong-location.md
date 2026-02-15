@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-Plugin components such as skills, agents, hooks, and commands should be located in the .claude/ directory. The .claude-plugin/ directory is reserved for plugin metadata like plugin.json and marketplace.json. Placing components in .claude-plugin/ may cause them to not be discovered correctly by Claude Code.
+Plugin components such as skills, agents, hooks, commands, mcpServers, lspServers, and outputStyles should be located in the .claude/ directory. The .claude-plugin/ directory is reserved for plugin metadata like plugin.json and marketplace.json. Placing components in .claude-plugin/ may cause them to not be discovered correctly by Claude Code.
 
 ### Incorrect
 
@@ -33,7 +33,7 @@ my-plugin/
 
 ## How To Fix
 
-Move the component directories (skills, agents, hooks, commands) from .claude-plugin/ to .claude/ and update any path references in plugin.json accordingly.
+Move the component directories (skills, agents, hooks, commands, mcpServers, lspServers, outputStyles) from .claude-plugin/ to .claude/ and update any path references in plugin.json accordingly.
 
 ## Options
 

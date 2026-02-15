@@ -32,7 +32,7 @@ Permission using valid tool names
 
 ## How To Fix
 
-Check the tool name against the list of valid tools: Bash, Edit, ExitPlanMode, Glob, Grep, KillShell, NotebookEdit, Read, Skill, Task, TodoWrite, WebFetch, WebSearch, Write. For MCP servers, use the mcp__ prefix followed by the server name.
+Check the tool name against the list of valid tools: Bash, Read, Write, Edit, Glob, Grep, Task, WebFetch, WebSearch, LSP, AskUserQuestion, EnterPlanMode, ExitPlanMode, Skill, TaskCreate, TaskUpdate, TaskGet, TaskList, TaskOutput, TaskStop, NotebookEdit. For MCP servers, use the mcp__ prefix followed by the server name.
 
 ## Options
 

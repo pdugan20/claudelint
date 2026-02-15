@@ -11,7 +11,14 @@ import { SettingsHooksSchema } from '../validators/schemas';
 /**
  * Permission modes for agents
  */
-const PermissionModes = z.enum(['default', 'acceptEdits', 'dontAsk', 'bypassPermissions', 'plan']);
+const PermissionModes = z.enum([
+  'default',
+  'acceptEdits',
+  'dontAsk',
+  'bypassPermissions',
+  'plan',
+  'delegate',
+]);
 
 /**
  * Base agent frontmatter schema without cross-field validations
@@ -41,6 +48,16 @@ export const AgentFrontmatterSchema = z.object({
 
   // Hooks that this agent defines (object format with event name keys)
   hooks: SettingsHooksSchema.optional(),
+
+  maxTurns: z.number().int().positive().optional(),
+
+  mcpServers: z.array(z.string()).optional(),
+
+  memory: z
+    .object({
+      enabled: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 /**

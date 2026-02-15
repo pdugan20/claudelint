@@ -34,7 +34,7 @@ describe('plugin-version-required', () => {
             name: 'my-plugin',
             description: 'A test plugin',
           }),
-          errors: [{ message: 'Plugin version is required and cannot be empty' }],
+          errors: [{ message: 'Plugin version is recommended but missing or empty' }],
         },
       ],
     });
@@ -51,7 +51,7 @@ describe('plugin-version-required', () => {
             version: '',
             description: 'A test plugin',
           }),
-          errors: [{ message: 'Plugin version is required and cannot be empty' }],
+          errors: [{ message: 'Plugin version is recommended but missing or empty' }],
         },
       ],
     });
@@ -68,7 +68,7 @@ describe('plugin-version-required', () => {
             version: '  ',
             description: 'A test plugin',
           }),
-          errors: [{ message: 'Plugin version is required and cannot be empty' }],
+          errors: [{ message: 'Plugin version is recommended but missing or empty' }],
         },
       ],
     });

@@ -10,7 +10,15 @@ import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
 import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
-const COMPONENT_FIELDS = ['skills', 'agents', 'commands', 'outputStyles'];
+const COMPONENT_FIELDS = [
+  'skills',
+  'agents',
+  'commands',
+  'outputStyles',
+  'hooks',
+  'mcpServers',
+  'lspServers',
+];
 
 /**
  * Normalize a field value to an array of strings
@@ -43,7 +51,7 @@ export const rule: Rule = {
       rationale:
         'Paths without "./" prefix are ambiguous and may be misinterpreted as absolute or module paths.',
       details:
-        'Component paths in plugin.json (skills, agents, commands, outputStyles) should start with ' +
+        'Component paths in plugin.json (skills, agents, commands, outputStyles, hooks, mcpServers, lspServers) should start with ' +
         '"./" to make it explicit that they are relative to the plugin root. Paths without the ' +
         'leading "./" prefix are ambiguous and may be misinterpreted. This rule is auto-fixable ' +
         'and will prepend "./" to paths that lack it.',

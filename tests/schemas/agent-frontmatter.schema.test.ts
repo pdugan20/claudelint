@@ -134,6 +134,15 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
+    it('should accept delegate permissionMode', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        permissionMode: 'delegate',
+      });
+      expect(result.success).toBe(true);
+    });
+
     it('should reject invalid permissionMode', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
@@ -141,6 +150,42 @@ describe('AgentFrontmatterSchema', () => {
         permissionMode: 'invalid',
       });
       expect(result.success).toBe(false);
+    });
+
+    it('should accept maxTurns', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        maxTurns: 10,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject non-positive maxTurns', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        maxTurns: 0,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept mcpServers', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        mcpServers: ['github', 'sentry'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept memory config', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        memory: { enabled: true },
+      });
+      expect(result.success).toBe(true);
     });
   });
 });

@@ -384,7 +384,6 @@ describe('SettingsHooksSchema', () => {
       SubagentStart: [],
       SubagentStop: [],
       PreCompact: [],
-      Setup: [],
       SessionStart: [],
       SessionEnd: [],
       TeammateIdle: [],

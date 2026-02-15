@@ -261,6 +261,49 @@ describe('mcp-invalid-env-var', () => {
       ],
     });
   });
+  it('should validate env var expansion in headers', async () => {
+    await ruleTester.run('mcp-invalid-env-var', rule, {
+      valid: [
+        // Valid expansion in header
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                type: 'http',
+                url: 'https://example.com',
+                headers: {
+                  Authorization: 'Bearer ${API_TOKEN}',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
+      ],
+      invalid: [
+        // Bare variable in header value
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                type: 'http',
+                url: 'https://example.com',
+                headers: {
+                  Authorization: 'Bearer $API_TOKEN',
+                },
+              },
+            },
+          }),
+          filePath: 'test.mcp.json',
+          errors: [
+            {
+              message: 'Unbraced variable expansion: $API_TOKEN',
+            },
+          ],
+        },
+      ],
+    });
+  });
   it('should skip CLAUDE_PLUGIN_ROOT from pattern validation', async () => {
     await ruleTester.run('mcp-invalid-env-var', rule, {
       valid: [

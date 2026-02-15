@@ -93,8 +93,8 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 15 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(15);
+    it('should export all 14 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(14);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
       expect(VALID_HOOK_EVENTS).toContain('TeammateIdle');

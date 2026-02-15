@@ -19,6 +19,7 @@ export const SettingsHookSchema = z.object({
   statusMessage: z.string().optional(),
   once: z.boolean().optional(),
   model: z.string().optional(),
+  async: z.boolean().optional(),
 });
 
 /**
@@ -45,7 +46,6 @@ export const SettingsHooksSchema = z.object({
   SubagentStart: z.array(SettingsHookMatcherSchema).optional(),
   SubagentStop: z.array(SettingsHookMatcherSchema).optional(),
   PreCompact: z.array(SettingsHookMatcherSchema).optional(),
-  Setup: z.array(SettingsHookMatcherSchema).optional(),
   SessionStart: z.array(SettingsHookMatcherSchema).optional(),
   SessionEnd: z.array(SettingsHookMatcherSchema).optional(),
   TeammateIdle: z.array(SettingsHookMatcherSchema).optional(),

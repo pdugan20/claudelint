@@ -1,10 +1,10 @@
 # plugin-description-required
 
-<RuleHeader description="Plugin description is required and cannot be empty" severity="error" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="Plugin description is recommended and should not be empty" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-The description field in plugin.json tells users what the plugin does. This rule ensures the field is present, is a string, and is not empty or whitespace-only. A clear description is essential for plugin discoverability and for users evaluating whether to install the plugin.
+The description field in plugin.json tells users what the plugin does. This rule checks that the field is present, is a string, and is not empty or whitespace-only. While only `name` is strictly required by Claude Code, a clear description is strongly recommended for plugin discoverability and for users evaluating whether to install the plugin.
 
 ### Incorrect
 
@@ -51,7 +51,7 @@ Plugin with a meaningful description
 
 ## How To Fix
 
-Add a description field with a clear, concise summary of what the plugin provides. Aim for one to two sentences that help users understand the plugin's purpose.
+Add a description field with a clear, concise summary of what the plugin provides. Aim for one to two sentences that help users understand the plugin's purpose. While optional per the spec, it is strongly recommended.
 
 ## Options
 

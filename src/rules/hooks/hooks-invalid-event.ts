@@ -29,10 +29,10 @@ export const rule: Rule = {
         'Unrecognized event names mean the hook will never fire, silently failing to provide the intended automation.',
       details:
         'This rule validates that the keys in the hooks object of settings.json correspond to recognized ' +
-        'Claude Code hook events. Valid events include PreToolUse, PostToolUse, PostToolUseFailure, ' +
-        'PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, and ' +
-        'PreCompact. An unrecognized event name means the hook will never fire, silently failing to ' +
-        'provide the intended automation.',
+        'Claude Code hook events. Valid events are: PreToolUse, PostToolUse, PostToolUseFailure, ' +
+        'PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, ' +
+        'PreCompact, SessionStart, SessionEnd, TeammateIdle, and TaskCompleted. An unrecognized event ' +
+        'name means the hook will never fire, silently failing to provide the intended automation.',
       examples: {
         incorrect: [
           {
@@ -52,7 +52,7 @@ export const rule: Rule = {
       howToFix:
         'Replace the invalid event name with one of the recognized hook events: PreToolUse, ' +
         'PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, ' +
-        'SubagentStart, SubagentStop, or PreCompact.',
+        'SubagentStart, SubagentStop, PreCompact, SessionStart, SessionEnd, TeammateIdle, or TaskCompleted.',
       relatedRules: ['hooks-missing-script'],
     },
   },

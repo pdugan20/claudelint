@@ -1,10 +1,10 @@
 /**
  * Rule: plugin-description-required
  *
- * Validates that plugin description is required and non-empty
+ * Validates that plugin description is present and non-empty
  *
- * The plugin description is a required field that explains what the plugin
- * does to users. It must not be empty or whitespace-only.
+ * The plugin description is a recommended field that explains what the plugin
+ * does to users. It should not be empty or whitespace-only.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -15,9 +15,9 @@ export const rule: Rule = {
   meta: {
     id: 'plugin-description-required',
     name: 'Plugin Description Required',
-    description: 'Plugin description is required and cannot be empty',
+    description: 'Plugin description is recommended and should not be empty',
     category: 'Plugin',
-    severity: 'error',
+    severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
@@ -25,13 +25,14 @@ export const rule: Rule = {
       'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-description-required.md',
     docs: {
       recommended: true,
-      summary: 'Requires plugin.json to include a non-empty description field.',
+      summary: 'Warns when plugin.json is missing a description field.',
       rationale:
         'A missing description prevents users from understanding what the plugin does before installing it.',
       details:
-        'The description field in plugin.json tells users what the plugin does. This rule ensures ' +
-        'the field is present, is a string, and is not empty or whitespace-only. A clear description ' +
-        'is essential for plugin discoverability and for users evaluating whether to install the plugin.',
+        'The description field in plugin.json tells users what the plugin does. This rule checks ' +
+        'that the field is present, is a string, and is not empty or whitespace-only. While only `name` is ' +
+        'strictly required by Claude Code, a clear description is strongly recommended for plugin ' +
+        'discoverability and for users evaluating whether to install the plugin.',
       examples: {
         incorrect: [
           {
@@ -60,7 +61,8 @@ export const rule: Rule = {
       },
       howToFix:
         'Add a description field with a clear, concise summary of what the plugin provides. ' +
-        "Aim for one to two sentences that help users understand the plugin's purpose.",
+        "Aim for one to two sentences that help users understand the plugin's purpose. " +
+        'While optional per the spec, it is strongly recommended.',
       relatedRules: ['plugin-invalid-version'],
     },
   },
@@ -84,7 +86,7 @@ export const rule: Rule = {
       plugin.description.trim().length === 0
     ) {
       context.report({
-        message: 'Plugin description is required and cannot be empty',
+        message: 'Plugin description is recommended but missing or empty',
       });
     }
   },

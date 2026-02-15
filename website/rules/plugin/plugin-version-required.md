@@ -1,10 +1,10 @@
 # plugin-version-required
 
-<RuleHeader description="Plugin version is required and cannot be empty" severity="error" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="Plugin version is recommended and should not be empty" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-This rule checks that the plugin.json file has a version property that is a non-empty string. The version is used for dependency management and marketplace distribution. A missing or empty version prevents proper version tracking, update detection, and may cause installation failures.
+This rule checks that the plugin.json file has a version property that is a non-empty string. The version is used for dependency management and marketplace distribution. While only `name` is strictly required by Claude Code, including a version is strongly recommended for version tracking and update detection.
 
 ### Incorrect
 
@@ -39,7 +39,7 @@ Plugin with a valid version
 
 ## How To Fix
 
-Add a version field to plugin.json with a non-empty string value, ideally following semver format (e.g., "1.0.0").
+Add a version field to plugin.json with a non-empty string value following semver format (e.g., "1.0.0"). While optional per the spec, it is strongly recommended.
 
 ## Options
 
