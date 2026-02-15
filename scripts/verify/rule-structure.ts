@@ -4,7 +4,7 @@
  *
  * Ensures every rule has:
  * - A test file at tests/rules/{category}/{rule-id}.test.ts
- * - A doc file at docs/rules/{category}/{rule-id}.md
+ * - A doc file at website/rules/{category}/{rule-id}.md
  *
  * Prevents orphaned test/doc files (file exists but no rule)
  */
@@ -55,7 +55,7 @@ function getTestFiles(): string[] {
  * Get all doc files
  */
 function getDocFiles(): string[] {
-  return glob.sync('docs/rules/**/*.md', {
+  return glob.sync('website/rules/**/*.md', {
     ignore: ['**/TEMPLATE.md', '**/index.md'],
   });
 }
@@ -72,7 +72,7 @@ function hasTestFile(rule: RuleFile): boolean {
  * Check if doc file exists for rule
  */
 function hasDocFile(rule: RuleFile): boolean {
-  const docPath = `docs/rules/${rule.category}/${rule.id}.md`;
+  const docPath = `website/rules/${rule.category}/${rule.id}.md`;
   return fs.existsSync(docPath);
 }
 
@@ -92,7 +92,7 @@ function hasRuleForTest(testPath: string): boolean {
  * Check if rule file exists for doc
  */
 function hasRuleForDoc(docPath: string): boolean {
-  const match = docPath.match(/docs\/rules\/([^/]+)\/([^/]+)\.md$/);
+  const match = docPath.match(/website\/rules\/([^/]+)\/([^/]+)\.md$/);
   if (!match) return true; // Ignore malformed paths
 
   const [, category, id] = match;
@@ -153,7 +153,7 @@ function printErrors(result: ValidationResult): void {
     log.bracket.error('Rules missing documentation files:');
     for (const rule of result.missingDocs) {
       log.info(`   ${rule.filePath}`);
-      log.info(`   Expected: docs/rules/${rule.category}/${rule.id}.md`);
+      log.info(`   Expected: website/rules/${rule.category}/${rule.id}.md`);
     }
   }
 
