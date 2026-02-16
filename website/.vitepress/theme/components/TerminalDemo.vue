@@ -75,6 +75,15 @@ const outputLines: Line[] = [
     html: '  <span class="dim">... and 2 more in tests/</span>',
   },
   { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'section',
+    html: 'agents <span class="dim">(1 file)</span>',
+  },
+  {
+    type: 'detail',
+    html: '  .claude/agents/deploy-agent.md',
+  },
+  { type: 'blank', html: '&nbsp;' },
   // ── Skipped validators ──
   {
     type: 'detail',
@@ -124,15 +133,11 @@ const outputLines: Line[] = [
   { type: 'blank', html: '&nbsp;' },
   {
     type: 'detail',
-    html: '<span class="underline">.claude/skills/deploy/SKILL.md</span> <span class="dim">(1 error, 2 warnings)</span>',
+    html: '<span class="underline">.claude/skills/deploy/SKILL.md</span> <span class="dim">(1 error, 1 warning)</span>',
   },
   {
     type: 'detail',
     html: '  0  <span class="err">error</span>    Name "deploy" is overly generic  <span class="dim">skill-overly-generic-name</span>',
-  },
-  {
-    type: 'detail',
-    html: '  3  <span class="warn">warning</span>  Description has only 3 words, minimum is 6  <span class="dim">skill-description-quality</span>',
   },
   {
     type: 'detail',
@@ -148,14 +153,28 @@ const outputLines: Line[] = [
     html: '  0  <span class="warn">warning</span>  Missing "## Usage" section  <span class="dim">skill-body-missing-usage-section</span>',
   },
   { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'section',
+    html: 'agents <span class="dim">(14ms)</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
+  {
+    type: 'detail',
+    html: '<span class="underline">.claude/agents/deploy-agent.md</span> <span class="dim">(1 error)</span>',
+  },
+  {
+    type: 'detail',
+    html: '  4  <span class="err">error</span>    Referenced skill not found: run-tests  <span class="dim">agent-skills-not-found</span>',
+  },
+  { type: 'blank', html: '&nbsp;' },
   // ── Summary + timing ──
   {
     type: 'summary',
-    html: 'Checked 7 files across 2 categories <span class="dim">(claude-md, skills)</span> in 72ms.',
+    html: 'Checked 8 files across 3 categories <span class="dim">(claude-md, skills, agents)</span> in 86ms.',
   },
   {
     type: 'summary',
-    html: '<span class="err">5 problems</span> (1 error, 4 warnings)',
+    html: '<span class="err">5 problems</span> (2 errors, 3 warnings)',
   },
   { type: 'blank', html: '&nbsp;' },
   {
@@ -169,6 +188,10 @@ const outputLines: Line[] = [
   {
     type: 'detail',
     html: '  skills     58ms',
+  },
+  {
+    type: 'detail',
+    html: '  agents     14ms',
   },
 ];
 
