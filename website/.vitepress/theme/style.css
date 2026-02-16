@@ -348,6 +348,12 @@ html {
   border-color: var(--vp-c-border) !important;
 }
 
+/* ===== Pager (prev/next): Use theme-consistent borders ===== */
+
+.pager-link:hover {
+  border-color: var(--vp-c-text-3) !important;
+}
+
 /* ===== Code Blocks: Hide language label ===== */
 
 .vp-doc [class*='language-'] > span.lang {
