@@ -365,13 +365,13 @@ The main configuration file for Claude Code projects. Contains:
 
 ### Rules Files (`.claude/rules/`)
 
-Modular markdown files in `.claude/rules/` that contain behavioral instructions for Claude Code. Each file covers a single topic (e.g., code style, testing conventions, security requirements) and is loaded into Claude's context at session start with the same priority as `.claude/CLAUDE.md`.
+Modular markdown files in `.claude/rules/` that contain behavioral instructions for Claude Code. Each file covers a single topic (e.g., code style, testing conventions, security requirements) and has the same priority as `.claude/CLAUDE.md`. Rules without a `paths` field are loaded unconditionally at session start. Rules with a `paths` field are loaded conditionally — only when Claude is working with files matching the specified patterns.
 
 Not to be confused with claudelint [rules](#rule), which are validation checks. Claude Code rules files are what claudelint *validates* — claudelint rules are the checks that do the validating.
 
 **Features:**
 
-- Optional `paths` frontmatter to scope instructions to specific file patterns
+- Optional `paths` frontmatter to scope instructions to specific file patterns (conditional loading)
 - Subdirectory organization (e.g., `rules/frontend/react.md`)
 - Symlink support for sharing rules across projects
 
