@@ -13,16 +13,7 @@ import { Reporter } from '../../utils/reporting/reporting';
 import { loadAndValidateConfig } from '../utils/config-loader';
 import { logger } from '../utils/logger';
 import { WatchOptions } from '../types';
-
-/** File patterns that trigger specific validators */
-const VALIDATOR_TRIGGERS: Record<string, string[]> = {
-  'claude-md': ['CLAUDE.md'],
-  skills: ['SKILL.md', '.sh'],
-  settings: ['settings.json'],
-  hooks: ['hooks.json'],
-  mcp: ['.mcp.json'],
-  plugin: ['plugin.json'],
-};
+import { WATCH_TRIGGERS } from '../../utils/filesystem/patterns';
 
 /**
  * Determine which validators to run based on changed file
@@ -30,7 +21,7 @@ const VALIDATOR_TRIGGERS: Record<string, string[]> = {
 function getTriggeredValidators(filePath: string): string[] {
   const triggered: string[] = [];
 
-  for (const [validatorId, patterns] of Object.entries(VALIDATOR_TRIGGERS)) {
+  for (const [validatorId, patterns] of Object.entries(WATCH_TRIGGERS)) {
     for (const pattern of patterns) {
       if (filePath.endsWith(pattern)) {
         triggered.push(validatorId);
@@ -105,7 +96,7 @@ export function registerWatchCommand(program: Command): void {
 
               if (triggered.length === 0) {
                 // Unknown file type - run all validators
-                for (const id of Object.keys(VALIDATOR_TRIGGERS)) {
+                for (const id of Object.keys(WATCH_TRIGGERS)) {
                   validatorIds.add(id);
                 }
               } else {

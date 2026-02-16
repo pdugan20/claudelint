@@ -75,7 +75,7 @@ ValidatorRegistry.register(
     id: 'mcp',
     name: 'MCP Validator',
     description: 'Validates MCP (Model Context Protocol) server configuration files',
-    filePatterns: ['**/.claude/mcp.json'],
+    filePatterns: ['**/.mcp.json'],
     enabled: true,
   },
   (options) => new MCPValidator(options)

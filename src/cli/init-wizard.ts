@@ -17,6 +17,7 @@ import {
   getShellCheckInstallMessage,
   getShellCheckVersion,
 } from './utils/system-tools';
+import { INIT_DETECTION_PATHS } from '../utils/filesystem/patterns';
 
 interface ProjectInfo {
   hasClaudeDir: boolean;
@@ -96,17 +97,17 @@ export class InitWizard {
    */
   private detectProject(): ProjectInfo {
     return {
-      hasClaudeDir: existsSync(join(this.cwd, '.claude')),
-      hasSkills: existsSync(join(this.cwd, '.claude/skills')),
-      hasSettings: existsSync(join(this.cwd, '.claude/settings.json')),
-      hasHooks: existsSync(join(this.cwd, '.claude/hooks')),
-      hasAgents: existsSync(join(this.cwd, '.claude/agents')),
-      hasOutputStyles: existsSync(join(this.cwd, '.claude/output-styles')),
-      hasCommands: existsSync(join(this.cwd, '.claude/commands')),
-      hasMCP: existsSync(join(this.cwd, '.mcp.json')),
-      hasPlugin: existsSync(join(this.cwd, 'plugin.json')),
-      hasCLAUDEmd: existsSync(join(this.cwd, 'CLAUDE.md')),
-      hasPackageJson: existsSync(join(this.cwd, 'package.json')),
+      hasClaudeDir: existsSync(join(this.cwd, INIT_DETECTION_PATHS.claudeDir)),
+      hasSkills: existsSync(join(this.cwd, INIT_DETECTION_PATHS.skills)),
+      hasSettings: existsSync(join(this.cwd, INIT_DETECTION_PATHS.settings)),
+      hasHooks: existsSync(join(this.cwd, INIT_DETECTION_PATHS.hooks)),
+      hasAgents: existsSync(join(this.cwd, INIT_DETECTION_PATHS.agents)),
+      hasOutputStyles: existsSync(join(this.cwd, INIT_DETECTION_PATHS.outputStyles)),
+      hasCommands: existsSync(join(this.cwd, INIT_DETECTION_PATHS.commands)),
+      hasMCP: existsSync(join(this.cwd, INIT_DETECTION_PATHS.mcp)),
+      hasPlugin: existsSync(join(this.cwd, INIT_DETECTION_PATHS.plugin)),
+      hasCLAUDEmd: existsSync(join(this.cwd, INIT_DETECTION_PATHS.claudeMd)),
+      hasPackageJson: existsSync(join(this.cwd, INIT_DETECTION_PATHS.packageJson)),
     };
   }
 

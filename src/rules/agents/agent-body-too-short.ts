@@ -46,7 +46,7 @@ export const rule: Rule = {
       rationale:
         'Sparse agent definitions lack the detailed instructions needed for consistent, high-quality responses.',
       details:
-        'This rule checks that the markdown body of an AGENT.md file ' +
+        'This rule checks that the markdown body of an agent file file ' +
         '(the content after frontmatter) contains enough substantive ' +
         'text. Very short body content typically indicates an incomplete ' +
         'agent definition that lacks the detailed instructions needed ' +
@@ -93,15 +93,15 @@ export const rule: Rule = {
       ],
       whenNotToUse:
         'Disable this rule if your agents use an external system ' +
-        'prompt source and the AGENT.md body is intentionally minimal.',
-      relatedRules: ['agent-missing-system-prompt', 'agent-name', 'agent-description'],
+        'prompt source and the agent file body is intentionally minimal.',
+      relatedRules: ['agent-name', 'agent-description'],
     },
   },
   validate: (context: RuleContext) => {
     const { filePath, fileContent, options } = context;
 
-    // Only validate AGENT.md files
-    if (!filePath.endsWith('AGENT.md')) {
+    // Only validate agent .md files
+    if (!filePath.endsWith('.md')) {
       return;
     }
 

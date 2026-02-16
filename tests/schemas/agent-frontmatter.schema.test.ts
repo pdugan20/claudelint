@@ -59,20 +59,21 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(false);
     });
 
-    it('should reject first-person descriptions', () => {
+    it('should accept descriptions with example XML tags', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
-        description: 'I help with testing things',
+        description:
+          'Use this agent when you need help.\n\n<example>\nuser: "Help me"\n</example>',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject second-person descriptions', () => {
+    it('should accept descriptions with dialog containing I/you', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
-        description: 'Helps you test things',
+        description: 'Use this agent when you need code review assistance',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
   });
 
@@ -183,9 +184,27 @@ describe('AgentFrontmatterSchema', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
-        memory: { enabled: true },
+        memory: 'project',
       });
       expect(result.success).toBe(true);
+    });
+
+    it('should accept valid color', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        color: 'green',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid color', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        color: 'purple',
+      });
+      expect(result.success).toBe(false);
     });
   });
 });

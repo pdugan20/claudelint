@@ -408,6 +408,23 @@ Claude Code project settings. Located at `.claude/settings.json`.
 - Permission rules
 - Environment variables
 
+### Agent Files
+
+Flat `.md` files that define Claude Code sub-agents. Located at `.claude/agents/<name>.md` (project) or `agents/<name>.md` (plugin).
+
+The agent name comes from YAML frontmatter, and the file body serves as the system prompt. Unlike skills, which use a directory structure with a `SKILL.md` entrypoint, agents are single files where the filename determines the agent identity.
+
+Not to be confused with OpenAI's [AGENTS.md](https://developers.openai.com/codex/guides/agents-md/), which provides project-wide instructions for Codex agents (similar to Claude Code's `CLAUDE.md`).
+
+**Validation:** AgentsValidator checks:
+
+- Frontmatter schema (name, description, model, tools, skills, color)
+- Name/filename consistency
+- Skill and tool references
+- Body content length
+
+**See:** [Agents Validator](/validators/agents), [Claude Code Sub-agents](https://code.claude.com/docs/en/sub-agents)
+
 ### hooks.json
 
 Defines automation hooks for Claude Code. Located at `.claude/hooks.json` (or `.claude/hooks/hooks.json`).

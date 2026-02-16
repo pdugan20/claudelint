@@ -30,5 +30,5 @@ claudelint validate-mcp --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code MCP Servers](https://code.claude.com/docs/en/mcp) - Official MCP documentation
 - [Configuration](/guide/configuration) - Customize rule severity

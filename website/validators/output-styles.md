@@ -30,5 +30,5 @@ claudelint validate-output-styles --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Output Styles](https://code.claude.com/docs/en/output-styles) - Official output styles documentation
 - [Configuration](/guide/configuration) - Customize rule severity

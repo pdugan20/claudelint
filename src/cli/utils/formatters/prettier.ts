@@ -16,6 +16,14 @@ export interface PrettierResult {
 }
 
 /**
+ * Resolve Prettier options for a file, merging project config with filepath.
+ */
+async function resolveOptions(file: string): Promise<prettier.Options> {
+  const config = (await prettier.resolveConfig(file)) || {};
+  return { ...config, filepath: file };
+}
+
+/**
  * Check if files are formatted with Prettier
  *
  * @param patterns - File glob patterns
@@ -38,7 +46,8 @@ export async function checkPrettier(patterns: string[]): Promise<PrettierResult>
   for (const file of uniqueFiles) {
     try {
       const text = readFileSync(file, 'utf-8');
-      const isFormatted = await prettier.check(text, { filepath: file });
+      const options = await resolveOptions(file);
+      const isFormatted = await prettier.check(text, options);
 
       if (isFormatted) {
         formatted.push(file);
@@ -82,7 +91,8 @@ export async function formatPrettier(patterns: string[]): Promise<PrettierResult
   for (const file of uniqueFiles) {
     try {
       const text = readFileSync(file, 'utf-8');
-      const formattedText = await prettier.format(text, { filepath: file });
+      const options = await resolveOptions(file);
+      const formattedText = await prettier.format(text, options);
 
       // Only write if changed
       if (text !== formattedText) {

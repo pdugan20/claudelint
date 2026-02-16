@@ -37,6 +37,6 @@ claudelint validate-claude-md --fix
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Memory](https://code.claude.com/docs/en/memory) - Official CLAUDE.md documentation
 - [Configuration](/guide/configuration) - Customize rule severity
 - [Troubleshooting](/guide/troubleshooting) - Common issues

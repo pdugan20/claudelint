@@ -13,20 +13,20 @@ describe('agent-description', () => {
       valid: [
         {
           content: '---\nname: my-agent\ndescription: Validates Claude configuration files\n---\n# Agent',
-          filePath: '/test/agents/AGENT.md',
+          filePath: '/test/agents/my-agent.md',
+        },
+        {
+          content:
+            '---\nname: my-agent\ndescription: >\n  Use this agent when the user wants help.\n\n  <example>\n  user: "Help me"\n  </example>\n---\n# Agent',
+          filePath: '/test/agents/my-agent.md',
         },
       ],
 
       invalid: [
         {
           content: '---\nname: my-agent\ndescription: Too short\n---\n# Agent',
-          filePath: '/test/agents/AGENT.md',
+          filePath: '/test/agents/my-agent.md',
           errors: [{ message: 'at least 10 characters' }],
-        },
-        {
-          content: '---\nname: my-agent\ndescription: I validate Claude files\n---\n# Agent',
-          filePath: '/test/agents/AGENT.md',
-          errors: [{ message: 'third person' }],
         },
       ],
     });

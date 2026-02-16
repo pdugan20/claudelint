@@ -82,6 +82,7 @@ export default defineConfig({
           items: [
             { text: 'Configuration', link: '/guide/configuration' },
             { text: 'CLI Reference', link: '/guide/cli-reference' },
+            { text: 'File Discovery', link: '/guide/file-discovery' },
             { text: 'Auto-fix', link: '/guide/auto-fix' },
             { text: 'Inline Disables', link: '/guide/inline-disables' },
           ],
@@ -149,6 +150,7 @@ export default defineConfig({
           text: 'Development',
           items: [
             { text: 'Overview', link: '/development/overview' },
+            { text: 'Design Philosophy', link: '/development/design-philosophy' },
             { text: 'Architecture', link: '/development/architecture' },
             { text: 'Rule System', link: '/development/rule-system' },
             { text: 'Internals', link: '/development/internals' },

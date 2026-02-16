@@ -138,7 +138,7 @@ ValidatorRegistry.register(
     id: 'skills',
     name: 'Skills Validator',
     description: 'Validates Claude Code skill directories and SKILL.md files',
-    filePatterns: ['**/.claude/skills/*/SKILL.md'],
+    filePatterns: ['**/.claude/skills/*/SKILL.md', 'skills/*/SKILL.md'],
     enabled: true,
   },
   (options) => new SkillsValidator(options)

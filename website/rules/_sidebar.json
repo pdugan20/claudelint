@@ -434,10 +434,6 @@
         "link": "/rules/agents/agent-hooks-invalid-schema"
       },
       {
-        "text": "agent-missing-system-prompt",
-        "link": "/rules/agents/agent-missing-system-prompt"
-      },
-      {
         "text": "agent-model",
         "link": "/rules/agents/agent-model"
       },
@@ -446,8 +442,8 @@
         "link": "/rules/agents/agent-name"
       },
       {
-        "text": "agent-name-directory-mismatch",
-        "link": "/rules/agents/agent-name-directory-mismatch"
+        "text": "agent-name-filename-mismatch",
+        "link": "/rules/agents/agent-name-filename-mismatch"
       },
       {
         "text": "agent-skills",

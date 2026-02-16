@@ -6,60 +6,43 @@
  */
 
 import { glob } from 'glob';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 export interface MarkdownlintResult {
   passed: boolean;
   errors: Record<string, string[]>;
   filesWithErrors: string[];
+  filesFixed: string[];
 }
 
 interface LintViolation {
   lineNumber: number;
   ruleNames: string[];
   ruleDescription: string;
+  fixInfo?: {
+    editColumn?: number;
+    deleteCount?: number;
+    insertText?: string;
+    lineNumber?: number;
+  } | null;
 }
 
 type LintResults = Record<string, LintViolation[]>;
 
-type LintFn = (options: { files: string[]; config: Record<string, unknown> }) => LintResults;
+type LintFn = (options: {
+  files?: string[];
+  strings?: Record<string, string>;
+  config: Record<string, unknown>;
+  resultVersion?: number;
+}) => LintResults;
+
+type ApplyFixesFn = (input: string, errors: LintViolation[]) => string;
 
 /**
- * Check markdown files with markdownlint
- *
- * @param patterns - File glob patterns
- * @param fix - Whether to auto-fix issues
- * @returns Result with passed status and error details
+ * Load markdownlint config from the project.
  */
-export async function checkMarkdownlint(
-  patterns: string[],
-  fix: boolean = false
-): Promise<MarkdownlintResult> {
-  // Dynamic import — markdownlint 0.40+ is ESM-only
-  // @ts-expect-error -- subpath exports require moduleResolution node16+
-  const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
-  const lint = mdlintSync.lint;
-
-  // Expand glob patterns to file list
-  const files: string[] = [];
-  for (const pattern of patterns) {
-    const matches = await glob(pattern, { ignore: ['node_modules/**'] });
-    files.push(...matches);
-  }
-
-  // Remove duplicates
-  const uniqueFiles = [...new Set(files)];
-
-  if (uniqueFiles.length === 0) {
-    return {
-      passed: true,
-      errors: {},
-      filesWithErrors: [],
-    };
-  }
-
-  // Load user's .markdownlint.json if it exists
+function loadConfig(): Record<string, unknown> {
   let config: Record<string, unknown> = { default: true };
   const configPath = join(process.cwd(), '.markdownlint.json');
 
@@ -72,13 +55,45 @@ export async function checkMarkdownlint(
     }
   }
 
-  // Run markdownlint
-  const results = lint({
-    files: uniqueFiles,
-    config,
-  });
+  return config;
+}
 
-  // Parse results
+/**
+ * Expand glob patterns to a unique file list.
+ */
+async function expandPatterns(patterns: string[]): Promise<string[]> {
+  const files: string[] = [];
+  for (const pattern of patterns) {
+    const matches = await glob(pattern, { ignore: ['node_modules/**'] });
+    files.push(...matches);
+  }
+  return [...new Set(files)];
+}
+
+/**
+ * Check markdown files with markdownlint (report only, no writes).
+ */
+export async function checkMarkdownlint(
+  patterns: string[],
+  fix: boolean = false
+): Promise<MarkdownlintResult> {
+  if (fix) {
+    return fixMarkdownlint(patterns);
+  }
+
+  // Dynamic import -- markdownlint 0.40+ is ESM-only
+  // @ts-expect-error -- subpath exports require moduleResolution node16+
+  const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
+
+  const uniqueFiles = await expandPatterns(patterns);
+
+  if (uniqueFiles.length === 0) {
+    return { passed: true, errors: {}, filesWithErrors: [], filesFixed: [] };
+  }
+
+  const config = loadConfig();
+  const results = mdlintSync.lint({ files: uniqueFiles, config });
+
   const errors: Record<string, string[]> = {};
   const filesWithErrors: string[] = [];
 
@@ -88,19 +103,70 @@ export async function checkMarkdownlint(
       errors[file] = violations.map(
         (v) => `${v.lineNumber}:${v.ruleNames[0]} ${v.ruleDescription}`
       );
+    }
+  }
 
-      // Note: Auto-fix is handled by markdownlint-cli in scripts
-      // The markdownlint programmatic API doesn't provide fix functionality
-      // This parameter is reserved for future implementation
-      if (fix) {
-        // TODO: Implement fix functionality when markdownlint API supports it
+  return { passed: filesWithErrors.length === 0, errors, filesWithErrors, filesFixed: [] };
+}
+
+/**
+ * Fix markdown files with markdownlint using applyFixes.
+ *
+ * Lints with resultVersion 3 (includes fixInfo), applies fixes via
+ * markdownlint's applyFixes(), writes the result, then re-lints to
+ * report any remaining unfixable violations.
+ */
+export async function fixMarkdownlint(patterns: string[]): Promise<MarkdownlintResult> {
+  // Dynamic imports -- markdownlint 0.40+ is ESM-only
+  // @ts-expect-error -- subpath exports require moduleResolution node16+
+  const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
+  // @ts-expect-error -- ESM dynamic import type mismatch
+  const mdlintMain = (await import('markdownlint')) as { applyFixes: ApplyFixesFn };
+
+  const uniqueFiles = await expandPatterns(patterns);
+
+  if (uniqueFiles.length === 0) {
+    return { passed: true, errors: {}, filesWithErrors: [], filesFixed: [] };
+  }
+
+  const config = loadConfig();
+  const filesFixed: string[] = [];
+
+  // First pass: lint with fixInfo, apply fixes, write back
+  for (const file of uniqueFiles) {
+    const content = readFileSync(file, 'utf-8');
+    const results = mdlintSync.lint({
+      strings: { [file]: content },
+      config,
+      resultVersion: 3,
+    });
+
+    const violations = results[file] || [];
+    const hasFixable = violations.some((v) => v.fixInfo);
+
+    if (hasFixable) {
+      const fixed = mdlintMain.applyFixes(content, violations);
+      if (fixed !== content) {
+        writeFileSync(file, fixed, 'utf-8');
+        filesFixed.push(file);
       }
     }
   }
 
-  return {
-    passed: filesWithErrors.length === 0,
-    errors,
-    filesWithErrors,
-  };
+  // Second pass: re-lint to find remaining unfixable issues
+  const finalResults = mdlintSync.lint({ files: uniqueFiles, config });
+
+  const errors: Record<string, string[]> = {};
+  const filesWithErrors: string[] = [];
+
+  for (const [file, violations] of Object.entries(finalResults)) {
+    if (violations.length > 0) {
+      filesWithErrors.push(file);
+      errors[file] = violations.map(
+        (v) => `${v.lineNumber}:${v.ruleNames[0]} ${v.ruleDescription}`
+      );
+    }
+  }
+
+  return { passed: filesWithErrors.length === 0, errors, filesWithErrors, filesFixed };
 }

@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 import { ModelNames } from './constants';
-import { noXMLTags, thirdPerson, lowercaseHyphens } from './refinements';
+import { noXMLTags, lowercaseHyphens } from './refinements';
 import { SettingsHooksSchema } from '../validators/schemas';
 
 /**
@@ -28,11 +28,10 @@ export const AgentFrontmatterSchema = z.object({
     .max(64, 'Agent name must be 64 characters or less')
     .refine(noXMLTags().check, { message: noXMLTags().message }),
 
-  description: z
-    .string()
-    .min(10, 'Description must be at least 10 characters')
-    .refine(noXMLTags().check, { message: noXMLTags().message })
-    .refine(thirdPerson().check, { message: thirdPerson().message }),
+  // Note: Agent descriptions conventionally include <example> and <commentary>
+  // XML tags and contain dialog with "I"/"you", so noXMLTags and thirdPerson
+  // refinements are intentionally omitted (unlike skill descriptions).
+  description: z.string().min(10, 'Description must be at least 10 characters'),
 
   model: ModelNames.optional(),
 
@@ -53,11 +52,9 @@ export const AgentFrontmatterSchema = z.object({
 
   mcpServers: z.array(z.string()).optional(),
 
-  memory: z
-    .object({
-      enabled: z.boolean().optional(),
-    })
-    .optional(),
+  memory: z.enum(['user', 'project', 'local']).optional(),
+
+  color: z.enum(['blue', 'cyan', 'green', 'yellow', 'magenta', 'red', 'pink']).optional(),
 });
 
 /**

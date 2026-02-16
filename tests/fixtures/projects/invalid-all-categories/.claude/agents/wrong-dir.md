@@ -1,6 +1,6 @@
 ---
 name: wrong-agent-name
-description: I help you
+description: Too short
 tools:
   - Bash
 disallowedTools:

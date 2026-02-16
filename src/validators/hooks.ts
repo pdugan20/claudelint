@@ -50,7 +50,7 @@ ValidatorRegistry.register(
     id: 'hooks',
     name: 'Hooks Validator',
     description: 'Validates Claude Code hooks.json files',
-    filePatterns: ['**/.claude/hooks.json'],
+    filePatterns: ['hooks/hooks.json'],
     enabled: true,
   },
   (options) => new HooksValidator(options)

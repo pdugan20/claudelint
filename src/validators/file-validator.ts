@@ -330,13 +330,16 @@ export abstract class FileValidator {
   protected mergeSchemaValidationResult(result: ValidationResult): void {
     // Convert errors to issues
     for (const error of result.errors) {
+      // Skip errors that have a matching rule — the thin-wrapper rule will report
+      // the same violation through report() with proper line numbers and disable support
+      if (error.ruleId) continue;
+
       this.issues.push({
         message: error.message,
         file: error.file,
         line: error.line,
         ruleId: error.ruleId,
-        // For errors without ruleId (e.g., JSON parse errors), use defaultSeverity
-        defaultSeverity: error.ruleId ? undefined : 'error',
+        defaultSeverity: 'error',
         fix: error.fix,
         explanation: error.explanation,
         howToFix: error.howToFix,
@@ -346,13 +349,15 @@ export abstract class FileValidator {
 
     // Convert warnings to issues
     for (const warning of result.warnings) {
+      // Skip warnings that have a matching rule — same reasoning as above
+      if (warning.ruleId) continue;
+
       this.issues.push({
         message: warning.message,
         file: warning.file,
         line: warning.line,
         ruleId: warning.ruleId,
-        // For warnings without ruleId, use defaultSeverity
-        defaultSeverity: warning.ruleId ? undefined : 'warning',
+        defaultSeverity: 'warning',
         fix: warning.fix,
         explanation: warning.explanation,
         howToFix: warning.howToFix,

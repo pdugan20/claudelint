@@ -107,7 +107,7 @@ ValidatorRegistry.register(
     id: 'output-styles',
     name: 'Output Styles Validator',
     description: 'Validates Claude Code output style structure and frontmatter',
-    filePatterns: ['**/.claude/output-styles/*/*.md'],
+    filePatterns: ['**/.claude/output-styles/*/*.md', 'output-styles/*/*.md'],
     enabled: true,
   },
   (options) => new OutputStylesValidator(options)

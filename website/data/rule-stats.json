@@ -1,5 +1,5 @@
 {
-  "total": 114,
+  "total": 113,
   "categoryCount": 10,
   "categories": {
     "claude-md": {
@@ -28,7 +28,7 @@
     },
     "agents": {
       "display": "Agents",
-      "count": 12
+      "count": 11
     },
     "lsp": {
       "display": "LSP",
@@ -43,5 +43,5 @@
       "count": 2
     }
   },
-  "generatedAt": "2026-02-15T17:33:23.608Z"
+  "generatedAt": "2026-02-16T05:31:05.656Z"
 }

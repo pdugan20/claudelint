@@ -4,12 +4,14 @@ The Agents validator checks Claude Code agent definitions for correctness, inclu
 
 ## What It Checks
 
-- AGENT.md frontmatter schema compliance
+- Agent frontmatter schema compliance
 - Required fields (name, description)
+- Name/filename consistency
 - Tool references
 - Model configuration
 - Skill references
 - Hook configuration
+- Body content length
 
 ## Rules
 
@@ -20,8 +22,9 @@ This validator includes <RuleCount category="agents" /> rules. See the [Agents r
 | [agent-name](/rules/agents/agent-name) | error | Invalid agent name format |
 | [agent-description](/rules/agents/agent-description) | error | Missing or invalid description |
 | [agent-model](/rules/agents/agent-model) | error | Invalid model configuration |
-| [agent-name-directory-mismatch](/rules/agents/agent-name-directory-mismatch) | error | Name does not match directory |
+| [agent-name-filename-mismatch](/rules/agents/agent-name-filename-mismatch) | error | Name does not match filename |
 | [agent-skills-not-found](/rules/agents/agent-skills-not-found) | error | Referenced skill not found |
+| [agent-body-too-short](/rules/agents/agent-body-too-short) | warn | Agent body content below minimum length |
 
 ## CLI Usage
 
@@ -35,5 +38,5 @@ claudelint validate-agents --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Sub-agents](https://code.claude.com/docs/en/sub-agents) - Official sub-agents documentation
 - [Configuration](/guide/configuration) - Customize rule severity

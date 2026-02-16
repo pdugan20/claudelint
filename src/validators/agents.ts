@@ -1,8 +1,8 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
-import { findAgentDirectories, readFileContent, fileExists } from '../utils/filesystem/files';
+import { findAgentFiles, readFileContent } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
-import { basename, join } from 'path';
+import { basename } from 'path';
 import { validateSettingsHooks } from '../utils/validators/helpers';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
@@ -18,7 +18,10 @@ export interface AgentsValidatorOptions extends BaseValidatorOptions {
 }
 
 /**
- * Validates Claude Code agents for structure and frontmatter
+ * Validates Claude Code agent files for structure and frontmatter.
+ *
+ * Agents are flat .md files (e.g., code-reviewer.md) in .claude/agents/ or agents/.
+ * See https://code.claude.com/docs/en/sub-agents#write-subagent-files
  */
 export class AgentsValidator extends FileValidator {
   private basePath: string;
@@ -31,59 +34,49 @@ export class AgentsValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
-    const agentDirs = await this.findAgentDirs();
-    const agentFiles = agentDirs.map((dir) => join(dir, 'AGENT.md'));
+    const agentFiles = await this.findAgentFilePaths();
     this.trackValidatedFiles(agentFiles);
 
-    if (agentDirs.length === 0) {
-      this.markSkipped('no .claude/agents/');
+    if (agentFiles.length === 0) {
+      this.markSkipped('no agent files');
       return this.getResult();
     }
 
     this.markScanned(agentFiles);
 
-    for (const agentDir of agentDirs) {
-      await this.validateAgent(agentDir);
+    for (const agentFile of agentFiles) {
+      await this.validateAgent(agentFile);
     }
 
     return this.getResult();
   }
 
-  private async findAgentDirs(): Promise<string[]> {
-    const allAgentDirs = await findAgentDirectories(this.basePath);
+  private async findAgentFilePaths(): Promise<string[]> {
+    const allAgentFiles = await findAgentFiles(this.basePath);
 
     if (this.specificAgent) {
-      // Filter to specific agent
-      return allAgentDirs.filter((dir) => basename(dir) === this.specificAgent);
+      return allAgentFiles.filter((file) => basename(file, '.md') === this.specificAgent);
     }
 
-    return allAgentDirs;
+    return allAgentFiles;
   }
 
-  private async validateAgent(agentDir: string): Promise<void> {
-    const agentMdPath = join(agentDir, 'AGENT.md');
-
-    // Check AGENT.md exists
-    const exists = await fileExists(agentMdPath);
-    if (!exists) {
-      throw new Error(`AGENT.md not found in agent directory: ${agentDir}`);
-    }
-
+  private async validateAgent(filePath: string): Promise<void> {
     // Read content
-    const content = await readFileContent(agentMdPath);
+    const content = await readFileContent(filePath);
 
     // Parse disable comments
-    this.parseDisableComments(agentMdPath, content);
+    this.parseDisableComments(filePath, content);
 
     // Validate frontmatter
-    this.validateFrontmatter(agentMdPath, content);
+    this.validateFrontmatter(filePath, content);
 
     // Execute ALL Agents rules via category-based discovery
-    await this.executeRulesForCategory('Agents', agentMdPath, content);
+    await this.executeRulesForCategory('Agents', filePath, content);
 
     // Report unused disable directives if configured
     if (this.options.config?.reportUnusedDisableDirectives) {
-      this.reportUnusedDisables(agentMdPath);
+      this.reportUnusedDisables(filePath);
     }
   }
 
@@ -122,8 +115,8 @@ ValidatorRegistry.register(
   {
     id: 'agents',
     name: 'Agents Validator',
-    description: 'Validates Claude Code agent structure and frontmatter',
-    filePatterns: ['**/.claude/agents/*/AGENT.md'],
+    description: 'Validates Claude Code agent files for structure and frontmatter',
+    filePatterns: ['**/.claude/agents/*.md', 'agents/*.md'],
     enabled: true,
   },
   (options) => new AgentsValidator(options)

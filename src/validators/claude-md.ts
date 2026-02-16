@@ -123,7 +123,13 @@ ValidatorRegistry.register(
     id: 'claude-md',
     name: 'CLAUDE.md Validator',
     description: 'Validates CLAUDE.md files for size, format, and structure',
-    filePatterns: ['**/CLAUDE.md', '**/.claude/rules/*.md'],
+    filePatterns: [
+      '**/CLAUDE.md',
+      '**/.claude/CLAUDE.md',
+      '**/CLAUDE.local.md',
+      '**/.claude/rules/*.md',
+      '**/.claude/rules/**/*.md',
+    ],
     enabled: true,
   },
   (options) => new ClaudeMdValidator(options)

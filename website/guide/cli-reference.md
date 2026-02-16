@@ -945,13 +945,23 @@ claudelint format [options]
 |--------|-------------|---------|
 | `--check` | Check formatting without making changes | `false` |
 | `--fix` | Apply formatting fixes | `true` |
+| `--fix-dry-run` | Preview what would be fixed without writing | `false` |
 | `-v, --verbose` | Show detailed output per file | `false` |
+
+**Modes:**
+
+- **Default** (no flags): Apply fixes and write corrected files
+- `--check`: Report pass/fail without modifying files
+- `--fix-dry-run`: Report which files would change, without writing
 
 **Examples:**
 
 ```bash
 # Check formatting (no changes)
 claudelint format --check
+
+# Preview what would be fixed
+claudelint format --fix-dry-run
 
 # Apply formatting fixes
 claudelint format --fix
@@ -962,10 +972,12 @@ claudelint format --verbose
 
 **File patterns checked:**
 
-- Markdown: `CLAUDE.md`, `.claude/**/*.md`
-- JSON: `.claude/**/*.json`, `.mcp.json`, `.claude-plugin/**/*.json`
+- Markdown: `**/CLAUDE.md`, `**/.claude/CLAUDE.md`, `**/CLAUDE.local.md`, `.claude/rules/**/*.md`, `**/.claude/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/agents/*/AGENT.md`, `agents/*/AGENT.md`, `.claude/output-styles/*/*.md`, `output-styles/*/*.md`, `.claude/commands/**/*.md`
+- JSON: `.claude/settings.json`, `.claude/settings.local.json`, `.claude/hooks.json`, `hooks/hooks.json`, `.claude/lsp.json`, `.mcp.json`, `plugin.json`, `.claude-plugin/plugin.json`
 - YAML: `.claude/**/*.{yaml,yml}`
-- Shell: `.claude/**/*.sh`, `.claude/hooks/*`
+- Shell: `.claude/**/*.sh`, `skills/**/*.sh`
+
+See [File Discovery](/guide/file-discovery) for details on how claudelint discovers these files.
 
 ## Development
 

@@ -1,10 +1,10 @@
 # agent-description
 
-<RuleHeader description="Agent description must be at least 10 characters, written in third person, with no XML tags" severity="error" :fixable="false" :configurable="false" category="Agents" />
+<RuleHeader description="Agent description must be at least 10 characters" severity="error" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 
-This rule enforces constraints on the description field in agent markdown frontmatter. The description must be at least 10 characters, written in third person, and must not contain XML tags. Validation is delegated to the AgentFrontmatterSchema.shape.description Zod schema. A clear description helps users understand the agent purpose when browsing available agents.
+This rule enforces a minimum length on the description field in agent markdown frontmatter. The description must be at least 10 characters. Validation is delegated to the AgentFrontmatterSchema.shape.description Zod schema. Agent descriptions may include XML-style tags like `<example>` and `<commentary>` which are conventional for trigger matching.
 
 ### Incorrect
 
@@ -17,18 +17,9 @@ description: Reviews
 ---
 ```
 
-Agent description with XML tags
-
-```yaml
----
-name: code-review
-description: <b>Handles</b> code reviews for pull requests
----
-```
-
 ### Correct
 
-Descriptive third-person agent description
+Descriptive agent description
 
 ```yaml
 ---
@@ -39,7 +30,7 @@ description: Handles code reviews for pull requests and suggests improvements
 
 ## How To Fix
 
-Write a description of at least 10 characters in third person. Remove any XML tags and ensure the text clearly explains what the agent does.
+Write a description of at least 10 characters that clearly explains what the agent does and when it should be triggered.
 
 ## Options
 

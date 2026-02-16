@@ -28,5 +28,5 @@ claudelint validate-commands --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Slash Commands](https://code.claude.com/docs/en/slash-commands) - Official commands documentation
 - [Configuration](/guide/configuration) - Customize rule severity

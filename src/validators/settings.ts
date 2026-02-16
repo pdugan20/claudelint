@@ -56,7 +56,7 @@ ValidatorRegistry.register(
     id: 'settings',
     name: 'Settings Validator',
     description: 'Validates Claude Code settings.json files',
-    filePatterns: ['**/.claude/settings.json'],
+    filePatterns: ['**/.claude/settings.json', '**/.claude/settings.local.json'],
     enabled: true,
   },
   (options) => new SettingsValidator(options)

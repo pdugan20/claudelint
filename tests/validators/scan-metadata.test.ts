@@ -93,12 +93,12 @@ describe('ScanMetadata', () => {
   });
 
   describe('AgentsValidator', () => {
-    it('should mark as scanned when agent directories exist', async () => {
-      const agentDir = join(getTestDir(), '.claude', 'agents', 'test-agent');
-      await mkdir(agentDir, { recursive: true });
+    it('should mark as scanned when agent files exist', async () => {
+      const agentsDir = join(getTestDir(), '.claude', 'agents');
+      await mkdir(agentsDir, { recursive: true });
       await writeFile(
-        join(agentDir, 'AGENT.md'),
-        '---\nname: test-agent\ndescription: A test agent for testing scanMetadata\ntools:\n  - Bash\n---\n\n# Test Agent\n\nThis agent is for testing purposes only and provides comprehensive validation of scanMetadata.'
+        join(agentsDir, 'test-agent.md'),
+        '---\nname: test-agent\ndescription: A test agent for testing scanMetadata\ntools:\n  - Bash\n---\n\nThis agent is for testing purposes only and provides comprehensive validation of scanMetadata.'
       );
 
       const validator = new AgentsValidator({ path: getTestDir() });
@@ -108,17 +108,17 @@ describe('ScanMetadata', () => {
       const meta = result.scanMetadata as ScanMetadata;
       expect(meta.skipped).toBe(false);
       expect(meta.filesScanned).toBe(1);
-      expect(meta.filesFound[0]).toContain('AGENT.md');
+      expect(meta.filesFound[0]).toContain('test-agent.md');
     });
 
-    it('should mark as skipped when no agent directories found', async () => {
+    it('should mark as skipped when no agent files found', async () => {
       const validator = new AgentsValidator({ path: getTestDir() });
       const result = await validator.validate();
 
       expect(result.scanMetadata).toBeDefined();
       const meta = result.scanMetadata as ScanMetadata;
       expect(meta.skipped).toBe(true);
-      expect(meta.skipReason).toContain('no .claude/agents/');
+      expect(meta.skipReason).toContain('no agent files');
     });
   });
 

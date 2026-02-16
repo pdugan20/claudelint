@@ -104,11 +104,11 @@ describe('Fixture Project Integration Tests', () => {
 
     // Pinned counts -- update intentionally when adding new rules or fixture content
     it('should report expected error count', () => {
-      expect(result.output).toContain('31 errors');
+      expect(result.output).toContain('24 errors');
     });
 
     it('should report expected warning count', () => {
-      expect(result.output).toContain('36 warnings');
+      expect(result.output).toContain('35 warnings');
     });
 
     it('should show summary line with problem count', () => {
@@ -151,14 +151,14 @@ describe('Fixture Project Integration Tests', () => {
     });
 
     it('should detect errors in agents', () => {
-      expect(result.output).toContain('agent-name-directory-mismatch');
+      expect(result.output).toContain('agent-name-filename-mismatch');
       expect(result.output).toContain('agent-description');
       expect(result.output).toContain('agent-tools');
+      expect(result.output).toContain('agent-skills-not-found');
     });
 
     it('should detect warnings in agents', () => {
       expect(result.output).toContain('agent-body-too-short');
-      expect(result.output).toContain('agent-missing-system-prompt');
     });
 
     it('should detect errors in output styles', () => {

@@ -31,5 +31,5 @@ claudelint validate-settings --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Settings](https://code.claude.com/docs/en/settings) - Official settings documentation
 - [Configuration](/guide/configuration) - Customize rule severity

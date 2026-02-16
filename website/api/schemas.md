@@ -138,7 +138,9 @@ Valid values for the `type` field in MCP server configuration.
 - When `context` is `fork`, the `agent` field is required
 - `allowed-tools` and `disallowed-tools` are mutually exclusive
 
-## AGENT.md Frontmatter
+## Agent Frontmatter
+
+Agent files are flat `.md` files (e.g., `.claude/agents/code-reviewer.md`). The file body is the system prompt.
 
 <SchemaRef
   validator="Agents" validator-link="/validators/agents"
@@ -152,9 +154,13 @@ Valid values for the `type` field in MCP server configuration.
 | `model` | string | no | `sonnet`, `opus`, `haiku`, or `inherit` |
 | `tools` | string[] | no | List of tool names to allow |
 | `disallowedTools` | string[] | no | List of tool names to disallow |
-| `permissionMode` | string | no | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, or `plan` |
+| `permissionMode` | string | no | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, or `delegate` |
 | `skills` | string[] | no | Skills this agent can use |
 | `hooks` | object | no | [Hooks configuration](#hooks-configuration) |
+| `memory` | string | no | `user`, `project`, or `local` |
+| `maxTurns` | number | no | Maximum agent turns (positive integer) |
+| `mcpServers` | string[] | no | MCP servers available to the agent |
+| `color` | string | no | `blue`, `cyan`, `green`, `yellow`, `magenta`, `red`, or `pink` |
 
 **Cross-field validations:**
 
@@ -211,7 +217,7 @@ Each event maps to an array of matcher objects:
 
 ### Standalone hooks.json
 
-The `.claude/hooks/hooks.json` file wraps the hooks object with an optional description:
+The `hooks/hooks.json` file (plugin root) wraps the hooks object with an optional description:
 
 ```json
 {
@@ -452,7 +458,7 @@ claudelint maintains JSON Schema files for IDE integration and external tooling.
 | Schema | File | Description |
 |--------|------|-------------|
 | Skill frontmatter | [`skill-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/skill-frontmatter.schema.json) | SKILL.md YAML frontmatter |
-| Agent frontmatter | [`agent-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/agent-frontmatter.schema.json) | AGENT.md YAML frontmatter |
+| Agent frontmatter | [`agent-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/agent-frontmatter.schema.json) | Agent file YAML frontmatter |
 | Hooks config | [`hooks-config.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/hooks-config.schema.json) | hooks.json structure |
 | MCP config | [`mcp-config.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/mcp-config.schema.json) | .mcp.json structure |
 | Plugin manifest | [`plugin-manifest.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/plugin-manifest.schema.json) | plugin.json structure |

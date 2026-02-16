@@ -35,5 +35,5 @@ claudelint validate-lsp --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code LSP Servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers) - Official LSP documentation
 - [Configuration](/guide/configuration) - Customize rule severity

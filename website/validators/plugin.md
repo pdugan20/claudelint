@@ -33,5 +33,5 @@ claudelint validate-plugin --verbose
 
 ## See Also
 
-- [Rules Reference](/rules/overview) - All validation rules
+- [Claude Code Plugins Reference](https://code.claude.com/docs/en/plugins-reference) - Official plugin documentation
 - [Claude Code Plugin Integration](/integrations/claude-code-plugin) - Plugin usage guide

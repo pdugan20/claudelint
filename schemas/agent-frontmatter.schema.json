@@ -63,13 +63,14 @@
       }
     },
     "memory": {
-      "type": "object",
-      "description": "Memory configuration for the agent",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      }
+      "type": "string",
+      "description": "Memory scope for the agent",
+      "enum": ["user", "project", "local"]
+    },
+    "color": {
+      "type": "string",
+      "description": "Display color for the agent in the UI",
+      "enum": ["blue", "cyan", "green", "yellow", "magenta", "red", "pink"]
     },
     "hooks": {
       "type": "object",

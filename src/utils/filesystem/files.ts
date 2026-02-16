@@ -2,6 +2,20 @@ import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
 import { join, resolve } from 'path';
 import { filterIgnored } from '../config/ignore';
+import {
+  CLAUDE_MD_PATTERNS,
+  SKILL_PATTERNS,
+  AGENT_PATTERNS,
+  OUTPUT_STYLE_PATTERNS,
+  SETTINGS_PATTERNS,
+  HOOKS_PATTERNS,
+  LSP_PATTERNS,
+  PLUGIN_PATTERNS,
+  FORMATTABLE_MARKDOWN,
+  FORMATTABLE_JSON,
+  FORMATTABLE_YAML,
+  FORMATTABLE_SHELL,
+} from './patterns';
 
 /**
  * Find files matching a glob pattern
@@ -72,11 +86,9 @@ export function resolvePath(basePath: string, relativePath: string): string {
  * Find CLAUDE.md files in standard locations
  */
 export async function findClaudeMdFiles(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = ['**/CLAUDE.md', '.claude/rules/**/*.md', '**/CLAUDE.local.md'];
-
   const allFiles: string[] = [];
 
-  for (const pattern of patterns) {
+  for (const pattern of CLAUDE_MD_PATTERNS) {
     const files = await findFiles(pattern, basePath);
     allFiles.push(...files);
   }
@@ -88,14 +100,8 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
  * Find skill directories
  */
 export async function findSkillDirectories(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = [
-    '**/.claude/skills/*/SKILL.md', // Standard + nested monorepo packages
-    'skills/*/SKILL.md', // Plugin/root-level skills
-    '*/SKILL.md', // Direct --path to skills directory
-  ];
-
   const allFiles: string[] = [];
-  for (const pattern of patterns) {
+  for (const pattern of SKILL_PATTERNS) {
     const files = await findFiles(pattern, basePath);
     allFiles.push(...files);
   }
@@ -105,23 +111,16 @@ export async function findSkillDirectories(basePath: string = process.cwd()): Pr
 }
 
 /**
- * Find agent directories
+ * Find agent files (flat .md files in agents/ directories)
  */
-export async function findAgentDirectories(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = [
-    '.claude/agents/*/AGENT.md', // Standard project location
-    'agents/*/AGENT.md', // Plugin/root-level agents
-    '*/AGENT.md', // Direct --path to agents directory
-  ];
-
+export async function findAgentFiles(basePath: string = process.cwd()): Promise<string[]> {
   const allFiles: string[] = [];
-  for (const pattern of patterns) {
+  for (const pattern of AGENT_PATTERNS) {
     const files = await findFiles(pattern, basePath);
     allFiles.push(...files);
   }
 
-  const uniqueFiles = [...new Set(allFiles)];
-  return uniqueFiles.map((file) => file.replace('/AGENT.md', ''));
+  return [...new Set(allFiles)];
 }
 
 /**
@@ -129,10 +128,7 @@ export async function findAgentDirectories(basePath: string = process.cwd()): Pr
  * Returns paths to .md files in output-styles directories
  */
 export async function findOutputStyleFiles(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = [
-    '.claude/output-styles/*/*.md', // Standard project location
-    'output-styles/*/*.md', // Plugin/root-level output styles
-  ];
+  const patterns: string[] = [...OUTPUT_STYLE_PATTERNS];
 
   // When --path points directly at an output-styles directory, match one level deep
   if (basePath.endsWith('output-styles') || basePath.endsWith('output-styles/')) {
@@ -152,18 +148,21 @@ export async function findOutputStyleFiles(basePath: string = process.cwd()): Pr
  * Find LSP configuration files
  */
 export async function findLspFiles(basePath: string = process.cwd()): Promise<string[]> {
-  return findFiles('.claude/lsp.json', basePath);
+  const allFiles: string[] = [];
+  for (const pattern of LSP_PATTERNS) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+  return allFiles;
 }
 
 /**
  * Find settings.json files
  */
 export async function findSettingsFiles(basePath: string = process.cwd()): Promise<string[]> {
-  const patterns = ['.claude/settings.json', '.claude/settings.local.json'];
-
   const allFiles: string[] = [];
 
-  for (const pattern of patterns) {
+  for (const pattern of SETTINGS_PATTERNS) {
     const files = await findFiles(pattern, basePath);
     allFiles.push(...files);
   }
@@ -175,25 +174,60 @@ export async function findSettingsFiles(basePath: string = process.cwd()): Promi
  * Find hooks.json files
  */
 export async function findHooksFiles(basePath: string = process.cwd()): Promise<string[]> {
-  return findFiles('.claude/hooks/hooks.json', basePath);
+  const allFiles: string[] = [];
+  for (const pattern of HOOKS_PATTERNS) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+  return allFiles;
 }
 
 /**
  * Find MCP configuration files
  */
 export async function findMcpFiles(basePath: string = process.cwd()): Promise<string[]> {
-  return findFiles('.mcp.json', basePath);
+  const allFiles: string[] = [];
+  for (const pattern of ['**/.mcp.json'] as const) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+  return allFiles;
 }
 
 /**
  * Find plugin manifest files
  */
 export async function findPluginManifests(basePath: string = process.cwd()): Promise<string[]> {
-  // Check for plugin.json at repository root (preferred)
-  const rootPlugin = await findFiles('plugin.json', basePath);
+  const allFiles: string[] = [];
+  for (const pattern of PLUGIN_PATTERNS) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+  return allFiles;
+}
 
-  // Also check legacy location for backwards compatibility
-  const legacyPlugin = await findFiles('.claude-plugin/plugin.json', basePath);
+/**
+ * Find all formattable files, categorized by type.
+ * Used by the format command to discover which files to process.
+ */
+export async function findAllFormattableFiles(
+  basePath: string = process.cwd()
+): Promise<{ markdown: string[]; json: string[]; yaml: string[]; shell: string[] }> {
+  const resolve = async (patterns: readonly string[]) => {
+    const all: string[] = [];
+    for (const pattern of patterns) {
+      const files = await findFiles(pattern, basePath);
+      all.push(...files);
+    }
+    return [...new Set(all)];
+  };
 
-  return [...rootPlugin, ...legacyPlugin];
+  const [markdown, json, yaml, shell] = await Promise.all([
+    resolve(FORMATTABLE_MARKDOWN),
+    resolve(FORMATTABLE_JSON),
+    resolve(FORMATTABLE_YAML),
+    resolve(FORMATTABLE_SHELL),
+  ]);
+
+  return { markdown, json, yaml, shell };
 }

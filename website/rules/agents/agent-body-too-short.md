@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-This rule checks that the markdown body of an AGENT.md file (the content after frontmatter) contains enough substantive text. Very short body content typically indicates an incomplete agent definition that lacks the detailed instructions needed for effective agent behavior. The minimum length is configurable via the `minLength` option.
+This rule checks that the markdown body of an agent file file (the content after frontmatter) contains enough substantive text. Very short body content typically indicates an incomplete agent definition that lacks the detailed instructions needed for effective agent behavior. The minimum length is configurable via the `minLength` option.
 
 ### Incorrect
 
@@ -76,11 +76,10 @@ Use a lower threshold for simple agents:
 
 ## When Not To Use It
 
-Disable this rule if your agents use an external system prompt source and the AGENT.md body is intentionally minimal.
+Disable this rule if your agents use an external system prompt source and the agent file body is intentionally minimal.
 
 ## Related Rules
 
-- [`agent-missing-system-prompt`](/rules/agents/agent-missing-system-prompt)
 - [`agent-name`](/rules/agents/agent-name)
 - [`agent-description`](/rules/agents/agent-description)
 
