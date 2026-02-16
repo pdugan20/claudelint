@@ -738,7 +738,7 @@ npm run docs:preview
    npm run check:constants
    ```
 
-   If drift detected, fix it before proceeding. See [Verifying Constants](#verifying-constants-maintainers-only) section.
+   If drift detected, fix it before proceeding. See [Verifying Constants](#verifying-constants) section.
 
 2. **Run full validation:**
 

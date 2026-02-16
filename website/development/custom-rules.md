@@ -818,10 +818,10 @@ validate: async (context) => {
 
 ## Further Reading
 
-- [Helper Library Reference](./helper-library) - Utility functions for custom rules
-- [Architecture Documentation](./architecture) - How custom rules fit into claudelint
+- [Helper Library Reference](./helper-library.md) - Utility functions for custom rules
+- [Architecture Documentation](./architecture.md) - How custom rules fit into claudelint
 - [Built-in Rules](/rules/overview) - Examples of rule implementations
-- [Contributing Guide](./contributing) - How to contribute rules to claudelint
+- [Contributing Guide](./contributing.md) - How to contribute rules to claudelint
 
 ## Support
 
