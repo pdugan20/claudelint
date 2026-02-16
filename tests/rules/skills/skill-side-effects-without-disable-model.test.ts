@@ -1,5 +1,8 @@
 /**
  * Tests for skill-side-effects-without-disable-model rule
+ *
+ * Only unscoped Bash (or Bash(*)) should trigger this rule.
+ * Scoped Bash, Edit, Write, Read, Grep, Glob should NOT trigger.
  */
 
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
@@ -11,28 +14,58 @@ describe('skill-side-effects-without-disable-model', () => {
   it('should pass validation tests', async () => {
     await ruleTester.run('skill-side-effects-without-disable-model', rule, {
       valid: [
-        // Bash with disable-model-invocation: true
+        // Unscoped Bash with disable-model-invocation: true
         {
           content:
             '---\nname: my-skill\ndescription: Test\ndisable-model-invocation: true\nallowed-tools:\n  - Bash\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
-        // Write with disable-model-invocation: true
+        // Bash(*) with disable-model-invocation: true
         {
           content:
-            '---\nname: my-skill\ndescription: Test\ndisable-model-invocation: true\nallowed-tools:\n  - Write\n  - Read\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\ndisable-model-invocation: true\nallowed-tools:\n  - Bash(*)\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
-        // Scoped Bash with disable-model-invocation: true
+        // Scoped Bash without disable-model-invocation (safe — command restricted)
         {
           content:
-            '---\nname: my-skill\ndescription: Test\ndisable-model-invocation: true\nallowed-tools:\n  - Bash(claudelint:*)\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash(claudelint:*)\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
-        // No side-effect tools (Read only)
+        // Scoped Bash with different pattern
         {
           content:
-            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Read\n  - Grep\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash(npm run *)\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
+        // Scoped Bash with gh pattern (from Claude docs example)
+        {
+          content:
+            '---\nname: pr-summary\ndescription: Summarize PR\nallowed-tools:\n  - Bash(gh *)\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
+        // Edit and Write without disable-model-invocation (safe — working dir only)
+        {
+          content:
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Edit\n  - Write\n  - Read\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
+        // Scoped Bash + Edit + Write (all safe)
+        {
+          content:
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash(claudelint:*)\n  - Read\n  - Edit\n  - Write\n  - Grep\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
+        // Read-only tools (no approval required regardless)
+        {
+          content:
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Read\n  - Grep\n  - Glob\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
+        // NotebookEdit without disable-model-invocation (file mod, working dir only)
+        {
+          content:
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - NotebookEdit\n  - Read\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
         // No allowed-tools field
@@ -54,47 +87,47 @@ describe('skill-side-effects-without-disable-model', () => {
       ],
 
       invalid: [
-        // Bash without disable-model-invocation
+        // Unscoped Bash without disable-model-invocation
         {
           content:
             '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash\n---\n# Skill',
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Side-effect tools without disable-model-invocation',
+              message: 'Unscoped Bash in allowed-tools without disable-model-invocation',
             },
           ],
         },
-        // Write without disable-model-invocation
+        // Bash(*) without disable-model-invocation (equivalent to unscoped)
         {
           content:
-            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Write\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash(*)\n---\n# Skill',
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Side-effect tools without disable-model-invocation',
+              message: 'Unscoped Bash in allowed-tools without disable-model-invocation',
             },
           ],
         },
-        // Edit without disable-model-invocation
+        // Unscoped Bash mixed with safe tools
         {
           content:
-            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Edit\n  - Read\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash\n  - Read\n  - Edit\n---\n# Skill',
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Side-effect tools without disable-model-invocation',
+              message: 'Unscoped Bash in allowed-tools without disable-model-invocation',
             },
           ],
         },
-        // Scoped Bash without disable-model-invocation
+        // Unscoped Bash alongside scoped Bash
         {
           content:
-            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash(claudelint:*)\n---\n# Skill',
+            '---\nname: my-skill\ndescription: Test\nallowed-tools:\n  - Bash\n  - Bash(npm:*)\n---\n# Skill',
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Side-effect tools without disable-model-invocation',
+              message: 'Unscoped Bash in allowed-tools without disable-model-invocation',
             },
           ],
         },
@@ -105,7 +138,7 @@ describe('skill-side-effects-without-disable-model', () => {
           filePath: '/test/SKILL.md',
           errors: [
             {
-              message: 'Side-effect tools without disable-model-invocation',
+              message: 'Unscoped Bash in allowed-tools without disable-model-invocation',
             },
           ],
         },

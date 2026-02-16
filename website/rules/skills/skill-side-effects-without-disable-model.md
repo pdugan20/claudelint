@@ -1,14 +1,20 @@
 # skill-side-effects-without-disable-model
 
-<RuleHeader description="Skills with side-effect tools (Bash, Write) should set disable-model-invocation to control auto-invocation" severity="warn" :fixable="false" :configurable="false" category="Skills" />
+<RuleHeader description="Skills with unscoped Bash should set disable-model-invocation to control auto-invocation" severity="warn" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 
-Skills that include side-effect tools (Bash, Write, Edit, NotebookEdit) in their `allowed-tools` list can potentially execute destructive operations. Setting `disable-model-invocation: true` prevents Claude from automatically invoking the skill, requiring explicit user action instead. This rule checks for the presence of side-effect tools in `allowed-tools` (including scoped variants like `Bash(scope:*)`) and verifies that `disable-model-invocation` is set to `true` when they are present.
+Claude Code has three permission tiers: read-only tools (Read, Grep, Glob) require no approval; file modification tools (Edit, Write) require per-session approval; and Bash commands require explicit approval (permanent per project once granted). When a skill lists tools in `allowed-tools`, those tools are auto-approved without prompts while the skill is active.
+
+Unscoped `Bash` (or `Bash(*)`) in `allowed-tools` means Claude can execute any shell command without asking — including commands that reach outside the project directory, modify system state, or make network requests. This is the only tool that can escape Claude Code's working directory sandbox.
+
+Setting `disable-model-invocation: true` prevents Claude from auto-invoking the skill, requiring the user to explicitly type `/skill-name`. The official docs recommend this for "workflows with side effects or that you want to control timing, like /commit, /deploy, or /send-slack-message."
+
+Scoped Bash like `Bash(claudelint:*)` or `Bash(npm run *)` already restricts which commands can run, so it does not trigger this rule. Edit, Write, and other built-in tools are confined to the working directory by Claude Code's security architecture.
 
 ### Incorrect
 
-Side-effect tools without disable-model-invocation
+Unscoped Bash without disable-model-invocation
 
 ```yaml
 ---
@@ -20,21 +26,20 @@ allowed-tools:
 ---
 ```
 
-Scoped Bash tool without disable-model-invocation
+Bash(*) is equivalent to unscoped Bash
 
 ```yaml
 ---
-name: format-code
-description: Formats source files
+name: run-anything
+description: Runs arbitrary commands
 allowed-tools:
-  - Bash(prettier:*)
-  - Write
+  - Bash(*)
 ---
 ```
 
 ### Correct
 
-Side-effect tools with disable-model-invocation enabled
+Unscoped Bash with disable-model-invocation
 
 ```yaml
 ---
@@ -47,7 +52,32 @@ allowed-tools:
 ---
 ```
 
-No side-effect tools (disable-model-invocation not needed)
+Scoped Bash — restricted to specific commands
+
+```yaml
+---
+name: lint-code
+description: Runs the linter
+allowed-tools:
+  - Bash(npm run lint*)
+---
+```
+
+Edit and Write — confined to working directory by Claude Code
+
+```yaml
+---
+name: optimize-config
+description: Optimizes project config
+allowed-tools:
+  - Bash(claudelint:*)
+  - Read
+  - Edit
+  - Write
+---
+```
+
+Read-only tools — no approval required regardless
 
 ```yaml
 ---
@@ -56,12 +86,13 @@ description: Analyzes source code
 allowed-tools:
   - Read
   - Glob
+  - Grep
 ---
 ```
 
 ## How To Fix
 
-Add `disable-model-invocation: true` to the SKILL.md frontmatter. This prevents the model from auto-invoking the skill, requiring explicit user confirmation for side-effect operations.
+Either scope Bash to specific commands (e.g., `Bash(npm run *)`) or add `disable-model-invocation: true` to require explicit user invocation with `/skill-name`.
 
 ## Options
 
