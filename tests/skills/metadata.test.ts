@@ -241,7 +241,7 @@ describe('Skill Metadata Consistency', () => {
 
   describe('Standard Fields', () => {
     it.each(getSkillDirs())(
-      'skill %s should have disable-model-invocation: true',
+      'skill %s should not have disable-model-invocation: true (allows Claude auto-discovery)',
       (skillName) => {
         if (skillName === 'lib') {
           return;
@@ -253,7 +253,7 @@ describe('Skill Metadata Consistency', () => {
         }
 
         const content = readFileSync(skillMdPath, 'utf-8');
-        expect(content).toContain('disable-model-invocation: true');
+        expect(content).not.toContain('disable-model-invocation: true');
       }
     );
 
