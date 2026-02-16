@@ -196,10 +196,12 @@ await ClaudeLint.outputFixes(results);
 
 A minimal formatter that outputs only aggregate counts:
 
-```javascript
-// formatters/summary.js
-module.exports = {
-  format(results) {
+```typescript
+// formatters/summary.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+const summaryFormatter: Formatter = {
+  format(results: LintResult[]): string {
     const totalErrors = results.reduce((sum, r) => sum + r.errorCount, 0);
     const totalWarnings = results.reduce((sum, r) => sum + r.warningCount, 0);
     const filesWithIssues = results.filter(r => r.errorCount + r.warningCount > 0).length;
@@ -214,18 +216,21 @@ module.exports = {
     ].join('\n');
   }
 };
+
+export default summaryFormatter;
 ```
 
 ### Detailed Formatter with Colors
 
 Uses chalk for color-coded output with explanations:
 
-```javascript
-// formatters/detailed.js
-const chalk = require('chalk');
+```typescript
+// formatters/detailed.ts
+import chalk from 'chalk';
+import type { Formatter, LintResult } from 'claude-code-lint';
 
-module.exports = {
-  format(results) {
+const detailedFormatter: Formatter = {
+  format(results: LintResult[]): string {
     let output = '';
 
     for (const result of results) {
@@ -259,6 +264,8 @@ module.exports = {
     return output;
   }
 };
+
+export default detailedFormatter;
 ```
 
 ### TypeScript Markdown Formatter
@@ -309,17 +316,26 @@ export default markdownFormatter;
 
 Groups all violations by rule ID instead of by file:
 
-```javascript
-// formatters/by-rule.js
-module.exports = {
-  format(results) {
-    const byRule = new Map();
+```typescript
+// formatters/by-rule.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+interface Violation {
+  file: string;
+  line: number;
+  message: string;
+  severity: string;
+}
+
+const byRuleFormatter: Formatter = {
+  format(results: LintResult[]): string {
+    const byRule = new Map<string, Violation[]>();
 
     for (const result of results) {
       for (const msg of result.messages) {
         const ruleId = msg.ruleId || 'unknown';
         if (!byRule.has(ruleId)) byRule.set(ruleId, []);
-        byRule.get(ruleId).push({
+        byRule.get(ruleId)!.push({
           file: result.filePath,
           line: msg.line,
           message: msg.message,
@@ -340,16 +356,20 @@ module.exports = {
     return output;
   }
 };
+
+export default byRuleFormatter;
 ```
 
 ### GitHub Actions Formatter
 
 Outputs annotations that GitHub Actions renders inline on PRs:
 
-```javascript
-// formatters/github-actions.js
-module.exports = {
-  format(results) {
+```typescript
+// formatters/github-actions.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+const githubActionsFormatter: Formatter = {
+  format(results: LintResult[]): string {
     let output = '';
 
     for (const result of results) {
@@ -365,16 +385,20 @@ module.exports = {
     return output;
   }
 };
+
+export default githubActionsFormatter;
 ```
 
 ### CSV Export Formatter
 
 Export violations to CSV for spreadsheet analysis:
 
-```javascript
-// formatters/csv.js
-module.exports = {
-  format(results) {
+```typescript
+// formatters/csv.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+const csvFormatter: Formatter = {
+  format(results: LintResult[]): string {
     let csv = 'File,Line,Severity,Rule,Message\n';
 
     for (const result of results) {
@@ -392,16 +416,20 @@ module.exports = {
     return csv;
   }
 };
+
+export default csvFormatter;
 ```
 
 ### HTML Report Formatter
 
 Generates a standalone HTML report:
 
-```javascript
-// formatters/html.js
-module.exports = {
-  format(results) {
+```typescript
+// formatters/html.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+const htmlFormatter: Formatter = {
+  format(results: LintResult[]): string {
     const totalErrors = results.reduce((sum, r) => sum + r.errorCount, 0);
     const totalWarnings = results.reduce((sum, r) => sum + r.warningCount, 0);
 
@@ -440,6 +468,8 @@ module.exports = {
     return html;
   }
 };
+
+export default htmlFormatter;
 ```
 
 ## See Also

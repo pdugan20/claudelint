@@ -11,15 +11,17 @@ claudelint allows you to define custom validation rules to extend the built-in r
 ## Quick Start
 
 1. Create a `.claudelint/rules/` directory in your project root
-2. Add a custom rule file (`.js` or `.ts`)
+2. Add a custom rule file (`.ts` or `.js`)
 3. Export a `rule` object that implements the Rule interface
 4. Run `claudelint check-all` to load and execute your custom rules
 
 Example custom rule:
 
-```javascript
-// .claudelint/rules/no-profanity.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/no-profanity.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'no-profanity',
     name: 'No Profanity',
@@ -54,10 +56,10 @@ Custom rules are automatically discovered in the `.claudelint/rules/` directory:
 your-project/
 ├── .claudelint/
 │   └── rules/
-│       ├── team-rule.js
-│       ├── project-rule.js
+│       ├── team-rule.ts
+│       ├── project-rule.ts
 │       └── conventions/
-│           └── naming-rule.js
+│           └── naming-rule.ts
 ├── CLAUDE.md
 └── .claudelintrc.json
 ```
@@ -65,7 +67,7 @@ your-project/
 Key features:
 
 - Rules can be organized in subdirectories
-- Both `.js` and `.ts` files are supported
+- Both `.ts` and `.js` files are supported
 - `.d.ts`, `.test.ts`, and `.spec.ts` files are automatically excluded
 - Rules are loaded recursively from all subdirectories
 
@@ -123,9 +125,11 @@ interface RuleIssue {
 
 ### Maximum file size
 
-```javascript
-// .claudelint/rules/max-file-size.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/max-file-size.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'max-file-size',
     name: 'Maximum File Size',
@@ -149,9 +153,11 @@ module.exports.rule = {
 
 ### Require specific heading
 
-```javascript
-// .claudelint/rules/require-overview.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/require-overview.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'require-overview',
     name: 'Require Overview Section',
@@ -176,9 +182,11 @@ module.exports.rule = {
 
 ### Pattern matching
 
-```javascript
-// .claudelint/rules/no-absolute-paths.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/no-absolute-paths.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'no-absolute-paths',
     name: 'No Absolute Paths',
@@ -221,9 +229,11 @@ interface AutoFix {
 
 ### Trailing whitespace fix
 
-```javascript
-// .claudelint/rules/no-trailing-whitespace.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/no-trailing-whitespace.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'no-trailing-whitespace',
     name: 'No Trailing Whitespace',
@@ -290,9 +300,11 @@ claudelint check-all --fix
 
 ### Pattern replacement fix
 
-```javascript
-// .claudelint/rules/use-correct-term.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/use-correct-term.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'use-correct-term',
     name: 'Use Correct Terminology',
@@ -358,7 +370,7 @@ Severity levels:
 Custom rules are loaded automatically when you run `claudelint check-all`:
 
 1. claudelint searches for `.claudelint/rules/` in the project root
-2. All `.js` and `.ts` files are discovered recursively
+2. All `.ts` and `.js` files are discovered recursively
 3. Each file is loaded and validated
 4. Rules are registered with the rule registry
 5. Configured rules are executed during validation
@@ -368,7 +380,7 @@ Custom rules are loaded automatically when you run `claudelint check-all`:
 If a custom rule fails to load, you'll see an error message:
 
 ```text
-Failed to load custom rule: .claudelint/rules/broken-rule.js
+Failed to load custom rule: .claudelint/rules/broken-rule.ts
 Error: Rule does not implement Rule interface (must have meta and validate)
 ```
 
@@ -383,7 +395,7 @@ Common load failures:
 
 ### Descriptive IDs and names
 
-```javascript
+```typescript
 // Good
 meta: {
   id: 'no-todo-comments',
@@ -399,7 +411,7 @@ meta: {
 
 ### Helpful error messages
 
-```javascript
+```typescript
 // Good
 context.report({
   message: 'Found TODO comment on line 42. Please create a GitHub issue instead.',
@@ -418,7 +430,7 @@ Each rule should check one thing. Don't combine multiple validations into a sing
 
 ### Handle edge cases
 
-```javascript
+```typescript
 validate: async (context) => {
   // Check if file is relevant
   if (!context.filePath.endsWith('.md')) {
@@ -443,9 +455,9 @@ validate: async (context) => {
 
 Create test cases for your custom rules:
 
-```javascript
-// .claudelint/rules/__tests__/no-profanity.test.js
-const { rule } = require('../no-profanity');
+```typescript
+// .claudelint/rules/__tests__/no-profanity.test.ts
+import { rule } from '../no-profanity';
 
 describe('no-profanity rule', () => {
   it('should detect profanity', async () => {
@@ -473,8 +485,8 @@ describe('no-profanity rule', () => {
 **Solutions:**
 
 - Verify file is in `.claudelint/rules/` directory
-- Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`, etc.)
-- Ensure `module.exports.rule` is used (not ES6 `export`)
+- Check file extension is `.ts` or `.js` (not `.d.ts`, `.test.ts`, etc.)
+- Export a named `rule` object using `export const rule`
 - Check for syntax errors in the rule file
 
 ### Rule ID Conflicts
@@ -493,13 +505,13 @@ describe('no-profanity rule', () => {
 
 **Solutions:**
 
-- Use `.js` files instead of `.ts` for simpler setup
-- If using TypeScript, add type annotations:
+- Both `.ts` and `.js` files are supported
+- Add type annotations to resolve implicit `any` errors:
 
 ```typescript
-import type { ValidationContext } from 'claude-code-lint';
+import type { Rule, ValidationContext } from 'claude-code-lint';
 
-module.exports.rule = {
+export const rule: Rule = {
   // ...
   validate: async (context: ValidationContext) => {
     // ...
@@ -524,17 +536,18 @@ module.exports.rule = {
 
 **Solutions:**
 
-- Use `require('claudelint/utils')` not `import`
-- For `.ts` files, import types separately: `import type { RuleContext } from 'claude-code-lint'`
+- Use `import { ... } from 'claudelint/utils'` for utility functions
+- Import types separately: `import type { RuleContext } from 'claude-code-lint'`
 - Ensure you're using the helpers within the `validate` function
 - Check that helpers are exported from your rule file
 
 Example:
 
-```javascript
-const { hasHeading, extractFrontmatter } = require('claudelint/utils');
+```typescript
+import { hasHeading, extractFrontmatter } from 'claudelint/utils';
+import type { Rule } from 'claude-code-lint';
 
-module.exports.rule = {
+export const rule: Rule = {
   validate: async (context) => {
     const fm = extractFrontmatter(context.fileContent);
     // ...
@@ -556,7 +569,7 @@ module.exports.rule = {
 
 Example:
 
-```javascript
+```typescript
 meta: {
   fixable: true,  // Required for auto-fix
   // ...
@@ -591,7 +604,7 @@ validate: async (context) => {
 
 Example:
 
-```javascript
+```typescript
 // Find all TODO comments with line numbers
 const todos = findLinesMatching(context.fileContent, /TODO:/gi);
 todos.forEach(match => {
@@ -636,9 +649,9 @@ tags: [example, test]
 
 Example:
 
-```javascript
-const { join, dirname } = require('path');
-const { fileExists } = require('claudelint/utils');
+```typescript
+import { join, dirname } from 'path';
+import { fileExists } from 'claudelint/utils';
 
 const dir = dirname(context.filePath);
 const targetFile = join(dir, '../README.md');
@@ -660,7 +673,7 @@ if (!(await fileExists(targetFile))) {
 
 Example:
 
-```javascript
+```typescript
 validate: async (context) => {  // Note: async keyword
   const content = await readFileContent('./config.json');
   const exists = await fileExists('./README.md');  // await needed
@@ -682,7 +695,7 @@ validate: async (context) => {  // Note: async keyword
 
 Example:
 
-```javascript
+```typescript
 validate: async (context) => {
   // Early exit for irrelevant files
   if (!context.filePath.endsWith('.md')) {
@@ -708,7 +721,7 @@ validate: async (context) => {
 
 1. Add console.log statements:
 
-```javascript
+```typescript
 validate: async (context) => {
   console.log('Validating:', context.filePath);
   const fm = extractFrontmatter(context.fileContent);
@@ -719,9 +732,9 @@ validate: async (context) => {
 
 1. Test rule in isolation:
 
-```javascript
-// test-my-rule.js
-const { rule } = require('./.claudelint/rules/my-rule');
+```typescript
+// test-my-rule.ts
+import { rule } from './.claudelint/rules/my-rule';
 
 const mockContext = {
   filePath: './test.md',
@@ -741,12 +754,12 @@ claudelint check-all --verbose
 
 1. Verify rule loads successfully:
 
-```javascript
-const { CustomRuleLoader } = require('claudelint/utils');
+```typescript
+import { CustomRuleLoader } from 'claudelint/utils';
+
 const loader = new CustomRuleLoader();
-loader.loadCustomRules('.').then(results => {
-  console.log(results);
-});
+const results = await loader.loadCustomRules('.');
+console.log(results);
 ```
 
 ## Helper Library
@@ -761,7 +774,7 @@ See the [Helper Library Reference](/development/helper-library) for the complete
 
 Only validate specific file types:
 
-```javascript
+```typescript
 validate: async (context) => {
   // Only check markdown files
   if (!context.filePath.endsWith('.md')) {
@@ -774,7 +787,7 @@ validate: async (context) => {
 
 ### Multi-line matching
 
-```javascript
+```typescript
 validate: async (context) => {
   // Find code blocks
   const codeBlockPattern = /```[\s\S]*?```/g;
@@ -788,7 +801,7 @@ validate: async (context) => {
 
 ### Line Number Calculation
 
-```javascript
+```typescript
 validate: async (context) => {
   const lines = context.fileContent.split('\n');
 
@@ -815,5 +828,5 @@ validate: async (context) => {
 If you encounter issues with custom rules:
 
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Review example rules in `tests/fixtures/custom-rules/`
+2. Review example rules in [`tests/fixtures/custom-rules/`](https://github.com/pdugan20/claudelint/tree/main/tests/fixtures/custom-rules/)
 3. Open an issue on [GitHub](https://github.com/pdugan20/claudelint/issues)

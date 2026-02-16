@@ -6,21 +6,14 @@ const { promisify } = require('util');
 const execAsync = promisify(exec);
 
 const IGNORED_PATTERNS = [
-  /src\/rules\//,
-  /tests\/rules\//,
-  /src\/validators\//,
-  /tests\/validators\//,
-  /src\/utils\//,
-  /tests\/utils\//,
   /TEMPLATE\.md/,
   /related-rule-\d+\.md/, // Template placeholders
-  /archive\/programmatic-api\/README\.md.*api\/README\.md/, // Archive docs - path resolution issues
 ];
 
 async function checkLinks() {
   try {
     const { stdout, stderr } = await execAsync(
-      'npx remark --use remark-validate-links --frail docs/ README.md CONTRIBUTING.md',
+      'npx remark --use remark-validate-links --frail website/ README.md CONTRIBUTING.md',
       { maxBuffer: 10 * 1024 * 1024 } // 10MB buffer
     );
 
@@ -43,8 +36,8 @@ async function checkLinks() {
     const warningCount = filteredLines.filter(l => l.includes('warning')).length;
 
     if (warningCount > 0) {
-      console.error(`\nWARNING: ${warningCount} documentation link warnings (source code references filtered)`);
-      process.exit(0); // Don't fail CI for now
+      console.error(`\nERROR: ${warningCount} broken link(s) found in documentation`);
+      process.exit(1);
     }
 
   } catch (error) {
@@ -71,10 +64,9 @@ async function checkLinks() {
     const warningCount = filteredLines.filter(l => l.includes('warning')).length;
 
     if (warningCount > 0) {
-      console.error(`\nWARNING: ${warningCount} documentation link warnings (source code references filtered)`);
+      console.error(`\nERROR: ${warningCount} broken link(s) found in documentation`);
+      process.exit(1);
     }
-
-    process.exit(0); // Don't fail CI for link warnings
   }
 }
 

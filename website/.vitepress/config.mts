@@ -12,6 +12,7 @@ export default defineConfig({
   base: '/',
   cleanUrls: true,
   lastUpdated: true,
+  deadLinks: 'error',
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],

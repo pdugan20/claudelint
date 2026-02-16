@@ -77,6 +77,12 @@ Allow lowercase environment variable names:
 }
 ```
 
+## Related Rules
+
+- [`mcp-stdio-empty-command`](/rules/mcp/mcp-stdio-empty-command)
+- [`mcp-http-invalid-url`](/rules/mcp/mcp-http-invalid-url)
+- [`mcp-sse-invalid-url`](/rules/mcp/mcp-sse-invalid-url)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-invalid-env-var.ts)

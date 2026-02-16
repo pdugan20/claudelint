@@ -60,6 +60,49 @@ describe('CustomRuleLoader', () => {
       expect(results[0].rule?.meta.id).toBe('test-custom-rule');
     });
 
+    it('should load TypeScript rule with type annotations', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'typed-rule.ts'),
+        `
+        interface RuleMeta {
+          id: string;
+          name: string;
+          description: string;
+          category: string;
+          severity: string;
+          fixable: boolean;
+          deprecated: boolean;
+          since: string;
+        }
+
+        const meta: RuleMeta = {
+          id: 'typed-custom-rule',
+          name: 'Typed Custom Rule',
+          description: 'A custom rule using TypeScript syntax',
+          category: 'Custom',
+          severity: 'error',
+          fixable: false,
+          deprecated: false,
+          since: '1.0.0',
+        };
+
+        export const rule = {
+          meta,
+          validate: async (_context: unknown) => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(true);
+      expect(results[0].rule?.meta.id).toBe('typed-custom-rule');
+    });
+
     it('should reject rule without meta', async () => {
       const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });

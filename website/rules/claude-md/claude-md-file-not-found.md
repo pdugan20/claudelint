@@ -37,6 +37,11 @@ This rule does not have any configuration options.
 
 Disable this rule only if you are intentionally running claudelint against a path that may not yet have a CLAUDE.md file, such as during project scaffolding.
 
+## Related Rules
+
+- [`claude-md-import-missing`](/rules/claude-md/claude-md-import-missing)
+- [`claude-md-file-reference-invalid`](/rules/claude-md/claude-md-file-reference-invalid)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-file-not-found.ts)

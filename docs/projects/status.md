@@ -35,15 +35,6 @@ npm package versioning and release automation. Published as `claude-code-lint@0.
 
 ---
 
-### agents-rework
-
-**Status:** Complete, pending archive
-**Location:** [docs/projects/agents-rework/](./agents-rework/)
-
-Reworked agent discovery to flat file pattern, aligned rules with official docs, fixed schema issues.
-
----
-
 ### branding-and-assets
 
 **Status:** In Progress
@@ -69,6 +60,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | Project | Status | Notes |
 |---------|--------|-------|
 | [agent-testing-and-plugin](./archive/agent-testing-and-plugin/) | Complete | Color field, plugin agent, test expansion, doc restructuring, rule rename. |
+| [agents-rework](./archive/agents-rework/) | Complete | Flat file discovery, rule alignment with official docs, schema fixes, dedup fix. |
 | [cross-category-audit](./archive/cross-category-audit/) | Complete | All 10 rule categories audited against official Anthropic docs. |
 | [file-discovery-and-format](./archive/file-discovery-and-format/) | Complete | Centralized discovery patterns, format command fixes, file-discovery docs. |
 | [github-automation](./archive/github-automation/) | Complete | Repo created, CI/CD, labels, Codecov, Discussions all configured. |

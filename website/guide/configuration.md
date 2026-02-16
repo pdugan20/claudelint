@@ -388,11 +388,7 @@ The first configuration file found is used. Files lower in the tree take precede
 
 claudelint exposes a programmatic API for use in custom tooling and scripts. The package uses the `exports` field for clean module resolution:
 
-```javascript
-// CommonJS
-const { ClaudeLint } = require('claude-code-lint');
-
-// ESM / TypeScript
+```typescript
 import { ClaudeLint } from 'claude-code-lint';
 ```
 

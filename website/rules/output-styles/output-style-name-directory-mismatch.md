@@ -38,6 +38,11 @@ Either rename the parent directory to match the name in frontmatter, or update t
 
 This rule does not have any configuration options.
 
+## Related Rules
+
+- [`output-style-body-too-short`](/rules/output-styles/output-style-body-too-short)
+- [`output-style-missing-guidelines`](/rules/output-styles/output-style-missing-guidelines)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/output-styles/output-style-name-directory-mismatch.ts)

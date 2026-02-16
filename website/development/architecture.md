@@ -8,7 +8,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 ### Rules (What Contributors Write)
 
-**Rules** are individual, focused validation checks located in `src/rules/{category}/{rule-id}.ts`.
+**Rules** are individual, focused validation checks located in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/).
 
 **Characteristics:**
 
@@ -20,7 +20,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 ### Validators (Internal Orchestrators)
 
-**Validators** are internal orchestration classes in `src/validators/` that collect and run rules.
+**Validators** are internal orchestration classes in [`src/validators/`](https://github.com/pdugan20/claudelint/tree/main/src/validators/) that collect and run rules.
 
 **Characteristics:**
 
@@ -40,7 +40,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 #### DO: Write Rules
 
-- Create new rules in `src/rules/{category}/{rule-id}.ts`
+- Create new rules in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
 - Follow the Rule interface and metadata schema
 - Write focused, single-purpose validation checks
 - See [Contributing Guide](/development/contributing#adding-validation-rules) for the complete guide

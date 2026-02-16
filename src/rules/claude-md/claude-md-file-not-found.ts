@@ -51,6 +51,7 @@ export const rule: Rule = {
       whenNotToUse:
         'Disable this rule only if you are intentionally running claudelint against a path ' +
         'that may not yet have a CLAUDE.md file, such as during project scaffolding.',
+      relatedRules: ['claude-md-import-missing', 'claude-md-file-reference-invalid'],
     },
   },
 

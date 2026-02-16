@@ -109,25 +109,29 @@ You can also extend [BaseFormatter](./types.md#baseformatter) for access to `get
 
 ### Basic Example
 
-```javascript
-// formatters/summary.js
-module.exports = {
-  format(results) {
+```typescript
+// formatters/summary.ts
+import type { Formatter, LintResult } from 'claude-code-lint';
+
+const summaryFormatter: Formatter = {
+  format(results: LintResult[]): string {
     const totalErrors = results.reduce((sum, r) => sum + r.errorCount, 0);
     const totalWarnings = results.reduce((sum, r) => sum + r.warningCount, 0);
     return `${results.length} files checked: ${totalErrors} errors, ${totalWarnings} warnings`;
   }
 };
+
+export default summaryFormatter;
 ```
 
 Load a custom formatter by path:
 
 ```typescript
 // Class API
-const formatter = await linter.loadFormatter('./formatters/summary.js');
+const formatter = await linter.loadFormatter('./formatters/summary.ts');
 
 // Functional API
-const output = await formatResults(results, './formatters/summary.js');
+const output = await formatResults(results, './formatters/summary.ts');
 ```
 
 For more custom formatter examples (Markdown, HTML, CSV, GitHub Actions annotations, group-by-rule), see [Recipes](./recipes.md#custom-formatters).

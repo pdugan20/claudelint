@@ -495,6 +495,7 @@ Add `meta.docs` to most commonly violated rules:
 ### Update References
 
 - [ ] Search codebase for `docs/` references and update
+- [ ] Update `scripts/check/file-naming.ts` to remove `checkRuleDocs()` which scans `docs/rules/`
 - [ ] Update any skill or hook references to docs/ paths
 - [ ] Update package.json homepage field to claudelint.com
 - [ ] Verify all README badge links point to live site

@@ -21,6 +21,8 @@ A single validation check that examines one specific aspect of a file.
 - Can be enabled/disabled in config
 - May support auto-fix
 
+Not to be confused with Claude Code's [`.claude/rules/`](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) directory, which stores modular behavioral instructions that Claude loads at session start (e.g., code style guidelines, testing conventions). claudelint *validates* those files but uses the term "rule" to mean a validation check, not a behavioral instruction.
+
 **See:** [Custom Rules Guide](/development/custom-rules)
 
 ### Validator
@@ -361,6 +363,26 @@ The main configuration file for Claude Code projects. Contains:
 - Circular imports
 - Glob patterns
 
+### Rules Files (`.claude/rules/`)
+
+Modular markdown files in `.claude/rules/` that contain behavioral instructions for Claude Code. Each file covers a single topic (e.g., code style, testing conventions, security requirements) and is loaded into Claude's context at session start with the same priority as `.claude/CLAUDE.md`.
+
+Not to be confused with claudelint [rules](#rule), which are validation checks. Claude Code rules files are what claudelint *validates* — claudelint rules are the checks that do the validating.
+
+**Features:**
+
+- Optional `paths` frontmatter to scope instructions to specific file patterns
+- Subdirectory organization (e.g., `rules/frontend/react.md`)
+- Symlink support for sharing rules across projects
+
+**Validation:** ClaudeMdValidator checks:
+
+- Frontmatter schema (`paths` field with valid glob patterns)
+- Glob pattern correctness (no backslashes, no overly broad patterns)
+- Circular symlinks
+
+**See:** [Claude Code Rules Documentation](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F)
+
 ### SKILL.md
 
 The main file for a Claude Code skill. Contains:
@@ -467,9 +489,11 @@ A user-defined validation rule stored in `.claudelint/rules/`.
 
 **Example:**
 
-```javascript
-// .claudelint/rules/no-profanity.js
-module.exports.rule = {
+```typescript
+// .claudelint/rules/no-profanity.ts
+import type { Rule } from 'claude-code-lint';
+
+export const rule: Rule = {
   meta: {
     id: 'no-profanity',
     name: 'No Profanity',
@@ -486,7 +510,7 @@ module.exports.rule = {
 
 ### Built-in Rule
 
-A validation rule that ships with claudelint. Located in `src/rules/{category}/`.
+A validation rule that ships with claudelint. Located in [`src/rules/{category}/`](https://github.com/pdugan20/claude-lint/tree/main/src/rules).
 
 **Properties:**
 

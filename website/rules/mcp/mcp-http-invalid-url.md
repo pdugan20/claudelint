@@ -44,6 +44,12 @@ Provide a fully qualified URL including the scheme (http:// or https://). Ensure
 
 This rule does not have any configuration options.
 
+## Related Rules
+
+- [`mcp-http-empty-url`](/rules/mcp/mcp-http-empty-url)
+- [`mcp-sse-invalid-url`](/rules/mcp/mcp-sse-invalid-url)
+- [`mcp-websocket-invalid-url`](/rules/mcp/mcp-websocket-invalid-url)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/mcp/mcp-http-invalid-url.ts)

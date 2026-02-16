@@ -104,7 +104,7 @@ export const rule: Rule = {
           config: { pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$' },
         },
       ],
-      relatedRules: [],
+      relatedRules: ['mcp-stdio-empty-command', 'mcp-http-invalid-url', 'mcp-sse-invalid-url'],
     },
   },
 

@@ -633,11 +633,13 @@ See [CLI Reference - Cache Management](./cli-reference.md#cache-management) for 
 **Solutions:**
 
 1. Verify file is in `.claudelint/rules/` directory
-2. Check file extension is `.js` or `.ts` (not `.d.ts`, `.test.ts`)
-3. Ensure `module.exports.rule` is used:
+2. Check file extension is `.ts` or `.js` (not `.d.ts`, `.test.ts`)
+3. Ensure a named `rule` export is used:
 
-   ```javascript
-   module.exports.rule = {
+   ```typescript
+   import type { Rule } from 'claude-code-lint';
+
+   export const rule: Rule = {
      meta: {
        /* ... */
      },
@@ -668,7 +670,7 @@ See [Custom Rules Guide](/development/custom-rules) for details.
 2. Verify `context.report()` is being called
 3. Add debug logging:
 
-   ```javascript
+   ```typescript
    validate: async (context) => {
      console.log('Validating:', context.filePath);
      // ...

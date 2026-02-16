@@ -53,6 +53,11 @@ Set the transport field to either "stdio" or "socket". If the server communicate
 
 This rule does not have any configuration options.
 
+## Related Rules
+
+- [`lsp-command-not-in-path`](/rules/lsp/lsp-command-not-in-path)
+- [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-invalid-transport.ts)

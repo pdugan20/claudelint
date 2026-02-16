@@ -60,7 +60,7 @@ export const rule: Rule = {
         'Set the transport field to either "stdio" or "socket". If the server communicates over ' +
         'standard input/output, use "stdio". If it communicates over a TCP socket, use "socket". ' +
         'Omit the field entirely to default to "stdio".',
-      relatedRules: [],
+      relatedRules: ['lsp-command-not-in-path', 'lsp-extension-missing-dot'],
     },
   },
   validate: (context: RuleContext) => {

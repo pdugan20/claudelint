@@ -54,7 +54,7 @@ export const rule: Rule = {
       howToFix:
         'Either rename the parent directory to match the name in frontmatter, or update the name ' +
         'in frontmatter to match the directory name.',
-      relatedRules: [],
+      relatedRules: ['output-style-body-too-short', 'output-style-missing-guidelines'],
     },
   },
   validate: (context: RuleContext) => {

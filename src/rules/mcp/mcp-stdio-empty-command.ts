@@ -53,7 +53,7 @@ export const rule: Rule = {
       howToFix:
         'Add a non-empty command string to the MCP server configuration. The command should be the ' +
         'executable that starts the MCP server process (e.g., "npx", "node", "python").',
-      relatedRules: [],
+      relatedRules: ['mcp-invalid-transport', 'mcp-invalid-env-var'],
     },
   },
 

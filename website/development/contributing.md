@@ -150,9 +150,9 @@ export class MyClass {
 
 **Where console IS allowed**:
 
-- CLI layer only: `src/cli/utils/logger.ts`
-- Output formatting: `src/utils/reporting/`
-- Script utilities: `scripts/util/logger.ts`
+- CLI layer only: [`src/cli/utils/logger.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/utils/logger.ts)
+- Output formatting: [`src/utils/reporting/`](https://github.com/pdugan20/claudelint/tree/main/src/utils/reporting/)
+- Script utilities: [`scripts/util/logger.ts`](https://github.com/pdugan20/claudelint/blob/main/scripts/util/logger.ts)
 
 **Enforcement**:
 
@@ -208,7 +208,7 @@ npm run check:model-names
 5. Re-verify: `npm run check:constants`
 6. Verify changes pass tests
 
-**See also:** the constants verification scripts in `scripts/check/` for detailed documentation.
+**See also:** the constants verification scripts in [`scripts/check/`](https://github.com/pdugan20/claudelint/tree/main/scripts/check/) for detailed documentation.
 
 **Note:** Regular contributors don't need Claude CLI installed. This is only for maintainers doing releases.
 
@@ -293,12 +293,12 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 
 **Quick checklist:**
 
-1. ✓ Create rule file in `src/rules/{category}/{rule-id}.ts`
+1. ✓ Create rule file in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
 2. ✓ Define rule metadata (id, name, description, category, severity)
 3. ✓ Add `meta.docs` documentation metadata (see below)
 4. ✓ Implement `validate()` function
-5. ✓ Add rule to category index in `src/rules/{category}/index.ts`
-6. ✓ Write unit tests in `tests/rules/{category}/{rule-id}.test.ts`
+5. ✓ Add rule to category index in [`src/rules/{category}/index.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
+6. ✓ Write unit tests in [`tests/rules/{category}/{rule-id}.test.ts`](https://github.com/pdugan20/claudelint/tree/main/tests/rules/)
 7. ✓ Test the rule with `npm test`
 8. ✓ Run `npm run docs:generate` to verify documentation generates
 9. ✓ Run validation on project: `npm run validate`
@@ -386,7 +386,7 @@ docs: {
 }
 ```
 
-Run `npm run docs:generate` after adding metadata to verify the generated page looks correct. The generated pages appear in `website/rules/{category}/{rule-id}.md`.
+Run `npm run docs:generate` after adding metadata to verify the generated page looks correct. The generated pages appear in [`website/rules/{category}/{rule-id}.md`](https://github.com/pdugan20/claudelint/tree/main/website/rules/).
 
 ## Contributing Skills
 
@@ -700,9 +700,9 @@ npm run docs:preview
 ### How It Works
 
 - Rule docs are auto-generated from `meta.docs` in each rule's TypeScript source
-- Running `npm run docs:generate` reads all rules and produces markdown pages in `website/rules/`
+- Running `npm run docs:generate` reads all rules and produces markdown pages in [`website/rules/`](https://github.com/pdugan20/claudelint/tree/main/website/rules/)
 - A sidebar JSON file (`website/rules/_sidebar.json`) is generated for navigation
-- Custom Vue components live in `website/.vitepress/theme/components/`
+- Custom Vue components live in [`website/.vitepress/theme/components/`](https://github.com/pdugan20/claudelint/tree/main/website/.vitepress/theme/components/)
 - See the [Development Overview](/development/overview) for the full metadata schema
 
 ### Editing documentation

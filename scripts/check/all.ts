@@ -72,6 +72,9 @@ async function main(): Promise<void> {
     { script: join(__dirname, 'rule-docs.ts'), name: 'Rule Documentation' },
     { script: join(__dirname, 'consistency.ts'), name: 'Consistency' },
     { script: join(__dirname, 'rule-patterns.ts'), name: 'Rule Anti-Patterns' },
+    { script: join(__dirname, 'rule-references.ts'), name: 'Rule References' },
+    { script: join(__dirname, 'rule-docs-sections.ts'), name: 'Rule Doc Sections' },
+    { script: join(__dirname, 'code-samples.ts'), name: 'Code Samples' },
   ];
 
   // Run each check

@@ -2,8 +2,8 @@
 
 claudelint provides utility functions to simplify common validation tasks in [custom rules](/development/custom-rules). Import them in your custom rules:
 
-```javascript
-const {
+```typescript
+import {
   hasHeading,
   extractHeadings,
   matchesPattern,
@@ -15,7 +15,7 @@ const {
   parseJSON,
   parseYAML,
   findLinesMatching,
-} = require('claudelint/utils');
+} from 'claudelint/utils';
 ```
 
 ## Heading Functions
@@ -24,7 +24,7 @@ const {
 
 Check if markdown contains a specific heading.
 
-```javascript
+```typescript
 // Check for any level heading
 if (!hasHeading(context.fileContent, 'Overview')) {
   context.report({ message: 'Missing Overview section' });
@@ -40,7 +40,7 @@ if (!hasHeading(context.fileContent, 'Installation', 2)) {
 
 Get all headings with their levels and line numbers.
 
-```javascript
+```typescript
 const headings = extractHeadings(context.fileContent);
 
 // Check heading structure
@@ -69,7 +69,7 @@ if (!overview) {
 
 Check if content matches a regular expression.
 
-```javascript
+```typescript
 // Check for TODO comments
 if (matchesPattern(context.fileContent, /TODO:|FIXME:/i)) {
   context.report({ message: 'Found TODO/FIXME comments' });
@@ -85,7 +85,7 @@ if (matchesPattern(context.fileContent, /api[_-]?key\s*=\s*['"][^'"]+['"]/i)) {
 
 Count how many times a string or pattern appears.
 
-```javascript
+```typescript
 // Count string occurrences
 const count = countOccurrences(context.fileContent, 'deprecated');
 if (count > 5) {
@@ -103,7 +103,7 @@ if (todoCount > 0) {
 
 Find all lines that match a pattern with line numbers.
 
-```javascript
+```typescript
 const matches = findLinesMatching(
   context.fileContent,
   /password\s*=\s*['"](.+)['"]/i
@@ -128,7 +128,7 @@ Extract YAML frontmatter from markdown files. Returns an object with:
 - `content` - The markdown content without frontmatter
 - `hasFrontmatter` - Boolean indicating if frontmatter exists
 
-```javascript
+```typescript
 const result = extractFrontmatter(context.fileContent);
 
 if (!result.hasFrontmatter || !result.frontmatter) {
@@ -157,7 +157,7 @@ if (fm.deprecated === true && !fm.replacedBy) {
 
 Validate semantic versioning format.
 
-```javascript
+```typescript
 const result = extractFrontmatter(context.fileContent);
 const fm = result.frontmatter;
 
@@ -175,7 +175,7 @@ if (fm?.version && !validateSemver(fm.version)) {
 
 Check if a file exists (asynchronous).
 
-```javascript
+```typescript
 // Check for required files
 if (!(await fileExists('./README.md'))) {
   context.report({ message: 'README.md not found' });
@@ -197,7 +197,7 @@ if (fm?.icon && !(await fileExists(fm.icon))) {
 
 Read file content asynchronously.
 
-```javascript
+```typescript
 validate: async (context) => {
   // Read related file
   const configContent = await readFileContent('./config.json');
@@ -218,7 +218,7 @@ validate: async (context) => {
 
 Safely parse JSON content.
 
-```javascript
+```typescript
 // Parse JSON files
 if (context.filePath.endsWith('.json')) {
   const data = parseJSON(context.fileContent);
@@ -239,7 +239,7 @@ if (context.filePath.endsWith('.json')) {
 
 Safely parse YAML content.
 
-```javascript
+```typescript
 // Parse YAML files
 if (context.filePath.endsWith('.yml') || context.filePath.endsWith('.yaml')) {
   const data = parseYAML(context.fileContent);
@@ -258,18 +258,19 @@ if (context.filePath.endsWith('.yml') || context.filePath.endsWith('.yaml')) {
 
 ## Complete Example
 
-```javascript
-// .claudelint/rules/skill-quality.js
-const {
+```typescript
+// .claudelint/rules/skill-quality.ts
+import type { Rule } from 'claude-code-lint';
+import {
   extractFrontmatter,
   validateSemver,
   hasHeading,
   extractHeadings,
   countOccurrences,
   findLinesMatching,
-} = require('claudelint/utils');
+} from 'claudelint/utils';
 
-module.exports.rule = {
+export const rule: Rule = {
   meta: {
     id: 'skill-quality',
     name: 'Skill Quality Checks',

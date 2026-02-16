@@ -32,11 +32,11 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
 />
 
 <RuleCard
-  rule-id="agent-missing-system-prompt"
-  description="Agent should include a system prompt section"
+  rule-id="agent-body-too-short"
+  description="Agent system prompt should have meaningful content"
   severity="warning"
   category="Agents"
-  link="/rules/agents/agent-missing-system-prompt"
+  link="/rules/agents/agent-body-too-short"
 />
 
 <RuleCard

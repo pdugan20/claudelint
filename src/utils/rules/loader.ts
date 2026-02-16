@@ -5,8 +5,11 @@
 
 import { existsSync, readdirSync } from 'fs';
 import { join, resolve } from 'path';
+import { createJiti } from 'jiti';
 import { RuleRegistry } from './registry';
 import type { Rule } from '../../types/rule';
+
+const jiti = createJiti(__filename);
 
 /**
  * Result of loading a custom rule
@@ -82,9 +85,8 @@ export class CustomRuleLoader {
       // Ensure this is treated as async (future-proofing)
       await Promise.resolve();
 
-      // Import the rule file
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const ruleModule = require(filePath) as { rule?: Rule; default?: { rule?: Rule } };
+      // Import the rule file (jiti handles both .js and .ts transparently)
+      const ruleModule = jiti(filePath) as { rule?: Rule; default?: { rule?: Rule } };
 
       // Handle both CJS and ESM exports
       const rule = ruleModule.rule ?? ruleModule.default?.rule;
