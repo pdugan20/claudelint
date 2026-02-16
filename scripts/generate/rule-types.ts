@@ -62,7 +62,7 @@ function generateRegistrationContent(ruleFiles: string[]): string {
   const imports = ruleFiles
     .map((file) => {
       const id = basename(file, '.ts');
-      const path = './' + file.replace(/\.ts$/, '');
+      const path = './' + file.replace(/\.ts$/, '').replace(/\\/g, '/');
       const varName = id.replace(/-/g, '_') + '_rule';
       return `import { rule as ${varName} } from '${path}';`;
     })
