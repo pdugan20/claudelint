@@ -32,110 +32,77 @@ If you've installed the npm package, you can load the plugin from your local `no
 
 This gives you both the CLI commands and the Claude skills.
 
-## Available Skills
+## Skills
 
-Once installed, 9 skills are available as namespaced slash commands:
+Once installed, the plugin adds 9 skills that Claude can use automatically. Ask naturally or invoke directly with `/claudelint:<name>`.
 
-### Validation Skills
+### Validation
 
-**`/claudelint:validate-all`** — Run all validators on your entire project.
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
 
-Checks CLAUDE.md files, skills, settings, hooks, MCP servers, and plugin manifests.
+<SkillCard
+  name="validate-all"
+  description="Runs every validator on your entire project — CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests."
+  example="Check my Claude Code project for issues"
+/>
 
-```bash
-/claudelint:validate-all
-/claudelint:validate-all --verbose
-/claudelint:validate-all --explain
-/claudelint:validate-all --warnings-as-errors
-```
+<SkillCard
+  name="validate-cc-md"
+  description="Checks CLAUDE.md file size, @import directives, frontmatter, and section organization."
+  example="Is my CLAUDE.md ok?"
+/>
 
-**`/claudelint:validate-cc-md`** — Validate CLAUDE.md files.
+<SkillCard
+  name="validate-skills"
+  description="Checks SKILL.md frontmatter, allowed-tools, file references, and shell script security."
+  example="Why is my skill not loading?"
+/>
 
-Checks file size limits (35KB warning, 40KB error), `@import` directives, frontmatter in `.claude/rules/` files, and section organization.
+<SkillCard
+  name="validate-settings"
+  description="Checks settings.json schema, permissions, and environment variables."
+  example="Check my settings"
+/>
 
-```bash
-/claudelint:validate-cc-md
-/claudelint:validate-cc-md --path /path/to/CLAUDE.md
-/claudelint:validate-cc-md --explain
-```
+<SkillCard
+  name="validate-hooks"
+  description="Checks hooks.json events, matcher patterns, and command script references."
+  example="Why is my hook not firing?"
+/>
 
-**`/claudelint:validate-skills`** — Validate skill definitions.
+<SkillCard
+  name="validate-mcp"
+  description="Checks .mcp.json transport types, server names, and environment variables."
+  example="Validate my MCP config"
+/>
 
-Checks SKILL.md frontmatter, allowed-tools, file references, security issues (dangerous commands, eval usage), and documentation quality.
+<SkillCard
+  name="validate-plugin"
+  description="Checks plugin.json manifest schema, versioning, and component references."
+  example="Check my plugin manifest"
+/>
 
-```bash
-/claudelint:validate-skills
-/claudelint:validate-skills --verbose
-```
-
-**`/claudelint:validate-settings`** — Validate settings.json files.
-
-Checks JSON schema, permission rules, environment variables, and model configuration.
-
-**`/claudelint:validate-hooks`** — Validate hooks.json files.
-
-Checks hook events, types (command, prompt, agent), matcher patterns, and command script references.
-
-**`/claudelint:validate-mcp`** — Validate .mcp.json configuration.
-
-Checks server names, transport types (stdio, SSE, HTTP, WebSocket), environment variables, and variable expansion patterns.
-
-**`/claudelint:validate-plugin`** — Validate plugin.json manifests.
-
-Checks manifest schema, semantic versioning, required fields, and component references.
+</div>
 
 ### Quality and Optimization
 
-**`/claudelint:format-cc`** — Auto-format Claude Code files.
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
 
-Runs markdownlint on CLAUDE.md and `.claude/**/*.md`, prettier on JSON/YAML files, and shellcheck on shell scripts.
+<SkillCard
+  name="format-cc"
+  description="Auto-formats Claude Code files with markdownlint, prettier, and shellcheck."
+  example="Format my Claude Code files"
+/>
 
-```bash
-/claudelint:format-cc
-/claudelint:format-cc --check    # Check without making changes
-/claudelint:format-cc --verbose
-```
+<SkillCard
+  name="optimize-cc-md"
+  description="Interactive workflow to reduce CLAUDE.md size, remove generic content, and organize @import files."
+  example="My CLAUDE.md is too long, help me organize it"
+/>
 
-**`/claudelint:optimize-cc-md`** — Interactively optimize CLAUDE.md files.
+</div>
 
-Helps reduce file size, organize content, and create `@import` files. Explains violations conversationally and asks before making changes.
-
-## Workflows
-
-### Quick Validation
-
-Start a session and immediately check your project:
-
-```bash
-/claudelint:validate-all
-```
-
-Or just ask Claude naturally — "check my Claude Code project" or "validate my CLAUDE.md" — and Claude will automatically invoke the right skill.
-
-### Fix Formatting Issues
-
-Before committing changes:
-
-```bash
-/claudelint:format-cc
-/claudelint:validate-all
-```
-
-### Debug a Specific Component
-
-If you're working on skills:
-
-```bash
-/claudelint:validate-skills --verbose --explain
-```
-
-### Strict Mode for CI
-
-Treat all warnings as errors:
-
-```bash
-/claudelint:validate-all --warnings-as-errors --format json
-```
+See the [CLI Reference](/guide/cli-reference) for all available flags when using slash commands directly.
 
 ## Automatic Validation
 

@@ -48,6 +48,8 @@ claudelint treats your Claude Code configuration as a first-class codebase. It v
 
 Because it's a standard CLI tool, you can run it in CI alongside your existing linters and tests. Instead of discovering a broken hook or misconfigured skill days later when someone triggers it, your pipeline catches the issue on the pull request that introduced it. Configuration problems become build failures — visible, blocking, and fixable before they reach your team.
 
+Beyond validation, claudelint includes an interactive optimization skill for CLAUDE.md files. Running `/claudelint:optimize-cc-md` inside Claude Code walks you through a guided workflow — assessing your file's quality, suggesting improvements, and creating `@import` files to keep your configuration organized and within size limits. See the [Claude Code Plugin](/integrations/claude-code-plugin) guide for setup.
+
 ## What It Catches
 
 ```text

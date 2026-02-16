@@ -11,7 +11,7 @@ npm run docs:generate    # Regenerate rule docs from source metadata
 
 ## Auto-Generated Pages
 
-**Do NOT hand-edit files in `website/rules/` — they are generated from rule metadata in `src/`.**
+**Do NOT hand-edit files in `website/rules/` — they are generated from source metadata.**
 
 Run `npm run docs:generate` to regenerate. This creates:
 

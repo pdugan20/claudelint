@@ -11,6 +11,7 @@ import ConfigExample from './components/ConfigExample.vue';
 import RuleCount from './components/RuleCount.vue';
 import RuleHeader from './components/RuleHeader.vue';
 import SchemaRef from './components/SchemaRef.vue';
+import SkillCard from './components/SkillCard.vue';
 import './style.css';
 
 export default {
@@ -26,6 +27,7 @@ export default {
     app.component('RuleCount', RuleCount);
     app.component('RuleHeader', RuleHeader);
     app.component('SchemaRef', SchemaRef);
+    app.component('SkillCard', SkillCard);
   },
   setup() {
     const route = useRoute();

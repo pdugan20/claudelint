@@ -65,10 +65,16 @@ See the [Rules Overview](/guide/rules-overview) for all available rules.
 
 ## Use with Claude Code
 
-claudelint is also available as a Claude Code plugin, giving you slash commands like `/claudelint:validate-all` and `/claudelint:validate-skills` directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
+claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
 
 ```bash
 claudelint install-plugin
 ```
 
-See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions.
+Key skills include:
+
+- `/claudelint:validate-all` — Run all validators at once
+- `/claudelint:optimize-cc-md` — Interactively optimize your CLAUDE.md
+- `/claudelint:format-cc` — Auto-format Claude Code files
+
+See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions and the full list of skills.

@@ -2,7 +2,6 @@
 name: validate-skills
 description: Validates Claude Code skills for schema, naming, documentation, and security. Use when user asks to "check my skill", "validate skill syntax", "why isn't my skill loading", "skill errors", or "dangerous command detected". Validates SKILL.md frontmatter, allowed-tools, file references, directory organization, and shell script security.
 version: 1.0.0
-disable-model-invocation: true
 allowed-tools:
   - Bash(claudelint:*)
   - Read

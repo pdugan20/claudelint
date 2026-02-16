@@ -2,7 +2,6 @@
 name: format-cc
 description: Formats Claude Code files with markdownlint, prettier, and shellcheck. Use when user asks to "format my files", "fix markdown formatting", "clean up CLAUDE.md", or "check shell scripts". Auto-fixes markdown, JSON, YAML formatting and analyzes shell script quality.
 version: 1.0.0
-disable-model-invocation: true
 allowed-tools:
   - Bash(claudelint:*)
 ---
@@ -208,4 +207,4 @@ claudelint check-all
 ## See Also
 
 - [validate-all](../validate-all/SKILL.md) - Validate Claude files
-- [Formatting Tools Documentation](../../docs/formatting-tools.md) - Complete formatting guide
+- [CLI Reference](https://claudelint.com/guide/cli-reference) - Complete CLI documentation

@@ -22,7 +22,6 @@ HAS_CI=$(echo "$STAGED_FILES" | grep -c '^\.github/' || true)
 HAS_SCHEMAS=$(echo "$STAGED_FILES" | grep -c -E '(^schemas/|^src/schemas/)' || true)
 HAS_VALIDATORS=$(echo "$STAGED_FILES" | grep -c -E '(^src/validators/|^tests/validators/)' || true)
 HAS_RULE_DOCS=$(echo "$STAGED_FILES" | grep -c -E '(^website/rules/|^src/rules/)' || true)
-
 FORCE_ALL="${CLAUDELINT_PRECOMMIT_ALL:-0}"
 
 # Track which checks to run

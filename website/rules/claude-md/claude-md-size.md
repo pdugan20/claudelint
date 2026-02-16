@@ -38,7 +38,7 @@ Core project instructions go here.
 
 ## How To Fix
 
-Split the CLAUDE.md content into smaller, focused files inside the `.claude/rules/` directory. Then replace the inlined content with `@import` directives pointing to each extracted file. Each rule file should cover a single concern.
+Split the CLAUDE.md content into smaller, focused files inside the `.claude/rules/` directory. Then replace the inlined content with `@import` directives pointing to each extracted file. Each rule file should cover a single concern. Or use the `/claudelint:optimize-cc-md` plugin skill for guided, interactive optimization.
 
 ## Options
 

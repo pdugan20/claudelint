@@ -979,6 +979,39 @@ claudelint format --verbose
 
 See [File Discovery](/guide/file-discovery) for details on how claudelint discovers these files.
 
+## Optimization
+
+### optimize-cc-md
+
+Interactively optimize CLAUDE.md files through a guided 3-phase workflow. Available as a [Claude Code plugin skill](/integrations/claude-code-plugin).
+
+**Phases:**
+
+1. **Validate** — Runs claudelint validation and reads the CLAUDE.md file
+2. **Assess** — Evaluates quality against five criteria: specificity, completeness, clarity, organization, and maintenance
+3. **Improve** — Walks you through targeted fixes, creating `@import` files and reorganizing content
+
+**Usage (inside Claude Code):**
+
+```bash
+/claudelint:optimize-cc-md
+/claudelint:optimize-cc-md CLAUDE.md
+/claudelint:optimize-cc-md --verbose
+```
+
+**What it does:**
+
+- Reduces file size by extracting content into `@import` files
+- Removes generic or obvious instructions
+- Reorganizes content by concern
+- Explains each suggestion conversationally
+- Asks before making any changes
+- Verifies improvements after each change
+
+**When to use:** After `claudelint check-all` flags `claude-md-size` violations, or when your CLAUDE.md has grown large and needs restructuring.
+
+See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions.
+
 ## Development
 
 ### watch

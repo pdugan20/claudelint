@@ -39,5 +39,6 @@ claudelint validate-skills --verbose
 
 ## See Also
 
+- [Claude Code Plugin](/integrations/claude-code-plugin) - Plugin skills reference
 - [Claude Code Skills](https://code.claude.com/docs/en/skills) - Official skills documentation
 - [Configuration](/guide/configuration) - Customize rule severity
