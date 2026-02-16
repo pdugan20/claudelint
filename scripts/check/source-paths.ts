@@ -49,10 +49,12 @@ const SKIP_DIRS = new Set([
 ]);
 
 /**
- * Illustrative example paths used in documentation that don't exist on disk.
+ * Paths used in documentation that don't exist on disk.
+ * Includes illustrative examples and build-generated directories.
  */
 const EXAMPLE_PATHS = new Set([
   'scripts/deploy.sh',
+  'schemas/generated',
 ]);
 
 /**
