@@ -330,26 +330,14 @@ Before submitting a PR:
    - Add to .claude-plugin/README.md
    - Include in PR description
 
-### Skill PR Requirements
+### Skill PR checklist
 
-Use this template for skill PRs:
+When submitting a skill PR, include the following in your PR description (the PR template will guide you):
 
-```markdown
-## New Skill: skill-name
-
-**Description**: [One line]
-
-**Trigger phrases**: "phrase 1", "phrase 2", "phrase 3"
-
-**Checklist**:
-- [ ] Passes `claudelint validate-skills`
-- [ ] Trigger phrases tested (90%+ success)
-- [ ] Functionality tested with edge cases
-- [ ] Examples section included (if complex)
-- [ ] Troubleshooting section included (if needed)
-- [ ] README.md updated
-- [ ] .claude-plugin/README.md updated
-```
+- Skill name and one-line description
+- Trigger phrases (list at least 3)
+- Confirmation that `claudelint validate-skills` passes
+- Trigger phrase test results (90%+ success rate)
 
 **Review criteria:**
 
@@ -536,17 +524,15 @@ describe('old-rule-name (deprecated)', () => {
 
 2. Open a pull request on GitHub
 
-3. Fill out the PR template with:
-   - Description of changes
-   - Issue number (if applicable)
-   - Testing performed
-   - Screenshots (if UI changes)
+3. Fill out the PR template (summary, type of change, test plan, checklist)
 
-4. Wait for CI checks to pass
+4. Ensure your PR title follows [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., `feat: add new rule`) — this is enforced by CI
 
-5. Address any review feedback
+5. Wait for CI checks to pass
 
-6. Once approved, a maintainer will merge your PR
+6. Address any review feedback
+
+7. Once approved, a maintainer will merge your PR
 
 ## Reporting Issues
 

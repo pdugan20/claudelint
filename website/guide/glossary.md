@@ -510,7 +510,7 @@ export const rule: Rule = {
 
 ### Built-in Rule
 
-A validation rule that ships with claudelint. Located in [`src/rules/{category}/`](https://github.com/pdugan20/claude-lint/tree/main/src/rules).
+A validation rule that ships with claudelint. Located in [`src/rules/{category}/`](https://github.com/pdugan20/claudelint/tree/main/src/rules).
 
 **Properties:**
 

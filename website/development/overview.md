@@ -30,7 +30,7 @@ Rule documentation pages on this site are **auto-generated from source code meta
 
 1. Rules define inline documentation via `meta.docs` (type: `RuleDocumentation`)
 2. Running `npm run docs:generate` reads all rules from the registry
-3. Rules with `meta.docs` generate pages from the template in `scripts/generators/rule-page.ts`
+3. Rules with `meta.docs` generate pages from the template in `scripts/generate/rule-docs.ts`
 4. A sidebar JSON file is auto-generated for navigation
 
 ### RuleDocumentation Schema

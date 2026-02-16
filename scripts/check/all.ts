@@ -75,6 +75,7 @@ async function main(): Promise<void> {
     { script: join(__dirname, 'rule-references.ts'), name: 'Rule References' },
     { script: join(__dirname, 'rule-docs-sections.ts'), name: 'Rule Doc Sections' },
     { script: join(__dirname, 'code-samples.ts'), name: 'Code Samples' },
+    { script: join(__dirname, 'source-paths.ts'), name: 'Source Paths' },
   ];
 
   // Run each check

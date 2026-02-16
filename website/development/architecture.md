@@ -20,7 +20,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 
 ### Validators (Internal Orchestrators)
 
-**Validators** are internal orchestration classes in [`src/validators/`](https://github.com/pdugan20/claudelint/tree/main/src/validators/) that collect and run rules.
+**Validators** are internal orchestration classes in `src/validators/` that collect and run rules.
 
 **Characteristics:**
 

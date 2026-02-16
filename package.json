@@ -89,6 +89,7 @@
     "check:rule-docs-sections": "ts-node scripts/check/rule-docs-sections.ts",
     "check:rule-structure": "ts-node scripts/verify/rule-structure.ts",
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
+    "check:source-paths": "ts-node scripts/check/source-paths.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "check:tool-names": "ts-node scripts/verify/tool-names.ts",
     "validate": "npm-run-all lint format:check build test check:publint",

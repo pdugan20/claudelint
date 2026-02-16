@@ -1,0 +1,38 @@
+rules:
+  - changed-files:
+      - any-glob-to-any-file: 'src/rules/**'
+
+core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/validators/**'
+          - 'src/schemas/**'
+          - 'src/types/**'
+
+cli:
+  - changed-files:
+      - any-glob-to-any-file: 'src/cli/**'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'website/**'
+          - '*.md'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'tests/**'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+
+skills:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.claude/skills/**'
+          - 'skills/**'
+
+plugin:
+  - changed-files:
+      - any-glob-to-any-file: '.claude-plugin/**'

@@ -1,0 +1,34 @@
+name: PR Size Label
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  label-size:
+    name: Label PR Size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: cbrgm/pr-size-labeler-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: 'size/xs'
+          xs_diff: '10'
+          s_label: 'size/s'
+          s_diff: '50'
+          m_label: 'size/m'
+          m_diff: '200'
+          l_label: 'size/l'
+          l_diff: '500'
+          xl_label: 'size/xl'
+          xl_diff: '1000'
+          exclude_files: |
+            package-lock.json
+            website/rules/**/*.md
+            website/rules/_sidebar.json
+            website/data/rule-stats.json
+            src/rules/index.ts
+            src/rules/rule-ids.ts

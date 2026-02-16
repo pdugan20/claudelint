@@ -3,6 +3,7 @@ import pkg from '../../package.json';
 import rulesSidebar from '../rules/_sidebar.json';
 import claudeLight from './theme/claude-light.json';
 import claudeDark from './theme/claude-dark.json';
+import { sourceLinkPlugin } from './plugins/source-link';
 
 export default defineConfig({
   title: 'claudelint',
@@ -189,6 +190,9 @@ export default defineConfig({
     theme: {
       light: claudeLight as any,
       dark: claudeDark as any,
+    },
+    config(md) {
+      md.use(sourceLinkPlugin);
     },
   },
 

@@ -828,5 +828,5 @@ validate: async (context) => {
 If you encounter issues with custom rules:
 
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Review example rules in [`tests/fixtures/custom-rules/`](https://github.com/pdugan20/claudelint/tree/main/tests/fixtures/custom-rules/)
+2. Review example rules in `tests/fixtures/custom-rules/`
 3. Open an issue on [GitHub](https://github.com/pdugan20/claudelint/issues)

@@ -104,7 +104,7 @@ npm run check:fixtures:valid
 npx claudelint validate-agents --path tests/fixtures/projects/invalid-all-categories
 ```
 
-The `invalid-all-categories` fixture has intentional violations across all 10 validator categories. The `valid-complete` fixture has valid files for every category and should produce zero issues. Both are tested in CI via [`tests/integration/fixture-projects.test.ts`](https://github.com/pdugan20/claudelint/blob/main/tests/integration/fixture-projects.test.ts).
+The `invalid-all-categories` fixture has intentional violations across all 10 validator categories. The `valid-complete` fixture has valid files for every category and should produce zero issues. Both are tested in CI via `tests/integration/fixture-projects.test.ts`.
 
 ### Code style
 
@@ -152,7 +152,7 @@ export class MyClass {
 
 This makes the library testable, allows programmatic usage, and provides structured diagnostics with source tracking.
 
-Console is only allowed in the CLI layer ([`src/cli/utils/logger.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/utils/logger.ts)), output formatting ([`src/utils/reporting/`](https://github.com/pdugan20/claudelint/tree/main/src/utils/reporting/)), and script utilities ([`scripts/util/logger.ts`](https://github.com/pdugan20/claudelint/blob/main/scripts/util/logger.ts)). This is enforced by `npm run check:logger-usage` in CI and pre-commit hooks.
+Console is only allowed in the CLI layer (`src/cli/utils/logger.ts`), output formatting (`src/utils/reporting/`), and script utilities (`scripts/util/logger.ts`). This is enforced by `npm run check:logger-usage` in CI and pre-commit hooks.
 
 ### Testing
 
@@ -181,11 +181,11 @@ If drift is detected:
 
 1. Review the output to see missing/extra values
 2. Cross-check with official docs: [Tools](https://code.claude.com/docs/en/settings#tools-available-to-claude), [Models](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields)
-3. Update [`src/schemas/constants.ts`](https://github.com/pdugan20/claudelint/blob/main/src/schemas/constants.ts) if needed
+3. Update `src/schemas/constants.ts` if needed
 4. Run tests: `npm test`
 5. Re-verify: `npm run check:constants`
 
-See the [`scripts/check/`](https://github.com/pdugan20/claudelint/tree/main/scripts/check/) directory for detailed documentation on verification scripts.
+See the `scripts/check/` directory for detailed documentation on verification scripts.
 
 ### Commit messages
 
@@ -207,42 +207,6 @@ Examples:
 - `fix(cli): handle missing config file gracefully`
 - `docs(readme): update installation instructions`
 
-## Project Structure
-
-```text
-claudelint/
-├── src/
-│   ├── api/             # Library API layer
-│   ├── cli/             # CLI commands and utilities
-│   ├── rules/           # Validation rules (by category)
-│   │   ├── claude-md/   # CLAUDE.md rules
-│   │   ├── skills/      # Skills rules
-│   │   ├── settings/    # Settings rules
-│   │   ├── hooks/       # Hooks rules
-│   │   ├── mcp/         # MCP rules
-│   │   ├── plugin/      # Plugin rules
-│   │   ├── agents/      # Agents rules
-│   │   ├── lsp/         # LSP rules
-│   │   ├── output-styles/ # Output Styles rules
-│   │   └── commands/    # Commands rules
-│   ├── schemas/         # Zod schemas and constants
-│   ├── types/           # TypeScript types and interfaces
-│   ├── validators/      # Validator orchestrators
-│   └── utils/           # Shared utilities
-├── tests/
-│   ├── rules/           # Rule unit tests
-│   ├── validators/      # Validator tests
-│   ├── integration/     # CLI integration tests
-│   ├── fixtures/        # Test fixtures
-│   └── utils/           # Utility tests
-├── website/             # VitePress documentation site
-├── skills/              # Claude Code plugin skills
-├── .claude/hooks/       # Claude Code plugin hooks
-├── .claude-plugin/      # Plugin manifest and metadata
-├── scripts/             # Build and automation scripts
-└── schemas/             # Generated JSON schemas
-```
-
 ## Adding Validation Rules
 
 claudelint uses a rule-based architecture similar to ESLint. Contributors write individual validation rules, not validators.
@@ -253,7 +217,7 @@ Checklist:
 
 1. Create rule file in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
 2. Define rule metadata (id, name, description, category, severity)
-3. Add `meta.docs` documentation metadata (see below)
+3. Add `meta.docs` documentation metadata (see [schema](/development/overview#ruledocumentation-schema) and example below)
 4. Implement `validate()` function
 5. Add rule to category index in [`src/rules/{category}/index.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
 6. Write unit tests in [`tests/rules/{category}/{rule-id}.test.ts`](https://github.com/pdugan20/claudelint/tree/main/tests/rules/)
@@ -263,88 +227,25 @@ Checklist:
 
 ### Rule docs metadata
 
-Rule documentation is auto-generated from `meta.docs` in each rule's source file. When you add or modify a rule, include a `docs` property so the documentation site stays in sync automatically.
-
-Example metadata for a simple rule:
-
-```typescript
-export const rule: Rule = {
-  meta: {
-    id: 'hooks-missing-script',
-    name: 'Hooks Missing Script',
-    description: 'Hook command references a script file that does not exist',
-    category: 'Hooks',
-    severity: 'error',
-    fixable: false,
-    deprecated: false,
-    since: '0.1.0',
-    docs: {
-      recommended: true,
-      summary: 'Hook command references a script file that does not exist',
-      details:
-        'When a hook command points to a script (e.g., `bash .claude/hooks/pre-tool.sh`), ' +
-        'the referenced file must exist on disk. A missing script causes the hook to fail ' +
-        'silently at runtime, which can lead to skipped validations or security checks.',
-      examples: {
-        incorrect: [
-          {
-            description: 'A hook referencing a script that does not exist',
-            code: `hooks:
-  PreToolUse:
-    - matcher: Write
-      command: "bash .claude/hooks/missing-script.sh"`,
-          },
-        ],
-        correct: [
-          {
-            description: 'A hook referencing an existing script',
-            code: `hooks:
-  PreToolUse:
-    - matcher: Write
-      command: "bash .claude/hooks/validate-write.sh"`,
-          },
-        ],
-      },
-      howToFix:
-        'Create the missing script file at the path referenced in the hook command, ' +
-        'or update the command to point to an existing script.',
-      whenNotToUse:
-        'Disable this rule if hook scripts are generated at build time ' +
-        'and do not exist in the source tree.',
-    },
-  },
-  validate: async (context) => { /* ... */ },
-};
-```
-
-Example with configurable options:
+Rule documentation is auto-generated from `meta.docs` in each rule's source file. Include a `docs` property so the documentation site stays in sync automatically. See the [RuleDocumentation schema](/development/overview#ruledocumentation-schema) for all available fields.
 
 ```typescript
 docs: {
   recommended: true,
-  summary: 'CLAUDE.md exceeds maximum file size limit',
-  details:
-    'Large CLAUDE.md files cause performance issues and may exceed ' +
-    'context window limits when loaded by Claude Code. ...',
-  examples: { /* ... */ },
-  howToFix: 'Split into smaller files using @import directives.',
-  optionExamples: [
-    {
-      description: 'Set a custom maximum file size of 50KB',
-      config: { maxSize: 50000 },
-    },
-    {
-      description: 'Use the default 40KB limit',
-      config: { maxSize: 40000 },
-    },
-  ],
-  whenNotToUse:
-    'This rule should always be enabled.',
-  relatedRules: ['claude-md-import-missing'],
+  summary: 'Hook command references a script file that does not exist',
+  details: 'When a hook command points to a script, the referenced file must exist on disk...',
+  examples: {
+    incorrect: [{ description: 'Missing script', code: `command: "bash .claude/hooks/missing.sh"` }],
+    correct: [{ description: 'Existing script', code: `command: "bash .claude/hooks/validate.sh"` }],
+  },
+  howToFix: 'Create the missing script or update the command path.',
+  whenNotToUse: 'Disable if hook scripts are generated at build time.',
 }
 ```
 
-Run `npm run docs:generate` after adding metadata to verify the generated page looks correct. The generated pages appear in [`website/rules/{category}/{rule-id}.md`](https://github.com/pdugan20/claudelint/tree/main/website/rules/).
+For rules with configurable options, add `optionExamples` and `relatedRules` — see the [schema](/development/overview#ruledocumentation-schema) for details.
+
+Run `npm run docs:generate` after adding metadata to verify the generated page. Output appears in `website/rules/{category}/{rule-id}.md`.
 
 ## Contributing Skills
 
@@ -395,24 +296,14 @@ Before submitting a PR:
    - Add to .claude-plugin/README.md
    - Include in PR description
 
-### Skill PR template
+### Skill PR checklist
 
-```markdown
-## New Skill: skill-name
+When submitting a skill PR, include the following in your PR description (the PR template will guide you):
 
-**Description**: [One line]
-
-**Trigger phrases**: "phrase 1", "phrase 2", "phrase 3"
-
-**Checklist**:
-- [ ] Passes `claudelint validate-skills`
-- [ ] Trigger phrases tested (90%+ success)
-- [ ] Functionality tested with edge cases
-- [ ] Examples section included (if complex)
-- [ ] Troubleshooting section included (if needed)
-- [ ] README.md updated
-- [ ] .claude-plugin/README.md updated
-```
+- Skill name and one-line description
+- Trigger phrases (list at least 3)
+- Confirmation that `claudelint validate-skills` passes
+- Trigger phrase test results (90%+ success rate)
 
 Review criteria: follows naming conventions (no generic names like "format", "validate"), description includes trigger phrases, progressive disclosure used if >3,000 words, examples follow scenario format, troubleshooting addresses skill usage issues (not the issues the skill fixes).
 
@@ -471,17 +362,15 @@ Rules deprecated before 1.0.0 may be removed in 1.0.0 if they validate non-exist
 
 2. Open a pull request on GitHub
 
-3. Fill out the PR template with:
-   - Description of changes
-   - Issue number (if applicable)
-   - Testing performed
-   - Screenshots (if UI changes)
+3. Fill out the PR template (summary, type of change, test plan, checklist)
 
-4. Wait for CI checks to pass
+4. Ensure your PR title follows [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., `feat: add new rule`) — this is enforced by CI
 
-5. Address any review feedback
+5. Wait for CI checks to pass
 
-6. Once approved, a maintainer will merge your PR
+6. Address any review feedback
+
+7. Once approved, a maintainer will merge your PR
 
 ## Reporting Issues
 
@@ -491,7 +380,7 @@ Feature requests should include: use case description, proposed solution, altern
 
 ## Documentation Website
 
-The documentation site is built with [VitePress](https://vitepress.dev/) and lives in the [`website/`](https://github.com/pdugan20/claudelint/tree/main/website) directory. Rule documentation pages are auto-generated from source code metadata.
+The documentation site is built with [VitePress](https://vitepress.dev/) and lives in the `website/` directory. Rule documentation pages are auto-generated from source code metadata.
 
 ### Running locally
 
@@ -512,17 +401,17 @@ npm run docs:preview
 ### How it works
 
 - Rule docs are auto-generated from `meta.docs` in each rule's TypeScript source
-- Running `npm run docs:generate` reads all rules and produces markdown pages in [`website/rules/`](https://github.com/pdugan20/claudelint/tree/main/website/rules/)
-- A sidebar JSON file ([`website/rules/_sidebar.json`](https://github.com/pdugan20/claudelint/blob/main/website/rules/_sidebar.json)) is generated for navigation
-- Custom Vue components live in [`website/.vitepress/theme/components/`](https://github.com/pdugan20/claudelint/tree/main/website/.vitepress/theme/components/)
+- Running `npm run docs:generate` reads all rules and produces markdown pages in `website/rules/`
+- A sidebar JSON file (`website/rules/_sidebar.json`) is generated for navigation
+- Custom Vue components live in `website/.vitepress/theme/components/`
 - See the [Development Overview](/development/overview) for the full metadata schema
 
 ### Editing documentation
 
 - Rule docs: edit the `meta.docs` property in the rule's source file, then run `npm run docs:generate`
-- Guide/API pages: edit markdown files directly in [`website/`](https://github.com/pdugan20/claudelint/tree/main/website)
-- Components: edit Vue files in [`website/.vitepress/theme/components/`](https://github.com/pdugan20/claudelint/tree/main/website/.vitepress/theme/components/)
-- Navigation: edit sidebar config in [`website/.vitepress/config.mts`](https://github.com/pdugan20/claudelint/blob/main/website/.vitepress/config.mts)
+- Guide/API pages: edit markdown files directly in `website/`
+- Components: edit Vue files in `website/.vitepress/theme/components/`
+- Navigation: edit sidebar config in `website/.vitepress/config.mts`
 
 ### Related docs
 
