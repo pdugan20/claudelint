@@ -159,7 +159,7 @@ Integration tests pin exact error and warning counts for each fixture. This prev
 
 **How it works:**
 
-1. `invalid-all-categories` pins `Total errors: 29` and `Total warnings: 20`
+1. `invalid-all-categories` pins `24 errors` and `35 warnings`
 2. When a new rule is added and fires against the fixture, the count changes
 3. The integration test fails, forcing an intentional decision:
    - Add the rule ID to the fixture's assertions, OR
