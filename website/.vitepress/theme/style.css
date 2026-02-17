@@ -269,6 +269,14 @@ html {
   -webkit-text-fill-color: transparent;
 }
 
+/* ===== Nav Logo ===== */
+
+.VPNavBarTitle .logo {
+  height: 19px;
+  width: auto;
+  margin-right: 7px;
+}
+
 /* ===== Nav: Always show bottom border (VitePress hides it on home) ===== */
 
 .VPNavBar .divider-line {

@@ -1,7 +1,7 @@
 # Branding & Assets Tracker
 
 **Start Date**: 2026-02-14
-**Status**: Phase 1
+**Status**: Phase 1 (nearly complete)
 
 Track progress through each phase of branding and asset implementation.
 
@@ -14,27 +14,27 @@ Track progress through each phase of branding and asset implementation.
 
 ### Logo Concept
 
-- [ ] Decide on logo concept/direction
-  - [ ] Sketch or describe 2-3 concepts
-  - [ ] Select final direction
-- [ ] Determine if logo is icon-only, wordmark-only, or icon + wordmark
+- [x] Decide on logo concept/direction
+  - [x] Sketch or describe 2-3 concepts
+  - [x] Select final direction
+- [x] Determine if logo is icon-only, wordmark-only, or icon + wordmark
 
 ### Logo Creation
 
-- [ ] Create primary logo SVG (works on light backgrounds)
-- [ ] Create dark variant SVG (works on dark backgrounds)
-- [ ] Verify logo is legible at 24px height (nav bar size)
+- [x] Create primary logo SVG (works on light backgrounds)
+- [x] Create dark variant SVG (works on dark backgrounds)
+- [x] Verify logo is legible at 24px height (nav bar size)
 - [ ] Verify logo is recognizable at 16x16 (favicon size)
-- [ ] Test logo against both light (`#faf9f5`) and dark (`#1a1a19`) backgrounds
+- [x] Test logo against both light (`#faf9f5`) and dark (`#1a1a19`) backgrounds
 
 ### Color Validation
 
-- [ ] Logo uses colors from existing palette
+- [x] Logo uses colors from existing palette
   - Primary: terracotta `#d97757` / `#e08b6e`
   - Neutral: near-black `#1a1a19` / warm off-white `#faf9f5`
-- [ ] Logo works in monochrome (single color)
+- [x] Logo works in monochrome (single color)
 
-**Phase 1 Complete**: ( /11 tasks)
+**Phase 1 Complete**: (10/11 tasks)
 
 ---
 
@@ -229,13 +229,13 @@ Track progress through each phase of branding and asset implementation.
 
 ### By Phase
 
-- [ ] Phase 1: Logo Design (0/11)
+- [ ] Phase 1: Logo Design (10/11)
 - [ ] Phase 2: Favicon Set (0/11)
 - [ ] Phase 3: Per-Page OG Image Generation (0/22)
 - [ ] Phase 4: VitePress Configuration (0/20)
 - [ ] Phase 5: Validation & Polish (0/16)
 
-**Total**: 0/80 tasks (0%)
+**Total**: 10/80 tasks (12%)
 
 ---
 

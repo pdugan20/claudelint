@@ -99,7 +99,12 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span class="footer-copyright">&copy; {{ year }} Pat Dugan</span>
+        <span class="footer-copyright">&copy; {{ year }} Pat Dugan. All rights reserved.</span>
+        <span class="footer-disclaimer"
+          >Not affiliated with or endorsed by Anthropic. Claude Code is a trademark of Anthropic,
+          PBC.</span
+        >
+        <img src="/logo-gray.svg" alt="claudelint" class="footer-logo" />
       </div>
     </div>
   </footer>
@@ -166,11 +171,29 @@ const year = new Date().getFullYear();
 .footer-bottom {
   border-top: 1px solid #2e2e2a;
   padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.footer-logo {
+  height: 16px;
+  width: auto;
+  opacity: 0.7;
+  margin-top: 8px;
 }
 
 .footer-copyright {
   font-size: 0.75rem;
   color: #6e6c64;
+}
+
+.footer-disclaimer {
+  font-size: 0.75rem;
+  color: #6e6c64;
+  line-height: 1.4;
 }
 
 @media (max-width: 768px) {
