@@ -27,14 +27,14 @@ async function generate() {
       .resize(size, size)
       .png()
       .toFile(outputPath);
-    log.info(`  ${name} (${size}x${size})`);
+    log.dim(`${name} (${size}x${size})`);
   }
 
   const png16 = readFileSync(join(PUBLIC_DIR, 'favicon-16x16.png'));
   const png32 = readFileSync(join(PUBLIC_DIR, 'favicon-32x32.png'));
   const ico = await pngToIco([png16, png32]);
   writeFileSync(join(PUBLIC_DIR, 'favicon.ico'), ico);
-  log.info('  favicon.ico (16x16 + 32x32)');
+  log.dim('favicon.ico (16x16 + 32x32)');
 
   log.success('All favicon files written to website/public/');
 }
