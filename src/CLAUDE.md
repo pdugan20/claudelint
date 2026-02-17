@@ -27,7 +27,7 @@ export const rule: Rule = {
     severity: 'error' | 'warning',
     fixable: boolean,
     deprecated: boolean,
-    since: '0.2.0',
+    since: '0.2.0',                    // Required for built-in rules, optional for custom rules
     docs: {
       recommended: boolean,
       summary: 'Short summary for docs',

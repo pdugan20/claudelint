@@ -8,11 +8,15 @@
  * Run: npm run generate:schema-rules
  */
 
-import { writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { log } from '../util/logger';
 
 const rootDir = process.cwd();
+
+/** Derive the stable target version from package.json (strips pre-release suffix) */
+const pkg = JSON.parse(readFileSync(join(rootDir, 'package.json'), 'utf8')) as { version: string };
+const stableVersion = pkg.version.replace(/-.*$/, '');
 
 interface SchemaRuleConfig {
   id: string;
@@ -267,7 +271,7 @@ export const rule: Rule = {
     severity: 'error',
     fixable: false,
     deprecated: false,
-    since: '1.0.0',
+    since: '${stableVersion}',
     docUrl:
       'https://claudelint.com/rules/${config.category}/${config.id}',
   },

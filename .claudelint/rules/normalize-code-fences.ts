@@ -16,7 +16,6 @@ export const rule: Rule = {
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: true,
-    since: '1.0.0',
   },
 
   validate: async (context) => {

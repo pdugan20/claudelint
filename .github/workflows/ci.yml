@@ -175,6 +175,9 @@ jobs:
       - name: Verify rule structure
         run: npm run check:rule-structure
 
+      - name: Verify rule since values
+        run: npm run check:rule-since
+
       - name: Verify schema synchronization
         run: npm run check:schema-sync
 

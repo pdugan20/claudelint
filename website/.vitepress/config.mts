@@ -129,6 +129,7 @@ export default defineConfig({
               link: '/integrations/claude-code-plugin',
             },
             { text: 'Monorepos', link: '/integrations/monorepos' },
+            { text: 'FAQ Mockups', link: '/integrations/faq-mockups' },
             { text: 'SARIF', link: '/integrations/sarif' },
           ],
         },

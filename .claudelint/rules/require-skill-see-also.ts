@@ -16,7 +16,6 @@ export const rule: Rule = {
     category: 'Skills',
     severity: 'warn',
     fixable: false,
-    since: '1.0.0',
   },
 
   validate: async (context) => {

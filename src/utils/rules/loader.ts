@@ -9,6 +9,7 @@ import { createJiti } from 'jiti';
 import { RuleRegistry } from './registry';
 import type { Rule, RuleCategory, RuleSeverity } from '../../types/rule';
 import { isRule } from '../../types/rule';
+import { validateSemver } from './helpers';
 
 const jiti = createJiti(__filename);
 
@@ -50,6 +51,16 @@ function validateRuleValues(rule: Rule): string[] {
 
   if (!rule.meta.id || !/^[a-z][a-z0-9-]*$/.test(rule.meta.id)) {
     errors.push(`Invalid rule ID '${rule.meta.id}'. Must be non-empty, lowercase, and kebab-case`);
+  }
+
+  if (rule.meta.since !== undefined && rule.meta.since !== '' && !validateSemver(rule.meta.since)) {
+    errors.push(
+      `Invalid 'since' value '${rule.meta.since}'. Must be a valid semver string (e.g., '0.2.0')`
+    );
+  }
+
+  if (rule.meta.since === '') {
+    errors.push(`Invalid 'since' value ''. Must be a valid semver string or omitted entirely`);
   }
 
   return errors;
@@ -163,7 +174,7 @@ export class CustomRuleLoader {
           filePath,
           success: false,
           error:
-            'Rule does not implement Rule interface (must have meta with id, name, description, category, severity, fixable, since, and a validate function)',
+            'Rule does not implement Rule interface (must have meta with id, name, description, category, severity, fixable, and a validate function)',
         };
       }
 

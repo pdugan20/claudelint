@@ -426,6 +426,10 @@
         "link": "/rules/agents/agent-disallowed-tools"
       },
       {
+        "text": "agent-events",
+        "link": "/rules/agents/agent-events"
+      },
+      {
         "text": "agent-hooks",
         "link": "/rules/agents/agent-hooks"
       },
@@ -498,8 +502,20 @@
         "link": "/rules/output-styles/output-style-body-too-short"
       },
       {
+        "text": "output-style-description",
+        "link": "/rules/output-styles/output-style-description"
+      },
+      {
+        "text": "output-style-examples",
+        "link": "/rules/output-styles/output-style-examples"
+      },
+      {
         "text": "output-style-missing-guidelines",
         "link": "/rules/output-styles/output-style-missing-guidelines"
+      },
+      {
+        "text": "output-style-name",
+        "link": "/rules/output-styles/output-style-name"
       },
       {
         "text": "output-style-name-directory-mismatch",

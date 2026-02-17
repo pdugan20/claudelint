@@ -12,7 +12,6 @@ export const rule = {
     severity: 'error',
     fixable: false,
     deprecated: false,
-    since: '1.0.0',
   },
   // Missing validate function
 };

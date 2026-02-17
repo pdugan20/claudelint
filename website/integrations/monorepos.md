@@ -1,5 +1,18 @@
 # Monorepo Support
 
+<script setup>
+const faqItems = [
+  { q: 'Can I use extends without workspaces?', a: 'Yes. Config inheritance works in any repository, not just monorepos.' },
+  { q: 'Can I extend from npm packages?', a: 'Yes. Install the package and reference it by name in your config.' },
+  { q: 'Do recursive extends work?', a: 'Yes. Configs can extend other configs that also use extends. Circular dependencies are detected and prevented.' },
+  { q: 'Can I override inherited rules?', a: 'Yes. Rules in the child config always override rules from extended configs.' },
+  { q: 'What if a package has no config?', a: 'claudelint searches up the directory tree for the nearest .claudelintrc.json file, just like ESLint.' },
+  { q: 'Can I use --workspace without a monorepo?', a: 'No. The --workspace and --workspaces flags require a workspace configuration (pnpm-workspace.yaml or package.json workspaces).' },
+  { q: 'How do ignore patterns merge?', a: 'Ignore patterns are concatenated and deduplicated. Both parent and child patterns apply.' },
+  { q: 'Can I disable an inherited rule?', a: 'Yes. Set it to "off" in the child config.' },
+]
+</script>
+
 claudelint provides full support for monorepo projects with workspace detection and configuration inheritance.
 
 ## File Discovery
@@ -103,15 +116,15 @@ When extending configs, claudelint merges configurations in this order:
 2. Additional extended configs (in order)
 3. Current config (overrides everything)
 
-**Rules:** Deep merged (child can override specific rules)
+Each field type merges differently:
 
-**Overrides:** Arrays concatenated (all overrides apply)
-
-**Ignore Patterns:** Arrays concatenated and deduplicated
-
-**Output:** Child completely overrides parent
-
-**Scalars:** Child value wins
+| Field | Strategy |
+|-------|----------|
+| `rules` | Deep merged (child can override specific rules) |
+| `overrides` | Arrays concatenated (all overrides apply) |
+| `ignorePatterns` | Arrays concatenated and deduplicated |
+| `output` | Child completely replaces parent |
+| Scalars | Child value wins |
 
 ### Example Monorepo Structure
 
@@ -148,7 +161,13 @@ monorepo/
 }
 ```
 
-```json [Package config]
+```json [App package]
+{
+  "extends": "../../.claudelintrc.json"
+}
+```
+
+```json [Test utils (relaxed)]
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
@@ -255,7 +274,7 @@ Workspace detection supports pnpm-workspace.yaml and package.json workspaces.
 Please run this command from a monorepo root directory.
 ```
 
-**Solution:** Run the command from your monorepo root (where pnpm-workspace.yaml or package.json with workspaces field exists).
+Solution: Run the command from your monorepo root (where pnpm-workspace.yaml or package.json with workspaces field exists).
 
 ### Package not found
 
@@ -268,7 +287,7 @@ Available packages:
 - shared
 ```
 
-**Solution:** Use the exact directory name of the package (shown in "Available packages" list).
+Solution: Use the exact directory name of the package (shown in "Available packages" list).
 
 ### Extended config not found
 
@@ -278,7 +297,7 @@ Resolved to: /path/to/base.json
 Referenced from: /path/to/dir
 ```
 
-**Solution:** Check that the relative path is correct and the file exists.
+Solution: Check that the relative path is correct and the file exists.
 
 ### Circular dependency
 
@@ -289,68 +308,11 @@ Error: Circular dependency detected in config extends:
   3. /path/to/a.json
 ```
 
-**Solution:** Remove the circular reference from your config extends chain.
-
-## FAQ
-
-### Extends without workspaces
-
-Yes! Config inheritance works in any repository, not just monorepos.
-
-### Extend from npm packages
-
-Yes! Install the package and reference it:
-
-::: code-group
-
-```bash [Install]
-npm install --save-dev @company/claudelint-config
-```
-
-```json [Config]
-{
-  "extends": "@company/claudelint-config"
-}
-```
-
-:::
-
-### Recursive extends
-
-Yes! Configs can extend other configs that also use extends. Circular dependencies are detected and prevented.
-
-### Override inherited rules
-
-Yes! Rules in the child config always override rules from extended configs.
-
-### No config in a package
-
-claudelint searches up the directory tree for the nearest .claudelintrc.json file, just like ESLint.
-
-### --workspace without a monorepo
-
-No. The --workspace and --workspaces flags require a workspace configuration (pnpm-workspace.yaml or package.json workspaces).
-
-### Ignore patterns in extended configs
-
-Ignore patterns are concatenated and deduplicated. Both parent and child patterns apply.
-
-### Disable an inherited rule
-
-Yes! Set it to "off" in the child config:
-
-```json
-{
-  "extends": "./base.json",
-  "rules": {
-    "some-rule": "off"
-  }
-}
-```
+Solution: Remove the circular reference from your config extends chain.
 
 ## Migration Guide
 
-### Upgrading Existing Monorepos
+**Upgrading existing monorepos:**
 
 ::: code-group
 
@@ -371,7 +333,7 @@ packages/
 
 :::
 
-**Steps:**
+Steps:
 
 1. Create root .claudelintrc.json with common rules
 2. Update package configs to extend root:
@@ -385,88 +347,7 @@ packages/
 3. Keep only package-specific overrides in child configs
 4. Test with `claudelint check-all --workspaces`
 
-### Backward Compatibility
-
-- All existing configs continue to work without changes
-- `extends` field is optional
-- Workspaces are auto-detected (no config changes needed)
-- No breaking changes to existing functionality
-
-## Examples
-
-### Strict apps, relaxed tests
-
-::: code-group
-
-```json [Root]
-{
-  "rules": {
-    "claude-md-size": "warn"
-  }
-}
-```
-
-```json [App package]
-{
-  "extends": "../../.claudelintrc.json"
-}
-```
-
-```json [Test utils]
-{
-  "extends": "../../.claudelintrc.json",
-  "rules": {
-    "claude-md-size": "warn"
-  }
-}
-```
-
-:::
-
-### Shared company config
-
-Create a publishable shared config:
-
-::: code-group
-
-```json [package.json]
-{
-  "name": "@company/claudelint-config",
-  "version": "1.0.0",
-  "main": "index.json"
-}
-```
-
-```json [index.json]
-{
-  "rules": {
-    "claude-md-size": "warn",
-    "skill-missing-version": "error",
-    "skill-missing-changelog": "error"
-  }
-}
-```
-
-:::
-
-Then use it in projects:
-
-::: code-group
-
-```bash [Install]
-npm install --save-dev @company/claudelint-config
-```
-
-```json [Config]
-{
-  "extends": "@company/claudelint-config",
-  "rules": {
-    "claude-md-size": "warn"
-  }
-}
-```
-
-:::
+**Backward compatibility:** All existing configs continue to work without changes. The `extends` field is optional, workspaces are auto-detected, and there are no breaking changes to existing functionality.
 
 ## Best Practices
 
@@ -476,6 +357,10 @@ npm install --save-dev @company/claudelint-config
 4. **Test with --workspaces** - catch issues across all packages
 5. **Version shared configs** - treat them like dependencies
 6. **Document overrides** - explain why packages differ
+
+## FAQ
+
+<FaqList variant="divider" :items="faqItems" />
 
 ## Related Documentation
 

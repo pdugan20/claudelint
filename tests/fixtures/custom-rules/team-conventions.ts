@@ -14,7 +14,6 @@ export const rule: Rule = {
     severity: 'warn',
     fixable: false,
     deprecated: false,
-    since: '1.0.0',
   },
 
   validate: async (context) => {

@@ -138,7 +138,9 @@ function renderRuleExplanation(meta: RuleMetadata): void {
   output.push(`  ${chalk.dim('Severity:')}  ${severityLabel}`);
   output.push(`  ${chalk.dim('Category:')}  ${meta.category}`);
   output.push(`  ${chalk.dim('Fixable:')}   ${meta.fixable ? 'yes' : 'no'}`);
-  output.push(`  ${chalk.dim('Since:')}     ${meta.since}`);
+  if (meta.since) {
+    output.push(`  ${chalk.dim('Since:')}     ${meta.since}`);
+  }
   output.push(`  ${chalk.dim('Docs:')}      ${getDocsUrl(meta)}`);
   output.push('');
 

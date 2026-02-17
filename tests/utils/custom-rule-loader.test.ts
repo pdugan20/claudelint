@@ -569,7 +569,7 @@ describe('CustomRuleLoader', () => {
       expect(results[0].error).toContain('Rule interface');
     });
 
-    it('should reject missing since field', async () => {
+    it('should accept rule without since field (optional for custom rules)', async () => {
       const rulesDir = join(testDir, '.claudelint/rules');
       mkdirSync(rulesDir, { recursive: true });
 
@@ -593,8 +593,151 @@ describe('CustomRuleLoader', () => {
       const results = await loader.loadCustomRules(testDir);
 
       expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(true);
+    });
+
+    it('should reject invalid semver in since field', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'bad-since.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'bad-since-rule',
+            name: 'Bad Since',
+            description: 'Rule with invalid since value',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            since: 'banana',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
       expect(results[0].success).toBe(false);
-      expect(results[0].error).toContain('Rule interface');
+      expect(results[0].error).toContain("Invalid 'since' value");
+      expect(results[0].error).toContain('semver');
+    });
+
+    it('should reject v-prefixed since value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'v-prefix.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'v-prefix-rule',
+            name: 'V Prefix',
+            description: 'Rule with v-prefixed since',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            since: 'v0.2.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain("Invalid 'since' value");
+    });
+
+    it('should reject empty string since value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'empty-since.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'empty-since-rule',
+            name: 'Empty Since',
+            description: 'Rule with empty since',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            since: '',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain("Invalid 'since' value");
+    });
+
+    it('should accept valid semver since value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'good-since.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'good-since-rule',
+            name: 'Good Since',
+            description: 'Rule with valid since',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            since: '0.2.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(true);
+    });
+
+    it('should accept pre-release semver since value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'prerelease-since.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'prerelease-since-rule',
+            name: 'Prerelease Since',
+            description: 'Rule with prerelease since',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            since: '1.0.0-beta.1',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(true);
     });
 
     it('should reject invalid rule ID format', async () => {

@@ -279,7 +279,7 @@ export const rule: Rule = {
     severity: 'warn',
     fixable: false,
     deprecated: false,
-    since: '1.0.0',
+    // since is optional for custom rules
   },
 
   validate: async (context) => {

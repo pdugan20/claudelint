@@ -21,7 +21,6 @@ export const rule: Rule = {
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: false,
-    since: '1.0.0',
     schema: optionsSchema,
     defaultOptions: {
       maxDepth: 4,

@@ -182,11 +182,13 @@ export function generateRulePage(meta: RuleMetadata): string {
   );
   parts.push('');
 
-  // Version
-  parts.push('## Version');
-  parts.push('');
-  parts.push(`Available since: v${meta.since}`);
-  parts.push('');
+  // Version (only if since is defined)
+  if (meta.since) {
+    parts.push('## Version');
+    parts.push('');
+    parts.push(`Available since: v${meta.since}`);
+    parts.push('');
+  }
 
   return parts.join('\n');
 }

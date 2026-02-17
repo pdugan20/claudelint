@@ -26,7 +26,7 @@ export const rule: Rule = {
     category: 'Skills',
     severity: 'warn',
     fixable: false,
-    since: '1.0.0',
+    // since is optional for custom rules
   },
 
   validate: async (context) => {
@@ -161,7 +161,7 @@ export const rule: Rule = {
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: false,
-    since: '1.0.0',
+    // since is optional for custom rules
   },
 
   validate: async (context) => {
@@ -224,7 +224,7 @@ export const rule: Rule = {
     id: 'normalize-code-fences',
     // ...
     fixable: true,  // Required for auto-fix
-    since: '1.0.0',
+    // since is optional for custom rules
   },
 
   validate: async (context) => {
@@ -322,7 +322,7 @@ export const rule: Rule = {
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: false,
-    since: '1.0.0',
+    // since is optional for custom rules
     schema: optionsSchema,
     defaultOptions: {
       maxDepth: 4,

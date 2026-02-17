@@ -110,8 +110,8 @@ export interface RuleMetadata {
    */
   deprecated?: boolean | DeprecationInfo;
 
-  /** Version when this rule was introduced */
-  since: string;
+  /** Version when this rule was introduced (optional for custom rules) */
+  since?: string;
 
   /** Optional URL to detailed documentation */
   docUrl?: string;
@@ -323,8 +323,7 @@ export function isRule(value: unknown): value is Rule {
     typeof (rule.meta as Record<string, unknown>).severity === 'string' &&
     'fixable' in rule.meta &&
     typeof (rule.meta as Record<string, unknown>).fixable === 'boolean' &&
-    'since' in rule.meta &&
-    typeof (rule.meta as Record<string, unknown>).since === 'string' &&
+    (!('since' in rule.meta) || typeof (rule.meta as Record<string, unknown>).since === 'string') &&
     typeof rule.validate === 'function'
   );
 }
