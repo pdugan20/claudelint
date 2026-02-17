@@ -13,7 +13,7 @@ concurrency:
 jobs:
   lint:
     name: Lint & Format
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -46,7 +46,7 @@ jobs:
 
   static-checks:
     name: Static Checks
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -79,7 +79,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -108,13 +108,12 @@ jobs:
           retention-days: 1
 
   test:
-    name: Test (Node ${{ matrix.node-version }}, ${{ matrix.os }})
+    name: Test (Node ${{ matrix.node-version }})
     needs: [build]
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [20, 22]
-        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v6
 
@@ -136,7 +135,7 @@ jobs:
         run: npm test -- --coverage
 
       - name: Upload coverage to Codecov
-        if: matrix.node-version == 20 && matrix.os == 'ubuntu-latest'
+        if: matrix.node-version == 20
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -147,7 +146,7 @@ jobs:
 
   rule-verification:
     name: Rule Verification
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -175,7 +174,7 @@ jobs:
   dogfood:
     name: Dogfood
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -199,7 +198,7 @@ jobs:
   skill-validation:
     name: Skill Validation
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 
@@ -229,7 +228,7 @@ jobs:
   integration:
     name: Integration Tests
     needs: [build]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v6
 

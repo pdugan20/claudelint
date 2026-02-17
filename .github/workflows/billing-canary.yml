@@ -1,0 +1,13 @@
+name: Billing Canary
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  canary:
+    name: GitHub-Hosted Runner Check
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "GitHub-hosted runners are available"
