@@ -45,29 +45,29 @@ Track progress through each phase of branding and asset implementation.
 
 ### Generate Favicons
 
-- [ ] Export favicon source at 512x512 PNG from logo mark
-- [ ] Generate `favicon.ico` (contains 16x16 and 32x32)
-- [ ] Generate `favicon-16x16.png`
-- [ ] Generate `favicon-32x32.png`
-- [ ] Generate `apple-touch-icon.png` (180x180)
-- [ ] Generate `android-chrome-192x192.png`
-- [ ] Generate `android-chrome-512x512.png`
+- [x] Export favicon source at 512x512 PNG from logo mark
+- [x] Generate `favicon.ico` (contains 16x16 and 32x32)
+- [x] Generate `favicon-16x16.png`
+- [x] Generate `favicon-32x32.png`
+- [x] Generate `apple-touch-icon.png` (180x180)
+- [x] Generate `android-chrome-192x192.png`
+- [x] Generate `android-chrome-512x512.png`
 
 ### Web Manifest
 
-- [ ] Create `site.webmanifest` with icon references
-  - [ ] Name: "claudelint"
-  - [ ] Short name: "claudelint"
-  - [ ] Theme color: `#1a1a19`
-  - [ ] Background color: `#faf9f5`
-  - [ ] Icon entries for 192x192 and 512x512
+- [x] Create `site.webmanifest` with icon references
+  - [x] Name: "claudelint"
+  - [x] Short name: "claudelint"
+  - [x] Theme color: `#1a1a19`
+  - [x] Background color: `#faf9f5`
+  - [x] Icon entries for 192x192 and 512x512
 
 ### Place Files
 
-- [ ] All favicon files placed in `website/public/`
-- [ ] Verify `favicon.ico` replaces the missing one already referenced in config
+- [x] All favicon files placed in `website/public/`
+- [x] Verify `favicon.ico` replaces the missing one already referenced in config
 
-**Phase 2 Complete**: ( /11 tasks)
+**Phase 2 Complete**: (11/11 tasks)
 
 ---
 
@@ -230,12 +230,12 @@ Track progress through each phase of branding and asset implementation.
 ### By Phase
 
 - [ ] Phase 1: Logo Design (10/11)
-- [ ] Phase 2: Favicon Set (0/11)
+- [x] Phase 2: Favicon Set (11/11)
 - [ ] Phase 3: Per-Page OG Image Generation (0/22)
 - [ ] Phase 4: VitePress Configuration (0/20)
 - [ ] Phase 5: Validation & Polish (0/16)
 
-**Total**: 10/80 tasks (12%)
+**Total**: 21/80 tasks (26%)
 
 ---
 
