@@ -1,0 +1,19 @@
+#!/bin/sh
+
+echo "Running pre-push checks..."
+
+# 1. Run full test suite
+echo "1/2 Running full test suite..."
+npm test || {
+  echo "Tests failed. Please fix failing tests before pushing."
+  exit 1
+}
+
+# 2. Run claudelint on itself (dogfooding)
+echo "2/2 Validating Claude Code configuration..."
+npm run build && node bin/claudelint check-all || {
+  echo "claudelint validation failed. Please fix validation errors before pushing."
+  exit 1
+}
+
+echo "All pre-push checks passed!"

@@ -22,43 +22,17 @@ jobs:
 
       - run: npm install -g claude-code-lint
 
-      - name: Validate all configuration
-        run: claudelint check-all
-```
-
-### GitHub Actions Annotations {#github-actions-annotations}
-
-Use `--format github` to get inline annotations on PR diffs with no extra setup:
-
-```yaml
-name: Lint Claude Config
-on: [push, pull_request]
-
-jobs:
-  claudelint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-
-      - run: npm install -g claude-code-lint
-
       - name: Validate with annotations
         run: claudelint check-all --format github
 ```
 
 Errors and warnings appear directly on the PR diff at the relevant lines. No permissions or upload steps needed.
 
-::: tip When to use `github` vs `sarif`
-`--format github` is the simplest option — annotations appear immediately with no extra config. Use `--format sarif` with Code Scanning upload when you need persistent results, trend tracking, or more than 50 annotations per run (GitHub limits workflow annotations to 50 per run).
-:::
+### Alternative Annotations
 
-### Problem Matcher (Stylish Format) {#problem-matcher}
+#### Problem Matcher (Stylish Format) {#problem-matcher}
 
-If you prefer the default `stylish` format but still want PR annotations, use a problem matcher. Copy the matcher file from the claudelint repo:
+If you prefer the default `stylish` format but still want PR annotations, use a problem matcher:
 
 ```yaml
 - name: Register problem matcher
@@ -70,7 +44,9 @@ If you prefer the default `stylish` format but still want PR annotations, use a 
 
 The problem matcher parses stylish output and converts errors/warnings into GitHub annotations. Place `.github/claudelint-problem-matcher.json` in your repo (available in the [claudelint repository](https://github.com/pdugan20/claudelint/blob/main/.github/claudelint-problem-matcher.json)).
 
-### With SARIF Upload (Inline PR Annotations)
+#### SARIF Upload (Code Scanning)
+
+Use SARIF when you need persistent results, trend tracking, or more than 50 annotations per run (GitHub limits workflow annotations to 50 per run):
 
 ```yaml
 name: Claude Config Analysis
@@ -100,7 +76,23 @@ jobs:
           sarif_file: results.sarif
 ```
 
-### Selective Validators
+### Optimizing CI Runs
+
+#### Changed Files Only
+
+Speed up PR checks by only validating files that changed:
+
+```yaml
+- name: Lint changed files only
+  run: claudelint check-all --since origin/main --format github
+
+- name: Lint uncommitted changes
+  run: claudelint check-all --changed --format github
+```
+
+Use `--since <ref>` to check files changed since a git ref (ideal for PRs), or `--changed` for uncommitted changes.
+
+#### Selective Validators
 
 Instead of `check-all`, run individual validators as separate steps:
 
@@ -122,9 +114,21 @@ Instead of `check-all`, run individual validators as separate steps:
 
 - name: Validate plugin manifest
   run: claudelint validate-plugin
+
+- name: Validate agents
+  run: claudelint validate-agents
+
+- name: Validate commands
+  run: claudelint validate-commands
+
+- name: Validate LSP config
+  run: claudelint validate-lsp
+
+- name: Validate output styles
+  run: claudelint validate-output-styles
 ```
 
-### With Caching
+#### Caching
 
 Add caching to speed up repeated runs:
 
@@ -161,7 +165,42 @@ claudelint:
         - "skills/**"
 ```
 
-## Pre-commit (Python)
+## Git Hooks
+
+### Husky
+
+Run claudelint as a git hook with [Husky](https://typicode.github.io/husky/):
+
+```bash
+npx husky init
+```
+
+Add to `.husky/pre-commit` for a fast check on every commit:
+
+```sh
+npx claudelint check-all --fast --changed --quiet
+```
+
+Add to `.husky/pre-push` for a thorough check before pushing:
+
+```sh
+npx claudelint check-all
+```
+
+### lint-staged
+
+Run claudelint only on staged files using [lint-staged](https://github.com/lint-staged/lint-staged):
+
+```json
+{
+  "lint-staged": {
+    "*.md": "claudelint validate-claude-md --allow-empty-input",
+    ".claude/**/*.json": "claudelint check-all --allow-empty-input"
+  }
+}
+```
+
+### Pre-commit (Python)
 
 Using the [pre-commit](https://pre-commit.com/) framework:
 
@@ -198,13 +237,20 @@ repos:
 | `--format compact` | One-line-per-issue for log parsing |
 | `-q, --quiet` | Suppress warnings, show only errors |
 | `--warnings-as-errors` | Fail on warnings too |
-| `--strict` | Fail on any issue (errors + warnings) |
+| `--strict` | Fail on any issue (errors + warnings + info) |
+| `--max-warnings <n>` | Fail if warning count exceeds limit |
 | `--allow-empty-input` | Exit 0 when no files found (useful with lint-staged) |
 | `--cache` | Enable result caching (default in `check-all`) |
 | `--no-cache` | Disable caching |
 | `--config <path>` | Custom config file path |
 | `--fix` | Auto-fix fixable issues |
 | `--fix-dry-run` | Preview fixes without applying |
+| `--changed` | Only check files with uncommitted changes |
+| `--since <ref>` | Only check files changed since a git ref |
+| `--fast` | Skip expensive checks (good for pre-commit) |
+| `-o, --output-file <path>` | Write results to a file |
+| `--timing` | Show per-validator timing breakdown |
+| `--stats` | Include per-rule statistics in output |
 
 ### Configuration File
 

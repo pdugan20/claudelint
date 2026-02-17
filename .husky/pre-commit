@@ -82,6 +82,7 @@ TOTAL=0
 [ "$RUN_MILESTONE_REFS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_SCHEMA_SYNC" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_BUILD" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_BUILD" = "1" ] && TOTAL=$((TOTAL + 1))  # dogfood step
 [ "$RUN_VALIDATOR_TESTS" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MARKDOWNLINT" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_HARDCODED_COUNTS" = "1" ] && TOTAL=$((TOTAL + 1))
@@ -90,7 +91,7 @@ TOTAL=0
 [ "$RUN_ORPHANED_DOCS" = "1" ] && TOTAL=$((TOTAL + 1))
 
 STEP=0
-echo "Running pre-commit checks ($TOTAL of 15 enabled)..."
+echo "Running pre-commit checks ($TOTAL of 16 enabled)..."
 if [ "$FORCE_ALL" = "1" ]; then
   echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
@@ -182,6 +183,13 @@ if [ "$RUN_BUILD" = "1" ]; then
   npm run build || fail_check "Build failed. Please fix TypeScript errors before committing."
   # Auto-stage rule files if they were regenerated during build
   git add src/rules/index.ts src/rules/rule-ids.ts website/data/rule-stats.json 2>/dev/null || true
+  echo ""
+fi
+
+# 11b. Dogfood claudelint on itself (fast mode, changed files only)
+if [ "$RUN_BUILD" = "1" ]; then
+  run_check "Running claudelint on itself (dogfooding)"
+  node bin/claudelint check-all --fast --changed --quiet || fail_check "claudelint dogfooding failed. Please fix validation errors."
   echo ""
 fi
 

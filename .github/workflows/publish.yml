@@ -34,6 +34,9 @@ jobs:
       - name: Validate configuration
         run: npm run validate
 
+      - name: Run claudelint on itself (dogfooding)
+        run: node bin/claudelint check-all --strict
+
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:

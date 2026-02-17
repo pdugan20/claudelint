@@ -250,6 +250,9 @@ jobs:
       - name: Run claudelint on itself
         run: npm run validate
 
+      - name: Run claudelint check-all (dogfooding with annotations)
+        run: node bin/claudelint check-all --format github
+
       - name: Check CLAUDE.md
         run: node bin/claudelint validate-claude-md
 
@@ -267,6 +270,12 @@ jobs:
 
       - name: Validate plugin
         run: node bin/claudelint validate-plugin
+
+      - name: Validate agents
+        run: node bin/claudelint validate-agents
+
+      - name: Validate commands
+        run: node bin/claudelint validate-commands
 
   skill-validation:
     name: Validate Skills
