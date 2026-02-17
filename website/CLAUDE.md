@@ -56,6 +56,6 @@ Website files have their own lint targets:
 - **CSS**: `npm run lint:css` (Stylelint)
 - **Markdown**: runs under the global `npm run lint:md`
 
-## Frozen Legacy Docs
+## Project Docs
 
-**NEVER edit files in `docs/`.** That directory is frozen legacy content scheduled for deletion. All documentation lives here in `website/`.
+The `docs/projects/` directory contains internal project tracking only. All user-facing documentation lives here in `website/`.

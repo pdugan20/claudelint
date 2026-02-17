@@ -38,7 +38,7 @@ body:
     attributes:
       label: Documentation Location
       description: Which file or section needs updating?
-      placeholder: "docs/rules/skill-missing-timeout.md"
+      placeholder: "website/rules/skills/skill-missing-timeout.md"
     validations:
       required: true
 

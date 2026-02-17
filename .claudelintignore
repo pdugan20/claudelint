@@ -3,10 +3,6 @@
 tests/fixtures/
 tests/**temp**/
 
-# Example projects are demo configs, not real project files
+# Internal project tracking
 
-examples/
-
-# Frozen legacy docs (scheduled for deletion)
-
-docs/
+docs/projects/

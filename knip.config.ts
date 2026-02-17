@@ -18,7 +18,6 @@ const config: KnipConfig = {
   ignore: [
     'dist/**',                      // Build artifacts
     'coverage/**',                  // Test coverage
-    'examples/**',                  // Example code (intentionally standalone)
     'packages/**',                  // Separate packages (have their own entry points)
     'docs/**',                      // Documentation
     '**/*.test.ts',                 // Test files are separate entry points

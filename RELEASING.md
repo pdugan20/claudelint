@@ -87,7 +87,6 @@ All version numbers must stay in sync across:
 - `package.json` (primary source)
 - `plugin.json`
 - `.claude-plugin/marketplace.json`
-- `examples/integration/package.json`
 
 This is handled automatically by the `after:bump` hook. To verify manually:
 

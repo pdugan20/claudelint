@@ -477,4 +477,3 @@ export default htmlFormatter;
 - [ClaudeLint Class](./claudelint-class.md) - Full class API reference
 - [Functional API](./functional-api.md) - Stateless convenience functions
 - [Formatters](./formatters.md) - Built-in formatter reference
-- [Examples](https://github.com/pdugan20/claudelint/tree/main/examples) - Runnable example scripts

@@ -1,8 +1,0 @@
-docs/projects/programmatic-api/
-├── README.md                    # Project overview and navigation
-├── PROPOSAL.md                  # Complete proposal with rationale
-├── TASK_TRACKER.md              # 54 discrete tasks across 4 phases
-├── API_DESIGN.md                # Detailed API specification
-├── TESTING_STRATEGY.md          # Testing plan and coverage
-├── MIGRATION_GUIDE.md           # User migration guide
-└── EXAMPLES.md                  # 18 code examples

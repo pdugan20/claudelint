@@ -52,7 +52,6 @@ ignore:
   - "bin/**"
 
   # Examples and documentation
-  - "examples/**"
   - "docs/**"
 
   # Type definitions

@@ -69,4 +69,4 @@ Release runs lint/test/build, generates CHANGELOG, bumps versions (including `np
 
 ## Documentation
 
-**`docs/` is FROZEN.** All documentation edits go to `website/` only. Legacy copies scheduled for deletion.
+All documentation lives at [claudelint.com](https://claudelint.com) (source in `website/`). The `docs/projects/` directory contains internal project tracking only.

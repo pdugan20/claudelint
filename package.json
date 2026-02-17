@@ -33,7 +33,7 @@
     "test:schemas": "jest tests/schemas --coverage",
     "test:skills:automated": "npm-run-all test:skills:structure test:skills:cli",
     "test:skills:cli": "bash scripts/test/skills/test-cli-commands.sh",
-    "test:skills:manual": "echo 'See docs/testing/manual-testing-runbook.md for manual test protocol.'",
+    "test:skills:manual": "echo 'See scripts/test/manual/manual-testing-runbook.md for manual test protocol.'",
     "test:skills:metadata": "jest tests/skills/metadata.test.ts",
     "test:skills:structure": "bash scripts/test/skills/validate-self.sh",
     "test:validators": "jest tests/validators --coverage",

@@ -1,9 +1,0 @@
-{
-  "rules": {
-    "claude-md-size": "warn",
-    "claude-md-import-missing": "error",
-    "skill-missing-shebang": "warn",
-    "skill-dangerous-command": "error"
-  },
-  "ignorePatterns": ["**/node_modules/**", "**/.git/**", "**/dist/**"]
-}

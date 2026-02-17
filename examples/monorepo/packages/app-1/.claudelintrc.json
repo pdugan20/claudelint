@@ -1,6 +1,0 @@
-{
-  "extends": "../../.claudelintrc.json",
-  "rules": {
-    "claude-md-size": "error"
-  }
-}

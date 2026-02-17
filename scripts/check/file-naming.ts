@@ -3,9 +3,7 @@
  * File Naming Convention Checker
  *
  * Validates that all files in the project follow the documented naming conventions:
- * - docs/*.md: lowercase-with-hyphens.md
  * - docs/projects/*\/*.md: lowercase-with-hyphens.md (exceptions: README, CHANGELOG, CONTRIBUTING)
- * - docs/rules/{validator}/{rule-id}.md: Must match rule ID exactly
  * - src/**\/*.ts: lowercase-with-hyphens.ts
  * - tests/**\/*.test.ts: lowercase-with-hyphens.test.ts
  */

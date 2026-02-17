@@ -1,6 +1,0 @@
-{
-  "rules": {
-    "skill-missing-changelog": "error",
-    "skill-missing-tests": "error"
-  }
-}

@@ -73,11 +73,11 @@ Rule documentation is auto-generated from inline metadata in each rule's source 
 
 ### Quick Links
 
-- [Getting Started](docs/getting-started.md)
-- [Configuration](docs/configuration.md)
-- [Validation Reference](docs/validation-reference.md)
-- [Plugin Usage](docs/plugin-usage.md)
-- [Programmatic API](docs/api/README.md)
-- [Custom Rules](docs/custom-rules.md)
+- [Getting Started](https://claudelint.com/guide/getting-started)
+- [Configuration](https://claudelint.com/guide/configuration)
+- [Rules Overview](https://claudelint.com/guide/rules-overview)
+- [Plugin Usage](https://claudelint.com/integrations/claude-code-plugin)
+- [Programmatic API](https://claudelint.com/api/overview)
+- [Custom Rules](https://claudelint.com/development/custom-rules)
 - [Contributing](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)

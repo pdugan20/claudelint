@@ -4,7 +4,7 @@ Thank you for your interest in contributing to claudelint! This document provide
 
 ## Quick Start for Contributors
 
-**Want to add a validation rule?** See [docs/contributing-rules.md](docs/contributing-rules.md) - this is our detailed technical guide for writing rules.
+**Want to add a validation rule?** See the [Rule Development Guide](https://claudelint.com/development/custom-rules) - this is our detailed technical guide for writing rules.
 
 **Want to contribute in other ways?** Keep reading this document for general contribution guidelines (git workflow, testing, code style, etc.).
 
@@ -87,7 +87,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
    npm run validate
    ```
 
-**See [docs/scripts.md](docs/scripts.md) for complete npm scripts reference.**
+**See the [CLI Reference](https://claudelint.com/guide/cli-reference) for complete command reference.**
 
 ### Code Style Guidelines
 
@@ -102,7 +102,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 **IMPORTANT**: Library code MUST NOT use `console` directly.
 
-See [docs/architecture/diagnostic-system.md](docs/architecture/diagnostic-system.md) for full details.
+See the [Internals Guide](https://claudelint.com/development/internals#diagnostic-collection) for full details.
 
 **Use DiagnosticCollector instead**:
 
@@ -202,9 +202,7 @@ npm run check:model-names
 3. Update `src/schemas/constants.ts` if needed
 4. Run tests: `npm test`
 5. Re-verify: `npm run check:constants`
-6. Update `docs/constants-verification.md` with new date
-
-**See also:** [docs/constants-verification.md](docs/constants-verification.md) for detailed documentation.
+6. Re-verify: `npm run check:constants`
 
 **Note:** Regular contributors don't need Claude CLI installed. This is only for maintainers doing releases.
 
@@ -248,7 +246,8 @@ claudelint/
 │   ├── validators/      # Validator tests
 │   ├── utils/           # Utility tests
 │   └── integration/     # Integration tests
-├── docs/                # Documentation
+├── docs/projects/       # Internal project tracking
+├── website/             # Documentation site (claudelint.com)
 ├── .claude/             # Claude Code plugin files
 │   ├── skills/          # Plugin skills
 │   └── hooks/           # Plugin hooks
@@ -259,7 +258,7 @@ claudelint/
 
 claudelint uses a rule-based architecture (similar to ESLint). Contributors write individual validation rules, not validators.
 
-**See the comprehensive [Rule Development Guide](docs/rule-development.md) for:**
+**See the comprehensive [Rule Development Guide](https://claudelint.com/development/custom-rules) for:**
 
 - Understanding rules and architecture
 - Writing custom rules (external developers)
@@ -277,7 +276,7 @@ claudelint uses a rule-based architecture (similar to ESLint). Contributors writ
 3. ✓ Implement `validate()` function
 4. ✓ Add rule to category index in `src/rules/{category}/index.ts`
 5. ✓ Write unit tests in `tests/rules/{category}/{rule-id}.test.ts`
-6. ✓ Document rule in `docs/rules/{category}/{rule-id}.md`
+6. ✓ Run `npm run docs:generate` to generate rule documentation
 7. ✓ Test the rule with `npm test`
 8. ✓ Run validation on project: `npm run validate`
 
@@ -287,7 +286,7 @@ Skills are interactive capabilities that allow Claude to help users validate, op
 
 ### Skill Quality Standards
 
-All skills must follow Anthropic's best practices for skill development. See [docs/skill-development.md](docs/skill-development.md) for complete guide.
+All skills must follow Anthropic's best practices for skill development.
 
 **Required for all skills:**
 
@@ -347,7 +346,7 @@ When submitting a skill PR, include the following in your PR description (the PR
 - Examples follow scenario format
 - Troubleshooting addresses skill usage issues (not issues skill fixes)
 
-See [docs/skill-development.md](docs/skill-development.md) for detailed requirements and [docs/projects/plugin-and-md-management/skill-improvement-guidelines.md](docs/projects/plugin-and-md-management/skill-improvement-guidelines.md) for Anthropic best practices.
+See the [Contributing Guide](https://claudelint.com/development/contributing) for detailed requirements.
 
 ## Rule Deprecation Policy
 
@@ -559,7 +558,7 @@ Include:
 ## Documentation
 
 - Update README.md for user-facing changes
-- Update docs/ for detailed documentation
+- All documentation lives at [claudelint.com](https://claudelint.com) (source in `website/`)
 - Add JSDoc comments for API changes
 - Include code examples where helpful
 
@@ -567,16 +566,16 @@ Include:
 
 **For contributing code:**
 
-- **[Rule Development Guide](docs/rule-development.md)** - How to write validation rules (START HERE)
-- **[Architecture Documentation](docs/architecture.md)** - System architecture and design decisions
+- **[Custom Rules](https://claudelint.com/development/custom-rules)** - How to write validation rules (START HERE)
+- **[Architecture](https://claudelint.com/development/architecture)** - System architecture and design decisions
+- **[Contributing](https://claudelint.com/development/contributing)** - Contribution guidelines
 
 **For users:**
 
-- **[Getting Started](docs/getting-started.md)** - Installation and first steps
-- **[Validation Reference](docs/validation-reference.md)** - Understanding validation categories
-- **[Rule Reference](docs/rules/)** - Individual documentation for all rules
-- **[Configuration Guide](docs/configuration.md)** - Configuring claudelint
-- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
+- **[Getting Started](https://claudelint.com/guide/getting-started)** - Installation and first steps
+- **[Rules Overview](https://claudelint.com/guide/rules-overview)** - Understanding validation categories
+- **[Configuration](https://claudelint.com/guide/configuration)** - Configuring claudelint
+- **[Troubleshooting](https://claudelint.com/guide/troubleshooting)** - Common issues and solutions
 
 ## Release Process
 
@@ -678,7 +677,7 @@ jobs:
 
 ## Getting Help
 
-- Read the [documentation](docs/)
+- Read the [documentation](https://claudelint.com)
 - Search [existing issues](https://github.com/pdugan20/claudelint/issues)
 - Ask in [discussions](https://github.com/pdugan20/claudelint/discussions)
 - Open a new issue if needed
