@@ -1,3 +1,7 @@
+---
+description: Set up Claude Code SessionStart hooks to automatically validate your project configuration every time a Claude Code session begins.
+---
+
 # Claude Code Hooks
 
 claudelint provides hooks that can automatically validate your Claude Code project at key moments in your workflow.

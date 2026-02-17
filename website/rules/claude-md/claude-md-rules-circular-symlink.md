@@ -1,3 +1,7 @@
+---
+description: "Circular symlink detected in import path"
+---
+
 # claude-md-rules-circular-symlink
 
 <RuleHeader description="Circular symlink detected in import path" severity="error" :fixable="false" :configurable="true" category="CLAUDE.md" />

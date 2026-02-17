@@ -1,3 +1,7 @@
+---
+description: Validate Claude Code plugin.json manifest files for schema compliance, semantic versioning, required fields, and component file references with claudelint.
+---
+
 # Plugin Validator
 
 The Plugin validator checks `.claude-plugin/plugin.json` manifest files for schema compliance, versioning, and component references.

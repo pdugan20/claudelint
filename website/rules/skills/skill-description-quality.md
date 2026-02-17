@@ -1,3 +1,7 @@
+---
+description: "Skill description should start with an action verb and include sufficient context"
+---
+
 # skill-description-quality
 
 <RuleHeader description="Skill description should start with an action verb and include sufficient context" severity="warn" :fixable="false" :configurable="true" category="Skills" />

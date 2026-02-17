@@ -1,3 +1,7 @@
+---
+description: Use the ClaudeLint class for shared configuration, progress tracking, selective auto-fix, and multiple linting operations. Full method and static API reference.
+---
+
 # ClaudeLint Class API
 
 The `ClaudeLint` class is the primary interface for programmatic linting. Use it when you need shared configuration, progress tracking, selective auto-fix, or multiple operations on the same instance.

@@ -1,3 +1,7 @@
+---
+description: "Agent hooks must be an object with event name keys"
+---
+
 # agent-hooks
 
 <RuleHeader description="Agent hooks must be an object with event name keys" severity="error" :fixable="false" :configurable="false" category="Agents" />

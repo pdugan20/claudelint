@@ -1,3 +1,7 @@
+---
+description: Browse all claudelint validation rules organized by category. Covers severity levels, auto-fixable rules, and featured rules for CLAUDE.md, Skills, MCP, Agents, and Plugin.
+---
+
 # Rules Reference
 
 claudelint includes <RuleCount category="total" /> validation rules across <RuleCount category="categories" /> categories. Each rule has detailed documentation with examples.

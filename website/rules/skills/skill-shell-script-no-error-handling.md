@@ -1,3 +1,7 @@
+---
+description: "Shell script lacks error handling (set -e or set -euo pipefail)"
+---
+
 # skill-shell-script-no-error-handling
 
 <RuleHeader description="Shell script lacks error handling (set -e or set -euo pipefail)" severity="warn" :fixable="true" :configurable="false" category="Skills" />

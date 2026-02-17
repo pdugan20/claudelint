@@ -1,3 +1,7 @@
+---
+description: "Agent description must be at least 10 characters"
+---
+
 # agent-description
 
 <RuleHeader description="Agent description must be at least 10 characters" severity="error" :fixable="false" :configurable="false" category="Agents" />

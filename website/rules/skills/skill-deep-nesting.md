@@ -1,3 +1,7 @@
+---
+description: "Skill directory has excessive directory nesting"
+---
+
 # skill-deep-nesting
 
 <RuleHeader description="Skill directory has excessive directory nesting" severity="warn" :fixable="false" :configurable="true" category="Skills" />

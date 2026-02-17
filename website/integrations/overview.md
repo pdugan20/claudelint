@@ -1,3 +1,7 @@
+---
+description: Integrate claudelint into CI/CD pipelines, pre-commit hooks, npm scripts, and the Claude Code plugin to validate your configuration automatically.
+---
+
 # Integrations
 
 claudelint integrates with your existing development workflow through CI/CD pipelines, pre-commit hooks, npm scripts, and the Claude Code plugin system.

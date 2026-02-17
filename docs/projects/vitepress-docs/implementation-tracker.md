@@ -337,10 +337,10 @@ Add `meta.docs` to most commonly violated rules:
 - [x] OG meta tags configured (og:type, og:title, og:description)
 - [x] Sitemap generation enabled (hostname: claudelint.com)
 - [x] robots.txt created (Allow all, sitemap reference)
-- [ ] og:image for social previews (requires design asset)
+- [x] og:image for social previews (completed in branding-and-assets project)
 - [ ] Test social media previews (post-deployment)
 
-**Phase 5 Complete**: (10/15 tasks = 67%, remainder deferred to post-launch)
+**Phase 5 Complete**: (11/15 tasks = 73%, remainder deferred to post-launch)
 
 ---
 
@@ -417,6 +417,10 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Pre-Launch Polish (Day 5)
 
+- [ ] Branding & asset verification (rolled over from branding-and-assets project)
+  - [ ] Test OG images at thumbnail size (~300px wide) for readability
+  - [ ] Preview OG images with opengraph.xyz or similar debugger
+  - [ ] Verify logo is recognizable at 16x16 (favicon size)
 - [ ] Content review
   - [ ] Proofread key pages (homepage, getting started)
   - [ ] Check code examples work
@@ -457,7 +461,7 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] Gather user feedback
 - [ ] Create backlog for improvements
 
-**Phase 6 Complete**: ☐ (0/32 tasks = 0%)
+**Phase 6 Complete**: ☐ (0/35 tasks = 0%)
 
 ---
 
@@ -513,19 +517,19 @@ Add `meta.docs` to most commonly violated rules:
 - [x] Phase 2: Metadata Foundation (43/43 = 100%)
 - [x] Phase 3: Metadata Completion (12/12 = 100%)
 - [x] Phase 4: Custom Components (18/21 = 86%, 3 require browser testing)
-- [x] Phase 5: Enhanced Features (10/15 = 67%, remainder deferred to post-launch)
-- [ ] Phase 6: Deployment & Launch (0/32 = 0%)
+- [x] Phase 5: Enhanced Features (11/15 = 73%, remainder deferred to post-launch)
+- [ ] Phase 6: Deployment & Launch (0/35 = 0%)
 - [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 = 0%)
 
-**Total Progress**: 119/161 tasks (74%) — Phases 1-5 complete, Phase 6-7 remaining
+**Total Progress**: 120/164 tasks (73%) — Phases 1-5 complete, Phase 6-7 remaining
 
 ### By Category
 
 - **Validation**: 9/9 (100%)
 - **Setup & Infrastructure**: 27/29 (93%)
 - **Auto-Generation & Metadata**: 55/55 (100%)
-- **Components & Features**: 28/36 (78%)
-- **Deployment & Launch**: 0/32 (0%)
+- **Components & Features**: 29/36 (81%)
+- **Deployment & Launch**: 0/35 (0%)
 - **Docs Cleanup**: 0/14 (0%)
 
 ### Note on Rule Counts

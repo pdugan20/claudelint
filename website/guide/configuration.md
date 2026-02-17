@@ -1,3 +1,7 @@
+---
+description: Configure claudelint with rules, presets, ignore patterns, overrides, and output options using .claudelintrc.json or package.json.
+---
+
 # Configuration
 
 claudelint supports configuration through multiple methods, allowing you to customize linting rules and behavior for your project.

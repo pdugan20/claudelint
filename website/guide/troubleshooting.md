@@ -1,5 +1,6 @@
 ---
 outline: 2
+description: Fix common claudelint errors including CLAUDE.md issues, skill misconfigurations, config file problems, CI failures, and cache issues.
 ---
 
 # Troubleshooting Guide

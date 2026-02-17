@@ -1,3 +1,7 @@
+---
+description: "Skill frontmatter lacks version field"
+---
+
 # skill-missing-version
 
 <RuleHeader description="Skill frontmatter lacks version field" severity="warn" :fixable="false" :configurable="false" category="Skills" />

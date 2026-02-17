@@ -1,3 +1,7 @@
+---
+description: "CLAUDE.md has too many sections making it hard to navigate"
+---
+
 # claude-md-content-too-many-sections
 
 <RuleHeader description="CLAUDE.md has too many sections making it hard to navigate" severity="warn" :fixable="false" :configurable="true" category="CLAUDE.md" />

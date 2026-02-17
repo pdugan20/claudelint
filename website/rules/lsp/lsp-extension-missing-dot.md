@@ -1,3 +1,7 @@
+---
+description: "LSP extension mappings must start with a dot"
+---
+
 # lsp-extension-missing-dot
 
 <RuleHeader description="LSP extension mappings must start with a dot" severity="error" :fixable="false" :configurable="false" category="LSP" />

@@ -1,3 +1,7 @@
+---
+description: "Skill script contains dangerous commands that could cause system damage"
+---
+
 # skill-dangerous-command
 
 <RuleHeader description="Skill script contains dangerous commands that could cause system damage" severity="error" :fixable="false" :configurable="false" category="Skills" />

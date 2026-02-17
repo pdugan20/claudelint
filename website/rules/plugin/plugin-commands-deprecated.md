@@ -1,3 +1,7 @@
+---
+description: "The commands field in plugin.json is deprecated"
+---
+
 # plugin-commands-deprecated
 
 <RuleHeader description="The commands field in plugin.json is deprecated" severity="warn" :fixable="false" :configurable="false" category="Plugin" />

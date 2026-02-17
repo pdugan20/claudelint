@@ -1,3 +1,7 @@
+---
+description: "Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words"
+---
+
 # skill-name
 
 <RuleHeader description="Skill name must be lowercase-with-hyphens, under 64 characters, with no XML tags or reserved words" severity="error" :fixable="false" :configurable="false" category="Skills" />

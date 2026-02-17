@@ -1,3 +1,7 @@
+---
+description: "Specified CLAUDE.md file path does not exist"
+---
+
 # claude-md-file-not-found
 
 <RuleHeader description="Specified CLAUDE.md file path does not exist" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />

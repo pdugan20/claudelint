@@ -1,3 +1,7 @@
+---
+description: Fix common issues when developing claudelint custom rules, including rules not loading, ID conflicts, TypeScript errors, auto-fix failures, and performance problems.
+---
+
 # Custom Rules Troubleshooting
 
 Common issues when developing [custom rules](/development/custom-rules) and how to resolve them.

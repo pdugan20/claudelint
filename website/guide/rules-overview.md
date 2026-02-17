@@ -1,3 +1,7 @@
+---
+description: Browse all claudelint validation rules by category, understand severity levels, learn about auto-fixable rules, and see how progressive disclosure output works.
+---
+
 # Rules Overview
 
 claudelint includes <RuleCount category="total" /> validation rules across <RuleCount category="categories" /> categories.

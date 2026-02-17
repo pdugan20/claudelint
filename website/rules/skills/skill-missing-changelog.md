@@ -1,3 +1,7 @@
+---
+description: "Skill directory lacks CHANGELOG.md"
+---
+
 # skill-missing-changelog
 
 <RuleHeader description="Skill directory lacks CHANGELOG.md" severity="warn" :fixable="false" :configurable="false" category="Skills" />

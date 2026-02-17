@@ -1,3 +1,7 @@
+---
+description: Use claudelint's stateless functional API to lint files and text with a single function call. Covers lint, lintText, formatResults, resolveConfig, and getFileInfo.
+---
+
 # Functional API
 
 Stateless convenience functions for simple, one-off linting operations. Each function creates a new `ClaudeLint` instance internally and returns the result.

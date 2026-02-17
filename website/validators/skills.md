@@ -1,3 +1,7 @@
+---
+description: Validate Claude Code skill definitions for naming conventions, required fields, shell script security, and documentation quality with the Skills validator.
+---
+
 # Skills Validator
 
 The Skills validator checks Claude Code skill definitions for correctness, security, documentation quality, and best practices.

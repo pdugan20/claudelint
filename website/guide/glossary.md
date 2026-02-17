@@ -1,3 +1,7 @@
+---
+description: Definitions for key claudelint terms including rules, validators, severity levels, violations, formatters, and Claude Code file types like SKILL.md and CLAUDE.md.
+---
+
 # Glossary
 
 This glossary defines key terminology used throughout claudelint documentation.

@@ -1,3 +1,7 @@
+---
+description: "SKILL.md body should not exceed 500 lines"
+---
+
 # skill-body-too-long
 
 <RuleHeader description="SKILL.md body should not exceed 500 lines" severity="warn" :fixable="false" :configurable="true" category="Skills" />

@@ -32,21 +32,8 @@ export default defineConfig({
         href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap',
       },
     ],
-    ['meta', { property: 'og:type', content: 'website' }],
-    [
-      'meta',
-      {
-        property: 'og:title',
-        content: 'claudelint - Lint your Claude Code projects',
-      },
-    ],
-    [
-      'meta',
-      {
-        property: 'og:description',
-        content: 'Validate CLAUDE.md, skills, settings, hooks, MCP servers, and plugins',
-      },
-    ],
+    ['meta', { property: 'og:site_name', content: 'claudelint' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
 
   themeConfig: {
@@ -221,19 +208,41 @@ export default defineConfig({
   },
 
   transformPageData(pageData) {
+    const isHomepage = pageData.relativePath === 'index.md';
     const title = pageData.frontmatter.title || pageData.title;
     const description =
       pageData.frontmatter.description || pageData.description || 'claudelint documentation';
     const canonicalUrl = `https://claudelint.com/${pageData.relativePath}`
       .replace(/index\.md$/, '')
       .replace(/\.md$/, '');
+    const ogTitle = isHomepage
+      ? 'claudelint - The linter for Claude Code'
+      : `${title} | claudelint`;
+
+    // Per-page OG image slug (must match scripts/generate/og-images.ts)
+    const ogSlug = isHomepage
+      ? 'index'
+      : pageData.relativePath.replace(/\.md$/, '').replace(/\/index$/, '').replace(/\//g, '-');
+    const ogImageUrl = `https://claudelint.com/og/${ogSlug}.png`;
 
     pageData.frontmatter.head ??= [];
     pageData.frontmatter.head.push(
-      ['meta', { property: 'og:title', content: `${title} | claudelint` }],
+      // SEO
+      ['meta', { name: 'description', content: description }],
+      ['link', { rel: 'canonical', href: canonicalUrl }],
+      // Open Graph
+      ['meta', { property: 'og:title', content: ogTitle }],
       ['meta', { property: 'og:description', content: description }],
       ['meta', { property: 'og:url', content: canonicalUrl }],
-      ['link', { rel: 'canonical', href: canonicalUrl }]
+      ['meta', { property: 'og:type', content: isHomepage ? 'website' : 'article' }],
+      ['meta', { property: 'og:image', content: ogImageUrl }],
+      ['meta', { property: 'og:image:width', content: '1200' }],
+      ['meta', { property: 'og:image:height', content: '630' }],
+      ['meta', { property: 'og:image:alt', content: ogTitle }],
+      // Twitter
+      ['meta', { name: 'twitter:title', content: ogTitle }],
+      ['meta', { name: 'twitter:description', content: description }],
+      ['meta', { name: 'twitter:image', content: ogImageUrl }],
     );
   },
 });

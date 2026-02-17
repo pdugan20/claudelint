@@ -1,3 +1,7 @@
+---
+description: "Import statement found inside code block"
+---
+
 # claude-md-import-in-code-block
 
 <RuleHeader description="Import statement found inside code block" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />

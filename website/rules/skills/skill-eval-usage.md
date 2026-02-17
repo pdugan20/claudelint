@@ -1,3 +1,7 @@
+---
+description: "Script uses eval/exec which can execute arbitrary code"
+---
+
 # skill-eval-usage
 
 <RuleHeader description="Script uses eval/exec which can execute arbitrary code" severity="warn" :fixable="false" :configurable="false" category="Skills" />

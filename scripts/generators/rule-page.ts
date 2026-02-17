@@ -61,6 +61,13 @@ export function generateRulePage(meta: RuleMetadata): string {
   const categoryDisplay = CATEGORY_DISPLAY_MAP[meta.category];
   const parts: string[] = [];
 
+  // Frontmatter with description for SEO and OG images
+  const fmDescription = meta.description.replace(/"/g, '\\"');
+  parts.push('---');
+  parts.push(`description: "${fmDescription}"`);
+  parts.push('---');
+  parts.push('');
+
   // Title (no "Rule:" prefix)
   parts.push(`# ${meta.id}`);
   parts.push('');

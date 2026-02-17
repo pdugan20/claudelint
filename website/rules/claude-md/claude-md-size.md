@@ -1,3 +1,7 @@
+---
+description: "CLAUDE.md exceeds maximum file size limit"
+---
+
 # claude-md-size
 
 <RuleHeader description="CLAUDE.md exceeds maximum file size limit" severity="warn" :fixable="false" :configurable="true" category="CLAUDE.md" />

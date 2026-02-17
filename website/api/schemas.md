@@ -1,3 +1,7 @@
+---
+description: Reference every schema claudelint enforces for SKILL.md, agents, hooks, MCP servers, plugin manifests, settings, and LSP configs, including valid fields and constraints.
+---
+
 # Configuration Schemas
 
 claudelint validates Claude Code configuration files against a set of schemas derived from the official Claude Code documentation. This page documents every schema claudelint enforces, including valid fields, types, constraints, and cross-field validations.

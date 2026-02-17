@@ -1,3 +1,7 @@
+---
+description: Generate SARIF output from claudelint to integrate with GitHub Code Scanning, VS Code, and other static analysis tools.
+---
+
 # SARIF Output
 
 claudelint can output validation results in [SARIF](https://sarifweb.azurewebsites.net/) (Static Analysis Results Interchange Format) v2.1.0. This enables integration with GitHub Code Scanning, VS Code, and other SARIF-compatible tools.

@@ -1,3 +1,7 @@
+---
+description: "Tool(pattern) syntax should not have empty patterns"
+---
+
 # settings-permission-empty-pattern
 
 <RuleHeader description="Tool(pattern) syntax should not have empty patterns" severity="warn" :fixable="false" :configurable="true" category="Settings" />

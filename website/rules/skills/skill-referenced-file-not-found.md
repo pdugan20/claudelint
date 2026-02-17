@@ -1,3 +1,7 @@
+---
+description: "Referenced file in markdown link does not exist"
+---
+
 # skill-referenced-file-not-found
 
 <RuleHeader description="Referenced file in markdown link does not exist" severity="error" :fixable="false" :configurable="false" category="Skills" />

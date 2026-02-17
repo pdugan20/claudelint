@@ -1,3 +1,7 @@
+---
+description: "Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags"
+---
+
 # agent-name
 
 <RuleHeader description="Agent name must be lowercase-with-hyphens, under 64 characters, with no XML tags" severity="error" :fixable="false" :configurable="false" category="Agents" />

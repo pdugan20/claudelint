@@ -1,3 +1,7 @@
+---
+description: "LSP server commands should be in PATH or use absolute paths"
+---
+
 # lsp-command-not-in-path
 
 <RuleHeader description="LSP server commands should be in PATH or use absolute paths" severity="warn" :fixable="false" :configurable="false" category="LSP" />

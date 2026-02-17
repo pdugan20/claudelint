@@ -1,3 +1,7 @@
+---
+description: "Imported file does not exist"
+---
+
 # claude-md-import-missing
 
 <RuleHeader description="Imported file does not exist" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />

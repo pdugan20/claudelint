@@ -1,3 +1,7 @@
+---
+description: Validate Claude Code agent definitions for naming conventions, required fields, model configuration, tool references, and skill references with claudelint.
+---
+
 # Agents Validator
 
 The Agents validator checks Claude Code agent definitions for correctness, including names, descriptions, tools, and model configuration.

@@ -1,3 +1,7 @@
+---
+description: "Shell script lacks shebang line"
+---
+
 # skill-missing-shebang
 
 <RuleHeader description="Shell script lacks shebang line" severity="warn" :fixable="true" :configurable="false" category="Skills" />

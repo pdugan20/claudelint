@@ -1,3 +1,7 @@
+---
+description: Automatically fix claudelint validation issues using --fix. Preview changes with --fix-dry-run, apply fixes safely, and learn which rules are fixable.
+---
+
 # Auto-fix
 
 claudelint can automatically fix certain validation issues.

@@ -1,3 +1,7 @@
+---
+description: Install claudelint as a Claude Code plugin to access validation skills directly inside Claude Code sessions via slash commands.
+---
+
 # Claude Code Plugin
 
 This guide covers how to install and use claudelint as a Claude Code plugin.

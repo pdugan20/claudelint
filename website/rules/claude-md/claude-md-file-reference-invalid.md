@@ -1,3 +1,7 @@
+---
+description: "File path referenced in CLAUDE.md does not exist"
+---
+
 # claude-md-file-reference-invalid
 
 <RuleHeader description="File path referenced in CLAUDE.md does not exist" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />

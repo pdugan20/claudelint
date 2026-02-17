@@ -1,8 +1,10 @@
+---
+description: Build claudelint integrations with practical code examples for build scripts, pre-commit hooks, CI pipelines, progress tracking, selective auto-fix, and custom formatters.
+---
+
 # Recipes
 
-Practical examples and usage patterns for common claudelint integration scenarios.
-
-For API fundamentals, see the [ClaudeLint Class](./claudelint-class.md) or [Functional API](./functional-api.md) reference.
+Practical examples and usage patterns for common claudelint integration scenarios. For API fundamentals, see the [ClaudeLint Class](./claudelint-class.md) or [Functional API](./functional-api.md) reference.
 
 ## Linting Patterns
 

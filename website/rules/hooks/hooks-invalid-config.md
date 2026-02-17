@@ -1,3 +1,7 @@
+---
+description: "Hook configuration must be valid"
+---
+
 # hooks-invalid-config
 
 <RuleHeader description="Hook configuration must be valid" severity="error" :fixable="false" :configurable="false" category="Hooks" />

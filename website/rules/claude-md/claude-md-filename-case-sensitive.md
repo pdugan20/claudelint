@@ -1,3 +1,7 @@
+---
+description: "Filename differs only in case from another file, causing conflicts on case-insensitive filesystems"
+---
+
 # claude-md-filename-case-sensitive
 
 <RuleHeader description="Filename differs only in case from another file, causing conflicts on case-insensitive filesystems" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />

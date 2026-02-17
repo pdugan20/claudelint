@@ -1,3 +1,7 @@
+---
+description: "Skill file contains hardcoded secrets that should use environment variables"
+---
+
 # skill-hardcoded-secrets
 
 <RuleHeader description="Skill file contains hardcoded secrets that should use environment variables" severity="error" :fixable="false" :configurable="false" category="Skills" />

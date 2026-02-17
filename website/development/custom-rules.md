@@ -1,3 +1,7 @@
+---
+description: Build custom claudelint validation rules for your team or project. Learn the Rule interface, validation patterns, auto-fix, configurable options, and testing strategies.
+---
+
 # Custom Rules Guide
 
 > **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).

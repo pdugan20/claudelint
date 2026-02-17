@@ -1,3 +1,7 @@
+---
+description: "Skill version must follow semantic versioning format (e.g., 1.0.0)"
+---
+
 # skill-version
 
 <RuleHeader description="Skill version must follow semantic versioning format (e.g., 1.0.0)" severity="error" :fixable="false" :configurable="false" category="Skills" />

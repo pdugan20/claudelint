@@ -1,3 +1,7 @@
+---
+description: "Skill model must be one of: sonnet, opus, haiku, inherit"
+---
+
 # skill-model
 
 <RuleHeader description="Skill model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" :configurable="false" category="Skills" />

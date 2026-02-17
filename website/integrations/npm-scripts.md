@@ -1,3 +1,7 @@
+---
+description: Add claudelint to your package.json scripts to lint Claude Code configuration alongside your existing npm workflow.
+---
+
 # Npm Scripts
 
 Add claudelint to your package.json scripts for easy integration.

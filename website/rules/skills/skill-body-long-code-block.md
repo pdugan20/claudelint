@@ -1,3 +1,7 @@
+---
+description: "Long code blocks in SKILL.md should be moved to reference files"
+---
+
 # skill-body-long-code-block
 
 <RuleHeader description="Long code blocks in SKILL.md should be moved to reference files" severity="warn" :fixable="false" :configurable="true" category="Skills" />

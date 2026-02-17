@@ -1,3 +1,7 @@
+---
+description: "SKILL.md lacks usage examples"
+---
+
 # skill-missing-examples
 
 <RuleHeader description="SKILL.md lacks usage examples" severity="warn" :fixable="false" :configurable="false" category="Skills" />

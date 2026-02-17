@@ -1,3 +1,7 @@
+---
+description: "Cross-reference points to non-existent skill"
+---
+
 # skill-cross-reference-invalid
 
 <RuleHeader description="Cross-reference points to non-existent skill" severity="warn" :fixable="false" :configurable="false" category="Skills" />

@@ -1,5 +1,6 @@
 ---
 layout: home
+description: Validate, optimize, and improve CLAUDE.md, skills, settings, hooks, and the rest of your Claude Code configuration.
 
 hero:
   text: The linter for Claude Code

@@ -1,3 +1,7 @@
+---
+description: Validate Language Server Protocol configuration for transport settings, language IDs, file extensions, and server commands in Claude Code projects.
+---
+
 # LSP Validator
 
 The LSP validator checks Language Server Protocol configuration files for transport settings, language IDs, file extensions, and server commands.

@@ -1,3 +1,7 @@
+---
+description: Learn why claudelint exists, what problems it solves in Claude Code projects, and how it catches silent misconfigurations before they cause failures.
+---
+
 # Why claudelint?
 
 claudelint validates your Claude Code project configuration to catch issues early, enforce best practices, and improve developer experience.

@@ -1,3 +1,7 @@
+---
+description: "Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability"
+---
+
 # plugin-hook-missing-plugin-root
 
 <RuleHeader description="Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability" severity="error" :fixable="false" :configurable="false" category="Plugin" />

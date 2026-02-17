@@ -1,3 +1,7 @@
+---
+description: Validate your CLAUDE.md files for size limits, import integrity, circular imports, and content structure using claudelint's CLAUDE.md validator rules.
+---
+
 # CLAUDE.md Validator
 
 The CLAUDE.md validator checks your project's CLAUDE.md files for correctness, size limits, import integrity, and content structure.

@@ -1,3 +1,7 @@
+---
+description: "Agent name must match filename"
+---
+
 # agent-name-filename-mismatch
 
 <RuleHeader description="Agent name must match filename" severity="error" :fixable="false" :configurable="false" category="Agents" />

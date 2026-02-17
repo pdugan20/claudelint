@@ -1,3 +1,7 @@
+---
+description: "Skills using $ARGUMENTS or positional parameters should include an argument-hint in frontmatter"
+---
+
 # skill-arguments-without-hint
 
 <RuleHeader description="Skills using $ARGUMENTS or positional parameters should include an argument-hint in frontmatter" severity="warn" :fixable="false" :configurable="false" category="Skills" />

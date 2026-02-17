@@ -1,3 +1,7 @@
+---
+description: "Plugin version is recommended and should not be empty"
+---
+
 # plugin-version-required
 
 <RuleHeader description="Plugin version is recommended and should not be empty" severity="warn" :fixable="false" :configurable="false" category="Plugin" />

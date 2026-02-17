@@ -1,3 +1,7 @@
+---
+description: "MCP tools in allowed-tools should use qualified mcp__server__tool format for clarity"
+---
+
 # skill-mcp-tool-qualified-name
 
 <RuleHeader description="MCP tools in allowed-tools should use qualified mcp__server__tool format for clarity" severity="warn" :fixable="false" :configurable="false" category="Skills" />

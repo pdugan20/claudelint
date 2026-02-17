@@ -1,3 +1,7 @@
+---
+description: "MCP SSE transport URL cannot be empty"
+---
+
 # mcp-sse-empty-url
 
 <RuleHeader description="MCP SSE transport URL cannot be empty" severity="error" :fixable="false" :configurable="false" category="MCP" />

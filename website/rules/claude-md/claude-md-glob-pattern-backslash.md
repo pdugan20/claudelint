@@ -1,3 +1,7 @@
+---
+description: "Path pattern uses backslashes instead of forward slashes"
+---
+
 # claude-md-glob-pattern-backslash
 
 <RuleHeader description="Path pattern uses backslashes instead of forward slashes" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />

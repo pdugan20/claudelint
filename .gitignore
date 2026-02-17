@@ -34,6 +34,7 @@ temp/
 # Cache
 .claude-code-lint-cache/
 .claudelint-cache/
+.og-cache/
 
 # Generated schemas (for comparison only, not committed)
 schemas/generated/
@@ -41,3 +42,7 @@ schemas/generated/
 # VitePress
 website/.vitepress/dist/
 website/.vitepress/cache/
+
+# Generated OG images (built during docs:build)
+website/public/og/
+website/public/og-image.png

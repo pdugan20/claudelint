@@ -1,3 +1,7 @@
+---
+description: Choose and configure claudelint output formatters. Covers built-in stylish, json, compact, sarif, and github formats, plus how to create custom formatters.
+---
+
 # Formatters
 
 Formatters transform lint results into human-readable or machine-parseable output.

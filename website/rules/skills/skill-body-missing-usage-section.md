@@ -1,3 +1,7 @@
+---
+description: "SKILL.md body lacks a ## Usage or ## Instructions section"
+---
+
 # skill-body-missing-usage-section
 
 <RuleHeader description="SKILL.md body lacks a ## Usage or ## Instructions section" severity="warn" :fixable="false" :configurable="false" category="Skills" />

@@ -1,3 +1,7 @@
+---
+description: "Environment variables must follow naming conventions"
+---
+
 # settings-invalid-env-var
 
 <RuleHeader description="Environment variables must follow naming conventions" severity="warn" :fixable="false" :configurable="false" category="Settings" />

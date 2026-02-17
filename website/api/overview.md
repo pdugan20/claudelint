@@ -1,3 +1,7 @@
+---
+description: Explore the claudelint programmatic API. Compare the functional API and ClaudeLint class to choose the right style for build scripts, CI pipelines, and IDE integrations.
+---
+
 # API Reference
 
 claudelint provides a programmatic API for integrating validation into your tools and scripts. Everything is available from the `claude-code-lint` package.

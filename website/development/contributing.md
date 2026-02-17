@@ -1,5 +1,6 @@
 ---
 outline: 2
+description: Contribute to claudelint by adding validation rules, submitting skills, or improving documentation. Covers dev setup, coding standards, the deprecation policy, and PR workflow.
 ---
 
 # Contributing

@@ -1,3 +1,7 @@
+---
+description: Learn how to extend claudelint with custom rules, understand rule documentation auto-generation, and navigate the architecture and contributing guides.
+---
+
 # Development
 
 Learn how to extend claudelint with custom rules, understand the architecture, and contribute to the project.

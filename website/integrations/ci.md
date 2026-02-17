@@ -1,3 +1,7 @@
+---
+description: Run claudelint in GitHub Actions, GitLab CI, and other pipelines to catch Claude Code configuration errors before they reach production.
+---
+
 # CI/CD Integration Guide
 
 Run `claudelint` in your CI pipeline to catch configuration issues before they reach production.

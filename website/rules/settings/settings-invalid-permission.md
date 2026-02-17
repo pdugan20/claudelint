@@ -1,3 +1,7 @@
+---
+description: "Permission rules must use valid tool names"
+---
+
 # settings-invalid-permission
 
 <RuleHeader description="Permission rules must use valid tool names" severity="error" :fixable="false" :configurable="false" category="Settings" />

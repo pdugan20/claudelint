@@ -1,3 +1,7 @@
+---
+description: "Referenced skill does not exist in .claude/skills directory"
+---
+
 # agent-skills-not-found
 
 <RuleHeader description="Referenced skill does not exist in .claude/skills directory" severity="error" :fixable="false" :configurable="false" category="Agents" />

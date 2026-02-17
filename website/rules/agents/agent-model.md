@@ -1,3 +1,7 @@
+---
+description: "Agent model must be one of: sonnet, opus, haiku, inherit"
+---
+
 # agent-model
 
 <RuleHeader description="Agent model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" :configurable="false" category="Agents" />

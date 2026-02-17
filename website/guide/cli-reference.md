@@ -1,3 +1,7 @@
+---
+description: Complete reference for all claudelint CLI commands, flags, options, exit codes, and usage examples including check-all, init, explain, and more.
+---
+
 # CLI Reference
 
 Complete reference for all claudelint commands, options, and usage patterns.

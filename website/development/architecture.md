@@ -1,3 +1,7 @@
+---
+description: "Explore claudelint's internal architecture: the distinction between rules and validators, project structure, validator implementations, error handling, and configuration."
+---
+
 # Architecture
 
 This document describes the internal architecture of claudelint for contributors. For the project's validation philosophy, scope boundaries, and design principles, see [Design Philosophy](/development/design-philosophy).

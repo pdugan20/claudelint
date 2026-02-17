@@ -1,3 +1,7 @@
+---
+description: Learn the complete TypeScript type definitions for the claudelint API, including LintResult, LintMessage, ClaudeLintOptions, RuleMetadata, and Formatter interfaces.
+---
+
 # TypeScript Types
 
 Complete TypeScript type reference for the claudelint API. All types are exported from `claude-code-lint`.

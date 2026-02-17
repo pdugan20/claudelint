@@ -1,3 +1,7 @@
+---
+description: "Failed to read imported file"
+---
+
 # claude-md-import-read-failed
 
 <RuleHeader description="Failed to read imported file" severity="error" :fixable="false" :configurable="false" category="CLAUDE.md" />

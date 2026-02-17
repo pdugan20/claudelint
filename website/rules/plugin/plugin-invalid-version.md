@@ -1,3 +1,7 @@
+---
+description: "Plugin version must follow semantic versioning format"
+---
+
 # plugin-invalid-version
 
 <RuleHeader description="Plugin version must follow semantic versioning format" severity="error" :fixable="false" :configurable="false" category="Plugin" />

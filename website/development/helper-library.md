@@ -1,3 +1,7 @@
+---
+description: Use claudelint's built-in helper functions in custom rules for heading detection, pattern matching, frontmatter parsing, file system operations, and JSON/YAML parsing.
+---
+
 # Helper Library
 
 claudelint provides utility functions to simplify common validation tasks in [custom rules](/development/custom-rules). Import them in your custom rules:

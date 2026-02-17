@@ -1,3 +1,7 @@
+---
+description: "Hook scripts must reference existing files"
+---
+
 # hooks-missing-script
 
 <RuleHeader description="Hook scripts must reference existing files" severity="error" :fixable="false" :configurable="false" category="Hooks" />

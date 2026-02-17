@@ -1,3 +1,7 @@
+---
+description: "Circular import detected between Claude.md files"
+---
+
 # claude-md-import-circular
 
 <RuleHeader description="Circular import detected between Claude.md files" severity="warn" :fixable="false" :configurable="false" category="CLAUDE.md" />

@@ -1,3 +1,7 @@
+---
+description: "MCP SSE transport URL must be valid"
+---
+
 # mcp-sse-invalid-url
 
 <RuleHeader description="MCP SSE transport URL must be valid" severity="error" :fixable="false" :configurable="false" category="MCP" />

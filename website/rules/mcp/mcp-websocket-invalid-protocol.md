@@ -1,3 +1,7 @@
+---
+description: "WebSocket URLs should use ws:// or wss:// protocol"
+---
+
 # mcp-websocket-invalid-protocol
 
 <RuleHeader description="WebSocket URLs should use ws:// or wss:// protocol" severity="warn" :fixable="false" :configurable="false" category="MCP" />

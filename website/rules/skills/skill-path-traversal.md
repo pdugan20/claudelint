@@ -1,3 +1,7 @@
+---
+description: "Potential path traversal pattern detected"
+---
+
 # skill-path-traversal
 
 <RuleHeader description="Potential path traversal pattern detected" severity="warn" :fixable="false" :configurable="false" category="Skills" />

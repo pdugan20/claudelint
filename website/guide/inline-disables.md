@@ -1,3 +1,7 @@
+---
+description: Disable claudelint rules for specific lines, blocks, or entire files using inline HTML comment syntax without changing your global configuration.
+---
+
 # Inline Disable Directives
 
 claudelint supports inline comments to disable specific validation rules for parts of your files.

@@ -1,3 +1,7 @@
+---
+description: Compare FaqList component variants — divider, card, and flat — to choose the right accordion style for your documentation pages.
+---
+
 # FAQ Style Mockups
 
 <script setup>

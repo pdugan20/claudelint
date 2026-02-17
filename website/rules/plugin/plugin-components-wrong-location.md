@@ -1,3 +1,7 @@
+---
+description: "Plugin components should be in .claude/ not .claude-plugin/"
+---
+
 # plugin-components-wrong-location
 
 <RuleHeader description="Plugin components should be in .claude/ not .claude-plugin/" severity="warn" :fixable="false" :configurable="false" category="Plugin" />

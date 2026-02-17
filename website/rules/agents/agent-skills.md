@@ -1,3 +1,7 @@
+---
+description: "Agent skills must be an array of skill names"
+---
+
 # agent-skills
 
 <RuleHeader description="Agent skills must be an array of skill names" severity="error" :fixable="false" :configurable="false" category="Agents" />

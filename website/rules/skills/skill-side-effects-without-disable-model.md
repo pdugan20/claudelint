@@ -1,3 +1,7 @@
+---
+description: "Skills with unscoped Bash should set disable-model-invocation to control auto-invocation"
+---
+
 # skill-side-effects-without-disable-model
 
 <RuleHeader description="Skills with unscoped Bash should set disable-model-invocation to control auto-invocation" severity="warn" :fixable="false" :configurable="false" category="Skills" />

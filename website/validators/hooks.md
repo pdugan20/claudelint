@@ -1,3 +1,7 @@
+---
+description: Validate Claude Code hooks.json files for schema compliance, valid event names, hook types, script file existence, and matcher pattern syntax.
+---
+
 # Hooks Validator
 
 The Hooks validator checks `.claude/hooks/hooks.json` files for schema compliance, event validity, and script references.

@@ -1,3 +1,7 @@
+---
+description: "Unknown string substitution pattern detected"
+---
+
 # skill-unknown-string-substitution
 
 <RuleHeader description="Unknown string substitution pattern detected" severity="warn" :fixable="false" :configurable="false" category="Skills" />

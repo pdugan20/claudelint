@@ -1,3 +1,7 @@
+---
+description: "Tools listed in allowed-tools are never referenced in the skill body"
+---
+
 # skill-allowed-tools-not-used
 
 <RuleHeader description="Tools listed in allowed-tools are never referenced in the skill body" severity="warn" :fixable="false" :configurable="false" category="Skills" />

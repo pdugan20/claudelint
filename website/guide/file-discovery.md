@@ -1,3 +1,7 @@
+---
+description: Understand how claudelint automatically discovers Claude Code configuration files across project layouts, monorepos, and plugin directories.
+---
+
 # File Discovery
 
 claudelint automatically discovers Claude Code configuration files throughout your project. This page explains which files are detected, where they can live, and how the discovery process works.

@@ -1,3 +1,7 @@
+---
+description: Configure claudelint for monorepos using config inheritance, workspace detection, and per-package validation with pnpm, npm, or Yarn workspaces.
+---
+
 # Monorepo Support
 
 <script setup>

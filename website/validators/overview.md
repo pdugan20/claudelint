@@ -1,3 +1,7 @@
+---
+description: Understand how claudelint organizes validation rules into categories covering CLAUDE.md, skills, settings, hooks, MCP servers, plugins, agents, LSP, and more.
+---
+
 # Validators
 
 claudelint organizes its <RuleCount category="total" /> validation rules into <RuleCount category="categories" /> validator categories. Each validator handles a specific aspect of your Claude Code project.

@@ -1,3 +1,7 @@
+---
+description: "Commands directory is deprecated, migrate to Skills"
+---
+
 # commands-deprecated-directory
 
 <RuleHeader description="Commands directory is deprecated, migrate to Skills" severity="warn" :fixable="false" :configurable="false" category="Commands" />

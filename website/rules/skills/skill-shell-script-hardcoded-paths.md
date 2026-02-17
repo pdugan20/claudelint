@@ -1,3 +1,7 @@
+---
+description: "Shell script contains hardcoded absolute paths that reduce portability"
+---
+
 # skill-shell-script-hardcoded-paths
 
 <RuleHeader description="Shell script contains hardcoded absolute paths that reduce portability" severity="warn" :fixable="false" :configurable="false" category="Skills" />

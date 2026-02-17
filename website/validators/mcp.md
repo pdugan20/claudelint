@@ -1,3 +1,7 @@
+---
+description: Validate .mcp.json configuration files for transport types, URL formats, environment variable syntax, and server command validity with claudelint.
+---
+
 # MCP Servers Validator
 
 The MCP validator checks `.mcp.json` configuration files for transport types, URLs, environment variables, and server configuration.

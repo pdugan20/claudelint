@@ -1,3 +1,7 @@
+---
+description: "Unknown key in SKILL.md frontmatter"
+---
+
 # skill-frontmatter-unknown-keys
 
 <RuleHeader description="Unknown key in SKILL.md frontmatter" severity="warn" :fixable="false" :configurable="false" category="Skills" />

@@ -1,3 +1,7 @@
+---
+description: "Learn how claudelint's rule system works: the Rule interface, schema-delegating and standalone validation patterns, rule registry, and how validators execute rules."
+---
+
 # Rule System
 
 claudelint's rule system is modeled after ESLint. Rules are self-contained modules that export metadata and a validation function. This page covers rule implementation patterns, the rule registry, and how validators execute rules.

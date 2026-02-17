@@ -1,3 +1,7 @@
+---
+description: "XML tags in SKILL.md can cause prompt injection"
+---
+
 # skill-xml-tags-anywhere
 
 <RuleHeader description="XML tags in SKILL.md can cause prompt injection" severity="error" :fixable="false" :configurable="false" category="Skills" />

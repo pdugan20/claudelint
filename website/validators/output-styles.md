@@ -1,3 +1,7 @@
+---
+description: Validate Claude Code output style definitions for name consistency, directory matching, and required guidelines content using claudelint's Output Styles validator.
+---
+
 # Output Styles Validator
 
 The Output Styles validator checks Claude Code output style definitions for name validation and content requirements.

@@ -1,3 +1,7 @@
+---
+description: "Hook events must be valid event names"
+---
+
 # hooks-invalid-event
 
 <RuleHeader description="Hook events must be valid event names" severity="warn" :fixable="false" :configurable="false" category="Hooks" />

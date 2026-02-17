@@ -1,3 +1,7 @@
+---
+description: "Environment variables must use proper expansion syntax"
+---
+
 # mcp-invalid-env-var
 
 <RuleHeader description="Environment variables must use proper expansion syntax" severity="warn" :fixable="false" :configurable="true" category="MCP" />

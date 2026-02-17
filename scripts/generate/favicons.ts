@@ -2,9 +2,9 @@ import sharp from 'sharp';
 import pngToIco from 'png-to-ico';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { log } from './util/logger';
+import { log } from '../util/logger';
 
-const PUBLIC_DIR = join(__dirname, '..', 'website', 'public');
+const PUBLIC_DIR = join(__dirname, '../..', 'website', 'public');
 
 // The favicon SVG with the CL badge centered in a square
 const svgSource = readFileSync(join(PUBLIC_DIR, 'favicon.svg'));

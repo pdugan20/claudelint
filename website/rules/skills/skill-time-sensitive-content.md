@@ -1,3 +1,7 @@
+---
+description: "SKILL.md should avoid time-sensitive references"
+---
+
 # skill-time-sensitive-content
 
 <RuleHeader description="SKILL.md should avoid time-sensitive references" severity="warn" :fixable="false" :configurable="false" category="Skills" />

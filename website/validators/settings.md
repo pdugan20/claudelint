@@ -1,3 +1,7 @@
+---
+description: Validate .claude/settings.json files for schema compliance, permission rule syntax, environment variable names, and file path references with claudelint.
+---
+
 # Settings Validator
 
 The Settings validator checks `.claude/settings.json` files for schema compliance, permission rules, and environment variable configuration.

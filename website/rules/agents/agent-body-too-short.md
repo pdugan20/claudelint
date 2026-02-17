@@ -1,3 +1,7 @@
+---
+description: "Agent body content should meet minimum length requirements"
+---
+
 # agent-body-too-short
 
 <RuleHeader description="Agent body content should meet minimum length requirements" severity="warn" :fixable="false" :configurable="true" category="Agents" />

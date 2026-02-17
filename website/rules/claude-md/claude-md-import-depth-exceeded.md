@@ -1,3 +1,7 @@
+---
+description: "Import depth exceeds maximum, possible circular import"
+---
+
 # claude-md-import-depth-exceeded
 
 <RuleHeader description="Import depth exceeds maximum, possible circular import" severity="error" :fixable="false" :configurable="true" category="CLAUDE.md" />

@@ -1,3 +1,7 @@
+---
+description: Check for deprecated .claude/commands/ directory usage and get migration guidance for moving to the skills-based approach with claudelint's Commands validator.
+---
+
 # Commands Validator
 
 The Commands validator checks for deprecated command directory usage and helps migrate to the newer skills-based approach.

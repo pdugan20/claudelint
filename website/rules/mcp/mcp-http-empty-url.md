@@ -1,3 +1,7 @@
+---
+description: "MCP HTTP transport URL cannot be empty"
+---
+
 # mcp-http-empty-url
 
 <RuleHeader description="MCP HTTP transport URL cannot be empty" severity="error" :fixable="false" :configurable="false" category="MCP" />

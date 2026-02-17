@@ -1,3 +1,7 @@
+---
+description: "Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools"
+---
+
 # skill-allowed-tools
 
 <RuleHeader description="Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools" severity="error" :fixable="false" :configurable="false" category="Skills" />

@@ -1,3 +1,7 @@
+---
+description: "Understand claudelint's validation philosophy: why it focuses exclusively on Claude-specific checks, delegates generic linting to other tools, and covers only project-scoped files."
+---
+
 # Design Philosophy
 
 This document describes claudelint's validation philosophy, scope boundaries, and design principles.

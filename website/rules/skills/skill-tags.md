@@ -1,3 +1,7 @@
+---
+description: "Skill tags must be an array of strings"
+---
+
 # skill-tags
 
 <RuleHeader description="Skill tags must be an array of strings" severity="error" :fixable="false" :configurable="false" category="Skills" />
