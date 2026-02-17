@@ -555,6 +555,28 @@ Include:
 - Alternative solutions considered
 - Impact on existing functionality
 
+## Public API Changes
+
+If your PR changes the public API (adds/removes/modifies exports from `src/index.ts` or types in `src/api/`):
+
+1. **Update the API report:**
+
+   ```bash
+   npm run check:api-report:update
+   ```
+
+   This regenerates `etc/claude-code-lint.api.md`. Commit the updated report alongside your code changes.
+
+2. **Update the snapshot test** — run `npm test -- -u --testPathPatterns=api-surface` if you intentionally added or removed exports.
+
+3. **Add JSDoc comments** to any new public exports (enforced by ESLint).
+
+4. **Update type assertions** in `src/index.test-d.ts` if you changed function signatures.
+
+5. **Update documentation pages** in `website/api/` to reflect the change.
+
+CI will fail if the API report is stale, the export snapshot doesn't match, or public exports lack JSDoc.
+
 ## Documentation
 
 - Update README.md for user-facing changes

@@ -5,7 +5,7 @@
  * projects programmatically. It handles configuration, file discovery, validation
  * orchestration, and result formatting.
  *
- * @module api/claudelint
+ * @packageDocumentation
  *
  * @example
  * ```typescript
@@ -22,8 +22,15 @@
  * ```
  */
 
-import { ClaudeLintOptions, LintResult, LintTextOptions, Formatter, LintMessage } from './types';
-import { RuleMetadata } from '../types/rule';
+import {
+  ClaudeLintOptions,
+  LintResult,
+  LintTextOptions,
+  Formatter,
+  LintMessage,
+  RuleMetadata,
+} from './types';
+import { RuleMetadata as InternalRuleMetadata } from '../types/rule';
 import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
@@ -407,7 +414,7 @@ export class ClaudeLint {
     const allRules = RuleRegistry.getAllRules();
 
     for (const rule of allRules) {
-      metaMap.set(rule.meta.id, rule.meta);
+      metaMap.set(rule.meta.id, ClaudeLint.toPublicRuleMetadata(rule.meta));
     }
 
     return metaMap;
@@ -444,11 +451,11 @@ export class ClaudeLint {
       }
     }
 
-    // Load metadata for each rule
+    // Load metadata for each rule and convert to public type
     for (const ruleId of ruleIds) {
       const metadata = RuleRegistry.get(ruleId);
       if (metadata) {
-        metaMap.set(ruleId, metadata);
+        metaMap.set(ruleId, ClaudeLint.toPublicRuleMetadata(metadata));
       }
     }
 
@@ -519,7 +526,7 @@ export class ClaudeLint {
    * Filter results to only those with errors
    *
    * @param results - All lint results
-   * @returns Results with errorCount > 0
+   * @returns Results with errorCount \> 0
    *
    * @example
    * ```typescript
@@ -580,6 +587,24 @@ export class ClaudeLint {
    */
   static getVersion(): string {
     return (packageJson as { version: string }).version;
+  }
+
+  /**
+   * Convert internal rule metadata to the public API type
+   *
+   * @param meta - Internal rule metadata from the rule registry
+   * @returns Public RuleMetadata matching the documented API shape
+   */
+  private static toPublicRuleMetadata(meta: InternalRuleMetadata): RuleMetadata {
+    return {
+      ruleId: meta.id,
+      description: meta.description,
+      category: meta.category,
+      severity: meta.severity === 'error' ? 'error' : 'warning',
+      fixable: meta.fixable,
+      explanation: meta.docs?.details,
+      docs: meta.docUrl,
+    };
   }
 
   // Private methods
@@ -914,14 +939,26 @@ export class ClaudeLint {
       return undefined;
     }
 
-    // Apply all fixes sequentially
-    let fixedContent = source;
+    // Sort fixes by range start, then by range end for ties
+    autoFixes.sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1]);
+
+    // Apply fixes via range splicing, skipping overlaps
+    let output = '';
+    let lastPos = 0;
+
     for (const autoFix of autoFixes) {
-      fixedContent = autoFix.apply(fixedContent);
+      const [start, end] = autoFix.range;
+      if (start < lastPos || start > end) {
+        continue; // Skip overlapping or invalid fixes
+      }
+      output += source.slice(lastPos, start);
+      output += autoFix.text;
+      lastPos = end;
     }
+    output += source.slice(lastPos);
 
     // Return fixed content only if it's different from source
-    return fixedContent !== source ? fixedContent : undefined;
+    return output !== source ? output : undefined;
   }
 
   /**

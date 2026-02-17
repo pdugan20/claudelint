@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Public API surface exports have not changed unexpectedly 1`] = `
+[
+  "BUILTIN_FORMATTERS",
+  "BaseFormatter",
+  "ClaudeLint",
+  "findConfigFile",
+  "formatResults",
+  "getFileInfo",
+  "isBuiltinFormatter",
+  "lint",
+  "lintText",
+  "loadConfig",
+  "loadFormatter",
+  "resolveConfig",
+]
+`;

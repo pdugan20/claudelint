@@ -4,7 +4,7 @@
  * This module contains all public type definitions for the API, including
  * result types, message types, and configuration options.
  *
- * @module api/types
+ * @packageDocumentation
  */
 
 import { ClaudeLintConfig } from '../utils/config/types';

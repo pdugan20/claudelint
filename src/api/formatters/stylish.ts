@@ -4,18 +4,15 @@
  * Similar to ESLint's stylish formatter, provides a clean,
  * easy-to-read output format with colors and structure.
  *
- * @module api/formatters/stylish
+ * @packageDocumentation
  */
 
 import { LintResult } from '../types';
 import { BaseFormatter } from '../formatter';
 
-/**
- * Stylish formatter for lint results
- *
- * Provides human-readable, colored output similar to ESLint's default formatter
- */
+/** Human-readable terminal formatter with colors */
 export class StylishFormatter extends BaseFormatter {
+  /** Format lint results as human-readable colored output */
   format(results: LintResult[]): string {
     let output = '';
     const summary = this.getSummary(results);

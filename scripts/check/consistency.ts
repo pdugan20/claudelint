@@ -162,7 +162,7 @@ async function parseDocMetadata(filePath: string): Promise<{ severity?: string; 
  * Find all rule documentation files and extract metadata
  */
 async function findRuleDocs(): Promise<void> {
-  const rulesDir = join(projectRoot, 'docs', 'rules');
+  const rulesDir = join(projectRoot, 'website', 'rules');
 
   if (!existsSync(rulesDir)) {
     return;
@@ -297,7 +297,7 @@ function checkValidatorConsistency(): void {
     if (expectedValidator !== 'Unknown' && doc.validator !== expectedValidator) {
       violations.push({
         file: doc.file,
-        issue: `Validator mismatch for rule "${ruleId}": metadata says "${doc.validator}" but file is in docs/rules/${expectedValidator.toLowerCase()}/`,
+        issue: `Validator mismatch for rule "${ruleId}": metadata says "${doc.validator}" but file is in website/rules/${expectedValidator.toLowerCase()}/`,
         suggestion: `Update metadata to: **Validator**: ${expectedValidator}`,
       });
     }

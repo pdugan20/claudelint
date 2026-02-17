@@ -77,7 +77,7 @@ describe('message-builder', () => {
       expect(result.howToFix).toBe('Do this instead');
     });
 
-    it('should convert autoFix to fix info', () => {
+    it('should convert autoFix to fix info with real range/text', () => {
       const error: ValidationError = {
         message: 'Fixable issue',
         severity: 'error',
@@ -85,15 +85,16 @@ describe('message-builder', () => {
           ruleId: 'claude-md-size',
           description: 'Fix it',
           filePath: '/test.md',
-          apply: (content: string) => content,
+          range: [10, 15],
+          text: 'replaced',
         },
       };
 
       const result = buildLintMessage(error, 'error');
 
       expect(result.fix).toBeDefined();
-      expect(result.fix!.range).toEqual([0, 0]);
-      expect(result.fix!.text).toBe('');
+      expect(result.fix!.range).toEqual([10, 15]);
+      expect(result.fix!.text).toBe('replaced');
     });
 
     it('should build a warning message', () => {

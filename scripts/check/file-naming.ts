@@ -3,7 +3,8 @@
  * File Naming Convention Checker
  *
  * Validates that all files in the project follow the documented naming conventions:
- * - docs/projects/*\/*.md: lowercase-with-hyphens.md (exceptions: README, CHANGELOG, CONTRIBUTING)
+ * - docs/projects/*.md: lowercase-with-hyphens.md (exceptions: README, CHANGELOG, CONTRIBUTING)
+ * - website/rules/**\/*.md: lowercase-with-hyphens.md matching rule IDs
  * - src/**\/*.ts: lowercase-with-hyphens.ts
  * - tests/**\/*.test.ts: lowercase-with-hyphens.test.ts
  */
@@ -167,10 +168,10 @@ async function checkProjectDocs(): Promise<void> {
 }
 
 /**
- * Check docs/rules/{validator}/{rule-id}.md files
+ * Check website/rules/{validator}/{rule-id}.md files
  */
 async function checkRuleDocs(): Promise<void> {
-  const rulesDir = join(projectRoot, 'docs', 'rules');
+  const rulesDir = join(projectRoot, 'website', 'rules');
   if (!existsSync(rulesDir)) return;
 
   // Get all registered rule IDs
@@ -307,7 +308,7 @@ async function main(): Promise<void> {
       log.blank();
     }
 
-    log.info('See docs/file-naming-conventions.md for details.');
+    log.info('See CLAUDE.md for file naming convention details.');
     process.exit(1);
   }
 }

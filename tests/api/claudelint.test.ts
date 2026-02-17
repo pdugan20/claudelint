@@ -244,6 +244,47 @@ describe('ClaudeLint', () => {
       expect(typeof formatter.format).toBe('function');
     });
 
+    it('should load built-in sarif formatter', async () => {
+      const linter = new ClaudeLint();
+      const formatter = await linter.loadFormatter('sarif');
+
+      expect(formatter).toBeDefined();
+      expect(typeof formatter.format).toBe('function');
+
+      // Verify SARIF output structure
+      const results: LintResult[] = [
+        {
+          filePath: '/test/file.md',
+          messages: [
+            { ruleId: 'test-rule', severity: 'error', message: 'Test error', line: 1 },
+          ],
+          suppressedMessages: [],
+          errorCount: 1,
+          warningCount: 0,
+          fixableErrorCount: 0,
+          fixableWarningCount: 0,
+        },
+      ];
+
+      const output = formatter.format(results);
+      const sarif = JSON.parse(output);
+
+      expect(sarif.version).toBe('2.1.0');
+      expect(sarif.runs).toHaveLength(1);
+      expect(sarif.runs[0].tool.driver.name).toBe('claudelint');
+      expect(sarif.runs[0].results).toHaveLength(1);
+      expect(sarif.runs[0].results[0].ruleId).toBe('test-rule');
+      expect(sarif.runs[0].results[0].level).toBe('error');
+    });
+
+    it('should load built-in github formatter', async () => {
+      const linter = new ClaudeLint();
+      const formatter = await linter.loadFormatter('github');
+
+      expect(formatter).toBeDefined();
+      expect(typeof formatter.format).toBe('function');
+    });
+
     it('should cache loaded formatters', async () => {
       const linter = new ClaudeLint();
 
@@ -470,13 +511,24 @@ describe('ClaudeLint', () => {
         // In test environment, registry may be empty or populated
         expect(rules.size).toBeGreaterThanOrEqual(0);
 
-        // If there are rules, verify structure
+        // If there are rules, verify public API shape
         if (rules.size > 0) {
           for (const [ruleId, metadata] of rules) {
             expect(typeof ruleId).toBe('string');
-            expect(metadata).toHaveProperty('id');
+            // Public RuleMetadata uses ruleId, not id
+            expect(metadata).toHaveProperty('ruleId');
             expect(metadata).toHaveProperty('description');
             expect(metadata).toHaveProperty('category');
+            expect(metadata).toHaveProperty('severity');
+            expect(metadata).toHaveProperty('fixable');
+            // Severity must be 'error' or 'warning' (not 'warn' or 'off')
+            expect(['error', 'warning']).toContain(metadata.severity);
+            // Should NOT expose internal fields
+            expect(metadata).not.toHaveProperty('id');
+            expect(metadata).not.toHaveProperty('name');
+            expect(metadata).not.toHaveProperty('since');
+            expect(metadata).not.toHaveProperty('schema');
+            expect(metadata).not.toHaveProperty('defaultOptions');
           }
         }
       });

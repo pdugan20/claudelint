@@ -5,7 +5,7 @@
  * and ValidationWarning formats to the standardized LintMessage format used by the
  * programmatic API.
  *
- * @module api/message-builder
+ * @packageDocumentation
  */
 
 import { LintMessage, FixInfo } from './types';
@@ -75,21 +75,13 @@ export function buildLintMessage(
 /**
  * Convert AutoFix to FixInfo format
  *
- * Transforms the internal AutoFix format (which includes file path and content
- * transformation) to the API's FixInfo format (which uses byte ranges).
- *
- * @param autoFix - Internal AutoFix object
- * @returns FixInfo for the API
+ * @param autoFix - Internal AutoFix object with range and text
+ * @returns FixInfo for the public API
  */
-function convertAutoFixToFixInfo(_autoFix: AutoFix): FixInfo {
-  // The internal AutoFix format uses a function to transform content.
-  // The API's FixInfo format expects byte ranges and replacement text.
-  // This is intentionally simplified - autofixes are applied via autoFix.apply()
-  // in the main validation flow before results reach the API consumer.
-  // This placeholder allows the API to report that a fix exists.
+function convertAutoFixToFixInfo(autoFix: AutoFix): FixInfo {
   return {
-    range: [0, 0], // Placeholder - fix is applied before API consumption
-    text: '', // Placeholder - fix is applied before API consumption
+    range: [autoFix.range[0], autoFix.range[1]],
+    text: autoFix.text,
   };
 }
 

@@ -4,7 +4,7 @@
  * This module provides stateless functional utilities for common operations.
  * These are convenience wrappers around the ClaudeLint class for simple use cases.
  *
- * @module api/functions
+ * @packageDocumentation
  */
 
 import { ClaudeLint } from './claudelint';

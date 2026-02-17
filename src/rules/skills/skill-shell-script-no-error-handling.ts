@@ -99,18 +99,10 @@ export const rule: Rule = {
           ruleId: 'skill-shell-script-no-error-handling',
           description: 'Add set -euo pipefail after shebang',
           filePath,
-          apply: (content) => {
-            // Insert after shebang line if present, otherwise at top
-            if (content.startsWith('#!')) {
-              const newlineIndex = content.indexOf('\n');
-              return (
-                content.substring(0, newlineIndex + 1) +
-                'set -euo pipefail\n' +
-                content.substring(newlineIndex + 1)
-              );
-            }
-            return 'set -euo pipefail\n' + content;
-          },
+          range: fileContent.startsWith('#!')
+            ? [fileContent.indexOf('\n') + 1, fileContent.indexOf('\n') + 1]
+            : [0, 0],
+          text: 'set -euo pipefail\n',
         },
       });
     }

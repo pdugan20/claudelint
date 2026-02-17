@@ -65,31 +65,29 @@ Create a base configuration that child packages can extend:
 
 ```json
 {
-  "extends": "./base.json"
-}
-```
-
-```json
-{
-  "extends": "../../root-config.json"
+  "extends": "../../.claudelintrc.json"
 }
 ```
 
 **Node modules packages:**
 
-```json
+::: code-group
+
+```json [Unscoped]
 {
   "extends": "claudelint-config-standard"
 }
 ```
 
-```json
+```json [Scoped]
 {
   "extends": "@company/claudelint-config"
 }
 ```
 
-**Multiple extends (array):**
+:::
+
+**Multiple extends:**
 
 ```json
 {
@@ -135,9 +133,9 @@ monorepo/
         └── .claudelintrc.json  # Extends root
 ```
 
-**Root config** (.claudelintrc.json):
+::: code-group
 
-```json
+```json [Root config]
 {
   "rules": {
     "claude-md-size": "warn",
@@ -150,9 +148,7 @@ monorepo/
 }
 ```
 
-**Package config** (packages/app-1/.claudelintrc.json):
-
-```json
+```json [Package config]
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
@@ -160,6 +156,8 @@ monorepo/
   }
 }
 ```
+
+:::
 
 ## Workspace Detection
 
@@ -170,17 +168,15 @@ claudelint automatically detects monorepo workspaces from:
 
 ### Supported Package Managers
 
-**pnpm:**
+::: code-group
 
-```yaml
+```yaml [pnpm]
 packages:
   - 'packages/*'
   - 'apps/*'
 ```
 
-**npm:**
-
-```json
+```json [npm]
 {
   "workspaces": [
     "packages/*",
@@ -189,9 +185,7 @@ packages:
 }
 ```
 
-**Yarn:**
-
-```json
+```json [Yarn]
 {
   "workspaces": {
     "packages": [
@@ -201,6 +195,8 @@ packages:
   }
 }
 ```
+
+:::
 
 ### CLI Flags
 
@@ -305,15 +301,19 @@ Yes! Config inheritance works in any repository, not just monorepos.
 
 Yes! Install the package and reference it:
 
-```bash
+::: code-group
+
+```bash [Install]
 npm install --save-dev @company/claudelint-config
 ```
 
-```json
+```json [Config]
 {
   "extends": "@company/claudelint-config"
 }
 ```
+
+:::
 
 ### Recursive extends
 
@@ -352,24 +352,24 @@ Yes! Set it to "off" in the child config:
 
 ### Upgrading Existing Monorepos
 
-**Before (duplicated config in each package):**
+::: code-group
 
-```text
+```text [Before]
 packages/
 ├── app-1/.claudelintrc.json  (full config)
 ├── app-2/.claudelintrc.json  (full config)
 └── shared/.claudelintrc.json (full config)
 ```
 
-**After (shared config with extends):**
-
-```text
+```text [After]
 .claudelintrc.json              (shared rules)
 packages/
 ├── app-1/.claudelintrc.json  (extends root)
 ├── app-2/.claudelintrc.json  (extends root)
 └── shared/.claudelintrc.json (extends root)
 ```
+
+:::
 
 **Steps:**
 
@@ -396,9 +396,9 @@ packages/
 
 ### Strict apps, relaxed tests
 
-**Root config:**
+::: code-group
 
-```json
+```json [Root]
 {
   "rules": {
     "claude-md-size": "warn"
@@ -406,17 +406,13 @@ packages/
 }
 ```
 
-**App package:**
-
-```json
+```json [App package]
 {
   "extends": "../../.claudelintrc.json"
 }
 ```
 
-**Test utilities package:**
-
-```json
+```json [Test utils]
 {
   "extends": "../../.claudelintrc.json",
   "rules": {
@@ -425,11 +421,15 @@ packages/
 }
 ```
 
+:::
+
 ### Shared company config
 
-**Publish shared config:**
+Create a publishable shared config:
 
-```json
+::: code-group
+
+```json [package.json]
 {
   "name": "@company/claudelint-config",
   "version": "1.0.0",
@@ -437,9 +437,7 @@ packages/
 }
 ```
 
-**index.json:**
-
-```json
+```json [index.json]
 {
   "rules": {
     "claude-md-size": "warn",
@@ -449,13 +447,17 @@ packages/
 }
 ```
 
-**Use in projects:**
+:::
 
-```bash
+Then use it in projects:
+
+::: code-group
+
+```bash [Install]
 npm install --save-dev @company/claudelint-config
 ```
 
-```json
+```json [Config]
 {
   "extends": "@company/claudelint-config",
   "rules": {
@@ -463,6 +465,8 @@ npm install --save-dev @company/claudelint-config
   }
 }
 ```
+
+:::
 
 ## Best Practices
 

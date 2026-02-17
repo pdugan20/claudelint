@@ -2,7 +2,7 @@
  * Rule Page Template Generator
  *
  * Generates VitePress-compatible markdown pages from rule metadata.
- * Output follows the structure defined in docs/rules/TEMPLATE.md.
+ * Output follows the standardized rule page structure.
  *
  * Usage: Called by scripts/generate/rule-docs.ts
  */
@@ -10,7 +10,7 @@
 import { RuleMetadata, RuleCategory } from '../../src/types/rule';
 
 /**
- * Map RuleCategory to directory name used in docs/rules/ and website/rules/
+ * Map RuleCategory to directory name used in website/rules/
  */
 const CATEGORY_DIR_MAP: Record<RuleCategory, string> = {
   'CLAUDE.md': 'claude-md',

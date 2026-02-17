@@ -163,7 +163,12 @@ describe('Dogfood Custom Rules', () => {
       const content = '# Project\n\n```\necho hello\n```\n';
       const issues = await collectIssues(rule, '/test/CLAUDE.md', content);
       expect(issues[0].autoFix).toBeDefined();
-      expect(issues[0].autoFix!.apply(content)).toBe('# Project\n\n```text\necho hello\n```\n');
+      expect(issues[0].autoFix!.range).toEqual([11, 14]);
+      expect(issues[0].autoFix!.text).toBe('```text');
+      // Verify fix produces correct output when applied
+      const fix = issues[0].autoFix!;
+      const result = content.slice(0, fix.range[0]) + fix.text + content.slice(fix.range[1]);
+      expect(result).toBe('# Project\n\n```text\necho hello\n```\n');
     });
 
     it('should pass when all fences have languages', async () => {

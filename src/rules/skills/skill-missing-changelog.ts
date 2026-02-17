@@ -19,7 +19,7 @@ export const rule: Rule = {
     description: 'Skill directory lacks CHANGELOG.md',
     category: 'Skills',
     severity: 'warn',
-    fixable: true,
+    fixable: false,
     deprecated: false,
     since: '0.2.0',
     docUrl:

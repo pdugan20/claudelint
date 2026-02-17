@@ -466,7 +466,7 @@ claudelint maintains JSON Schema files for IDE integration and external tooling.
 | Output style | [`output-style-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/output-style-frontmatter.schema.json) | OUTPUTSTYLE.md frontmatter |
 | Rules frontmatter | [`rules-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/rules-frontmatter.schema.json) | Rules file frontmatter |
 
-Auto-generated versions (from Zod schemas) are in `schemas/generated/` and can be used to verify schema sync with `npm run check:schema-sync`.
+Running `npm run generate:json-schemas` produces auto-generated versions (from Zod schemas) in `schemas/generated/` locally. Use `npm run check:schema-sync` to verify they stay in sync with the hand-written schemas above.
 
 ## See Also
 

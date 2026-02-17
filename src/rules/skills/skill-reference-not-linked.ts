@@ -100,8 +100,8 @@ export const rule: Rule = {
           ruleId: 'skill-reference-not-linked',
           description: `Convert \`${referencedPath}\` to markdown link`,
           filePath,
-          apply: (content) =>
-            content.replace(fullMatch, `[${referencedPath}](./${referencedPath})`),
+          range: [matchIndex, matchIndex + fullMatch.length],
+          text: `[${referencedPath}](./${referencedPath})`,
         },
       });
     }

@@ -4,17 +4,14 @@
  * Outputs one line per lint issue, suitable for parsing
  * and integration with other tools.
  *
- * @module api/formatters/compact
+ * @packageDocumentation
  */
 
 import { LintResult, Formatter } from '../types';
 
-/**
- * Compact formatter for lint results
- *
- * Provides compact, one-line-per-issue output suitable for parsing
- */
+/** Compact one-line-per-issue formatter */
 export class CompactFormatter implements Formatter {
+  /** Format lint results as compact one-line-per-issue output */
   format(results: LintResult[]): string {
     let output = '';
 

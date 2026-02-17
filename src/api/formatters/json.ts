@@ -4,17 +4,14 @@
  * Outputs lint results as JSON, useful for tooling integration
  * and programmatic processing.
  *
- * @module api/formatters/json
+ * @packageDocumentation
  */
 
 import { LintResult, Formatter } from '../types';
 
-/**
- * JSON formatter for lint results
- *
- * Provides machine-readable JSON output for tooling integration
- */
+/** JSON output formatter */
 export class JsonFormatter implements Formatter {
+  /** Format lint results as a JSON string */
   format(results: LintResult[]): string {
     return JSON.stringify(results, null, 2);
   }

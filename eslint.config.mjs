@@ -2,6 +2,8 @@ import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import pluginVue from 'eslint-plugin-vue';
 import tseslint from '@typescript-eslint/parser';
+import tsdocPlugin from 'eslint-plugin-tsdoc';
+import jsdocPlugin from 'eslint-plugin-jsdoc';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -40,6 +42,34 @@ export default [
       // Relax rules that conflict with VitePress patterns
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn',
+    },
+  },
+
+  // TSDoc syntax validation on public API files
+  {
+    files: ['src/api/**/*.ts', 'src/index.ts'],
+    plugins: { tsdoc: tsdocPlugin },
+    rules: {
+      'tsdoc/syntax': 'error',
+    },
+  },
+
+  // JSDoc completeness: require doc comments on public exports
+  {
+    files: ['src/api/**/*.ts', 'src/index.ts'],
+    plugins: { jsdoc: jsdocPlugin },
+    rules: {
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          publicOnly: true,
+          require: {
+            ClassDeclaration: true,
+            FunctionDeclaration: true,
+            MethodDefinition: true,
+          },
+        },
+      ],
     },
   },
 ];

@@ -7,7 +7,6 @@ import { log } from './logger';
 interface PackageJson {
   version: string;
   name?: string;
-  devDependencies?: Record<string, string>;
   [key: string]: unknown;
 }
 
@@ -83,39 +82,6 @@ function syncVersions(): void {
     filesUpdated++;
   } else {
     log.pass('marketplace.json already in sync');
-  }
-
-  // 4. Update examples/integration/package.json dependency
-  const integrationPackageJsonPath = path.join(
-    rootDir,
-    'examples',
-    'integration',
-    'package.json'
-  );
-  const integrationPackageJson: PackageJson = JSON.parse(
-    fs.readFileSync(integrationPackageJsonPath, 'utf-8')
-  );
-
-  const devDeps = (integrationPackageJson.devDependencies || {}) as Record<
-    string,
-    string
-  >;
-  const currentDepVersion = devDeps[packageName];
-  const newDepVersion = `^${primaryVersion}`;
-
-  if (currentDepVersion !== newDepVersion) {
-    log.info(
-      `Updating integration example dependency: ${currentDepVersion} → ${newDepVersion}`
-    );
-    devDeps[packageName] = newDepVersion;
-    integrationPackageJson.devDependencies = devDeps;
-    fs.writeFileSync(
-      integrationPackageJsonPath,
-      JSON.stringify(integrationPackageJson, null, 2) + '\n'
-    );
-    filesUpdated++;
-  } else {
-    log.pass('integration example dependency already in sync');
   }
 
   log.blank();

@@ -386,10 +386,10 @@ The first configuration file found is used. Files lower in the tree take precede
 
 ## Programmatic API
 
-claudelint exposes a programmatic API for use in custom tooling and scripts. The package uses the `exports` field for clean module resolution:
+claudelint exposes a programmatic API for use in custom tooling and scripts:
 
 ```typescript
 import { ClaudeLint } from 'claude-code-lint';
 ```
 
-The `prepare` script runs only on `git clone` + `npm install` (not when installed as a dependency), so claudelint installs cleanly without side effects.
+See the [API Overview](/api/overview) for full documentation, including the [ClaudeLint class](/api/claudelint-class), [functional API](/api/functional-api), and [recipes](/api/recipes).

@@ -72,7 +72,7 @@ async function loadRegisteredRuleIds(): Promise<Set<string>> {
  * Find all rule documentation files
  */
 async function findRuleDocs(): Promise<Map<string, string>> {
-  const rulesDir = join(projectRoot, 'docs', 'rules');
+  const rulesDir = join(projectRoot, 'website', 'rules');
   const ruleDocs = new Map<string, string>();
 
   if (!existsSync(rulesDir)) {
@@ -296,7 +296,7 @@ function checkMissingDocs(registeredRuleIds: Set<string>, ruleDocs: Map<string, 
   for (const ruleId of registeredRuleIds) {
     if (!ruleDocs.has(ruleId)) {
       warnings.push({
-        file: 'docs/rules/',
+        file: 'website/rules/',
         issue: `Missing documentation for registered rule ID "${ruleId}"`,
       });
     }
@@ -389,7 +389,7 @@ async function main(): Promise<void> {
   if (hasErrors) {
     log.blank();
     log.info('Fix violations before committing.');
-    log.info('See docs/rule-development-enforcement.md for documentation requirements.');
+    log.info('See https://claudelint.com/development/custom-rules for documentation requirements.');
     process.exit(1);
   } else {
     process.exit(0);

@@ -80,12 +80,17 @@ export const rule: Rule = {
       context.report({
         message: `Skill name "${oldName}" does not match directory name "${dirName}"`,
         fix: `Change name from "${oldName}" to "${dirName}"`,
-        autoFix: {
-          ruleId: 'skill-name-directory-mismatch',
-          description: `Update skill name to "${dirName}"`,
-          filePath,
-          apply: (content) => content.replace(`name: ${oldName}`, `name: ${dirName}`),
-        },
+        autoFix: (() => {
+          const needle = `name: ${oldName}`;
+          const idx = fileContent.indexOf(needle);
+          return {
+            ruleId: 'skill-name-directory-mismatch' as const,
+            description: `Update skill name to "${dirName}"`,
+            filePath,
+            range: [idx, idx + needle.length] as [number, number],
+            text: `name: ${dirName}`,
+          };
+        })(),
       });
     }
   },

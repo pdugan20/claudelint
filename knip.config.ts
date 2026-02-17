@@ -5,6 +5,7 @@ const config: KnipConfig = {
   entry: [
     'src/cli.ts',                   // CLI entry point
     'scripts/**/*.{ts,js,sh}',      // All utility scripts are entry points
+    'tests/api-examples/**/*.ts',   // API code samples (intentionally standalone)
   ],
 
   // Project files to analyze

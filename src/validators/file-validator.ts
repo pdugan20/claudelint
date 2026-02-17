@@ -11,7 +11,16 @@ import { RuleRegistry } from '../utils/rules/registry';
 import { DiagnosticCollector } from '../utils/diagnostics';
 
 /**
- * Automatic fix that can be applied to resolve a validation issue
+ * Automatic fix that can be applied to resolve a validation issue.
+ *
+ * Uses ESLint-style character-range edits: `range` specifies the start
+ * (inclusive) and end (exclusive) character offsets in the source, and
+ * `text` is the replacement string. The fix is applied as:
+ * `source.slice(0, range[0]) + text + source.slice(range[1])`
+ *
+ * - Insertion: `range: [n, n]` (zero-length range) + `text: "inserted"`
+ * - Deletion: `range: [start, end]` + `text: ""`
+ * - Replacement: `range: [start, end]` + `text: "replacement"`
  */
 export interface AutoFix {
   /** Unique identifier for the rule that provides this fix */
@@ -20,8 +29,10 @@ export interface AutoFix {
   description: string;
   /** The file path to fix */
   filePath: string;
-  /** Function that applies the fix and returns the new file content */
-  apply: (currentContent: string) => string;
+  /** Start and end character offsets in the source (0-based, start inclusive, end exclusive) */
+  range: [number, number];
+  /** Replacement text (empty string for deletion) */
+  text: string;
 }
 
 /**

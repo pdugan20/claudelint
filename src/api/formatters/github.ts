@@ -4,7 +4,7 @@
  * Outputs lint results as GitHub Actions workflow commands
  * for inline PR annotations and the Actions summary tab.
  *
- * @module api/formatters/github
+ * @packageDocumentation
  */
 
 import { LintResult, LintMessage, Formatter } from '../types';
@@ -15,6 +15,7 @@ import { LintResult, LintMessage, Formatter } from '../types';
  * Produces one `::error` or `::warning` command per lint issue
  */
 export class GitHubFormatter implements Formatter {
+  /** Format lint results as GitHub Actions annotation commands */
   format(results: LintResult[]): string {
     const lines: string[] = [];
 

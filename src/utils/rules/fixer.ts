@@ -50,7 +50,10 @@ export class Fixer {
   }
 
   /**
-   * Apply all registered fixes
+   * Apply all registered fixes using ESLint-style range splicing.
+   *
+   * Fixes are sorted by range start position and applied left-to-right.
+   * Overlapping fixes are skipped (the earlier fix wins).
    */
   applyFixes(): FixResult {
     const result: FixResult = {
@@ -68,29 +71,48 @@ export class Fixer {
         // Read current file content (empty string if file doesn't exist)
         const fileExists = existsSync(filePath);
         const originalContent = fileExists ? readFileSync(filePath, 'utf-8') : '';
-        let currentContent = originalContent;
 
-        // Apply all fixes for this file
-        for (const fix of fileFixes) {
-          try {
-            currentContent = fix.apply(currentContent);
-            result.fixesApplied++;
-          } catch (error) {
+        // Sort fixes by range start, then by range end for ties
+        const sorted = [...fileFixes].sort(
+          (a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1]
+        );
+
+        // Apply fixes via linear scan, skipping overlaps
+        let output = '';
+        let lastPos = 0;
+
+        for (const fix of sorted) {
+          const [start, end] = fix.range;
+
+          if (start < lastPos || start > end) {
+            // Overlapping or invalid range — skip this fix
             result.failedFixes.push({
               fix,
-              error: error instanceof Error ? error.message : String(error),
+              error:
+                start < lastPos
+                  ? `Fix overlaps with a previously applied fix (start ${start} < lastPos ${lastPos})`
+                  : `Invalid range: start (${start}) > end (${end})`,
             });
+            continue;
           }
+
+          output += originalContent.slice(lastPos, start);
+          output += fix.text;
+          lastPos = end;
+          result.fixesApplied++;
         }
 
+        // Append remaining content after last fix
+        output += originalContent.slice(lastPos);
+
         // Check if content actually changed
-        if (currentContent !== originalContent) {
+        if (output !== originalContent) {
           // Generate unified diff
           const diff = createTwoFilesPatch(
             filePath,
             filePath,
             originalContent,
-            currentContent,
+            output,
             'original',
             'fixed'
           );
@@ -98,7 +120,7 @@ export class Fixer {
 
           // Apply fix if not dry-run
           if (!this.options.dryRun) {
-            writeFileSync(filePath, currentContent, 'utf-8');
+            writeFileSync(filePath, output, 'utf-8');
           }
 
           result.filesFixed++;

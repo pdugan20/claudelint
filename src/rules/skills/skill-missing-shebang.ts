@@ -81,7 +81,8 @@ export const rule: Rule = {
           ruleId: 'skill-missing-shebang',
           description: 'Add #!/usr/bin/env bash shebang line',
           filePath,
-          apply: (content) => `#!/usr/bin/env bash\n${content}`,
+          range: [0, 0],
+          text: '#!/usr/bin/env bash\n',
         },
       });
     }

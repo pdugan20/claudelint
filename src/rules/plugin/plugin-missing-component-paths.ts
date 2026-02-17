@@ -40,7 +40,7 @@ export const rule: Rule = {
     description: 'Plugin component paths should start with ./ to be explicit about their location',
     category: 'Plugin',
     severity: 'warn',
-    fixable: true,
+    fixable: false,
     deprecated: false,
     since: '0.2.0',
     docUrl:

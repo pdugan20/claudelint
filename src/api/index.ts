@@ -4,7 +4,7 @@
  * This module provides the main programmatic API for claudelint, including
  * the ClaudeLint class, functional utilities, and all type definitions.
  *
- * @module api
+ * @packageDocumentation
  *
  * @example
  * ```typescript

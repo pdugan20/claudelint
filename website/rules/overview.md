@@ -58,20 +58,7 @@ claudelint includes <RuleCount category="total" /> validation rules across <Rule
 
 </div>
 
-Browse the sidebar for the complete list of rules organized by category.
-
-## By Category
-
-- [**CLAUDE.md**](/validators/claude-md) (<RuleCount category="claude-md" /> rules) - File size, imports, paths, content
-- [**Skills**](/validators/skills) (<RuleCount category="skills" /> rules) - Names, descriptions, security, versioning
-- [**MCP**](/validators/mcp) (<RuleCount category="mcp" /> rules) - Server config, URLs, transport types
-- [**Plugin**](/validators/plugin) (<RuleCount category="plugin" /> rules) - Manifest, components, versioning
-- [**Agents**](/validators/agents) (<RuleCount category="agents" /> rules) - Names, descriptions, tools, models
-- [**LSP**](/validators/lsp) (<RuleCount category="lsp" /> rules) - Transport, language IDs, extensions
-- [**Settings**](/validators/settings) (<RuleCount category="settings" /> rules) - Permissions, environment variables
-- [**Hooks**](/validators/hooks) (<RuleCount category="hooks" /> rules) - Event types, script references
-- [**Output Styles**](/validators/output-styles) (<RuleCount category="output-styles" /> rules) - Name validation
-- [**Commands**](/validators/commands) (<RuleCount category="commands" /> rules) - Migration checks
+Browse the sidebar for the complete list of rules organized by category, or see the [Validators Overview](/validators/overview) for a summary of what each category checks.
 
 ## Severity Levels
 

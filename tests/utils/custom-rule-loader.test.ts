@@ -682,14 +682,16 @@ describe('CustomRuleLoader', () => {
             since: '1.0.0',
           },
           validate: async (context) => {
-            if (context.fileContent.includes('BAD')) {
+            const idx = context.fileContent.indexOf('BAD');
+            if (idx !== -1) {
               context.report({
                 message: 'Found BAD text',
                 autoFix: {
                   ruleId: 'auto-fix-test',
                   description: 'Replace BAD with GOOD',
                   filePath: context.filePath,
-                  apply: (content) => content.replace(/BAD/g, 'GOOD'),
+                  range: [idx, idx + 3],
+                  text: 'GOOD',
                 },
               });
             }

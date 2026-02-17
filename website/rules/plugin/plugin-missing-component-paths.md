@@ -1,6 +1,6 @@
 # plugin-missing-component-paths
 
-<RuleHeader description="Plugin component paths should start with ./ to be explicit about their location" severity="warn" :fixable="true" :configurable="false" category="Plugin" />
+<RuleHeader description="Plugin component paths should start with ./ to be explicit about their location" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 

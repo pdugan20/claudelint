@@ -4,7 +4,7 @@
  * This module provides the formatter interface and loading utilities for
  * formatting lint results into various output formats.
  *
- * @module api/formatter
+ * @packageDocumentation
  */
 
 import { Formatter, FormatterOptions, LoadFormatterOptions, LintResult } from './types';
@@ -76,6 +76,11 @@ async function loadBuiltinFormatter(name: BuiltinFormatterName): Promise<Formatt
       return new CompactFormatter();
     }
 
+    case 'sarif': {
+      const { SarifFormatter } = await import('./formatters/sarif');
+      return new SarifFormatter();
+    }
+
     case 'github': {
       const { GitHubFormatter } = await import('./formatters/github');
       return new GitHubFormatter();
@@ -141,6 +146,7 @@ export function isFormatter(obj: unknown): obj is Formatter {
 export abstract class BaseFormatter implements Formatter {
   protected options: FormatterOptions;
 
+  /** Create a new BaseFormatter with optional formatting options */
   constructor(options: FormatterOptions = {}) {
     this.options = options;
   }

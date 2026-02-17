@@ -5,7 +5,7 @@
  * markdown pages in website/rules/<category>/<rule-id>.md.
  *
  * For rules with `meta.docs` metadata, generates from the template.
- * For rules without metadata, copies existing docs from docs/rules/.
+ * For rules without metadata, logs a warning (no docs generated).
  *
  * Usage: npm run docs:generate
  *
@@ -13,8 +13,7 @@
  * @see src/types/rule-metadata.ts - Documentation type definitions
  */
 
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { log } from '../util/logger';
 import { generateRulePage, getCategoryDir } from '../generators/rule-page';
@@ -24,7 +23,6 @@ import '../../src/rules/index';
 import { RuleRegistry } from '../../src/utils/rules/registry';
 
 const WEBSITE_RULES_DIR = join(__dirname, '../../website/rules');
-const DOCS_RULES_DIR = join(__dirname, '../../docs/rules');
 
 /**
  * Generate rule documentation pages
@@ -36,7 +34,6 @@ async function generateRuleDocs(): Promise<void> {
   log.info(`Found ${rules.length} registered rules`);
 
   let generated = 0;
-  let copied = 0;
   let skipped = 0;
 
   // Track categories we've seen for sidebar generation
@@ -63,15 +60,7 @@ async function generateRuleDocs(): Promise<void> {
       await writeFile(outputPath, markdown);
       generated++;
     } else {
-      // Try to copy existing doc
-      const existingPath = join(DOCS_RULES_DIR, categoryDir, `${meta.id}.md`);
-      if (existsSync(existingPath)) {
-        const content = await readFile(existingPath, 'utf-8');
-        await writeFile(outputPath, content);
-        copied++;
-      } else {
-        skipped++;
-      }
+      skipped++;
     }
   }
 
@@ -84,11 +73,10 @@ async function generateRuleDocs(): Promise<void> {
   log.blank();
   log.info(`Results:`);
   log.info(`  Generated from metadata: ${generated}`);
-  log.info(`  Copied from existing docs: ${copied}`);
   if (skipped > 0) {
-    log.warn(`  Skipped (no docs): ${skipped}`);
+    log.warn(`  Skipped (no docs metadata): ${skipped}`);
   }
-  log.info(`  Total rule pages: ${generated + copied}`);
+  log.info(`  Total rule pages: ${generated}`);
   log.blank();
   log.bracket.success('Rule documentation generated');
 }

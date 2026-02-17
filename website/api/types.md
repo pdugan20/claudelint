@@ -74,10 +74,10 @@ interface LintMessage {
 | `message` | `string` | Human-readable description of the issue |
 | `line` | `number?` | Line number where issue starts (1-based) |
 | `column` | `number?` | Column number where issue starts (1-based) |
-| `endLine` | `number?` | Line number where issue ends (1-based) |
-| `endColumn` | `number?` | Column number where issue ends (1-based) |
+| `endLine` | `number?` | Line number where issue ends (1-based). Reserved for future use. |
+| `endColumn` | `number?` | Column number where issue ends (1-based). Reserved for future use. |
 | `fix` | `FixInfo?` | Automatic fix information |
-| `suggestions` | `SuggestionInfo[]?` | Alternative fix suggestions |
+| `suggestions` | `SuggestionInfo[]?` | Alternative fix suggestions. Reserved for future use. |
 | `explanation` | `string?` | Detailed explanation of why this matters |
 | `howToFix` | `string?` | Step-by-step fix instructions |
 
@@ -92,8 +92,16 @@ interface FixInfo {
 }
 ```
 
-- `range` - Start and end character offsets in source code
+- `range` - Start and end character offsets (0-based, start inclusive, end exclusive)
 - `text` - Replacement text to insert at the range
+
+When `fix` is present on a `LintMessage`, you can apply it by splicing the source string:
+
+```typescript
+const fixed = source.slice(0, fix.range[0]) + fix.text + source.slice(fix.range[1]);
+```
+
+You can also use `ClaudeLint.outputFixes(results)` or check `result.output` for auto-fixed content.
 
 ### SuggestionInfo
 
@@ -217,13 +225,14 @@ Complete claudelint configuration object.
 ```typescript
 interface ClaudeLintConfig {
   extends?: string | string[];
-  rules?: Record<string, RuleConfig>;
+  rules?: Record<string, RuleConfig | 'off' | 'warn' | 'error'>;
   overrides?: ConfigOverride[];
   ignorePatterns?: string[];
   output?: {
-    format?: string;
+    format?: 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
     verbose?: boolean;
     color?: boolean;
+    collapseRepetitive?: boolean;
   };
   reportUnusedDisableDirectives?: boolean;
   maxWarnings?: number;
@@ -233,10 +242,10 @@ interface ClaudeLintConfig {
 | Property | Type | Description |
 |----------|------|-------------|
 | `extends` | `string \| string[]` | Extend base configuration(s) |
-| `rules` | `Record<string, RuleConfig>` | Rule configuration map |
+| `rules` | `Record<string, RuleConfig \| 'off' \| 'warn' \| 'error'>` | Rule configuration map (accepts objects or shorthand strings) |
 | `overrides` | `ConfigOverride[]` | File-specific rule overrides |
 | `ignorePatterns` | `string[]` | Glob patterns to ignore |
-| `output` | `object` | Output format, verbosity, and color settings |
+| `output` | `object` | Output settings: `format` (built-in name), `verbose`, `color`, `collapseRepetitive` |
 | `reportUnusedDisableDirectives` | `boolean` | Warn about unused disable comments |
 | `maxWarnings` | `number` | Maximum warnings before exit code 1 |
 
@@ -292,12 +301,44 @@ File-specific rule overrides applied by glob pattern.
 ```typescript
 interface ConfigOverride {
   files: string[];
-  rules: Record<string, RuleConfig>;
+  rules: Record<string, RuleConfig | 'off' | 'warn' | 'error'>;
 }
 ```
 
 - `files` - Glob patterns to match (uses minimatch)
 - `rules` - Rule configuration to apply to matched files
+
+### LintOptions
+
+Alias for `ClaudeLintOptions`, used by the functional `lint()` wrapper.
+
+```typescript
+type LintOptions = ClaudeLintOptions;
+```
+
+### DeprecatedRuleUsage
+
+Information about a deprecated rule that was triggered during linting.
+
+```typescript
+interface DeprecatedRuleUsage {
+  ruleId: string;
+  reason: string;
+  replacedBy?: string[];
+  deprecatedSince?: string;
+  removeInVersion?: string | null;
+  url?: string;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `ruleId` | `string` | Rule ID of the deprecated rule |
+| `reason` | `string` | Why this rule is deprecated |
+| `replacedBy` | `string[]?` | Replacement rule IDs |
+| `deprecatedSince` | `string?` | Version when deprecated |
+| `removeInVersion` | `string \| null?` | Version when it will be removed |
+| `url` | `string?` | URL to migration guide |
 
 ## Formatter Types
 
@@ -319,7 +360,14 @@ Abstract base class for custom formatters with path resolution helpers.
 abstract class BaseFormatter implements Formatter {
   abstract format(results: LintResult[]): string;
   protected getRelativePath(filePath: string): string;
-  protected getSummary(results: LintResult[]): { errors: number; warnings: number; fixable: number };
+  protected getSummary(results: LintResult[]): {
+    fileCount: number;
+    errorCount: number;
+    warningCount: number;
+    fixableErrorCount: number;
+    fixableWarningCount: number;
+    totalIssues: number;
+  };
 }
 ```
 

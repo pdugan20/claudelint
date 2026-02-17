@@ -57,7 +57,7 @@ Best for: IDE integrations, watch mode, custom progress tracking, selective auto
 | Format results | `formatResults(results)` | `linter.loadFormatter(name)` |
 | Resolve config | `resolveConfig(path)` | `linter.calculateConfigForFile(path)` |
 | File info | `getFileInfo(path)` | `linter.isPathIgnored(path)` |
-| Progress callbacks | No | Yes |
+| Progress callbacks | Yes (via `LintOptions`) | Yes |
 | Fix predicates | No | Yes |
 | Shared configuration | No (new instance per call) | Yes |
 | Static utilities | N/A | `outputFixes`, `getErrorResults`, etc. |

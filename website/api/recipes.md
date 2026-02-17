@@ -192,85 +192,11 @@ await ClaudeLint.outputFixes(results);
 
 ## Custom Formatters
 
-### Summary Formatter
+For a basic custom formatter example, see [Formatters](./formatters.md#custom-formatters). The examples below demonstrate more advanced patterns.
 
-A minimal formatter that outputs only aggregate counts:
+### Markdown Report Formatter
 
-```typescript
-// formatters/summary.ts
-import type { Formatter, LintResult } from 'claude-code-lint';
-
-const summaryFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    const totalErrors = results.reduce((sum, r) => sum + r.errorCount, 0);
-    const totalWarnings = results.reduce((sum, r) => sum + r.warningCount, 0);
-    const filesWithIssues = results.filter(r => r.errorCount + r.warningCount > 0).length;
-
-    return [
-      'Validation Summary',
-      '==================',
-      `Files checked: ${results.length}`,
-      `Files with issues: ${filesWithIssues}`,
-      `Total errors: ${totalErrors}`,
-      `Total warnings: ${totalWarnings}`,
-    ].join('\n');
-  }
-};
-
-export default summaryFormatter;
-```
-
-### Detailed Formatter with Colors
-
-Uses chalk for color-coded output with explanations:
-
-```typescript
-// formatters/detailed.ts
-import chalk from 'chalk';
-import type { Formatter, LintResult } from 'claude-code-lint';
-
-const detailedFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    let output = '';
-
-    for (const result of results) {
-      if (result.messages.length === 0) continue;
-
-      output += chalk.underline(result.filePath) + '\n';
-
-      const errors = result.messages.filter(m => m.severity === 'error');
-      const warnings = result.messages.filter(m => m.severity === 'warning');
-
-      if (errors.length > 0) {
-        output += chalk.red.bold(`\n  Errors (${errors.length}):\n`);
-        for (const msg of errors) {
-          output += `    Line ${msg.line}: ${msg.message}\n`;
-          if (msg.explanation) {
-            output += chalk.gray(`      ${msg.explanation}\n`);
-          }
-        }
-      }
-
-      if (warnings.length > 0) {
-        output += chalk.yellow.bold(`\n  Warnings (${warnings.length}):\n`);
-        for (const msg of warnings) {
-          output += `    Line ${msg.line}: ${msg.message}\n`;
-        }
-      }
-
-      output += '\n';
-    }
-
-    return output;
-  }
-};
-
-export default detailedFormatter;
-```
-
-### TypeScript Markdown Formatter
-
-Type-safe formatter that outputs a Markdown report:
+Outputs a Markdown report suitable for PR comments or documentation artifacts:
 
 ```typescript
 // formatters/markdown.ts
@@ -314,7 +240,7 @@ export default markdownFormatter;
 
 ### Group-by-Rule Formatter
 
-Groups all violations by rule ID instead of by file:
+Groups all violations by rule ID instead of by file — useful for identifying the most common issues across a project:
 
 ```typescript
 // formatters/by-rule.ts
@@ -358,118 +284,6 @@ const byRuleFormatter: Formatter = {
 };
 
 export default byRuleFormatter;
-```
-
-### GitHub Actions Formatter
-
-Outputs annotations that GitHub Actions renders inline on PRs:
-
-```typescript
-// formatters/github-actions.ts
-import type { Formatter, LintResult } from 'claude-code-lint';
-
-const githubActionsFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    let output = '';
-
-    for (const result of results) {
-      for (const msg of result.messages) {
-        const level = msg.severity === 'error' ? 'error' : 'warning';
-        const line = msg.line || 1;
-        output += `::${level} file=${result.filePath},line=${line}::${msg.message}`;
-        if (msg.ruleId) output += ` (${msg.ruleId})`;
-        output += '\n';
-      }
-    }
-
-    return output;
-  }
-};
-
-export default githubActionsFormatter;
-```
-
-### CSV Export Formatter
-
-Export violations to CSV for spreadsheet analysis:
-
-```typescript
-// formatters/csv.ts
-import type { Formatter, LintResult } from 'claude-code-lint';
-
-const csvFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    let csv = 'File,Line,Severity,Rule,Message\n';
-
-    for (const result of results) {
-      for (const msg of result.messages) {
-        csv += [
-          result.filePath,
-          msg.line || '',
-          msg.severity || '',
-          msg.ruleId || '',
-          `"${(msg.message || '').replace(/"/g, '""')}"`,
-        ].join(',') + '\n';
-      }
-    }
-
-    return csv;
-  }
-};
-
-export default csvFormatter;
-```
-
-### HTML Report Formatter
-
-Generates a standalone HTML report:
-
-```typescript
-// formatters/html.ts
-import type { Formatter, LintResult } from 'claude-code-lint';
-
-const htmlFormatter: Formatter = {
-  format(results: LintResult[]): string {
-    const totalErrors = results.reduce((sum, r) => sum + r.errorCount, 0);
-    const totalWarnings = results.reduce((sum, r) => sum + r.warningCount, 0);
-
-    let html = `<!DOCTYPE html>
-<html>
-<head>
-  <title>ClaudeLint Report</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    .summary { background: #f5f5f5; padding: 15px; border-radius: 5px; }
-    .error { color: #d32f2f; }
-    .warning { color: #f57c00; }
-    .message { margin: 10px 0; padding: 10px; border-left: 3px solid #ccc; }
-  </style>
-</head>
-<body>
-  <h1>ClaudeLint Report</h1>
-  <div class="summary">
-    <p>Files: ${results.length}</p>
-    <p class="error">Errors: ${totalErrors}</p>
-    <p class="warning">Warnings: ${totalWarnings}</p>
-  </div>`;
-
-    for (const result of results) {
-      if (result.messages.length === 0) continue;
-      html += `\n  <h2>${result.filePath}</h2>`;
-      for (const msg of result.messages) {
-        html += `\n  <div class="message ${msg.severity}">`;
-        html += `<strong>Line ${msg.line}</strong>: ${msg.message}`;
-        if (msg.ruleId) html += `<br><small>${msg.ruleId}</small>`;
-        html += `</div>`;
-      }
-    }
-
-    html += '\n</body>\n</html>';
-    return html;
-  }
-};
-
-export default htmlFormatter;
 ```
 
 ## See Also

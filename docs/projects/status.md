@@ -1,7 +1,7 @@
 # Project Status Dashboard
 
-**Last Updated:** 2026-02-15
-**Current stats:** 113 rules, 1578 tests
+**Last Updated:** 2026-02-17
+**Current stats:** 113 rules, 1625 tests
 
 High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
 
@@ -81,6 +81,7 @@ Projects in `docs/projects/archive/`. Completed or preserved as reference materi
 | [cli-output-overhaul](./archive/cli-output-overhaul/) | ~28% | Phase 1 complete. Message cleanup and explain mode remaining. |
 | [cli-best-practices](./archive/cli-best-practices/) | Planned | 60 tasks across 9 phases. CLI/npm best practices overhaul. |
 | [preset-system](./archive/preset-system/) | Planned | Built-in presets (recommended, all). Target 0.3.0. |
+| [api-docs-verification](./archive/api-docs-verification/) | Complete | 5 phases: fix discrepancies, export snapshots, API Extractor, code samples, range-based auto-fix. |
 
 ---
 
@@ -103,4 +104,4 @@ The linter has **113 implemented rules** across 10 categories:
 
 ---
 
-**Last Updated:** 2026-02-15
+**Last Updated:** 2026-02-17

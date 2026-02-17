@@ -98,6 +98,15 @@ jobs:
       - name: Check package publishing
         run: npm run check:publint
 
+      - name: Check API type assertions
+        run: npm run check:types:api
+
+      - name: Check API code examples compile
+        run: npm run check:api-examples
+
+      - name: Check API report is up to date
+        run: npm run check:api-report
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:

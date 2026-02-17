@@ -10,16 +10,16 @@ For shared configuration, progress tracking, or multiple operations, use the [Cl
 
 Lints files matching glob patterns.
 
-```typescript
+- **Parameters:** `patterns` (`string[]`) - Glob patterns to match files; `options` ([ClaudeLintOptions](./types.md#claudelintoptions), optional) - All constructor options plus `errorOnUnmatchedPattern`
+- **Returns:** [`LintResult[]`](./types.md#lintresult)
+
+::: code-group
+
+```typescript [Signature]
 async function lint(patterns: string[], options?: LintOptions): Promise<LintResult[]>
 ```
 
-**Parameters:**
-
-- `patterns` (`string[]`) - Array of glob patterns
-- `options` ([ClaudeLintOptions](./types.md#claudelintoptions), optional) - All constructor options plus `errorOnUnmatchedPattern`
-
-```typescript
+```typescript [Example]
 import { lint } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
@@ -28,20 +28,22 @@ const hasErrors = results.some(r => r.errorCount > 0);
 if (hasErrors) process.exit(1);
 ```
 
+:::
+
 ### lintText()
 
 Lints text content without a file on disk.
 
-```typescript
+- **Parameters:** `code` (`string`) - Text content to lint; `options` ([LintTextOptions](./types.md#linttextoptions), optional) - The `filePath` option determines which validators run
+- **Returns:** [`LintResult[]`](./types.md#lintresult)
+
+::: code-group
+
+```typescript [Signature]
 async function lintText(code: string, options?: LintTextOptions): Promise<LintResult[]>
 ```
 
-**Parameters:**
-
-- `code` (`string`) - Text content to lint
-- `options` ([LintTextOptions](./types.md#linttextoptions), optional) - The `filePath` option determines which validators run
-
-```typescript
+```typescript [Example]
 import { lintText } from 'claude-code-lint';
 
 const results = await lintText('# CLAUDE.md\n\nMy instructions', {
@@ -51,31 +53,40 @@ const results = await lintText('# CLAUDE.md\n\nMy instructions', {
 console.log(`Errors: ${results[0].errorCount}`);
 ```
 
+:::
+
 ### resolveConfig()
 
 Resolves the effective configuration for a file, including overrides.
 
-```typescript
+- **Parameters:** `filePath` (`string`) - Path to resolve config for; `options` ([ConfigOptions](./types.md#configoptions-fileinfooptions-loadformatteroptions), optional)
+- **Returns:** [`ClaudeLintConfig`](./types.md#claudelintconfig)
+
+::: code-group
+
+```typescript [Signature]
 async function resolveConfig(filePath: string, options?: ConfigOptions): Promise<ClaudeLintConfig>
 ```
 
-**Parameters:**
-
-- `filePath` (`string`) - Path to resolve config for
-- `options` ([ConfigOptions](./types.md#configoptions-fileinfooptions-loadformatteroptions), optional)
-
-```typescript
+```typescript [Example]
 import { resolveConfig } from 'claude-code-lint';
 
 const config = await resolveConfig('skills/test/SKILL.md');
 console.log('Active rules:', config.rules);
 ```
 
+:::
+
 ### formatResults()
 
 Formats lint results using a built-in or custom formatter.
 
-```typescript
+- **Parameters:** `results` ([LintResult](./types.md#lintresult)[]) - Results to format; `formatterName` (`string`, optional) - `stylish` (default), `json`, `compact`, `sarif`, `github`, or path to custom formatter; `options` (`{ cwd?: string }`, optional)
+- **Returns:** `string`
+
+::: code-group
+
+```typescript [Signature]
 async function formatResults(
   results: LintResult[],
   formatterName?: string,
@@ -83,13 +94,7 @@ async function formatResults(
 ): Promise<string>
 ```
 
-**Parameters:**
-
-- `results` ([LintResult](./types.md#lintresult)[]) - Results to format
-- `formatterName` (`string`, optional) - `stylish` (default), `json`, `compact`, `sarif`, or path to custom formatter
-- `options` ([FormatterOptions](./types.md#formatteroptions), optional)
-
-```typescript
+```typescript [Example]
 import { lint, formatResults } from 'claude-code-lint';
 
 const results = await lint(['**/*.md']);
@@ -99,28 +104,65 @@ const json = await formatResults(results, 'json');     // JSON
 const sarif = await formatResults(results, 'sarif');   // SARIF
 ```
 
+:::
+
 ### getFileInfo()
 
 Gets information about a file without linting it.
 
-```typescript
+- **Parameters:** `filePath` (`string`) - Path to check; `options` ([FileInfoOptions](./types.md#configoptions-fileinfooptions-loadformatteroptions), optional)
+- **Returns:** [FileInfo](./types.md#fileinfo) - Whether the file is ignored and which validators apply
+
+::: code-group
+
+```typescript [Signature]
 async function getFileInfo(filePath: string, options?: FileInfoOptions): Promise<FileInfo>
 ```
 
-**Parameters:**
-
-- `filePath` (`string`) - Path to check
-- `options` ([FileInfoOptions](./types.md#configoptions-fileinfooptions-loadformatteroptions), optional)
-
-**Returns:** [FileInfo](./types.md#fileinfo) - Whether the file is ignored and which validators apply
-
-```typescript
+```typescript [Example]
 import { getFileInfo } from 'claude-code-lint';
 
 const info = await getFileInfo('CLAUDE.md');
 if (!info.ignored) {
   console.log('Validators:', info.validators);
 }
+```
+
+:::
+
+### loadFormatter()
+
+Loads a formatter by name or path. Standalone version of `ClaudeLint.loadFormatter()`.
+
+- **Parameters:** `nameOrPath` (`string`) - Built-in name or path to custom formatter; `options` (`{ cwd?: string }`, optional)
+- **Returns:** [`Formatter`](./formatters.md)
+
+::: code-group
+
+```typescript [Signature]
+async function loadFormatter(
+  nameOrPath: string,
+  options?: { cwd?: string }
+): Promise<Formatter>
+```
+
+```typescript [Example]
+import { loadFormatter } from 'claude-code-lint';
+
+const formatter = await loadFormatter('json');
+console.log(formatter.format(results));
+```
+
+:::
+
+## Constants
+
+### BuiltinFormatterName
+
+Type representing valid built-in formatter names. The `BUILTIN_FORMATTERS` array is also exported as a runtime value containing these same names.
+
+```typescript
+type BuiltinFormatterName = 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
 ```
 
 ## See Also

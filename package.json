@@ -42,8 +42,8 @@
     "lint:css": "stylelint 'website/.vitepress/theme/**/*.{css,vue}'",
     "lint:css:fix": "stylelint 'website/.vitepress/theme/**/*.{css,vue}' --fix",
     "lint:fix": "npm-run-all --parallel lint:ts:fix lint:vue:fix lint:css:fix lint:md:fix",
-    "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules",
-    "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --fix",
+    "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp",
+    "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp --fix",
     "lint:pkg": "npmPkgJsonLint .",
     "lint:pkg:quiet": "npmPkgJsonLint . --quiet",
     "lint:ts": "eslint src --ext .ts",
@@ -92,6 +92,10 @@
     "check:source-paths": "ts-node scripts/check/source-paths.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "check:tool-names": "ts-node scripts/verify/tool-names.ts",
+    "check:types:api": "tsd --typings dist/index.d.ts --files 'src/index.test-d.ts'",
+    "check:api-examples": "tsc --noEmit -p tsconfig.api-examples.json",
+    "check:api-report": "api-extractor run",
+    "check:api-report:update": "api-extractor run --local --verbose",
     "validate": "npm-run-all lint format:check build test check:publint",
     "validate:all": "npm-run-all lint format:check build test check:all",
     "release": "release-it",
@@ -130,7 +134,7 @@
       "prettier --write"
     ],
     "*.md": [
-      "markdownlint --fix"
+      "markdownlint --fix --ignore etc"
     ]
   },
   "keywords": [
@@ -188,6 +192,7 @@
     "@commitlint/config-conventional": "^20.4.0",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
+    "@microsoft/api-extractor": "^7.56.3",
     "@release-it/conventional-changelog": "^10.0.4",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
@@ -200,6 +205,8 @@
     "emoji-regex": "^10.6.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsdoc": "^61.7.1",
+    "eslint-plugin-tsdoc": "^0.5.0",
     "eslint-plugin-vue": "^10.7.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
@@ -218,6 +225,7 @@
     "stylelint-config-recommended-vue": "^1.6.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
+    "tsd": "^0.33.0",
     "typescript": "^5.3.3",
     "vitepress": "^1.6.4",
     "vue": "^3.5.28",

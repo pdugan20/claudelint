@@ -4,7 +4,7 @@
  * This module provides utilities to convert claudelint's internal ValidationResult
  * format to the standardized LintResult format used by the programmatic API.
  *
- * @module api/result-builder
+ * @packageDocumentation
  */
 
 import { LintResult, LintMessage } from './types';

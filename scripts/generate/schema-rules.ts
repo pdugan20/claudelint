@@ -269,7 +269,7 @@ export const rule: Rule = {
     deprecated: false,
     since: '1.0.0',
     docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/${config.category}/${config.id}.md',
+      'https://claudelint.com/rules/${config.category}/${config.id}',
   },
   validate: () => {
     // No-op: Validation implemented in ${config.schemaName}

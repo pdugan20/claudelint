@@ -199,40 +199,25 @@ interface AutoFix {
   ruleId: string;              // Must match your rule's meta.id
   description: string;         // Human-readable description of the fix
   filePath: string;            // Path to file being fixed (use context.filePath)
-  apply: (currentContent: string) => string;  // Function that returns fixed content
+  range: [number, number];     // Character offsets [start, end) to replace
+  text: string;                // Replacement text
 }
 ```
 
+Fixes use character-range edits (inspired by ESLint's fix format):
+
+- `range: [start, end]` — 0-based character offsets, start inclusive, end exclusive
+- `text` — replacement text to insert at the range
+- Insertion: use `range: [pos, pos]` (zero-length range) with non-empty `text`
+- Deletion: use a range spanning the text to remove with `text: ''`
+- Replacement: use a range spanning the old text with `text` set to the new text
+
 **Source:** [`.claudelint/rules/normalize-code-fences.ts`](https://github.com/pdugan20/claudelint/blob/main/.claudelint/rules/normalize-code-fences.ts)
 
-This rule detects bare code fences (` ``` ` without a language) and auto-fixes them by adding `text`:
+This rule detects bare code fences (` ``` ` without a language) and auto-fixes them by replacing each bare ` ``` ` with `` ```text ``:
 
 ```typescript
 import type { Rule } from 'claude-code-lint';
-
-/** Add language to bare opening fences, leaving closing fences unchanged */
-function addLanguageToBareFences(content: string): string {
-  const lines = content.split('\n');
-  let inCodeBlock = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    if (inCodeBlock) {
-      if (/^```\s*$/.test(lines[i])) {
-        inCodeBlock = false;
-      }
-      continue;
-    }
-
-    if (/^```\s*$/.test(lines[i])) {
-      lines[i] = '```text';
-      inCodeBlock = true;
-    } else if (/^```\w/.test(lines[i])) {
-      inCodeBlock = true;
-    }
-  }
-
-  return lines.join('\n');
-}
 
 export const rule: Rule = {
   meta: {
@@ -243,19 +228,44 @@ export const rule: Rule = {
   },
 
   validate: async (context) => {
-    // ... detection logic ...
+    const { fileContent, filePath } = context;
+    const lines = fileContent.split('\n');
+    let inCodeBlock = false;
+    let offset = 0;
 
-    context.report({
-      message: 'Code fence missing language identifier',
-      line: i + 1,
-      fix: 'Add a language (e.g. ```bash, ```typescript, ```text)',
-      autoFix: {
-        ruleId: 'normalize-code-fences',
-        description: 'Add "text" language to bare code fences',
-        filePath: context.filePath,
-        apply: addLanguageToBareFences,
-      },
-    });
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (inCodeBlock) {
+        if (/^```\s*$/.test(line)) {
+          inCodeBlock = false;
+        }
+        offset += line.length + 1;
+        continue;
+      }
+
+      if (/^```\s*$/.test(line)) {
+        inCodeBlock = true;
+        const fenceStart = offset;
+        const fenceEnd = offset + line.trimEnd().length;
+        context.report({
+          message: 'Code fence missing language identifier',
+          line: i + 1,
+          fix: 'Add a language (e.g. ```bash, ```typescript, ```text)',
+          autoFix: {
+            ruleId: 'normalize-code-fences',
+            description: 'Add "text" language to bare code fence',
+            filePath,
+            range: [fenceStart, fenceEnd],
+            text: '```text',
+          },
+        });
+      } else if (/^```\w/.test(line)) {
+        inCodeBlock = true;
+      }
+
+      offset += line.length + 1;
+    }
   },
 };
 ```
@@ -263,9 +273,9 @@ export const rule: Rule = {
 Key techniques:
 
 - Set `fixable: true` in meta when providing `autoFix`
-- `apply()` receives current file content, returns fixed content
-- Track state (open/close fences) to avoid modifying closing fences
-- One `autoFix` can fix all occurrences in a single pass
+- Track a character `offset` while iterating lines to compute ranges
+- Each violation gets its own fix with a precise range — multiple fixes on the same file are applied together, sorted by position
+- Overlapping fixes are automatically skipped (second fix dropped)
 
 #### Using auto-fix
 
@@ -283,8 +293,8 @@ claudelint check-all --fix
 
 1. **Always mark fixable rules**: Set `fixable: true` in meta when providing autoFix
 2. **Make fixes idempotent**: Running the fix multiple times should produce the same result
-3. **Validate fix results**: Ensure your apply() function returns valid content
-4. **One fix per violation**: Don't try to fix multiple unrelated issues in one autoFix
+3. **Use precise ranges**: Compute exact character offsets for the text being replaced
+4. **One fix per violation**: Each `context.report()` should target one specific edit
 5. **Use simple transformations**: Complex fixes are better done manually
 
 ### Configurable options with Zod
