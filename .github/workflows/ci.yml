@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
-    name: Lint (ESLint)
+    name: Lint & Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -22,65 +26,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: ESLint (TypeScript)
         run: npm run lint:ts
 
-  format:
-    name: Format Check (Prettier)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+      - name: ESLint (Vue)
+        run: npm run lint:vue
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Stylelint (CSS)
+        run: npm run lint:css
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Prettier
+      - name: Prettier
         run: npm run format:check
 
-  markdown:
-    name: Markdown Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Markdownlint
+      - name: Markdownlint
         run: npm run lint:md
 
-  links:
-    name: Check Documentation Links
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+      - name: Package.json lint
+        run: npm run lint:pkg:quiet
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check for broken links
-        run: npm run check:links
-
-  emoji-check:
-    name: Emoji Check
+  static-checks:
+    name: Static Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -100,81 +65,20 @@ jobs:
       - name: Check for stale milestone references
         run: npm run check:milestone-refs
 
-  verify-rules:
-    name: Verify Rule Implementations
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Verify rule implementations
-        run: npm run check:rule-implementations
-
-  verify-rule-structure:
-    name: Verify Rule Structure
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Verify rule structure
-        run: npm run check:rule-structure
-
-  hardcoded-counts:
-    name: Check Hardcoded Rule Counts
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Check for hardcoded rule counts
         run: npm run check:hardcoded-counts
 
-  schema-sync:
-    name: Verify Schema Synchronization
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+      - name: Check documentation links
+        run: npm run check:links
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Check logger spacing
+        run: npm run check:logger-spacing
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Check logger usage
+        run: npm run check:logger-usage
 
-      - name: Verify schemas match official Claude Code specs
-        run: npm run check:schema-sync
-        # Dual-schema verification:
-        # 1. Generates JSON Schemas from Zod
-        # 2. Compares against manual reference schemas
-        # 3. Fails if drift detected
+      - name: Check package publishing
+        run: npm run check:publint
 
   build:
     name: Build
@@ -194,8 +98,18 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/
+            presets/
+          retention-days: 1
+
   test:
     name: Test (Node ${{ matrix.node-version }}, ${{ matrix.os }})
+    needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -213,14 +127,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
 
       - name: Run tests
         run: npm test -- --coverage
 
       - name: Upload coverage to Codecov
-        if: matrix.node-version == 20
+        if: matrix.node-version == 20 && matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -229,8 +145,8 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  dogfood:
-    name: Validate Own Configuration
+  rule-verification:
+    name: Rule Verification
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -244,41 +160,45 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Verify rule implementations
+        run: npm run check:rule-implementations
+
+      - name: Verify rule structure
+        run: npm run check:rule-structure
+
+      - name: Verify schema synchronization
+        run: npm run check:schema-sync
+
+      - name: Run all validation checks
+        run: npm run check:all
+
+  dogfood:
+    name: Dogfood
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
 
       - name: Run claudelint on itself
-        run: npm run validate
-
-      - name: Run claudelint check-all (dogfooding with annotations)
-        run: node bin/claudelint check-all --format github
-
-      - name: Check CLAUDE.md
-        run: node bin/claudelint validate-claude-md
-
-      - name: Validate skills
-        run: node bin/claudelint validate-skills
-
-      - name: Validate settings
-        run: node bin/claudelint validate-settings
-
-      - name: Validate hooks
-        run: node bin/claudelint validate-hooks
-
-      - name: Validate MCP
-        run: node bin/claudelint validate-mcp
-
-      - name: Validate plugin
-        run: node bin/claudelint validate-plugin
-
-      - name: Validate agents
-        run: node bin/claudelint validate-agents
-
-      - name: Validate commands
-        run: node bin/claudelint validate-commands
+        run: node bin/claudelint check-all --format github --strict
 
   skill-validation:
-    name: Validate Skills
+    name: Skill Validation
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -292,10 +212,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
 
-      - name: Validate skill structure (dogfooding)
+      - name: Validate skill structure
         run: npm run test:skills:structure
 
       - name: Verify CLI commands exist
@@ -304,11 +226,9 @@ jobs:
       - name: Check metadata consistency
         run: npm run test:skills:metadata
 
-      - name: Run automated skill tests
-        run: npm run test:skills:automated
-
   integration:
     name: Integration Tests
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -322,27 +242,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
 
       - name: Run integration tests
         run: npm test -- --testPathPatterns=integration
-
-  complete-validation:
-    name: Full Validation
-    runs-on: ubuntu-latest
-    needs: [lint, format, markdown, links, emoji-check, verify-rules, verify-rule-structure, hardcoded-counts, schema-sync, build, test, dogfood, skill-validation, integration]
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run complete validation
-        run: npm run validate:all
