@@ -49,6 +49,7 @@ export const rule: Rule = {
       howToFix:
         'Reduce the `events` array to at most 3 entries. If you need to respond to more events, ' +
         'consider splitting the logic across multiple focused agents.',
+      relatedRules: ['agent-hooks', 'agent-description'],
     },
   },
   validate: () => {

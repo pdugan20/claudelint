@@ -48,6 +48,11 @@ Reduce the `events` array to at most 3 entries. If you need to respond to more e
 
 This rule does not have any configuration options.
 
+## Related Rules
+
+- [`agent-hooks`](/rules/agents/agent-hooks)
+- [`agent-description`](/rules/agents/agent-description)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/agents/agent-events.ts)

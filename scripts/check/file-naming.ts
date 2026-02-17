@@ -43,10 +43,10 @@ const EXEMPT_FILES = new Set([
  * Check if filename follows lowercase-with-hyphens pattern
  */
 function isLowercaseWithHyphens(filename: string): boolean {
-  // Handle compound extensions like .schema.ts, .test.ts, .integration.test.ts
+  // Handle compound extensions like .schema.ts, .test.ts, .test-d.ts, .integration.test.ts
   const name = filename
     .replace(/\.(integration|schema)\.test\.ts$/, '')
-    .replace(/\.(test|schema|config)\.ts$/, '')
+    .replace(/\.(test-d|test|schema|config)\.ts$/, '')
     .replace(/\.(md|ts|js|json)$/, '');
 
   return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(name);
@@ -188,7 +188,7 @@ async function checkRuleDocs(): Promise<void> {
     const filename = basename(fullPath);
 
     if (!filename.endsWith('.md')) return;
-    if (filename === 'index.md' || filename === 'TEMPLATE.md') return;
+    if (filename === 'index.md' || filename === 'TEMPLATE.md' || filename === 'overview.md') return;
 
     const ruleId = filename.replace('.md', '');
     const validatorDir = basename(dirname(fullPath));

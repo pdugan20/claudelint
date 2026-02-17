@@ -29,14 +29,15 @@ const projectRoot = join(__dirname, '../..');
 // Required sections in rule documentation
 const REQUIRED_SECTIONS = [
   'Rule Details',
-  'Options',
-  'When Not To Use It',
   'Version',
-  // Note: 'Metadata' section is now optional - new format uses badges at top
+  // Note: 'Options' is only present when docs.optionExamples is defined or rule is non-configurable
+  // Note: 'When Not To Use It' is only present when docs.whenNotToUse is defined
+  // Note: 'Metadata' section replaced by <RuleHeader> component
 ];
 
-// Required metadata fields
-const METADATA_FIELDS = ['Category', 'Severity', 'Fixable', 'Validator'];
+// Metadata fields are now rendered by the <RuleHeader> Vue component,
+// not as plain text in the markdown. Skip metadata field validation.
+const METADATA_FIELDS: string[] = [];
 
 // Valid validators
 const VALID_VALIDATORS = [
@@ -88,7 +89,7 @@ async function findRuleDocs(): Promise<Map<string, string>> {
 
       if (stats.isDirectory()) {
         await scanDirectory(fullPath);
-      } else if (entry.endsWith('.md') && entry !== 'index.md' && entry !== 'TEMPLATE.md') {
+      } else if (entry.endsWith('.md') && entry !== 'index.md' && entry !== 'TEMPLATE.md' && entry !== 'overview.md') {
         const ruleId = entry.replace('.md', '');
         ruleDocs.set(ruleId, fullPath);
       }
@@ -122,13 +123,32 @@ async function parseDocumentation(
   let inMetadataSection = false;
   let insideCodeBlock = false;
   let currentFenceLength = 0;
+  let inFrontmatter = false;
+  let frontmatterDone = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // Check for H1 title (must be first non-empty line)
-    if (i === 0 && line.startsWith('# Rule:')) {
-      hasTitle = true;
+    // Track YAML frontmatter (--- delimited block at start of file)
+    if (i === 0 && line.trim() === '---') {
+      inFrontmatter = true;
+      continue;
+    }
+    if (inFrontmatter && line.trim() === '---') {
+      inFrontmatter = false;
+      frontmatterDone = true;
+      continue;
+    }
+    if (inFrontmatter) continue;
+
+    // Check for H1 title — first non-empty line after optional frontmatter
+    // Accept both "# rule-id" and "# Rule: rule-id" formats
+    if (!hasTitle && (i === 0 || frontmatterDone)) {
+      if (line.startsWith('# ') && line.trim().length > 2) {
+        hasTitle = true;
+      }
+      // Skip blank lines between frontmatter and title
+      if (line.trim() === '') continue;
     }
 
     // Extract metadata from badges at top (new format) - within first 15 lines
@@ -212,7 +232,7 @@ async function validateDocumentation(_ruleId: string, filePath: string): Promise
   if (!parsed.hasTitle) {
     violations.push({
       file: relativePath,
-      issue: 'Missing required H1 title in format "# Rule: rule-id"',
+      issue: 'Missing required H1 title (e.g., "# rule-id")',
     });
   }
 
