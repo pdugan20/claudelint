@@ -6,9 +6,9 @@ This document describes the internal architecture of claudelint for contributors
 
 claudelint uses a **rule-based architecture** inspired by ESLint. Understanding the distinction between rules and validators is critical for contributors.
 
-### Rules (What Contributors Write)
+### Rules
 
-**Rules** are individual, focused validation checks located in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/).
+Rules are what contributors write. They are individual, focused validation checks located in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/).
 
 **Characteristics:**
 
@@ -18,9 +18,9 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 - **Metadata-driven** - Include id, name, description, severity, fixable flag
 - **ESLint-style** - Similar pattern to ESLint rules
 
-### Validators (Internal Orchestrators)
+### Validators
 
-**Validators** are internal orchestration classes in `src/validators/` that collect and run rules.
+Validators are internal orchestrators — classes in `src/validators/` that collect and run rules.
 
 **Characteristics:**
 
@@ -36,7 +36,7 @@ claudelint uses a **rule-based architecture** inspired by ESLint. Understanding 
 3. **Rule Orchestration** - Collect category rules, call validate(), aggregate results
 4. **Result Reporting** - Format and report violations to CLI
 
-### What Should Contributors Do?
+### Contributor Guidelines
 
 #### DO: Write Rules
 

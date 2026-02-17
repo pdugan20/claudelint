@@ -7,9 +7,53 @@ import { existsSync, readdirSync } from 'fs';
 import { join, resolve } from 'path';
 import { createJiti } from 'jiti';
 import { RuleRegistry } from './registry';
-import type { Rule } from '../../types/rule';
+import type { Rule, RuleCategory, RuleSeverity } from '../../types/rule';
+import { isRule } from '../../types/rule';
 
 const jiti = createJiti(__filename);
+
+/** Valid severity values */
+const VALID_SEVERITIES: ReadonlySet<string> = new Set<RuleSeverity>(['off', 'warn', 'error']);
+
+/** Valid category values */
+const VALID_CATEGORIES: ReadonlySet<string> = new Set<RuleCategory>([
+  'CLAUDE.md',
+  'Skills',
+  'Settings',
+  'Hooks',
+  'MCP',
+  'Plugin',
+  'Commands',
+  'Agents',
+  'OutputStyles',
+  'LSP',
+]);
+
+/**
+ * Validate that a rule's meta values are correct enum members.
+ * Returns an array of error strings (empty if valid).
+ */
+function validateRuleValues(rule: Rule): string[] {
+  const errors: string[] = [];
+
+  if (!VALID_SEVERITIES.has(rule.meta.severity)) {
+    errors.push(
+      `Invalid severity '${rule.meta.severity}'. Must be one of: ${[...VALID_SEVERITIES].join(', ')}`
+    );
+  }
+
+  if (!VALID_CATEGORIES.has(rule.meta.category)) {
+    errors.push(
+      `Invalid category '${rule.meta.category}'. Must be one of: ${[...VALID_CATEGORIES].join(', ')}`
+    );
+  }
+
+  if (!rule.meta.id || !/^[a-z][a-z0-9-]*$/.test(rule.meta.id)) {
+    errors.push(`Invalid rule ID '${rule.meta.id}'. Must be non-empty, lowercase, and kebab-case`);
+  }
+
+  return errors;
+}
 
 /**
  * Result of loading a custom rule
@@ -51,7 +95,21 @@ export class CustomRuleLoader {
    * @param basePath - Base path to search from (typically project root)
    * @returns Array of load results
    */
-  async loadCustomRules(basePath: string): Promise<CustomRuleLoadResult[]> {
+  loadCustomRules(basePath: string): Promise<CustomRuleLoadResult[]> {
+    // Delegate to sync implementation (jiti loads are synchronous)
+    return Promise.resolve(this.loadCustomRulesSync(basePath));
+  }
+
+  /**
+   * Synchronously load all custom rules from the configured directory.
+   *
+   * Since jiti (the TypeScript loader) is synchronous, this is safe to call
+   * from synchronous contexts like config validation.
+   *
+   * @param basePath - Base path to search from (typically project root)
+   * @returns Array of load results
+   */
+  loadCustomRulesSync(basePath: string): CustomRuleLoadResult[] {
     const results: CustomRuleLoadResult[] = [];
 
     if (!this.options.enableCustomRules) {
@@ -68,7 +126,7 @@ export class CustomRuleLoader {
     const ruleFiles = this.findRuleFiles(rulesDir);
 
     for (const file of ruleFiles) {
-      results.push(await this.loadRule(file));
+      results.push(this.loadRuleSync(file));
     }
 
     return results;
@@ -77,14 +135,13 @@ export class CustomRuleLoader {
   /**
    * Load a single custom rule file
    *
+   * Uses jiti which is synchronous, so this is safe for both sync and async callers.
+   *
    * @param filePath - Path to rule file
    * @returns Load result
    */
-  private async loadRule(filePath: string): Promise<CustomRuleLoadResult> {
+  private loadRuleSync(filePath: string): CustomRuleLoadResult {
     try {
-      // Ensure this is treated as async (future-proofing)
-      await Promise.resolve();
-
       // Import the rule file (jiti handles both .js and .ts transparently)
       const ruleModule = jiti(filePath) as { rule?: Rule; default?: { rule?: Rule } };
 
@@ -100,12 +157,23 @@ export class CustomRuleLoader {
         };
       }
 
-      // Validate implements Rule interface
-      if (!this.isValidRule(rule)) {
+      // Validate implements Rule interface (reuses shared isRule() type guard)
+      if (!isRule(rule)) {
         return {
           filePath,
           success: false,
-          error: 'Rule does not implement Rule interface (must have meta and validate)',
+          error:
+            'Rule does not implement Rule interface (must have meta with id, name, description, category, severity, fixable, since, and a validate function)',
+        };
+      }
+
+      // Validate enum values (severity, category, id format)
+      const valueErrors = validateRuleValues(rule);
+      if (valueErrors.length > 0) {
+        return {
+          filePath,
+          success: false,
+          error: valueErrors.join('. '),
         };
       }
 
@@ -201,45 +269,6 @@ export class CustomRuleLoader {
     }
 
     if (filename.endsWith('.test.js') || filename.endsWith('.spec.js')) {
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * Validate that an object implements the Rule interface
-   *
-   * @param rule - Object to validate
-   * @returns True if valid rule
-   */
-  private isValidRule(rule: unknown): rule is Rule {
-    if (!rule || typeof rule !== 'object') {
-      return false;
-    }
-
-    const r = rule as Record<string, unknown>;
-
-    // Check for required meta object
-    if (!r.meta || typeof r.meta !== 'object') {
-      return false;
-    }
-
-    const meta = r.meta as Record<string, unknown>;
-
-    // Check for required meta fields
-    if (
-      typeof meta.id !== 'string' ||
-      typeof meta.name !== 'string' ||
-      typeof meta.description !== 'string' ||
-      typeof meta.category !== 'string' ||
-      typeof meta.severity !== 'string'
-    ) {
-      return false;
-    }
-
-    // Check for required validate function
-    if (typeof r.validate !== 'function') {
       return false;
     }
 

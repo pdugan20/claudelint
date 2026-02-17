@@ -46,9 +46,9 @@ export interface RuleIssue {
 
 claudelint supports two primary patterns for implementing rules.
 
-### Pattern 1: Schema-Delegating Rules (Thin Wrapper)
+### Schema-Delegating Rules
 
-**Use when:** Validating individual frontmatter fields that have Zod schema definitions.
+The "thin wrapper" pattern — use when validating individual frontmatter fields that have Zod schema definitions.
 
 Rules delegate to Zod schema validators instead of duplicating validation logic. This is the actual pattern from `src/rules/skills/skill-allowed-tools.ts`:
 
@@ -89,7 +89,7 @@ export const rule: Rule = {
 
 **Categories using this pattern:** Skills, Agents, Output Styles
 
-### Pattern 2: Standalone Validation Rules
+### Standalone Validation
 
 **Use when:** Validating file-level properties, cross-references, or complex logic that doesn't fit in schemas.
 
@@ -231,7 +231,9 @@ ValidatorRegistry.register(
 
 ## Validator vs Rule Responsibilities
 
-### Validators (Orchestrators)
+### Validators
+
+Validators are orchestrators. They:
 
 - Find files matching patterns
 - Read file content
@@ -240,16 +242,18 @@ ValidatorRegistry.register(
 - Aggregate and report results
 - Handle **operational messages only** (e.g., "No files found")
 
-### Rules (Validation Logic)
+### Rules
+
+Rules own all validation logic:
 
 - ALL validation logic
 - Individual field checks and cross-field validation
 - File existence checks and body content validation
 - **Everything users might want to configure/disable**
 
-### What Is NOT a Rule (Operational Messages)
+### Operational Messages
 
-These are the only non-configurable messages:
+These are the only non-configurable messages (not rules):
 
 - "No skill directories found"
 - "No agent directories found"

@@ -8,20 +8,42 @@ import { findConfigFile, validateConfig } from '../../utils/config/types';
 import { loadConfigWithExtends } from '../../utils/config/extends';
 import { ConfigError, validateAllRuleOptions } from '../../utils/config/resolver';
 import { ClaudeLintConfig } from '../../utils/config/types';
+import { CustomRuleLoader } from '../../utils/rules/loader';
 import { logger } from './logger';
 
 /**
- * Load and validate configuration for commands
- * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
- *
- * @param options - Command options (config, verbose, debugConfig)
- * @returns Loaded and validated config object (empty if --no-config)
+ * Load custom rules so their IDs are in the registry before config validation.
+ * Uses the synchronous load path since jiti (the TypeScript loader) is synchronous.
  */
-export function loadAndValidateConfig(options: {
+let customRulesLoaded = false;
+export function ensureCustomRulesLoaded(): void {
+  if (customRulesLoaded) return;
+  customRulesLoaded = true;
+
+  const loader = new CustomRuleLoader({
+    customRulesPath: '.claudelint/rules',
+    enableCustomRules: true,
+  });
+
+  loader.loadCustomRulesSync(process.cwd());
+}
+
+interface ConfigLoaderOptions {
   config?: string | false; // Commander sets config to false when --no-config is used
   verbose?: boolean;
   debugConfig?: boolean;
-}): ClaudeLintConfig {
+}
+
+/**
+ * Load configuration without validation
+ *
+ * Use this when custom rules need to be registered before config validation
+ * (custom rule IDs must be in the registry for validation to pass).
+ *
+ * @param options - Command options (config, verbose, debugConfig)
+ * @returns Loaded config object (empty if --no-config)
+ */
+export function loadConfig(options: ConfigLoaderOptions): ClaudeLintConfig {
   // Skip config loading if --no-config flag is set (Commander sets config to false)
   if (options.config === false) {
     if (options.verbose || options.debugConfig) {
@@ -79,6 +101,17 @@ export function loadAndValidateConfig(options: {
     }
   }
 
+  return config;
+}
+
+/**
+ * Validate a loaded configuration against the rule registry
+ *
+ * Call this after custom rules have been registered so their IDs are recognized.
+ *
+ * @param config - Previously loaded config object
+ */
+export function validateLoadedConfig(config: ClaudeLintConfig): void {
   // Validate config against rule registry (rule IDs exist)
   const configErrors = validateConfig(config);
   if (configErrors.length > 0) {
@@ -111,6 +144,21 @@ export function loadAndValidateConfig(options: {
     }
     throw error; // Re-throw unexpected errors
   }
+}
 
+/**
+ * Load and validate configuration for commands
+ * Follows ESLint pattern: all commands load config by default, --no-config to opt-out
+ *
+ * For commands that load custom rules, use loadConfig() + validateLoadedConfig()
+ * separately so custom rules can register before validation.
+ *
+ * @param options - Command options (config, verbose, debugConfig)
+ * @returns Loaded and validated config object (empty if --no-config)
+ */
+export function loadAndValidateConfig(options: ConfigLoaderOptions): ClaudeLintConfig {
+  const config = loadConfig(options);
+  ensureCustomRulesLoaded();
+  validateLoadedConfig(config);
   return config;
 }

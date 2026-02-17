@@ -275,7 +275,7 @@ export const rule: Rule = {
     id: 'skill-quality',
     name: 'Skill Quality Checks',
     description: 'Enforce quality standards for skill documentation',
-    category: 'Custom',
+    category: 'Skills',
     severity: 'warn',
     fixable: false,
     deprecated: false,

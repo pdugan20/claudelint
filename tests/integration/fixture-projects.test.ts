@@ -208,4 +208,30 @@ describe('Fixture Project Integration Tests', () => {
       expect(result.output).toContain('commands-migrate-to-skills');
     });
   });
+
+  describe('custom-rules-violation', () => {
+    const fixturePath = join(fixturesDir, 'custom-rules-violation');
+    let result: { output: string; exitCode: number };
+
+    beforeAll(() => {
+      result = runClaudelint(fixturePath);
+    });
+
+    it('should exit 0 (custom rule is warn-level)', () => {
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('should load the custom rule', () => {
+      // The custom rule must have loaded and executed (not silently skipped)
+      expect(result.output).toContain('require-commands-section');
+    });
+
+    it('should report the custom rule violation', () => {
+      expect(result.output).toContain('Missing ## Commands section');
+    });
+
+    it('should report exactly 1 warning', () => {
+      expect(result.output).toMatch(/1 problem.*0 errors.*1 warning/);
+    });
+  });
 });

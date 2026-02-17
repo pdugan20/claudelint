@@ -1,1 +1,9 @@
-{}
+{
+  "customRulesDir": ".claudelint/rules",
+  "rules": {
+    "require-skill-see-also": "warn",
+    "no-user-paths": "warn",
+    "normalize-code-fences": "warn",
+    "max-section-depth": ["warn", { "maxDepth": 4 }]
+  }
+}

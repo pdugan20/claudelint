@@ -37,7 +37,7 @@ describe('CustomRuleLoader', () => {
             id: 'test-custom-rule',
             name: 'Test Custom Rule',
             description: 'A test custom rule',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -82,7 +82,7 @@ describe('CustomRuleLoader', () => {
           id: 'typed-custom-rule',
           name: 'Typed Custom Rule',
           description: 'A custom rule using TypeScript syntax',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -135,7 +135,7 @@ describe('CustomRuleLoader', () => {
             id: 'test',
             name: 'Test',
             description: 'Test',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
           },
         };
@@ -196,7 +196,7 @@ describe('CustomRuleLoader', () => {
             id: 'duplicate-rule-id',
             name: 'First Rule',
             description: 'First rule with this ID',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -215,7 +215,7 @@ describe('CustomRuleLoader', () => {
             id: 'duplicate-rule-id',
             name: 'Second Rule',
             description: 'Second rule with same ID',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -252,7 +252,7 @@ describe('CustomRuleLoader', () => {
             id: 'custom-rule-1',
             name: 'Custom Rule 1',
             description: 'First custom rule',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -271,7 +271,7 @@ describe('CustomRuleLoader', () => {
             id: 'custom-rule-2',
             name: 'Custom Rule 2',
             description: 'Second custom rule',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'warn',
             fixable: false,
             deprecated: false,
@@ -303,7 +303,7 @@ describe('CustomRuleLoader', () => {
             id: 'team-custom-rule',
             name: 'Team Custom Rule',
             description: 'A team-specific rule',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -363,7 +363,7 @@ describe('CustomRuleLoader', () => {
             id: 'disabled-rule',
             name: 'Disabled Rule',
             description: 'Should not load',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -392,7 +392,7 @@ describe('CustomRuleLoader', () => {
             id: 'custom-path-rule',
             name: 'Custom Path Rule',
             description: 'From custom path',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -427,7 +427,7 @@ describe('CustomRuleLoader', () => {
             id: 'loaded-rule',
             name: 'Loaded Rule',
             description: 'A loaded rule',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -459,7 +459,7 @@ describe('CustomRuleLoader', () => {
             id: 'clearable-rule',
             name: 'Clearable Rule',
             description: 'Will be cleared',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: false,
             deprecated: false,
@@ -478,6 +478,189 @@ describe('CustomRuleLoader', () => {
     });
   });
 
+  describe('Value Validation', () => {
+    it('should reject invalid severity value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'bad-severity.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'bad-severity-rule',
+            name: 'Bad Severity',
+            description: 'Rule with invalid severity',
+            category: 'CLAUDE.md',
+            severity: 'warning',
+            fixable: false,
+            deprecated: false,
+            since: '1.0.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain("Invalid severity 'warning'");
+      expect(results[0].error).toContain('off, warn, error');
+    });
+
+    it('should reject invalid category value', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'bad-category.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'bad-category-rule',
+            name: 'Bad Category',
+            description: 'Rule with invalid category',
+            category: 'Custom',
+            severity: 'error',
+            fixable: false,
+            deprecated: false,
+            since: '1.0.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain("Invalid category 'Custom'");
+      expect(results[0].error).toContain('CLAUDE.md');
+    });
+
+    it('should reject missing fixable field', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'no-fixable.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'no-fixable-rule',
+            name: 'No Fixable',
+            description: 'Rule missing fixable',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            since: '1.0.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain('Rule interface');
+    });
+
+    it('should reject missing since field', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'no-since.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'no-since-rule',
+            name: 'No Since',
+            description: 'Rule missing since',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain('Rule interface');
+    });
+
+    it('should reject invalid rule ID format', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'bad-id.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'Invalid_ID',
+            name: 'Bad ID',
+            description: 'Rule with invalid ID format',
+            category: 'CLAUDE.md',
+            severity: 'error',
+            fixable: false,
+            deprecated: false,
+            since: '1.0.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      expect(results[0].error).toContain('Invalid rule ID');
+      expect(results[0].error).toContain('kebab-case');
+    });
+
+    it('should report multiple validation errors at once', async () => {
+      const rulesDir = join(testDir, '.claudelint/rules');
+      mkdirSync(rulesDir, { recursive: true });
+
+      writeFileSync(
+        join(rulesDir, 'multi-error.js'),
+        `
+        module.exports.rule = {
+          meta: {
+            id: 'multi-error-rule',
+            name: 'Multi Error',
+            description: 'Rule with multiple invalid values',
+            category: 'Custom',
+            severity: 'warning',
+            fixable: false,
+            deprecated: false,
+            since: '1.0.0',
+          },
+          validate: async () => {},
+        };
+      `
+      );
+
+      const results = await loader.loadCustomRules(testDir);
+
+      expect(results).toHaveLength(1);
+      expect(results[0].success).toBe(false);
+      // Both errors should be reported
+      expect(results[0].error).toContain("Invalid severity 'warning'");
+      expect(results[0].error).toContain("Invalid category 'Custom'");
+    });
+  });
+
   describe('Auto-Fix Support', () => {
     it('should load and execute rule with autoFix', async () => {
       const rulesDir = join(testDir, '.claudelint/rules');
@@ -492,7 +675,7 @@ describe('CustomRuleLoader', () => {
             id: 'auto-fix-test',
             name: 'Auto Fix Test',
             description: 'Test rule with auto-fix',
-            category: 'Custom',
+            category: 'CLAUDE.md',
             severity: 'error',
             fixable: true,
             deprecated: false,

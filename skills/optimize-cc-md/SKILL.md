@@ -306,3 +306,8 @@ For detailed strategies, see:
 - [file type taxonomy](./references/file-type-taxonomy.md) - Complete Claude Code config ecosystem reference
 
 These files are read on-demand when you need specific guidance.
+
+## See Also
+
+- [validate-cc-md](../validate-cc-md/SKILL.md) - Validate CLAUDE.md files
+- [validate-all](../validate-all/SKILL.md) - Run all validators

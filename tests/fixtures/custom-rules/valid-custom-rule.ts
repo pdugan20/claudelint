@@ -10,7 +10,7 @@ export const rule: Rule = {
     id: 'no-forbidden-keywords',
     name: 'No Forbidden Keywords',
     description: 'Disallow forbidden keywords in files',
-    category: 'Custom',
+    category: 'CLAUDE.md',
     severity: 'error',
     fixable: false,
     deprecated: false,

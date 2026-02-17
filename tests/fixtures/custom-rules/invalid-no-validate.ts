@@ -8,7 +8,7 @@ export const rule = {
     id: 'invalid-rule',
     name: 'Invalid Rule',
     description: 'Missing validate function',
-    category: 'Custom',
+    category: 'CLAUDE.md',
     severity: 'error',
     fixable: false,
     deprecated: false,

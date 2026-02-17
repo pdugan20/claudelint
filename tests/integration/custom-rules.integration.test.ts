@@ -38,7 +38,7 @@ describe('Custom Rules Integration', () => {
           id: 'integration-test-rule',
           name: 'Integration Test Rule',
           description: 'Tests integration with RuleRegistry',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -66,7 +66,7 @@ describe('Custom Rules Integration', () => {
     // Verify rule registered with RuleRegistry
     expect(RuleRegistry.exists('integration-test-rule')).toBe(true);
     const metadata = RuleRegistry.get('integration-test-rule');
-    expect(metadata?.category).toBe('Custom');
+    expect(metadata?.category).toBe('CLAUDE.md');
 
     // Cleanup
     loader.clear();
@@ -89,7 +89,7 @@ describe('Custom Rules Integration', () => {
           id: 'root-custom-rule',
           name: 'Root Custom Rule',
           description: 'From root directory',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -108,7 +108,7 @@ describe('Custom Rules Integration', () => {
           id: 'team-custom-rule',
           name: 'Team Custom Rule',
           description: 'From team directory',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'warn',
           fixable: false,
           deprecated: false,
@@ -127,7 +127,7 @@ describe('Custom Rules Integration', () => {
           id: 'project-custom-rule',
           name: 'Project Custom Rule',
           description: 'From project directory',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -167,7 +167,7 @@ describe('Custom Rules Integration', () => {
           id: 'valid-mixed-rule',
           name: 'Valid Mixed Rule',
           description: 'This one is valid',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -197,7 +197,7 @@ describe('Custom Rules Integration', () => {
           id: 'another-valid-rule',
           name: 'Another Valid Rule',
           description: 'Also valid',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'warn',
           fixable: false,
           deprecated: false,
@@ -237,7 +237,7 @@ describe('Custom Rules Integration', () => {
           id: 'custom-path-rule',
           name: 'Custom Path Rule',
           description: 'Loaded from custom path',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -271,7 +271,7 @@ describe('Custom Rules Integration', () => {
           id: 'disabled-rule',
           name: 'Disabled Rule',
           description: 'Should not load',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,
@@ -287,6 +287,139 @@ describe('Custom Rules Integration', () => {
 
     expect(results).toHaveLength(0);
     expect(RuleRegistry.exists('disabled-rule')).toBe(false);
+  });
+
+  it('should execute custom rule and produce violations via context.report', async () => {
+    const rulesDir = join(testDir, '.claudelint/rules');
+    mkdirSync(rulesDir, { recursive: true });
+
+    // Create a rule that reports violations for CLAUDE.md files missing a heading
+    writeFileSync(
+      join(rulesDir, 'require-heading.js'),
+      `
+      module.exports.rule = {
+        meta: {
+          id: 'execution-test-rule',
+          name: 'Execution Test Rule',
+          description: 'Reports violation when content lacks heading',
+          category: 'CLAUDE.md',
+          severity: 'error',
+          fixable: false,
+          deprecated: false,
+          since: '1.0.0',
+        },
+        validate: async (context) => {
+          if (!context.fileContent.includes('# ')) {
+            context.report({
+              message: 'Missing heading',
+              line: 1,
+              fix: 'Add a heading',
+            });
+          }
+        },
+      };
+    `
+    );
+
+    const loader = new CustomRuleLoader();
+    const results = await loader.loadCustomRules(testDir);
+    expect(results[0].success).toBe(true);
+
+    // Execute the rule's validate function directly
+    const rule = results[0].rule!;
+    const issues: Array<{ message: string; line?: number; fix?: string }> = [];
+
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: 'No heading here, just text.',
+      options: {},
+      report: (issue) => issues.push(issue),
+    });
+
+    expect(issues).toHaveLength(1);
+    expect(issues[0].message).toBe('Missing heading');
+    expect(issues[0].line).toBe(1);
+
+    // Verify no violation when heading exists
+    const issues2: Array<{ message: string }> = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: '# My Project\nSome content.',
+      options: {},
+      report: (issue) => issues2.push(issue),
+    });
+
+    expect(issues2).toHaveLength(0);
+
+    loader.clear();
+  });
+
+  it('should support configurable options via meta.schema and context.options', async () => {
+    const rulesDir = join(testDir, '.claudelint/rules');
+    mkdirSync(rulesDir, { recursive: true });
+
+    // Create a rule with configurable options
+    writeFileSync(
+      join(rulesDir, 'max-lines.js'),
+      `
+      module.exports.rule = {
+        meta: {
+          id: 'options-test-rule',
+          name: 'Options Test Rule',
+          description: 'Configurable max lines rule',
+          category: 'CLAUDE.md',
+          severity: 'warn',
+          fixable: false,
+          deprecated: false,
+          since: '1.0.0',
+          defaultOptions: { maxLines: 10 },
+        },
+        validate: async (context) => {
+          const maxLines = context.options.maxLines || 10;
+          const lineCount = context.fileContent.split('\\n').length;
+          if (lineCount > maxLines) {
+            context.report({
+              message: 'File exceeds ' + maxLines + ' lines (' + lineCount + ')',
+              line: maxLines + 1,
+            });
+          }
+        },
+      };
+    `
+    );
+
+    const loader = new CustomRuleLoader();
+    const results = await loader.loadCustomRules(testDir);
+    expect(results[0].success).toBe(true);
+
+    const rule = results[0].rule!;
+
+    // Test with default options (maxLines: 10)
+    const issues1: Array<{ message: string }> = [];
+    const lines = Array.from({ length: 15 }, (_, i) => `Line ${i + 1}`);
+    const content = lines.join('\n');
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: content,
+      options: { maxLines: 10 },
+      report: (issue) => issues1.push(issue),
+    });
+
+    expect(issues1).toHaveLength(1);
+    expect(issues1[0].message).toContain('exceeds 10 lines');
+
+    // Test with custom options (maxLines: 20)
+    const issues2: Array<{ message: string }> = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: content,
+      options: { maxLines: 20 },
+      report: (issue) => issues2.push(issue),
+    });
+
+    expect(issues2).toHaveLength(0);
+
+    loader.clear();
   });
 
   it('should filter out non-rule files correctly', async () => {
@@ -308,7 +441,7 @@ describe('Custom Rules Integration', () => {
           id: 'actual-rule',
           name: 'Actual Rule',
           description: 'The only real rule',
-          category: 'Custom',
+          category: 'CLAUDE.md',
           severity: 'error',
           fixable: false,
           deprecated: false,

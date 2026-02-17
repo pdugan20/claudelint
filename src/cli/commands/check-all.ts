@@ -8,7 +8,7 @@ import { Command } from 'commander';
 import { ValidatorRegistry } from '../../utils/validators/factory';
 import { Reporter } from '../../utils/reporting/reporting';
 import { ConfigError } from '../../utils/config/resolver';
-import { loadAndValidateConfig } from '../utils/config-loader';
+import { loadConfig, validateLoadedConfig } from '../utils/config-loader';
 import { buildReporterOptions } from '../utils/reporter-options';
 import { CustomRuleLoader } from '../../utils/rules/loader';
 import { ValidationCache } from '../../utils/cache';
@@ -60,8 +60,32 @@ export function registerCheckAllCommand(program: Command): void {
     process.on('SIGTERM', () => handleSignal('SIGTERM'));
 
     try {
-      // Load and validate configuration (shared loader handles --no-config, extends, validation)
-      const config = loadAndValidateConfig(options);
+      // Load configuration (without validation — custom rules must register first)
+      const config = loadConfig(options);
+
+      // Load custom rules before config validation so their IDs are in the registry
+      const customRuleLoader = new CustomRuleLoader({
+        customRulesPath: '.claudelint/rules',
+        enableCustomRules: true,
+      });
+
+      const customRuleResults = await customRuleLoader.loadCustomRules(process.cwd());
+      const failedCustomRules = customRuleResults.filter((r) => !r.success);
+
+      if (options.verbose && customRuleResults.length > 0) {
+        const successful = customRuleResults.filter((r) => r.success);
+        logger.success(`Loaded ${successful.length} custom rule(s)`);
+
+        if (failedCustomRules.length > 0) {
+          logger.warn(`Failed to load ${failedCustomRules.length} custom rule(s):`);
+          for (const failure of failedCustomRules) {
+            logger.detail(`- ${failure.filePath}: ${failure.error}`);
+          }
+        }
+      }
+
+      // Now validate config (custom rule IDs are registered)
+      validateLoadedConfig(config);
 
       // Apply --rule CLI overrides (highest precedence)
       if (options.rule && options.rule.length > 0) {
@@ -83,27 +107,6 @@ export function registerCheckAllCommand(program: Command): void {
           config.rules[ruleId] = severity as 'off' | 'warn' | 'error';
           if (options.verbose) {
             logger.info(`Rule override: ${ruleId} -> ${severity}`);
-          }
-        }
-      }
-
-      // Load custom rules
-      const customRuleLoader = new CustomRuleLoader({
-        customRulesPath: '.claudelint/rules',
-        enableCustomRules: true,
-      });
-
-      const customRuleResults = await customRuleLoader.loadCustomRules(process.cwd());
-      const failedCustomRules = customRuleResults.filter((r) => !r.success);
-
-      if (options.verbose && customRuleResults.length > 0) {
-        const successful = customRuleResults.filter((r) => r.success);
-        logger.success(`Loaded ${successful.length} custom rule(s)`);
-
-        if (failedCustomRules.length > 0) {
-          logger.warn(`Failed to load ${failedCustomRules.length} custom rule(s):`);
-          for (const failure of failedCustomRules) {
-            logger.detail(`- ${failure.filePath}: ${failure.error}`);
           }
         }
       }

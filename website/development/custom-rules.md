@@ -1,7 +1,3 @@
----
-outline: 2
----
-
 # Custom Rules Guide
 
 > **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
@@ -15,38 +11,41 @@ claudelint allows you to define custom validation rules to extend the built-in r
 3. Export a `rule` object that implements the Rule interface
 4. Run `claudelint check-all` to load and execute your custom rules
 
-Example custom rule:
+Example custom rule that validates SKILL.md files have cross-references:
 
 ```typescript
-// .claudelint/rules/no-profanity.ts
+// .claudelint/rules/require-skill-see-also.ts
 import type { Rule } from 'claude-code-lint';
+import { hasHeading } from 'claudelint/utils';
 
 export const rule: Rule = {
   meta: {
-    id: 'no-profanity',
-    name: 'No Profanity',
-    description: 'Disallow profanity in Claude Code files',
-    category: 'Custom',
-    severity: 'error',
+    id: 'require-skill-see-also',
+    name: 'Require Skill See Also',
+    description: 'SKILL.md must have a ## See Also section for cross-referencing related skills',
+    category: 'Skills',
+    severity: 'warn',
     fixable: false,
-    deprecated: false,
     since: '1.0.0',
   },
-  validate: async (context) => {
-    const profanityWords = ['badword1', 'badword2'];
-    const content = context.fileContent.toLowerCase();
 
-    for (const word of profanityWords) {
-      if (content.includes(word)) {
-        context.report({
-          message: `Found profanity: "${word}"`,
-          line: 1,
-        });
-      }
+  validate: async (context) => {
+    if (!context.filePath.endsWith('SKILL.md')) {
+      return;
+    }
+
+    if (!hasHeading(context.fileContent, 'See Also', 2)) {
+      context.report({
+        message: 'Missing ## See Also section',
+        line: 1,
+        fix: 'Add a ## See Also section linking to related skills',
+      });
     }
   },
 };
 ```
+
+> This is a real rule from claudelint's own [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules) directory. All examples in this guide come from working, tested rules that run in CI.
 
 ## Directory Structure
 
@@ -91,15 +90,32 @@ interface RuleMetadata {
   id: string;              // Unique identifier (e.g., 'no-profanity')
   name: string;            // Human-readable name
   description: string;     // What the rule checks
-  category: string;        // Group rules by category (typically 'Custom')
-  severity: 'error' | 'warn';  // Default severity level
-  fixable?: boolean;       // Whether rule can auto-fix violations
+  category: RuleCategory;  // Must be a valid category (see Valid Categories below)
+  severity: 'off' | 'warn' | 'error';  // Default severity level
+  fixable: boolean;        // Whether rule can auto-fix violations
   deprecated?: boolean;    // Mark rule as deprecated
-  since?: string;          // Version when rule was introduced
+  since: string;           // Version when rule was introduced
 }
 ```
 
 **Important:** Rule IDs must be unique across all custom rules and built-in rules. If a custom rule ID conflicts with an existing rule, the loader will reject it.
+
+### Valid Categories
+
+Custom rules must use one of the built-in categories. The category determines which validator executes your rule. The loader rejects rules with invalid categories and lists the valid options in the error message.
+
+| Category | Description |
+|----------|-------------|
+| `CLAUDE.md` | Rules targeting CLAUDE.md configuration files |
+| `Skills` | Rules for skill definitions (SKILL.md) |
+| `Settings` | Rules for settings files |
+| `Hooks` | Rules for hook configurations |
+| `MCP` | Rules for MCP server configurations |
+| `Plugin` | Rules for plugin manifests |
+| `Commands` | Rules for command definitions |
+| `Agents` | Rules for agent definitions |
+| `OutputStyles` | Rules for output style configurations |
+| `LSP` | Rules for LSP server configurations |
 
 ### Validation Function
 
@@ -121,102 +137,62 @@ interface RuleIssue {
 }
 ```
 
-## Example Custom Rules
+## Examples
 
-### Maximum file size
+Each example below is a working rule from claudelint's [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules) directory. These rules validate the project's own files and run on every CI build.
+
+### Pattern matching with line reporting
+
+**Source:** [`.claudelint/rules/no-user-paths.ts`](https://github.com/pdugan20/claudelint/blob/main/.claudelint/rules/no-user-paths.ts)
+
+Detects hardcoded user-specific paths (`/Users/name/`, `/home/name/`, `C:\Users\`) with precise line numbers:
 
 ```typescript
-// .claudelint/rules/max-file-size.ts
 import type { Rule } from 'claude-code-lint';
+import { findLinesMatching } from 'claudelint/utils';
+
+const USER_PATH_PATTERN = /(?:\/Users\/|\/home\/|C:\\Users\\)[^\s/\\]+/;
 
 export const rule: Rule = {
   meta: {
-    id: 'max-file-size',
-    name: 'Maximum File Size',
-    description: 'Enforce maximum file size limit',
-    category: 'Custom',
+    id: 'no-user-paths',
+    name: 'No User Paths',
+    description: 'CLAUDE.md must not contain hardcoded user-specific paths',
+    category: 'CLAUDE.md',
     severity: 'warn',
+    fixable: false,
+    since: '1.0.0',
   },
-  validate: async (context) => {
-    const maxSize = 5000; // characters
-    const size = context.fileContent.length;
 
-    if (size > maxSize) {
-      context.report({
-        message: `File size (${size}) exceeds maximum (${maxSize})`,
-        line: 1,
-      });
-    }
-  },
-};
-```
-
-### Require specific heading
-
-```typescript
-// .claudelint/rules/require-overview.ts
-import type { Rule } from 'claude-code-lint';
-
-export const rule: Rule = {
-  meta: {
-    id: 'require-overview',
-    name: 'Require Overview Section',
-    description: 'CLAUDE.md must include an overview section',
-    category: 'Custom',
-    severity: 'error',
-  },
   validate: async (context) => {
     if (!context.filePath.endsWith('CLAUDE.md')) {
-      return; // Only check CLAUDE.md files
+      return;
     }
 
-    if (!context.fileContent.includes('## Overview')) {
+    // Use contentWithoutCode to avoid false positives in code examples
+    const content = context.contentWithoutCode ?? context.fileContent;
+
+    const matches = findLinesMatching(content, USER_PATH_PATTERN);
+    for (const match of matches) {
       context.report({
-        message: 'CLAUDE.md must include "## Overview" section',
-        line: 1,
+        message: `Hardcoded user path: ${match.match}`,
+        line: match.line,
+        fix: 'Use a relative path or environment variable instead',
       });
     }
   },
 };
 ```
 
-### Pattern matching
+Key techniques:
 
-```typescript
-// .claudelint/rules/no-absolute-paths.ts
-import type { Rule } from 'claude-code-lint';
+- `contentWithoutCode` strips fenced code blocks to avoid false positives
+- `findLinesMatching()` returns `{ line, match }` pairs for precise line reporting
+- Early return on wrong file type
 
-export const rule: Rule = {
-  meta: {
-    id: 'no-absolute-paths',
-    name: 'No Absolute Paths',
-    description: 'Disallow absolute file paths in documentation',
-    category: 'Custom',
-    severity: 'warn',
-  },
-  validate: async (context) => {
-    const absolutePathPattern = /\/Users\/|\/home\/|C:\\/gi;
-    const lines = context.fileContent.split('\n');
+### Auto-fix
 
-    lines.forEach((line, index) => {
-      if (absolutePathPattern.test(line)) {
-        context.report({
-          message: 'Avoid absolute file paths in documentation',
-          line: index + 1,
-        });
-      }
-    });
-  },
-};
-```
-
-## Auto-Fix Support
-
-Custom rules can provide automatic fixes that users can apply with the `--fix` flag.
-
-### AutoFix Interface
-
-To enable auto-fix, include an `autoFix` object in your `context.report()` call:
+Custom rules can provide automatic fixes that users apply with the `--fix` flag. Include an `autoFix` object in your `context.report()` call:
 
 ```typescript
 interface AutoFix {
@@ -227,58 +203,71 @@ interface AutoFix {
 }
 ```
 
-### Trailing whitespace fix
+**Source:** [`.claudelint/rules/normalize-code-fences.ts`](https://github.com/pdugan20/claudelint/blob/main/.claudelint/rules/normalize-code-fences.ts)
+
+This rule detects bare code fences (` ``` ` without a language) and auto-fixes them by adding `text`:
 
 ```typescript
-// .claudelint/rules/no-trailing-whitespace.ts
 import type { Rule } from 'claude-code-lint';
+
+/** Add language to bare opening fences, leaving closing fences unchanged */
+function addLanguageToBareFences(content: string): string {
+  const lines = content.split('\n');
+  let inCodeBlock = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    if (inCodeBlock) {
+      if (/^```\s*$/.test(lines[i])) {
+        inCodeBlock = false;
+      }
+      continue;
+    }
+
+    if (/^```\s*$/.test(lines[i])) {
+      lines[i] = '```text';
+      inCodeBlock = true;
+    } else if (/^```\w/.test(lines[i])) {
+      inCodeBlock = true;
+    }
+  }
+
+  return lines.join('\n');
+}
 
 export const rule: Rule = {
   meta: {
-    id: 'no-trailing-whitespace',
-    name: 'No Trailing Whitespace',
-    description: 'Remove trailing whitespace from lines',
-    category: 'Custom',
-    severity: 'warn',
-    fixable: true,  // Mark as fixable
-    deprecated: false,
+    id: 'normalize-code-fences',
+    // ...
+    fixable: true,  // Required for auto-fix
     since: '1.0.0',
   },
 
   validate: async (context) => {
-    const lines = context.fileContent.split('\n');
-    let hasViolations = false;
+    // ... detection logic ...
 
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i] !== lines[i].trimEnd()) {
-        hasViolations = true;
-        break;
-      }
-    }
-
-    if (hasViolations) {
-      context.report({
-        message: 'Found trailing whitespace',
-        line: 1,
-        fix: 'Remove trailing whitespace',
-        autoFix: {
-          ruleId: 'no-trailing-whitespace',
-          description: 'Remove trailing whitespace from all lines',
-          filePath: context.filePath,
-          apply: (currentContent) => {
-            return currentContent
-              .split('\n')
-              .map((line) => line.trimEnd())
-              .join('\n');
-          },
-        },
-      });
-    }
+    context.report({
+      message: 'Code fence missing language identifier',
+      line: i + 1,
+      fix: 'Add a language (e.g. ```bash, ```typescript, ```text)',
+      autoFix: {
+        ruleId: 'normalize-code-fences',
+        description: 'Add "text" language to bare code fences',
+        filePath: context.filePath,
+        apply: addLanguageToBareFences,
+      },
+    });
   },
 };
 ```
 
-### Using Auto-Fix
+Key techniques:
+
+- Set `fixable: true` in meta when providing `autoFix`
+- `apply()` receives current file content, returns fixed content
+- Track state (open/close fences) to avoid modifying closing fences
+- One `autoFix` can fix all occurrences in a single pass
+
+#### Using auto-fix
 
 Run claudelint with the `--fix` flag to apply automatic fixes:
 
@@ -290,7 +279,7 @@ claudelint check-all --fix --dry-run
 claudelint check-all --fix
 ```
 
-### Auto-fix best practices
+#### Auto-fix best practices
 
 1. **Always mark fixable rules**: Set `fixable: true` in meta when providing autoFix
 2. **Make fixes idempotent**: Running the fix multiple times should produce the same result
@@ -298,52 +287,74 @@ claudelint check-all --fix
 4. **One fix per violation**: Don't try to fix multiple unrelated issues in one autoFix
 5. **Use simple transformations**: Complex fixes are better done manually
 
-### Pattern replacement fix
+### Configurable options with Zod
+
+Rules can accept user-configurable options via `meta.schema` (a Zod schema) and `meta.defaultOptions`.
+
+**Source:** [`.claudelint/rules/max-section-depth.ts`](https://github.com/pdugan20/claudelint/blob/main/.claudelint/rules/max-section-depth.ts)
+
+This rule limits heading depth to keep documents flat and scannable:
 
 ```typescript
-// .claudelint/rules/use-correct-term.ts
+import { z } from 'zod';
 import type { Rule } from 'claude-code-lint';
+import { extractHeadings } from 'claudelint/utils';
+
+const optionsSchema = z.object({
+  maxDepth: z.number().int().min(1).max(6).optional(),
+});
 
 export const rule: Rule = {
   meta: {
-    id: 'use-correct-term',
-    name: 'Use Correct Terminology',
-    description: 'Replace deprecated terms with preferred ones',
-    category: 'Custom',
+    id: 'max-section-depth',
+    name: 'Max Section Depth',
+    description: 'CLAUDE.md headings must not exceed a configurable depth',
+    category: 'CLAUDE.md',
     severity: 'warn',
-    fixable: true,
-    deprecated: false,
+    fixable: false,
     since: '1.0.0',
+    schema: optionsSchema,
+    defaultOptions: {
+      maxDepth: 4,
+    },
   },
 
   validate: async (context) => {
-    const replacements = {
-      'whitelist': 'allowlist',
-      'blacklist': 'blocklist',
-      'master': 'main',
-    };
+    if (!context.filePath.endsWith('CLAUDE.md')) {
+      return;
+    }
 
-    for (const [oldTerm, newTerm] of Object.entries(replacements)) {
-      const regex = new RegExp(`\\b${oldTerm}\\b`, 'gi');
+    const maxDepth = (context.options.maxDepth as number) ?? 4;
+    const headings = extractHeadings(context.fileContent);
 
-      if (regex.test(context.fileContent)) {
+    for (const heading of headings) {
+      if (heading.level > maxDepth) {
         context.report({
-          message: `Use "${newTerm}" instead of "${oldTerm}"`,
-          fix: `Replace all instances`,
-          autoFix: {
-            ruleId: 'use-correct-term',
-            description: `Replace "${oldTerm}" with "${newTerm}"`,
-            filePath: context.filePath,
-            apply: (content) => {
-              return content.replace(regex, newTerm);
-            },
-          },
+          message: `Heading "${'#'.repeat(heading.level)} ${heading.text}" exceeds max depth ${maxDepth}`,
+          line: heading.line,
+          fix: `Restructure to use heading level ${maxDepth} or shallower`,
         });
       }
     }
   },
 };
 ```
+
+Users configure options in `.claudelintrc.json` using the array syntax:
+
+```json
+{
+  "rules": {
+    "max-section-depth": ["warn", { "maxDepth": 3 }]
+  }
+}
+```
+
+Key techniques:
+
+- Define `schema` with Zod for type-safe validation of user options
+- `defaultOptions` provides fallbacks when user doesn't configure
+- Access options via `context.options` in the validate function
 
 ## Configuration
 
@@ -352,9 +363,9 @@ Custom rules can be configured in `.claudelintrc.json`:
 ```json
 {
   "rules": {
-    "no-profanity": "error",
-    "max-file-size": "warn",
-    "require-overview": "off"
+    "require-skill-see-also": "warn",
+    "no-user-paths": "error",
+    "normalize-code-fences": "off"
   }
 }
 ```
@@ -453,313 +464,33 @@ validate: async (context) => {
 
 ### Test your rules
 
-Create test cases for your custom rules:
+Create test cases for your custom rules. See the [dogfood rule tests](https://github.com/pdugan20/claudelint/blob/main/tests/integration/dogfood-rules.test.ts) for a tested pattern using a `collectIssues` helper:
 
 ```typescript
-// .claudelint/rules/__tests__/no-profanity.test.ts
-import { rule } from '../no-profanity';
-
-describe('no-profanity rule', () => {
-  it('should detect profanity', async () => {
-    const violations = [];
-    const context = {
-      filePath: 'test.md',
-      fileContent: 'This contains badword1',
-      report: (v) => violations.push(v),
-    };
-
-    await rule.validate(context);
-
-    expect(violations).toHaveLength(1);
-    expect(violations[0].message).toContain('badword1');
-  });
-});
-```
-
-## Troubleshooting
-
-### Rule Not Loading
-
-**Problem:** Custom rule doesn't appear in output
-
-**Solutions:**
-
-- Verify file is in `.claudelint/rules/` directory
-- Check file extension is `.ts` or `.js` (not `.d.ts`, `.test.ts`, etc.)
-- Export a named `rule` object using `export const rule`
-- Check for syntax errors in the rule file
-
-### Rule ID Conflicts
-
-**Problem:** `Error: Rule ID conflicts with existing rule`
-
-**Solutions:**
-
-- Choose a unique ID that doesn't match built-in rules
-- Check for duplicate IDs across your custom rules
-- Prefix custom rules with a namespace (e.g., `team-no-profanity`)
-
-### TypeScript errors
-
-**Problem:** `Parameter 'context' implicitly has an 'any' type`
-
-**Solutions:**
-
-- Both `.ts` and `.js` files are supported
-- Add type annotations to resolve implicit `any` errors:
-
-```typescript
-import type { Rule, ValidationContext } from 'claude-code-lint';
-
-export const rule: Rule = {
-  // ...
-  validate: async (context: ValidationContext) => {
-    // ...
-  },
-};
-```
-
-### Rule Not Executing
-
-**Problem:** Rule loads but doesn't report violations
-
-**Solutions:**
-
-- Check rule is enabled in `.claudelintrc.json`
-- Verify `context.report()` is being called
-- Add debug logging to validate function
-- Ensure file being checked matches your rule's logic
-
-### Helper Functions Not Found
-
-**Problem:** `Cannot find module 'claudelint/utils'`
-
-**Solutions:**
-
-- Use `import { ... } from 'claudelint/utils'` for utility functions
-- Import types separately: `import type { RuleContext } from 'claude-code-lint'`
-- Ensure you're using the helpers within the `validate` function
-- Check that helpers are exported from your rule file
-
-Example:
-
-```typescript
-import { hasHeading, extractFrontmatter } from 'claudelint/utils';
-import type { Rule } from 'claude-code-lint';
-
-export const rule: Rule = {
-  validate: async (context) => {
-    const fm = extractFrontmatter(context.fileContent);
-    // ...
-  },
-};
-```
-
-### Auto-Fix Not Working
-
-**Problem:** Auto-fix doesn't apply when using `--fix` flag
-
-**Solutions:**
-
-- Verify `meta.fixable: true` in rule metadata
-- Ensure `autoFix` object is passed to `context.report()`
-- Check that `apply()` function returns modified content
-- Make sure `apply()` is pure (doesn't mutate input)
-- Test `apply()` function independently
-
-Example:
-
-```typescript
-meta: {
-  fixable: true,  // Required for auto-fix
-  // ...
-},
-validate: async (context) => {
-  context.report({
-    message: 'Issue found',
-    autoFix: {
-      ruleId: 'my-rule',
-      description: 'Fix description',
-      filePath: context.filePath,
-      apply: (content) => {
-        return content.replace(/old/g, 'new');
-      },
-    },
-  });
-},
-```
-
-### Regex issues
-
-**Problem:** Pattern doesn't match expected content
-
-**Solutions:**
-
-- Test regex at [regex101.com](https://regex101.com) first
-- Use `matchesPattern()` for quick existence checks
-- Use `findLinesMatching()` to get line numbers
-- Remember: `.` doesn't match newlines by default
-- Use `\s` for whitespace, `\S` for non-whitespace
-- Escape special characters: `\.`, `\?`, `\*`, etc.
-
-Example:
-
-```typescript
-// Find all TODO comments with line numbers
-const todos = findLinesMatching(context.fileContent, /TODO:/gi);
-todos.forEach(match => {
-  context.report({
-    message: 'Found TODO comment',
-    line: match.line,
-  });
-});
-```
-
-### Frontmatter parsing
-
-**Problem:** `extractFrontmatter()` returns `null`
-
-**Solutions:**
-
-- Verify frontmatter has `---` delimiters at start/end
-- Check YAML syntax is valid (no tabs, proper indentation)
-- Ensure frontmatter is at the very beginning of file
-- Test YAML at [yamllint.com](http://www.yamllint.com)
-
-Valid frontmatter format:
-
-```yaml
----
-name: My File
-version: 1.0.0
-tags: [example, test]
----
-```
-
-### File existence checks
-
-**Problem:** `fileExists()` returns false for existing files
-
-**Solutions:**
-
-- Use absolute paths, not relative paths
-- Join paths with `path.join()` for cross-platform compatibility
-- Get file directory with `path.dirname(context.filePath)`
-- Check for typos in file path
-
-Example:
-
-```typescript
-import { join, dirname } from 'path';
-import { fileExists } from 'claudelint/utils';
-
-const dir = dirname(context.filePath);
-const targetFile = join(dir, '../README.md');
-
-if (!(await fileExists(targetFile))) {
-  context.report({ message: 'README.md not found' });
-}
-```
-
-### Async/Await Errors
-
-**Problem:** `await is only valid in async function`
-
-**Solutions:**
-
-- Mark `validate` function as `async`
-- Use `await` for async helpers like `readFileContent()` and `fileExists()`
-- Don't use `await` with sync helpers (parseJSON, parseYAML, matchesPattern, etc.)
-
-Example:
-
-```typescript
-validate: async (context) => {  // Note: async keyword
-  const content = await readFileContent('./config.json');
-  const exists = await fileExists('./README.md');  // await needed
-  const data = parseJSON(content);  // No await needed (sync)
-},
-```
-
-### Performance Issues
-
-**Problem:** Rule is slow on large files
-
-**Solutions:**
-
-- Use `matchesPattern()` before expensive operations
-- Early return if file type doesn't match
-- Avoid calling `split('\n')` multiple times (cache it)
-- Use `findLinesMatching()` instead of manual iteration
-- Limit regex backtracking with atomic groups
-
-Example:
-
-```typescript
-validate: async (context) => {
-  // Early exit for irrelevant files
-  if (!context.filePath.endsWith('.md')) {
-    return;
-  }
-
-  // Quick check before expensive operation
-  if (!matchesPattern(context.fileContent, /TODO:/)) {
-    return;  // No TODOs, skip detailed analysis
-  }
-
-  // Only parse frontmatter if needed
-  const fm = extractFrontmatter(context.fileContent);
-  // ...
-},
-```
-
-### Debugging Tips
-
-**Problem:** Can't figure out why rule isn't working
-
-**Solutions:**
-
-1. Add console.log statements:
-
-```typescript
-validate: async (context) => {
-  console.log('Validating:', context.filePath);
-  const fm = extractFrontmatter(context.fileContent);
-  console.log('Frontmatter:', fm);
-  // ...
-},
-```
-
-1. Test rule in isolation:
-
-```typescript
-// test-my-rule.ts
 import { rule } from './.claudelint/rules/my-rule';
 
-const mockContext = {
-  filePath: './test.md',
-  fileContent: '---\nversion: 1.0.0\n---\n# Test',
-  options: {},
-  report: (issue) => console.log('Issue:', issue),
-};
+async function collectIssues(rule, filePath, fileContent) {
+  const issues = [];
+  await rule.validate({
+    filePath,
+    fileContent,
+    options: {},
+    report: (issue) => issues.push(issue),
+  });
+  return issues;
+}
 
-rule.validate(mockContext);
-```
+// Test violation detection
+const issues = await collectIssues(rule, '/test/SKILL.md', 'content missing required section');
+expect(issues).toHaveLength(1);
 
-1. Check file is being validated:
+// Test clean input passes
+const clean = await collectIssues(rule, '/test/SKILL.md', 'content with required section');
+expect(clean).toHaveLength(0);
 
-```bash
-claudelint check-all --verbose
-```
-
-1. Verify rule loads successfully:
-
-```typescript
-import { CustomRuleLoader } from 'claudelint/utils';
-
-const loader = new CustomRuleLoader();
-const results = await loader.loadCustomRules('.');
-console.log(results);
+// Test file type filtering
+const skipped = await collectIssues(rule, '/test/README.md', 'wrong file type');
+expect(skipped).toHaveLength(0);
 ```
 
 ## Helper Library
@@ -827,6 +558,6 @@ validate: async (context) => {
 
 If you encounter issues with custom rules:
 
-1. Check the [Troubleshooting](#troubleshooting) section
-2. Review example rules in `tests/fixtures/custom-rules/`
+1. Check the [Troubleshooting](/development/custom-rules-troubleshooting) guide
+2. Review example rules in [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules)
 3. Open an issue on [GitHub](https://github.com/pdugan20/claudelint/issues)

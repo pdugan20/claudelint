@@ -10,7 +10,7 @@ export const rule: Rule = {
     id: 'team-naming-convention',
     name: 'Team Naming Convention',
     description: 'Enforce team-specific naming conventions for skills',
-    category: 'Custom',
+    category: 'Skills',
     severity: 'warn',
     fixable: false,
     deprecated: false,

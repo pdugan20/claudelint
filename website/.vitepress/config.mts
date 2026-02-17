@@ -156,7 +156,16 @@ export default defineConfig({
             { text: 'Architecture', link: '/development/architecture' },
             { text: 'Rule System', link: '/development/rule-system' },
             { text: 'Internals', link: '/development/internals' },
-            { text: 'Custom Rules', link: '/development/custom-rules' },
+            {
+              text: 'Custom Rules',
+              link: '/development/custom-rules',
+              items: [
+                {
+                  text: 'Troubleshooting',
+                  link: '/development/custom-rules-troubleshooting',
+                },
+              ],
+            },
             { text: 'Helper Library', link: '/development/helper-library' },
             { text: 'Contributing', link: '/development/contributing' },
           ],
