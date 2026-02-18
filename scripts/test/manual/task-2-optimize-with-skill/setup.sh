@@ -25,9 +25,9 @@ if [ -d "$TEST_DIR" ]; then
   rm -rf "$TEST_DIR"
 fi
 
-# Step 3: Copy fixture to test directory
+# Step 3: Copy fixture to test directory (exclude .expected/ test artifacts)
 echo "Copying react-typescript-bloated fixture..."
-cp -r "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated" "$TEST_DIR"
+rsync -a --exclude='.expected' "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated/" "$TEST_DIR/"
 
 # Step 4: Install claudelint in test workspace
 "$LIB_DIR/install-in-workspace.sh" "$TEST_DIR" "$PACKAGE_TGZ"

@@ -25,9 +25,9 @@ mkdir -p "$TEST_DIR/fixtures"
 echo "Copying test fixtures..."
 cp -r "$REPO_ROOT/tests/fixtures/claude-md/"* "$TEST_DIR/fixtures/"
 
-# Copy react-typescript-bloated for optimize-cc-md testing
+# Copy react-typescript-bloated for optimize-cc-md testing (exclude .expected/ test artifacts)
 echo "Copying react-typescript-bloated fixture for optimize test..."
-cp -r "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated" "$TEST_DIR/optimize-test"
+rsync -a --exclude='.expected' "$REPO_ROOT/tests/fixtures/projects/react-typescript-bloated/" "$TEST_DIR/optimize-test/"
 
 echo "Test workspaces created:"
 echo "  - $TEST_DIR/claude-md-tests (for validate-cc-md)"
