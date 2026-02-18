@@ -49,7 +49,7 @@
     "lint:pkg:quiet": "npmPkgJsonLint . --quiet",
     "lint:ts": "eslint src --ext .ts",
     "lint:ts:fix": "eslint src --ext .ts --fix",
-    "lint:vue": "eslint 'website/.vitepress/**/*.vue'",
+    "lint:vue": "eslint 'website/.vitepress/**/*.vue' --max-warnings 0",
     "lint:vue:fix": "eslint 'website/.vitepress/**/*.vue' --fix",
     "format": "prettier --write \"src/**/*.ts\" \"**/*.json\" \"website/.vitepress/**/*.vue\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"**/*.json\" \"website/.vitepress/**/*.vue\"",
