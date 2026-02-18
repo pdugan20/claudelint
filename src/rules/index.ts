@@ -13,361 +13,361 @@
 import { RuleRegistry } from '../utils/rules/registry';
 
 // Import all rule files
-import { rule as settings_permission_invalid_rule_rule } from './settings/settings-permission-invalid-rule';
-import { rule as settings_permission_empty_pattern_rule } from './settings/settings-permission-empty-pattern';
-import { rule as settings_invalid_permission_rule } from './settings/settings-invalid-permission';
-import { rule as settings_invalid_env_var_rule } from './settings/settings-invalid-env-var';
-import { rule as settings_file_path_not_found_rule } from './settings/settings-file-path-not-found';
-import { rule as skill_xml_tags_anywhere_rule } from './skills/skill-xml-tags-anywhere';
-import { rule as skill_version_rule } from './skills/skill-version';
-import { rule as skill_unknown_string_substitution_rule } from './skills/skill-unknown-string-substitution';
-import { rule as skill_too_many_files_rule } from './skills/skill-too-many-files';
-import { rule as skill_time_sensitive_content_rule } from './skills/skill-time-sensitive-content';
-import { rule as skill_tags_rule } from './skills/skill-tags';
-import { rule as skill_side_effects_without_disable_model_rule } from './skills/skill-side-effects-without-disable-model';
-import { rule as skill_shell_script_no_error_handling_rule } from './skills/skill-shell-script-no-error-handling';
-import { rule as skill_shell_script_hardcoded_paths_rule } from './skills/skill-shell-script-hardcoded-paths';
-import { rule as skill_referenced_file_not_found_rule } from './skills/skill-referenced-file-not-found';
-import { rule as skill_reference_not_linked_rule } from './skills/skill-reference-not-linked';
-import { rule as skill_readme_forbidden_rule } from './skills/skill-readme-forbidden';
-import { rule as skill_path_traversal_rule } from './skills/skill-path-traversal';
-import { rule as skill_overly_generic_name_rule } from './skills/skill-overly-generic-name';
-import { rule as skill_naming_inconsistent_rule } from './skills/skill-naming-inconsistent';
-import { rule as skill_name_rule } from './skills/skill-name';
-import { rule as skill_name_directory_mismatch_rule } from './skills/skill-name-directory-mismatch';
-import { rule as skill_model_rule } from './skills/skill-model';
-import { rule as skill_missing_version_rule } from './skills/skill-missing-version';
-import { rule as skill_missing_shebang_rule } from './skills/skill-missing-shebang';
-import { rule as skill_missing_examples_rule } from './skills/skill-missing-examples';
-import { rule as skill_missing_comments_rule } from './skills/skill-missing-comments';
-import { rule as skill_missing_changelog_rule } from './skills/skill-missing-changelog';
-import { rule as skill_mcp_tool_qualified_name_rule } from './skills/skill-mcp-tool-qualified-name';
-import { rule as skill_hardcoded_secrets_rule } from './skills/skill-hardcoded-secrets';
-import { rule as skill_frontmatter_unknown_keys_rule } from './skills/skill-frontmatter-unknown-keys';
-import { rule as skill_eval_usage_rule } from './skills/skill-eval-usage';
-import { rule as skill_disallowed_tools_rule } from './skills/skill-disallowed-tools';
-import { rule as skill_description_rule } from './skills/skill-description';
-import { rule as skill_description_quality_rule } from './skills/skill-description-quality';
-import { rule as skill_description_missing_trigger_rule } from './skills/skill-description-missing-trigger';
-import { rule as skill_description_max_length_rule } from './skills/skill-description-max-length';
-import { rule as skill_dependencies_rule } from './skills/skill-dependencies';
-import { rule as skill_deep_nesting_rule } from './skills/skill-deep-nesting';
-import { rule as skill_dangerous_command_rule } from './skills/skill-dangerous-command';
-import { rule as skill_cross_reference_invalid_rule } from './skills/skill-cross-reference-invalid';
-import { rule as skill_context_rule } from './skills/skill-context';
-import { rule as skill_body_word_count_rule } from './skills/skill-body-word-count';
-import { rule as skill_body_too_long_rule } from './skills/skill-body-too-long';
-import { rule as skill_body_missing_usage_section_rule } from './skills/skill-body-missing-usage-section';
-import { rule as skill_body_long_code_block_rule } from './skills/skill-body-long-code-block';
-import { rule as skill_arguments_without_hint_rule } from './skills/skill-arguments-without-hint';
-import { rule as skill_allowed_tools_rule } from './skills/skill-allowed-tools';
-import { rule as skill_allowed_tools_not_used_rule } from './skills/skill-allowed-tools-not-used';
-import { rule as skill_agent_rule } from './skills/skill-agent';
-import { rule as output_style_name_rule } from './output-styles/output-style-name';
-import { rule as output_style_name_directory_mismatch_rule } from './output-styles/output-style-name-directory-mismatch';
-import { rule as output_style_missing_guidelines_rule } from './output-styles/output-style-missing-guidelines';
-import { rule as output_style_examples_rule } from './output-styles/output-style-examples';
-import { rule as output_style_description_rule } from './output-styles/output-style-description';
-import { rule as output_style_body_too_short_rule } from './output-styles/output-style-body-too-short';
-import { rule as mcp_websocket_invalid_url_rule } from './mcp/mcp-websocket-invalid-url';
-import { rule as mcp_websocket_invalid_protocol_rule } from './mcp/mcp-websocket-invalid-protocol';
-import { rule as mcp_websocket_empty_url_rule } from './mcp/mcp-websocket-empty-url';
-import { rule as mcp_stdio_empty_command_rule } from './mcp/mcp-stdio-empty-command';
-import { rule as mcp_sse_transport_deprecated_rule } from './mcp/mcp-sse-transport-deprecated';
-import { rule as mcp_sse_invalid_url_rule } from './mcp/mcp-sse-invalid-url';
-import { rule as mcp_sse_empty_url_rule } from './mcp/mcp-sse-empty-url';
-import { rule as mcp_invalid_transport_rule } from './mcp/mcp-invalid-transport';
-import { rule as mcp_invalid_env_var_rule } from './mcp/mcp-invalid-env-var';
-import { rule as mcp_http_invalid_url_rule } from './mcp/mcp-http-invalid-url';
-import { rule as mcp_http_empty_url_rule } from './mcp/mcp-http-empty-url';
-import { rule as lsp_server_name_too_short_rule } from './lsp/lsp-server-name-too-short';
-import { rule as lsp_language_id_not_lowercase_rule } from './lsp/lsp-language-id-not-lowercase';
-import { rule as lsp_language_id_empty_rule } from './lsp/lsp-language-id-empty';
-import { rule as lsp_invalid_transport_rule } from './lsp/lsp-invalid-transport';
-import { rule as lsp_extension_missing_dot_rule } from './lsp/lsp-extension-missing-dot';
-import { rule as lsp_command_not_in_path_rule } from './lsp/lsp-command-not-in-path';
-import { rule as plugin_version_required_rule } from './plugin/plugin-version-required';
-import { rule as plugin_name_required_rule } from './plugin/plugin-name-required';
-import { rule as plugin_missing_file_rule } from './plugin/plugin-missing-file';
-import { rule as plugin_missing_component_paths_rule } from './plugin/plugin-missing-component-paths';
-import { rule as plugin_marketplace_files_not_found_rule } from './plugin/plugin-marketplace-files-not-found';
-import { rule as plugin_json_wrong_location_rule } from './plugin/plugin-json-wrong-location';
-import { rule as plugin_invalid_version_rule } from './plugin/plugin-invalid-version';
-import { rule as plugin_invalid_manifest_rule } from './plugin/plugin-invalid-manifest';
-import { rule as plugin_hook_missing_plugin_root_rule } from './plugin/plugin-hook-missing-plugin-root';
-import { rule as plugin_description_required_rule } from './plugin/plugin-description-required';
-import { rule as plugin_components_wrong_location_rule } from './plugin/plugin-components-wrong-location';
-import { rule as plugin_commands_deprecated_rule } from './plugin/plugin-commands-deprecated';
-import { rule as hooks_missing_script_rule } from './hooks/hooks-missing-script';
-import { rule as hooks_invalid_event_rule } from './hooks/hooks-invalid-event';
-import { rule as hooks_invalid_config_rule } from './hooks/hooks-invalid-config';
-import { rule as commands_migrate_to_skills_rule } from './commands/commands-migrate-to-skills';
-import { rule as commands_deprecated_directory_rule } from './commands/commands-deprecated-directory';
-import { rule as claude_md_size_rule } from './claude-md/claude-md-size';
-import { rule as claude_md_rules_circular_symlink_rule } from './claude-md/claude-md-rules-circular-symlink';
-import { rule as claude_md_paths_rule } from './claude-md/claude-md-paths';
-import { rule as claude_md_npm_script_not_found_rule } from './claude-md/claude-md-npm-script-not-found';
-import { rule as claude_md_import_read_failed_rule } from './claude-md/claude-md-import-read-failed';
-import { rule as claude_md_import_missing_rule } from './claude-md/claude-md-import-missing';
-import { rule as claude_md_import_in_code_block_rule } from './claude-md/claude-md-import-in-code-block';
-import { rule as claude_md_import_depth_exceeded_rule } from './claude-md/claude-md-import-depth-exceeded';
-import { rule as claude_md_import_circular_rule } from './claude-md/claude-md-import-circular';
-import { rule as claude_md_glob_pattern_too_broad_rule } from './claude-md/claude-md-glob-pattern-too-broad';
-import { rule as claude_md_glob_pattern_backslash_rule } from './claude-md/claude-md-glob-pattern-backslash';
-import { rule as claude_md_filename_case_sensitive_rule } from './claude-md/claude-md-filename-case-sensitive';
-import { rule as claude_md_file_reference_invalid_rule } from './claude-md/claude-md-file-reference-invalid';
-import { rule as claude_md_file_not_found_rule } from './claude-md/claude-md-file-not-found';
-import { rule as claude_md_content_too_many_sections_rule } from './claude-md/claude-md-content-too-many-sections';
-import { rule as agent_tools_rule } from './agents/agent-tools';
-import { rule as agent_skills_rule } from './agents/agent-skills';
-import { rule as agent_skills_not_found_rule } from './agents/agent-skills-not-found';
-import { rule as agent_name_rule } from './agents/agent-name';
-import { rule as agent_name_filename_mismatch_rule } from './agents/agent-name-filename-mismatch';
-import { rule as agent_model_rule } from './agents/agent-model';
-import { rule as agent_hooks_rule } from './agents/agent-hooks';
-import { rule as agent_hooks_invalid_schema_rule } from './agents/agent-hooks-invalid-schema';
-import { rule as agent_events_rule } from './agents/agent-events';
-import { rule as agent_disallowed_tools_rule } from './agents/agent-disallowed-tools';
-import { rule as agent_description_rule } from './agents/agent-description';
 import { rule as agent_body_too_short_rule } from './agents/agent-body-too-short';
+import { rule as agent_description_rule } from './agents/agent-description';
+import { rule as agent_disallowed_tools_rule } from './agents/agent-disallowed-tools';
+import { rule as agent_events_rule } from './agents/agent-events';
+import { rule as agent_hooks_invalid_schema_rule } from './agents/agent-hooks-invalid-schema';
+import { rule as agent_hooks_rule } from './agents/agent-hooks';
+import { rule as agent_model_rule } from './agents/agent-model';
+import { rule as agent_name_filename_mismatch_rule } from './agents/agent-name-filename-mismatch';
+import { rule as agent_name_rule } from './agents/agent-name';
+import { rule as agent_skills_not_found_rule } from './agents/agent-skills-not-found';
+import { rule as agent_skills_rule } from './agents/agent-skills';
+import { rule as agent_tools_rule } from './agents/agent-tools';
+import { rule as claude_md_content_too_many_sections_rule } from './claude-md/claude-md-content-too-many-sections';
+import { rule as claude_md_file_not_found_rule } from './claude-md/claude-md-file-not-found';
+import { rule as claude_md_file_reference_invalid_rule } from './claude-md/claude-md-file-reference-invalid';
+import { rule as claude_md_filename_case_sensitive_rule } from './claude-md/claude-md-filename-case-sensitive';
+import { rule as claude_md_glob_pattern_backslash_rule } from './claude-md/claude-md-glob-pattern-backslash';
+import { rule as claude_md_glob_pattern_too_broad_rule } from './claude-md/claude-md-glob-pattern-too-broad';
+import { rule as claude_md_import_circular_rule } from './claude-md/claude-md-import-circular';
+import { rule as claude_md_import_depth_exceeded_rule } from './claude-md/claude-md-import-depth-exceeded';
+import { rule as claude_md_import_in_code_block_rule } from './claude-md/claude-md-import-in-code-block';
+import { rule as claude_md_import_missing_rule } from './claude-md/claude-md-import-missing';
+import { rule as claude_md_import_read_failed_rule } from './claude-md/claude-md-import-read-failed';
+import { rule as claude_md_npm_script_not_found_rule } from './claude-md/claude-md-npm-script-not-found';
+import { rule as claude_md_paths_rule } from './claude-md/claude-md-paths';
+import { rule as claude_md_rules_circular_symlink_rule } from './claude-md/claude-md-rules-circular-symlink';
+import { rule as claude_md_size_rule } from './claude-md/claude-md-size';
+import { rule as commands_deprecated_directory_rule } from './commands/commands-deprecated-directory';
+import { rule as commands_migrate_to_skills_rule } from './commands/commands-migrate-to-skills';
+import { rule as hooks_invalid_config_rule } from './hooks/hooks-invalid-config';
+import { rule as hooks_invalid_event_rule } from './hooks/hooks-invalid-event';
+import { rule as hooks_missing_script_rule } from './hooks/hooks-missing-script';
+import { rule as lsp_command_not_in_path_rule } from './lsp/lsp-command-not-in-path';
+import { rule as lsp_extension_missing_dot_rule } from './lsp/lsp-extension-missing-dot';
+import { rule as lsp_invalid_transport_rule } from './lsp/lsp-invalid-transport';
+import { rule as lsp_language_id_empty_rule } from './lsp/lsp-language-id-empty';
+import { rule as lsp_language_id_not_lowercase_rule } from './lsp/lsp-language-id-not-lowercase';
+import { rule as lsp_server_name_too_short_rule } from './lsp/lsp-server-name-too-short';
+import { rule as mcp_http_empty_url_rule } from './mcp/mcp-http-empty-url';
+import { rule as mcp_http_invalid_url_rule } from './mcp/mcp-http-invalid-url';
+import { rule as mcp_invalid_env_var_rule } from './mcp/mcp-invalid-env-var';
+import { rule as mcp_invalid_transport_rule } from './mcp/mcp-invalid-transport';
+import { rule as mcp_sse_empty_url_rule } from './mcp/mcp-sse-empty-url';
+import { rule as mcp_sse_invalid_url_rule } from './mcp/mcp-sse-invalid-url';
+import { rule as mcp_sse_transport_deprecated_rule } from './mcp/mcp-sse-transport-deprecated';
+import { rule as mcp_stdio_empty_command_rule } from './mcp/mcp-stdio-empty-command';
+import { rule as mcp_websocket_empty_url_rule } from './mcp/mcp-websocket-empty-url';
+import { rule as mcp_websocket_invalid_protocol_rule } from './mcp/mcp-websocket-invalid-protocol';
+import { rule as mcp_websocket_invalid_url_rule } from './mcp/mcp-websocket-invalid-url';
+import { rule as output_style_body_too_short_rule } from './output-styles/output-style-body-too-short';
+import { rule as output_style_description_rule } from './output-styles/output-style-description';
+import { rule as output_style_examples_rule } from './output-styles/output-style-examples';
+import { rule as output_style_missing_guidelines_rule } from './output-styles/output-style-missing-guidelines';
+import { rule as output_style_name_directory_mismatch_rule } from './output-styles/output-style-name-directory-mismatch';
+import { rule as output_style_name_rule } from './output-styles/output-style-name';
+import { rule as plugin_commands_deprecated_rule } from './plugin/plugin-commands-deprecated';
+import { rule as plugin_components_wrong_location_rule } from './plugin/plugin-components-wrong-location';
+import { rule as plugin_description_required_rule } from './plugin/plugin-description-required';
+import { rule as plugin_hook_missing_plugin_root_rule } from './plugin/plugin-hook-missing-plugin-root';
+import { rule as plugin_invalid_manifest_rule } from './plugin/plugin-invalid-manifest';
+import { rule as plugin_invalid_version_rule } from './plugin/plugin-invalid-version';
+import { rule as plugin_json_wrong_location_rule } from './plugin/plugin-json-wrong-location';
+import { rule as plugin_marketplace_files_not_found_rule } from './plugin/plugin-marketplace-files-not-found';
+import { rule as plugin_missing_component_paths_rule } from './plugin/plugin-missing-component-paths';
+import { rule as plugin_missing_file_rule } from './plugin/plugin-missing-file';
+import { rule as plugin_name_required_rule } from './plugin/plugin-name-required';
+import { rule as plugin_version_required_rule } from './plugin/plugin-version-required';
+import { rule as settings_file_path_not_found_rule } from './settings/settings-file-path-not-found';
+import { rule as settings_invalid_env_var_rule } from './settings/settings-invalid-env-var';
+import { rule as settings_invalid_permission_rule } from './settings/settings-invalid-permission';
+import { rule as settings_permission_empty_pattern_rule } from './settings/settings-permission-empty-pattern';
+import { rule as settings_permission_invalid_rule_rule } from './settings/settings-permission-invalid-rule';
+import { rule as skill_agent_rule } from './skills/skill-agent';
+import { rule as skill_allowed_tools_not_used_rule } from './skills/skill-allowed-tools-not-used';
+import { rule as skill_allowed_tools_rule } from './skills/skill-allowed-tools';
+import { rule as skill_arguments_without_hint_rule } from './skills/skill-arguments-without-hint';
+import { rule as skill_body_long_code_block_rule } from './skills/skill-body-long-code-block';
+import { rule as skill_body_missing_usage_section_rule } from './skills/skill-body-missing-usage-section';
+import { rule as skill_body_too_long_rule } from './skills/skill-body-too-long';
+import { rule as skill_body_word_count_rule } from './skills/skill-body-word-count';
+import { rule as skill_context_rule } from './skills/skill-context';
+import { rule as skill_cross_reference_invalid_rule } from './skills/skill-cross-reference-invalid';
+import { rule as skill_dangerous_command_rule } from './skills/skill-dangerous-command';
+import { rule as skill_deep_nesting_rule } from './skills/skill-deep-nesting';
+import { rule as skill_dependencies_rule } from './skills/skill-dependencies';
+import { rule as skill_description_max_length_rule } from './skills/skill-description-max-length';
+import { rule as skill_description_missing_trigger_rule } from './skills/skill-description-missing-trigger';
+import { rule as skill_description_quality_rule } from './skills/skill-description-quality';
+import { rule as skill_description_rule } from './skills/skill-description';
+import { rule as skill_disallowed_tools_rule } from './skills/skill-disallowed-tools';
+import { rule as skill_eval_usage_rule } from './skills/skill-eval-usage';
+import { rule as skill_frontmatter_unknown_keys_rule } from './skills/skill-frontmatter-unknown-keys';
+import { rule as skill_hardcoded_secrets_rule } from './skills/skill-hardcoded-secrets';
+import { rule as skill_mcp_tool_qualified_name_rule } from './skills/skill-mcp-tool-qualified-name';
+import { rule as skill_missing_changelog_rule } from './skills/skill-missing-changelog';
+import { rule as skill_missing_comments_rule } from './skills/skill-missing-comments';
+import { rule as skill_missing_examples_rule } from './skills/skill-missing-examples';
+import { rule as skill_missing_shebang_rule } from './skills/skill-missing-shebang';
+import { rule as skill_missing_version_rule } from './skills/skill-missing-version';
+import { rule as skill_model_rule } from './skills/skill-model';
+import { rule as skill_name_directory_mismatch_rule } from './skills/skill-name-directory-mismatch';
+import { rule as skill_name_rule } from './skills/skill-name';
+import { rule as skill_naming_inconsistent_rule } from './skills/skill-naming-inconsistent';
+import { rule as skill_overly_generic_name_rule } from './skills/skill-overly-generic-name';
+import { rule as skill_path_traversal_rule } from './skills/skill-path-traversal';
+import { rule as skill_readme_forbidden_rule } from './skills/skill-readme-forbidden';
+import { rule as skill_reference_not_linked_rule } from './skills/skill-reference-not-linked';
+import { rule as skill_referenced_file_not_found_rule } from './skills/skill-referenced-file-not-found';
+import { rule as skill_shell_script_hardcoded_paths_rule } from './skills/skill-shell-script-hardcoded-paths';
+import { rule as skill_shell_script_no_error_handling_rule } from './skills/skill-shell-script-no-error-handling';
+import { rule as skill_side_effects_without_disable_model_rule } from './skills/skill-side-effects-without-disable-model';
+import { rule as skill_tags_rule } from './skills/skill-tags';
+import { rule as skill_time_sensitive_content_rule } from './skills/skill-time-sensitive-content';
+import { rule as skill_too_many_files_rule } from './skills/skill-too-many-files';
+import { rule as skill_unknown_string_substitution_rule } from './skills/skill-unknown-string-substitution';
+import { rule as skill_version_rule } from './skills/skill-version';
+import { rule as skill_xml_tags_anywhere_rule } from './skills/skill-xml-tags-anywhere';
 
 // Register all rules with the registry
 // This happens automatically when this module is imported
-RuleRegistry.register(settings_permission_invalid_rule_rule);
-RuleRegistry.register(settings_permission_empty_pattern_rule);
-RuleRegistry.register(settings_invalid_permission_rule);
-RuleRegistry.register(settings_invalid_env_var_rule);
-RuleRegistry.register(settings_file_path_not_found_rule);
-RuleRegistry.register(skill_xml_tags_anywhere_rule);
-RuleRegistry.register(skill_version_rule);
-RuleRegistry.register(skill_unknown_string_substitution_rule);
-RuleRegistry.register(skill_too_many_files_rule);
-RuleRegistry.register(skill_time_sensitive_content_rule);
-RuleRegistry.register(skill_tags_rule);
-RuleRegistry.register(skill_side_effects_without_disable_model_rule);
-RuleRegistry.register(skill_shell_script_no_error_handling_rule);
-RuleRegistry.register(skill_shell_script_hardcoded_paths_rule);
-RuleRegistry.register(skill_referenced_file_not_found_rule);
-RuleRegistry.register(skill_reference_not_linked_rule);
-RuleRegistry.register(skill_readme_forbidden_rule);
-RuleRegistry.register(skill_path_traversal_rule);
-RuleRegistry.register(skill_overly_generic_name_rule);
-RuleRegistry.register(skill_naming_inconsistent_rule);
-RuleRegistry.register(skill_name_rule);
-RuleRegistry.register(skill_name_directory_mismatch_rule);
-RuleRegistry.register(skill_model_rule);
-RuleRegistry.register(skill_missing_version_rule);
-RuleRegistry.register(skill_missing_shebang_rule);
-RuleRegistry.register(skill_missing_examples_rule);
-RuleRegistry.register(skill_missing_comments_rule);
-RuleRegistry.register(skill_missing_changelog_rule);
-RuleRegistry.register(skill_mcp_tool_qualified_name_rule);
-RuleRegistry.register(skill_hardcoded_secrets_rule);
-RuleRegistry.register(skill_frontmatter_unknown_keys_rule);
-RuleRegistry.register(skill_eval_usage_rule);
-RuleRegistry.register(skill_disallowed_tools_rule);
-RuleRegistry.register(skill_description_rule);
-RuleRegistry.register(skill_description_quality_rule);
-RuleRegistry.register(skill_description_missing_trigger_rule);
-RuleRegistry.register(skill_description_max_length_rule);
-RuleRegistry.register(skill_dependencies_rule);
-RuleRegistry.register(skill_deep_nesting_rule);
-RuleRegistry.register(skill_dangerous_command_rule);
-RuleRegistry.register(skill_cross_reference_invalid_rule);
-RuleRegistry.register(skill_context_rule);
-RuleRegistry.register(skill_body_word_count_rule);
-RuleRegistry.register(skill_body_too_long_rule);
-RuleRegistry.register(skill_body_missing_usage_section_rule);
-RuleRegistry.register(skill_body_long_code_block_rule);
-RuleRegistry.register(skill_arguments_without_hint_rule);
-RuleRegistry.register(skill_allowed_tools_rule);
-RuleRegistry.register(skill_allowed_tools_not_used_rule);
-RuleRegistry.register(skill_agent_rule);
-RuleRegistry.register(output_style_name_rule);
-RuleRegistry.register(output_style_name_directory_mismatch_rule);
-RuleRegistry.register(output_style_missing_guidelines_rule);
-RuleRegistry.register(output_style_examples_rule);
-RuleRegistry.register(output_style_description_rule);
-RuleRegistry.register(output_style_body_too_short_rule);
-RuleRegistry.register(mcp_websocket_invalid_url_rule);
-RuleRegistry.register(mcp_websocket_invalid_protocol_rule);
-RuleRegistry.register(mcp_websocket_empty_url_rule);
-RuleRegistry.register(mcp_stdio_empty_command_rule);
-RuleRegistry.register(mcp_sse_transport_deprecated_rule);
-RuleRegistry.register(mcp_sse_invalid_url_rule);
-RuleRegistry.register(mcp_sse_empty_url_rule);
-RuleRegistry.register(mcp_invalid_transport_rule);
-RuleRegistry.register(mcp_invalid_env_var_rule);
-RuleRegistry.register(mcp_http_invalid_url_rule);
-RuleRegistry.register(mcp_http_empty_url_rule);
-RuleRegistry.register(lsp_server_name_too_short_rule);
-RuleRegistry.register(lsp_language_id_not_lowercase_rule);
-RuleRegistry.register(lsp_language_id_empty_rule);
-RuleRegistry.register(lsp_invalid_transport_rule);
-RuleRegistry.register(lsp_extension_missing_dot_rule);
-RuleRegistry.register(lsp_command_not_in_path_rule);
-RuleRegistry.register(plugin_version_required_rule);
-RuleRegistry.register(plugin_name_required_rule);
-RuleRegistry.register(plugin_missing_file_rule);
-RuleRegistry.register(plugin_missing_component_paths_rule);
-RuleRegistry.register(plugin_marketplace_files_not_found_rule);
-RuleRegistry.register(plugin_json_wrong_location_rule);
-RuleRegistry.register(plugin_invalid_version_rule);
-RuleRegistry.register(plugin_invalid_manifest_rule);
-RuleRegistry.register(plugin_hook_missing_plugin_root_rule);
-RuleRegistry.register(plugin_description_required_rule);
-RuleRegistry.register(plugin_components_wrong_location_rule);
-RuleRegistry.register(plugin_commands_deprecated_rule);
-RuleRegistry.register(hooks_missing_script_rule);
-RuleRegistry.register(hooks_invalid_event_rule);
-RuleRegistry.register(hooks_invalid_config_rule);
-RuleRegistry.register(commands_migrate_to_skills_rule);
-RuleRegistry.register(commands_deprecated_directory_rule);
-RuleRegistry.register(claude_md_size_rule);
-RuleRegistry.register(claude_md_rules_circular_symlink_rule);
-RuleRegistry.register(claude_md_paths_rule);
-RuleRegistry.register(claude_md_npm_script_not_found_rule);
-RuleRegistry.register(claude_md_import_read_failed_rule);
-RuleRegistry.register(claude_md_import_missing_rule);
-RuleRegistry.register(claude_md_import_in_code_block_rule);
-RuleRegistry.register(claude_md_import_depth_exceeded_rule);
-RuleRegistry.register(claude_md_import_circular_rule);
-RuleRegistry.register(claude_md_glob_pattern_too_broad_rule);
-RuleRegistry.register(claude_md_glob_pattern_backslash_rule);
-RuleRegistry.register(claude_md_filename_case_sensitive_rule);
-RuleRegistry.register(claude_md_file_reference_invalid_rule);
-RuleRegistry.register(claude_md_file_not_found_rule);
-RuleRegistry.register(claude_md_content_too_many_sections_rule);
-RuleRegistry.register(agent_tools_rule);
-RuleRegistry.register(agent_skills_rule);
-RuleRegistry.register(agent_skills_not_found_rule);
-RuleRegistry.register(agent_name_rule);
-RuleRegistry.register(agent_name_filename_mismatch_rule);
-RuleRegistry.register(agent_model_rule);
-RuleRegistry.register(agent_hooks_rule);
-RuleRegistry.register(agent_hooks_invalid_schema_rule);
-RuleRegistry.register(agent_events_rule);
-RuleRegistry.register(agent_disallowed_tools_rule);
-RuleRegistry.register(agent_description_rule);
 RuleRegistry.register(agent_body_too_short_rule);
+RuleRegistry.register(agent_description_rule);
+RuleRegistry.register(agent_disallowed_tools_rule);
+RuleRegistry.register(agent_events_rule);
+RuleRegistry.register(agent_hooks_invalid_schema_rule);
+RuleRegistry.register(agent_hooks_rule);
+RuleRegistry.register(agent_model_rule);
+RuleRegistry.register(agent_name_filename_mismatch_rule);
+RuleRegistry.register(agent_name_rule);
+RuleRegistry.register(agent_skills_not_found_rule);
+RuleRegistry.register(agent_skills_rule);
+RuleRegistry.register(agent_tools_rule);
+RuleRegistry.register(claude_md_content_too_many_sections_rule);
+RuleRegistry.register(claude_md_file_not_found_rule);
+RuleRegistry.register(claude_md_file_reference_invalid_rule);
+RuleRegistry.register(claude_md_filename_case_sensitive_rule);
+RuleRegistry.register(claude_md_glob_pattern_backslash_rule);
+RuleRegistry.register(claude_md_glob_pattern_too_broad_rule);
+RuleRegistry.register(claude_md_import_circular_rule);
+RuleRegistry.register(claude_md_import_depth_exceeded_rule);
+RuleRegistry.register(claude_md_import_in_code_block_rule);
+RuleRegistry.register(claude_md_import_missing_rule);
+RuleRegistry.register(claude_md_import_read_failed_rule);
+RuleRegistry.register(claude_md_npm_script_not_found_rule);
+RuleRegistry.register(claude_md_paths_rule);
+RuleRegistry.register(claude_md_rules_circular_symlink_rule);
+RuleRegistry.register(claude_md_size_rule);
+RuleRegistry.register(commands_deprecated_directory_rule);
+RuleRegistry.register(commands_migrate_to_skills_rule);
+RuleRegistry.register(hooks_invalid_config_rule);
+RuleRegistry.register(hooks_invalid_event_rule);
+RuleRegistry.register(hooks_missing_script_rule);
+RuleRegistry.register(lsp_command_not_in_path_rule);
+RuleRegistry.register(lsp_extension_missing_dot_rule);
+RuleRegistry.register(lsp_invalid_transport_rule);
+RuleRegistry.register(lsp_language_id_empty_rule);
+RuleRegistry.register(lsp_language_id_not_lowercase_rule);
+RuleRegistry.register(lsp_server_name_too_short_rule);
+RuleRegistry.register(mcp_http_empty_url_rule);
+RuleRegistry.register(mcp_http_invalid_url_rule);
+RuleRegistry.register(mcp_invalid_env_var_rule);
+RuleRegistry.register(mcp_invalid_transport_rule);
+RuleRegistry.register(mcp_sse_empty_url_rule);
+RuleRegistry.register(mcp_sse_invalid_url_rule);
+RuleRegistry.register(mcp_sse_transport_deprecated_rule);
+RuleRegistry.register(mcp_stdio_empty_command_rule);
+RuleRegistry.register(mcp_websocket_empty_url_rule);
+RuleRegistry.register(mcp_websocket_invalid_protocol_rule);
+RuleRegistry.register(mcp_websocket_invalid_url_rule);
+RuleRegistry.register(output_style_body_too_short_rule);
+RuleRegistry.register(output_style_description_rule);
+RuleRegistry.register(output_style_examples_rule);
+RuleRegistry.register(output_style_missing_guidelines_rule);
+RuleRegistry.register(output_style_name_directory_mismatch_rule);
+RuleRegistry.register(output_style_name_rule);
+RuleRegistry.register(plugin_commands_deprecated_rule);
+RuleRegistry.register(plugin_components_wrong_location_rule);
+RuleRegistry.register(plugin_description_required_rule);
+RuleRegistry.register(plugin_hook_missing_plugin_root_rule);
+RuleRegistry.register(plugin_invalid_manifest_rule);
+RuleRegistry.register(plugin_invalid_version_rule);
+RuleRegistry.register(plugin_json_wrong_location_rule);
+RuleRegistry.register(plugin_marketplace_files_not_found_rule);
+RuleRegistry.register(plugin_missing_component_paths_rule);
+RuleRegistry.register(plugin_missing_file_rule);
+RuleRegistry.register(plugin_name_required_rule);
+RuleRegistry.register(plugin_version_required_rule);
+RuleRegistry.register(settings_file_path_not_found_rule);
+RuleRegistry.register(settings_invalid_env_var_rule);
+RuleRegistry.register(settings_invalid_permission_rule);
+RuleRegistry.register(settings_permission_empty_pattern_rule);
+RuleRegistry.register(settings_permission_invalid_rule_rule);
+RuleRegistry.register(skill_agent_rule);
+RuleRegistry.register(skill_allowed_tools_not_used_rule);
+RuleRegistry.register(skill_allowed_tools_rule);
+RuleRegistry.register(skill_arguments_without_hint_rule);
+RuleRegistry.register(skill_body_long_code_block_rule);
+RuleRegistry.register(skill_body_missing_usage_section_rule);
+RuleRegistry.register(skill_body_too_long_rule);
+RuleRegistry.register(skill_body_word_count_rule);
+RuleRegistry.register(skill_context_rule);
+RuleRegistry.register(skill_cross_reference_invalid_rule);
+RuleRegistry.register(skill_dangerous_command_rule);
+RuleRegistry.register(skill_deep_nesting_rule);
+RuleRegistry.register(skill_dependencies_rule);
+RuleRegistry.register(skill_description_max_length_rule);
+RuleRegistry.register(skill_description_missing_trigger_rule);
+RuleRegistry.register(skill_description_quality_rule);
+RuleRegistry.register(skill_description_rule);
+RuleRegistry.register(skill_disallowed_tools_rule);
+RuleRegistry.register(skill_eval_usage_rule);
+RuleRegistry.register(skill_frontmatter_unknown_keys_rule);
+RuleRegistry.register(skill_hardcoded_secrets_rule);
+RuleRegistry.register(skill_mcp_tool_qualified_name_rule);
+RuleRegistry.register(skill_missing_changelog_rule);
+RuleRegistry.register(skill_missing_comments_rule);
+RuleRegistry.register(skill_missing_examples_rule);
+RuleRegistry.register(skill_missing_shebang_rule);
+RuleRegistry.register(skill_missing_version_rule);
+RuleRegistry.register(skill_model_rule);
+RuleRegistry.register(skill_name_directory_mismatch_rule);
+RuleRegistry.register(skill_name_rule);
+RuleRegistry.register(skill_naming_inconsistent_rule);
+RuleRegistry.register(skill_overly_generic_name_rule);
+RuleRegistry.register(skill_path_traversal_rule);
+RuleRegistry.register(skill_readme_forbidden_rule);
+RuleRegistry.register(skill_reference_not_linked_rule);
+RuleRegistry.register(skill_referenced_file_not_found_rule);
+RuleRegistry.register(skill_shell_script_hardcoded_paths_rule);
+RuleRegistry.register(skill_shell_script_no_error_handling_rule);
+RuleRegistry.register(skill_side_effects_without_disable_model_rule);
+RuleRegistry.register(skill_tags_rule);
+RuleRegistry.register(skill_time_sensitive_content_rule);
+RuleRegistry.register(skill_too_many_files_rule);
+RuleRegistry.register(skill_unknown_string_substitution_rule);
+RuleRegistry.register(skill_version_rule);
+RuleRegistry.register(skill_xml_tags_anywhere_rule);
 
 // Export all rules for direct access if needed
 export {
-  settings_permission_invalid_rule_rule,
-  settings_permission_empty_pattern_rule,
-  settings_invalid_permission_rule,
-  settings_invalid_env_var_rule,
-  settings_file_path_not_found_rule,
-  skill_xml_tags_anywhere_rule,
-  skill_version_rule,
-  skill_unknown_string_substitution_rule,
-  skill_too_many_files_rule,
-  skill_time_sensitive_content_rule,
-  skill_tags_rule,
-  skill_side_effects_without_disable_model_rule,
-  skill_shell_script_no_error_handling_rule,
-  skill_shell_script_hardcoded_paths_rule,
-  skill_referenced_file_not_found_rule,
-  skill_reference_not_linked_rule,
-  skill_readme_forbidden_rule,
-  skill_path_traversal_rule,
-  skill_overly_generic_name_rule,
-  skill_naming_inconsistent_rule,
-  skill_name_rule,
-  skill_name_directory_mismatch_rule,
-  skill_model_rule,
-  skill_missing_version_rule,
-  skill_missing_shebang_rule,
-  skill_missing_examples_rule,
-  skill_missing_comments_rule,
-  skill_missing_changelog_rule,
-  skill_mcp_tool_qualified_name_rule,
-  skill_hardcoded_secrets_rule,
-  skill_frontmatter_unknown_keys_rule,
-  skill_eval_usage_rule,
-  skill_disallowed_tools_rule,
-  skill_description_rule,
-  skill_description_quality_rule,
-  skill_description_missing_trigger_rule,
-  skill_description_max_length_rule,
-  skill_dependencies_rule,
-  skill_deep_nesting_rule,
-  skill_dangerous_command_rule,
-  skill_cross_reference_invalid_rule,
-  skill_context_rule,
-  skill_body_word_count_rule,
-  skill_body_too_long_rule,
-  skill_body_missing_usage_section_rule,
-  skill_body_long_code_block_rule,
-  skill_arguments_without_hint_rule,
-  skill_allowed_tools_rule,
-  skill_allowed_tools_not_used_rule,
-  skill_agent_rule,
-  output_style_name_rule,
-  output_style_name_directory_mismatch_rule,
-  output_style_missing_guidelines_rule,
-  output_style_examples_rule,
-  output_style_description_rule,
-  output_style_body_too_short_rule,
-  mcp_websocket_invalid_url_rule,
-  mcp_websocket_invalid_protocol_rule,
-  mcp_websocket_empty_url_rule,
-  mcp_stdio_empty_command_rule,
-  mcp_sse_transport_deprecated_rule,
-  mcp_sse_invalid_url_rule,
-  mcp_sse_empty_url_rule,
-  mcp_invalid_transport_rule,
-  mcp_invalid_env_var_rule,
-  mcp_http_invalid_url_rule,
-  mcp_http_empty_url_rule,
-  lsp_server_name_too_short_rule,
-  lsp_language_id_not_lowercase_rule,
-  lsp_language_id_empty_rule,
-  lsp_invalid_transport_rule,
-  lsp_extension_missing_dot_rule,
-  lsp_command_not_in_path_rule,
-  plugin_version_required_rule,
-  plugin_name_required_rule,
-  plugin_missing_file_rule,
-  plugin_missing_component_paths_rule,
-  plugin_marketplace_files_not_found_rule,
-  plugin_json_wrong_location_rule,
-  plugin_invalid_version_rule,
-  plugin_invalid_manifest_rule,
-  plugin_hook_missing_plugin_root_rule,
-  plugin_description_required_rule,
-  plugin_components_wrong_location_rule,
-  plugin_commands_deprecated_rule,
-  hooks_missing_script_rule,
-  hooks_invalid_event_rule,
-  hooks_invalid_config_rule,
-  commands_migrate_to_skills_rule,
-  commands_deprecated_directory_rule,
-  claude_md_size_rule,
-  claude_md_rules_circular_symlink_rule,
-  claude_md_paths_rule,
-  claude_md_npm_script_not_found_rule,
-  claude_md_import_read_failed_rule,
-  claude_md_import_missing_rule,
-  claude_md_import_in_code_block_rule,
-  claude_md_import_depth_exceeded_rule,
-  claude_md_import_circular_rule,
-  claude_md_glob_pattern_too_broad_rule,
-  claude_md_glob_pattern_backslash_rule,
-  claude_md_filename_case_sensitive_rule,
-  claude_md_file_reference_invalid_rule,
-  claude_md_file_not_found_rule,
-  claude_md_content_too_many_sections_rule,
-  agent_tools_rule,
-  agent_skills_rule,
-  agent_skills_not_found_rule,
-  agent_name_rule,
-  agent_name_filename_mismatch_rule,
-  agent_model_rule,
-  agent_hooks_rule,
-  agent_hooks_invalid_schema_rule,
-  agent_events_rule,
-  agent_disallowed_tools_rule,
-  agent_description_rule,
   agent_body_too_short_rule,
+  agent_description_rule,
+  agent_disallowed_tools_rule,
+  agent_events_rule,
+  agent_hooks_invalid_schema_rule,
+  agent_hooks_rule,
+  agent_model_rule,
+  agent_name_filename_mismatch_rule,
+  agent_name_rule,
+  agent_skills_not_found_rule,
+  agent_skills_rule,
+  agent_tools_rule,
+  claude_md_content_too_many_sections_rule,
+  claude_md_file_not_found_rule,
+  claude_md_file_reference_invalid_rule,
+  claude_md_filename_case_sensitive_rule,
+  claude_md_glob_pattern_backslash_rule,
+  claude_md_glob_pattern_too_broad_rule,
+  claude_md_import_circular_rule,
+  claude_md_import_depth_exceeded_rule,
+  claude_md_import_in_code_block_rule,
+  claude_md_import_missing_rule,
+  claude_md_import_read_failed_rule,
+  claude_md_npm_script_not_found_rule,
+  claude_md_paths_rule,
+  claude_md_rules_circular_symlink_rule,
+  claude_md_size_rule,
+  commands_deprecated_directory_rule,
+  commands_migrate_to_skills_rule,
+  hooks_invalid_config_rule,
+  hooks_invalid_event_rule,
+  hooks_missing_script_rule,
+  lsp_command_not_in_path_rule,
+  lsp_extension_missing_dot_rule,
+  lsp_invalid_transport_rule,
+  lsp_language_id_empty_rule,
+  lsp_language_id_not_lowercase_rule,
+  lsp_server_name_too_short_rule,
+  mcp_http_empty_url_rule,
+  mcp_http_invalid_url_rule,
+  mcp_invalid_env_var_rule,
+  mcp_invalid_transport_rule,
+  mcp_sse_empty_url_rule,
+  mcp_sse_invalid_url_rule,
+  mcp_sse_transport_deprecated_rule,
+  mcp_stdio_empty_command_rule,
+  mcp_websocket_empty_url_rule,
+  mcp_websocket_invalid_protocol_rule,
+  mcp_websocket_invalid_url_rule,
+  output_style_body_too_short_rule,
+  output_style_description_rule,
+  output_style_examples_rule,
+  output_style_missing_guidelines_rule,
+  output_style_name_directory_mismatch_rule,
+  output_style_name_rule,
+  plugin_commands_deprecated_rule,
+  plugin_components_wrong_location_rule,
+  plugin_description_required_rule,
+  plugin_hook_missing_plugin_root_rule,
+  plugin_invalid_manifest_rule,
+  plugin_invalid_version_rule,
+  plugin_json_wrong_location_rule,
+  plugin_marketplace_files_not_found_rule,
+  plugin_missing_component_paths_rule,
+  plugin_missing_file_rule,
+  plugin_name_required_rule,
+  plugin_version_required_rule,
+  settings_file_path_not_found_rule,
+  settings_invalid_env_var_rule,
+  settings_invalid_permission_rule,
+  settings_permission_empty_pattern_rule,
+  settings_permission_invalid_rule_rule,
+  skill_agent_rule,
+  skill_allowed_tools_not_used_rule,
+  skill_allowed_tools_rule,
+  skill_arguments_without_hint_rule,
+  skill_body_long_code_block_rule,
+  skill_body_missing_usage_section_rule,
+  skill_body_too_long_rule,
+  skill_body_word_count_rule,
+  skill_context_rule,
+  skill_cross_reference_invalid_rule,
+  skill_dangerous_command_rule,
+  skill_deep_nesting_rule,
+  skill_dependencies_rule,
+  skill_description_max_length_rule,
+  skill_description_missing_trigger_rule,
+  skill_description_quality_rule,
+  skill_description_rule,
+  skill_disallowed_tools_rule,
+  skill_eval_usage_rule,
+  skill_frontmatter_unknown_keys_rule,
+  skill_hardcoded_secrets_rule,
+  skill_mcp_tool_qualified_name_rule,
+  skill_missing_changelog_rule,
+  skill_missing_comments_rule,
+  skill_missing_examples_rule,
+  skill_missing_shebang_rule,
+  skill_missing_version_rule,
+  skill_model_rule,
+  skill_name_directory_mismatch_rule,
+  skill_name_rule,
+  skill_naming_inconsistent_rule,
+  skill_overly_generic_name_rule,
+  skill_path_traversal_rule,
+  skill_readme_forbidden_rule,
+  skill_reference_not_linked_rule,
+  skill_referenced_file_not_found_rule,
+  skill_shell_script_hardcoded_paths_rule,
+  skill_shell_script_no_error_handling_rule,
+  skill_side_effects_without_disable_model_rule,
+  skill_tags_rule,
+  skill_time_sensitive_content_rule,
+  skill_too_many_files_rule,
+  skill_unknown_string_substitution_rule,
+  skill_version_rule,
+  skill_xml_tags_anywhere_rule,
 };

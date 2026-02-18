@@ -26,10 +26,10 @@ async function generateRuleIds(): Promise<void> {
   log.info(`Scanning for rule files in: ${rulesDir}`);
 
   // Find all rule files (exclude tests, index, and rule-ids itself)
-  const ruleFiles = await glob('**/*.ts', {
+  const ruleFiles = (await glob('**/*.ts', {
     cwd: rulesDir,
     ignore: ['**/*.test.ts', '**/index.ts', '**/rule-ids.ts', '**/*.d.ts'],
-  });
+  })).sort();
 
   log.info(`Found ${ruleFiles.length} rule files`);
 
