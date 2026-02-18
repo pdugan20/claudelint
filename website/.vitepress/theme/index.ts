@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme';
 import { useRoute } from 'vitepress';
 import { watch } from 'vue';
 import { injectSpeedInsights } from '@vercel/speed-insights';
+import { inject } from '@vercel/analytics';
 import Layout from './Layout.vue';
 import RuleBadge from './components/RuleBadge.vue';
 import RuleCard from './components/RuleCard.vue';
@@ -42,5 +43,6 @@ export default {
     update();
     watch(() => route.path, update);
     injectSpeedInsights();
+    inject();
   },
 };
