@@ -29,6 +29,7 @@ The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin cata
 |-------|------|----------|-------------|
 | `name` | string | yes | Owner name |
 | `email` | string | no | Contact email |
+| `url` | string | no | Owner URL |
 
 ## Plugin Entry
 
@@ -40,7 +41,7 @@ Each entry in the `plugins` array:
 | `source` | string \| object | yes | Relative path or [source object](#plugin-source) |
 | `description` | string | no | Plugin description |
 | `version` | string | no | Plugin version |
-| `author` | object | no | Author info (`name`, `email`) |
+| `author` | object | no | Author info (`name`, `email`, `url`) |
 | `homepage` | string | no | Homepage URL |
 | `repository` | string | no | Repository URL |
 | `license` | string | no | License identifier |
@@ -66,21 +67,35 @@ The `source` field can be a relative path string or an object:
 
 ## Example
 
+A marketplace with one local plugin and one external plugin:
+
 ```json
 {
-  "name": "my-marketplace",
-  "owner": { "name": "Dev Team" },
+  "name": "my-plugins",
+  "description": "Plugins for developer tooling.",
+  "version": "1.0.0",
+  "owner": { "name": "Dev Team", "email": "team@example.com" },
+  "metadata": {
+    "description": "Plugins for developer tooling."
+  },
   "plugins": [
     {
-      "name": "code-review",
-      "source": "./plugins/code-review",
-      "description": "Automated code review",
+      "name": "my-linter",
+      "source": "./",
+      "description": "A linter plugin bundled with this marketplace.",
       "version": "1.0.0",
-      "category": "development"
+      "author": { "name": "Dev Team" },
+      "homepage": "https://example.com",
+      "repository": "https://github.com/example/my-linter",
+      "license": "MIT",
+      "keywords": ["linting", "developer-tools"],
+      "category": "developer-tools"
     },
     {
       "name": "external-plugin",
-      "source": { "source": "github", "repo": "owner/repo", "ref": "v2.0.0" }
+      "source": { "source": "github", "repo": "owner/repo", "ref": "v2.0.0" },
+      "description": "An external plugin fetched from GitHub.",
+      "category": "developer-tools"
     }
   ]
 }

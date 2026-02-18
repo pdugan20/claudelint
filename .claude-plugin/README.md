@@ -54,28 +54,52 @@ This plugin gives Claude the ability to check your Claude Code projects for erro
 
 ## Installation
 
-### Local Development / Testing
-
-Load the plugin directly using the `--plugin-dir` flag:
-
-```bash
-claude --plugin-dir /path/to/claude-lint
-```
-
-### Marketplace Installation
-
-If the plugin is available in a marketplace:
-
-```bash
-/plugin install claudelint@marketplace-name
-```
-
 ### Prerequisites
 
 The plugin's skills run claudelint CLI commands under the hood. Install the npm package first:
 
 ```bash
+# All projects (recommended)
+npm install -g claude-code-lint
+
+# Or this project only
 npm install --save-dev claude-code-lint
+```
+
+### From the Marketplace
+
+1. Add the marketplace (one-time):
+
+   ```text
+   /plugin marketplace add pdugan20/claudelint
+   ```
+
+2. Install the plugin:
+
+   ```text
+   /plugin install claudelint@pdugan20-plugins
+   ```
+
+Choose your scope when prompted: **User** (all projects, recommended), **Project** (shared with collaborators), or **Local** (only you, this repo).
+
+### Keeping Up to Date
+
+Third-party marketplace plugins do not auto-update by default. Enable auto-update:
+
+```text
+/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
+```
+
+Or update manually: `/plugin marketplace update pdugan20-plugins`
+
+See the [Plugin Guide](https://claudelint.com/integrations/claude-code-plugin) for full details on version sync.
+
+### Local Development / Testing
+
+For plugin contributors, load the plugin directly:
+
+```bash
+claude --plugin-dir /path/to/claude-lint
 ```
 
 ## Usage

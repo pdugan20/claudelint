@@ -69,11 +69,22 @@ See the [Rules Overview](/guide/rules-overview) for all available rules.
 
 ## Use with Claude Code
 
-claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions. The plugin wraps the CLI, so the npm package must be installed first.
+claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions.
 
-```bash
-claudelint install-plugin
-```
+**Quick setup:**
+
+1. Install the npm package (if you haven't already):
+
+   ```bash
+   npm install -g claude-code-lint
+   ```
+
+2. Add the marketplace and install (inside Claude Code):
+
+   ```text
+   /plugin marketplace add pdugan20/claudelint
+   /plugin install claudelint@pdugan20-plugins
+   ```
 
 Key skills include:
 
@@ -81,4 +92,4 @@ Key skills include:
 - `/claudelint:optimize-cc-md` — Interactively optimize your CLAUDE.md
 - `/claudelint:format-cc` — Auto-format Claude Code files
 
-See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions and the full list of skills.
+See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for team setup, plugin scopes, and troubleshooting.

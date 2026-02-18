@@ -259,11 +259,11 @@ This is the primary plugin documentation page. Major updates needed:
 
 **Installation section (lines 9-37) — full rewrite:**
 
-- [ ] Add "Prerequisites" as first subsection with npm install (global AND local options)
-- [ ] Explain when to use global vs local npm install:
+- [x] Add "Prerequisites" as first subsection with npm install (global AND local options)
+- [x] Explain when to use global vs local npm install:
   - Global: you want claudelint in every project, you're an individual developer
   - Local (devDependency): you want the team to use a pinned version, CI integration
-- [ ] Replace "From a Marketplace" section with step-by-step marketplace install:
+- [x] Replace "From a Marketplace" section with step-by-step marketplace install:
 
 ````markdown
 ### From the Marketplace
@@ -287,8 +287,8 @@ Choose your installation scope when prompted:
 - **Local scope** — available only to you, only in this repo
 ````
 
-- [ ] Keep "Local Development / Testing" section for contributors
-- [ ] Add "Team Setup" subsection with `.claude/settings.json` example:
+- [x] Keep "Local Development / Testing" section for contributors
+- [x] Add "Team Setup" subsection with `.claude/settings.json` example:
 
 ```json
 {
@@ -308,11 +308,11 @@ Choose your installation scope when prompted:
 
 **New section: "Keeping Up to Date":**
 
-- [ ] Add section explaining auto-update behavior for third-party marketplaces
-- [ ] Show how to enable auto-update: `/plugin` > Marketplaces > select > "Enable auto-update"
-- [ ] Show manual update: `/plugin marketplace update pdugan20-plugins`
-- [ ] Explain that plugin updates and npm package updates are independent
-- [ ] Recommend updating both when upgrading:
+- [x] Add section explaining auto-update behavior for third-party marketplaces
+- [x] Show how to enable auto-update: `/plugin` > Marketplaces > select > "Enable auto-update"
+- [x] Show manual update: `/plugin marketplace update pdugan20-plugins`
+- [x] Explain that plugin updates and npm package updates are independent
+- [x] Recommend updating both when upgrading:
 
 ```bash
 # Update npm package
@@ -324,11 +324,11 @@ npm install --save-dev claude-code-lint@latest
 /plugin marketplace update pdugan20-plugins
 ```
 
-- [ ] Note the SessionStart hook will warn about version mismatches
+- [x] Note the SessionStart hook will warn about version mismatches
 
 **New section: "Global vs Project Install":**
 
-- [ ] Add a clear decision guide:
+- [x] Add a clear decision guide:
 
 | Scenario | npm Install | Plugin Scope |
 |----------|------------|--------------|
@@ -338,18 +338,18 @@ npm install --save-dev claude-code-lint@latest
 
 **Update Troubleshooting section:**
 
-- [ ] Add "Skills work in one project but not another" — explain global vs local npm install
-- [ ] Add "Version mismatch warning" — explain how to resolve
-- [ ] Add "Auto-update not working" — explain third-party marketplace default
+- [x] Add "Skills work in one project but not another" — explain global vs local npm install
+- [x] Add "Version mismatch warning" — explain how to resolve
+- [x] Add "Auto-update not working" — explain third-party marketplace default
 
 ### 4.2 Update website getting-started guide
 
 File: `website/guide/getting-started.md`
 
-- [ ] Lines 70-84 "Use with Claude Code" section — expand with marketplace install steps
-- [ ] Add brief mention of plugin scopes (link to plugin guide for details)
-- [ ] Show the recommended path: global npm install + marketplace plugin install
-- [ ] Keep the section concise (it should defer to the plugin guide for full details)
+- [x] Lines 70-84 "Use with Claude Code" section — expand with marketplace install steps
+- [x] Add brief mention of plugin scopes (link to plugin guide for details)
+- [x] Show the recommended path: global npm install + marketplace plugin install
+- [x] Keep the section concise (it should defer to the plugin guide for full details)
 
 Proposed update:
 
@@ -386,10 +386,10 @@ team setup, plugin scopes, and troubleshooting.
 
 File: `.claude-plugin/README.md`
 
-- [ ] Lines 65-71: Replace placeholder `claudelint@marketplace-name` with real syntax
-- [ ] Add the marketplace add step before the install step
-- [ ] Update "Prerequisites" section to show both global and local npm install options
-- [ ] Add a "Keeping Up to Date" section that includes:
+- [x] Lines 65-71: Replace placeholder `claudelint@marketplace-name` with real syntax
+- [x] Add the marketplace add step before the install step
+- [x] Update "Prerequisites" section to show both global and local npm install options
+- [x] Add a "Keeping Up to Date" section that includes:
   - Auto-update is off by default for third-party marketplaces — recommend enabling it
   - How to enable: `/plugin` > Marketplaces > select `pdugan20-plugins` > "Enable auto-update"
   - Manual update command: `/plugin marketplace update pdugan20-plugins`
@@ -399,13 +399,13 @@ File: `.claude-plugin/README.md`
 
 File: `website/api/schemas/marketplace.md`
 
-- [ ] Update example at bottom to use our actual marketplace.json (or a close variant)
-- [ ] Verify field documentation matches current schema
+- [x] Update example at bottom to use our actual marketplace.json (or a close variant)
+- [x] Verify field documentation matches current schema (added `url` to owner and author)
 
 ### 4.5 Build and verify
 
-- [ ] Run `npm run docs:build` — ensure website builds without errors
-- [ ] Run `npm run lint` — ensure no lint violations introduced
+- [x] Run `npm run docs:build` — ensure website builds without errors
+- [x] Run `npm run lint` — ensure no lint violations introduced
 - [ ] Visually review key pages in `npm run docs:dev`
 
 ---

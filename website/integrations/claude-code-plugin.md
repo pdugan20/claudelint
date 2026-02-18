@@ -8,33 +8,66 @@ This guide covers how to install and use claudelint as a Claude Code plugin.
 
 ## Installation
 
-The plugin's skills run claudelint CLI commands under the hood. You must install the npm package first:
+### Prerequisites
+
+The plugin's skills run claudelint CLI commands under the hood. Install the npm package first:
 
 <CodeTabs :tabs="[
-  { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
-  { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
-  { label: 'pnpm', code: 'pnpm add -D claude-code-lint' },
+  { label: 'Global (recommended)', code: 'npm install -g claude-code-lint' },
+  { label: 'Project only', code: 'npm install --save-dev claude-code-lint' },
 ]" />
 
-See [Getting Started](/guide/getting-started) for full installation options.
+**Global** makes `claudelint` available in every project. **Project-local** pins a version for your team via `package.json`. See [Global vs Project Install](#global-vs-project-install) for help choosing.
+
+### From the Marketplace
+
+1. Add the marketplace (one-time setup):
+
+   ```text
+   /plugin marketplace add pdugan20/claudelint
+   ```
+
+2. Install the plugin:
+
+   ```text
+   /plugin install claudelint@pdugan20-plugins
+   ```
+
+Choose your installation scope when prompted:
+
+- **User scope** (default, recommended) — available in all your projects
+- **Project scope** — shared with collaborators via `.claude/settings.json`
+- **Local scope** — only you, only this repo
+
+### Team Setup
+
+To pre-configure the plugin for all collaborators, commit this to `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "pdugan20-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "pdugan20/claudelint"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "claudelint@pdugan20-plugins": true
+  }
+}
+```
+
+When a collaborator opens Claude Code in this project, they will be prompted to install the plugin.
 
 ### Local Development / Testing
 
-Load the plugin directly using the `--plugin-dir` flag:
+For plugin contributors, load the plugin directly:
 
 ```bash
 claude --plugin-dir ./node_modules/claude-code-lint
 ```
-
-### From a Marketplace
-
-If the plugin is available in a marketplace:
-
-```bash
-/plugin install claudelint@marketplace-name
-```
-
-See the [Claude Code plugin docs](https://code.claude.com/docs/en/discover-plugins) for marketplace setup.
 
 ## Skills
 
@@ -142,6 +175,49 @@ The plugin respects your project's configuration files:
 
 See the [Configuration Guide](/guide/configuration) for details.
 
+## Global vs Project Install
+
+| Scenario | npm Install | Plugin Scope |
+|----------|------------|--------------|
+| Individual developer, all projects | `npm install -g` | User scope |
+| Team project, pinned version | `npm install --save-dev` | Project scope |
+| Trying it out | `npm install --save-dev` | Local scope |
+
+- **Global npm + User scope** is the simplest setup. Install once and claudelint works everywhere.
+- **Local npm + Project scope** gives teams a pinned version. Add `claude-code-lint` to `devDependencies` and commit `.claude/settings.json` so everyone gets the same setup.
+
+## Keeping Up to Date
+
+Third-party marketplace plugins do not auto-update by default. You have two options:
+
+**Enable auto-update** (recommended):
+
+```text
+/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
+```
+
+**Manual update**:
+
+```text
+/plugin marketplace update pdugan20-plugins
+```
+
+Plugin updates and npm package updates are independent. When upgrading, update both:
+
+```bash
+# Update npm package
+npm install -g claude-code-lint@latest
+# or for project-local:
+npm install --save-dev claude-code-lint@latest
+```
+
+```text
+# Update plugin (inside Claude Code)
+/plugin marketplace update pdugan20-plugins
+```
+
+The SessionStart hook will warn you if the plugin version and npm package version are out of sync.
+
 ## Troubleshooting
 
 ### Skills Don't Appear
@@ -177,6 +253,31 @@ If you get warnings/errors that shouldn't apply:
 2. Configure rules in `.claudelintrc.json`
 3. Add file overrides for specific patterns
 4. Report issue if rule is incorrect
+
+### Skills Work in One Project but Not Another
+
+If skills work in some projects but fail in others, the npm package is likely installed locally (in `node_modules`) rather than globally. Either:
+
+1. Install globally: `npm install -g claude-code-lint`
+2. Or add `claude-code-lint` to `devDependencies` in each project
+
+### Version Mismatch Warning
+
+If you see `[claudelint] Version mismatch: plugin=X, CLI=Y` when starting a session, the plugin and npm package versions are out of sync. Update the npm package:
+
+```bash
+npm install -g claude-code-lint@latest
+```
+
+### Auto-Update Not Working
+
+Third-party marketplaces have auto-update disabled by default. Enable it:
+
+```text
+/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
+```
+
+Or update manually: `/plugin marketplace update pdugan20-plugins`
 
 ## Uninstalling
 
