@@ -151,7 +151,23 @@ export default defineConfig({
             { text: 'ClaudeLint Class', link: '/api/claudelint-class' },
             { text: 'Functional API', link: '/api/functional-api' },
             { text: 'Types', link: '/api/types' },
-            { text: 'Schemas', link: '/api/schemas' },
+            {
+              text: 'Schemas',
+              collapsed: true,
+              items: [
+                { text: 'Overview', link: '/api/schemas' },
+                { text: 'Skills', link: '/api/schemas/skills' },
+                { text: 'Agents', link: '/api/schemas/agents' },
+                { text: 'Hooks', link: '/api/schemas/hooks' },
+                { text: 'MCP', link: '/api/schemas/mcp' },
+                { text: 'Plugin Manifest', link: '/api/schemas/plugin' },
+                { text: 'Marketplace', link: '/api/schemas/marketplace' },
+                { text: 'Settings', link: '/api/schemas/settings' },
+                { text: 'LSP', link: '/api/schemas/lsp' },
+                { text: 'Output Styles', link: '/api/schemas/output-styles' },
+                { text: 'Rules', link: '/api/schemas/rules' },
+              ],
+            },
             { text: 'Formatters', link: '/api/formatters' },
             { text: 'Recipes', link: '/api/recipes' },
           ],
@@ -238,7 +254,10 @@ export default defineConfig({
     // Per-page OG image slug (must match scripts/generate/og-images.ts)
     const ogSlug = isHomepage
       ? 'index'
-      : pageData.relativePath.replace(/\.md$/, '').replace(/\/index$/, '').replace(/\//g, '-');
+      : pageData.relativePath
+          .replace(/\.md$/, '')
+          .replace(/\/index$/, '')
+          .replace(/\//g, '-');
     const ogImageUrl = `https://claudelint.com/og/${ogSlug}.png`;
 
     pageData.frontmatter.head ??= [];
@@ -258,7 +277,7 @@ export default defineConfig({
       // Twitter
       ['meta', { name: 'twitter:title', content: ogTitle }],
       ['meta', { name: 'twitter:description', content: description }],
-      ['meta', { name: 'twitter:image', content: ogImageUrl }],
+      ['meta', { name: 'twitter:image', content: ogImageUrl }]
     );
   },
 });
