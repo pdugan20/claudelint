@@ -41,7 +41,7 @@ interface ToolInfo {
 }
 
 interface WizardAnswers {
-  configStyle: 'recommended' | 'all' | 'manual';
+  configStyle: 'recommended' | 'strict' | 'all' | 'manual';
   ignorePatterns?: string[];
   customIgnorePattern?: string;
   outputFormat?: 'stylish' | 'json' | 'compact' | 'sarif';
@@ -181,6 +181,10 @@ export class InitWizard {
             value: 'recommended',
           },
           {
+            name: 'Strict (recommended + additional quality rules)',
+            value: 'strict',
+          },
+          {
             name: 'All rules (everything enabled)',
             value: 'all',
           },
@@ -252,7 +256,7 @@ export class InitWizard {
   /**
    * Create configuration using a built-in preset
    */
-  private createPresetConfig(preset: 'recommended' | 'all', info: ProjectInfo): void {
+  private createPresetConfig(preset: 'recommended' | 'strict' | 'all', info: ProjectInfo): void {
     const config: ClaudeLintConfig = {
       extends: `claudelint:${preset}`,
     };
@@ -271,7 +275,11 @@ export class InitWizard {
   private generateConfig(answers: WizardAnswers, _info: ProjectInfo): void {
     let config: ClaudeLintConfig;
 
-    if (answers.configStyle === 'recommended' || answers.configStyle === 'all') {
+    if (
+      answers.configStyle === 'recommended' ||
+      answers.configStyle === 'strict' ||
+      answers.configStyle === 'all'
+    ) {
       config = {
         extends: `claudelint:${answers.configStyle}`,
       };

@@ -41,6 +41,7 @@ export const rule: Rule = {
       minLength: 2,
     },
     docs: {
+      strict: true,
       summary: 'Warns when LSP server names are too short to be descriptive.',
       rationale: 'Short, cryptic server names make LSP configurations hard to maintain and debug.',
       details:

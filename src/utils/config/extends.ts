@@ -18,8 +18,19 @@ import { ConfigError } from './resolver';
  */
 const BUILTIN_PRESETS: Record<string, string> = {
   'claudelint:recommended': join(__dirname, '../../../presets/recommended.json'),
+  'claudelint:strict': join(__dirname, '../../../presets/strict.json'),
   'claudelint:all': join(__dirname, '../../../presets/all.json'),
 };
+
+/**
+ * Get the path to a built-in preset by name
+ *
+ * @param name - Short preset name (e.g., 'recommended', 'all')
+ * @returns Absolute path to preset JSON, or undefined if not found
+ */
+export function getBuiltinPresetPath(name: string): string | undefined {
+  return BUILTIN_PRESETS[`claudelint:${name}`];
+}
 
 /**
  * Resolve extends path to absolute file path

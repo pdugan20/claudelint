@@ -25,9 +25,9 @@ Even more content.`,
           filePath: '/project/CLAUDE.md',
         },
 
-        // Exactly at threshold (20 sections)
+        // Exactly at threshold (40 sections)
         {
-          content: Array(20)
+          content: Array(40)
             .fill(0)
             .map((_, i) => `## Section ${i + 1}\nContent.`)
             .join('\n\n'),
@@ -64,30 +64,30 @@ Even more content.`,
       ],
 
       invalid: [
-        // Too many sections (default threshold 20)
+        // Too many sections (default threshold 40)
         {
-          content: Array(25)
+          content: Array(45)
             .fill(0)
             .map((_, i) => `## Section ${i + 1}\nContent.`)
             .join('\n\n'),
           filePath: '/project/CLAUDE.md',
           errors: [
             {
-              message: 'Too many sections (25, max 20)',
+              message: 'Too many sections (45, max 40)',
             },
           ],
         },
 
         // Way too many sections
         {
-          content: Array(50)
+          content: Array(60)
             .fill(0)
             .map((_, i) => `# Heading ${i + 1}`)
             .join('\n'),
           filePath: '/project/CLAUDE.md',
           errors: [
             {
-              message: 'Too many sections (50, max 20)',
+              message: 'Too many sections (60, max 40)',
             },
           ],
         },

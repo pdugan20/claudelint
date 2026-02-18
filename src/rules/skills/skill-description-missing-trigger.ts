@@ -22,6 +22,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-description-missing-trigger',
     docs: {
+      strict: true,
       summary:
         'Warns when a skill description lacks trigger phrases that help the model know when to load the skill.',
       rationale:

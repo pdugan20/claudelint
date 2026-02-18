@@ -21,6 +21,7 @@ export const rule: Rule = {
     since: '0.3.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-cross-reference-invalid',
     docs: {
+      recommended: true,
       summary: 'Validates that cross-references between skills point to SKILL.md files that exist.',
       rationale:
         'Broken cross-references lead to dead links and confuse users trying to navigate between skills.',

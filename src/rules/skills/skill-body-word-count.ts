@@ -28,6 +28,7 @@ export const rule: Rule = {
       maxWords: 5000,
     },
     docs: {
+      strict: true,
       summary: 'Warns when a SKILL.md body exceeds the maximum word count.',
       rationale:
         'Excessive word counts waste context window tokens and reduce focus on actionable instructions.',

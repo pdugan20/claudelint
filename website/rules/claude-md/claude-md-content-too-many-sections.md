@@ -8,11 +8,11 @@ description: "CLAUDE.md has too many sections making it hard to navigate"
 
 ## Rule Details
 
-Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to navigate. When the number of markdown headings exceeds the configured threshold (default: 20), this rule warns that the file should be reorganized. The recommended approach is to split content into topic-specific files under `.claude/rules/` and use `@import` directives to include them. This keeps each file focused and easier to maintain. The rule only checks top-level CLAUDE.md files, not files already in the `.claude/rules/` directory.
+Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to navigate. When the number of markdown headings exceeds the configured threshold (default: 40), this rule warns that the file should be reorganized. The recommended approach is to split content into topic-specific files under `.claude/rules/` and use `@import` directives to include them. This keeps each file focused and easier to maintain. The rule only checks top-level CLAUDE.md files, not files already in the `.claude/rules/` directory.
 
 ### Incorrect
 
-A CLAUDE.md with too many sections (over 20 headings)
+A CLAUDE.md with too many sections (over 40 headings)
 
 ```markdown
 # Project Instructions
@@ -108,7 +108,7 @@ Default options:
 
 ```json
 {
-  "maxSections": 20
+  "maxSections": 40
 }
 ```
 

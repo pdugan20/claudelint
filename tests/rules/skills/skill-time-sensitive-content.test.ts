@@ -7,6 +7,27 @@ import { rule } from '../../../src/rules/skills/skill-time-sensitive-content';
 
 const ruleTester = new ClaudeLintRuleTester();
 
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** Returns a named date string 30 days ago (e.g. "January 15, 2026") */
+function getRecentDateString(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 30);
+  return `${MONTH_NAMES[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+/** Returns an ISO date string 30 days ago (e.g. "2026-01-15") */
+function getRecentISODate(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 30);
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
 describe('skill-time-sensitive-content', () => {
   it('should pass validation tests', async () => {
     await ruleTester.run('skill-time-sensitive-content', rule, {
@@ -32,6 +53,18 @@ describe('skill-time-sensitive-content', () => {
         // No frontmatter (no body to check)
         {
           content: '# Skill\n\nToday is a great day',
+          filePath: '/test/SKILL.md',
+        },
+
+        // Recent date (within default 180-day threshold) should NOT be flagged
+        {
+          content: `---\nname: my-skill\n---\n# Skill\n\nUpdated on ${getRecentDateString()}`,
+          filePath: '/test/SKILL.md',
+        },
+
+        // Recent ISO date should NOT be flagged
+        {
+          content: `---\nname: my-skill\n---\n# Skill\n\nVersion 3.0 released ${getRecentISODate()}`,
           filePath: '/test/SKILL.md',
         },
       ],

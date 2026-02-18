@@ -42,6 +42,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-shell-script-hardcoded-paths',
     docs: {
+      strict: true,
       summary: 'Warns when shell scripts contain hardcoded absolute paths that reduce portability.',
       rationale:
         'Hardcoded absolute paths break the skill on any machine with a different directory structure.',

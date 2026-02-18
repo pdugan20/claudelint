@@ -53,6 +53,18 @@ Use --force for override.
 </details>
 ```
 
+Markdown autolinks are not flagged
+
+```markdown
+---
+name: deploy-app
+description: Deploys the application
+---
+
+See <https://docs.example.com> for details.
+Contact <mailto:team@example.com> for help.
+```
+
 XML tags inside code blocks are not flagged
 
 ````markdown

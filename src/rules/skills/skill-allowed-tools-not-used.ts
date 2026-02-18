@@ -59,13 +59,16 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-allowed-tools-not-used',
     docs: {
-      summary: 'Warns when tools declared in allowed-tools are never referenced in the skill body.',
+      strict: true,
+      summary:
+        'Warns when none of the tools declared in allowed-tools are referenced in the skill body.',
       rationale:
-        'Unused allowed-tools entries add noise and suggest the skill is misconfigured or incomplete.',
+        'A tool list with zero references in the body suggests a copy-pasted or stale configuration.',
       details:
-        'This rule checks each tool listed in the `allowed-tools` frontmatter array against the SKILL.md body content. ' +
-        'If a tool name is never mentioned in the body, it is likely stale configuration left over from a previous version. ' +
-        'Unused tool declarations grant unnecessary permissions and make the skill harder to audit. ' +
+        'This rule checks the `allowed-tools` frontmatter array against the SKILL.md body content. ' +
+        'If none of the listed tools are referenced anywhere in the body, the entire list is likely ' +
+        'copy-pasted or stale. If at least one tool is referenced, the list is considered intentional ' +
+        '(tools may be needed for autonomy without being mentioned by name). ' +
         'The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), ' +
         'checking for the short name portion of MCP tools as well.',
       examples: {
@@ -108,16 +111,22 @@ export const rule: Rule = {
 
     const line = getFrontmatterFieldLine(context.fileContent, 'allowed-tools');
 
-    for (const tool of allowedTools) {
-      if (typeof tool !== 'string') continue;
-
+    // Check if ANY tool is referenced in the body
+    const hasAnyReference = allowedTools.some((tool) => {
+      if (typeof tool !== 'string') return false;
       const baseName = getBaseToolName(tool);
-      if (!isToolReferencedInBody(baseName, body)) {
-        context.report({
-          message: `Unused tool in allowed-tools: "${tool}"`,
-          line,
-        });
-      }
+      return isToolReferencedInBody(baseName, body);
+    });
+
+    // If at least one tool is referenced, the list is intentional — skip
+    if (hasAnyReference) {
+      return;
     }
+
+    // None of the tools are referenced — report the whole list
+    context.report({
+      message: `None of the ${allowedTools.length} allowed-tools are referenced in the skill body`,
+      line,
+    });
   },
 };

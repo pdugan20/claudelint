@@ -12,7 +12,7 @@ This rule scans the body of SKILL.md files for fenced code blocks (triple backti
 
 ### Incorrect
 
-Code block exceeding the default 20-line limit
+Code block exceeding the default 40-line limit
 
 ````markdown
 ---
@@ -71,7 +71,7 @@ Default options:
 
 ```json
 {
-  "maxLines": 20
+  "maxLines": 40
 }
 ```
 

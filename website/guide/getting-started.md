@@ -28,7 +28,7 @@ Or install globally:
 # Initialize configuration
 claudelint init
 
-# Validate your project (check-all is the default command)
+# Validate your project
 claudelint
 ```
 
@@ -49,15 +49,14 @@ claudelint checks <RuleCount category="categories" /> different aspects of your 
 
 ## Configuration
 
-Run `claudelint init` to set up configuration interactively. The quickest option is the recommended preset, which enables a curated subset of rules:
+With no config file, claudelint uses the recommended preset. Run `claudelint init` to set up configuration interactively, or create a `.claudelintrc.json` with a built-in preset:
 
-```json
-{
-  "extends": "claudelint:recommended"
-}
-```
+<CodeTabs :tabs="[
+  { label: 'Recommended', code: JSON.stringify({ extends: 'claudelint:recommended' }, null, 2) },
+  { label: 'Strict', code: JSON.stringify({ extends: 'claudelint:strict' }, null, 2) }
+]" />
 
-You can also create a `.claudelintrc.json` manually with per-rule overrides:
+You can also add per-rule overrides:
 
 <ConfigExample
   filename=".claudelintrc.json"
@@ -65,7 +64,7 @@ You can also create a `.claudelintrc.json` manually with per-rule overrides:
   caption="Extend a preset and override specific rules"
 />
 
-See the [Rules Overview](/guide/rules-overview) for all available rules.
+See the [Rules Overview](/rules/overview) for all available rules.
 
 ## Use with Claude Code
 

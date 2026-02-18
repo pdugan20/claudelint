@@ -36,6 +36,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-naming-inconsistent',
     docs: {
+      strict: true,
       summary: 'Warns when files in a skill directory mix different naming conventions.',
       rationale:
         'Mixed naming conventions (e.g. camelCase and kebab-case) reduce readability and predictability.',

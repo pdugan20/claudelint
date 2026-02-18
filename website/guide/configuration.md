@@ -84,7 +84,7 @@ The `extends` field allows you to inherit configuration from other config files 
 
 **Built-in presets:**
 
-claudelint ships with two built-in presets you can use directly:
+claudelint ships with three built-in presets you can use directly:
 
 ```json
 {
@@ -92,8 +92,9 @@ claudelint ships with two built-in presets you can use directly:
 }
 ```
 
-- **`claudelint:recommended`** - A curated subset of rules focused on correctness, security, and broad applicability. Best for most projects.
-- **`claudelint:all`** - Every rule at its source-defined severity. Equivalent to running with no config file, but explicit.
+- **`claudelint:recommended`** - A curated subset of rules focused on correctness, security, and broad applicability. Best for most projects. **This is the default when no config file is present.**
+- **`claudelint:strict`** - Everything in recommended, plus additional quality and best-practice rules. Good for teams that want stricter guardrails.
+- **`claudelint:all`** - Every rule at its source-defined severity. Maximum coverage for comprehensive audits.
 
 You can extend a preset and override individual rules:
 
@@ -108,7 +109,9 @@ You can extend a preset and override individual rules:
 ```
 
 ::: tip
-Running `claudelint init` will prompt you to choose between Recommended, All, or Manual configuration.
+Running `claudelint init` will prompt you to choose between Recommended, Strict, All, or Manual configuration.
+
+When no configuration file is found, claudelint defaults to the **recommended** preset. Use `--preset all` to run all rules without creating a config file.
 :::
 
 **Merge behavior:**

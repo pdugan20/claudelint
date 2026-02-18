@@ -44,7 +44,7 @@ Just text, no code blocks.
 `,
           filePath,
         },
-        // Exactly at threshold (20 lines)
+        // Exactly at threshold (40 lines)
         {
           content: `---
 name: test-skill
@@ -54,7 +54,7 @@ description: Test skill for validation
 # Test Skill
 
 \`\`\`bash
-${Array.from({ length: 20 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
+${Array.from({ length: 40 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
 \`\`\`
 `,
           filePath,
@@ -83,11 +83,11 @@ description: Test skill for validation
 # Test Skill
 
 \`\`\`bash
-${Array.from({ length: 25 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
+${Array.from({ length: 45 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
 \`\`\`
 `,
           filePath,
-          errors: [{ message: 'Code block too long (25/20 lines)' }],
+          errors: [{ message: 'Code block too long (45/40 lines)' }],
         },
         // Multiple code blocks, only long one flagged
         {
@@ -103,11 +103,11 @@ echo "short"
 \`\`\`
 
 \`\`\`json
-${Array.from({ length: 30 }, (_, i) => `"field${i}": "value${i}"`).join(',\n')}
+${Array.from({ length: 50 }, (_, i) => `"field${i}": "value${i}"`).join(',\n')}
 \`\`\`
 `,
           filePath,
-          errors: [{ message: 'Code block too long (30/20 lines)' }],
+          errors: [{ message: 'Code block too long (50/40 lines)' }],
         },
       ],
     });

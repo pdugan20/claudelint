@@ -12,7 +12,7 @@ export const rule: Rule = {
   meta: {
     id: 'skill-body-missing-usage-section',
     name: 'Skill Body Missing Usage Section',
-    description: 'SKILL.md body lacks a ## Usage or ## Instructions section',
+    description: 'SKILL.md body lacks a usage/instructions section',
     category: 'Skills',
     severity: 'warn',
     fixable: false,
@@ -20,14 +20,16 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-body-missing-usage-section',
     docs: {
-      summary: 'Warns when a SKILL.md body lacks a "## Usage" or "## Instructions" section.',
+      recommended: true,
+      summary: 'Warns when a SKILL.md body lacks a usage or instructions heading.',
       rationale:
-        'A missing Usage or Instructions section leaves users and the AI model without clear invocation instructions.',
+        'A missing usage section leaves users and the AI model without clear invocation instructions.',
       details:
-        'A dedicated `## Usage` or `## Instructions` section helps users and AI models understand how to ' +
+        'A dedicated usage/instructions section helps users and AI models understand how to ' +
         'invoke and interact with the skill. This rule checks the body content of SKILL.md files for a ' +
-        'level-2 heading that starts with "Usage" or "Instructions". Without this section, users must read ' +
-        'through the entire file to figure out how to use the skill, reducing discoverability and usability.',
+        'level-2 heading matching common conventions: "Usage", "Instructions", "Quick Start", ' +
+        '"Quick Workflow", "Getting Started", "How to Use", or "Examples". Without such a section, ' +
+        'users must read through the entire file to figure out how to use the skill.',
       examples: {
         incorrect: [
           {
@@ -50,8 +52,9 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Add a `## Usage` or `## Instructions` section to the body of your SKILL.md file. Include ' +
-        'invocation examples, expected arguments, and any flags or options the skill supports.',
+        'Add a section like `## Usage`, `## Instructions`, `## Quick Start`, `## Getting Started`, ' +
+        '`## How to Use`, or `## Examples` to the body of your SKILL.md file. Include invocation examples, ' +
+        'expected arguments, and any flags or options the skill supports.',
       relatedRules: ['skill-body-too-long', 'skill-body-word-count'],
     },
   },
@@ -70,12 +73,15 @@ export const rule: Rule = {
       return; // No body to check (handled by other rules)
     }
 
-    const hasUsageSection = /^##\s+(Usage|Instructions)/im.test(body);
+    const hasUsageSection =
+      /^##\s+(Usage|Instructions|Quick\s+Start|Quick\s+Workflow|Getting\s+Started|How\s+to\s+Use|Examples)/im.test(
+        body
+      );
 
     if (!hasUsageSection) {
       context.report({
-        message: 'Missing "## Usage" or "## Instructions" section',
-        fix: 'Add a "## Usage" or "## Instructions" section with invocation examples',
+        message: 'Missing usage/instructions section',
+        fix: 'Add a "## Usage", "## Instructions", "## Quick Start", or similar section',
       });
     }
   },

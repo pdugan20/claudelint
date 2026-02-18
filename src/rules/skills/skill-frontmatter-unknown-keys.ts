@@ -40,6 +40,7 @@ export const rule: Rule = {
     since: '0.3.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-frontmatter-unknown-keys',
     docs: {
+      strict: true,
       summary: 'Warns when SKILL.md frontmatter contains unrecognized keys.',
       rationale:
         'Unknown keys are silently ignored, which often indicates a typo in a valid key name.',

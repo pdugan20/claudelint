@@ -108,7 +108,7 @@ describe('Fixture Project Integration Tests', () => {
     });
 
     it('should report expected warning count', () => {
-      expect(result.output).toContain('35 warnings');
+      expect(result.output).toContain('34 warnings');
     });
 
     it('should show summary line with problem count', () => {

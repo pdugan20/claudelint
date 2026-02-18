@@ -27,6 +27,7 @@ export const rule: Rule = {
       maxLength: 1024,
     },
     docs: {
+      strict: true,
       summary: 'Warns when a skill description exceeds the maximum character length.',
       rationale:
         'Long descriptions are truncated in skill listings and menus, hiding important context.',

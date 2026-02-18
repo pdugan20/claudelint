@@ -12,7 +12,7 @@ import { z } from 'zod';
  * Options for claude-md-content-too-many-sections rule
  */
 export interface ClaudeMdContentTooManySectionsOptions {
-  /** Maximum number of sections (markdown headings) before warning (default: 20) */
+  /** Maximum number of sections (markdown headings) before warning (default: 40) */
   maxSections?: number;
 }
 
@@ -34,7 +34,7 @@ export const rule: Rule = {
       maxSections: z.number().positive().int().optional(),
     }),
     defaultOptions: {
-      maxSections: 20,
+      maxSections: 40,
     },
     docs: {
       recommended: true,
@@ -44,7 +44,7 @@ export const rule: Rule = {
         'A bloated CLAUDE.md is hard for both humans and the AI to navigate, reducing instruction effectiveness.',
       details:
         'Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to ' +
-        'navigate. When the number of markdown headings exceeds the configured threshold (default: 20), ' +
+        'navigate. When the number of markdown headings exceeds the configured threshold (default: 40), ' +
         'this rule warns that the file should be reorganized. The recommended approach is to split ' +
         'content into topic-specific files under `.claude/rules/` and use `@import` directives to ' +
         'include them. This keeps each file focused and easier to maintain. The rule only checks ' +
@@ -52,7 +52,7 @@ export const rule: Rule = {
       examples: {
         incorrect: [
           {
-            description: 'A CLAUDE.md with too many sections (over 20 headings)',
+            description: 'A CLAUDE.md with too many sections (over 40 headings)',
             code:
               '# Project Instructions\n\n' +
               '## Git Workflow\n...\n\n## Code Style\n...\n\n## Testing\n...\n\n' +
@@ -110,7 +110,7 @@ export const rule: Rule = {
     }
 
     // Get configured threshold (already has default from meta.defaultOptions)
-    const maxSections = (options as ClaudeMdContentTooManySectionsOptions).maxSections ?? 20;
+    const maxSections = (options as ClaudeMdContentTooManySectionsOptions).maxSections ?? 40;
 
     // Count markdown headings (sections)
     const headingRegex = /^#{1,6}\s+.+$/gm;

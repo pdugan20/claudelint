@@ -23,6 +23,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/lsp/lsp-command-not-in-path',
     docs: {
+      strict: true,
       summary: 'Warns when LSP server commands are not in PATH or lack absolute paths.',
       rationale:
         'PATH-dependent commands may fail in CI, containers, or other environments with different PATH configurations.',

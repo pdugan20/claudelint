@@ -24,6 +24,7 @@ export function addCommonOptions(cmd: Command): Command {
     .option('-v, --verbose', 'Verbose output')
     .option('-c, --config <path>', 'Path to config file')
     .option('--no-config', 'Disable configuration file loading')
+    .option('--preset <name>', 'Built-in preset when no config file (recommended, strict, all)')
     .option('--debug-config', 'Show configuration loading debug information')
     .option('--warnings-as-errors', 'Treat warnings as errors')
     .option('--max-warnings <number>', 'Fail if warning count exceeds limit', parseInt)

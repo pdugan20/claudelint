@@ -8,7 +8,7 @@ description: "Tools listed in allowed-tools are never referenced in the skill bo
 
 ## Rule Details
 
-This rule checks each tool listed in the `allowed-tools` frontmatter array against the SKILL.md body content. If a tool name is never mentioned in the body, it is likely stale configuration left over from a previous version. Unused tool declarations grant unnecessary permissions and make the skill harder to audit. The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), checking for the short name portion of MCP tools as well.
+This rule checks the `allowed-tools` frontmatter array against the SKILL.md body content. If none of the listed tools are referenced anywhere in the body, the entire list is likely copy-pasted or stale. If at least one tool is referenced, the list is considered intentional (tools may be needed for autonomy without being mentioned by name). The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), checking for the short name portion of MCP tools as well.
 
 ### Incorrect
 

@@ -23,6 +23,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/lsp/lsp-language-id-not-lowercase',
     docs: {
+      strict: true,
       summary: 'Warns when language IDs in LSP extension mappings are not lowercase.',
       rationale:
         'Mixed-case language IDs cause mismatches between editor expectations and server behavior.',

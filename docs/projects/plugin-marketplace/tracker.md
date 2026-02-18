@@ -236,7 +236,7 @@ exit 0
 ```
 
 - [x] Update sync-versions.ts to also update `PLUGIN_VERSION` in check-dependency.sh
-- [ ] Test hook with: global install + matching version, global install + mismatched version, local install only, no install
+- [ ] Test hook with: global install + matching version, global install + mismatched version, local install only, no install (deferred to Phase 7)
 
 ### 3.3 Build and verify
 
@@ -406,7 +406,7 @@ File: `website/api/schemas/marketplace.md`
 
 - [x] Run `npm run docs:build` — ensure website builds without errors
 - [x] Run `npm run lint` — ensure no lint violations introduced
-- [ ] Visually review key pages in `npm run docs:dev`
+- [x] Visually review key pages in `npm run docs:dev`
 
 ---
 
@@ -452,9 +452,9 @@ File: `website/api/schemas/marketplace.md`
 
 ### 6.3 Deploy website
 
-- [ ] Deploy docs to claudelint.com
-- [ ] Verify plugin guide page is live with marketplace instructions
-- [ ] Verify getting-started page is live with updated "Use with Claude Code" section
+- [x] Deploy docs to claudelint.com (auto-deploys on push via Vercel)
+- [x] Verify plugin guide page is live with marketplace instructions
+- [x] Verify getting-started page is live with updated "Use with Claude Code" section
 
 ---
 

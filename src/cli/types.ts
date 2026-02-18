@@ -18,6 +18,7 @@ import { OutputFormat } from '../utils/reporting/reporting';
 export interface CommonOptions {
   verbose?: boolean;
   config?: string | false; // Commander sets to false when --no-config is used
+  preset?: string; // Built-in preset to use when no config found (default: recommended)
   debugConfig?: boolean;
   warningsAsErrors?: boolean;
   maxWarnings?: number;

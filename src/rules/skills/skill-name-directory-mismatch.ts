@@ -74,6 +74,11 @@ export const rule: Rule = {
 
     const dirName = getParentDirectoryName(filePath);
 
+    // Skip template/scaffold directories (prefixed with _)
+    if (dirName.startsWith('_')) {
+      return;
+    }
+
     if (frontmatter.name !== dirName) {
       const oldName = frontmatter.name;
       context.report({

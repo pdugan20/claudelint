@@ -93,7 +93,10 @@ export const rule: Rule = {
 
       // If we're inside a code block, search for imports
       if (inCodeBlock) {
-        const importRegex = /@([^\s]+)/g;
+        // Only match @-references that look like file paths (contain /)
+        // This avoids false positives on emails (user@example.com),
+        // decorators (@Component), and JSDoc tags (@param, @returns)
+        const importRegex = /@([^\s]*\/[^\s]*)/g;
         let match;
 
         while ((match = importRegex.exec(line)) !== null) {

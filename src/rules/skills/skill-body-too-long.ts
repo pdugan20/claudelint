@@ -37,6 +37,7 @@ export const rule: Rule = {
       maxLines: 500,
     },
     docs: {
+      strict: true,
       summary: 'Warns when a SKILL.md body exceeds the maximum number of lines.',
       rationale:
         'Overly long skill bodies consume excessive context window space and slow down skill loading.',

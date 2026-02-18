@@ -165,8 +165,8 @@ describe('option-builders', () => {
       addFileSelectionOptions(cmd);
       addWorkspaceOptions(cmd);
 
-      // 7 common + 10 output + 4 enforcement + 4 cache + 3 fix + 6 file selection + 2 workspace = 36
-      expect(cmd.options.length).toBe(36);
+      // 8 common + 10 output + 4 enforcement + 4 cache + 3 fix + 6 file selection + 2 workspace = 37
+      expect(cmd.options.length).toBe(37);
     });
   });
 });

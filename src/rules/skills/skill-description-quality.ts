@@ -72,7 +72,8 @@ export const rule: Rule = {
       minWords: DEFAULT_MIN_WORDS,
     },
     docs: {
-      recommended: true,
+      recommended: false,
+      strict: true,
       summary:
         'Checks that skill descriptions start with an action verb and include sufficient context.',
       rationale:

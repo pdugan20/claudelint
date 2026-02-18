@@ -22,6 +22,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-unknown-string-substitution',
     docs: {
+      strict: true,
       summary: 'Warns when SKILL.md contains unrecognized string substitution patterns.',
       rationale:
         'Unrecognized substitutions are passed through literally, producing broken commands at runtime.',

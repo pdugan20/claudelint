@@ -41,6 +41,36 @@ describe('skill-body-missing-usage-section', () => {
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## instructions\n\nDo this.',
           filePath: '/test/skills/my-skill/SKILL.md',
         },
+        // Quick Start section
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Quick Start\n\nGet started here.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
+        // Quick Workflow section
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Quick Workflow\n\n1. Do this\n2. Then this.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
+        // Getting Started section
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Getting Started\n\nFirst, install the tool.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
+        // How to Use section
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## How to Use\n\nFollow these steps.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
+        // Examples section
+        {
+          content:
+            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Examples\n\nExample here.',
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
         // Non-SKILL.md file (skipped)
         {
           content: '# No usage section here',
@@ -59,21 +89,14 @@ describe('skill-body-missing-usage-section', () => {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\nThis skill does things.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
+          errors: [{ message: 'Missing usage/instructions section' }],
         },
-        // Has Examples but no Usage or Instructions
-        {
-          content:
-            '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Examples\n\nExample here.',
-          filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
-        },
-        // Has other sections but no Usage or Instructions
+        // Has other sections but no recognized usage heading
         {
           content:
             '---\nname: my-skill\ndescription: Use this to test\n---\n\n# My Skill\n\n## Overview\n\nOverview.\n\n## Notes\n\nNotes here.',
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Missing "## Usage" or "## Instructions" section' }],
+          errors: [{ message: 'Missing usage/instructions section' }],
         },
       ],
     });

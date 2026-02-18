@@ -32,6 +32,7 @@ import {
 } from './types';
 import { RuleMetadata as InternalRuleMetadata } from '../types/rule';
 import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
+import { getBuiltinPresetPath } from '../utils/config/extends';
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
@@ -635,7 +636,15 @@ export class ClaudeLint {
       return loadConfig(configPath);
     }
 
-    // No config found, use defaults
+    // No config found — default to recommended preset
+    const presetPath = getBuiltinPresetPath('recommended');
+    if (presetPath) {
+      try {
+        return loadConfig(presetPath);
+      } catch {
+        return {};
+      }
+    }
     return {};
   }
 

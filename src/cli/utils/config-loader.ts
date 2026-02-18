@@ -5,7 +5,7 @@
  */
 
 import { findConfigFile, validateConfig } from '../../utils/config/types';
-import { loadConfigWithExtends } from '../../utils/config/extends';
+import { loadConfigWithExtends, getBuiltinPresetPath } from '../../utils/config/extends';
 import { ConfigError, validateAllRuleOptions } from '../../utils/config/resolver';
 import { ClaudeLintConfig } from '../../utils/config/types';
 import { CustomRuleLoader } from '../../utils/rules/loader';
@@ -30,6 +30,7 @@ export function ensureCustomRulesLoaded(): void {
 
 interface ConfigLoaderOptions {
   config?: string | false; // Commander sets config to false when --no-config is used
+  preset?: string; // Override default preset (e.g., 'all', 'strict')
   verbose?: boolean;
   debugConfig?: boolean;
 }
@@ -96,8 +97,24 @@ export function loadConfig(options: ConfigLoaderOptions): ClaudeLintConfig {
         logger.error(error instanceof Error ? error.message : String(error));
         process.exit(2);
       }
-    } else if (options.debugConfig) {
-      logger.info('[Config Debug] No config file found, using defaults');
+    } else {
+      // No config file found — load a built-in preset as default
+      const presetName = options.preset || 'recommended';
+      const presetPath = getBuiltinPresetPath(presetName);
+      if (presetPath) {
+        try {
+          config = loadConfigWithExtends(presetPath);
+          if (options.verbose || options.debugConfig) {
+            logger.info(`No config file found, using claudelint:${presetName} preset`);
+          }
+        } catch {
+          if (options.debugConfig) {
+            logger.info(`[Config Debug] Failed to load ${presetName} preset, using defaults`);
+          }
+        }
+      } else if (options.debugConfig) {
+        logger.info(`[Config Debug] Unknown preset: ${presetName}, using defaults`);
+      }
     }
   }
 

@@ -35,7 +35,7 @@ async function generatePresets(): Promise<void> {
   // Ensure output directory exists
   await mkdir(PRESETS_DIR, { recursive: true });
 
-  // Generate recommended preset
+  // Generate recommended preset (exhaustive: non-included rules set to "off")
   const recommendedRules: Record<string, string> = {};
   let recommendedCount = 0;
 
@@ -43,15 +43,35 @@ async function generatePresets(): Promise<void> {
     if (rule.meta.docs?.recommended) {
       recommendedRules[rule.meta.id] = rule.meta.severity;
       recommendedCount++;
+    } else {
+      recommendedRules[rule.meta.id] = 'off';
     }
   }
 
   const recommendedPreset = { rules: recommendedRules };
   const recommendedPath = join(PRESETS_DIR, 'recommended.json');
   await writeFile(recommendedPath, JSON.stringify(recommendedPreset, null, 2) + '\n');
-  log.info(`  recommended.json: ${recommendedCount} rules`);
+  log.info(`  recommended.json: ${recommendedCount} rules (${rules.length} total entries)`);
 
-  // Generate all preset
+  // Generate strict preset (recommended + strict rules, exhaustive)
+  const strictRules: Record<string, string> = {};
+  let strictCount = 0;
+
+  for (const rule of rules) {
+    if (rule.meta.docs?.recommended || rule.meta.docs?.strict) {
+      strictRules[rule.meta.id] = rule.meta.severity;
+      strictCount++;
+    } else {
+      strictRules[rule.meta.id] = 'off';
+    }
+  }
+
+  const strictPreset = { rules: strictRules };
+  const strictPath = join(PRESETS_DIR, 'strict.json');
+  await writeFile(strictPath, JSON.stringify(strictPreset, null, 2) + '\n');
+  log.info(`  strict.json: ${strictCount} rules (${rules.length} total entries)`);
+
+  // Generate all preset (every rule at source severity)
   const allRules: Record<string, string> = {};
 
   for (const rule of rules) {

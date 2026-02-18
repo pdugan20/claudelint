@@ -23,6 +23,15 @@ describe('skill-name-directory-mismatch', () => {
           content: '---\nname: code-formatter\ndescription: Formats code\n---\n# Skill',
           filePath: '/Users/test/.claude/skills/code-formatter/SKILL.md',
         },
+        // Template directories (prefixed with _) should be skipped
+        {
+          content: '---\nname: skill-name\ndescription: A template skill\n---\n# Skill',
+          filePath: '/path/to/.claude/skills/_template/SKILL.md',
+        },
+        {
+          content: '---\nname: my-custom-name\ndescription: A scaffold\n---\n# Skill',
+          filePath: '.claude/skills/_scaffold/SKILL.md',
+        },
       ],
 
       invalid: [

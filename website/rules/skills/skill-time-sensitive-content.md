@@ -4,11 +4,11 @@ description: "SKILL.md should avoid time-sensitive references"
 
 # skill-time-sensitive-content
 
-<RuleHeader description="SKILL.md should avoid time-sensitive references" severity="warn" :fixable="false" :configurable="false" category="Skills" />
+<RuleHeader description="SKILL.md should avoid time-sensitive references" severity="warn" :fixable="false" :configurable="true" category="Skills" />
 
 ## Rule Details
 
-Skills should contain evergreen content that remains accurate over time. References to specific dates ("January 15, 2025"), relative time ("last week", "this month"), or ISO date strings ("2025-01-15") become stale and misleading. This rule scans the SKILL.md body (after frontmatter) for patterns like "today", "yesterday", "tomorrow", "this/last/next week/month/year", full date strings, and ISO date formats. Each matching line is reported.
+Skills should contain evergreen content that remains accurate over time. Relative time words ("today", "yesterday", "this week") are always flagged. Specific dates ("January 15, 2025", "2025-01-15") are only flagged if they are older than `maxAgeDays` (default: 180 days). This allows recently-added dates to exist without noise while catching stale references.
 
 ### Incorrect
 
@@ -64,7 +64,29 @@ Replace specific dates with version references or relative terms that age well. 
 
 ## Options
 
-This rule does not have any configuration options.
+Default options:
+
+```json
+{
+  "maxAgeDays": 180
+}
+```
+
+Only flag dates older than 1 year:
+
+```json
+{
+  "maxAgeDays": 365
+}
+```
+
+Flag dates older than 90 days:
+
+```json
+{
+  "maxAgeDays": 90
+}
+```
 
 ## When Not To Use It
 

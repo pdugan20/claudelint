@@ -11,6 +11,10 @@ import { stripCodeBlocks } from '../../utils/formats/markdown';
 
 // Standard HTML/markdown tags that are safe to use.
 // Tracks the HTML Living Standard — update when new elements are widely adopted.
+// CommonMark autolink spec: <scheme:content> where scheme is 1-32 alpha chars
+// Simplified from markdown-it/lib/rules_inline/autolink.mjs (avoids control char range)
+const AUTOLINK_RE = /^[a-zA-Z][a-zA-Z0-9+.-]{1,31}:\S+$/;
+
 const ALLOWED_TAGS = new Set([
   'a',
   'b',
@@ -111,6 +115,14 @@ export const rule: Rule = {
             language: 'markdown',
           },
           {
+            description: 'Markdown autolinks are not flagged',
+            code:
+              '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
+              'See <https://docs.example.com> for details.\n' +
+              'Contact <mailto:team@example.com> for help.',
+            language: 'markdown',
+          },
+          {
             description: 'XML tags inside code blocks are not flagged',
             code:
               '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
@@ -145,7 +157,14 @@ export const rule: Rule = {
     const reportedTags = new Set<string>();
     let match;
     while ((match = xmlTagRegex.exec(contentWithoutCode)) !== null) {
+      const fullMatch = match[0];
       const tagName = match[1].toLowerCase();
+
+      // Skip CommonMark autolinks like <https://example.com>, <mailto:user@host>
+      const inner = fullMatch.slice(1, -1); // Remove < and >
+      if (AUTOLINK_RE.test(inner)) {
+        continue;
+      }
 
       // Skip standard HTML tags
       if (ALLOWED_TAGS.has(tagName)) {

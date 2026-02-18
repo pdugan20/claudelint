@@ -35,6 +35,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-too-many-files',
     docs: {
+      strict: true,
       summary: 'Warns when a skill directory has too many files at the root level.',
       rationale:
         'A crowded skill directory is hard to navigate and suggests the skill should be decomposed.',

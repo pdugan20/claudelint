@@ -50,6 +50,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-mcp-tool-qualified-name',
     docs: {
+      strict: true,
       summary:
         'Warns when allowed-tools entries appear to be MCP tools but lack the qualified mcp__server__tool format.',
       rationale:

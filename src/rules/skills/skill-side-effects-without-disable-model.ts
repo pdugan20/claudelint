@@ -30,6 +30,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-side-effects-without-disable-model',
     docs: {
+      strict: true,
       summary:
         'Warns when skills with unscoped Bash in `allowed-tools` do not set `disable-model-invocation` to true.',
       rationale:

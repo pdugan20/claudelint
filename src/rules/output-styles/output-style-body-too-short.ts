@@ -40,6 +40,7 @@ export const rule: Rule = {
       minLength: 50,
     },
     docs: {
+      strict: true,
       summary: 'Warns when output style body content is too short.',
       rationale:
         'Sparse output style definitions lack enough detail for models to apply formatting consistently.',

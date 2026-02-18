@@ -61,6 +61,26 @@ describe('skill-allowed-tools-not-used', () => {
           ].join('\n'),
           filePath: '/test/skills/my-skill/SKILL.md',
         },
+        // Some tools referenced, some not — intentional list, no error
+        {
+          content: [
+            '---',
+            'name: my-skill',
+            'description: Validate project files',
+            'allowed-tools:',
+            '  - Bash',
+            '  - Read',
+            '  - Write',
+            '  - Grep',
+            '---',
+            '',
+            '# My Skill',
+            '',
+            'Use the Bash tool to run validation.',
+            'Use Read to examine files.',
+          ].join('\n'),
+          filePath: '/test/skills/my-skill/SKILL.md',
+        },
         // No allowed-tools (skipped)
         {
           content: [
@@ -90,25 +110,7 @@ describe('skill-allowed-tools-not-used', () => {
       ],
 
       invalid: [
-        // Tool listed but never referenced in body
-        {
-          content: [
-            '---',
-            'name: my-skill',
-            'description: Validate project files',
-            'allowed-tools:',
-            '  - Bash',
-            '  - Write',
-            '---',
-            '',
-            '# My Skill',
-            '',
-            'Use the Bash tool to run validation.',
-          ].join('\n'),
-          filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Write' }],
-        },
-        // Multiple unused tools
+        // No tools referenced at all — entire list flagged
         {
           content: [
             '---',
@@ -125,9 +127,9 @@ describe('skill-allowed-tools-not-used', () => {
             'This skill checks files.',
           ].join('\n'),
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Bash' }, { message: 'Read' }, { message: 'Grep' }],
+          errors: [{ message: 'None of the 3 allowed-tools are referenced' }],
         },
-        // Scoped tool not referenced
+        // Single tool, not referenced
         {
           content: [
             '---',
@@ -135,15 +137,14 @@ describe('skill-allowed-tools-not-used', () => {
             'description: Run lint commands',
             'allowed-tools:',
             '  - Bash(claudelint:*)',
-            '  - Edit',
             '---',
             '',
             '# My Skill',
             '',
-            'This skill uses Edit to fix files.',
+            'This skill lints your code.',
           ].join('\n'),
           filePath: '/test/skills/my-skill/SKILL.md',
-          errors: [{ message: 'Bash(claudelint:*)' }],
+          errors: [{ message: 'None of the 1 allowed-tools are referenced' }],
         },
       ],
     });

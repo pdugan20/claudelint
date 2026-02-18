@@ -69,6 +69,11 @@ describe('resolveConfigPath', () => {
       expect(resolved).toMatch(/presets\/recommended\.json$/);
     });
 
+    it('resolves claudelint:strict to file path', () => {
+      const resolved = resolveConfigPath('claudelint:strict', tempDir);
+      expect(resolved).toMatch(/presets\/strict\.json$/);
+    });
+
     it('resolves claudelint:all to file path', () => {
       const resolved = resolveConfigPath('claudelint:all', tempDir);
       expect(resolved).toMatch(/presets\/all\.json$/);

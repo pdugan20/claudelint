@@ -60,6 +60,35 @@ echo "test"
 @.claude/rules/api.md`,
           filePath: 'CLAUDE.md',
         },
+
+        // Email addresses in code blocks (not imports)
+        {
+          content: `\`\`\`yaml
+author: user@example.com
+\`\`\``,
+          filePath: 'CLAUDE.md',
+        },
+
+        // Decorators in code blocks (not imports)
+        {
+          content: `\`\`\`typescript
+@Component({ selector: 'app-root' })
+export class AppComponent {}
+\`\`\``,
+          filePath: 'CLAUDE.md',
+        },
+
+        // JSDoc tags in code blocks (not imports)
+        {
+          content: `\`\`\`javascript
+/**
+ * @param name The user's name
+ * @returns A greeting string
+ */
+function greet(name) {}
+\`\`\``,
+          filePath: 'CLAUDE.md',
+        },
       ],
 
       invalid: [

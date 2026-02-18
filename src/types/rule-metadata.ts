@@ -19,6 +19,9 @@ export interface RuleDocumentation {
   /** Whether this rule is included in the recommended config */
   recommended?: boolean;
 
+  /** Whether this rule is included in the strict config (between recommended and all) */
+  strict?: boolean;
+
   /** One-sentence summary for search indexes and overview pages */
   summary: string;
 

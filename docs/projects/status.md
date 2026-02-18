@@ -1,6 +1,6 @@
 # Project Status
 
-**Last Updated:** 2026-02-17
+**Last Updated:** 2026-02-18
 **Current stats:** 117 rules, 1675 tests
 
 All active work is tracked in [roadmap.md](./roadmap.md).
@@ -9,13 +9,16 @@ All active work is tracked in [roadmap.md](./roadmap.md).
 
 ## Current Status
 
-**Next milestone:** Interactive testing, then stable 0.2.0 release.
+**Next milestone:** Developer experience overhaul, then stable 0.2.0 release.
 
-Published as `claude-code-lint@0.2.0-beta.1`. Plugin spec alignment complete. Release burndown begins after interactive testing.
+Published as `claude-code-lint@0.2.0-beta.2`. Plugin marketplace complete. DX overhaul in progress.
 
 ## Active Projects
 
-No active projects. Next up: interactive testing (see [roadmap.md](./roadmap.md)).
+| Project | Status | Tracker |
+|---------|--------|---------|
+| Plugin Marketplace | Phases 1-6 complete, Phase 7+ pending | [tracker](./plugin-marketplace/tracker.md) |
+| Developer Experience & Defaults Overhaul | In Progress | [tracker](./developer-experience-overhaul/tracker.md) |
 
 ---
 

@@ -121,6 +121,53 @@ description: A test skill
     });
   });
 
+  it('should skip CommonMark autolinks', async () => {
+    await ruleTester.run('skill-xml-tags-anywhere', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: A test skill
+---
+
+# My Skill
+
+See <https://docs.example.com> for details.
+Also <http://legacy.example.com/path?q=1> works.
+Contact <mailto:team@example.com> for support.
+Download via <ftp://files.example.com/archive.tar.gz>.`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should still flag tags that look like URLs but are not', async () => {
+    await ruleTester.run('skill-xml-tags-anywhere', rule, {
+      valid: [],
+      invalid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: A test skill
+---
+
+# My Skill
+
+<https-instructions>Follow these steps</https-instructions>`,
+          errors: [
+            {
+              message:
+                'XML tag <https-instructions> outside code block',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
   it('should skip non-SKILL.md files', async () => {
     await ruleTester.run('skill-xml-tags-anywhere', rule, {
       valid: [

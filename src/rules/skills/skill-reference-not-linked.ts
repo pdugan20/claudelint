@@ -28,6 +28,7 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/skills/skill-reference-not-linked',
     docs: {
+      recommended: true,
       summary:
         'Warns when backtick-enclosed file paths in SKILL.md are not formatted as markdown links.',
       rationale:

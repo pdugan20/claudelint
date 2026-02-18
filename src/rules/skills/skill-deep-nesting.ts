@@ -74,6 +74,7 @@ export const rule: Rule = {
       maxDepth: DEFAULT_MAX_DEPTH,
     },
     docs: {
+      strict: true,
       summary: 'Warns when a skill directory has excessive nesting depth.',
       rationale:
         'Deep directory nesting makes skill contents harder to discover and increases path complexity.',

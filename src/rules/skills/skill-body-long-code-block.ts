@@ -13,7 +13,7 @@ import { z } from 'zod';
  * Options for skill-body-long-code-block rule
  */
 export interface SkillBodyLongCodeBlockOptions {
-  /** Maximum code block lines before warning (default: 20) */
+  /** Maximum code block lines before warning (default: 40) */
   maxLines?: number;
 }
 
@@ -32,9 +32,10 @@ export const rule: Rule = {
       maxLines: z.number().positive().int().optional(),
     }),
     defaultOptions: {
-      maxLines: 20,
+      maxLines: 40,
     },
     docs: {
+      strict: true,
       summary: 'Warns when code blocks in a SKILL.md body exceed a configurable line threshold.',
       rationale:
         'Oversized code blocks bloat the skill payload and waste context window tokens during execution.',
@@ -47,7 +48,7 @@ export const rule: Rule = {
       examples: {
         incorrect: [
           {
-            description: 'Code block exceeding the default 20-line limit',
+            description: 'Code block exceeding the default 40-line limit',
             code:
               '---\nname: setup\ndescription: Sets up the development environment\n---\n\n## Usage\n\n' +
               '```bash\n# Line 1\n# Line 2\n# ...\n# Line 25\n```',
@@ -99,7 +100,7 @@ export const rule: Rule = {
     const body = extractBodyContent(fileContent);
     if (!body) return;
 
-    const maxLines = (options as SkillBodyLongCodeBlockOptions).maxLines ?? 20;
+    const maxLines = (options as SkillBodyLongCodeBlockOptions).maxLines ?? 40;
     const lines = body.split('\n');
 
     let inCodeBlock = false;
