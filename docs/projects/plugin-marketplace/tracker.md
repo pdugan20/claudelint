@@ -174,16 +174,16 @@ $ claudelint install-plugin
 
 Tasks:
 
-- [ ] Restructure install-plugin as a multi-step guided output
-- [ ] Present global vs local npm install options with clear recommendations
-- [ ] Show marketplace add + install as the primary method (not plugin-dir)
-- [ ] Add scope explanation (user/project/local) for the plugin install step
-- [ ] Auto-detect: if `claudelint` is already in PATH or node_modules, say so
-- [ ] Auto-detect: if running inside a project with `claude-code-lint` in package.json, tailor the output
-- [ ] Add `--json` flag support for programmatic consumption (optional, low priority)
-- [ ] Add verification step showing how to test the install worked
-- [ ] After install steps, remind user that auto-update is off by default for third-party marketplaces
-- [ ] Show how to enable: `/plugin` > Marketplaces > select `pdugan20-plugins` > "Enable auto-update"
+- [x] Restructure install-plugin as a multi-step guided output
+- [x] Present global vs local npm install options with clear recommendations
+- [x] Show marketplace add + install as the primary method (not plugin-dir)
+- [x] Add scope explanation (user/project/local) for the plugin install step
+- [x] Auto-detect: if `claudelint` is already in PATH or node_modules, say so
+- [x] Auto-detect: if running inside a project with `claude-code-lint` in package.json, tailor the output
+- [x] Add `--json` flag support for programmatic consumption (optional, low priority)
+- [x] Add verification step showing how to test the install worked
+- [x] After install steps, remind user that auto-update is off by default for third-party marketplaces
+- [x] Show how to enable: `/plugin` > Marketplaces > select `pdugan20-plugins` > "Enable auto-update"
 
 ### 3.2 Upgrade SessionStart hook
 
@@ -191,12 +191,12 @@ File: `.claude-plugin/scripts/check-dependency.sh`
 
 Current hook only checks if the binary exists. Enhance to:
 
-- [ ] Check for version mismatch between plugin and npm package
-- [ ] Read plugin version from `plugin.json` (available via `${CLAUDE_PLUGIN_ROOT}`)
-- [ ] Compare against `claudelint --version` output
-- [ ] If binary not found: detect if plugin is user-scope and recommend global install
-- [ ] If binary found but version mismatch: warn with upgrade command
-- [ ] Keep output concise — single-line for success, 3-4 lines for warnings
+- [x] Check for version mismatch between plugin and npm package
+- [x] Read plugin version from hardcoded PLUGIN_VERSION (synced by sync-versions.ts)
+- [x] Compare against `claudelint --version` output
+- [x] If binary not found: recommend both global and local install
+- [x] If binary found but version mismatch: warn with upgrade command
+- [x] Keep output concise — single-line for success, 3-4 lines for warnings
 
 **Enhanced script structure:**
 
@@ -235,14 +235,15 @@ echo ""
 exit 0
 ```
 
-- [ ] Update sync-versions.ts to also update `PLUGIN_VERSION` in check-dependency.sh
+- [x] Update sync-versions.ts to also update `PLUGIN_VERSION` in check-dependency.sh
 - [ ] Test hook with: global install + matching version, global install + mismatched version, local install only, no install
 
 ### 3.3 Build and verify
 
-- [ ] Run `npm run build` — ensure install-plugin.ts changes compile
-- [ ] Run `npm run lint` — ensure no lint violations introduced
-- [ ] Test `claudelint install-plugin` output manually
+- [x] Run `npm run build` — ensure install-plugin.ts changes compile
+- [x] Run `npm run lint` — no new violations (99 pre-existing Vue warnings unrelated)
+- [x] Test `claudelint install-plugin` output manually
+- [x] Test `claudelint install-plugin --json` output
 
 ---
 
