@@ -5,8 +5,11 @@ This document covers the release process for claudelint. All releases use [relea
 ## Prerequisites
 
 - Authenticated with npm (`npm login`)
+- Authenticated with GitHub CLI (`gh auth status`)
 - Push access to `pdugan20/claudelint`
 - Clean working directory (`git status` shows no changes)
+
+All `npm run release*` scripts automatically set `GITHUB_TOKEN` from `gh auth token` so release-it can create GitHub releases. If `GITHUB_TOKEN` is already set (e.g. in CI), that value is used instead.
 
 ## Pre-Release Checklist
 
@@ -127,6 +130,18 @@ git stash      # Or commit/discard changes
 ```bash
 npm run sync:versions        # Fix drift
 npm run sync:versions:check  # Verify
+```
+
+### GitHub release not created
+
+If the git tag and npm publish succeeded but no GitHub release was created:
+
+```bash
+# Check if gh CLI is authenticated
+gh auth status
+
+# Create the release manually from the existing tag
+gh release create v0.x.x --title "v0.x.x" --notes-from-tag
 ```
 
 ### Failed release mid-way
