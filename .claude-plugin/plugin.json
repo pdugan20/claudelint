@@ -9,10 +9,5 @@
   "homepage": "https://github.com/pdugan20/claudelint",
   "repository": "https://github.com/pdugan20/claudelint",
   "license": "MIT",
-  "keywords": [
-    "validation",
-    "linting",
-    "developer-tools",
-    "code-quality"
-  ]
+  "keywords": ["validation", "linting", "developer-tools", "code-quality"]
 }

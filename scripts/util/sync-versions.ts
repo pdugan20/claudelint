@@ -2,6 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 import { log } from './logger';
 
 interface PackageJson {
@@ -127,6 +128,20 @@ function syncVersions(): void {
       filesUpdated++;
     } else {
       log.pass('check-dependency.sh already in sync');
+    }
+  }
+
+  // 5. Run prettier on modified JSON files to preserve formatting
+  if (filesUpdated > 0) {
+    const jsonFiles = [pluginJsonPath, marketplaceJsonPath].join(' ');
+    try {
+      execSync(`npx prettier --write ${jsonFiles}`, {
+        cwd: rootDir,
+        stdio: 'ignore',
+      });
+      log.pass('Formatted JSON files with prettier');
+    } catch {
+      log.info('Prettier not available, skipping formatting');
     }
   }
 

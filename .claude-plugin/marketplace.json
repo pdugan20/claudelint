@@ -21,13 +21,7 @@
       "homepage": "https://claudelint.com",
       "repository": "https://github.com/pdugan20/claudelint",
       "license": "MIT",
-      "keywords": [
-        "validation",
-        "linting",
-        "developer-tools",
-        "code-quality",
-        "claude-code"
-      ],
+      "keywords": ["validation", "linting", "developer-tools", "code-quality", "claude-code"],
       "category": "developer-tools"
     }
   ]
