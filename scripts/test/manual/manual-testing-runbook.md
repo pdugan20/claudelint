@@ -1,7 +1,7 @@
 # Manual Testing Runbook for Claude Code Skills
 
 **Version:** 1.1.0
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-18
 **Estimated Total Time:** 3.5-4 hours
 
 This runbook provides step-by-step instructions for manually testing all 9 bundled skills in the claudelint plugin. It combines manual verification (for conversational quality and UX) with automated checks (for verifiable aspects like tool usage and file changes).
@@ -11,7 +11,7 @@ This runbook provides step-by-step instructions for manually testing all 9 bundl
 **Required:**
 
 - Claude Code CLI installed and configured
-- claudelint npm package installed locally (this repo)
+- claude-code-lint npm package installed locally (this repo)
 - Plugin loaded: `claude --plugin-dir .`
 - Ability to open multiple Claude Code sessions/tabs
 - Terminal with bash support
@@ -21,8 +21,14 @@ This runbook provides step-by-step instructions for manually testing all 9 bundl
 ```bash
 # From repo root
 npm run build
-npm run test:skills:automated  # Should pass
-/plugin list | grep claudelint  # Should show the plugin
+npm test  # Should pass
+```
+
+Once Claude Code is running with the plugin loaded, verify in the session:
+
+```text
+/skills list
+# Should show 9 claudelint skills
 ```
 
 ## Quick Start
@@ -45,7 +51,7 @@ All tests use isolated temporary directories to avoid affecting the repo:
 - Test fixtures: `tests/fixtures/projects/` (realistic projects)
 - Deprecated fixtures: `tests/fixtures/manual/` (old approach)
 - Test workspaces: `/tmp/claudelint-test-*`
-- Results: `docs/testing/manual-test-results/YYYY-MM-DD.md`
+- Results: `scripts/test/manual/manual-test-results/YYYY-MM-DD.md`
 
 ## Understanding Fixture Projects
 
@@ -729,10 +735,18 @@ Test error scenarios:
 
 ##### 6.2: Marketplace Plugin Install
 
-1. Test marketplace install (requires marketplace setup):
+1. Test marketplace install (requires published marketplace):
 
    ```bash
-   /plugin install claudelint@marketplace-name
+   claude /plugin install marketplace-url
+   ```
+
+   Or add to `.claude/settings.json`:
+
+   ```json
+   {
+     "enabledPlugins": ["marketplace-url"]
+   }
    ```
 
    - [ ] Installation succeeds
@@ -754,9 +768,9 @@ Test error scenarios:
 
    - [ ] Skill executes correctly
 
-**Note:** If the repo is private, skip this test and document "Skipped - private repo".
+**Note:** If the repo is private or not published to a marketplace, skip this test and document "Skipped - not published".
 
-##### 6.4: Dependency Detection
+##### 6.3: Dependency Detection
 
 1. Uninstall npm package:
 
@@ -781,7 +795,7 @@ Test error scenarios:
    npm install
    ```
 
-##### 6.5: Verify Package Contents
+##### 6.4: Verify Package Contents
 
 ```bash
 npm pack --dry-run
@@ -804,10 +818,9 @@ Check output:
 
 Checks:
 
-- Plugin appears in `/plugin list`
-- All 9 skills registered
+- Package includes `skills/`, `.claude-plugin/`, `bin/claudelint`
+- All 9 SKILL.md files present
 - Package contents correct
-- Dependency check works
 
 #### Pass Criteria
 
@@ -829,14 +842,14 @@ brew install asciinema  # macOS
 # or: apt-get install asciinema  # Linux
 
 # Record a session
-asciinema rec docs/testing/recordings/task-1-optimize.cast
+asciinema rec scripts/test/manual/recordings/task-1-optimize.cast
 
 # ... perform testing ...
 
 # Stop recording: Ctrl+D
 
 # Replay
-asciinema play docs/testing/recordings/task-1-optimize.cast
+asciinema play scripts/test/manual/recordings/task-1-optimize.cast
 ```
 
 Recordings are:
@@ -850,10 +863,10 @@ Recordings are:
 
 ### Issue: Skill doesn't trigger
 
-- Check plugin is installed: `/plugin list`
-- Check skill exists: `/skills list | grep claudelint`
+- In a Claude Code session, run `/skills list` to check skills loaded
 - Try explicit invocation: `/claudelint:skill-name`
 - Check trigger phrase matches description field
+- Verify plugin loaded with `claude --plugin-dir .`
 
 ### Issue: Automated verification fails
 
@@ -873,11 +886,12 @@ Recordings are:
 After completing all tests, document results using the template:
 
 ```bash
-cp docs/testing/manual-test-results-template.md \
-   docs/testing/manual-test-results/$(date +%Y-%m-%d).md
+mkdir -p scripts/test/manual/manual-test-results
+cp scripts/test/manual/manual-test-results-template.md \
+   scripts/test/manual/manual-test-results/$(date +%Y-%m-%d).md
 ```
 
-Then fill in the template with your findings. See `docs/testing/manual-test-results-template.md` for format.
+Then fill in the template with your findings. See `scripts/test/manual/manual-test-results-template.md` for format.
 
 ## Next Steps After Testing
 

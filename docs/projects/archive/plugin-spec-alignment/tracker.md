@@ -232,9 +232,9 @@ Update website and internal docs to reflect corrected marketplace spec.
 
 ## Phase 7: Commit and Verify
 
-- [ ] 7.1: Commit all changes
+- [x] 7.1: Commit all changes (commit `e08be74`)
 - [x] 7.2: Run `npm run validate` (full validation suite: 203 suites, 1675 tests, all clean)
-- [ ] 7.3: Verify CI passes (after push)
+- [x] 7.3: Verify CI passes (pushed to origin/main)
 
 ---
 

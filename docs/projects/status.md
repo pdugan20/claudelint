@@ -1,7 +1,7 @@
 # Project Status
 
 **Last Updated:** 2026-02-17
-**Current stats:** 113 rules, 1625 tests
+**Current stats:** 117 rules, 1675 tests
 
 All active work is tracked in [roadmap.md](./roadmap.md).
 
@@ -9,15 +9,13 @@ All active work is tracked in [roadmap.md](./roadmap.md).
 
 ## Current Status
 
-**Next milestone:** Plugin spec alignment, then interactive testing, then stable 0.2.0 release.
+**Next milestone:** Interactive testing, then stable 0.2.0 release.
 
-Published as `claude-code-lint@0.2.0-beta.1`. Plugin spec alignment in progress -- marketplace schema and 2 rules need fixing. Release burndown begins after.
+Published as `claude-code-lint@0.2.0-beta.1`. Plugin spec alignment complete. Release burndown begins after interactive testing.
 
 ## Active Projects
 
-| Project | Status | Tracker |
-|---------|--------|---------|
-| [plugin-spec-alignment](./plugin-spec-alignment/) | Active | [tracker.md](./plugin-spec-alignment/tracker.md) |
+No active projects. Next up: interactive testing (see [roadmap.md](./roadmap.md)).
 
 ---
 
@@ -53,13 +51,14 @@ All project trackers are in `docs/projects/archive/`. Completed or preserved as 
 | testing-fixture-infrastructure | Complete | 9 fluent builders, pinned integration tests. |
 | validator-refactor | Complete | Rule-based architecture foundation. |
 | validator-refactor-2026 | Complete | Removed 1,263 LOC, renamed validators. |
+| plugin-spec-alignment | Complete | Fixed marketplace schema, 2 rules, install syntax, JSON schema. |
 | vitepress-docs | Launched | claudelint.com live, incremental updates. |
 
 ---
 
 ## Rule Implementation Summary
 
-113 implemented rules across 10 categories:
+117 implemented rules across 10 categories:
 
 | Category | Count |
 |----------|-------|
@@ -67,9 +66,9 @@ All project trackers are in `docs/projects/archive/`. Completed or preserved as 
 | CLAUDE.md | 15 |
 | MCP | 11 |
 | Plugin | 12 |
-| Agents | 11 |
+| Agents | 12 |
 | LSP | 6 |
 | Settings | 5 |
+| Output Styles | 5 |
 | Hooks | 3 |
-| Output Styles | 3 |
-| Commands | 2 |
+| Commands | 3 |

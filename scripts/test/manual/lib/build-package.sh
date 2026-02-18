@@ -19,19 +19,13 @@ npm run build
 
 # Create package
 echo "Creating package..."
-PACKAGE_TGZ=$(npm pack 2>/dev/null | head -1)
+npm pack --pack-destination "$REPO_ROOT" > /dev/null 2>&1
 
-if [ -z "$PACKAGE_TGZ" ]; then
+# Find the .tgz file (npm pack creates it in the destination directory)
+PACKAGE_TGZ=$(ls -t "$REPO_ROOT"/claude-code-lint-*.tgz 2>/dev/null | head -1)
+
+if [ -z "$PACKAGE_TGZ" ] || [ ! -f "$PACKAGE_TGZ" ]; then
   echo "ERROR: npm pack failed to create package"
-  exit 1
-fi
-
-# Get absolute path
-PACKAGE_TGZ="$REPO_ROOT/$PACKAGE_TGZ"
-
-if [ ! -f "$PACKAGE_TGZ" ]; then
-  echo "ERROR: Package file not found"
-  echo "  Expected: $PACKAGE_TGZ"
   exit 1
 fi
 

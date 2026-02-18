@@ -190,7 +190,7 @@ This is exactly how users would install the package.
 ## Documentation
 
 See the full manual testing runbook:
-`docs/testing/manual-testing-runbook.md`
+`scripts/test/manual/manual-testing-runbook.md`
 
 ## Test Workspaces
 
@@ -221,8 +221,9 @@ This combines the repeatability of automation with the subjective judgment neede
 After testing, document results using:
 
 ```bash
-cp docs/testing/manual-test-results-template.md \
-   docs/testing/manual-test-results/$(date +%Y-%m-%d).md
+mkdir -p scripts/test/manual/manual-test-results
+cp scripts/test/manual/manual-test-results-template.md \
+   scripts/test/manual/manual-test-results/$(date +%Y-%m-%d).md
 ```
 
 Then fill in the template with your findings.

@@ -1,7 +1,7 @@
 # Roadmap
 
 **Last Updated:** 2026-02-17
-**Current stats:** 113 rules, 1625 tests
+**Current stats:** 117 rules, 1675 tests
 
 Single source of truth for all remaining work. Check off tasks as you complete them.
 
@@ -9,30 +9,17 @@ Single source of truth for all remaining work. Check off tasks as you complete t
 
 ## Release Burndown
 
-### Plugin Spec Alignment (Pre-Release)
+### ~~Plugin Spec Alignment~~ (Complete)
 
-**Effort:** ~3-4 hours
-**Unblocks:** Interactive testing
-**Tracker:** [plugin-spec-alignment/tracker.md](./plugin-spec-alignment/tracker.md)
-
-- [ ] Commit pending install syntax fixes (10 files)
-- [ ] Fix `MarketplaceMetadataSchema` to match official spec
-- [ ] Create `schemas/marketplace.schema.json` reference schema
-- [ ] Fix `plugin-invalid-manifest` rule
-- [ ] Fix `plugin-marketplace-files-not-found` rule
-- [ ] Rewrite tests for both rules
-- [ ] Regenerate, verify, dogfood
+Done. Archived to `docs/projects/archive/plugin-spec-alignment/`.
 
 ### Interactive Testing (Pre-Release)
 
-**Effort:** ~2-3 hours
+**Effort:** ~3.5-4 hours
 **Unblocks:** Stable release
-**Depends on:** Plugin spec alignment above
+**Runbook:** [`scripts/test/manual/manual-testing-runbook.md`](../../scripts/test/manual/manual-testing-runbook.md)
 
-- [ ] Test local plugin load: `claude --plugin-dir .`
-- [ ] Verify all 9 skills load: `/skills list`
-- [ ] Execute one skill: `/claudelint:validate-all`
-- [ ] Test one natural language trigger: "check my CLAUDE.md"
+Follow the 6-task runbook. Each task has setup/verify/cleanup scripts in `scripts/test/manual/`.
 
 ### Stable Release (0.2.0)
 
