@@ -36,20 +36,20 @@ claudelint
 
 claudelint checks <RuleCount category="categories" /> different aspects of your Claude Code project:
 
-- **CLAUDE.md** - File size, imports, paths, content structure
-- **Skills** - Names, descriptions, security, versioning
-- **Settings** - Permissions, environment variables
-- **Hooks** - Event types, script references
-- **MCP Servers** - Transport types, URLs, environment variables
-- **Plugins** - Manifest structure, component references
-- **Agents** - Names, descriptions, tools, models
-- **LSP** - Transport config, language IDs, extensions
-- **Output Styles** - Name validation
-- **Commands** - Migration checks
+- **[CLAUDE.md](/validators/claude-md)** - File size, imports, paths, content structure
+- **[Skills](/validators/skills)** - Names, descriptions, security, versioning
+- **[Settings](/validators/settings)** - Permissions, environment variables
+- **[Hooks](/validators/hooks)** - Event types, script references
+- **[MCP Servers](/validators/mcp)** - Transport types, URLs, environment variables
+- **[Plugins](/validators/plugin)** - Manifest structure, component references
+- **[Agents](/validators/agents)** - Names, descriptions, tools, models
+- **[LSP](/validators/lsp)** - Transport config, language IDs, extensions
+- **[Output Styles](/validators/output-styles)** - Name validation
+- **[Commands](/validators/commands)** - Migration checks
 
 ## Configuration
 
-Run `claudelint init` to set up configuration interactively. The quickest option is the **Recommended** preset, which enables a curated subset of rules:
+Run `claudelint init` to set up configuration interactively. The quickest option is the recommended preset, which enables a curated subset of rules:
 
 ```json
 {
