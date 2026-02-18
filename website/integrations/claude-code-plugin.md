@@ -204,12 +204,10 @@ Third-party marketplace plugins do not auto-update by default. You have two opti
 
 Plugin updates and npm package updates are independent. When upgrading, update both:
 
-```bash
-# Update npm package
-npm install -g claude-code-lint@latest
-# or for project-local:
-npm install --save-dev claude-code-lint@latest
-```
+<CodeTabs :tabs="[
+  { label: 'Global', code: 'npm install -g claude-code-lint@latest' },
+  { label: 'Project only', code: 'npm install --save-dev claude-code-lint@latest' },
+]" />
 
 ```text
 # Update plugin (inside Claude Code)

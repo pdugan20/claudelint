@@ -79,7 +79,7 @@ claudelint is also available as a Claude Code plugin, giving you slash commands 
    npm install -g claude-code-lint
    ```
 
-2. Add the marketplace and install (inside Claude Code):
+2. Inside Claude Code, add the marketplace and install the plugin:
 
    ```text
    /plugin marketplace add pdugan20/claudelint
