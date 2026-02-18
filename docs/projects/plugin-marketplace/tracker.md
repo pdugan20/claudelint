@@ -410,7 +410,7 @@ File: `website/api/schemas/marketplace.md`
 
 ---
 
-## Phase 5: Testing and Validation
+## Phase 5: Automated Testing
 
 ### 5.1 Dogfood validation
 
@@ -423,17 +423,7 @@ File: `website/api/schemas/marketplace.md`
 - [x] Add a test case that validates our actual marketplace.json against the schema
 - [x] Run full test suite: `npm test` (1679/1679 pass, 203 suites)
 
-### 5.3 Local marketplace test
-
-- [ ] Start Claude Code with: `claude --plugin-dir .`
-- [ ] Run `/plugin marketplace add ./`
-- [ ] Verify marketplace appears in `/plugin` > Marketplaces tab
-- [ ] Run `/plugin install claudelint@pdugan20-plugins`
-- [ ] Verify plugin appears in Installed tab
-- [ ] Run `/claudelint:validate-all` — verify skill works
-- [ ] Uninstall and clean up
-
-### 5.4 Sync versions test
+### 5.3 Sync versions test
 
 - [x] Temporarily change version in package.json (set to 9.9.9-test)
 - [x] Run `npm run sync:versions`
@@ -442,35 +432,79 @@ File: `website/api/schemas/marketplace.md`
 - [x] Verify `check-dependency.sh` PLUGIN_VERSION updated
 - [x] Revert test changes
 
-### 5.5 Global install test
+---
 
-- [ ] Install globally: `npm install -g claude-code-lint` (or `npm link` from repo)
-- [ ] Navigate to a DIFFERENT project that has Claude Code files
-- [ ] Run `claudelint check-all` — verify it scans the target project, not the package install location
-- [ ] Verify config resolution: create `.claudelintrc.json` in the target project, confirm it's picked up
-- [ ] Verify `.claudelintignore` in the target project works
-- [ ] Clean up global install
+## Phase 6: Release and Deploy
 
-### 5.6 SessionStart hook test
+### 6.1 Push and make repo public
 
-- [ ] Test with global install + matching version: expect no output
-- [ ] Test with global install + mismatched version: expect version mismatch warning with upgrade command
-- [ ] Test with local install only: expect no output (or version check)
-- [ ] Test with no install: expect install guidance with both global and local options
+- [ ] Push all commits to GitHub
+- [ ] Make repo public: `gh repo edit pdugan20/claudelint --visibility public`
 
-### 5.7 Install-plugin command test
+### 6.2 Version bump and publish
 
-- [ ] Run `claudelint install-plugin` from a project WITH claude-code-lint installed — verify auto-detection
-- [ ] Run `claudelint install-plugin` from a project WITHOUT it — verify appropriate guidance
-- [x] Verify the marketplace name and install commands are correct
+- [ ] Decide version: `0.2.0-beta.2` or `0.2.0`
+- [ ] Run release: `npm run release:beta` (or `release:patch`)
+- [ ] Verify npm package page shows updated version
+
+### 6.3 Deploy website
+
+- [ ] Deploy docs to claudelint.com
+- [ ] Verify plugin guide page is live with marketplace instructions
+- [ ] Verify getting-started page is live with updated "Use with Claude Code" section
 
 ---
 
-## Phase 6: Scaffold docs-tools Plugin Repo
+## Phase 7: End-to-End Manual Testing
+
+Test everything as a real developer would, against the published package and public repo.
+
+### 7.1 CLI smoke test
+
+- [ ] Open a project that does NOT have `claude-code-lint` installed
+- [ ] Install globally: `npm install -g claude-code-lint`
+- [ ] Run `claudelint install-plugin` — verify output matches docs
+- [ ] Run `claudelint init` — verify config setup works
+- [ ] Run `claudelint` — verify it scans the project
+- [ ] Run `claudelint install-plugin` from a project WITHOUT it — verify appropriate guidance
+- [ ] Verify config resolution: create `.claudelintrc.json` in the target project, confirm it's picked up
+- [ ] Verify `.claudelintignore` in the target project works
+
+### 7.2 Marketplace install from GitHub
+
+- [ ] Open Claude Code in the test project
+- [ ] Run `/plugin marketplace add pdugan20/claudelint`
+- [ ] Verify marketplace resolves from GitHub (not local)
+- [ ] Run `/plugin install claudelint@pdugan20-plugins`
+- [ ] Choose User scope — verify plugin installs successfully
+- [ ] Verify plugin appears in `/plugin` > Installed tab
+
+### 7.3 Plugin functionality
+
+- [ ] Run `/claudelint:validate-all` — verify skill executes
+- [ ] Try natural language: "Check my Claude Code project" — verify skill triggers
+- [ ] Verify all skills appear: `/skills` (filter by "claudelint")
+
+### 7.4 SessionStart hook
+
+- [ ] Start a new Claude Code session — verify hook fires without errors
+- [ ] With matching versions: expect no output
+- [ ] With mismatched versions: expect version mismatch warning with upgrade command
+- [ ] With no npm install: expect install guidance
+
+### 7.5 Cross-project and auto-update
+
+- [ ] Open Claude Code in a SECOND project — verify plugin is available (User scope)
+- [ ] Test auto-update toggle: `/plugin` > Marketplaces > pdugan20-plugins > Enable auto-update
+- [ ] Uninstall and clean up
+
+---
+
+## Phase 8: Scaffold docs-tools Plugin Repo
 
 Create a new GitHub repo with a documentation plugin containing multiple skills, each with supporting files.
 
-### 6.1 Define plugin scope
+### 8.1 Define plugin scope
 
 - [ ] Plugin name: `docs-tools` (repo: `pdugan20/claude-docs-tools`)
 - [ ] Purpose: A Claude Code plugin with multiple documentation skills
@@ -485,14 +519,14 @@ Create a new GitHub repo with a documentation plugin containing multiple skills,
 | `review-docs` | Review existing docs for quality and completeness | Quality criteria reference, common issues checklist, example review output |
 | `update-docs` | Update project docs after code changes | Changelog conventions reference, diff analysis prompts |
 
-### 6.2 Create GitHub repo
+### 8.2 Create GitHub repo
 
 - [ ] Create repo: `pdugan20/claude-docs-tools`
 - [ ] Set description: "Claude Code plugin for generating, reviewing, and maintaining project documentation"
 - [ ] Initialize with MIT license
 - [ ] Add `.gitignore`
 
-### 6.3 Set up plugin structure
+### 8.3 Set up plugin structure
 
 ```text
 claude-docs-tools/
@@ -567,7 +601,7 @@ claude-docs-tools/
 - [ ] Create project `CLAUDE.md` with development instructions
 - [ ] Push to GitHub
 
-### 6.4 Validate plugin structure
+### 8.4 Validate plugin structure
 
 - [ ] Run `claudelint check-all` against the new repo
 - [ ] Verify plugin.json passes validation
@@ -576,9 +610,9 @@ claude-docs-tools/
 
 ---
 
-## Phase 7: Add docs-tools to Marketplace
+## Phase 9: Add docs-tools to Marketplace
 
-### 7.1 Add plugin entry to marketplace.json
+### 9.1 Add plugin entry to marketplace.json
 
 - [ ] Add new entry to `.claude-plugin/marketplace.json` plugins array:
 
@@ -603,13 +637,13 @@ claude-docs-tools/
 }
 ```
 
-### 7.2 Validate marketplace update
+### 9.2 Validate marketplace update
 
 - [ ] Run `npm run check:self` — verify marketplace.json still passes validation
 - [ ] Check that `plugin-marketplace-files-not-found` does NOT flag the GitHub source (it should only check relative paths)
 - [ ] Run schema tests
 
-### 7.3 Test cross-repo installation
+### 9.3 Test cross-repo installation
 
 - [ ] Add marketplace locally: `/plugin marketplace add ./`
 - [ ] Verify docs-tools appears in Discover tab
@@ -619,7 +653,7 @@ claude-docs-tools/
 - [ ] Test at least one skill end-to-end
 - [ ] Uninstall and clean up
 
-### 7.4 Update documentation
+### 9.4 Update documentation
 
 - [ ] Update website plugin page to mention the marketplace has multiple plugins
 - [ ] Consider a dedicated "marketplace" page on the website listing all available plugins
@@ -633,8 +667,8 @@ claude-docs-tools/
 |------|--------|------------|
 | sync-versions crashes on release | Release blocked | Phase 2 fixes this before next release |
 | marketplace name conflicts | Users can't install | Verified `pdugan20-plugins` isn't reserved |
-| Relative source `"./"` doesn't resolve | Plugin install fails | Test locally in Phase 5.3 |
-| Cross-repo install requires public repo | docs-tools install fails | Ensure repo is public before Phase 7 |
+| Relative source `"./"` doesn't resolve | Plugin install fails | Test in Phase 7.2 marketplace install |
+| Cross-repo install requires public repo | docs-tools install fails | Ensure repo is public before Phase 9 |
 | Plugin entry version drift | Wrong version cached | sync-versions updates plugins[0].version too |
 | Global npm install breaks file discovery | Linting wrong files | Verified: all discovery uses `process.cwd()` (safe) |
 | User installs plugin globally but npm locally | Skills fail in other projects | SessionStart hook warns + docs guide users to match scopes |
@@ -648,5 +682,5 @@ claude-docs-tools/
 - The official Claude docs state: "When possible, avoid setting the version in both places. The plugin manifest always wins silently." Since we use `strict: true` (default), the plugin.json version is authoritative. The marketplace entry version is informational/for cache key purposes.
 - Auto-updates: Third-party marketplaces have auto-update disabled by default. Users must manually run `/plugin marketplace update pdugan20-plugins` or enable auto-update in the UI.
 - The `metadata.pluginRoot` field would let us write `"source": "claudelint"` instead of `"source": "./"` — but with only one local plugin this adds no value. Revisit if we add more local plugins.
-- The docs-tools plugin (Phase 6) is a **pure-skill plugin** with no npm dependency. This is an important distinction from claudelint — it demonstrates that not all plugins in our marketplace have the npm sync concern.
+- The docs-tools plugin (Phase 8) is a **pure-skill plugin** with no npm dependency. This is an important distinction from claudelint — it demonstrates that not all plugins in our marketplace have the npm sync concern.
 - The LSP plugin pattern (pyright-lsp, rust-analyzer-lsp) in the official marketplace validates our "plugin + external binary" architecture. Their approach: plugin installs, binary must be in PATH, errors show in `/plugin` Errors tab.
