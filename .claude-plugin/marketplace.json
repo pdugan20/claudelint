@@ -1,0 +1,28 @@
+{
+  "name": "pdugan20-plugins",
+  "description": "Plugins for validating, linting, and improving Claude Code projects.",
+  "version": "0.2.0-beta.1",
+  "owner": {
+    "name": "Pat Dugan",
+    "email": "dugan.pat@gmail.com"
+  },
+  "metadata": {
+    "description": "Plugins for validating, linting, and improving Claude Code projects."
+  },
+  "plugins": [
+    {
+      "name": "claudelint",
+      "source": "./",
+      "description": "A comprehensive linter for Claude Code projects. Validates CLAUDE.md, skills, settings, hooks, MCP servers, plugins, and more.",
+      "version": "0.2.0-beta.1",
+      "author": {
+        "name": "Pat Dugan"
+      },
+      "homepage": "https://claudelint.com",
+      "repository": "https://github.com/pdugan20/claudelint",
+      "license": "MIT",
+      "keywords": ["validation", "linting", "developer-tools", "code-quality", "claude-code"],
+      "category": "developer-tools"
+    }
+  ]
+}

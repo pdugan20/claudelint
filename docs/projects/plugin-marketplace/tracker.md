@@ -1,6 +1,6 @@
 # Plugin Marketplace - Progress Tracker
 
-**Status:** Not Started
+**Status:** In Progress
 **Created:** 2026-02-18
 **Last Updated:** 2026-02-18
 
@@ -12,14 +12,14 @@ Create `.claude-plugin/marketplace.json` with claudelint as the first plugin.
 
 ### 1.1 Design marketplace.json content
 
-- [ ] Choose marketplace name: `pdugan20-plugins`
-- [ ] Decide on all fields to include (see field inventory below)
-- [ ] Decide on `metadata.pluginRoot` — not needed since claudelint is at repo root (`"./"`), but consider for future plugins
-- [ ] Decide `strict` mode — default `true` is correct (plugin.json is authority)
+- [x] Choose marketplace name: `pdugan20-plugins`
+- [x] Decide on all fields to include (see field inventory below)
+- [x] Decide on `metadata.pluginRoot` — not needed since claudelint is at repo root (`"./"`), but consider for future plugins
+- [x] Decide `strict` mode — default `true` is correct (plugin.json is authority)
 
 ### 1.2 Create the file
 
-- [ ] Create `.claude-plugin/marketplace.json` with this structure:
+- [x] Create `.claude-plugin/marketplace.json` with this structure:
 
 ```json
 {
@@ -94,10 +94,10 @@ Verify all useful fields from the [marketplace schema](https://code.claude.com/d
 
 ### 1.4 Validate the file
 
-- [ ] Run `npm run build && npm run check:self` — marketplace.json should be picked up by plugin validator
-- [ ] Verify no `plugin-invalid-manifest` violations
-- [ ] Verify no `plugin-marketplace-files-not-found` violations
-- [ ] Run schema tests: `npm test -- tests/schemas/marketplace.schema.test.ts`
+- [x] Run `npm run build && npm run check:self` — marketplace.json should be picked up by plugin validator
+- [x] Verify no `plugin-invalid-manifest` violations
+- [x] Verify no `plugin-marketplace-files-not-found` violations
+- [x] Run schema tests: `npm test -- tests/schemas/marketplace.schema.test.ts`
 
 ---
 
@@ -109,22 +109,25 @@ The release pipeline will crash on the next release because of incorrect file re
 
 Current bug: line 44 reads `path.join(rootDir, 'plugin.json')` but plugin.json lives at `.claude-plugin/plugin.json`.
 
-- [ ] Update line 44: change `path.join(rootDir, 'plugin.json')` to `path.join(rootDir, '.claude-plugin', 'plugin.json')`
-- [ ] Verify marketplace.json sync at line 64 is correct (it already reads from `.claude-plugin/marketplace.json`)
-- [ ] Add marketplace version sync: the script syncs top-level `version`, but also needs to sync `plugins[0].version` for the claudelint entry
-- [ ] Run `npm run sync:versions` to verify it completes without errors
-- [ ] Run `npm run sync:versions:check` to verify it detects sync state correctly
+- [x] Update line 44: change `path.join(rootDir, 'plugin.json')` to `path.join(rootDir, '.claude-plugin', 'plugin.json')`
+- [x] Verify marketplace.json sync at line 64 is correct (it already reads from `.claude-plugin/marketplace.json`)
+- [x] Add marketplace version sync: the script syncs top-level `version`, but also needs to sync `plugins[0].version` for the claudelint entry
+- [x] Run `npm run sync:versions` to verify it completes without errors
+- [x] Run `npm run sync:versions:check` to verify it detects sync state correctly
+- [x] Fix same bug in `scripts/check/version-sync.ts` (line 45 had same wrong path)
+- [x] Add `plugins[0].version` check to version-sync.ts
+- [x] Make integration example check graceful when `examples/integration/` doesn't exist
 
 ### 2.2 Update RELEASING.md
 
-- [ ] Line 88: change `plugin.json` to `.claude-plugin/plugin.json`
-- [ ] Verify line 89 (`.claude-plugin/marketplace.json`) is already correct
-- [ ] Add note that marketplace plugin entry version is also synced
+- [x] Line 88: change `plugin.json` to `.claude-plugin/plugin.json`
+- [x] Verify line 89 (`.claude-plugin/marketplace.json`) is already correct
+- [x] Add note that marketplace plugin entry version is also synced
 
 ### 2.3 Verify release dry run
 
-- [ ] Run `npm run release:dry` — should complete without errors
-- [ ] Verify the `after:bump` hook triggers sync-versions correctly
+- [x] Run `npm run release:dry` — reaches npm publish step (fails at auth, expected in local dev)
+- [x] Verify the `after:bump` hook triggers sync-versions correctly
 
 ---
 

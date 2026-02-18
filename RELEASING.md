@@ -85,8 +85,8 @@ npm run release          # Prompts for version
 All version numbers must stay in sync across:
 
 - `package.json` (primary source)
-- `plugin.json`
-- `.claude-plugin/marketplace.json`
+- `.claude-plugin/plugin.json`
+- `.claude-plugin/marketplace.json` (top-level version and `plugins[0].version`)
 
 This is handled automatically by the `after:bump` hook. To verify manually:
 

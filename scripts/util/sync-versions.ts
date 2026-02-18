@@ -15,8 +15,14 @@ interface PluginJson {
   [key: string]: unknown;
 }
 
+interface MarketplacePluginEntry {
+  version: string;
+  [key: string]: unknown;
+}
+
 interface MarketplaceJson {
   version: string;
+  plugins: MarketplacePluginEntry[];
   [key: string]: unknown;
 }
 
@@ -40,8 +46,8 @@ function syncVersions(): void {
 
   let filesUpdated = 0;
 
-  // 2. Update plugin.json
-  const pluginJsonPath = path.join(rootDir, 'plugin.json');
+  // 2. Update .claude-plugin/plugin.json
+  const pluginJsonPath = path.join(rootDir, '.claude-plugin', 'plugin.json');
   const pluginJson: PluginJson = JSON.parse(
     fs.readFileSync(pluginJsonPath, 'utf-8')
   );
@@ -70,11 +76,27 @@ function syncVersions(): void {
     fs.readFileSync(marketplaceJsonPath, 'utf-8')
   );
 
+  let marketplaceUpdated = false;
+
   if (marketplaceJson.version !== primaryVersion) {
     log.info(
-      `Updating marketplace.json: ${marketplaceJson.version} → ${primaryVersion}`
+      `Updating marketplace.json version: ${marketplaceJson.version} → ${primaryVersion}`
     );
     marketplaceJson.version = primaryVersion;
+    marketplaceUpdated = true;
+  }
+
+  // Also sync the first plugin entry version (claudelint)
+  if (marketplaceJson.plugins?.[0]?.version !== primaryVersion) {
+    const pluginEntry = marketplaceJson.plugins[0];
+    log.info(
+      `Updating marketplace.json plugins[0].version: ${pluginEntry.version} → ${primaryVersion}`
+    );
+    pluginEntry.version = primaryVersion;
+    marketplaceUpdated = true;
+  }
+
+  if (marketplaceUpdated) {
     fs.writeFileSync(
       marketplaceJsonPath,
       JSON.stringify(marketplaceJson, null, 2) + '\n'

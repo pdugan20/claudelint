@@ -16,8 +16,14 @@ interface PluginJson {
   [key: string]: unknown;
 }
 
+interface MarketplacePluginEntry {
+  version: string;
+  [key: string]: unknown;
+}
+
 interface MarketplaceJson {
   version: string;
+  plugins: MarketplacePluginEntry[];
   [key: string]: unknown;
 }
 
@@ -41,8 +47,8 @@ function checkVersionSync(): boolean {
 
   let allInSync = true;
 
-  // Check plugin.json
-  const pluginJsonPath = path.join(rootDir, 'plugin.json');
+  // Check .claude-plugin/plugin.json
+  const pluginJsonPath = path.join(rootDir, '.claude-plugin', 'plugin.json');
   const pluginJson: PluginJson = JSON.parse(
     fs.readFileSync(pluginJsonPath, 'utf-8')
   );
@@ -73,27 +79,41 @@ function checkVersionSync(): boolean {
     log.pass('marketplace.json in sync');
   }
 
-  // Check integration example
+  // Check marketplace.json plugins[0].version
+  if (marketplaceJson.plugins?.[0]?.version !== primaryVersion) {
+    log.fail(
+      `marketplace.json plugins[0].version mismatch: ${marketplaceJson.plugins?.[0]?.version} (expected ${primaryVersion})`
+    );
+    allInSync = false;
+  } else {
+    log.pass('marketplace.json plugins[0].version in sync');
+  }
+
+  // Check integration example (optional — may not exist yet)
   const integrationPackageJsonPath = path.join(
     rootDir,
     'examples',
     'integration',
     'package.json'
   );
-  const integrationPackageJson: PackageJson = JSON.parse(
-    fs.readFileSync(integrationPackageJsonPath, 'utf-8')
-  );
-  const devDeps = integrationPackageJson.devDependencies || {};
-  const depVersion = devDeps[packageName];
-  const expectedDepVersion = `^${primaryVersion}`;
-
-  if (depVersion !== expectedDepVersion) {
-    log.fail(
-      `integration example dependency mismatch: ${depVersion} (expected ${expectedDepVersion})`
+  if (fs.existsSync(integrationPackageJsonPath)) {
+    const integrationPackageJson: PackageJson = JSON.parse(
+      fs.readFileSync(integrationPackageJsonPath, 'utf-8')
     );
-    allInSync = false;
+    const devDeps = integrationPackageJson.devDependencies || {};
+    const depVersion = devDeps[packageName];
+    const expectedDepVersion = `^${primaryVersion}`;
+
+    if (depVersion !== expectedDepVersion) {
+      log.fail(
+        `integration example dependency mismatch: ${depVersion} (expected ${expectedDepVersion})`
+      );
+      allInSync = false;
+    } else {
+      log.pass('integration example dependency in sync');
+    }
   } else {
-    log.pass('integration example dependency in sync');
+    log.pass('integration example not present (skipped)');
   }
 
   log.blank();
