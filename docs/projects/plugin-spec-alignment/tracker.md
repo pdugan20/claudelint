@@ -8,9 +8,9 @@
 
 10 files already updated to fix plugin install syntax. Commit before any further changes.
 
-- [ ] 0.1: Commit the 10-file install syntax fix (unstaged changes)
-- [ ] 0.2: Verify build passes: `npm run build`
-- [ ] 0.3: Verify tests pass: `npm test`
+- [x] 0.1: Commit the 10-file install syntax fix (commit `72f4514`)
+- [x] 0.2: Verify build passes (pre-commit hook ran build)
+- [x] 0.3: Verify tests pass (pre-commit hook ran dogfood, 0 errors)
 
 **Files changed:**
 
@@ -131,7 +131,12 @@ Add `schemas/marketplace.schema.json` so marketplace validation has the same dua
 
 - [ ] 2.1: Create `schemas/marketplace.schema.json` derived from the Zod schema
 - [ ] 2.2: Add to schema drift detection (`npm run check:schema-sync`)
-- [ ] 2.3: Add schema test in `tests/schemas/`
+- [ ] 2.3: Add schema test in `tests/schemas/marketplace.schema.test.ts`
+  - Validates Anthropic's bundled marketplace.json structure passes
+  - Validates Anthropic's official directory marketplace.json structure passes
+  - Rejects old fabricated schema format
+  - Rejects missing required fields (name, owner, plugins)
+  - Validates all source types (relative path, github, url, npm, pip)
 
 ---
 
@@ -145,6 +150,19 @@ Update the rule to validate against the corrected schema.
 - [ ] 3.4: Add validation: plugin entry `version` matches its `plugin.json` version (when both exist and source is a relative path)
 - [ ] 3.5: Update rule metadata (`meta.docs`) to reflect real marketplace.json structure
 - [ ] 3.6: Rewrite tests in `tests/rules/plugin/plugin-invalid-manifest.test.ts`
+  - Valid: well-formed marketplace.json with all required fields
+  - Valid: marketplace.json with optional fields (metadata, description, version)
+  - Valid: plugin entries with relative path source
+  - Valid: plugin entries with github/url/npm source objects
+  - Invalid: missing `name` field
+  - Invalid: missing `owner` field
+  - Invalid: missing `plugins` array
+  - Invalid: plugin entry missing `name`
+  - Invalid: plugin entry missing `source`
+  - Invalid: plugin entry version mismatch with its plugin.json
+  - Invalid: malformed JSON
+  - Edge: empty plugins array (valid but warn?)
+  - Edge: non-marketplace.json file (should skip)
 
 ---
 
@@ -157,6 +175,13 @@ Update the rule to check real marketplace.json references.
 - [ ] 4.3: Add check: relative source directories contain `.claude-plugin/plugin.json`
 - [ ] 4.4: Update rule metadata (`meta.docs`) to reflect real behavior
 - [ ] 4.5: Rewrite tests in `tests/rules/plugin/plugin-marketplace-files-not-found.test.ts`
+  - Valid: relative source path resolves to existing directory with plugin.json
+  - Valid: external source (github/url/npm) skipped (can't check remote paths)
+  - Invalid: relative source path points to non-existent directory
+  - Invalid: relative source path exists but has no `.claude-plugin/plugin.json`
+  - Edge: non-marketplace.json file (should skip)
+  - Edge: invalid JSON (should skip gracefully)
+  - Edge: schema validation failure (should skip, handled by other rule)
 
 ---
 
@@ -175,12 +200,24 @@ Run generators, verify drift detection, dogfood.
 
 ## Phase 6: Documentation Updates
 
-Update any docs that reference the old marketplace schema or install methods.
+Update website and internal docs to reflect corrected marketplace spec.
 
-- [ ] 6.1: Update `website/integrations/claude-code-plugin.md` if marketplace install path changes
-- [ ] 6.2: Verify `website/guide/cli-reference.md` install-plugin docs are accurate
-- [ ] 6.3: Update `docs/projects/roadmap.md` to reference this project
-- [ ] 6.4: Update `docs/projects/status.md` to add this project
+### Website (auto-generated rule docs)
+
+- [ ] 6.1: Run `npm run docs:generate` to regenerate rule pages for `plugin-invalid-manifest` and `plugin-marketplace-files-not-found` (picks up updated `meta.docs`)
+- [ ] 6.2: Verify generated rule pages at `website/rules/plugin/plugin-invalid-manifest.md` and `website/rules/plugin/plugin-marketplace-files-not-found.md` reflect the corrected descriptions, examples, and howToFix text
+
+### Website (hand-written pages)
+
+- [ ] 6.3: Review `website/integrations/claude-code-plugin.md` -- verify marketplace install instructions are accurate
+- [ ] 6.4: Review `website/guide/cli-reference.md` -- verify `install-plugin` command docs match actual CLI output
+- [ ] 6.5: Review `website/guide/configuration.md` -- check for any marketplace schema references
+- [ ] 6.6: Add marketplace.json to the schemas API page if applicable (`website/api/schemas.md` or equivalent)
+
+### Internal docs
+
+- [x] 6.7: Update `docs/projects/roadmap.md` -- added plugin-spec-alignment section (commit `72f4514`)
+- [x] 6.8: Update `docs/projects/status.md` -- added active project entry (commit `72f4514`)
 
 ---
 
