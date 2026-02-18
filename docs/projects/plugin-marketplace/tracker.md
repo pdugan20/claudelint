@@ -414,14 +414,14 @@ File: `website/api/schemas/marketplace.md`
 
 ### 5.1 Dogfood validation
 
-- [ ] Run `npm run check:self` — verify marketplace.json passes our own rules
-- [ ] Confirm 0 errors, 0 warnings related to marketplace/plugin validation
+- [x] Run `npm run check:self` — verify marketplace.json passes our own rules
+- [x] Confirm 0 errors, 0 warnings related to marketplace/plugin validation
 
 ### 5.2 Schema tests
 
-- [ ] Run `npm test -- tests/schemas/marketplace.schema.test.ts` — all existing tests pass
-- [ ] Add a test case that validates our actual marketplace.json against the schema
-- [ ] Run full test suite: `npm test`
+- [x] Run `npm test -- tests/schemas/marketplace.schema.test.ts` — all existing tests pass (29/29)
+- [x] Add a test case that validates our actual marketplace.json against the schema
+- [x] Run full test suite: `npm test` (1679/1679 pass, 203 suites)
 
 ### 5.3 Local marketplace test
 
@@ -435,12 +435,12 @@ File: `website/api/schemas/marketplace.md`
 
 ### 5.4 Sync versions test
 
-- [ ] Temporarily change version in package.json
-- [ ] Run `npm run sync:versions`
-- [ ] Verify `.claude-plugin/plugin.json` version updated
-- [ ] Verify `.claude-plugin/marketplace.json` version updated (top-level AND plugins[0].version)
-- [ ] Verify `check-dependency.sh` PLUGIN_VERSION updated
-- [ ] Revert test changes
+- [x] Temporarily change version in package.json (set to 9.9.9-test)
+- [x] Run `npm run sync:versions`
+- [x] Verify `.claude-plugin/plugin.json` version updated
+- [x] Verify `.claude-plugin/marketplace.json` version updated (top-level AND plugins[0].version)
+- [x] Verify `check-dependency.sh` PLUGIN_VERSION updated
+- [x] Revert test changes
 
 ### 5.5 Global install test
 
@@ -462,7 +462,7 @@ File: `website/api/schemas/marketplace.md`
 
 - [ ] Run `claudelint install-plugin` from a project WITH claude-code-lint installed — verify auto-detection
 - [ ] Run `claudelint install-plugin` from a project WITHOUT it — verify appropriate guidance
-- [ ] Verify the marketplace name and install commands are correct
+- [x] Verify the marketplace name and install commands are correct
 
 ---
 

@@ -263,6 +263,19 @@ describe('MarketplacePluginEntrySchema', () => {
   });
 });
 
+describe('actual marketplace.json validation', () => {
+  it('should validate our own marketplace.json against the schema', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const marketplace = require('../../.claude-plugin/marketplace.json');
+    const result = MarketplaceMetadataSchema.safeParse(marketplace);
+    if (!result.success) {
+      // eslint-disable-next-line no-console
+      console.error('Validation errors:', result.error.format());
+    }
+    expect(result.success).toBe(true);
+  });
+});
+
 describe('MarketplacePluginSourceSchema', () => {
   it('should accept relative path string', () => {
     const result = MarketplacePluginSourceSchema.safeParse('./plugins/my-plugin');
