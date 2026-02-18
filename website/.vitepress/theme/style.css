@@ -200,9 +200,24 @@
   }
 }
 
-/* Tighten hero bottom to match visual top spacing */
+/* Match hero bottom spacing to top spacing (no features section below) */
 .VPHero {
-  padding-bottom: 48px !important;
+  padding-bottom: 96px !important;
+}
+
+.VPHome {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.VPContent.is-home {
+  padding-bottom: 0 !important;
+}
+
+@media (max-width: 959px) {
+  .VPHero {
+    padding-bottom: 48px !important;
+  }
 }
 
 /* ===== Hero: Wider layout, vertically centered, terminal bleeds right ===== */

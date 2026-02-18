@@ -1,11 +1,28 @@
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme';
 import { useData } from 'vitepress';
+import { onMounted, watch, nextTick } from 'vue';
 import TerminalDemo from './components/TerminalDemo.vue';
 import HomeFooter from './components/HomeFooter.vue';
 
 const { Layout } = DefaultTheme;
 const { frontmatter } = useData();
+
+function ensureMainLandmark() {
+  if (typeof document === 'undefined') return;
+  const el = document.querySelector('.VPHome');
+  if (el && !document.querySelector('main')) {
+    el.setAttribute('role', 'main');
+  }
+}
+
+onMounted(() => {
+  ensureMainLandmark();
+  watch(
+    () => frontmatter.value.layout,
+    () => nextTick(ensureMainLandmark)
+  );
+});
 </script>
 
 <template>

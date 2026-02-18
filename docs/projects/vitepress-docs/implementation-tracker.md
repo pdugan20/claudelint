@@ -107,12 +107,12 @@ Track progress through each phase of VitePress documentation website implementat
 - [x] Navbar with 6 sections renders
 - [x] Sidebar navigation per section
 - [x] Local search index generated (26 pages indexed)
-- [ ] Dark mode toggle (requires browser testing)
-- [ ] Mobile responsiveness (requires browser testing)
+- [x] Dark mode toggle (verified via browser testing 2026-02-17)
+- [x] Mobile responsiveness (verified via browser testing 2026-02-17)
 
 **Note**: 106 dead links from old docs/ relative paths; ignored for now, will be resolved as rule pages are added in Phase 2-3.
 
-**Phase 1 Complete**: (27/29 tasks = 93%, 2 require browser testing)
+**Phase 1 Complete**: (29/29 tasks = 100%)
 
 ---
 
@@ -296,11 +296,11 @@ Add `meta.docs` to most commonly violated rules:
 ### Component Testing
 
 - [x] VitePress build succeeds with all components (7.19s)
-- [ ] Test mobile responsiveness (requires browser testing)
-- [ ] Test dark mode compatibility (requires browser testing)
-- [ ] Check accessibility (requires browser testing)
+- [x] Test mobile responsiveness (verified via browser testing 2026-02-17)
+- [x] Test dark mode compatibility (verified via browser testing 2026-02-17)
+- [x] Check accessibility (Lighthouse 96-100, axe audit run 2026-02-17)
 
-**Phase 4 Complete**: (18/21 tasks = 86%, 3 require browser testing)
+**Phase 4 Complete**: (21/21 tasks = 100%, excluding deferred interactive components)
 
 ---
 
@@ -384,10 +384,10 @@ Add `meta.docs` to most commonly violated rules:
   - [x] Set Content-Type for llms.txt files
 - [x] Create `.vercelignore` (exclude tests, docs, .claude, .github from uploads)
 - [x] Add docs-build CI job to validate VitePress build on every PR
-- [ ] Enable Vercel Analytics
-  - [ ] Go to Project → Analytics
-  - [ ] Enable Vercel Analytics
-  - [ ] Test analytics tracking
+- [x] Enable Vercel Analytics
+  - [x] Install `@vercel/analytics` and inject in theme
+  - [x] Enable Vercel Analytics in dashboard
+  - [x] Test analytics tracking (scripts load on production, 404 only on local preview)
 
 ### Domain Configuration
 
@@ -407,8 +407,9 @@ Add `meta.docs` to most commonly violated rules:
 ### Monitoring & Analytics
 
 - [x] Add Vercel Speed Insights (`@vercel/speed-insights` injected in theme)
-- [ ] Enable Vercel Web Analytics (dashboard toggle)
-- [ ] Enable Speed Insights in Vercel dashboard
+- [x] Add Vercel Web Analytics (`@vercel/analytics` injected in theme)
+- [x] Enable Vercel Web Analytics in dashboard
+- [x] Enable Speed Insights in Vercel dashboard
 
 ### Project Links & README
 
@@ -418,21 +419,21 @@ Add `meta.docs` to most commonly violated rules:
 
 ### SEO & Social Verification
 
-- [ ] Test OG images with opengraph.xyz or similar debugger
-- [ ] Verify OG images readable at thumbnail size (~300px wide)
-- [ ] Verify logo recognizable at 16x16 (favicon size)
+- [x] Test OG images with opengraph.xyz or similar debugger
+- [x] Verify OG images readable at thumbnail size (~300px wide)
+- [x] Verify logo recognizable at 16x16 (favicon size)
 - [ ] Test social media share preview (Twitter, LinkedIn)
 
 ### Performance Audit
 
-- [ ] Run Lighthouse audit on homepage
-- [ ] Run Lighthouse audit on a rule page
-- [ ] Target scores:
-  - [ ] Performance: 95+
-  - [ ] Accessibility: 95+
-  - [ ] Best Practices: 95+
-  - [ ] SEO: 95+
-- [ ] Fix any issues identified
+- [x] Run Lighthouse audit on homepage
+- [x] Run Lighthouse audit on a rule page
+- [x] Target scores:
+  - [ ] Performance: 95+ (actual: 88 mobile / 81 desktop — font loading bottleneck)
+  - [x] Accessibility: 95+ (actual: 96 homepage, 100 rule pages)
+  - [x] Best Practices: 95+ (actual: 100)
+  - [x] SEO: 95+ (actual: 100)
+- [x] Fix any issues identified (async font loading, heading hierarchy, main landmark, hero spacing)
 
 ### PR Preview Deployments
 
@@ -465,7 +466,7 @@ Add `meta.docs` to most commonly violated rules:
 - [ ] Gather user feedback
 - [ ] Set up uptime monitoring (UptimeRobot or similar)
 
-**Phase 6 Complete**: ☐ (23/52 tasks = 44%)
+**Phase 6 Complete**: ☐ (33/52 tasks = 63%)
 
 ---
 
@@ -522,10 +523,10 @@ Add `meta.docs` to most commonly violated rules:
 - [x] Phase 3: Metadata Completion (12/12 = 100%)
 - [x] Phase 4: Custom Components (18/21 = 86%, 3 require browser testing)
 - [x] Phase 5: Enhanced Features (12/16 = 75%, remainder deferred to post-launch)
-- [ ] Phase 6: Deployment & Launch (23/52 = 44%)
+- [ ] Phase 6: Deployment & Launch (33/52 = 63%)
 - [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 = 0%)
 
-**Total Progress**: 144/185 tasks (78%) — Phases 1-5 complete, Phase 6 in progress (deployed + live), Phase 7 remaining
+**Total Progress**: 154/185 tasks (83%) — Phases 1-5 complete, Phase 6 in progress (deployed + live, Lighthouse audited), Phase 7 remaining
 
 ### By Category
 
@@ -533,7 +534,7 @@ Add `meta.docs` to most commonly violated rules:
 - **Setup & Infrastructure**: 27/29 (93%)
 - **Auto-Generation & Metadata**: 55/55 (100%)
 - **Components & Features**: 29/36 (81%)
-- **Deployment & Launch**: 23/52 (44%)
+- **Deployment & Launch**: 33/52 (63%)
 - **Docs Cleanup**: 0/14 (0%)
 
 ### Note on Rule Counts

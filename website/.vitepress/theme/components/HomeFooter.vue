@@ -1,9 +1,9 @@
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer" role="contentinfo" aria-label="Site footer">
     <div class="footer-inner">
       <div class="footer-columns">
         <div class="footer-col">
-          <h4 class="footer-heading">Documentation</h4>
+          <p class="footer-heading">Documentation</p>
           <ul class="footer-links">
             <li><a href="/guide/getting-started">Getting Started</a></li>
             <li><a href="/guide/configuration">Configuration</a></li>
@@ -14,7 +14,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-heading">Validators</h4>
+          <p class="footer-heading">Validators</p>
           <ul class="footer-links">
             <li><a href="/validators/claude-md">CLAUDE.md</a></li>
             <li><a href="/validators/skills">Skills</a></li>
@@ -26,7 +26,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-heading">Integrations</h4>
+          <p class="footer-heading">Integrations</p>
           <ul class="footer-links">
             <li><a href="/integrations/ci">CI/CD</a></li>
             <li><a href="/integrations/pre-commit">Claude Code Hooks</a></li>
@@ -37,7 +37,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-heading">Reference</h4>
+          <p class="footer-heading">Reference</p>
           <ul class="footer-links">
             <li><a href="/rules/overview">Rules</a></li>
             <li><a href="/api/overview">API Overview</a></li>
@@ -48,7 +48,7 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h4 class="footer-heading">Project</h4>
+          <p class="footer-heading">Project</p>
           <ul class="footer-links">
             <li>
               <a href="https://github.com/pdugan20/claudelint" target="_blank" rel="noopener"
