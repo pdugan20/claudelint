@@ -49,7 +49,7 @@ const logoSvg = readFileSync(join(WEBSITE_DIR, 'public/logo.svg'), 'utf-8');
 const logoDataUri = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString('base64')}`;
 
 // --- Template version (bump to invalidate all cached images) ---
-const TEMPLATE_VERSION = 1;
+const TEMPLATE_VERSION = 2;
 
 // --- Satori VDOM helper ---
 type VNode = { type: string; props: Record<string, any> };
@@ -199,25 +199,26 @@ function renderTemplate(page: PageMeta): VNode {
         width: '1200px',
         height: '630px',
         padding: '60px',
-        backgroundImage: 'linear-gradient(225deg, #2a1c14 0%, #201812 40%, #1a1a19 100%)',
+        paddingRight: '120px',
+        backgroundImage: 'linear-gradient(225deg, #221710 0%, #1a1410 40%, #141413 100%)',
       },
     },
     // Header: logo + site name
     h(
       'div',
-      { style: { display: 'flex', alignItems: 'center', gap: '16px' } },
-      h('img', { src: logoDataUri, width: 56, height: 35 }),
+      { style: { display: 'flex', alignItems: 'center', gap: '20px' } },
+      h('img', { src: logoDataUri, width: 72, height: 45 }),
       h(
         'span',
         {
           style: {
-            fontFamily: 'Source Serif 4',
-            fontSize: '44px',
+            fontFamily: 'Inter',
+            fontSize: '56px',
             fontWeight: 600,
-            color: '#e8e6dc',
+            color: '#ffffff',
           },
         },
-        'Claudelint Docs',
+        'claudelint',
       ),
     ),
     // Content: section, title, description — anchored to bottom
@@ -251,7 +252,7 @@ function renderTemplate(page: PageMeta): VNode {
         'span',
         {
           style: {
-            fontFamily: 'Source Serif 4',
+            fontFamily: 'Inter',
             fontSize: '72px',
             fontWeight: 600,
             color: '#ffffff',

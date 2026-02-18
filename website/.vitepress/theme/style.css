@@ -107,7 +107,9 @@
 
   --vp-button-brand-text: #1a1a19;
   --vp-button-brand-bg: #e8e6dc;
+  --vp-button-brand-hover-text: #1a1a19;
   --vp-button-brand-hover-bg: #f0eee6;
+  --vp-button-brand-active-text: #1a1a19;
   --vp-button-brand-active-bg: #d4d2c8;
 
   --vp-c-tip-1: #a8a69d;
@@ -200,9 +202,24 @@
   }
 }
 
-/* Tighten hero bottom to match visual top spacing */
+/* Match hero bottom spacing to top spacing (no features section below) */
 .VPHero {
-  padding-bottom: 48px !important;
+  padding-bottom: 96px !important;
+}
+
+.VPHome {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.VPContent.is-home {
+  padding-bottom: 0 !important;
+}
+
+@media (max-width: 959px) {
+  .VPHero {
+    padding-bottom: 48px !important;
+  }
 }
 
 /* ===== Hero: Wider layout, vertically centered, terminal bleeds right ===== */

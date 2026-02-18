@@ -29,8 +29,18 @@ export default defineConfig({
     [
       'link',
       {
+        rel: 'preload',
+        as: 'style',
+        href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap',
+      },
+    ],
+    [
+      'link',
+      {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&display=swap',
+        media: 'print',
+        onload: "this.media='all'",
       },
     ],
     ['meta', { property: 'og:site_name', content: 'claudelint' }],
@@ -41,6 +51,7 @@ export default defineConfig({
     logo: {
       light: '/logo.svg',
       dark: '/logo-dark.svg',
+      alt: 'claudelint logo',
     },
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '^/guide/' },
