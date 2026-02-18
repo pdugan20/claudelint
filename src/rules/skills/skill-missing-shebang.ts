@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: true,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-shebang.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-missing-shebang',
     docs: {
       recommended: true,
       summary: 'Warns when shell script files are missing a shebang line.',

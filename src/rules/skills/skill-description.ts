@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-description',
     docs: {
       recommended: true,
       summary: 'Enforces that skills have a valid description in their SKILL.md frontmatter.',

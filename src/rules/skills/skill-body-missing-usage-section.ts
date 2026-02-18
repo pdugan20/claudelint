@@ -18,8 +18,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-body-missing-usage-section.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-body-missing-usage-section',
     docs: {
       summary: 'Warns when a SKILL.md body lacks a "## Usage" or "## Instructions" section.',
       rationale:

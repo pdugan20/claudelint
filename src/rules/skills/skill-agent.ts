@@ -21,7 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-agent.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-agent',
     docs: {
       recommended: true,
       summary: 'Requires the agent field when a skill uses fork context mode.',

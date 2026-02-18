@@ -57,8 +57,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-allowed-tools-not-used.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-allowed-tools-not-used',
     docs: {
       summary: 'Warns when tools declared in allowed-tools are never referenced in the skill body.',
       rationale:

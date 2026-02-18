@@ -17,8 +17,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-sse-transport-deprecated.md',
+    docUrl: 'https://claudelint.com/rules/mcp/mcp-sse-transport-deprecated',
     docs: {
       recommended: true,
       summary: 'Warns when an MCP server uses the deprecated SSE transport type.',

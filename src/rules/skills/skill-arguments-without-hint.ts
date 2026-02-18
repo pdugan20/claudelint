@@ -24,8 +24,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-arguments-without-hint.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-arguments-without-hint',
     docs: {
       summary:
         'Warns when a skill uses $ARGUMENTS or positional parameters but lacks an argument-hint in frontmatter.',

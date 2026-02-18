@@ -23,8 +23,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-invalid-transport.md',
+    docUrl: 'https://claudelint.com/rules/lsp/lsp-invalid-transport',
     docs: {
       recommended: true,
       summary: 'Validates that LSP server transport types are either "stdio" or "socket".',

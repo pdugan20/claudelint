@@ -23,8 +23,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-commands-deprecated.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-commands-deprecated',
     docs: {
       recommended: true,
       summary: 'Warns when plugin.json uses the deprecated commands field.',

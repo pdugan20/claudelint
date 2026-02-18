@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-disallowed-tools.md',
+    docUrl: 'https://claudelint.com/rules/agents/agent-disallowed-tools',
     docs: {
       recommended: true,
       summary:

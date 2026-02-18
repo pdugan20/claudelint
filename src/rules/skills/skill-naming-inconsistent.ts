@@ -34,8 +34,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-naming-inconsistent.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-naming-inconsistent',
     docs: {
       summary: 'Warns when files in a skill directory mix different naming conventions.',
       rationale:

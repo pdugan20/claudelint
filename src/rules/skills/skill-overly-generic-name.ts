@@ -61,8 +61,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-overly-generic-name.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-overly-generic-name',
     docs: {
       recommended: true,
       summary: 'Flags skill names that are too generic to convey what the skill does.',

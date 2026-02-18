@@ -22,8 +22,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/commands/commands-deprecated-directory.md',
+    docUrl: 'https://claudelint.com/rules/commands/commands-deprecated-directory',
     docs: {
       recommended: true,
       summary: 'Warns when the deprecated .claude/commands directory is detected.',

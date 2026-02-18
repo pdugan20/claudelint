@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/hooks/hooks-invalid-config.md',
+    docUrl: 'https://claudelint.com/rules/hooks/hooks-invalid-config',
     docs: {
       recommended: true,
       summary: 'Validates hook configuration structure and required fields.',

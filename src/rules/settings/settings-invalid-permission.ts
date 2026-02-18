@@ -52,8 +52,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/settings/settings-invalid-permission.md',
+    docUrl: 'https://claudelint.com/rules/settings/settings-invalid-permission',
     docs: {
       recommended: true,
       summary: 'Ensures permission rules reference valid Claude Code tool names.',

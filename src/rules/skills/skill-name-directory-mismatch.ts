@@ -22,8 +22,7 @@ export const rule: Rule = {
     fixable: true,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-name-directory-mismatch.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-name-directory-mismatch',
     docs: {
       recommended: true,
       summary: 'Enforces that the skill `name` in frontmatter matches its parent directory name.',

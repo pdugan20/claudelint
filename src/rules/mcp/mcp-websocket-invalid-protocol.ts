@@ -17,8 +17,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-websocket-invalid-protocol.md',
+    docUrl: 'https://claudelint.com/rules/mcp/mcp-websocket-invalid-protocol',
     docs: {
       recommended: true,
       summary: 'Warns when a WebSocket MCP server URL does not use ws:// or wss:// protocol.',

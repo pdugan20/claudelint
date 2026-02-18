@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-disallowed-tools.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-disallowed-tools',
     docs: {
       recommended: true,
       summary:

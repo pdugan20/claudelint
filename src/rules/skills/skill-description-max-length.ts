@@ -19,8 +19,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.3.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description-max-length.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-description-max-length',
     schema: z.object({
       maxLength: z.number().positive().int().optional(),
     }),

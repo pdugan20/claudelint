@@ -23,8 +23,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-marketplace-files-not-found.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-marketplace-files-not-found',
     docs: {
       recommended: true,
       summary: 'Verifies that files referenced in marketplace.json actually exist on disk.',

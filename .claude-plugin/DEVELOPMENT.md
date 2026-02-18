@@ -234,7 +234,7 @@ Before releasing a new version:
 - **Plugin structure**: This file
 - **Manual testing**: `/tmp/claudelint-manual-testing-guide.md`
 - **Schema findings**: `docs/projects/manual-testing-infrastructure-refactor/`
-- **Rule documentation**: `docs/rules/plugin/`
+- **Rule documentation**: [claudelint.com/rules](https://claudelint.com/rules/overview)
 
 ## References
 

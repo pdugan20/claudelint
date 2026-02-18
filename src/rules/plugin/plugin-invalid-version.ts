@@ -27,8 +27,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-invalid-version.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-invalid-version',
     docs: {
       recommended: true,
       summary: 'Validates that the plugin version follows semantic versioning format.',

@@ -25,8 +25,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-missing-file.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-missing-file',
     docs: {
       recommended: true,
       summary: 'Validates that files and directories referenced in plugin.json exist on disk.',

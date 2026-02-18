@@ -17,8 +17,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-stdio-empty-command.md',
+    docUrl: 'https://claudelint.com/rules/mcp/mcp-stdio-empty-command',
     docs: {
       recommended: true,
       summary: 'Ensures that MCP stdio transport servers have a non-empty command field.',

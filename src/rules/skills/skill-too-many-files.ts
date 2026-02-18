@@ -33,8 +33,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-too-many-files.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-too-many-files',
     docs: {
       summary: 'Warns when a skill directory has too many files at the root level.',
       rationale:

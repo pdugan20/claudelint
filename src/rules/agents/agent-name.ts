@@ -20,7 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-name.md',
+    docUrl: 'https://claudelint.com/rules/agents/agent-name',
     docs: {
       recommended: true,
       summary: 'Validates that agent names follow the lowercase-with-hyphens naming convention.',

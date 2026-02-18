@@ -401,7 +401,7 @@ export const rule: Rule = {
       deprecatedSince: '0.3.0',
       removeInVersion: '1.0.0',           // When it will be removed
       // OR: removeInVersion: null,       // Retained indefinitely
-      url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
+      url: 'https://claudelint.com/guide/troubleshooting',
     },
     since: '0.1.0',
   },

@@ -17,8 +17,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-file-not-found.md',
+    docUrl: 'https://claudelint.com/rules/claude-md/claude-md-file-not-found',
     docs: {
       recommended: true,
       summary: 'Ensures the specified CLAUDE.md file exists at the expected path.',

@@ -26,8 +26,7 @@ export const rule: Rule = {
     fixable: true,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-reference-not-linked.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-reference-not-linked',
     docs: {
       summary:
         'Warns when backtick-enclosed file paths in SKILL.md are not formatted as markdown links.',

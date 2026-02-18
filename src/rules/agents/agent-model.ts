@@ -20,7 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/agents/agent-model.md',
+    docUrl: 'https://claudelint.com/rules/agents/agent-model',
     docs: {
       recommended: true,
       summary: 'Validates that the agent model field is a recognized ' + 'model name.',

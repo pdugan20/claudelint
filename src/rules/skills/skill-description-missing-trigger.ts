@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-description-missing-trigger.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-description-missing-trigger',
     docs: {
       summary:
         'Warns when a skill description lacks trigger phrases that help the model know when to load the skill.',

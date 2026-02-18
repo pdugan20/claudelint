@@ -28,8 +28,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/claude-md/claude-md-import-depth-exceeded.md',
+    docUrl: 'https://claudelint.com/rules/claude-md/claude-md-import-depth-exceeded',
     schema: z.object({
       maxDepth: z.number().positive().int().optional(),
     }),

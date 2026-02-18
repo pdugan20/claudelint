@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-command-not-in-path.md',
+    docUrl: 'https://claudelint.com/rules/lsp/lsp-command-not-in-path',
     docs: {
       summary: 'Warns when LSP server commands are not in PATH or lack absolute paths.',
       rationale:

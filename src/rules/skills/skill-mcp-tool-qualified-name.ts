@@ -48,8 +48,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-mcp-tool-qualified-name.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-mcp-tool-qualified-name',
     docs: {
       summary:
         'Warns when allowed-tools entries appear to be MCP tools but lack the qualified mcp__server__tool format.',

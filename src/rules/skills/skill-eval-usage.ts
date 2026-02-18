@@ -25,8 +25,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-eval-usage.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-eval-usage',
     docs: {
       recommended: true,
       summary: 'Detects use of eval() and exec() in skill scripts that can execute arbitrary code.',

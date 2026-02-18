@@ -17,7 +17,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-http-empty-url.md',
+    docUrl: 'https://claudelint.com/rules/mcp/mcp-http-empty-url',
     docs: {
       recommended: true,
       summary: 'Ensures that MCP HTTP transport servers have a non-empty URL.',

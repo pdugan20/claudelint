@@ -66,8 +66,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-deep-nesting.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-deep-nesting',
     schema: z.object({
       maxDepth: z.number().positive().int().optional(),
     }),

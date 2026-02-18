@@ -40,8 +40,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-shell-script-hardcoded-paths.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-shell-script-hardcoded-paths',
     docs: {
       summary: 'Warns when shell scripts contain hardcoded absolute paths that reduce portability.',
       rationale:

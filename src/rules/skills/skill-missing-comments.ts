@@ -31,8 +31,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-missing-comments.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-missing-comments',
     schema: z.object({
       minLines: z.number().positive().int().optional(),
     }),

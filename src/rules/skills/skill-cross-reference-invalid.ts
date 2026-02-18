@@ -19,8 +19,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.3.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-cross-reference-invalid.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-cross-reference-invalid',
     docs: {
       summary: 'Validates that cross-references between skills point to SKILL.md files that exist.',
       rationale:

@@ -22,8 +22,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/commands/commands-migrate-to-skills.md',
+    docUrl: 'https://claudelint.com/rules/commands/commands-migrate-to-skills',
     docs: {
       recommended: true,
       summary: 'Provides step-by-step migration guidance from Commands to Skills.',

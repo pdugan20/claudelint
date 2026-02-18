@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-json-wrong-location.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-json-wrong-location',
     docs: {
       recommended: true,
       summary: 'Ensures plugin.json is inside the .claude-plugin/ directory.',

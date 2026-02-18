@@ -22,8 +22,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-name-directory-mismatch.md',
+    docUrl: 'https://claudelint.com/rules/output-styles/output-style-name-directory-mismatch',
     docs: {
       recommended: true,
       summary: 'Ensures the output style name in frontmatter matches its parent directory name.',

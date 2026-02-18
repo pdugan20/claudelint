@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/lsp/lsp-extension-missing-dot.md',
+    docUrl: 'https://claudelint.com/rules/lsp/lsp-extension-missing-dot',
     docs: {
       recommended: true,
       summary: 'Ensures file extension mappings in LSP config start with a dot.',

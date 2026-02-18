@@ -18,8 +18,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/mcp/mcp-websocket-invalid-url.md',
+    docUrl: 'https://claudelint.com/rules/mcp/mcp-websocket-invalid-url',
     docs: {
       recommended: true,
       summary: 'Validates that MCP WebSocket transport URLs are well-formed.',

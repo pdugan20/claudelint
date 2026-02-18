@@ -20,8 +20,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/output-styles/output-style-missing-guidelines.md',
+    docUrl: 'https://claudelint.com/rules/output-styles/output-style-missing-guidelines',
     docs: {
       recommended: true,
       summary: 'Warns when an output style lacks a Guidelines or Format section.',

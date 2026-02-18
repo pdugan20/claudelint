@@ -69,8 +69,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.3.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/skills/skill-xml-tags-anywhere.md',
+    docUrl: 'https://claudelint.com/rules/skills/skill-xml-tags-anywhere',
     docs: {
       recommended: true,
       summary:

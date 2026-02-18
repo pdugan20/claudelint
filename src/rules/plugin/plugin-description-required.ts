@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-description-required.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-description-required',
     docs: {
       recommended: true,
       summary: 'Warns when plugin.json is missing a description field.',

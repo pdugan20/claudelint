@@ -43,8 +43,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-missing-component-paths.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-missing-component-paths',
     docs: {
       recommended: true,
       summary: 'Warns when plugin component paths do not start with "./".',

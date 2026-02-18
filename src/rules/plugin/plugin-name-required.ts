@@ -21,8 +21,7 @@ export const rule: Rule = {
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl:
-      'https://github.com/pdugan20/claudelint/blob/main/docs/rules/plugin/plugin-name-required.md',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-name-required',
     docs: {
       recommended: true,
       summary: 'Requires that plugin.json contains a non-empty name field.',
