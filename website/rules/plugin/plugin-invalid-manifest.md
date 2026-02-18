@@ -1,55 +1,74 @@
 ---
-description: "marketplace.json must be valid and reference existing files"
+description: "marketplace.json must conform to the marketplace schema"
 ---
 
 # plugin-invalid-manifest
 
-<RuleHeader description="marketplace.json must be valid and reference existing files" severity="error" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="marketplace.json must conform to the marketplace schema" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-This rule checks the marketplace.json file that accompanies a plugin.json. It verifies that marketplace.json contains valid JSON, conforms to the MarketplaceMetadataSchema, and that its version field matches the version declared in plugin.json. If marketplace.json does not exist, the rule is skipped since it is optional. A mismatched version or invalid schema will cause marketplace publishing issues.
+This rule validates marketplace.json files against the official Claude Code marketplace schema. A valid marketplace.json requires a name, owner (with name), and plugins array. Each plugin entry must have a name and source. The rule checks JSON syntax, schema conformance, and that each plugin entry has the required fields.
 
 ### Incorrect
 
-marketplace.json with version mismatch
+marketplace.json missing required owner field
 
 ```json
-// plugin.json
 {
-  "name": "my-plugin",
-  "version": "1.2.0"
+  "name": "my-marketplace",
+  "plugins": []
 }
+```
 
-// marketplace.json
+Plugin entry missing required source field
+
+```json
 {
-  "name": "my-plugin",
-  "version": "1.0.0"
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    { "name": "my-plugin" }
+  ]
 }
 ```
 
 ### Correct
 
-marketplace.json with matching version
+Valid marketplace.json with relative path source
 
 ```json
-// plugin.json
 {
-  "name": "my-plugin",
-  "version": "1.2.0"
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "./plugins/my-plugin",
+      "description": "A useful plugin"
+    }
+  ]
 }
+```
 
-// marketplace.json
+Valid marketplace.json with GitHub source
+
+```json
 {
-  "name": "my-plugin",
-  "version": "1.2.0",
-  "description": "A useful plugin"
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": { "source": "github", "repo": "owner/repo" }
+    }
+  ]
 }
 ```
 
 ## How To Fix
 
-Ensure marketplace.json is valid JSON, follows the expected schema, and has a version that matches plugin.json. Update the version in marketplace.json whenever you bump plugin.json.
+Ensure marketplace.json has the required fields: name (string), owner (object with name), and plugins (array). Each plugin entry needs name and source. See the [official docs](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema).
 
 ## Options
 
@@ -57,8 +76,7 @@ This rule does not have any configuration options.
 
 ## Related Rules
 
-- [`plugin-name-required`](/rules/plugin/plugin-name-required)
-- [`plugin-version-required`](/rules/plugin/plugin-version-required)
+- [`plugin-marketplace-files-not-found`](/rules/plugin/plugin-marketplace-files-not-found)
 
 ## Resources
 

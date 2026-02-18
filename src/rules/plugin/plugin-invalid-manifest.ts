@@ -1,22 +1,21 @@
 /**
  * Rule: plugin-invalid-manifest
  *
- * Validates marketplace.json schema and referenced files.
+ * Validates marketplace.json schema against the official spec.
+ * https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
  */
 
 import { Rule } from '../../types/rule';
-import { fileExists, readFileContent } from '../../utils/filesystem/files';
-import { dirname, join } from 'path';
 import { MarketplaceMetadataSchema } from '../../validators/schemas';
 
 /**
- * Validates marketplace.json metadata
+ * Validates marketplace.json structure and content
  */
 export const rule: Rule = {
   meta: {
     id: 'plugin-invalid-manifest',
     name: 'Plugin Invalid Manifest',
-    description: 'marketplace.json must be valid and reference existing files',
+    description: 'marketplace.json must conform to the marketplace schema',
     category: 'Plugin',
     severity: 'error',
     fixable: false,
@@ -25,97 +24,91 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/plugin/plugin-invalid-manifest',
     docs: {
       recommended: true,
-      summary: 'Validates that marketplace.json is well-formed and consistent with plugin.json.',
+      summary: 'Validates that marketplace.json conforms to the official marketplace schema.',
       rationale:
-        'A mismatched version or invalid schema in marketplace.json causes marketplace publishing failures.',
+        'An invalid marketplace.json prevents plugin discovery and installation via the marketplace system.',
       details:
-        'This rule checks the marketplace.json file that accompanies a plugin.json. It verifies that ' +
-        'marketplace.json contains valid JSON, conforms to the MarketplaceMetadataSchema, and that its ' +
-        'version field matches the version declared in plugin.json. If marketplace.json does not exist, ' +
-        'the rule is skipped since it is optional. A mismatched version or invalid schema will cause ' +
-        'marketplace publishing issues.',
+        'This rule validates marketplace.json files against the official Claude Code marketplace schema. ' +
+        'A valid marketplace.json requires a name, owner (with name), and plugins array. Each plugin ' +
+        'entry must have a name and source. The rule checks JSON syntax, schema conformance, and that ' +
+        'each plugin entry has the required fields.',
       examples: {
         incorrect: [
           {
-            description: 'marketplace.json with version mismatch',
-            code: '// plugin.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0"\n}\n\n// marketplace.json\n{\n  "name": "my-plugin",\n  "version": "1.0.0"\n}',
+            description: 'marketplace.json missing required owner field',
+            code: '{\n  "name": "my-marketplace",\n  "plugins": []\n}',
+            language: 'json',
+          },
+          {
+            description: 'Plugin entry missing required source field',
+            code: '{\n  "name": "my-marketplace",\n  "owner": { "name": "Dev Team" },\n  "plugins": [\n    { "name": "my-plugin" }\n  ]\n}',
             language: 'json',
           },
         ],
         correct: [
           {
-            description: 'marketplace.json with matching version',
-            code: '// plugin.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0"\n}\n\n// marketplace.json\n{\n  "name": "my-plugin",\n  "version": "1.2.0",\n  "description": "A useful plugin"\n}',
+            description: 'Valid marketplace.json with relative path source',
+            code: '{\n  "name": "my-marketplace",\n  "owner": { "name": "Dev Team" },\n  "plugins": [\n    {\n      "name": "my-plugin",\n      "source": "./plugins/my-plugin",\n      "description": "A useful plugin"\n    }\n  ]\n}',
+            language: 'json',
+          },
+          {
+            description: 'Valid marketplace.json with GitHub source',
+            code: '{\n  "name": "my-marketplace",\n  "owner": { "name": "Dev Team" },\n  "plugins": [\n    {\n      "name": "my-plugin",\n      "source": { "source": "github", "repo": "owner/repo" }\n    }\n  ]\n}',
             language: 'json',
           },
         ],
       },
       howToFix:
-        'Ensure marketplace.json is valid JSON, follows the expected schema, and has a version that ' +
-        'matches plugin.json. Update the version in marketplace.json whenever you bump plugin.json.',
-      relatedRules: ['plugin-name-required', 'plugin-version-required'],
+        'Ensure marketplace.json has the required fields: name (string), owner (object with name), ' +
+        'and plugins (array). Each plugin entry needs name and source. See the ' +
+        '[official docs](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema).',
+      relatedRules: ['plugin-marketplace-files-not-found'],
     },
   },
 
-  validate: async (context) => {
+  validate: (context) => {
     const { filePath, fileContent } = context;
 
-    // Only validate plugin.json files (we check for marketplace.json from here)
-    if (!filePath.endsWith('plugin.json')) {
+    // Only validate marketplace.json files
+    if (!filePath.endsWith('marketplace.json')) {
       return;
-    }
-
-    const pluginRoot = dirname(filePath);
-    const marketplacePath = join(pluginRoot, 'marketplace.json');
-
-    // marketplace.json is optional
-    if (!(await fileExists(marketplacePath))) {
-      return;
-    }
-
-    // Read marketplace.json
-    let marketplaceContent: string;
-    try {
-      marketplaceContent = await readFileContent(marketplacePath);
-    } catch {
-      return; // File read errors will be caught elsewhere
     }
 
     // Parse JSON
-    let marketplaceData: unknown;
+    let data: unknown;
     try {
-      marketplaceData = JSON.parse(marketplaceContent);
+      data = JSON.parse(fileContent);
     } catch (err) {
       context.report({
-        message: `marketplace.json: Invalid JSON syntax: ${err instanceof Error ? err.message : String(err)}`,
+        message: `Invalid JSON: ${err instanceof Error ? err.message : String(err)}`,
       });
       return;
     }
 
     // Validate against schema
-    const result = MarketplaceMetadataSchema.safeParse(marketplaceData);
+    const result = MarketplaceMetadataSchema.safeParse(data);
     if (!result.success) {
       for (const issue of result.error.issues) {
+        const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
         context.report({
-          message: `marketplace.json: ${issue.path.join('.')}: ${issue.message}`,
+          message: `${path}${issue.message}`,
         });
       }
       return;
     }
 
-    // Validate that marketplace version matches plugin version
-    let pluginData: unknown;
-    try {
-      pluginData = JSON.parse(fileContent);
-    } catch {
-      return; // Plugin JSON errors handled elsewhere
-    }
-
-    if (pluginData && typeof pluginData === 'object' && 'version' in pluginData) {
-      const pluginVersion = (pluginData as { version: string }).version;
-      if (result.data.version !== pluginVersion) {
+    // Validate each plugin entry has name and source (already enforced by schema,
+    // but provide clearer messages)
+    for (let i = 0; i < result.data.plugins.length; i++) {
+      const plugin = result.data.plugins[i];
+      if (!plugin.name) {
         context.report({
-          message: `marketplace.json version (${result.data.version}) does not match plugin.json version (${pluginVersion})`,
+          message: `plugins[${i}]: Missing required field "name"`,
+        });
+      }
+      if (!plugin.source) {
+        context.report({
+          message: `plugins[${i}]: Missing required field "source"`,
         });
       }
     }

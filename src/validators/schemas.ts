@@ -103,21 +103,40 @@ export const SandboxSchema = z.object({
 });
 
 /**
- * Marketplace source schema for settings
+ * Marketplace source schema for settings (extraKnownMarketplaces)
+ * Based on: https://code.claude.com/docs/en/settings
+ * Supports: github, git, url, npm, directory, file
  */
 export const MarketplaceSourceSchema = z.object({
-  source: z.string(),
-  repo: z.string().optional(),
-  branch: z.string().optional(),
-  tag: z.string().optional(),
+  source: z.enum(['github', 'git', 'url', 'npm', 'directory', 'file']),
+  repo: z.string().optional(), // github
+  url: z.string().optional(), // git, url
+  package: z.string().optional(), // npm
+  path: z.string().optional(), // github (subdir), git (subdir), directory, file
+  ref: z.string().optional(), // github, git (branch/tag/SHA)
 });
 
 /**
- * Marketplace config schema for settings
+ * Marketplace config schema for settings (extraKnownMarketplaces entries)
  */
 export const MarketplaceConfigSchema = z.object({
   source: MarketplaceSourceSchema,
   enabled: z.boolean().optional(),
+});
+
+/**
+ * Strict marketplace source schema for settings (strictKnownMarketplaces)
+ * Based on: https://code.claude.com/docs/en/settings#strictknownmarketplaces
+ * Same source types as extraKnownMarketplaces plus hostPattern for regex matching
+ */
+export const StrictMarketplaceSourceSchema = z.object({
+  source: z.enum(['github', 'git', 'url', 'npm', 'directory', 'file', 'hostPattern']),
+  repo: z.string().optional(),
+  url: z.string().optional(),
+  package: z.string().optional(),
+  path: z.string().optional(),
+  ref: z.string().optional(),
+  hostPattern: z.string().optional(), // regex pattern for hostPattern source
 });
 
 /**
@@ -140,7 +159,7 @@ export const SettingsSchema = z.object({
   sandbox: SandboxSchema.optional(),
   enabledPlugins: z.record(z.string(), z.boolean()).optional(),
   extraKnownMarketplaces: z.record(z.string(), MarketplaceConfigSchema).optional(),
-  strictKnownMarketplaces: z.boolean().optional(),
+  strictKnownMarketplaces: z.array(StrictMarketplaceSourceSchema).optional(),
   autoUpdatesChannel: z.string().optional(),
   cleanupPeriodDays: z.number().optional(),
   language: z.string().optional(),
@@ -291,17 +310,93 @@ export const PluginManifestSchema = z.object({
 });
 
 /**
+ * Marketplace plugin source schema
+ * Specifies where to fetch a plugin: relative path or source object
+ * Based on: https://code.claude.com/docs/en/plugin-marketplaces#plugin-sources
+ */
+export const MarketplacePluginSourceSchema = z.union([
+  z.string(), // Relative path like "./plugins/my-plugin"
+  z.object({
+    source: z.enum(['github', 'url', 'npm', 'pip']),
+    // github
+    repo: z.string().optional(),
+    // url (git)
+    url: z.string().optional(),
+    // npm/pip
+    package: z.string().optional(),
+    version: z.string().optional(),
+    registry: z.string().optional(),
+    // git pinning (github and url)
+    ref: z.string().optional(),
+    sha: z.string().optional(),
+  }),
+]);
+
+/**
+ * Marketplace plugin entry schema
+ * Represents a single plugin listed in marketplace.json plugins array
+ * Based on: https://code.claude.com/docs/en/plugin-marketplaces#plugin-entries
+ */
+export const MarketplacePluginEntrySchema = z.object({
+  // Required
+  name: z.string(),
+  source: MarketplacePluginSourceSchema,
+
+  // Optional metadata
+  description: z.string().optional(),
+  version: z.string().optional(),
+  author: z
+    .object({
+      name: z.string(),
+      email: z.string().optional(),
+    })
+    .optional(),
+  homepage: z.string().optional(),
+  repository: z.string().optional(),
+  license: z.string().optional(),
+  keywords: z.array(z.string()).optional(),
+  category: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  strict: z.boolean().optional(),
+
+  // Component overrides (same types as plugin.json)
+  commands: z.union([z.string(), z.array(z.string())]).optional(),
+  agents: z.union([z.string(), z.array(z.string())]).optional(),
+  skills: z.union([z.string(), z.array(z.string())]).optional(),
+  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
+  mcpServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
+  lspServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+});
+
+/**
+ * Marketplace owner schema
+ * Based on: https://code.claude.com/docs/en/plugin-marketplaces#owner-fields
+ */
+export const MarketplaceOwnerSchema = z.object({
+  name: z.string(),
+  email: z.string().optional(),
+});
+
+/**
  * Marketplace metadata schema (marketplace.json)
+ * Based on: https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
+ * Verified against:
+ * - https://github.com/anthropics/claude-code/blob/main/.claude-plugin/marketplace.json
+ * - https://github.com/anthropics/claude-plugins-official/blob/main/.claude-plugin/marketplace.json
  */
 export const MarketplaceMetadataSchema = z.object({
+  $schema: z.string().optional(),
   name: z.string(),
-  description: z.string(),
-  version: semver(),
-  author: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  category: z.string().optional(),
-  icon: z.string().optional(),
-  screenshots: z.array(z.string()).optional(),
-  readme: z.string().optional(),
-  changelog: z.string().optional(),
+  description: z.string().optional(),
+  version: z.string().optional(),
+  owner: MarketplaceOwnerSchema,
+  plugins: z.array(MarketplacePluginEntrySchema),
+  metadata: z
+    .object({
+      description: z.string().optional(),
+      version: z.string().optional(),
+      pluginRoot: z.string().optional(),
+    })
+    .optional(),
 });

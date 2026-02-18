@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/marketplace.schema.json",
+  "title": "Claude Code Plugin Marketplace",
+  "description": "Schema for marketplace.json files in Claude Code plugin marketplaces",
+  "source": "https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema",
+  "sourceType": "documentation",
+  "type": "object",
+  "required": ["name", "owner", "plugins"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference URL"
+    },
+    "name": {
+      "type": "string",
+      "description": "Marketplace identifier (kebab-case). Used in install commands: plugin-name@marketplace-name",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief marketplace description"
+    },
+    "version": {
+      "type": "string",
+      "description": "Marketplace version"
+    },
+    "owner": {
+      "type": "object",
+      "description": "Marketplace maintainer information",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Maintainer or team name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Contact email",
+          "format": "email"
+        }
+      },
+      "additionalProperties": false
+    },
+    "plugins": {
+      "type": "array",
+      "description": "List of available plugins",
+      "items": {
+        "$ref": "#/$defs/pluginEntry"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional marketplace metadata",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Brief marketplace description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Marketplace version"
+        },
+        "pluginRoot": {
+          "type": "string",
+          "description": "Base directory prepended to relative plugin source paths"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "pluginSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Relative path to plugin directory (must start with ./)",
+          "pattern": "^\\.\\/.*"
+        },
+        {
+          "type": "object",
+          "description": "Source object specifying where to fetch the plugin",
+          "required": ["source"],
+          "properties": {
+            "source": {
+              "type": "string",
+              "enum": ["github", "url", "npm", "pip"],
+              "description": "Source type"
+            },
+            "repo": {
+              "type": "string",
+              "description": "GitHub repository in owner/repo format (github source)"
+            },
+            "url": {
+              "type": "string",
+              "description": "Git repository URL, must end with .git (url source)"
+            },
+            "package": {
+              "type": "string",
+              "description": "Package name (npm/pip source)"
+            },
+            "version": {
+              "type": "string",
+              "description": "Package version constraint (npm/pip source)"
+            },
+            "registry": {
+              "type": "string",
+              "description": "Custom package registry URL (npm/pip source)"
+            },
+            "ref": {
+              "type": "string",
+              "description": "Git branch or tag (github/url source)"
+            },
+            "sha": {
+              "type": "string",
+              "description": "Full 40-character git commit SHA (github/url source)",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "pluginEntry": {
+      "type": "object",
+      "description": "A plugin listed in the marketplace",
+      "required": ["name", "source"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Plugin identifier (kebab-case)"
+        },
+        "source": {
+          "$ref": "#/$defs/pluginSource"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief plugin description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Plugin version (semver)"
+        },
+        "author": {
+          "type": "object",
+          "description": "Plugin author information",
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "additionalProperties": false
+        },
+        "homepage": {
+          "type": "string",
+          "description": "Plugin documentation URL",
+          "format": "uri"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Source code URL",
+          "format": "uri"
+        },
+        "license": {
+          "type": "string",
+          "description": "SPDX license identifier"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Discovery tags",
+          "items": { "type": "string" }
+        },
+        "category": {
+          "type": "string",
+          "description": "Plugin category"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Additional tags",
+          "items": { "type": "string" }
+        },
+        "strict": {
+          "type": "boolean",
+          "description": "Whether plugin.json is authority for components (default: true)"
+        },
+        "commands": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "agents": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "skills": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "hooks": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
+            { "type": "array", "items": { "type": "string" } },
+            { "type": "object" }
+          ]
+        },
+        "mcpServers": {
+          "oneOf": [{ "type": "string", "pattern": "^\\.\\/.*\\.json$" }, { "type": "object" }]
+        },
+        "outputStyles": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "lspServers": {
+          "oneOf": [{ "type": "string", "pattern": "^\\.\\/.*\\.json$" }, { "type": "object" }]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

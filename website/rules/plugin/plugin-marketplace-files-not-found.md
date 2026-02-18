@@ -1,43 +1,52 @@
 ---
-description: "Referenced marketplace file does not exist"
+description: "Relative plugin source path does not resolve to a valid plugin directory"
 ---
 
 # plugin-marketplace-files-not-found
 
-<RuleHeader description="Referenced marketplace file does not exist" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="Relative plugin source path does not resolve to a valid plugin directory" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-Plugins can include a marketplace.json file that references assets such as an icon, screenshots, a readme, and a changelog. This rule checks that each referenced file path resolves to an existing file relative to the directory containing marketplace.json. Missing files will cause broken links or images in the marketplace listing.
+When a marketplace.json lists plugins with relative path sources (e.g., "./plugins/my-plugin"), this rule checks that the referenced directory exists and contains a .claude-plugin/plugin.json manifest. External sources (github, url, npm, pip) are skipped since they cannot be validated locally.
 
 ### Incorrect
 
-marketplace.json referencing a non-existent icon file
+Plugin source points to non-existent directory
 
 ```json
 {
-  "icon": "./assets/icon.png",
-  "screenshots": ["./assets/screenshot1.png"],
-  "readme": "./README.md"
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "./plugins/missing-plugin"
+    }
+  ]
 }
 ```
 
 ### Correct
 
-marketplace.json with all referenced files present
+Plugin source points to valid plugin directory
 
 ```json
 {
-  "icon": "./assets/icon.png",
-  "screenshots": ["./assets/screenshot1.png"],
-  "readme": "./README.md",
-  "changelog": "./CHANGELOG.md"
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "./plugins/my-plugin"
+    }
+  ]
 }
 ```
 
 ## How To Fix
 
-Ensure all files referenced in marketplace.json exist at the specified paths relative to the marketplace.json file. Create any missing assets or correct the paths.
+Ensure relative source paths in plugin entries point to existing directories that contain a .claude-plugin/plugin.json manifest. Create the plugin directory structure or correct the source path.
 
 ## Options
 
@@ -45,6 +54,7 @@ This rule does not have any configuration options.
 
 ## Related Rules
 
+- [`plugin-invalid-manifest`](/rules/plugin/plugin-invalid-manifest)
 - [`plugin-missing-file`](/rules/plugin/plugin-missing-file)
 
 ## Resources

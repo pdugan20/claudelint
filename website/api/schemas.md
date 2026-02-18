@@ -1,5 +1,5 @@
 ---
-description: Reference every schema claudelint enforces for SKILL.md, agents, hooks, MCP servers, plugin manifests, settings, and LSP configs, including valid fields and constraints.
+description: Reference every schema claudelint enforces for SKILL.md, agents, hooks, MCP servers, plugin manifests, marketplaces, settings, and LSP configs, including valid fields and constraints.
 ---
 
 # Configuration Schemas
@@ -455,6 +455,66 @@ paths:
 |-------|------|----------|-------------|
 | `paths` | string[] | no | Glob patterns to scope the rule to (min 1 pattern if present) |
 
+## Marketplace Metadata
+
+<SchemaRef
+  validator="Plugin" validator-link="/validators/plugin"
+  docs="Plugin marketplaces" docs-link="https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema"
+/>
+
+The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin catalog.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `$schema` | string | no | Schema URL for IDE validation |
+| `name` | string | yes | Marketplace name |
+| `description` | string | no | Marketplace description |
+| `version` | string | no | Marketplace version |
+| `owner` | object | yes | Owner info (see below) |
+| `plugins` | array | yes | Plugin entries (see below) |
+| `metadata` | object | no | Extra metadata (`pluginRoot`, etc.) |
+
+### Marketplace Owner
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | yes | Owner name |
+| `email` | string | no | Contact email |
+
+### Plugin Entry
+
+Each entry in the `plugins` array:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | yes | Plugin name |
+| `source` | string \| object | yes | Relative path or source object |
+| `description` | string | no | Plugin description |
+| `version` | string | no | Plugin version |
+| `author` | object | no | Author info (`name`, `email`) |
+| `homepage` | string | no | Homepage URL |
+| `repository` | string | no | Repository URL |
+| `license` | string | no | License identifier |
+| `keywords` | string[] | no | Search keywords |
+| `category` | string | no | Plugin category |
+| `tags` | string[] | no | Categorization tags |
+| `strict` | boolean | no | Enable strict mode |
+
+### Plugin Source
+
+The `source` field can be a relative path string (e.g., `"./plugins/my-plugin"`) or an object:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `source` | string | yes | `github`, `url`, `npm`, or `pip` |
+| `repo` | string | no | GitHub `owner/repo` (for `github`) |
+| `url` | string | no | Git URL (for `url`) |
+| `package` | string | no | Package name (for `npm`/`pip`) |
+| `version` | string | no | Version constraint |
+| `registry` | string | no | Custom registry URL |
+| `ref` | string | no | Git ref (tag, branch, commit) |
+| `sha` | string | no | Git commit SHA for pinning |
+
 ## JSON Schema Files
 
 claudelint maintains JSON Schema files for IDE integration and external tooling. These are available in the [`schemas/`](https://github.com/pdugan20/claudelint/tree/main/schemas) directory:
@@ -469,6 +529,7 @@ claudelint maintains JSON Schema files for IDE integration and external tooling.
 | LSP config | [`lsp-config.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/lsp-config.schema.json) | .lsp.json structure |
 | Output style | [`output-style-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/output-style-frontmatter.schema.json) | OUTPUTSTYLE.md frontmatter |
 | Rules frontmatter | [`rules-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/rules-frontmatter.schema.json) | Rules file frontmatter |
+| Marketplace | [`marketplace.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/marketplace.schema.json) | marketplace.json structure |
 
 Running `npm run generate:json-schemas` produces auto-generated versions (from Zod schemas) in `schemas/generated/` locally. Use `npm run check:schema-sync` to verify they stay in sync with the hand-written schemas above.
 

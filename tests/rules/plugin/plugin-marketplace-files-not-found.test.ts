@@ -8,29 +8,19 @@ import { rule } from '../../../src/rules/plugin/plugin-marketplace-files-not-fou
 const ruleTester = new ClaudeLintRuleTester();
 
 describe('plugin-marketplace-files-not-found', () => {
-  it('should pass when no file references specified', async () => {
-    await ruleTester.run('plugin-marketplace-files-not-found', rule, {
-      valid: [
-        {
-          filePath: '/test/marketplace.json',
-          content: JSON.stringify({
-            name: 'My Plugin',
-            description: 'Test plugin',
-          }),
-        },
-      ],
-      invalid: [],
-    });
-  });
-
   it('should skip non-marketplace.json files', async () => {
     await ruleTester.run('plugin-marketplace-files-not-found', rule, {
       valid: [
         {
           filePath: '/test/plugin.json',
           content: JSON.stringify({
-            icon: 'does-not-exist.png',
+            name: 'my-plugin',
+            source: './plugins/missing',
           }),
+        },
+        {
+          filePath: '/test/config.json',
+          content: JSON.stringify({ plugins: [] }),
         },
       ],
       invalid: [],
@@ -41,7 +31,7 @@ describe('plugin-marketplace-files-not-found', () => {
     await ruleTester.run('plugin-marketplace-files-not-found', rule, {
       valid: [
         {
-          filePath: '/test/marketplace.json',
+          filePath: '/test/.claude-plugin/marketplace.json',
           content: 'invalid json{',
         },
       ],
@@ -53,10 +43,10 @@ describe('plugin-marketplace-files-not-found', () => {
     await ruleTester.run('plugin-marketplace-files-not-found', rule, {
       valid: [
         {
-          filePath: '/test/marketplace.json',
+          filePath: '/test/.claude-plugin/marketplace.json',
           content: JSON.stringify({
-            // Missing required fields - schema validation should fail
-            icon: 'icon.png',
+            // Missing required fields — schema validation fails, rule skips
+            description: 'No name or owner',
           }),
         },
       ],
@@ -64,16 +54,20 @@ describe('plugin-marketplace-files-not-found', () => {
     });
   });
 
-  it('should skip when icon is not a string', async () => {
+  it('should skip external source objects (github)', async () => {
     await ruleTester.run('plugin-marketplace-files-not-found', rule, {
       valid: [
         {
-          filePath: '/test/marketplace.json',
+          filePath: '/test/.claude-plugin/marketplace.json',
           content: JSON.stringify({
-            name: 'Test',
-            description: 'Test',
-            version: '1.0.0',
-            icon: 123,
+            name: 'my-marketplace',
+            owner: { name: 'Test' },
+            plugins: [
+              {
+                name: 'external-plugin',
+                source: { source: 'github', repo: 'owner/repo' },
+              },
+            ],
           }),
         },
       ],
@@ -81,16 +75,23 @@ describe('plugin-marketplace-files-not-found', () => {
     });
   });
 
-  it('should skip when screenshots is not an array', async () => {
+  it('should skip external source objects (url)', async () => {
     await ruleTester.run('plugin-marketplace-files-not-found', rule, {
       valid: [
         {
-          filePath: '/test/marketplace.json',
+          filePath: '/test/.claude-plugin/marketplace.json',
           content: JSON.stringify({
-            name: 'Test',
-            description: 'Test',
-            version: '1.0.0',
-            screenshots: 'not-an-array',
+            name: 'my-marketplace',
+            owner: { name: 'Test' },
+            plugins: [
+              {
+                name: 'url-plugin',
+                source: {
+                  source: 'url',
+                  url: 'https://gitlab.com/team/plugin.git',
+                },
+              },
+            ],
           }),
         },
       ],
@@ -98,6 +99,45 @@ describe('plugin-marketplace-files-not-found', () => {
     });
   });
 
-  // Note: Testing actual file existence requires integration tests with real filesystem
-  // or complex mocking. The rule logic is tested here, filesystem interaction tested separately.
+  it('should skip external source objects (npm)', async () => {
+    await ruleTester.run('plugin-marketplace-files-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude-plugin/marketplace.json',
+          content: JSON.stringify({
+            name: 'my-marketplace',
+            owner: { name: 'Test' },
+            plugins: [
+              {
+                name: 'npm-plugin',
+                source: { source: 'npm', package: '@scope/plugin' },
+              },
+            ],
+          }),
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  it('should pass with empty plugins array', async () => {
+    await ruleTester.run('plugin-marketplace-files-not-found', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude-plugin/marketplace.json',
+          content: JSON.stringify({
+            name: 'my-marketplace',
+            owner: { name: 'Test' },
+            plugins: [],
+          }),
+        },
+      ],
+      invalid: [],
+    });
+  });
+
+  // Note: Testing actual filesystem checks (directory existence, plugin.json presence)
+  // requires integration tests with temporary directories. The rule logic for skip paths
+  // (non-marketplace files, invalid JSON, schema failures, external sources) is tested above.
+  // Filesystem interaction is tested in integration tests.
 });

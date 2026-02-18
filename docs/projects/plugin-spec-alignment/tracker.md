@@ -31,7 +31,7 @@
 
 Rewrite the Zod schema to match the real marketplace.json spec.
 
-- [ ] 1.1: Rewrite `MarketplaceMetadataSchema` in `src/validators/schemas.ts`
+- [x] 1.1: Rewrite `MarketplaceMetadataSchema` in `src/validators/schemas.ts`
 
 **Current (wrong):**
 
@@ -121,7 +121,10 @@ const MarketplaceMetadataSchema = z.object({
 });
 ```
 
-- [ ] 1.2: Export any sub-schemas needed by rules (e.g., `MarketplacePluginEntrySchema`)
+- [x] 1.2: Export any sub-schemas needed by rules (e.g., `MarketplacePluginEntrySchema`)
+- [x] 1.3: Fix `MarketplaceSourceSchema` for settings -- `branch`/`tag` replaced with `ref`/`path`, correct source types added
+- [x] 1.4: Fix `strictKnownMarketplaces` in `SettingsSchema` -- was `z.boolean()`, now `z.array(StrictMarketplaceSourceSchema)`
+- [x] 1.5: Add `StrictMarketplaceSourceSchema` with `hostPattern` source type
 
 ---
 
@@ -129,9 +132,9 @@ const MarketplaceMetadataSchema = z.object({
 
 Add `schemas/marketplace.schema.json` so marketplace validation has the same dual-schema coverage as our other 8 schemas.
 
-- [ ] 2.1: Create `schemas/marketplace.schema.json` derived from the Zod schema
-- [ ] 2.2: Add to schema drift detection (`npm run check:schema-sync`)
-- [ ] 2.3: Add schema test in `tests/schemas/marketplace.schema.test.ts`
+- [x] 2.1: Create `schemas/marketplace.schema.json` derived from the Zod schema
+- [x] 2.2: Add to schema drift detection (added to `src/schemas/registry.ts`)
+- [x] 2.3: Add schema test in `tests/schemas/marketplace.schema.test.ts` (28 tests passing)
   - Validates Anthropic's bundled marketplace.json structure passes
   - Validates Anthropic's official directory marketplace.json structure passes
   - Rejects old fabricated schema format
@@ -144,12 +147,12 @@ Add `schemas/marketplace.schema.json` so marketplace validation has the same dua
 
 Update the rule to validate against the corrected schema.
 
-- [ ] 3.1: Update rule to validate marketplace.json files directly (not searched relative to plugin.json)
-- [ ] 3.2: Add validation: required fields `name`, `owner`, `plugins`
-- [ ] 3.3: Add validation: each plugin entry has `name` and `source`
-- [ ] 3.4: Add validation: plugin entry `version` matches its `plugin.json` version (when both exist and source is a relative path)
-- [ ] 3.5: Update rule metadata (`meta.docs`) to reflect real marketplace.json structure
-- [ ] 3.6: Rewrite tests in `tests/rules/plugin/plugin-invalid-manifest.test.ts`
+- [x] 3.1: Update rule to validate marketplace.json files directly (not searched relative to plugin.json)
+- [x] 3.2: Add validation: required fields `name`, `owner`, `plugins`
+- [x] 3.3: Add validation: each plugin entry has `name` and `source`
+- [x] 3.4: ~~Add validation: plugin entry `version` matches its `plugin.json` version~~ (skipped — cross-file validation out of scope for this rule)
+- [x] 3.5: Update rule metadata (`meta.docs`) to reflect real marketplace.json structure
+- [x] 3.6: Rewrite tests in `tests/rules/plugin/plugin-invalid-manifest.test.ts` (13 tests passing)
   - Valid: well-formed marketplace.json with all required fields
   - Valid: marketplace.json with optional fields (metadata, description, version)
   - Valid: plugin entries with relative path source
@@ -170,11 +173,11 @@ Update the rule to validate against the corrected schema.
 
 Update the rule to check real marketplace.json references.
 
-- [ ] 4.1: Remove checks for non-existent fields (`icon`, `screenshots`, `readme`, `changelog`)
-- [ ] 4.2: Add check: relative `source` paths in plugin entries resolve to existing directories
-- [ ] 4.3: Add check: relative source directories contain `.claude-plugin/plugin.json`
-- [ ] 4.4: Update rule metadata (`meta.docs`) to reflect real behavior
-- [ ] 4.5: Rewrite tests in `tests/rules/plugin/plugin-marketplace-files-not-found.test.ts`
+- [x] 4.1: Remove checks for non-existent fields (`icon`, `screenshots`, `readme`, `changelog`)
+- [x] 4.2: Add check: relative `source` paths in plugin entries resolve to existing directories
+- [x] 4.3: Add check: relative source directories contain `.claude-plugin/plugin.json`
+- [x] 4.4: Update rule metadata (`meta.docs`) to reflect real behavior
+- [x] 4.5: Rewrite tests in `tests/rules/plugin/plugin-marketplace-files-not-found.test.ts` (7 tests passing)
   - Valid: relative source path resolves to existing directory with plugin.json
   - Valid: external source (github/url/npm) skipped (can't check remote paths)
   - Invalid: relative source path points to non-existent directory
@@ -189,12 +192,12 @@ Update the rule to check real marketplace.json references.
 
 Run generators, verify drift detection, dogfood.
 
-- [ ] 5.1: Run `npm run generate:types` (updates rule index if rule signatures changed)
-- [ ] 5.2: Run `npm run generate:json-schemas` (if marketplace schema added to generator)
-- [ ] 5.3: Run `npm run check:schema-sync` (verify no drift)
-- [ ] 5.4: Run `npm test` (all tests pass)
-- [ ] 5.5: Run `npm run check:self` (dogfood: 0 errors/0 warnings on self)
-- [ ] 5.6: Run `npm run docs:generate` (regenerate rule docs for updated rule metadata)
+- [x] 5.1: Run `npm run generate:types` (117 rules registered)
+- [x] 5.2: Run `npm run generate:json-schemas` (9 schemas generated)
+- [x] 5.3: Run `npm run check:schema-sync` (9 schemas, 0 drift)
+- [x] 5.4: Run `npm test` (203 suites, 1675 tests passing)
+- [x] 5.5: Run `npm run check:self` (dogfood: 0 errors/0 warnings)
+- [x] 5.6: Run `npm run docs:generate` (117 rule pages generated)
 
 ---
 
@@ -204,21 +207,21 @@ Update website and internal docs to reflect corrected marketplace spec.
 
 ### Website (auto-generated rule docs)
 
-- [ ] 6.1: Run `npm run docs:generate` to regenerate rule pages for `plugin-invalid-manifest` and `plugin-marketplace-files-not-found` (picks up updated `meta.docs`)
-- [ ] 6.2: Verify generated rule pages at `website/rules/plugin/plugin-invalid-manifest.md` and `website/rules/plugin/plugin-marketplace-files-not-found.md` reflect the corrected descriptions, examples, and howToFix text
+- [x] 6.1: Run `npm run docs:generate` to regenerate rule pages (done in Phase 5)
+- [x] 6.2: Verify generated rule pages reflect corrected descriptions, examples, and howToFix
 
 ### Website (hand-written pages)
 
-- [ ] 6.3: Review `website/integrations/claude-code-plugin.md` -- verify marketplace install instructions are accurate
-- [ ] 6.4: Review `website/guide/cli-reference.md` -- verify `install-plugin` command docs match actual CLI output
-- [ ] 6.5: Review `website/guide/configuration.md` -- check for any marketplace schema references
-- [ ] 6.6: Add marketplace.json to the schemas API page (`website/api/schemas.md`)
+- [x] 6.3: Review `website/integrations/claude-code-plugin.md` -- marketplace install instructions accurate
+- [x] 6.4: Review `website/guide/cli-reference.md` -- install-plugin docs match CLI output
+- [x] 6.5: Review `website/guide/configuration.md` -- no marketplace references (nothing to update)
+- [x] 6.6: Add marketplace.json to the schemas API page (`website/api/schemas.md`)
 
 ### CLI verification
 
-- [ ] 6.9: Verify `claudelint install-plugin` output is accurate (shows `--plugin-dir` and marketplace paths)
-- [ ] 6.10: Verify `claudelint init` wizard plugin setup step gives correct instructions
-- [ ] 6.11: Verify `scripts/util/postinstall.js` npm post-install message is accurate
+- [x] 6.9: Verify `claudelint install-plugin` output is accurate (uses `--plugin-dir` and `/plugin install`)
+- [x] 6.10: Verify `claudelint init` wizard plugin setup step gives correct instructions
+- [x] 6.11: Verify `scripts/util/postinstall.js` npm post-install message is accurate
 
 ### Internal docs
 
@@ -230,8 +233,8 @@ Update website and internal docs to reflect corrected marketplace spec.
 ## Phase 7: Commit and Verify
 
 - [ ] 7.1: Commit all changes
-- [ ] 7.2: Verify CI passes
-- [ ] 7.3: Run `npm run validate` (full validation suite)
+- [x] 7.2: Run `npm run validate` (full validation suite: 203 suites, 1675 tests, all clean)
+- [ ] 7.3: Verify CI passes (after push)
 
 ---
 

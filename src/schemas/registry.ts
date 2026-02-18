@@ -8,7 +8,12 @@
 import { z } from 'zod';
 
 // Import all Zod schemas
-import { PluginManifestSchema, HooksConfigSchema, MCPConfigSchema } from '../validators/schemas';
+import {
+  PluginManifestSchema,
+  HooksConfigSchema,
+  MCPConfigSchema,
+  MarketplaceMetadataSchema,
+} from '../validators/schemas';
 import { SkillFrontmatterSchema } from './skill-frontmatter.schema';
 import { LSPConfigSchema } from './lsp-config.schema';
 import { AgentFrontmatterSchema } from './agent-frontmatter.schema';
@@ -109,5 +114,13 @@ export const SCHEMA_REGISTRY: SchemaRegistryEntry[] = [
     generatedSchemaFile: 'rules-frontmatter.generated.json',
     description: 'Generated JSON Schema for .claude/rules/*.md frontmatter',
     officialDocsUrl: 'https://code.claude.com/docs/en/memory#path-specific-rules',
+  },
+  {
+    name: 'MarketplaceMetadataSchema',
+    zodSchema: MarketplaceMetadataSchema,
+    manualSchemaFile: 'marketplace.schema.json',
+    generatedSchemaFile: 'marketplace.generated.json',
+    description: 'Generated JSON Schema for marketplace.json configuration',
+    officialDocsUrl: 'https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema',
   },
 ];
