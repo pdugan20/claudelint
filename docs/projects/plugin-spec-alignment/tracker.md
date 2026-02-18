@@ -212,7 +212,13 @@ Update website and internal docs to reflect corrected marketplace spec.
 - [ ] 6.3: Review `website/integrations/claude-code-plugin.md` -- verify marketplace install instructions are accurate
 - [ ] 6.4: Review `website/guide/cli-reference.md` -- verify `install-plugin` command docs match actual CLI output
 - [ ] 6.5: Review `website/guide/configuration.md` -- check for any marketplace schema references
-- [ ] 6.6: Add marketplace.json to the schemas API page if applicable (`website/api/schemas.md` or equivalent)
+- [ ] 6.6: Add marketplace.json to the schemas API page (`website/api/schemas.md`)
+
+### CLI verification
+
+- [ ] 6.9: Verify `claudelint install-plugin` output is accurate (shows `--plugin-dir` and marketplace paths)
+- [ ] 6.10: Verify `claudelint init` wizard plugin setup step gives correct instructions
+- [ ] 6.11: Verify `scripts/util/postinstall.js` npm post-install message is accurate
 
 ### Internal docs
 
@@ -233,7 +239,6 @@ Update website and internal docs to reflect corrected marketplace spec.
 
 These items are related but not part of this project:
 
-- Creating a marketplace repo for claudelint (post-release task)
-- Submitting to `claude-plugins-official` (post-release task)
+- Submitting to `claude-plugins-official` (post-release task, if desired)
 - Interactive plugin testing with `claude --plugin-dir .` (tracked in roadmap.md)
 - Stable 0.2.0 release (tracked in roadmap.md)
