@@ -302,11 +302,17 @@ export const PluginManifestSchema = z.object({
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
 
-  // Config paths (string for path, object for inline config)
-  hooks: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
-  mcpServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  // Config paths
+  // Note: hooks rejects inline objects (Claude Code only accepts string paths).
+  // Default hooks/hooks.json is auto-loaded; this field is for additional hook files only.
+  hooks: z.union([z.string(), z.array(z.string())]).optional(),
+  mcpServers: z
+    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .optional(),
   outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
-  lspServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  lspServers: z
+    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .optional(),
 });
 
 /**
@@ -363,10 +369,14 @@ export const MarketplacePluginEntrySchema = z.object({
   commands: z.union([z.string(), z.array(z.string())]).optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
-  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
-  mcpServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  hooks: z.union([z.string(), z.array(z.string())]).optional(),
+  mcpServers: z
+    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .optional(),
   outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
-  lspServers: z.union([z.string(), z.record(z.string(), z.unknown())]).optional(),
+  lspServers: z
+    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .optional(),
 });
 
 /**

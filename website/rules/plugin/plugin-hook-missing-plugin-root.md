@@ -8,7 +8,7 @@ description: "Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scrip
 
 ## Rule Details
 
-Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) will break when the plugin is installed in a different location. This rule ensures that hook commands use the ${CLAUDE_PLUGIN_ROOT} variable to form absolute paths that resolve correctly regardless of where the plugin is installed. Both inline hooks and hooks path references are checked.
+Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) will break when the plugin is installed in a different location. This rule ensures that hook commands use the ${CLAUDE_PLUGIN_ROOT} variable to form absolute paths that resolve correctly regardless of where the plugin is installed.
 
 ### Incorrect
 
@@ -22,8 +22,13 @@ Hook using a relative script path without ${CLAUDE_PLUGIN_ROOT}
   "hooks": {
     "PostToolUse": [
       {
-        "command": "./scripts/post-tool.sh",
-        "matcher": "Write"
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./scripts/post-tool.sh"
+          }
+        ]
       }
     ]
   }
@@ -42,8 +47,13 @@ Hook using ${CLAUDE_PLUGIN_ROOT} for the script path
   "hooks": {
     "PostToolUse": [
       {
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-tool.sh",
-        "matcher": "Write"
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-tool.sh"
+          }
+        ]
       }
     ]
   }

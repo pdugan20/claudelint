@@ -30,7 +30,7 @@ claudelint validates project-level and plugin-level files. Global user configura
 | Agents | `.claude/agents/<name>.md`, `agents/<name>.md` | agents | No |
 | Output Styles | `.claude/output-styles/<name>/*.md`, `output-styles/<name>/*.md` | output-styles | No |
 | Settings | `.claude/settings.json`, `.claude/settings.local.json` | settings | No |
-| Hooks | `hooks/hooks.json` (plugin only) | hooks | No |
+| Hooks | `hooks/hooks.json` (plugin, auto-loaded) | hooks | No |
 | MCP | `.mcp.json` | mcp | No |
 | LSP | `.claude/lsp.json`, `.lsp.json` | lsp | No |
 | Plugin | `plugin.json`, `.claude-plugin/plugin.json` | plugin | No |
@@ -82,6 +82,10 @@ my-plugin/
 ```
 
 claudelint detects both the standard `.claude/` project structure and the plugin root structure.
+
+::: tip Auto-discovery
+Claude Code automatically loads `hooks/hooks.json`, `.mcp.json`, and `.lsp.json` from the plugin root. The `hooks`, `mcpServers`, and `lspServers` fields in plugin.json are only needed for **additional** config files at non-default paths. Specifying the default location (e.g., `"hooks": "./hooks/hooks.json"`) causes a duplicate load error. See [Plugin Manifest: Auto-discovery](/api/schemas/plugin#auto-discovery) for details.
+:::
 
 ## Ignoring Files
 

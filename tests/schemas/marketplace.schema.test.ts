@@ -254,13 +254,9 @@ describe('MarketplacePluginEntrySchema', () => {
       source: './plugins/my-plugin',
       commands: ['./commands/core/', './commands/enterprise/'],
       agents: ['./agents/reviewer.md'],
-      hooks: {
-        PostToolUse: [
-          {
-            matcher: 'Write|Edit',
-            hooks: [{ type: 'command', command: 'echo test' }],
-          },
-        ],
+      hooks: './config/extra-hooks.json',
+      mcpServers: {
+        myServer: { command: 'node', args: ['server.js'] },
       },
     });
     expect(result.success).toBe(true);

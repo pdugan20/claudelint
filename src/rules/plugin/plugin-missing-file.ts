@@ -33,8 +33,7 @@ export const rule: Rule = {
         'Missing referenced files cause the plugin to fail at runtime when Claude Code tries to load them.',
       details:
         'This rule checks that every path referenced in plugin.json actually exists. It validates ' +
-        'skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. For ' +
-        'hooks and server configs, only string paths are checked (inline objects are skipped). ' +
+        'skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. ' +
         'Missing referenced files will cause the plugin to fail at runtime when Claude Code tries ' +
         'to load the referenced resources.',
       examples: {
@@ -118,12 +117,12 @@ export const rule: Rule = {
       }
     }
 
-    // Validate hooks reference (string path or inline object)
-    if (plugin.hooks && typeof plugin.hooks === 'string') {
-      const hooksPath = join(pluginRoot, plugin.hooks);
-      if (!(await fileExists(hooksPath))) {
+    // Validate hooks references (string path or array of paths)
+    for (const hookPath of toArray(plugin.hooks)) {
+      const resolvedPath = join(pluginRoot, hookPath);
+      if (!(await fileExists(resolvedPath))) {
         context.report({
-          message: `Referenced hooks config not found: ${plugin.hooks}`,
+          message: `Referenced hooks config not found: ${hookPath}`,
         });
       }
     }

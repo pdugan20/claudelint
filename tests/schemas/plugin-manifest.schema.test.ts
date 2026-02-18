@@ -278,17 +278,20 @@ describe('PluginManifestSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should accept hooks as inline object', () => {
+    it('should reject hooks as inline object', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         hooks: {
-          PostToolUse: [
-            {
-              type: 'command',
-              command: 'echo test',
-            },
-          ],
+          PostToolUse: [{ type: 'command', command: 'echo test' }],
         },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept hooks as array of paths', () => {
+      const result = PluginManifestSchema.safeParse({
+        name: 'my-plugin',
+        hooks: ['./config/extra-hooks.json', './config/more-hooks.json'],
       });
       expect(result.success).toBe(true);
     });
@@ -305,11 +308,16 @@ describe('PluginManifestSchema', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         mcpServers: {
-          myServer: {
-            command: 'node',
-            args: ['server.js'],
-          },
+          myServer: { command: 'node', args: ['server.js'] },
         },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept mcpServers as array of paths', () => {
+      const result = PluginManifestSchema.safeParse({
+        name: 'my-plugin',
+        mcpServers: ['./config/mcp1.json', './config/mcp2.json'],
       });
       expect(result.success).toBe(true);
     });
@@ -326,13 +334,16 @@ describe('PluginManifestSchema', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         lspServers: {
-          typescript: {
-            command: 'typescript-language-server',
-            extensionToLanguage: {
-              '.ts': 'typescript',
-            },
-          },
+          typescript: { command: 'typescript-language-server' },
         },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept lspServers as array of paths', () => {
+      const result = PluginManifestSchema.safeParse({
+        name: 'my-plugin',
+        lspServers: ['./.lsp.json', './config/extra-lsp.json'],
       });
       expect(result.success).toBe(true);
     });

@@ -19,25 +19,14 @@ describe('plugin-hook-missing-plugin-root', () => {
           }),
           filePath: '/test/plugin.json',
         },
-        // Inline hooks with ${CLAUDE_PLUGIN_ROOT} in commands
+        // Hooks array using ${CLAUDE_PLUGIN_ROOT}
         {
           content: JSON.stringify({
             name: 'my-plugin',
-            hooks: {
-              PreToolUse: [
-                { command: '${CLAUDE_PLUGIN_ROOT}/scripts/validate.sh' },
-              ],
-            },
-          }),
-          filePath: '/test/plugin.json',
-        },
-        // Inline hooks with non-path commands (no slashes)
-        {
-          content: JSON.stringify({
-            name: 'my-plugin',
-            hooks: {
-              PreToolUse: [{ command: 'echo "hello"' }],
-            },
+            hooks: [
+              '${CLAUDE_PLUGIN_ROOT}/config/extra-hooks.json',
+              '${CLAUDE_PLUGIN_ROOT}/config/more-hooks.json',
+            ],
           }),
           filePath: '/test/plugin.json',
         },
@@ -67,35 +56,14 @@ describe('plugin-hook-missing-plugin-root', () => {
             },
           ],
         },
-        // Inline hook command without ${CLAUDE_PLUGIN_ROOT}
+        // Hooks array with paths missing ${CLAUDE_PLUGIN_ROOT}
         {
           content: JSON.stringify({
             name: 'my-plugin',
-            hooks: {
-              PreToolUse: [
-                { command: './scripts/validate.sh' },
-              ],
-            },
-          }),
-          filePath: '/test/plugin.json',
-          errors: [
-            {
-              message: '${CLAUDE_PLUGIN_ROOT}',
-            },
-          ],
-        },
-        // Multiple hooks with missing root
-        {
-          content: JSON.stringify({
-            name: 'my-plugin',
-            hooks: {
-              PreToolUse: [
-                { command: './scripts/pre-check.sh' },
-              ],
-              PostToolUse: [
-                { command: './scripts/post-check.sh' },
-              ],
-            },
+            hooks: [
+              './config/extra-hooks.json',
+              './config/more-hooks.json',
+            ],
           }),
           filePath: '/test/plugin.json',
           errors: [

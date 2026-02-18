@@ -124,7 +124,7 @@
       ]
     },
     "hooks": {
-      "description": "Hook configuration: path to hooks.json or inline hook config object",
+      "description": "Additional hook config file paths (hooks/hooks.json is auto-loaded). Claude Code rejects inline objects.",
       "oneOf": [
         {
           "type": "string",
@@ -132,18 +132,32 @@
           "pattern": "^\\.\\/.*\\.json$"
         },
         {
-          "type": "object",
-          "description": "Inline hooks configuration (see hooks schema for structure)"
+          "type": "array",
+          "description": "Array of hooks configuration file paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*\\.json$"
+          },
+          "minItems": 1
         }
       ]
     },
     "mcpServers": {
-      "description": "MCP server configuration: path to .mcp.json or inline MCP config object",
+      "description": "MCP server configuration: path to .mcp.json, array of paths, or inline MCP config object",
       "oneOf": [
         {
           "type": "string",
           "description": "Path to MCP configuration file",
           "pattern": "^\\.\\/.*\\.json$"
+        },
+        {
+          "type": "array",
+          "description": "Array of MCP configuration file paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*\\.json$"
+          },
+          "minItems": 1
         },
         {
           "type": "object",
@@ -171,12 +185,21 @@
       ]
     },
     "lspServers": {
-      "description": "LSP server configuration: path to .lsp.json or inline LSP config object",
+      "description": "LSP server configuration: path to .lsp.json, array of paths, or inline LSP config object",
       "oneOf": [
         {
           "type": "string",
           "description": "Path to LSP configuration file",
           "pattern": "^\\.\\/.*\\.json$"
+        },
+        {
+          "type": "array",
+          "description": "Array of LSP configuration file paths",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.\\/.*\\.json$"
+          },
+          "minItems": 1
         },
         {
           "type": "object",
