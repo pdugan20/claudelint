@@ -24,6 +24,7 @@ describe('option-builders', () => {
       addCommonOptions(cmd);
       const flags = getOptionFlags(cmd);
 
+      expect(flags).toContain('--cwd');
       expect(flags).toContain('--verbose');
       expect(flags).toContain('--config');
       expect(flags).toContain('--no-config');
@@ -165,8 +166,8 @@ describe('option-builders', () => {
       addFileSelectionOptions(cmd);
       addWorkspaceOptions(cmd);
 
-      // 8 common + 10 output + 4 enforcement + 4 cache + 3 fix + 6 file selection + 2 workspace = 37
-      expect(cmd.options.length).toBe(37);
+      // 9 common + 10 output + 4 enforcement + 4 cache + 3 fix + 6 file selection + 2 workspace = 38
+      expect(cmd.options.length).toBe(38);
     });
   });
 });

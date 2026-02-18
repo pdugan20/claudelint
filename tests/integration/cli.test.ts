@@ -636,6 +636,33 @@ describe('CLI Integration Tests', () => {
     });
   });
 
+  describe('--cwd flag', () => {
+    it('should lint a different directory', async () => {
+      await claudeMd(testProjectDir).withMinimalContent().build();
+
+      // Run from the project root but point --cwd at the test dir
+      const { output } = runCLI(
+        claudelintBin,
+        ['check-all', '--cwd', testProjectDir],
+        projectRoot
+      );
+
+      expect(output).toContain('No problems found');
+    });
+
+    it('should error for non-existent directory', () => {
+      const result = spawnSync(
+        claudelintBin,
+        ['check-all', '--cwd', '/tmp/does-not-exist-claudelint-test'],
+        { cwd: projectRoot, encoding: 'utf-8' }
+      );
+
+      const output = (result.stdout || '') + (result.stderr || '');
+      expect(output).toContain('directory does not exist');
+      expect(result.status).toBe(2);
+    });
+  });
+
   describe('--max-warnings on individual validators', () => {
     it('should exit 0 when warnings are under the limit', async () => {
       await claudeMd(testProjectDir).withSize(45000).build(); // Triggers claude-md-size warning

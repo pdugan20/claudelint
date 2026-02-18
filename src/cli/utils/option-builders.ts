@@ -12,6 +12,8 @@
  */
 
 import { Command } from 'commander';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
 /**
  * Add common options shared by all commands
@@ -20,7 +22,20 @@ import { Command } from 'commander';
  * --warnings-as-errors, --max-warnings
  */
 export function addCommonOptions(cmd: Command): Command {
+  cmd.hook('preAction', (thisCommand) => {
+    const cwd = thisCommand.opts()['cwd'] as string | undefined;
+    if (cwd) {
+      const target = resolve(cwd);
+      if (!existsSync(target)) {
+        process.stderr.write(`error: directory does not exist: ${target}\n`);
+        process.exit(2);
+      }
+      process.chdir(target);
+    }
+  });
+
   return cmd
+    .option('--cwd <path>', 'Run as if claudelint was started in this directory')
     .option('-v, --verbose', 'Verbose output')
     .option('-c, --config <path>', 'Path to config file')
     .option('--no-config', 'Disable configuration file loading')

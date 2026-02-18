@@ -16,6 +16,7 @@ import { OutputFormat } from '../utils/reporting/reporting';
  * Every CLI command that loads config and reports results uses these.
  */
 export interface CommonOptions {
+  cwd?: string;
   verbose?: boolean;
   config?: string | false; // Commander sets to false when --no-config is used
   preset?: string; // Built-in preset to use when no config found (default: recommended)

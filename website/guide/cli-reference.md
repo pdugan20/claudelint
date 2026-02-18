@@ -49,10 +49,13 @@ claudelint check-all [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
+| `--cwd <path>` | Run as if claudelint was started in this directory | Current directory |
 | `-v, --verbose` | Show detailed output including skipped validators and timing | `false` |
 | `-q, --quiet` | Suppress warnings, show only errors | `false` |
 | `--format <format>` | Output format: `stylish`, `json`, `compact`, `sarif`, or `github` | `stylish` |
 | `--config <path>` | Path to custom config file | Auto-detect |
+| `--no-config` | Disable configuration file loading | - |
+| `--preset <name>` | Built-in preset when no config file: `recommended`, `strict`, or `all` | `recommended` |
 | `--strict` | Exit with error on any issues (errors, warnings, or info) | `false` |
 | `--max-warnings <number>` | Fail if warning count exceeds this limit | Unlimited |
 | `--no-collapse` | Show all issues without collapsing repeated rules | `false` |
@@ -110,6 +113,12 @@ claudelint check-all --changed
 
 # Only check files changed since a branch
 claudelint check-all --since main
+
+# Lint a different project
+claudelint check-all --cwd /path/to/project
+
+# Run all rules without a config file
+claudelint check-all --preset all
 
 # Override rule severity from CLI
 claudelint check-all --rule skill-name:error --rule claude-md-size:off
