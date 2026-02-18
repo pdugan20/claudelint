@@ -398,22 +398,22 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Deploy Latest Changes
 
-- [ ] Commit and push local changes to main (llms plugin, vercel.json, .vercelignore, CI job)
-- [ ] Verify Vercel auto-deploys from push
-- [ ] Verify `/llms.txt` accessible on production
-- [ ] Verify `/llms-full.txt` accessible on production
-- [ ] Verify hardened security headers active (check with `curl -I`)
+- [x] Commit and push local changes to main (llms plugin, vercel.json, .vercelignore, CI job)
+- [x] Verify Vercel auto-deploys from push
+- [x] Verify `/llms.txt` accessible on production
+- [x] Verify `/llms-full.txt` accessible on production
+- [x] Verify hardened security headers active (HSTS, Permissions-Policy, etc.)
 
 ### Monitoring & Analytics
 
-- [ ] Add Vercel Speed Insights (`@vercel/speed-insights/vue` component in theme)
+- [x] Add Vercel Speed Insights (`@vercel/speed-insights` injected in theme)
 - [ ] Enable Vercel Web Analytics (dashboard toggle)
 - [ ] Enable Speed Insights in Vercel dashboard
 
 ### Project Links & README
 
-- [ ] Update main README.md with docs site link
-- [ ] Add docs badge to README (e.g., `docs | claudelint.com`)
+- [x] Update main README.md with docs site link
+- [x] Add docs badge to README (`docs | claudelint.com`)
 - [x] Verify npm package.json homepage field (already `https://claudelint.com`)
 
 ### SEO & Social Verification
