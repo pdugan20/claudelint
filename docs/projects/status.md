@@ -1,93 +1,59 @@
-# Project Status Dashboard
+# Project Status
 
 **Last Updated:** 2026-02-17
 **Current stats:** 113 rules, 1625 tests
 
-High-level overview of all claudelint projects. **For the sequenced execution plan, see [roadmap.md](./roadmap.md).**
+All active work is tracked in [roadmap.md](./roadmap.md).
 
 ---
 
-## Active Projects
+## Current Status
 
-### plugin-and-md-management (~90%)
+**Next milestone:** Interactive plugin testing, then stable 0.2.0 release.
 
-**Status:** Phases 0-4 Complete. Phase 5 (interactive testing) remaining.
-**Location:** [docs/projects/plugin-and-md-management/](./plugin-and-md-management/)
-
-Plugin infrastructure, npm package distribution, and CLAUDE.md management skills.
-
-**Remaining:**
-
-- Milestone 4: Interactive + full manual testing (pre-release)
-
----
-
-### npm-release-setup (~85%)
-
-**Status:** Phases 1-6 Complete. Phases 7-8 (stable release) remaining.
-**Location:** [docs/projects/npm-release-setup/](./npm-release-setup/)
-
-npm package versioning and release automation. Published as `claude-code-lint@0.2.0-beta.1`.
-
-**Remaining:**
-
-- Milestone 5: Stable 0.2.0 release + post-release process
-
----
-
-### branding-and-assets
-
-**Status:** In Progress
-**Location:** [docs/projects/branding-and-assets/](./branding-and-assets/)
-
-Branding, logo, and visual assets for the project.
-
----
-
-### vitepress-docs
-
-**Status:** Launched
-**Location:** [docs/projects/vitepress-docs/](./vitepress-docs/)
-
-Documentation website at claudelint.com (VitePress). Live and receiving incremental updates.
+Published as `claude-code-lint@0.2.0-beta.1`. All implementation work complete. Release burndown is ~1 day of effort.
 
 ---
 
 ## Archived Projects
 
-Projects in `docs/projects/archive/`. Completed or preserved as reference material.
+All project trackers are in `docs/projects/archive/`. Completed or preserved as reference.
 
 | Project | Status | Notes |
 |---------|--------|-------|
-| [agent-testing-and-plugin](./archive/agent-testing-and-plugin/) | Complete | Color field, plugin agent, test expansion, doc restructuring, rule rename. |
-| [agents-rework](./archive/agents-rework/) | Complete | Flat file discovery, rule alignment with official docs, schema fixes, dedup fix. |
-| [cross-category-audit](./archive/cross-category-audit/) | Complete | All 10 rule categories audited against official Anthropic docs. |
-| [file-discovery-and-format](./archive/file-discovery-and-format/) | Complete | Centralized discovery patterns, format command fixes, file-discovery docs. |
-| [github-automation](./archive/github-automation/) | Complete | Repo created, CI/CD, labels, Codecov, Discussions all configured. |
-| [manual-testing-infrastructure-refactor](./archive/manual-testing-infrastructure-refactor/) | MVP complete | Phases 0-6 done. Phases 7-8 deferred. |
-| [skills-quality-validation](./archive/skills-quality-validation/) | Reconciled | 4 easy rules implemented, 7 dropped, 1 deferred. |
-| [rule-implementation](./archive/rule-implementation/) | Reference doc | 324 planned rules snapshot. |
-| [monorepo-support](./archive/monorepo-support/) | Complete | Config inheritance, workspace detection, parallel validation. |
-| [plugin-system-removal](./archive/plugin-system-removal/) | Complete | Removed legacy plugin system. |
-| [programmatic-api](./archive/programmatic-api/) | Complete | ClaudeLint class API. |
-| [validator-refactor](./archive/validator-refactor/) | Complete | Rule-based architecture foundation. |
-| [validator-refactor-2026](./archive/validator-refactor-2026/) | Complete | Removed 1,263 LOC, renamed validators, added architecture docs. |
-| [schema-accuracy-fixes](./archive/schema-accuracy-fixes/) | Complete | Fixed 7 schema issues from Anthropic comparison audit. |
-| [testing-fixture-infrastructure](./archive/testing-fixture-infrastructure/) | Complete | 9 fluent builders, enhanced fixtures, pinned integration tests. |
-| [official-spec-alignment](./archive/official-spec-alignment/) | Complete | 5 new rules (B5-B9), self-fixed all 9 skills. |
-| [rule-reliability](./archive/rule-reliability/) | Complete | 30/30 tasks: parsing hardening, regex fixes, regression prevention. |
-| [dogfood-and-improvements](./archive/dogfood-and-improvements/) | ~92% | 21 new rules, SARIF, auto-fix, watch mode. 3 tasks remaining (T3-15/16/17). |
-| [cli-output-ux](./archive/cli-output-ux/) | ~93% | Phases 1-3 complete. Phase 4 (rich diagnostics) not started. |
-| [cli-output-overhaul](./archive/cli-output-overhaul/) | ~28% | Phase 1 complete. Message cleanup and explain mode remaining. |
-| [cli-best-practices](./archive/cli-best-practices/) | Planned | 60 tasks across 9 phases. CLI/npm best practices overhaul. |
-| [preset-system](./archive/preset-system/) | Planned | Built-in presets (recommended, all). Target 0.3.0. |
-| [api-docs-verification](./archive/api-docs-verification/) | Complete | 5 phases: fix discrepancies, export snapshots, API Extractor, code samples, range-based auto-fix. |
+| npm-release-setup | Complete (Phases 1-6) | Beta published. Stable release tracked in roadmap. |
+| plugin-and-md-management | Complete (Phases 0-4) | Plugin infra, schemas, skills, deprecation. Testing tracked in roadmap. |
+| agent-testing-and-plugin | Complete | Color field, plugin agent, test expansion, doc restructuring. |
+| agents-rework | Complete | Flat file discovery, rule alignment, schema fixes. |
+| api-docs-verification | Complete | API Extractor, code samples, range-based auto-fix. |
+| branding-and-assets | Complete | Logo, OG image, visual assets. |
+| cli-best-practices | Complete | `--output-file`, `--rule`, `--changed`, `--stdin`, option-builders. |
+| cli-output-overhaul | ~28% | Phase 1 complete. Remaining work deferred. |
+| cli-output-ux | ~93% | Phases 1-3 complete. Phase 4 deferred. |
+| cross-category-audit | Complete | All 10 rule categories audited. |
+| dogfood-and-improvements | ~92% | 21 new rules, SARIF, auto-fix. 3 tasks in roadmap. |
+| file-discovery-and-format | Complete | Centralized discovery, format command fixes. |
+| github-automation | Complete | Repo, CI/CD, labels, Codecov, Discussions. |
+| manual-testing-infrastructure-refactor | MVP complete | Phases 0-6 done. |
+| monorepo-support | Complete | Config inheritance, workspace detection. |
+| official-spec-alignment | Complete | 5 new rules, self-fixed all 9 skills. |
+| plugin-system-removal | Complete | Removed legacy plugin system. |
+| preset-system | Complete | `claudelint:recommended` (89 rules), `claudelint:all` (117 rules). |
+| programmatic-api | Complete | ClaudeLint class API. |
+| rule-implementation | Reference doc | 324 planned rules snapshot. |
+| rule-reliability | Complete | 30/30 tasks: parsing, regex, regression prevention. |
+| schema-accuracy-fixes | Complete | Fixed 7 schema issues. |
+| skills-quality-validation | Reconciled | 4 implemented, 7 dropped, 1 deferred. |
+| testing-fixture-infrastructure | Complete | 9 fluent builders, pinned integration tests. |
+| validator-refactor | Complete | Rule-based architecture foundation. |
+| validator-refactor-2026 | Complete | Removed 1,263 LOC, renamed validators. |
+| vitepress-docs | Launched | claudelint.com live, incremental updates. |
 
 ---
 
 ## Rule Implementation Summary
 
-The linter has **113 implemented rules** across 10 categories:
+113 implemented rules across 10 categories:
 
 | Category | Count |
 |----------|-------|
@@ -101,7 +67,3 @@ The linter has **113 implemented rules** across 10 categories:
 | Hooks | 3 |
 | Output Styles | 3 |
 | Commands | 2 |
-
----
-
-**Last Updated:** 2026-02-17
