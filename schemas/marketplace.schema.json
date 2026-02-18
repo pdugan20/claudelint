@@ -153,6 +153,11 @@
             "email": {
               "type": "string",
               "format": "email"
+            },
+            "url": {
+              "type": "string",
+              "description": "Author URL",
+              "format": "uri"
             }
           },
           "additionalProperties": false
@@ -210,12 +215,15 @@
         "hooks": {
           "oneOf": [
             { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
-            { "type": "array", "items": { "type": "string" } },
-            { "type": "object" }
+            { "type": "array", "items": { "type": "string" } }
           ]
         },
         "mcpServers": {
-          "oneOf": [{ "type": "string", "pattern": "^\\.\\/.*\\.json$" }, { "type": "object" }]
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
+            { "type": "array", "items": { "type": "string" } },
+            { "type": "object" }
+          ]
         },
         "outputStyles": {
           "oneOf": [
@@ -224,7 +232,11 @@
           ]
         },
         "lspServers": {
-          "oneOf": [{ "type": "string", "pattern": "^\\.\\/.*\\.json$" }, { "type": "object" }]
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
+            { "type": "array", "items": { "type": "string" } },
+            { "type": "object" }
+          ]
         }
       },
       "additionalProperties": false

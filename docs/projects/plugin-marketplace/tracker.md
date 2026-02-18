@@ -24,14 +24,14 @@ Create `.claude-plugin/marketplace.json` with claudelint as the first plugin.
 ```json
 {
   "name": "pdugan20-plugins",
-  "description": "Claude Code plugins by Pat Dugan — linting, documentation, and developer tools.",
+  "description": "Plugins for validating, linting, and improving Claude Code projects.",
   "version": "0.2.0-beta.1",
   "owner": {
     "name": "Pat Dugan",
-    "email": "pat@claudelint.com"
+    "email": "dugan.pat@gmail.com"
   },
   "metadata": {
-    "description": "Claude Code plugins by Pat Dugan — linting, documentation, and developer tools."
+    "description": "Plugins for validating, linting, and improving Claude Code projects."
   },
   "plugins": [
     {
@@ -46,8 +46,7 @@ Create `.claude-plugin/marketplace.json` with claudelint as the first plugin.
       "repository": "https://github.com/pdugan20/claudelint",
       "license": "MIT",
       "keywords": ["validation", "linting", "developer-tools", "code-quality", "claude-code"],
-      "category": "developer-tools",
-      "tags": ["linter", "validator", "claude-md", "skills", "hooks", "mcp", "plugins"]
+      "category": "developer-tools"
     }
   ]
 }
@@ -84,7 +83,7 @@ Verify all useful fields from the [marketplace schema](https://code.claude.com/d
 | `license` | Yes | `MIT` | Matches package.json |
 | `keywords` | Yes | Relevant search terms | Helps plugin discovery |
 | `category` | Yes | `developer-tools` | Organization in Discover tab |
-| `tags` | Yes | More specific than keywords | Searchability |
+| `tags` | Skip | Nearly identical to `keywords` per docs; official examples don't use it | Redundant |
 | `strict` | Skip | Default `true` is correct | plugin.json is the authority |
 | `commands` | Skip | Auto-discovered from plugin.json | Not needed in strict mode |
 | `agents` | Skip | None defined | |
@@ -180,6 +179,8 @@ Tasks:
 - [ ] Auto-detect: if running inside a project with `claude-code-lint` in package.json, tailor the output
 - [ ] Add `--json` flag support for programmatic consumption (optional, low priority)
 - [ ] Add verification step showing how to test the install worked
+- [ ] After install steps, remind user that auto-update is off by default for third-party marketplaces
+- [ ] Show how to enable: `/plugin` > Marketplaces > select `pdugan20-plugins` > "Enable auto-update"
 
 ### 3.2 Upgrade SessionStart hook
 
@@ -384,7 +385,11 @@ File: `.claude-plugin/README.md`
 - [ ] Lines 65-71: Replace placeholder `claudelint@marketplace-name` with real syntax
 - [ ] Add the marketplace add step before the install step
 - [ ] Update "Prerequisites" section to show both global and local npm install options
-- [ ] Add a "Keeping Up to Date" section (brief, link to website for details)
+- [ ] Add a "Keeping Up to Date" section that includes:
+  - Auto-update is off by default for third-party marketplaces — recommend enabling it
+  - How to enable: `/plugin` > Marketplaces > select `pdugan20-plugins` > "Enable auto-update"
+  - Manual update command: `/plugin marketplace update pdugan20-plugins`
+  - Link to website plugin guide for full details on version sync
 
 ### 4.4 Update website marketplace schema docs
 

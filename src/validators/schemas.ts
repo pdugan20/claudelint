@@ -351,12 +351,7 @@ export const MarketplacePluginEntrySchema = z.object({
   // Optional metadata
   description: z.string().optional(),
   version: z.string().optional(),
-  author: z
-    .object({
-      name: z.string(),
-      email: z.string().optional(),
-    })
-    .optional(),
+  author: PluginAuthorSchema.optional(),
   homepage: z.string().optional(),
   repository: z.string().optional(),
   license: z.string().optional(),
