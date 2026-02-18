@@ -90,6 +90,7 @@
     "check:rule-since": "ts-node scripts/check/rule-since.ts",
     "check:rule-docs-sections": "ts-node scripts/check/rule-docs-sections.ts",
     "check:rule-structure": "ts-node scripts/verify/rule-structure.ts",
+    "check:schema-docs": "ts-node scripts/check/schema-docs.ts",
     "check:schema-sync": "ts-node scripts/check/schema-sync.ts",
     "check:source-paths": "ts-node scripts/check/source-paths.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",

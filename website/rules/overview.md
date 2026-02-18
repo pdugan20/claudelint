@@ -4,7 +4,7 @@ description: Browse all claudelint validation rules organized by category. Cover
 
 # Rules Reference
 
-claudelint includes <RuleCount category="total" /> validation rules across <RuleCount category="categories" /> categories. Each rule has detailed documentation with examples.
+Browse every validation rule by category. Each rule page includes severity, examples of correct and incorrect usage, and how to fix violations.
 
 ## Featured Rules
 

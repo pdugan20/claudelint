@@ -9,7 +9,9 @@ description: "Schema reference for marketplace.json plugin catalog including own
   docs="Plugin marketplaces" docs-link="https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema"
 />
 
-The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin catalog.
+The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin catalog for distribution.
+
+## Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -17,11 +19,11 @@ The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin cata
 | `name` | string | yes | Marketplace name |
 | `description` | string | no | Marketplace description |
 | `version` | string | no | Marketplace version |
-| `owner` | object | yes | Owner info (see below) |
-| `plugins` | array | yes | Plugin entries (see below) |
+| `owner` | object | yes | [Owner info](#owner) |
+| `plugins` | array | yes | Array of [plugin entries](#plugin-entry) |
 | `metadata` | object | no | Extra metadata (`pluginRoot`, etc.) |
 
-## Marketplace Owner
+## Owner
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -49,7 +51,7 @@ Each entry in the `plugins` array:
 
 ## Plugin Source
 
-The `source` field can be a relative path string (e.g., `"./plugins/my-plugin"`) or an object:
+The `source` field can be a relative path string or an object:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -61,3 +63,25 @@ The `source` field can be a relative path string (e.g., `"./plugins/my-plugin"`)
 | `registry` | string | no | Custom registry URL |
 | `ref` | string | no | Git ref (tag, branch, commit) |
 | `sha` | string | no | Git commit SHA for pinning |
+
+## Example
+
+```json
+{
+  "name": "my-marketplace",
+  "owner": { "name": "Dev Team" },
+  "plugins": [
+    {
+      "name": "code-review",
+      "source": "./plugins/code-review",
+      "description": "Automated code review",
+      "version": "1.0.0",
+      "category": "development"
+    },
+    {
+      "name": "external-plugin",
+      "source": { "source": "github", "repo": "owner/repo", "ref": "v2.0.0" }
+    }
+  ]
+}
+```

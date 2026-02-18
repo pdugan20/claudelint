@@ -22,6 +22,7 @@ HAS_CI=$(echo "$STAGED_FILES" | grep -c '^\.github/' || true)
 HAS_SCHEMAS=$(echo "$STAGED_FILES" | grep -c -E '(^schemas/|^src/schemas/)' || true)
 HAS_VALIDATORS=$(echo "$STAGED_FILES" | grep -c -E '(^src/validators/|^tests/validators/)' || true)
 HAS_RULE_DOCS=$(echo "$STAGED_FILES" | grep -c -E '(^website/rules/|^src/rules/)' || true)
+HAS_SCHEMA_DOCS=$(echo "$STAGED_FILES" | grep -c '^website/api/schemas/' || true)
 FORCE_ALL="${CLAUDELINT_PRECOMMIT_ALL:-0}"
 
 # Track which checks to run
@@ -40,6 +41,7 @@ RUN_HARDCODED_COUNTS=0
 RUN_MSG_LENGTH=0
 RUN_MSG_CONTENT=0
 RUN_ORPHANED_DOCS=0
+RUN_SCHEMA_DOCS=0
 
 if [ "$FORCE_ALL" = "1" ]; then
   RUN_EMOJIS=1
@@ -55,6 +57,7 @@ if [ "$FORCE_ALL" = "1" ]; then
   RUN_MSG_LENGTH=1
   RUN_MSG_CONTENT=1
   RUN_ORPHANED_DOCS=1
+  RUN_SCHEMA_DOCS=1
 else
   [ "$HAS_TS" -gt 0 ] || [ "$HAS_MD" -gt 0 ] && RUN_EMOJIS=1
   [ "$HAS_CLI" -gt 0 ] && RUN_LOGGER_SPACING=1
@@ -69,6 +72,7 @@ else
   [ "$HAS_RULES" -gt 0 ] && RUN_MSG_LENGTH=1
   [ "$HAS_RULES" -gt 0 ] && RUN_MSG_CONTENT=1
   [ "$HAS_RULE_DOCS" -gt 0 ] && RUN_ORPHANED_DOCS=1
+  [ "$HAS_SCHEMA_DOCS" -gt 0 ] && RUN_SCHEMA_DOCS=1
 fi
 
 # Count enabled checks for progress display
@@ -89,9 +93,10 @@ TOTAL=0
 [ "$RUN_MSG_LENGTH" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_MSG_CONTENT" = "1" ] && TOTAL=$((TOTAL + 1))
 [ "$RUN_ORPHANED_DOCS" = "1" ] && TOTAL=$((TOTAL + 1))
+[ "$RUN_SCHEMA_DOCS" = "1" ] && TOTAL=$((TOTAL + 1))
 
 STEP=0
-echo "Running pre-commit checks ($TOTAL of 16 enabled)..."
+echo "Running pre-commit checks ($TOTAL of 17 enabled)..."
 if [ "$FORCE_ALL" = "1" ]; then
   echo "(CLAUDELINT_PRECOMMIT_ALL=1: running all checks)"
 fi
@@ -218,6 +223,13 @@ fi
 if [ "$RUN_ORPHANED_DOCS" = "1" ]; then
   run_check "Checking for orphaned rule docs"
   npm run check:orphaned-rule-docs || fail_check "Orphaned rule docs found. Delete stale files or regenerate with: npm run docs:generate"
+  echo ""
+fi
+
+# 16. Schema documentation consistency
+if [ "$RUN_SCHEMA_DOCS" = "1" ]; then
+  run_check "Checking schema documentation consistency"
+  npm run check:schema-docs || fail_check "Schema docs violate standard template. Run 'npm run check:schema-docs' for details."
   echo ""
 fi
 

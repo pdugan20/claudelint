@@ -9,25 +9,16 @@ description: "Schema reference for hooks.json configuration including events, ma
   docs="Hooks" docs-link="https://code.claude.com/docs/en/hooks"
 />
 
-Hooks use an object-keyed format where each key is a [hook event](/api/schemas#hook-events) name (PascalCase):
+Hooks run commands or prompts in response to Claude Code events. Each key is a [hook event](/api/schemas#hook-events) name (PascalCase), mapping to an array of matchers.
 
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "optional-pattern",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Session started'"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+## Fields
+
+Top-level hooks object (standalone `hooks.json`):
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `description` | string | no | Human-readable description |
+| `hooks` | object | yes | Event-keyed hooks configuration |
 
 ## Hook Matcher
 
@@ -51,20 +42,33 @@ Each event maps to an array of matcher objects:
 | `once` | boolean | no | Run only once per session |
 | `model` | string | no | Model override for this hook |
 
-## Standalone hooks.json
-
-The `hooks/hooks.json` file (plugin root) wraps the hooks object with an optional description:
+## Example
 
 ```json
 {
-  "description": "Project-level hooks",
   "hooks": {
-    "PreToolUse": [ ... ]
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Bash tool invoked'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Review the project README before starting work."
+          }
+        ]
+      }
+    ]
   }
 }
 ```
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `description` | string | no | Human-readable description |
-| `hooks` | object | yes | Hooks configuration (event-keyed object) |

@@ -9,20 +9,9 @@ description: "Schema reference for .lsp.json language server configuration inclu
   docs="LSP servers" docs-link="https://code.claude.com/docs/en/plugins-reference#lsp-servers"
 />
 
-The `.lsp.json` file maps server names to their configurations:
+The `.lsp.json` file maps server names to their configurations, enabling language intelligence for Claude Code.
 
-```json
-{
-  "typescript": {
-    "command": "typescript-language-server",
-    "args": ["--stdio"],
-    "extensionToLanguage": {
-      ".ts": "typescript",
-      ".tsx": "typescriptreact"
-    }
-  }
-}
-```
+## Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -38,3 +27,18 @@ The `.lsp.json` file maps server names to their configurations:
 | `shutdownTimeout` | number | no | Shutdown timeout (ms, min 0) |
 | `restartOnCrash` | boolean | no | Auto-restart on crash |
 | `maxRestarts` | number | no | Max restart attempts (min 0) |
+
+## Example
+
+```json
+{
+  "typescript": {
+    "command": "typescript-language-server",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact"
+    }
+  }
+}
+```

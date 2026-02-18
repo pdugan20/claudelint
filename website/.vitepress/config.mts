@@ -153,7 +153,7 @@ export default defineConfig({
             { text: 'Types', link: '/api/types' },
             {
               text: 'Schemas',
-              collapsed: true,
+              collapsed: false,
               items: [
                 { text: 'Overview', link: '/api/schemas' },
                 { text: 'Skills', link: '/api/schemas/skills' },

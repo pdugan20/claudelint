@@ -10,41 +10,61 @@ description: "Schema reference for settings.json including permissions, attribut
   schema="claude-code-settings.json" schema-link="https://json.schemastore.org/claude-code-settings.json"
 />
 
-The `settings.json` file can be located at:
+The `settings.json` file configures Claude Code behavior. It can be located at `~/.claude/settings.json` (global), `.claude/settings.json` (project), or `.claude/settings.local.json` (local, gitignored).
 
-- `~/.claude/settings.json` (global)
-- `.claude/settings.json` (project)
-- `.claude/settings.local.json` (local, gitignored)
+## Fields
 
-claudelint validates the top-level structure and nested objects. Key sections include:
+### Permissions
 
-## Permissions
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `allow` | string[] | no | Permission patterns to auto-allow (e.g., `"Bash(npm run *)"`) |
+| `deny` | string[] | no | Permission patterns to always deny |
+| `ask` | string[] | no | Permission patterns to always prompt |
+| `defaultMode` | string | no | `acceptEdits`, `bypassPermissions`, `default`, or `plan` |
+| `disableBypassPermissionsMode` | string | no | Set to `"disable"` to prevent bypass |
+| `additionalDirectories` | string[] | no | Extra directories to allow access to |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `allow` | string[] | Permission patterns to auto-allow (e.g., `"Bash(npm run *)"`) |
-| `deny` | string[] | Permission patterns to always deny |
-| `ask` | string[] | Permission patterns to always prompt |
-| `defaultMode` | string | `acceptEdits`, `bypassPermissions`, `default`, or `plan` |
-| `disableBypassPermissionsMode` | string | Set to `"disable"` to prevent bypass |
-| `additionalDirectories` | string[] | Extra directories to allow access to |
+### Attribution
 
-## Attribution
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `commit` | string | no | Commit message template |
+| `pr` | string | no | PR description template |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `commit` | string | Commit message template |
-| `pr` | string | PR description template |
+### Sandbox
 
-## Sandbox
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `enabled` | boolean | no | Enable sandboxing |
+| `autoAllowBashIfSandboxed` | boolean | no | Auto-allow bash in sandbox |
+| `excludedCommands` | string[] | no | Commands excluded from sandbox |
+| `allowUnsandboxedCommands` | string[] | no | Commands allowed outside sandbox |
+| `network.allowedHosts` | string[] | no | Allowed network hosts |
+| `network.allowedPorts` | number[] | no | Allowed network ports |
+| `enableWeakerNestedSandbox` | boolean | no | Allow weaker nested sandbox |
+| `ignoreViolations` | boolean | no | Ignore sandbox violations |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `enabled` | boolean | Enable sandboxing |
-| `autoAllowBashIfSandboxed` | boolean | Auto-allow bash in sandbox |
-| `excludedCommands` | string[] | Commands excluded from sandbox |
-| `allowUnsandboxedCommands` | string[] | Commands allowed outside sandbox |
-| `network.allowedHosts` | string[] | Allowed network hosts |
-| `network.allowedPorts` | number[] | Allowed network ports |
-| `enableWeakerNestedSandbox` | boolean | Allow weaker nested sandbox |
-| `ignoreViolations` | boolean | Ignore sandbox violations |
+## Example
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(git *)",
+      "Read",
+      "Edit"
+    ],
+    "deny": [
+      "Bash(rm -rf *)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "network": {
+      "allowedHosts": ["registry.npmjs.org"]
+    }
+  }
+}
+```

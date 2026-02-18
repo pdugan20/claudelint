@@ -4,7 +4,7 @@ description: Understand how claudelint organizes validation rules into categorie
 
 # Validators
 
-claudelint organizes its <RuleCount category="total" /> validation rules into <RuleCount category="categories" /> validator categories. Each validator handles a specific aspect of your Claude Code project.
+Validators are the engines that scan your project. Each validator targets specific files — CLAUDE.md, SKILL.md, settings.json, and others — and runs its rules against them.
 
 ## Validator Categories
 
