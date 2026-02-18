@@ -438,14 +438,17 @@ File: `website/api/schemas/marketplace.md`
 
 ### 6.1 Push and make repo public
 
-- [ ] Push all commits to GitHub
-- [ ] Make repo public: `gh repo edit pdugan20/claudelint --visibility public`
+- [x] Push all commits to GitHub
+- [x] Make repo public: `gh repo edit pdugan20/claudelint --visibility public`
 
 ### 6.2 Version bump and publish
 
-- [ ] Decide version: `0.2.0-beta.2` or `0.2.0`
-- [ ] Run release: `npm run release:beta` (or `release:patch`)
-- [ ] Verify npm package page shows updated version
+- [x] Decide version: `0.2.0-beta.2` (graduate to `0.2.0` after all testing)
+- [x] Run release: `npx release-it 0.2.0-beta.2`
+- [x] Verify npm package published
+- [x] Create GitHub Release with changelog
+- [x] Fix sync-versions.ts to run prettier after writing JSON (prevents CI formatting drift)
+- [x] Auto-set GITHUB_TOKEN from `gh auth token` in all release scripts
 
 ### 6.3 Deploy website
 
