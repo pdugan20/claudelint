@@ -21,8 +21,8 @@ echo "Setup complete!"
 echo
 echo "Next steps:"
 echo
-echo "6.1: Install plugin"
-echo "  /plugin install --source ."
+echo "6.1: Load plugin"
+echo "  claude --plugin-dir ."
 echo
 echo "6.2: Verify skills load"
 echo "  /skills list | grep claudelint"

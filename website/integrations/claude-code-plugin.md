@@ -18,23 +18,23 @@ The plugin's skills run claudelint CLI commands under the hood. You must install
 
 See [Getting Started](/guide/getting-started) for full installation options.
 
-### From GitHub
+### Local Development / Testing
 
-Install directly from GitHub:
-
-```bash
-/plugin install github:pdugan20/claudelint
-```
-
-### From Local Package
-
-If you've installed the npm package, you can load the plugin from your local `node_modules`:
+Load the plugin directly using the `--plugin-dir` flag:
 
 ```bash
-/plugin install --source ./node_modules/claude-code-lint
+claude --plugin-dir ./node_modules/claude-code-lint
 ```
 
-This gives you both the CLI commands and the Claude skills.
+### From a Marketplace
+
+If the plugin is available in a marketplace:
+
+```bash
+/plugin install claudelint@marketplace-name
+```
+
+See the [Claude Code plugin docs](https://code.claude.com/docs/en/discover-plugins) for marketplace setup.
 
 ## Skills
 

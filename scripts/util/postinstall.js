@@ -6,16 +6,15 @@ if (process.env.CI || process.env.CONTINUOUS_INTEGRATION) {
 }
 
 const chalk = require('chalk');
-const path = require('path');
 
 console.log('');
 console.log(chalk.green('✓') + ' claude-code-lint installed!');
 console.log('');
 console.log(chalk.bold('To enable interactive skills in Claude Code:'));
 console.log('');
-console.log('  Run this in your Claude Code session:');
-console.log(chalk.cyan('    /plugin install --source ./node_modules/claude-code-lint'));
+console.log('  Load the plugin with:');
+console.log(chalk.cyan('    claude --plugin-dir ./node_modules/claude-code-lint'));
 console.log('');
-console.log('  Or use the setup helper:');
+console.log('  Or see full options:');
 console.log(chalk.cyan('    npx claudelint install-plugin'));
 console.log('');

@@ -12,7 +12,7 @@ This runbook provides step-by-step instructions for manually testing all 9 bundl
 
 - Claude Code CLI installed and configured
 - claudelint npm package installed locally (this repo)
-- Plugin installed: `/plugin install --source .`
+- Plugin loaded: `claude --plugin-dir .`
 - Ability to open multiple Claude Code sessions/tabs
 - Terminal with bash support
 
@@ -699,13 +699,13 @@ Test error scenarios:
    npm run build
    ```
 
-2. Install plugin:
+2. Load plugin (start Claude Code with plugin flag):
 
    ```bash
-   /plugin install --source .
+   claude --plugin-dir .
    ```
 
-   - [ ] Installation succeeds
+   - [ ] Claude Code starts with plugin loaded
    - [ ] No errors shown
 
 3. Verify skills load:
@@ -727,12 +727,12 @@ Test error scenarios:
    - [ ] Shows expected output
    - [ ] No errors
 
-##### 6.2: GitHub Plugin Install
+##### 6.2: Marketplace Plugin Install
 
-1. Test GitHub install (requires repo to be public or accessible):
+1. Test marketplace install (requires marketplace setup):
 
    ```bash
-   /plugin install github:pdugan20/claudelint
+   /plugin install claudelint@marketplace-name
    ```
 
    - [ ] Installation succeeds

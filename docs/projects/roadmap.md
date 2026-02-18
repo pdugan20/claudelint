@@ -9,12 +9,27 @@ Single source of truth for all remaining work. Check off tasks as you complete t
 
 ## Release Burndown
 
+### Plugin Spec Alignment (Pre-Release)
+
+**Effort:** ~3-4 hours
+**Unblocks:** Interactive testing
+**Tracker:** [plugin-spec-alignment/tracker.md](./plugin-spec-alignment/tracker.md)
+
+- [ ] Commit pending install syntax fixes (10 files)
+- [ ] Fix `MarketplaceMetadataSchema` to match official spec
+- [ ] Create `schemas/marketplace.schema.json` reference schema
+- [ ] Fix `plugin-invalid-manifest` rule
+- [ ] Fix `plugin-marketplace-files-not-found` rule
+- [ ] Rewrite tests for both rules
+- [ ] Regenerate, verify, dogfood
+
 ### Interactive Testing (Pre-Release)
 
 **Effort:** ~2-3 hours
 **Unblocks:** Stable release
+**Depends on:** Plugin spec alignment above
 
-- [ ] Test local plugin install: `/plugin install --source .`
+- [ ] Test local plugin load: `claude --plugin-dir .`
 - [ ] Verify all 9 skills load: `/skills list`
 - [ ] Execute one skill: `/claudelint:validate-all`
 - [ ] Test one natural language trigger: "check my CLAUDE.md"

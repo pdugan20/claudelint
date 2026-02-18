@@ -9,9 +9,15 @@ All active work is tracked in [roadmap.md](./roadmap.md).
 
 ## Current Status
 
-**Next milestone:** Interactive plugin testing, then stable 0.2.0 release.
+**Next milestone:** Plugin spec alignment, then interactive testing, then stable 0.2.0 release.
 
-Published as `claude-code-lint@0.2.0-beta.1`. All implementation work complete. Release burndown is ~1 day of effort.
+Published as `claude-code-lint@0.2.0-beta.1`. Plugin spec alignment in progress -- marketplace schema and 2 rules need fixing. Release burndown begins after.
+
+## Active Projects
+
+| Project | Status | Tracker |
+|---------|--------|---------|
+| [plugin-spec-alignment](./plugin-spec-alignment/) | Active | [tracker.md](./plugin-spec-alignment/tracker.md) |
 
 ---
 

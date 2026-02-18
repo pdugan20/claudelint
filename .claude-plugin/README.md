@@ -54,31 +54,29 @@ This plugin gives Claude the ability to check your Claude Code projects for erro
 
 ## Installation
 
-### For Claude.ai Users
+### Local Development / Testing
 
-Install directly from GitHub:
+Load the plugin directly using the `--plugin-dir` flag:
 
 ```bash
-/plugin install github:pdugan20/claudelint
+claude --plugin-dir /path/to/claude-lint
 ```
 
-**Note**: You must also install the npm package (see below) for the validators to work.
+### Marketplace Installation
 
-### For npm Users (Recommended)
+If the plugin is available in a marketplace:
 
-1. Install the npm package in your project:
+```bash
+/plugin install claudelint@marketplace-name
+```
+
+### Prerequisites
+
+The plugin's skills run claudelint CLI commands under the hood. Install the npm package first:
 
 ```bash
 npm install --save-dev claude-code-lint
 ```
-
-1. Install the plugin from your local package:
-
-```bash
-/plugin install --source ./node_modules/claude-code-lint
-```
-
-This gives you both the CLI commands and the Claude skills.
 
 ## Usage
 

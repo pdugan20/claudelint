@@ -23,12 +23,14 @@ npx claudelint check-all  # Validate your project
 
 ### Claude Code Plugin
 
-Install as a plugin for interactive validation during Claude Code sessions.
+Load as a plugin for interactive validation during Claude Code sessions.
 
 ```bash
-/plugin install github:pdugan20/claudelint
+claude --plugin-dir /path/to/claude-lint
 /claudelint:validate-all
 ```
+
+See [Plugin Integration](https://claudelint.com/integrations/claude-code-plugin) for marketplace installation and distribution.
 
 ## What It Checks
 

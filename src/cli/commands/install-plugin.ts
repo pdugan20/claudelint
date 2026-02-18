@@ -5,8 +5,6 @@
 import { Command } from 'commander';
 import { logger } from '../utils/logger';
 import chalk from 'chalk';
-import { join } from 'path';
-import { existsSync } from 'fs';
 
 /**
  * Register the install-plugin command
@@ -18,36 +16,23 @@ export function registerInstallPluginCommand(program: Command): void {
     .command('install-plugin')
     .description('Show instructions for installing claudelint plugin in Claude Code')
     .action(() => {
-      const cwd = process.cwd();
-      const nodeModulesPath = join(cwd, 'node_modules', 'claude-code-lint');
-      const isProjectInstall = existsSync(nodeModulesPath);
-
       logger.newline();
       logger.section('Install claudelint plugin in Claude Code');
       logger.newline();
 
-      if (isProjectInstall) {
-        logger.info('Detected project installation in node_modules');
-        logger.newline();
-        logger.log(chalk.bold('Run this command in your Claude Code session:'));
-        logger.newline();
-        logger.log(chalk.cyan('  /plugin install --source ./node_modules/claude-code-lint'));
-        logger.newline();
-      } else {
-        logger.info('No project installation detected');
-        logger.newline();
-        logger.log(chalk.bold('Option 1: Install from GitHub (recommended)'));
-        logger.newline();
-        logger.log(chalk.cyan('  /plugin install github:pdugan20/claudelint'));
-        logger.newline();
-        logger.log(chalk.bold('Option 2: Install from npm first, then:'));
-        logger.newline();
-        logger.log(chalk.dim('  npm install --save-dev claude-code-lint'));
-        logger.log(chalk.cyan('  /plugin install --source ./node_modules/claude-code-lint'));
-        logger.newline();
-      }
+      logger.log(chalk.bold('Option 1: Load directly (development/testing)'));
+      logger.newline();
+      logger.log(chalk.cyan('  claude --plugin-dir ./node_modules/claude-code-lint'));
+      logger.newline();
 
-      logger.log(chalk.bold('After installation, skills will be available:'));
+      logger.log(chalk.bold('Option 2: Install from a marketplace'));
+      logger.newline();
+      logger.log(chalk.cyan('  /plugin install claudelint@marketplace-name'));
+      logger.newline();
+      logger.log(chalk.dim('  See https://code.claude.com/docs/en/discover-plugins for details.'));
+      logger.newline();
+
+      logger.log(chalk.bold('After loading, skills will be available:'));
       logger.newline();
       logger.detail('/claudelint:validate-all    - Validate all project files');
       logger.detail('/claudelint:validate-cc-md  - Validate CLAUDE.md files');

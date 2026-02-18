@@ -415,10 +415,10 @@ export class InitWizard {
     logger.newline();
     logger.log(chalk.bold('To enable interactive skills in Claude Code:'));
     logger.newline();
-    logger.detail('Run in your Claude Code session:');
-    logger.detail(chalk.cyan('  /plugin install --source ./node_modules/claude-code-lint'));
+    logger.detail('Load the plugin with:');
+    logger.detail(chalk.cyan('  claude --plugin-dir ./node_modules/claude-code-lint'));
     logger.newline();
-    logger.detail('Or use the helper command:');
+    logger.detail('Or see full options:');
     logger.detail(chalk.cyan('  npx claudelint install-plugin'));
     logger.newline();
     logger.info('Tip: Use "claudelint list-rules" to see all available rules');
