@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import llmstxt from 'vitepress-plugin-llms';
 import pkg from '../../package.json';
 import rulesSidebar from '../rules/_sidebar.json';
 import claudeLight from './theme/claude-light.json';
@@ -201,6 +202,10 @@ export default defineConfig({
     config(md) {
       md.use(sourceLinkPlugin);
     },
+  },
+
+  vite: {
+    plugins: [llmstxt()],
   },
 
   sitemap: {

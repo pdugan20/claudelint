@@ -261,3 +261,30 @@ jobs:
 
       - name: Run integration tests
         run: npm test -- --testPathPatterns=integration
+
+  docs-build:
+    name: Docs Build
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+
+      - name: Build documentation site
+        run: npm run docs:build
+
+      - name: Verify llms.txt generated
+        run: test -f website/.vitepress/dist/llms.txt && test -f website/.vitepress/dist/llms-full.txt

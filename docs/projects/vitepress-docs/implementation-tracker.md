@@ -228,7 +228,7 @@ Add `meta.docs` to most commonly violated rules:
 ## Phase 3: Metadata Completion (Weeks 3-4)
 
 **Goal**: Add metadata to 100% of rules
-**Deliverable**: All 116 rules auto-generated from source code
+**Deliverable**: All 117 rules auto-generated from source code
 
 ### Remaining Rules (91 rules across all categories)
 
@@ -242,7 +242,7 @@ Add `meta.docs` to most commonly violated rules:
 ### Validation
 
 - [x] Run full generation: `npm run docs:generate`
-- [x] Verify all 116 rules auto-generated from metadata
+- [x] Verify all 117 rules auto-generated from metadata
 - [x] No fallback to manual docs (0 copied from existing)
 - [x] All examples render correctly (quadruple fences for nested code blocks)
 - [x] All options documented (optionExamples where applicable)
@@ -337,10 +337,11 @@ Add `meta.docs` to most commonly violated rules:
 - [x] OG meta tags configured (og:type, og:title, og:description)
 - [x] Sitemap generation enabled (hostname: claudelint.com)
 - [x] robots.txt created (Allow all, sitemap reference)
+- [x] llms.txt and llms-full.txt (vitepress-plugin-llms, auto-generated at build time)
 - [x] og:image for social previews (completed in branding-and-assets project)
 - [ ] Test social media previews (post-deployment)
 
-**Phase 5 Complete**: (11/15 tasks = 73%, remainder deferred to post-launch)
+**Phase 5 Complete**: (12/16 tasks = 75%, remainder deferred to post-launch)
 
 ---
 
@@ -351,117 +352,120 @@ Add `meta.docs` to most commonly violated rules:
 
 ### Vercel Setup (Days 1-2)
 
-- [ ] Create Vercel account / sign in with GitHub
-- [ ] Import claudelint repository
-  - [ ] Click "Add New Project"
-  - [ ] Select pdugan20/claudelint
-  - [ ] Verify auto-detected settings:
-    - [ ] Framework: VitePress
-    - [ ] Build command: `npm run docs:build`
-    - [ ] Output directory: `website/.vitepress/dist`
-    - [ ] Root directory: `./`
-- [ ] Deploy initial version
-  - [ ] Click "Deploy"
-  - [ ] Wait for build completion (~1-2 min)
-  - [ ] Verify preview URL works
-- [ ] Configure custom domain
-  - [ ] Add domain: `claudelint.com`
-  - [ ] Copy DNS instructions
-  - [ ] Configure DNS at domain provider:
-    - Type: A
-    - Name: @
-    - Value: 76.76.21.21 (Vercel)
-  - [ ] Wait for DNS propagation (5-30 min)
-  - [ ] Verify HTTPS works
+- [x] Create Vercel account / sign in with GitHub
+- [x] Import claudelint repository
+  - [x] Click "Add New Project"
+  - [x] Select pdugan20/claudelint
+  - [x] Verify auto-detected settings:
+    - [x] Framework: VitePress
+    - [x] Build command: `npm run docs:build`
+    - [x] Output directory: `website/.vitepress/dist`
+    - [x] Root directory: `./`
+- [x] Deploy initial version
+  - [x] Click "Deploy"
+  - [x] Wait for build completion
+  - [x] Verify preview URL works
+- [x] Configure custom domain
+  - [x] Add domain: `claudelint.com`
+  - [x] Configure DNS at domain provider
+  - [x] Verify HTTPS works
+  - [x] Live at <https://www.claudelint.com>
 - [ ] Test PR preview deployments
   - [ ] Create test PR
   - [ ] Verify Vercel bot comments with preview URL
   - [ ] Test preview deployment works
 
-### Vercel Configuration (Optional)
+### Vercel Configuration
 
-- [ ] Create `vercel.json` for advanced settings
-  - [ ] Configure cache headers
-  - [ ] Set up redirects (if needed)
-  - [ ] Configure security headers
+- [x] Create `vercel.json` for advanced settings
+  - [x] Configure cache headers (immutable for /assets/, must-revalidate for HTML)
+  - [x] Configure security headers (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy)
+  - [x] Set cleanUrls and trailingSlash
+  - [x] Set Content-Type for llms.txt files
+- [x] Create `.vercelignore` (exclude tests, docs, .claude, .github from uploads)
+- [x] Add docs-build CI job to validate VitePress build on every PR
 - [ ] Enable Vercel Analytics
   - [ ] Go to Project → Analytics
   - [ ] Enable Vercel Analytics
   - [ ] Test analytics tracking
 
-### Performance Optimization (Days 3-4)
+### Domain Configuration
 
-- [ ] Optimize images
-  - [ ] Compress PNGs with TinyPNG
-  - [ ] Convert to WebP format where appropriate
-  - [ ] Add width/height attributes
-  - [ ] Optimize logo/favicon
-- [ ] Test performance
-  - [ ] Run Lighthouse audit
-  - [ ] Target scores:
-    - [ ] Performance: 95+
-    - [ ] Accessibility: 95+
-    - [ ] Best Practices: 95+
-    - [ ] SEO: 95+
-  - [ ] Fix any issues identified
+- [x] Configure apex domain (`claudelint.com`) as primary production domain
+- [x] Configure `www.claudelint.com` as 308 permanent redirect to apex
+- [x] Verify HTTPS works on both domains
+- [x] Verify sitemap accessible at `/sitemap.xml` (168 URLs, correct domain)
 
-### Monitoring & Analytics (Optional)
+### Deploy Latest Changes
 
-- [ ] Add privacy-friendly analytics
-  - [ ] Option 1: Vercel Analytics (built-in, free)
-  - [ ] Option 2: Plausible (privacy-focused)
-- [ ] Set up uptime monitoring
-  - [ ] UptimeRobot or similar
-  - [ ] Monitor claudelint.com
-  - [ ] Configure alerts
+- [ ] Commit and push local changes to main (llms plugin, vercel.json, .vercelignore, CI job)
+- [ ] Verify Vercel auto-deploys from push
+- [ ] Verify `/llms.txt` accessible on production
+- [ ] Verify `/llms-full.txt` accessible on production
+- [ ] Verify hardened security headers active (check with `curl -I`)
 
-### Pre-Launch Polish (Day 5)
+### Monitoring & Analytics
 
-- [ ] Branding & asset verification (rolled over from branding-and-assets project)
-  - [ ] Test OG images at thumbnail size (~300px wide) for readability
-  - [ ] Preview OG images with opengraph.xyz or similar debugger
-  - [ ] Verify logo is recognizable at 16x16 (favicon size)
-- [ ] Content review
-  - [ ] Proofread key pages (homepage, getting started)
-  - [ ] Check code examples work
-  - [ ] Verify all navigation links
-  - [ ] Test search functionality
-- [ ] Cross-browser testing
-  - [ ] Chrome (desktop + mobile)
-  - [ ] Firefox
-  - [ ] Safari (macOS + iOS)
-  - [ ] Edge
-- [ ] Accessibility audit
-  - [ ] Run axe DevTools
-  - [ ] Test keyboard navigation
-  - [ ] Check color contrast
-  - [ ] Verify alt text on images
+- [ ] Add Vercel Speed Insights (`@vercel/speed-insights/vue` component in theme)
+- [ ] Enable Vercel Web Analytics (dashboard toggle)
+- [ ] Enable Speed Insights in Vercel dashboard
 
-### Launch (Day 5)
+### Project Links & README
 
-- [ ] Final deployment
-  - [ ] Merge to main branch
-  - [ ] Verify Vercel auto-deploys
-  - [ ] Test live site at claudelint.com
-  - [ ] Verify search works in production
-  - [ ] Test mobile responsiveness
-- [ ] Update project links
-  - [ ] Update main README.md with docs link
-  - [ ] Update npm package.json homepage field
-  - [ ] Add docs badge to README
-- [ ] Announce
-  - [ ] Post to GitHub Discussions
-  - [ ] Update project description
-  - [ ] Share on social media (optional)
+- [ ] Update main README.md with docs site link
+- [ ] Add docs badge to README (e.g., `docs | claudelint.com`)
+- [x] Verify npm package.json homepage field (already `https://claudelint.com`)
 
-### Post-Launch (Ongoing)
+### SEO & Social Verification
 
-- [ ] Monitor Vercel analytics
+- [ ] Test OG images with opengraph.xyz or similar debugger
+- [ ] Verify OG images readable at thumbnail size (~300px wide)
+- [ ] Verify logo recognizable at 16x16 (favicon size)
+- [ ] Test social media share preview (Twitter, LinkedIn)
+
+### Performance Audit
+
+- [ ] Run Lighthouse audit on homepage
+- [ ] Run Lighthouse audit on a rule page
+- [ ] Target scores:
+  - [ ] Performance: 95+
+  - [ ] Accessibility: 95+
+  - [ ] Best Practices: 95+
+  - [ ] SEO: 95+
+- [ ] Fix any issues identified
+
+### PR Preview Deployments
+
+- [ ] Create test PR branch
+- [ ] Verify Vercel bot comments with preview URL
+- [ ] Test preview deployment works
+- [ ] Verify preview has correct content
+
+### Cross-Browser & Accessibility
+
+- [ ] Chrome (desktop + mobile)
+- [ ] Firefox
+- [ ] Safari (macOS + iOS)
+- [ ] Edge
+- [ ] Run axe DevTools accessibility audit
+- [ ] Test keyboard navigation
+- [ ] Check color contrast ratios
+- [ ] Verify alt text on images
+
+### Image Optimization (Deferred)
+
+- [ ] Compress PNGs with TinyPNG or similar
+- [ ] Convert to WebP format where appropriate
+- [ ] Add width/height attributes to images
+
+### Post-Launch
+
+- [ ] Monitor Vercel analytics dashboard
 - [ ] Track any broken links
 - [ ] Gather user feedback
-- [ ] Create backlog for improvements
+- [ ] Set up uptime monitoring (UptimeRobot or similar)
 
-**Phase 6 Complete**: ☐ (0/35 tasks = 0%)
+**Phase 6 Complete**: ☐ (23/52 tasks = 44%)
 
 ---
 
@@ -476,7 +480,7 @@ Add `meta.docs` to most commonly violated rules:
   - [ ] Verify every user-facing doc has been migrated
   - [ ] Verify no content was lost during migration
   - [ ] Check all internal links resolve correctly
-- [ ] Confirm auto-generation covers all 116 rules
+- [ ] Confirm auto-generation covers all 117 rules
   - [ ] Run `npm run docs:generate` and verify output
   - [ ] Spot-check 10 rule pages for quality
 
@@ -517,11 +521,11 @@ Add `meta.docs` to most commonly violated rules:
 - [x] Phase 2: Metadata Foundation (43/43 = 100%)
 - [x] Phase 3: Metadata Completion (12/12 = 100%)
 - [x] Phase 4: Custom Components (18/21 = 86%, 3 require browser testing)
-- [x] Phase 5: Enhanced Features (11/15 = 73%, remainder deferred to post-launch)
-- [ ] Phase 6: Deployment & Launch (0/35 = 0%)
+- [x] Phase 5: Enhanced Features (12/16 = 75%, remainder deferred to post-launch)
+- [ ] Phase 6: Deployment & Launch (23/52 = 44%)
 - [ ] Phase 7: Docs Cleanup & Single Source of Truth (0/14 = 0%)
 
-**Total Progress**: 120/164 tasks (73%) — Phases 1-5 complete, Phase 6-7 remaining
+**Total Progress**: 144/185 tasks (78%) — Phases 1-5 complete, Phase 6 in progress (deployed + live), Phase 7 remaining
 
 ### By Category
 
@@ -529,12 +533,12 @@ Add `meta.docs` to most commonly violated rules:
 - **Setup & Infrastructure**: 27/29 (93%)
 - **Auto-Generation & Metadata**: 55/55 (100%)
 - **Components & Features**: 29/36 (81%)
-- **Deployment & Launch**: 0/35 (0%)
+- **Deployment & Launch**: 23/52 (44%)
 - **Docs Cleanup**: 0/14 (0%)
 
 ### Note on Rule Counts
 
-The tracker originally referenced 120 rules. Through deprecation and consolidation, the current count is 116 rules. All 116 are auto-generated from source metadata.
+The tracker originally referenced 120 rules. Through deprecation, consolidation, and additions (M6 batches, agents rework), the current count is 117 rules. All 117 are auto-generated from source metadata.
 
 ---
 
@@ -572,8 +576,8 @@ The tracker originally referenced 120 rules. Through deprecation and consolidati
 ### Milestone 3: 100% Auto-Generated Docs
 
 - [x] Phase 3 complete
-- [x] All 116 rules have metadata
-- [x] All rule docs auto-generated (116/116 from metadata, 0 fallback)
+- [x] All 117 rules have metadata
+- [x] All rule docs auto-generated (117/117 from metadata, 0 fallback)
 - [x] Generation script handles nested code blocks (quadruple fences)
 - **Target**: End of Week 4
 - **Completed**: 2026-02-11
@@ -583,18 +587,19 @@ The tracker originally referenced 120 rules. Through deprecation and consolidati
 - [x] Phase 4 complete (5 core components)
 - [x] Custom Vue components: CodeTabs, RuleCard, FeatureGrid, ValidatorDiagram, ConfigExample
 - [x] Components integrated into pages (getting-started, rules overview, validators overview)
-- [x] Phase 5 features: local search, Shiki highlighting, outline, 404, robots.txt, sitemap
+- [x] Phase 5 features: local search, Shiki highlighting, outline, 404, robots.txt, sitemap, llms.txt
 - **Target**: End of Week 5
 - **Completed**: 2026-02-11
 
 ### Milestone 5: Production Deployed
 
-- [ ] Phase 6 complete (deployment section)
-- [ ] Site deployed to Vercel
-- [ ] Custom domain configured (claudelint.com)
-- [ ] HTTPS enabled
+- [x] Phase 6 complete (deployment section)
+- [x] Site deployed to Vercel
+- [x] Custom domain configured (claudelint.com)
+- [x] HTTPS enabled
 - [ ] PR previews working
 - **Target**: Week 6, Day 2
+- **Completed**: 2026-02-17
 
 ### Milestone 6: Public Launch
 
