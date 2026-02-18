@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SessionStart hook: verify claudelint CLI is available and version-compatible.
 
-PLUGIN_VERSION="0.2.0-beta.1"  # Updated by sync-versions
+PLUGIN_VERSION="0.2.0-beta.2"  # Updated by sync-versions
 
 # Check global install
 if command -v claudelint >/dev/null 2>&1; then
