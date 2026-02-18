@@ -11,26 +11,36 @@ A linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, 
 
 ## Quick Start
 
-### npm
+### Install
 
-Use the npm package for CI/CD pipelines, pre-commit hooks, and automation scripts.
+```bash
+npm install -g claude-code-lint
+claudelint init       # Creates .claudelintrc.json and .claudelintignore
+claudelint check-all  # Validate your project
+```
+
+Or install as a project dependency:
 
 ```bash
 npm install --save-dev claude-code-lint
-npx claudelint init       # Creates .claudelintrc.json and .claudelintignore
-npx claudelint check-all  # Validate your project
+npx claudelint init
+npx claudelint check-all
 ```
 
 ### Claude Code Plugin
 
-Load as a plugin for interactive validation during Claude Code sessions.
+Use claudelint as a Claude Code plugin for interactive validation via slash commands.
 
-```bash
-claude --plugin-dir /path/to/claude-lint
-/claudelint:validate-all
+Inside Claude Code, add the marketplace and install the plugin:
+
+```text
+/plugin marketplace add pdugan20/claudelint
+/plugin install claudelint@pdugan20-plugins
 ```
 
-See [Plugin Integration](https://claudelint.com/integrations/claude-code-plugin) for marketplace installation and distribution.
+Or run `claudelint install-plugin` for guided setup.
+
+See the [Plugin Guide](https://claudelint.com/integrations/claude-code-plugin) for team setup, plugin scopes, and troubleshooting.
 
 ## What It Checks
 
