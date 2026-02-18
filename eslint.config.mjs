@@ -42,6 +42,12 @@ export default [
       // Relax rules that conflict with VitePress patterns
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn',
+      // Disable formatting rules that conflict with prettier
+      'vue/singleline-html-element-content-newline': 'off',
+      'vue/max-attributes-per-line': 'off',
+      'vue/html-closing-bracket-newline': 'off',
+      'vue/html-indent': 'off',
+      'vue/html-self-closing': 'off',
     },
   },
 
