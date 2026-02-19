@@ -41,6 +41,7 @@ Each event maps to an array of matcher objects:
 | `statusMessage` | string | no | Status message shown during execution |
 | `once` | boolean | no | Run only once per session |
 | `model` | string | no | Model override for this hook |
+| `async` | boolean | no | Run hook asynchronously (non-blocking) |
 
 ## Example
 

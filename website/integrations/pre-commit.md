@@ -4,13 +4,13 @@ description: Set up Claude Code SessionStart hooks to automatically validate you
 
 # Claude Code Hooks
 
-claudelint provides hooks that can automatically validate your Claude Code project at key moments in your workflow.
+claudelint can automatically validate your Claude Code project when a session starts using Claude Code hooks.
 
-## SessionStart Hook
+## How It Works
 
-The SessionStart hook runs validation when a Claude Code session starts, giving you immediate feedback about your project's health.
+SessionStart `command` hooks run a shell command when a Claude Code session begins. The command's stdout is fed into Claude's context — not displayed in your terminal. This means Claude is silently made aware of any validation issues and can proactively mention them when you start chatting.
 
-### Setup
+## Setup
 
 Create `.claude/hooks/hooks.json` in your project:
 
@@ -22,7 +22,7 @@ Create `.claude/hooks/hooks.json` in your project:
         "hooks": [
           {
             "type": "command",
-            "command": "claudelint check-all --format compact"
+            "command": "claudelint check-all --format json"
           }
         ]
       }
@@ -31,68 +31,13 @@ Create `.claude/hooks/hooks.json` in your project:
 }
 ```
 
-### What It Does
+When you start a Claude Code session, the hook runs `claudelint check-all` in the background. Claude receives the JSON results and can inform you about any errors or warnings in your project's Claude Code configuration.
 
-When you start a Claude Code session, the hook will:
+The `--format json` flag produces structured output that is easy for Claude to parse and act on.
 
-1. Run `claudelint check-all` automatically
-2. Show a compact summary of errors and warnings
-3. Complete quickly depending on project size
+## Alternative: Prompt Hook
 
-### Output Formats
-
-Choose the format that works best for you:
-
-**Compact format (recommended for hooks):**
-
-```json
-"command": "claudelint check-all --format compact"
-```
-
-Output:
-
-```text
-.claude/skills/my-skill/SKILL.md:15:1 - Warning: Missing CHANGELOG.md [missing-changelog]
-.claude/settings.json:8:3 - Error: Invalid tool name "CustomTool" [unknown-tool]
-```
-
-**Stylish format (more detailed):**
-
-```json
-"command": "claudelint check-all --format stylish"
-```
-
-**JSON format (for programmatic parsing):**
-
-```json
-"command": "claudelint check-all --format json"
-```
-
-### Quiet Mode (Errors Only)
-
-Use `--quiet` to suppress warnings and show only errors:
-
-```json
-"command": "claudelint check-all --quiet --format compact"
-```
-
-The summary line still shows warning counts so you know they exist, but individual warning details are hidden.
-
-### Allow Empty Input
-
-Use `--allow-empty-input` when running claudelint in automated contexts where not every invocation may find files to check (e.g., lint-staged or selective hooks):
-
-```json
-"command": "claudelint check-all --allow-empty-input --format compact"
-```
-
-Without this flag, claudelint shows an informational message when no files are found. With the flag, it exits silently with code 0.
-
-## Hook Examples
-
-### Basic Validation
-
-Run all validators with compact output:
+If you want Claude to actively run validation and report results (instead of receiving them silently), use a `prompt` hook:
 
 ```json
 {
@@ -101,8 +46,8 @@ Run all validators with compact output:
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "claudelint check-all --format compact"
+            "type": "prompt",
+            "prompt": "Run claudelint check-all and briefly report any issues."
           }
         ]
       }
@@ -111,129 +56,21 @@ Run all validators with compact output:
 }
 ```
 
-### Validation with Explanations
-
-Show detailed explanations for any issues:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudelint check-all --explain"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Strict Mode
-
-Treat warnings as errors:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudelint check-all --warnings-as-errors"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Validate Specific Components
-
-Only validate CLAUDE.md files:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudelint validate-claude-md"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Multiple Hooks
-
-Run validation and formatting:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudelint check-all --format compact"
-          },
-          {
-            "type": "command",
-            "command": "claudelint format --check"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-## Disabling the Hook
-
-To temporarily disable validation:
-
-1. **Remove the hook** - Delete `.claude/hooks/hooks.json`
-2. **Rename the file** - Rename to `hooks.json.disabled`
-3. **Configure rules** - Set rules to `"off"` in `.claudelintrc.json`
-
-## Best Practices
-
-1. **Use compact format** - Less verbose output for hooks
-2. **Configure rules** - Turn off noisy warnings in `.claudelintrc.json`
-3. **Test first** - Run commands manually before adding to hooks
-4. **Version control** - Commit `.claude/hooks/hooks.json` to your repo
+This costs an extra turn at session start — Claude will run the command itself and show you the results before you begin working.
 
 ## Troubleshooting
 
 ### Hook doesn't run
 
 - Check that `claudelint` is installed globally or in your project
-- Verify the command works when run manually
+- Verify the command works when run manually: `claudelint check-all --format json`
 - Check hook syntax in `.claude/hooks/hooks.json`
 - Ensure event names are PascalCase (e.g., `SessionStart`, not `session-start`)
-
-### Hook is too slow
-
-- Use `--fast` mode: `claudelint check-all --fast`
-- Disable expensive checks in `.claudelintrc.json`
-- Use `.claudelintignore` to skip large directories
 
 ### Too many warnings
 
 - Configure rules in `.claudelintrc.json`
-- Use `--format compact` to reduce verbosity
-- Set `maxWarnings` threshold in config
+- Use `.claudelintignore` to skip large directories
 
 ## See Also
 

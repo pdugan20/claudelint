@@ -71,7 +71,7 @@ claude --plugin-dir ./node_modules/claude-code-lint
 
 ## Skills
 
-Once installed, the plugin adds 9 skills that Claude can use automatically. Ask naturally or invoke directly with `/claudelint:<name>`.
+Once installed, the plugin adds 9 skills that Claude can use automatically. Ask naturally or invoke directly with `/<name>`.
 
 ### Validation
 
@@ -261,7 +261,7 @@ If skills work in some projects but fail in others, the npm package is likely in
 
 ### Version Mismatch Warning
 
-If you see `[claudelint] Version mismatch: plugin=X, CLI=Y` when starting a session, the plugin and npm package versions are out of sync. Update the npm package:
+If Claude mentions a version mismatch between the plugin and npm package when you start a session, the two are out of sync. Claude will offer to fix it for you, or you can update manually:
 
 ```bash
 npm install -g claude-code-lint@latest
