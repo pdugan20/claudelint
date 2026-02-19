@@ -236,7 +236,7 @@ exit 0
 ```
 
 - [x] Update sync-versions.ts to also update `PLUGIN_VERSION` in check-dependency.sh
-- [ ] Test hook with: global install + matching version, global install + mismatched version, local install only, no install (deferred to Phase 7)
+- [x] Test hook with: global install + matching version, global install + mismatched version, local install only, no install (tested in Phase 7)
 
 ### 3.3 Build and verify
 
@@ -464,42 +464,60 @@ Test everything as a real developer would, against the published package and pub
 
 ### 7.1 CLI smoke test
 
-- [ ] Open a project that does NOT have `claude-code-lint` installed
-- [ ] Install globally: `npm install -g claude-code-lint`
-- [ ] Run `claudelint install-plugin` — verify output matches docs
-- [ ] Run `claudelint init` — verify config setup works
-- [ ] Run `claudelint` — verify it scans the project
-- [ ] Run `claudelint install-plugin` from a project WITHOUT it — verify appropriate guidance
-- [ ] Verify config resolution: create `.claudelintrc.json` in the target project, confirm it's picked up
-- [ ] Verify `.claudelintignore` in the target project works
+- [x] Open a project that does NOT have `claude-code-lint` installed
+- [x] Install globally: `npm install -g claude-code-lint`
+- [x] Run `claudelint install-plugin` — verify output matches docs
+- [x] Run `claudelint init` — verify config setup works
+- [x] Run `claudelint` — verify it scans the project
+- [x] Run `claudelint install-plugin` from a project WITHOUT it — verify appropriate guidance
+- [x] Verify config resolution: create `.claudelintrc.json` in the target project, confirm it's picked up
+- [x] Verify `.claudelintignore` in the target project works
+
+Bugs found and fixed:
+
+- Cache invalidation bug: `areFingerprintsValid({})` returned `true` for empty fingerprints, so validators that found 0 files never re-checked. Fixed in `src/utils/cache.ts` — empty fingerprints now return `false`.
+- Version prefix bug: `claudelint --version` outputs `claudelint v0.2.0-beta.2` but hook compared against bare `0.2.0-beta.2`. Fixed with `sed 's/^claudelint v//'` in check-dependency.sh.
 
 ### 7.2 Marketplace install from GitHub
 
-- [ ] Open Claude Code in the test project
-- [ ] Run `/plugin marketplace add pdugan20/claudelint`
-- [ ] Verify marketplace resolves from GitHub (not local)
-- [ ] Run `/plugin install claudelint@pdugan20-plugins`
-- [ ] Choose User scope — verify plugin installs successfully
-- [ ] Verify plugin appears in `/plugin` > Installed tab
+- [x] Open Claude Code in the test project
+- [x] Run `/plugin marketplace add pdugan20/claudelint`
+- [x] Verify marketplace resolves from GitHub (not local)
+- [x] Run `/plugin install claudelint@pdugan20-plugins`
+- [x] Choose User scope — verify plugin installs successfully
+- [x] Verify plugin appears in `/plugin` > Installed tab
 
 ### 7.3 Plugin functionality
 
-- [ ] Run `/claudelint:validate-all` — verify skill executes
+- [x] Run `/validate-all` — verify skill executes (39 findings on nextup-backend, as expected)
 - [ ] Try natural language: "Check my Claude Code project" — verify skill triggers
 - [ ] Verify all skills appear: `/skills` (filter by "claudelint")
 
+Note: Skills show as `/skill-name` (e.g., `/validate-all`), NOT `/claudelint:skill-name`. The plugin name appears in parentheses as a label. All docs, CLI output, and website references using `/claudelint:*` syntax need updating. See Phase 7 bugs below.
+
 ### 7.4 SessionStart hook
 
-- [ ] Start a new Claude Code session — verify hook fires without errors
-- [ ] With matching versions: expect no output
-- [ ] With mismatched versions: expect version mismatch warning with upgrade command
-- [ ] With no npm install: expect install guidance
+- [x] Start a new Claude Code session — verify hook fires without errors (confirmed via debug logs)
+- [x] With matching versions: no output (silent, correct)
+- [x] With mismatched versions: Claude mentions mismatch and offers to fix it
+- [x] With no npm install: verified locally (outputs install guidance)
+
+Bugs found and fixed:
+
+- Hook path mismatch: `hooks/hooks.json` pointed to `scripts/check/check-dependency.sh` (a simple 14-line CI check) instead of `.claude-plugin/scripts/check-dependency.sh` (the full version-checking hook). Fixed path and deleted the duplicate CI script.
+- Hook output mechanism: SessionStart hook stdout/stderr is not shown to users in the terminal. Discovered that JSON `additionalContext` injects into Claude's context, so Claude naturally mentions the warning on the user's first message. Switched from plain text stderr to JSON `additionalContext` output.
+- Added hook path validation to `scripts/check/version-sync.ts` — verifies the hook command resolves to a file containing `PLUGIN_VERSION`.
 
 ### 7.5 Cross-project and auto-update
 
 - [ ] Open Claude Code in a SECOND project — verify plugin is available (User scope)
 - [ ] Test auto-update toggle: `/plugin` > Marketplaces > pdugan20-plugins > Enable auto-update
 - [ ] Uninstall and clean up
+
+### Phase 7 bugs requiring follow-up
+
+- [ ] **Slash command syntax audit:** All references to `/claudelint:skill-name` across docs, CLI output, website, tests, and README need to be updated to `/skill-name`. ~50 occurrences across ~15 files (active code only; archived docs excluded).
+- [ ] **Publish new release:** The published plugin on GitHub/npm still has all pre-Phase 7 bugs (hook path, version prefix, output mechanism). Needs a new release after all fixes are complete.
 
 ---
 

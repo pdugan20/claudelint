@@ -89,6 +89,35 @@ function checkVersionSync(): boolean {
     log.pass('marketplace.json plugins[0].version in sync');
   }
 
+  // Check hooks.json hook script resolves to the version-checking script
+  const hooksJsonPath = path.join(rootDir, 'hooks', 'hooks.json');
+  if (fs.existsSync(hooksJsonPath)) {
+    const hooksJson = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf-8'));
+    const sessionStartHooks = hooksJson?.hooks?.SessionStart?.[0]?.hooks || [];
+    for (const hook of sessionStartHooks) {
+      if (hook.type === 'command' && hook.command.includes('check-dependency')) {
+        const resolvedPath = hook.command.replace(
+          '${CLAUDE_PLUGIN_ROOT}',
+          rootDir
+        );
+        if (!fs.existsSync(resolvedPath)) {
+          log.fail(`Hook script not found: ${resolvedPath}`);
+          allInSync = false;
+        } else {
+          const scriptContent = fs.readFileSync(resolvedPath, 'utf-8');
+          if (!scriptContent.includes('PLUGIN_VERSION=')) {
+            log.fail(
+              `Hook script missing PLUGIN_VERSION — wrong file? ${hook.command}`
+            );
+            allInSync = false;
+          } else {
+            log.pass('hooks.json SessionStart points to version-checking script');
+          }
+        }
+      }
+    }
+  }
+
   // Check integration example (optional — may not exist yet)
   const integrationPackageJsonPath = path.join(
     rootDir,
