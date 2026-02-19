@@ -5,7 +5,7 @@ PLUGIN_VERSION="0.2.0-beta.2"  # Updated by sync-versions
 
 # Check global install
 if command -v claudelint >/dev/null 2>&1; then
-  CLI_VERSION=$(claudelint --version 2>/dev/null || echo "unknown")
+  CLI_VERSION=$(claudelint --version 2>/dev/null | sed 's/^claudelint v//' || echo "unknown")
   if [ "$CLI_VERSION" != "$PLUGIN_VERSION" ] && [ "$CLI_VERSION" != "unknown" ]; then
     echo "[claudelint] Version mismatch: plugin=$PLUGIN_VERSION, CLI=$CLI_VERSION"
     echo "[claudelint] Update with: npm install -g claude-code-lint@$PLUGIN_VERSION"
@@ -15,7 +15,7 @@ fi
 
 # Check local install
 if npx --no-install claudelint --version >/dev/null 2>&1; then
-  CLI_VERSION=$(npx --no-install claudelint --version 2>/dev/null || echo "unknown")
+  CLI_VERSION=$(npx --no-install claudelint --version 2>/dev/null | sed 's/^claudelint v//' || echo "unknown")
   if [ "$CLI_VERSION" != "$PLUGIN_VERSION" ] && [ "$CLI_VERSION" != "unknown" ]; then
     echo "[claudelint] Version mismatch: plugin=$PLUGIN_VERSION, CLI=$CLI_VERSION"
     echo "[claudelint] Update with: npm install --save-dev claude-code-lint@$PLUGIN_VERSION"
