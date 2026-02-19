@@ -493,7 +493,7 @@ Bugs found and fixed:
 - [ ] Try natural language: "Check my Claude Code project" — verify skill triggers
 - [ ] Verify all skills appear: `/skills` (filter by "claudelint")
 
-Note: Skills show as `/skill-name` (e.g., `/validate-all`), NOT `/claudelint:skill-name`. The plugin name appears in parentheses as a label. All docs, CLI output, and website references using `/claudelint:*` syntax need updating. See Phase 7 bugs below.
+Note: Skills show as `/skill-name` (e.g., `/validate-all`), NOT `/claudelint:skill-name`. All references have been updated — see Phase 7 bugs below.
 
 ### 7.4 SessionStart hook
 
@@ -517,7 +517,7 @@ Bugs found and fixed:
 ### Phase 7 bugs requiring follow-up
 
 - [x] **Slash command syntax audit:** Updated all references from `/claudelint:skill-name` to `/skill-name` across docs, CLI output, website, tests, skills, and README. Also added `argument-hint` and `$ARGUMENTS` support to all 9 skills.
-- [x] **Hooks documentation audit:** Rewrote `website/integrations/pre-commit.md` — SessionStart command hook stdout goes to Claude's context, not the terminal. Removed misleading format options section. Added prompt hook alternative. Fixed version mismatch troubleshooting text on plugin page. Added missing `async` field to hooks schema docs.
+- [x] **Hooks documentation audit:** Rewrote `website/integrations/pre-commit.md` — SessionStart command hook stdout goes to Claude's context, not the terminal. Removed misleading format options section. Added prompt hook alternative. Removed duplicate hooks code block from plugin page (replaced with link). Fixed version mismatch troubleshooting on plugin page and troubleshooting guide. Added missing `async` field to hooks schema docs.
 - [ ] **Publish new release:** The published plugin on GitHub/npm still has all pre-Phase 7 bugs (hook path, version prefix, output mechanism). Needs a new release after all fixes are complete.
 
 ---
