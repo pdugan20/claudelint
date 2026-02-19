@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0-beta.3](https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.2...v0.2.0-beta.3) (2026-02-19)
+
+### Features
+
+* add --cwd flag for running claudelint from any directory ([03bce77](https://github.com/pdugan20/claudelint/commit/03bce77ba53d5e1b246b8317757692018304251c))
+* developer experience overhaul — defaults, strict preset, bug fixes ([9127f29](https://github.com/pdugan20/claudelint/commit/9127f29ed6ef65943d7a6c8b60f30fa3af67e764))
+
+### Bug Fixes
+
+* auto-set GITHUB_TOKEN in release scripts from gh CLI ([88ba211](https://github.com/pdugan20/claudelint/commit/88ba2111819bb64d94f9ee71254e6a34c6643f1c))
+* correct SessionStart hook path and output mechanism ([d3b1d0c](https://github.com/pdugan20/claudelint/commit/d3b1d0c5c803e6516657d421a65944b7a35266fc))
+* correct slash command syntax and add skill argument support ([22dd244](https://github.com/pdugan20/claudelint/commit/22dd244e9fe86f1dd28722e10078560974d45b64))
+* invalidate cache when new files are added to a project ([c21adf6](https://github.com/pdugan20/claudelint/commit/c21adf606f7fdb08850a43cc41da987a6bebd283))
+* run prettier after sync-versions to prevent JSON formatting drift ([67f6c61](https://github.com/pdugan20/claudelint/commit/67f6c61c4dec22154345cd99586e174ccab8e4b6))
+* strip version prefix in SessionStart hook comparison ([e0aa467](https://github.com/pdugan20/claudelint/commit/e0aa4674c919b12184a01cc920e5f59aa34885ec))
+* use null npm tag to let release-it auto-detect from preRelease flag ([7269b41](https://github.com/pdugan20/claudelint/commit/7269b41a65f7f2b2f54fac049a80cf26bc94c495))
+
+### Documentation
+
+* fix hooks documentation to reflect actual SessionStart behavior ([5c37a0c](https://github.com/pdugan20/claudelint/commit/5c37a0ca1ccaada148d5edc6bc12132b41cfbcd6))
+* link validator names to pages and fix Recommended casing ([3f710dd](https://github.com/pdugan20/claudelint/commit/3f710dda71cc64040ecf33244ca473af43b089c3))
+* remove inline hooks code block from plugin page ([f547984](https://github.com/pdugan20/claudelint/commit/f547984b2f3634f439d0d7013db9685f94e732e6))
+* update tracker for hooks audit and slash command fixes ([0197d01](https://github.com/pdugan20/claudelint/commit/0197d017a6e1f49670cb3cf5927ccc736d00141f))
+* update tracker for Phase 6 completion ([eed1e44](https://github.com/pdugan20/claudelint/commit/eed1e44d873142674ed05009d3d45a9c3f6e982c))
+* use natural trigger phrases in skill examples ([9a3b909](https://github.com/pdugan20/claudelint/commit/9a3b9090f34c96e058d507a6973fdfdd8abf64e2))
+
+### Code Refactoring
+
+* consolidate duplicated patterns into shared utilities ([4d3562c](https://github.com/pdugan20/claudelint/commit/4d3562cf780515bf24844824462b328f94d1ada1))
+
+### Build System
+
+* auto-detect npm tag for pre-releases ([a58fd15](https://github.com/pdugan20/claudelint/commit/a58fd15fb84f25b59df79243b180cb6ba36d966c))
+
 ## [0.2.0-beta.2](https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.1...v0.2.0-beta.2) (2026-02-18)
 
 ### Features
