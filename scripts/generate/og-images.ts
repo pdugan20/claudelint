@@ -49,7 +49,7 @@ const logoSvg = readFileSync(join(WEBSITE_DIR, 'public/logo.svg'), 'utf-8');
 const logoDataUri = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString('base64')}`;
 
 // --- Template version (bump to invalidate all cached images) ---
-const TEMPLATE_VERSION = 2;
+const TEMPLATE_VERSION = 3;
 
 // --- Satori VDOM helper ---
 type VNode = { type: string; props: Record<string, any> };
@@ -200,7 +200,7 @@ function renderTemplate(page: PageMeta): VNode {
         height: '630px',
         padding: '60px',
         paddingRight: '120px',
-        backgroundImage: 'linear-gradient(225deg, #221710 0%, #1a1410 40%, #141413 100%)',
+        backgroundImage: 'linear-gradient(225deg, #3a2418 0%, #261a12 40%, #1a1a19 100%)',
       },
     },
     // Header: logo + site name

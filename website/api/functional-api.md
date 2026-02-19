@@ -174,4 +174,4 @@ type BuiltinFormatterName = 'stylish' | 'json' | 'compact' | 'sarif' | 'github';
 - [ClaudeLint Class](./claudelint-class.md) - Full class API for advanced use cases
 - [Types](./types.md) - Complete TypeScript type reference
 - [Formatters](./formatters.md) - Built-in and custom formatters
-- [Recipes](./recipes.md) - Build scripts, CI/CD, pre-commit hooks, and more
+- [Recipes](./recipes.md) - Practical usage patterns and examples

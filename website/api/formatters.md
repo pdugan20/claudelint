@@ -138,7 +138,7 @@ const formatter = await linter.loadFormatter('./formatters/summary.ts');
 const output = await formatResults(results, './formatters/summary.ts');
 ```
 
-For more custom formatter examples (Markdown report, group-by-rule), see [Recipes](./recipes.md#custom-formatters).
+For a more advanced custom formatter example (group-by-rule), see [Recipes](./recipes.md#custom-formatters).
 
 ## Choosing a Formatter
 

@@ -79,71 +79,13 @@ claudelint check-all --fix --fix-type all
 
 ## Fixable Rules
 
-### Skills
-
-**skill-missing-shebang** (warning, fixable)
-
-Adds `#!/usr/bin/env bash` as the first line of shell scripts.
-
-**Before:**
+Each rule's documentation page indicates whether it supports auto-fix. To see all currently fixable rules:
 
 ```bash
-echo "Hello"
+claudelint list-rules --fixable
 ```
 
-**After:**
-
-```bash
-#!/usr/bin/env bash
-echo "Hello"
-```
-
-**skill-missing-version** (warning, fixable)
-
-Adds `version: "1.0.0"` to SKILL.md frontmatter.
-
-**Before:**
-
-```markdown
----
-name: my-skill
-description: A test skill
----
-```
-
-**After:**
-
-```markdown
----
-name: my-skill
-description: A test skill
-version: '1.0.0'
----
-```
-
-**skill-missing-changelog** (warning, fixable)
-
-Creates CHANGELOG.md with Keep a Changelog template.
-
-**skill-shell-script-no-error-handling** (warning, fixable)
-
-Adds `set -euo pipefail` to shell scripts that lack error handling.
-
-**skill-reference-not-linked** (warning, fixable)
-
-Converts backtick file references (e.g., `` `scripts/deploy.sh` ``) into markdown links.
-
-**skill-name-directory-mismatch** (error, fixable)
-
-Updates the `name` field in SKILL.md frontmatter to match the parent directory name.
-
-### Plugin
-
-**plugin-missing-component-paths** (warning, fixable)
-
-Adds `./` prefix to component paths that should be explicit about their location.
-
-Run `claudelint list-rules --fixable` to see all fixable rules.
+You can also browse the [Rules Reference](/rules/overview) — fixable rules are tagged with a green "Fixable" badge.
 
 ## Common Workflows
 

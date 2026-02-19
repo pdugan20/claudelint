@@ -11,14 +11,14 @@ claudelint validates Claude Code configuration files against schemas derived fro
 | Schema | Config File | Official Docs |
 |--------|-------------|---------------|
 | [Skills](/api/schemas/skills) | `SKILL.md` frontmatter | [Skills reference](https://code.claude.com/docs/en/skills#frontmatter-reference) |
-| [Agents](/api/schemas/agents) | Agent `.md` frontmatter | [Subagent fields](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields) |
+| [Agents](/api/schemas/agents) | `.claude/agents/*.md` frontmatter | [Subagent fields](https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields) |
 | [Hooks](/api/schemas/hooks) | `hooks.json` | [Hooks](https://code.claude.com/docs/en/hooks) |
 | [MCP](/api/schemas/mcp) | `.mcp.json` | [MCP servers](https://code.claude.com/docs/en/mcp) |
 | [Plugin Manifest](/api/schemas/plugin) | `plugin.json` | [Plugin schema](https://code.claude.com/docs/en/plugins-reference#complete-schema) |
 | [Marketplace](/api/schemas/marketplace) | `marketplace.json` | [Marketplace schema](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema) |
 | [Settings](/api/schemas/settings) | `settings.json` | [Settings](https://code.claude.com/docs/en/settings) |
 | [LSP](/api/schemas/lsp) | `.lsp.json` | [LSP servers](https://code.claude.com/docs/en/plugins-reference#lsp-servers) |
-| [Output Styles](/api/schemas/output-styles) | `OUTPUTSTYLE.md` frontmatter | [Output styles](https://code.claude.com/docs/en/output-styles#frontmatter) |
+| [Output Styles](/api/schemas/output-styles) | `.claude/output-styles/*/*.md` frontmatter | [Output styles](https://code.claude.com/docs/en/output-styles#frontmatter) |
 | [Rules](/api/schemas/rules) | `.claude/rules/*.md` frontmatter | [Path-specific rules](https://code.claude.com/docs/en/memory#path-specific-rules) |
 
 ## Valid Values Reference
@@ -135,7 +135,7 @@ claudelint maintains JSON Schema files for IDE integration and external tooling.
 | MCP config | [`mcp-config.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/mcp-config.schema.json) | .mcp.json structure |
 | Plugin manifest | [`plugin-manifest.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/plugin-manifest.schema.json) | plugin.json structure |
 | LSP config | [`lsp-config.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/lsp-config.schema.json) | .lsp.json structure |
-| Output style | [`output-style-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/output-style-frontmatter.schema.json) | OUTPUTSTYLE.md frontmatter |
+| Output style | [`output-style-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/output-style-frontmatter.schema.json) | Output style YAML frontmatter |
 | Rules frontmatter | [`rules-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/rules-frontmatter.schema.json) | Rules file frontmatter |
 | Marketplace | [`marketplace.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/marketplace.schema.json) | marketplace.json structure |
 

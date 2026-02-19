@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/agent-frontmatter.schema.json",
   "title": "Claude Code Agent Frontmatter",
-  "description": "Schema for agent frontmatter in AGENT.md files",
+  "description": "Schema for agent YAML frontmatter",
   "source": "https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields",
   "sourceType": "documentation",
   "type": "object",

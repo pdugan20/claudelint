@@ -82,4 +82,5 @@ claudelint check-all --fix
 
 - [Validators Overview](/validators/overview) - How validators work
 - [Configuration](/guide/configuration) - Customize rule severity
+- [Custom Rules](/development/custom-rules) - Write your own rules
 - [CLI Reference](/guide/cli-reference) - All CLI commands and flags

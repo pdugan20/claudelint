@@ -96,7 +96,7 @@ export const SCHEMA_REGISTRY: SchemaRegistryEntry[] = [
     zodSchema: AgentFrontmatterSchema,
     manualSchemaFile: 'agent-frontmatter.schema.json',
     generatedSchemaFile: 'agent-frontmatter.generated.json',
-    description: 'Generated JSON Schema for AGENT.md frontmatter',
+    description: 'Generated JSON Schema for agent frontmatter',
     officialDocsUrl: 'https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields',
   },
   {
@@ -104,7 +104,7 @@ export const SCHEMA_REGISTRY: SchemaRegistryEntry[] = [
     zodSchema: OutputStyleFrontmatterSchema,
     manualSchemaFile: 'output-style-frontmatter.schema.json',
     generatedSchemaFile: 'output-style-frontmatter.generated.json',
-    description: 'Generated JSON Schema for OUTPUTSTYLE.md frontmatter',
+    description: 'Generated JSON Schema for output style frontmatter',
     officialDocsUrl: 'https://code.claude.com/docs/en/output-styles#frontmatter',
   },
   {

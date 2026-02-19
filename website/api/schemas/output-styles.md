@@ -1,5 +1,5 @@
 ---
-description: "Schema reference for OUTPUTSTYLE.md YAML frontmatter fields."
+description: "Schema reference for output style YAML frontmatter fields."
 ---
 
 # Output Style Frontmatter
@@ -9,7 +9,7 @@ description: "Schema reference for OUTPUTSTYLE.md YAML frontmatter fields."
   docs="Output styles" docs-link="https://code.claude.com/docs/en/output-styles#frontmatter"
 />
 
-Output styles are defined as `.md` files in `output-styles/` directories (e.g., `.claude/output-styles/concise/OUTPUTSTYLE.md`). The YAML frontmatter configures the style; the file body contains the style guidelines.
+Output styles are defined as `.md` files in `output-styles/` directories (e.g., `.claude/output-styles/concise/concise.md`). The YAML frontmatter configures the style; the file body contains the style guidelines.
 
 ## Fields
 

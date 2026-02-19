@@ -4,9 +4,7 @@ description: Build custom claudelint validation rules for your team or project. 
 
 # Custom Rules Guide
 
-> **Note:** For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
-
-claudelint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements.
+claudelint allows you to define custom validation rules to extend the built-in rule set with your own team-specific or project-specific requirements. For contributing built-in rules, see the [Contributing Guide](/development/contributing#adding-validation-rules).
 
 ## Quick Start
 
@@ -48,8 +46,6 @@ export const rule: Rule = {
   },
 };
 ```
-
-> This is a real rule from claudelint's own [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules) directory. All examples in this guide come from working, tested rules that run in CI.
 
 ## Directory Structure
 

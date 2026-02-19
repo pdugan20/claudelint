@@ -65,6 +65,7 @@ defineProps<{
   color: var(--vp-c-text-2);
   line-height: 1.5;
   flex-grow: 1;
+  min-height: 2.625rem; /* ~2 lines at 0.875rem × 1.5 line-height */
 }
 
 .rule-card-footer {

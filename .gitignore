@@ -39,6 +39,9 @@ temp/
 # Generated schemas (for comparison only, not committed)
 schemas/generated/
 
+# OG image comparison output
+comparison/
+
 # VitePress
 website/.vitepress/dist/
 website/.vitepress/cache/
