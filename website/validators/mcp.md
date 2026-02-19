@@ -32,6 +32,10 @@ claudelint validate-mcp
 claudelint validate-mcp --verbose
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-mcp` or by asking "Validate my MCP config."
+
 ## See Also
 
 - [Claude Code MCP Servers](https://code.claude.com/docs/en/mcp) - Official MCP documentation

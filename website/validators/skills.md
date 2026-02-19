@@ -41,8 +41,11 @@ claudelint validate-skills --fix
 claudelint validate-skills --verbose
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-skills` or by asking "Why is my skill not loading?"
+
 ## See Also
 
-- [Claude Code Plugin](/integrations/claude-code-plugin) - Plugin skills reference
 - [Claude Code Skills](https://code.claude.com/docs/en/skills) - Official skills documentation
 - [Configuration](/guide/configuration) - Customize rule severity

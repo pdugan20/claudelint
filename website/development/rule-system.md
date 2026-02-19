@@ -8,7 +8,7 @@ claudelint's rule system is modeled after ESLint. Rules are self-contained modul
 
 ## Rule Interface
 
-Every rule implements the `Rule` interface from `src/types/rule.ts`:
+Every rule implements the [`Rule` interface](https://github.com/pdugan20/claudelint/blob/main/src/types/rule.ts):
 
 ```typescript
 // src/types/rule.ts
@@ -54,17 +54,9 @@ claudelint supports two primary patterns for implementing rules.
 
 The "thin wrapper" pattern — use when validating individual frontmatter fields that have Zod schema definitions.
 
-Rules delegate to Zod schema validators instead of duplicating validation logic. This is the actual pattern from `src/rules/skills/skill-allowed-tools.ts`:
+Rules delegate to Zod schema validators instead of duplicating validation logic. This is the actual pattern from [`skill-allowed-tools.ts`](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-allowed-tools.ts):
 
 ```typescript
-// src/rules/skills/skill-allowed-tools.ts
-import { Rule, RuleContext } from '../../types/rule';
-import {
-  SkillFrontmatterSchema,
-  SkillFrontmatterWithRefinements,
-} from '../../schemas/skill-frontmatter.schema';
-import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
-
 export const rule: Rule = {
   meta: {
     id: 'skill-allowed-tools',
@@ -74,7 +66,6 @@ export const rule: Rule = {
     category: 'Skills',
     severity: 'error',
     fixable: false,
-    deprecated: false,
     since: '0.2.0',
     docs: { /* ... */ },
   },
@@ -97,14 +88,9 @@ export const rule: Rule = {
 
 **Use when:** Validating file-level properties, cross-references, or complex logic that doesn't fit in schemas.
 
-This is the actual pattern from `src/rules/claude-md/claude-md-size.ts`:
+This is the actual pattern from [`claude-md-size.ts`](https://github.com/pdugan20/claudelint/blob/main/src/rules/claude-md/claude-md-size.ts):
 
 ```typescript
-// src/rules/claude-md/claude-md-size.ts
-import { Rule } from '../../types/rule';
-import { getFileSize } from '../../utils/filesystem/files';
-import { z } from 'zod';
-
 export const rule: Rule = {
   meta: {
     id: 'claude-md-size',
@@ -113,14 +99,11 @@ export const rule: Rule = {
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: false,
-    deprecated: false,
     since: '0.2.0',
     schema: z.object({
       maxSize: z.number().positive().int().optional(),
     }),
-    defaultOptions: {
-      maxSize: 40000, // 40KB
-    },
+    defaultOptions: { maxSize: 40000 },
     docs: { /* ... */ },
   },
   validate: async (context) => {
@@ -156,68 +139,13 @@ export const rule: Rule = {
 
 ## Rule Registry
 
-**Location:** `src/utils/rules/registry.ts`
+The [Rule Registry](https://github.com/pdugan20/claudelint/blob/main/src/utils/rules/registry.ts) is a centralized store for all validation rules. Rules self-register at module load time when their module is imported. The auto-generated [`src/rules/index.ts`](https://github.com/pdugan20/claudelint/blob/main/src/rules/index.ts) imports all rule modules, triggering registration.
 
-The Rule Registry is a centralized store for all validation rules. Rules self-register at module load time.
-
-```typescript
-// src/utils/rules/registry.ts
-export class RuleRegistry {
-  private static rules = new Map<RuleId, Rule>();
-  private static categoryCache = new Map<RuleCategory, Rule[]>();
-
-  static register(rule: Rule | RuleMetadata): void;
-  static get(ruleId: string): RuleMetadata | undefined;
-  static getRule(ruleId: string): Rule | undefined;
-  static getAll(): RuleMetadata[];
-  static getAllRules(): Rule[];
-  static getRulesByCategory(category: RuleCategory): Rule[];
-}
-```
-
-Rules auto-register when their module is imported. The `src/rules/index.ts` file imports all rule modules, triggering registration:
-
-```typescript
-// src/rules/index.ts (auto-generated)
-import './claude-md/claude-md-size';
-import './skills/skill-allowed-tools';
-// ... all other rules
-```
-
-### Registered Rule Categories
-
-- **Skills** (<RuleCount category="skills" /> rules)
-- **CLAUDE.md** (<RuleCount category="claude-md" /> rules)
-- **MCP** (<RuleCount category="mcp" /> rules)
-- **Agents** (<RuleCount category="agents" /> rules)
-- **Plugin** (<RuleCount category="plugin" /> rules)
-- **LSP** (<RuleCount category="lsp" /> rules)
-- **Output Styles** (<RuleCount category="output-styles" /> rules)
-- **Settings** (<RuleCount category="settings" /> rules)
-- **Hooks** (<RuleCount category="hooks" /> rules)
-- **Commands** (<RuleCount category="commands" /> rules)
-- **Total:** <RuleCount category="total" /> rules
+See the [Rules Reference](/rules/overview) for the full list of rules organized by category.
 
 ## Validator Registry
 
-**Location:** `src/utils/validators/factory.ts`
-
-The Validator Registry manages validator discovery and instantiation using a factory pattern.
-
-```typescript
-// src/utils/validators/factory.ts
-export class ValidatorRegistry {
-  private static validators = new Map<string, ValidatorRegistration>();
-
-  static register(metadata: ValidatorMetadata, factory: ValidatorFactory): void;
-  static create(id: string, options?: BaseValidatorOptions): FileValidator;
-  static getAll(options?: BaseValidatorOptions): FileValidator[];
-  static getEnabled(options?: BaseValidatorOptions): FileValidator[];
-  static getAllMetadata(): ValidatorMetadata[];
-}
-```
-
-Validators self-register at module load:
+The [Validator Registry](https://github.com/pdugan20/claudelint/blob/main/src/utils/validators/factory.ts) manages validator discovery and instantiation using a factory pattern. Validators self-register at module load, similar to rules:
 
 ```typescript
 // src/validators/skills.ts (end of file)
@@ -283,6 +211,6 @@ This matches ESLint, Prettier, and all modern linting tools.
 
 ## Custom Rules
 
-Custom rules are loaded from `.claudelint/rules/` and integrate seamlessly with built-in rules. The `CustomRuleLoader` (at `src/utils/rules/loader.ts`) discovers, validates, and registers custom rules alongside built-in ones.
+Custom rules are loaded from `.claudelint/rules/` and integrate seamlessly with built-in rules. The [`CustomRuleLoader`](https://github.com/pdugan20/claudelint/blob/main/src/utils/rules/loader.ts) discovers, validates, and registers custom rules alongside built-in ones.
 
 See the [Custom Rules Guide](/development/custom-rules) for complete documentation.

@@ -186,6 +186,10 @@ export default defineConfig({
               link: '/development/custom-rules',
               items: [
                 {
+                  text: 'Examples',
+                  link: '/development/custom-rules-examples',
+                },
+                {
                   text: 'Troubleshooting',
                   link: '/development/custom-rules-troubleshooting',
                 },

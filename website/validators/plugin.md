@@ -35,6 +35,10 @@ claudelint validate-plugin
 claudelint validate-plugin --verbose
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-plugin` or by asking "Check my plugin manifest."
+
 ## See Also
 
 - [Claude Code Plugins Reference](https://code.claude.com/docs/en/plugins-reference) - Official plugin documentation

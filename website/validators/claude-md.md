@@ -39,6 +39,10 @@ claudelint validate-claude-md --verbose
 claudelint validate-claude-md --fix
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-cc-md` or by asking "Is my CLAUDE.md ok?"
+
 ## See Also
 
 - [Claude Code Memory](https://code.claude.com/docs/en/memory) - Official CLAUDE.md documentation

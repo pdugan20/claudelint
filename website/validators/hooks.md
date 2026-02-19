@@ -31,6 +31,10 @@ claudelint validate-hooks
 claudelint validate-hooks --verbose
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-hooks` or by asking "Why is my hook not firing?"
+
 ## See Also
 
 - [Claude Code Hooks](https://code.claude.com/docs/en/hooks) - Official hooks documentation

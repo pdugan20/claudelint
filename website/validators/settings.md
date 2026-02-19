@@ -33,6 +33,10 @@ claudelint validate-settings
 claudelint validate-settings --verbose
 ```
 
+## Plugin Skill
+
+If you have the [claudelint plugin](/integrations/claude-code-plugin) installed, you can run this validator inside Claude Code with `/validate-settings` or by asking "Check my settings."
+
 ## See Also
 
 - [Claude Code Settings](https://code.claude.com/docs/en/settings) - Official settings documentation

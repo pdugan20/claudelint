@@ -8,9 +8,7 @@ How claudelint works under the hood: parallel validation, caching, the CLI archi
 
 ## Parallel Validation
 
-**Location:** `src/cli/commands/check-all.ts`
-
-All validators run concurrently using `Promise.all()`. Each validator (CLAUDE.md, Skills, Agents, etc.) executes independently, so total wall-clock time equals the slowest validator rather than the sum of all.
+All validators run concurrently using `Promise.all()` in [`check-all.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/check-all.ts). Each validator (CLAUDE.md, Skills, Agents, etc.) executes independently, so total wall-clock time equals the slowest validator rather than the sum of all.
 
 ```typescript
 // Simplified from src/cli/commands/check-all.ts
@@ -29,9 +27,7 @@ Progress output adapts to the environment automatically: animated spinners in te
 
 ## Caching
 
-**Location:** `src/utils/cache.ts`
-
-The `ValidationCache` class caches validation results keyed by validator name. Cache entries are invalidated when the claudelint version, configuration, or validated file modification times change. For CLI flags and CI setup, see the [CI/CD Integration Guide](/integrations/ci#caching).
+The [`ValidationCache`](https://github.com/pdugan20/claudelint/blob/main/src/utils/cache.ts) class caches validation results keyed by validator name. Cache entries are invalidated when the claudelint version, configuration, or validated file modification times change. For CLI flags and CI setup, see the [CI/CD Integration Guide](/integrations/ci#caching).
 
 ```typescript
 // src/utils/cache.ts
@@ -50,29 +46,27 @@ export class ValidationCache {
 
 ## CLI Implementation
 
-**Location:** `src/cli.ts` and `src/cli/commands/`
+The CLI uses [Commander.js](https://github.com/tj/commander.js) for argument parsing. The entrypoint is [`src/cli.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli.ts) and commands are organized in [`src/cli/commands/`](https://github.com/pdugan20/claudelint/tree/main/src/cli/commands):
 
-The CLI uses [Commander.js](https://github.com/tj/commander.js) for argument parsing. Commands are organized in `src/cli/commands/`:
+| Command | Source | Description |
+|---------|--------|-------------|
+| `check-all` | [`check-all.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/check-all.ts) | Run all validators (parallel execution) |
+| `validate-*` | [`validator-commands.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/validator-commands.ts) | Factory for individual validator commands |
+| `explain` | [`explain.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/explain.ts) | Explain a rule in detail |
+| `list-rules` | [`list-rules.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/list-rules.ts) | List all available rules |
+| `check-deprecated` | [`check-deprecated.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/check-deprecated.ts) | List deprecated rules in config |
+| `migrate` | [`migrate.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/migrate.ts) | Auto-migrate deprecated rules |
+| `format` | [`format.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/format.ts) | Format Claude Code files |
+| `cache-clear` | [`cache-clear.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/cache-clear.ts) | Clear validation cache |
+| `config` | [`config-commands.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/config-commands.ts) | Config inspection commands |
+| `install-plugin` | [`install-plugin.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/install-plugin.ts) | Plugin installation |
+| `watch` | [`watch.ts`](https://github.com/pdugan20/claudelint/blob/main/src/cli/commands/watch.ts) | Watch mode for file changes |
 
-- `check-all.ts` — Run all validators (parallel execution)
-- `validator-commands.ts` — Factory for individual validator commands (`validate-claude-md`, `validate-skills`, etc.)
-- `explain.ts` — Explain a rule in detail
-- `list-rules.ts` — List all available rules
-- `check-deprecated.ts` — List deprecated rules in config
-- `migrate.ts` — Auto-migrate deprecated rules in config
-- `format.ts` — Format Claude Code files
-- `cache-clear.ts` — Clear validation cache
-- `config-commands.ts` — Config inspection commands
-- `install-plugin.ts` — Plugin installation
-- `watch.ts` — Watch mode for file change monitoring
-
-Individual validator commands (`validate-claude-md`, `validate-skills`, etc.) are created through a factory in `validator-commands.ts` to eliminate duplication. Each command follows the same pattern: load config, create validator, run validation, report results.
+Individual validator commands are created through a factory in `validator-commands.ts` to eliminate duplication. Each command follows the same pattern: load config, create validator, run validation, report results.
 
 ## Diagnostic Collection
 
-**Location:** `src/utils/diagnostics/collector.ts`
-
-Library code uses `DiagnosticCollector` instead of `console` directly:
+Library code uses [`DiagnosticCollector`](https://github.com/pdugan20/claudelint/blob/main/src/utils/diagnostics/collector.ts) instead of `console` directly:
 
 ```typescript
 // src/utils/diagnostics/collector.ts
@@ -86,6 +80,4 @@ export class DiagnosticCollector {
 }
 ```
 
-This makes the library testable (no console spam), supports programmatic usage, and provides structured diagnostics with source tracking.
-
-Console output is only allowed in the CLI layer (`src/cli/utils/logger.ts`), output formatting (`src/utils/reporting/`), and script utilities (`scripts/util/logger.ts`).
+This makes the library testable, supports programmatic usage, and provides structured diagnostics with source tracking.
