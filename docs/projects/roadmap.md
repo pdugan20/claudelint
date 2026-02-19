@@ -1,7 +1,7 @@
 # Roadmap
 
-**Last Updated:** 2026-02-17
-**Current stats:** 117 rules, 1675 tests
+**Last Updated:** 2026-02-19
+**Current stats:** 117 rules, 204 test suites
 
 Single source of truth for all remaining work. Check off tasks as you complete them.
 
@@ -61,7 +61,7 @@ Work these when demand exists or as time permits.
 - [ ] H1-H2: MCP registry validation -- needs public MCP registry API
 - [ ] H3-H5: LLM-based quality evaluation -- needs `--llm` flag + Claude API integration
 - [ ] H10-H12: External tool integration (shellcheck, pylint, markdownlint)
-- [ ] Full manual testing runbook (GitHub install, trigger phrases, quality tests) -- blocked until repo is public
+- [ ] Full manual testing runbook (GitHub install, trigger phrases, quality tests)
 
 ---
 
@@ -88,3 +88,6 @@ Work these when demand exists or as time permits.
 | VitePress Website | claudelint.com launched, auto-generated rule docs |
 | Preset System | `claudelint:recommended` (89 rules), `claudelint:all` (117 rules), config resolver |
 | CLI Best Practices | `--output-file`, `--rule`, `--changed`, `--stdin`, option-builders, stdin-reader |
+| Plugin Marketplace | Marketplace, version sync, install UX, SessionStart hook, e2e testing (0.2.0-beta.3) |
+| Developer Experience Overhaul | Default presets, strict tier, rule improvements, bug fixes |
+| docs-tools Plugin | Scaffolded in [separate repo](https://github.com/pdugan20/claude-docs-tools) |

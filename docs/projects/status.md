@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-02-18
-**Current stats:** 117 rules, 1675 tests
+**Last Updated:** 2026-02-19
+**Current stats:** 117 rules, 204 test suites
 
 All active work is tracked in [roadmap.md](./roadmap.md).
 
@@ -9,16 +9,13 @@ All active work is tracked in [roadmap.md](./roadmap.md).
 
 ## Current Status
 
-**Next milestone:** Developer experience overhaul, then stable 0.2.0 release.
+**Next milestone:** Stable 0.2.0 release.
 
-Published as `claude-code-lint@0.2.0-beta.2`. Plugin marketplace complete. DX overhaul in progress.
+Published as `claude-code-lint@0.2.0-beta.3`. Plugin marketplace complete. DX overhaul complete. docs-tools plugin scaffolded in [separate repo](https://github.com/pdugan20/claude-docs-tools).
 
 ## Active Projects
 
-| Project | Status | Tracker |
-|---------|--------|---------|
-| Plugin Marketplace | Phases 1-6 complete, Phase 7+ pending | [tracker](./plugin-marketplace/tracker.md) |
-| Developer Experience & Defaults Overhaul | In Progress | [tracker](./developer-experience-overhaul/tracker.md) |
+No active projects. Remaining work is tracked in [roadmap.md](./roadmap.md).
 
 ---
 
@@ -54,6 +51,9 @@ All project trackers are in `docs/projects/archive/`. Completed or preserved as 
 | testing-fixture-infrastructure | Complete | 9 fluent builders, pinned integration tests. |
 | validator-refactor | Complete | Rule-based architecture foundation. |
 | validator-refactor-2026 | Complete | Removed 1,263 LOC, renamed validators. |
+| developer-experience-overhaul | Complete | Default presets, strict tier, rule improvements, bug fixes. |
+| pattern-consolidation | Complete | Shared utilities, banned patterns, regex consolidation. |
+| plugin-marketplace | Complete | Marketplace, version sync, install UX, SessionStart hook, e2e testing. docs-tools moved to separate repo. |
 | plugin-spec-alignment | Complete | Fixed marketplace schema, 2 rules, install syntax, JSON schema. |
 | vitepress-docs | Launched | claudelint.com live, incremental updates. |
 
