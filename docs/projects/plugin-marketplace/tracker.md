@@ -1,8 +1,8 @@
 # Plugin Marketplace - Progress Tracker
 
-**Status:** In Progress
+**Status:** Complete
 **Created:** 2026-02-18
-**Last Updated:** 2026-02-18
+**Last Updated:** 2026-02-19
 
 ---
 
@@ -490,8 +490,8 @@ Bugs found and fixed:
 ### 7.3 Plugin functionality
 
 - [x] Run `/validate-all` — verify skill executes (39 findings on nextup-backend, as expected)
-- [ ] Try natural language: "Check everything" or "Run all validators" — verify skill triggers
-- [ ] Verify all skills appear: `/skills` (filter by "claudelint")
+- [x] Try natural language: "Check everything" or "Run all validators" — verify skill triggers
+- [x] Verify all skills appear: `/skills` (filter by "claudelint")
 
 Note: Skills show as `/skill-name` (e.g., `/validate-all`), NOT `/claudelint:skill-name`. All references have been updated — see Phase 7 bugs below.
 
@@ -510,176 +510,21 @@ Bugs found and fixed:
 
 ### 7.5 Cross-project and auto-update
 
-- [ ] Open Claude Code in a SECOND project — verify plugin is available (User scope)
-- [ ] Test auto-update toggle: `/plugin` > Marketplaces > pdugan20-plugins > Enable auto-update
-- [ ] Uninstall and clean up
+- [x] Open Claude Code in a SECOND project — verify plugin is available (User scope)
+- [x] Test auto-update toggle: `/plugin` > Marketplaces > pdugan20-plugins > Enable auto-update
+- [x] Uninstall and clean up
 
 ### Phase 7 bugs requiring follow-up
 
 - [x] **Slash command syntax audit:** Updated all references from `/claudelint:skill-name` to `/skill-name` across docs, CLI output, website, tests, skills, and README. Also added `argument-hint` and `$ARGUMENTS` support to all 9 skills.
 - [x] **Hooks documentation audit:** Rewrote `website/integrations/hooks.md` (renamed from `pre-commit.md`) — SessionStart command hook stdout goes to Claude's context, not the terminal. Removed misleading format options section. Added prompt hook alternative. Removed duplicate hooks code block from plugin page (replaced with link). Fixed version mismatch troubleshooting on plugin page and troubleshooting guide. Added missing `async` field to hooks schema docs.
-- [ ] **Publish new release:** The published plugin on GitHub/npm still has all pre-Phase 7 bugs (hook path, version prefix, output mechanism). Needs a new release after all fixes are complete.
+- [x] **Publish new release:** Released v0.2.0-beta.3 with all Phase 7 fixes.
 
 ---
 
-## Phase 8: Scaffold docs-tools Plugin Repo
+## Phase 8-9: docs-tools Plugin (Moved)
 
-Create a new GitHub repo with a documentation plugin containing multiple skills, each with supporting files.
-
-### 8.1 Define plugin scope
-
-- [ ] Plugin name: `docs-tools` (repo: `pdugan20/claude-docs-tools`)
-- [ ] Purpose: A Claude Code plugin with multiple documentation skills
-- [ ] This plugin is pure-skill (no npm dependency required) — unlike claudelint, it uses Claude's built-in capabilities
-- [ ] Skills to include:
-
-| Skill | Purpose | Key supporting files |
-|-------|---------|---------------------|
-| `generate-readme` | Generate README.md from project analysis | Templates per project type (library, CLI, app), example outputs |
-| `generate-claude-md` | Create CLAUDE.md tailored to project structure | Templates (monorepo, standard), analysis script, best practices reference |
-| `scaffold-docs` | Scaffold full documentation site structure | Framework-specific templates (VitePress, Docusaurus, MkDocs), detection script |
-| `review-docs` | Review existing docs for quality and completeness | Quality criteria reference, common issues checklist, example review output |
-| `update-docs` | Update project docs after code changes | Changelog conventions reference, diff analysis prompts |
-
-### 8.2 Create GitHub repo
-
-- [ ] Create repo: `pdugan20/claude-docs-tools`
-- [ ] Set description: "Claude Code plugin for generating, reviewing, and maintaining project documentation"
-- [ ] Initialize with MIT license
-- [ ] Add `.gitignore`
-
-### 8.3 Set up plugin structure
-
-```text
-claude-docs-tools/
-├── .claude-plugin/
-│   ├── plugin.json
-│   └── README.md
-├── skills/
-│   ├── generate-readme/
-│   │   ├── SKILL.md
-│   │   ├── templates/
-│   │   │   ├── readme-library.md
-│   │   │   ├── readme-cli.md
-│   │   │   └── readme-app.md
-│   │   └── examples/
-│   │       └── sample-output.md
-│   ├── generate-claude-md/
-│   │   ├── SKILL.md
-│   │   ├── templates/
-│   │   │   ├── claude-md-standard.md
-│   │   │   └── claude-md-monorepo.md
-│   │   ├── scripts/
-│   │   │   └── analyze-project.sh
-│   │   └── references/
-│   │       └── best-practices.md
-│   ├── scaffold-docs/
-│   │   ├── SKILL.md
-│   │   ├── templates/
-│   │   │   ├── vitepress-scaffold.md
-│   │   │   ├── docusaurus-scaffold.md
-│   │   │   └── mkdocs-scaffold.md
-│   │   └── scripts/
-│   │       └── detect-framework.sh
-│   ├── review-docs/
-│   │   ├── SKILL.md
-│   │   ├── references/
-│   │   │   ├── quality-criteria.md
-│   │   │   └── common-issues.md
-│   │   └── examples/
-│   │       └── review-output.md
-│   └── update-docs/
-│       ├── SKILL.md
-│       └── references/
-│           └── changelog-conventions.md
-├── CLAUDE.md
-├── LICENSE
-└── README.md
-```
-
-- [ ] Create `.claude-plugin/plugin.json`:
-
-```json
-{
-  "name": "docs-tools",
-  "version": "0.1.0",
-  "description": "Generate, review, and maintain project documentation. Includes skills for README, CLAUDE.md, doc site scaffolding, and doc review.",
-  "author": {
-    "name": "Pat Dugan",
-    "url": "https://github.com/pdugan20"
-  },
-  "homepage": "https://github.com/pdugan20/claude-docs-tools",
-  "repository": "https://github.com/pdugan20/claude-docs-tools",
-  "license": "MIT",
-  "keywords": ["documentation", "scaffolding", "readme", "claude-md", "developer-tools"]
-}
-```
-
-- [ ] Create each skill's SKILL.md with proper frontmatter (name, description, allowed-tools)
-- [ ] Create templates — each should be a well-structured markdown file Claude fills in based on project analysis
-- [ ] Create scripts (analyze-project.sh, detect-framework.sh) — used via `!`command`` syntax or `allowed-tools: Bash(...)`
-- [ ] Create reference files — detailed guidance loaded on demand (keep SKILL.md under 500 lines per docs recommendation)
-- [ ] Create `.claude-plugin/README.md` with usage guide for all 5 skills
-- [ ] Create project `CLAUDE.md` with development instructions
-- [ ] Push to GitHub
-
-### 8.4 Validate plugin structure
-
-- [ ] Run `claudelint check-all` against the new repo
-- [ ] Verify plugin.json passes validation
-- [ ] Verify all SKILL.md files pass validation (frontmatter, allowed-tools, file references)
-- [ ] Fix any issues
-
----
-
-## Phase 9: Add docs-tools to Marketplace
-
-### 9.1 Add plugin entry to marketplace.json
-
-- [ ] Add new entry to `.claude-plugin/marketplace.json` plugins array:
-
-```json
-{
-  "name": "docs-tools",
-  "source": {
-    "source": "github",
-    "repo": "pdugan20/claude-docs-tools"
-  },
-  "description": "Generate, review, and maintain project documentation. Includes skills for README, CLAUDE.md, doc site scaffolding, and doc review.",
-  "version": "0.1.0",
-  "author": {
-    "name": "Pat Dugan"
-  },
-  "homepage": "https://github.com/pdugan20/claude-docs-tools",
-  "repository": "https://github.com/pdugan20/claude-docs-tools",
-  "license": "MIT",
-  "keywords": ["documentation", "scaffolding", "readme", "claude-md"],
-  "category": "developer-tools",
-  "tags": ["docs", "readme", "claude-md", "scaffold", "review"]
-}
-```
-
-### 9.2 Validate marketplace update
-
-- [ ] Run `npm run check:self` — verify marketplace.json still passes validation
-- [ ] Check that `plugin-marketplace-files-not-found` does NOT flag the GitHub source (it should only check relative paths)
-- [ ] Run schema tests
-
-### 9.3 Test cross-repo installation
-
-- [ ] Add marketplace locally: `/plugin marketplace add ./`
-- [ ] Verify docs-tools appears in Discover tab
-- [ ] Install: `/plugin install docs-tools@pdugan20-plugins`
-- [ ] Verify Claude Code clones the separate repo and installs successfully
-- [ ] Verify all 5 skills from docs-tools are available (`/docs-tools:generate-readme`, etc.)
-- [ ] Test at least one skill end-to-end
-- [ ] Uninstall and clean up
-
-### 9.4 Update documentation
-
-- [ ] Update website plugin page to mention the marketplace has multiple plugins
-- [ ] Consider a dedicated "marketplace" page on the website listing all available plugins
-- [ ] Update the marketplace.json example on the schema docs page
+Phases 8 and 9 have been moved to the [claude-docs-tools](https://github.com/pdugan20/claude-docs-tools) repository. The initial scaffold was created from this project and pushed on 2026-02-19. Remaining work (skill content refinement, marketplace integration, cross-repo testing) is tracked in that repo.
 
 ---
 
