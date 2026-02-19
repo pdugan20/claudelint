@@ -71,7 +71,7 @@ export const rule: Rule = {
         'Split the CLAUDE.md content into smaller, focused files inside the `.claude/rules/` ' +
         'directory. Then replace the inlined content with `@import` directives pointing to ' +
         'each extracted file. Each rule file should cover a single concern. ' +
-        'Or use the `/claudelint:optimize-cc-md` plugin skill for guided, interactive optimization.',
+        'Or use the `/optimize-cc-md` plugin skill for guided, interactive optimization.',
       optionExamples: [
         {
           description: 'Catch size issues early — warn at 30KB before hitting the 40KB limit',

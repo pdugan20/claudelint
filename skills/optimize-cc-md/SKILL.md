@@ -2,6 +2,7 @@
 name: optimize-cc-md
 description: Interactively helps users optimize their CLAUDE.md files. Use when user asks to "optimize my CLAUDE.md", "my CLAUDE.md is too long", "improve organization", or "split my CLAUDE.md". Runs validation, explains issues conversationally, and helps create @import files to reduce size and improve structure.
 version: 1.0.0
+argument-hint: "[path]"
 allowed-tools:
   - Bash(claudelint:*)
   - Read
@@ -16,7 +17,9 @@ An interactive skill that helps you optimize your CLAUDE.md file through a 3-pha
 
 ## Usage
 
-Invoke with `/claudelint:optimize-cc-md` or say "optimize my CLAUDE.md". The skill guides you through three phases: validation, quality assessment, and guided improvement.
+Invoke with `/optimize-cc-md` or say "optimize my CLAUDE.md". Optionally pass a path: `/optimize-cc-md CLAUDE.md`. The skill guides you through three phases: validation, quality assessment, and guided improvement.
+
+If a specific path is provided, optimize that file: $ARGUMENTS
 
 ## Workflow Overview
 
@@ -279,7 +282,7 @@ Common issues: CLI not found (install claude-code-lint), broken @import paths, s
 ### When NOT to Use This Skill
 
 - **For initial CLAUDE.md creation**: Use the built-in `/init` command instead
-- **For general validation only**: Use `/claudelint:validate-cc-md` for just checking
+- **For general validation only**: Use `/validate-cc-md` for just checking
 - **When you know exactly what to change**: Make direct edits instead
 
 ### Dependencies Required

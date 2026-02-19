@@ -39,7 +39,7 @@ echo "Next steps:"
 echo
 echo "Test 4.1: validate-all (from repo root)"
 echo "  cd $REPO_ROOT"
-echo "  /claudelint:validate-all"
+echo "  /validate-all"
 echo
 echo "Test 4.2: validate-cc-md with fixtures"
 echo "  cd $TEST_DIR/claude-md-tests"

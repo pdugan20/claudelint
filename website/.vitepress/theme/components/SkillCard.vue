@@ -1,6 +1,6 @@
 <template>
   <div class="skill-card">
-    <code class="skill-card-name">{{ name }}</code>
+    <code class="skill-card-name">/{{ name }}</code>
     <p class="skill-card-desc">
       {{ description }}
     </p>

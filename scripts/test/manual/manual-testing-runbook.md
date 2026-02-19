@@ -501,7 +501,7 @@ Creates test workspaces with various fixture files.
 
 ##### Test 4.1: validate-all on our own project
 
-1. From repo root, run: `/claudelint:validate-all`
+1. From repo root, run: `/validate-all`
 2. Observe:
    - [ ] Command executes: `claudelint check-all`
    - [ ] Output is parsed and explained clearly
@@ -726,7 +726,7 @@ Test error scenarios:
 4. Test one skill:
 
    ```bash
-   /claudelint:validate-all
+   /validate-all
    ```
 
    - [ ] Skill executes
@@ -763,7 +763,7 @@ Test error scenarios:
 3. Test one skill:
 
    ```bash
-   /claudelint:validate-all
+   /validate-all
    ```
 
    - [ ] Skill executes correctly
@@ -781,7 +781,7 @@ Test error scenarios:
 2. Try using skill:
 
    ```bash
-   /claudelint:validate-all
+   /validate-all
    ```
 
    - [ ] Shows helpful error
@@ -864,7 +864,7 @@ Recordings are:
 ### Issue: Skill doesn't trigger
 
 - In a Claude Code session, run `/skills list` to check skills loaded
-- Try explicit invocation: `/claudelint:skill-name`
+- Try explicit invocation: `/skill-name`
 - Check trigger phrase matches description field
 - Verify plugin loaded with `claude --plugin-dir .`
 

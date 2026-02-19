@@ -2,6 +2,7 @@
 name: validate-cc-md
 description: Validates CLAUDE.md files for size, imports, and structure. Use when user asks to "check my CLAUDE.md", "why is my CLAUDE.md too long", "validate imports", or "fix CLAUDE.md errors". Checks file size limits (30KB warning, 50KB error), @import directives, frontmatter in .claude/rules/, and section organization.
 version: 1.0.0
+argument-hint: "[flags]"
 allowed-tools:
   - Bash(claudelint:*)
 ---
@@ -18,7 +19,7 @@ Runs `claudelint validate-claude-md` to validate CLAUDE.md files including:
 ## Usage
 
 ```bash
-claudelint validate-claude-md
+claudelint validate-claude-md $ARGUMENTS
 ```
 
 ## Options

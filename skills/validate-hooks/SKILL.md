@@ -2,6 +2,7 @@
 name: validate-hooks
 description: Validates Claude Code hooks.json files for schema, events, and commands. Use when user asks to "check my hooks", "validate hooks.json", "hook errors", "why isn't my hook firing", or "hook event types". Validates hook events, types (command, prompt, agent), matcher patterns, and command script references.
 version: 1.0.0
+argument-hint: "[flags]"
 allowed-tools:
   - Bash(claudelint:*)
 ---
@@ -13,7 +14,7 @@ Runs `claudelint validate-hooks` to validate `.claude/hooks/hooks.json` files.
 ## Usage
 
 ```bash
-claudelint validate-hooks
+claudelint validate-hooks $ARGUMENTS
 ```
 
 ## Options

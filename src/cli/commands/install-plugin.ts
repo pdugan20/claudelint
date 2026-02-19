@@ -122,17 +122,17 @@ export function registerInstallPluginCommand(program: Command): void {
       logger.log(chalk.bold('Step 4: Verify'));
       logger.newline();
       logger.detail('Run inside Claude Code:');
-      logger.detail(chalk.cyan('/claudelint:validate-all'));
+      logger.detail(chalk.cyan('/validate-all'));
       logger.newline();
 
       // Skills reference
       logger.log(chalk.bold('Available skills:'));
       logger.newline();
-      logger.detail('/claudelint:validate-all    - Validate all project files');
-      logger.detail('/claudelint:validate-cc-md  - Validate CLAUDE.md files');
-      logger.detail('/claudelint:validate-skills - Validate skills structure');
-      logger.detail('/claudelint:format-cc       - Format Claude Code files');
-      logger.detail('/claudelint:optimize-cc-md  - Interactively optimize CLAUDE.md');
+      logger.detail('/validate-all    - Validate all project files');
+      logger.detail('/validate-cc-md  - Validate CLAUDE.md files');
+      logger.detail('/validate-skills - Validate skills structure');
+      logger.detail('/format-cc       - Format Claude Code files');
+      logger.detail('/optimize-cc-md  - Interactively optimize CLAUDE.md');
       logger.newline();
       logger.info('See all skills: /skills (filter by "claudelint")');
       logger.newline();
@@ -155,7 +155,7 @@ function outputJson(): void {
       development: 'claude --plugin-dir ./node_modules/claude-code-lint',
     },
     autoUpdate: '/plugin > Marketplaces > pdugan20-plugins > Enable auto-update',
-    verify: '/claudelint:validate-all',
+    verify: '/validate-all',
     status: {
       globalInstall: isGloballyInstalled(),
       localInstall: isLocallyInstalled(),

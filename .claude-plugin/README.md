@@ -120,10 +120,10 @@ Claude will automatically load the appropriate skill and run the right validator
 
 You can also invoke skills directly:
 
-- `/claudelint:validate-all` - Run all validators
-- `/claudelint:validate-cc-md` - Check CLAUDE.md
-- `/claudelint:optimize-cc-md` - Optimize CLAUDE.md
-- `/claudelint:format-cc` - Format files
+- `/validate-all` - Run all validators
+- `/validate-cc-md` - Check CLAUDE.md
+- `/optimize-cc-md` - Optimize CLAUDE.md
+- `/format-cc` - Format files
 
 ## Requirements
 

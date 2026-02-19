@@ -87,8 +87,8 @@ claudelint is also available as a Claude Code plugin, giving you slash commands 
 
 Key skills include:
 
-- `/claudelint:validate-all` — Run all validators at once
-- `/claudelint:optimize-cc-md` — Interactively optimize your CLAUDE.md
-- `/claudelint:format-cc` — Auto-format Claude Code files
+- `/validate-all` — Run all validators at once
+- `/optimize-cc-md` — Interactively optimize your CLAUDE.md
+- `/format-cc` — Auto-format Claude Code files
 
 See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for team setup, plugin scopes, and troubleshooting.

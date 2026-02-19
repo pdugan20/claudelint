@@ -130,7 +130,7 @@ describe('Skill Metadata Consistency', () => {
         // Check if skill is mentioned in README
         const isDocumented =
           readmeContent.includes(skillName) ||
-          readmeContent.includes(`/claudelint:${skillName}`);
+          readmeContent.includes(`/${skillName}`);
 
         expect(isDocumented).toBe(true);
       });
@@ -177,9 +177,9 @@ describe('Skill Metadata Consistency', () => {
   describe('Obsolete References', () => {
     // Old skill names that were renamed (as they would appear in skill invocations)
     const obsoleteSkillInvocations = [
-      '/claudelint:validate-agents-md', // Renamed to validate-cc-md
-      '/claudelint:validate"', // Renamed to validate-all (note the quote to avoid matching validate-all)
-      '/claudelint:format"', // Renamed to format-cc (note the quote to avoid matching format-cc)
+      '/validate-agents-md', // Renamed to validate-cc-md
+      '/validate"', // Renamed to validate-all (note the quote to avoid matching validate-all)
+      '/format"', // Renamed to format-cc (note the quote to avoid matching format-cc)
       '`validate-agents-md`', // Code references
     ];
 

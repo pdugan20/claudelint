@@ -586,9 +586,9 @@ Interactively optimize CLAUDE.md files through a guided 3-phase workflow. Availa
 **Usage (inside Claude Code):**
 
 ```bash
-/claudelint:optimize-cc-md
-/claudelint:optimize-cc-md CLAUDE.md
-/claudelint:optimize-cc-md --verbose
+/optimize-cc-md
+/optimize-cc-md CLAUDE.md
+/optimize-cc-md --verbose
 ```
 
 **What it does:**

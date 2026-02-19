@@ -29,11 +29,11 @@ echo "  /skills list | grep claudelint"
 echo "  (Should show 9 skills)"
 echo
 echo "6.3: Test one skill"
-echo "  /claudelint:validate-all"
+echo "  /validate-all"
 echo
 echo "6.4: Test dependency detection"
 echo "  npm uninstall claude-code-lint"
-echo "  /claudelint:validate-all"
+echo "  /validate-all"
 echo "  (Should show helpful error)"
 echo "  npm install"
 echo

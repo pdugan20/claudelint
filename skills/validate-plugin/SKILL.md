@@ -2,6 +2,7 @@
 name: validate-plugin
 description: Validates Claude Code plugin manifest files (plugin.json). Use when user asks to "check my plugin.json", "validate plugin.json", "plugin errors", or "why isn't my plugin loading". Validates JSON syntax, required fields (name, version, description), semantic versioning, and skill file references.
 version: 1.0.0
+argument-hint: "[flags]"
 allowed-tools:
   - Bash(claudelint:*)
 ---
@@ -13,7 +14,7 @@ Runs `claudelint validate-plugin` to validate `.claude-plugin/plugin.json` files
 ## Usage
 
 ```bash
-claudelint validate-plugin
+claudelint validate-plugin $ARGUMENTS
 ```
 
 ## Options

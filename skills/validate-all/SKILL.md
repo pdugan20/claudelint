@@ -2,6 +2,7 @@
 name: validate-all
 description: Runs comprehensive claudelint validation on all Claude Code project files. Use when user asks to "check everything", "run all validators", "full audit", "validate my entire project", or "what's wrong with my config". Validates CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests.
 version: 1.0.0
+argument-hint: "[flags]"
 allowed-tools:
   - Bash(claudelint:*)
 ---
@@ -13,7 +14,7 @@ Runs `claudelint check-all` to validate all Claude Code project files including 
 ## Usage
 
 ```bash
-claudelint check-all
+claudelint check-all $ARGUMENTS
 ```
 
 ## Options

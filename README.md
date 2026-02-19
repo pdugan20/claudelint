@@ -64,7 +64,7 @@ claudelint format --check               # Check formatting
 
 ## Plugin Skills
 
-After installing as a plugin, use skills via `/claudelint:*` or natural language:
+After installing as a plugin, use skills via `/skill-name` or natural language:
 
 | Skill | Description |
 |-------|-------------|
