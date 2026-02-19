@@ -273,6 +273,25 @@ Create `.claudelintrc.json` in your project root:
 }
 ```
 
+## Monitoring Config Drift
+
+Not every rule needs to be a hard gate. Setting rules to `warn` lets CI surface trends before they become problems — you get a heads-up in your PR checks without blocking the build.
+
+[CLAUDE.md](/validators/claude-md) size is a good example. Claude Code performance degrades once the file exceeds 40KB, but you probably want to know well before that:
+
+```json
+{
+  "rules": {
+    "claude-md-size": {
+      "severity": "warn",
+      "options": { "maxSize": 30000 }
+    }
+  }
+}
+```
+
+This pattern works with any configurable rule — skill body length, word counts, import depth. Set the threshold where you want the early signal, and let CI do the monitoring.
+
 ## Monorepo Support
 
 For monorepo projects with multiple packages:

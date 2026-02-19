@@ -109,9 +109,7 @@ You can extend a preset and override individual rules:
 ```
 
 ::: tip
-Running `claudelint init` will prompt you to choose between Recommended, Strict, All, or Manual configuration.
-
-When no configuration file is found, claudelint defaults to the **recommended** preset. Use `--preset all` to run all rules without creating a config file.
+claudelint defaults to the **recommended** preset. Run `claudelint init` to choose a different preset, or use `--preset all` for maximum coverage.
 :::
 
 **Merge behavior:**

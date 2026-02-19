@@ -398,6 +398,32 @@ html {
   color: var(--vp-c-text-1);
 }
 
+/* ===== Custom Blocks: Left-border only (no background fill) ===== */
+
+.vp-doc .custom-block {
+  background-color: transparent;
+  border: none;
+  border-left: 3px solid var(--vp-c-divider);
+  border-radius: 0;
+  padding: 8px 16px;
+}
+
+.vp-doc .custom-block.tip {
+  border-left-color: var(--vp-c-tip-1);
+}
+
+.vp-doc .custom-block.warning {
+  border-left-color: var(--vp-c-warning-1);
+}
+
+.vp-doc .custom-block.danger {
+  border-left-color: var(--vp-c-danger-1);
+}
+
+.vp-doc .custom-block.info {
+  border-left-color: var(--vp-c-info-1);
+}
+
 .vp-doc a {
   text-decoration: underline;
   text-decoration-color: var(--vp-c-divider);
