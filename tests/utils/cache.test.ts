@@ -55,12 +55,14 @@ describe('ValidationCache', () => {
     });
 
     it('returns cached result on cache hit', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
       cache.set('validator', result, { rules: {} });
 
+      const { validatedFiles: _vf, ...expectedStored } = result;
       const cached = cache.get('validator', { rules: {} });
-      expect(cached).toEqual(result);
+      expect(cached).toEqual(expectedStored);
     });
 
     it('returns null when cache is disabled', () => {
@@ -72,9 +74,11 @@ describe('ValidationCache', () => {
     });
 
     it('separates entries by validator name', () => {
+      const fileA = createTrackedFile('a.md');
+      const fileB = createTrackedFile('b.md');
       const cache = createCache();
-      const result1 = createResult({ valid: true });
-      const result2 = createResult({ valid: false, errors: [{ message: 'err', severity: 'error' }] });
+      const result1 = createResult({ valid: true, validatedFiles: [fileA] });
+      const result2 = createResult({ valid: false, errors: [{ message: 'err', severity: 'error' }], validatedFiles: [fileB] });
 
       cache.set('validator-a', result1, { rules: {} });
       cache.set('validator-b', result2, { rules: {} });
@@ -84,11 +88,13 @@ describe('ValidationCache', () => {
     });
 
     it('invalidates on config change', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
 
       cache.set('validator', result, { rules: { 'rule-a': 'error' } });
-      expect(cache.get('validator', { rules: { 'rule-a': 'error' } })).toEqual(result);
+      const { validatedFiles: _vf, ...expectedStored } = result;
+      expect(cache.get('validator', { rules: { 'rule-a': 'error' } })).toEqual(expectedStored);
 
       // Different config should miss
       expect(cache.get('validator', { rules: { 'rule-a': 'warn' } })).toBeNull();
@@ -174,15 +180,15 @@ describe('ValidationCache', () => {
       expect(cache.get('validator', { rules: {} })).toBeNull();
     });
 
-    it('handles validators with no files (cache always valid)', () => {
+    it('invalidates when no files were tracked (detects new files)', () => {
       const cache = createCache();
 
       // Result with no files (e.g., commands validator found no commands dir)
       const result = createResult();
       cache.set('validator', result, { rules: {} });
 
-      // Should hit — no files to invalidate
-      expect(cache.get('validator', { rules: {} })).toEqual(result);
+      // Should miss — empty fingerprints re-run discovery to detect new files
+      expect(cache.get('validator', { rules: {} })).toBeNull();
     });
   });
 
@@ -293,49 +299,57 @@ describe('ValidationCache', () => {
 
   describe('cache persistence', () => {
     it('persists across cache instances', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache1 = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
       cache1.set('validator', result, { rules: {} });
 
       // Create new instance pointing to same directory
       const cache2 = createCache();
-      expect(cache2.get('validator', { rules: {} })).toEqual(result);
+      const { validatedFiles: _vf, ...expectedStored } = result;
+      expect(cache2.get('validator', { rules: {} })).toEqual(expectedStored);
     });
   });
 
   describe('backwards compatibility', () => {
     it('accepts deprecated 3-arg get signature', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
       cache.set('validator', result, [], { rules: {} });
 
       // Old signature: get(name, files[], config)
+      const { validatedFiles: _vf, ...expectedStored } = result;
       const cached = cache.get('validator', [], { rules: {} });
-      expect(cached).toEqual(result);
+      expect(cached).toEqual(expectedStored);
     });
 
     it('old set + new get works', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
 
       // Old signature
       cache.set('validator', result, [], { rules: {} });
 
       // New signature
+      const { validatedFiles: _vf, ...expectedStored } = result;
       const cached = cache.get('validator', { rules: {} });
-      expect(cached).toEqual(result);
+      expect(cached).toEqual(expectedStored);
     });
 
     it('new set + old get works', () => {
+      const filePath = createTrackedFile('CLAUDE.md');
       const cache = createCache();
-      const result = createResult();
+      const result = createResult({ validatedFiles: [filePath] });
 
       // New signature
       cache.set('validator', result, { rules: {} });
 
       // Old signature
+      const { validatedFiles: _vf, ...expectedStored } = result;
       const cached = cache.get('validator', [], { rules: {} });
-      expect(cached).toEqual(result);
+      expect(cached).toEqual(expectedStored);
     });
   });
 

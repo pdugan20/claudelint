@@ -28,11 +28,18 @@ describe('ValidationCache with extends', () => {
     rmSync(tempDir, { recursive: true, force: true });
   });
 
-  function createMockResult(): ValidationResult {
+  function createTrackedFile(name: string): string {
+    const filePath = join(tempDir, name);
+    writeFileSync(filePath, '# Test');
+    return filePath;
+  }
+
+  function createMockResult(trackedFile?: string): ValidationResult {
     return {
       errors: [],
       warnings: [],
       valid: true,
+      ...(trackedFile ? { validatedFiles: [trackedFile] } : {}),
     };
   }
 
@@ -62,12 +69,14 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(childConfigPath);
 
       // Store result in cache with merged config
-      const result1 = createMockResult();
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
       cache.set('test-validator', result1, [], config1);
 
-      // Verify cache hit
+      // Verify cache hit (validatedFiles stripped from stored result)
+      const { validatedFiles: _vf, ...expectedStored } = result1;
       const cached1 = cache.get('test-validator', [], config1);
-      expect(cached1).toEqual(result1);
+      expect(cached1).toEqual(expectedStored);
 
       // Modify root config
       writeFileSync(
@@ -112,11 +121,13 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(childConfigPath);
 
       // Store in cache
-      const result1 = createMockResult();
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
       cache.set('test-validator', result1, [], config1);
 
       // Verify cache hit
-      expect(cache.get('test-validator', [], config1)).toEqual(result1);
+      const { validatedFiles: _vf, ...expectedStored } = result1;
+      expect(cache.get('test-validator', [], config1)).toEqual(expectedStored);
 
       // Modify child config
       writeFileSync(
@@ -170,11 +181,13 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(childPath);
 
       // Store in cache
-      const result1 = createMockResult();
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
       cache.set('test-validator', result1, [], config1);
 
       // Verify cache hit
-      expect(cache.get('test-validator', [], config1)).toEqual(result1);
+      const { validatedFiles: _vf, ...expectedStored } = result1;
+      expect(cache.get('test-validator', [], config1)).toEqual(expectedStored);
 
       // Modify grandparent (deep in chain)
       writeFileSync(
@@ -217,12 +230,13 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(childPath);
 
       // Store in cache
-      const result1 = createMockResult();
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
       result1.errors.push({
         ruleId: 'claude-md-size',
         message: 'Test error',
         severity: 'error',
-        file: '/test',
+        file: trackedFile,
         line: 1,
       });
       result1.valid = false;
@@ -231,9 +245,10 @@ describe('ValidationCache with extends', () => {
       // Load same config again (no changes)
       const config2 = loadConfigWithExtends(childPath);
 
-      // Cache should hit
+      // Cache should hit (validatedFiles stripped from stored result)
+      const { validatedFiles: _vf, ...expectedStored } = result1;
       const cached = cache.get('test-validator', [], config2);
-      expect(cached).toEqual(result1);
+      expect(cached).toEqual(expectedStored);
       expect(cached?.errors).toHaveLength(1);
     });
 
@@ -261,7 +276,8 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(childPath);
 
       // Store in cache
-      const result1 = createMockResult();
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
       cache.set('test-validator', result1, [], config1);
 
       // Modify an unrelated file
@@ -272,7 +288,8 @@ describe('ValidationCache with extends', () => {
       const config2 = loadConfigWithExtends(childPath);
 
       // Cache should still hit (unrelated file doesn't affect config)
-      expect(cache.get('test-validator', [], config2)).toEqual(result1);
+      const { validatedFiles: _vf, ...expectedStored } = result1;
+      expect(cache.get('test-validator', [], config2)).toEqual(expectedStored);
     });
   });
 
@@ -303,14 +320,16 @@ describe('ValidationCache with extends', () => {
       const config1 = loadConfigWithExtends(config1Path);
 
       // Store result with config1
-      const result1 = createMockResult();
-      result1.errors.push({ ruleId: 'claude-md-size', message: 'Error 1', severity: 'error', file: '/test', line: 1 });
+      const trackedFile = createTrackedFile('CLAUDE.md');
+      const result1 = createMockResult(trackedFile);
+      result1.errors.push({ ruleId: 'claude-md-size', message: 'Error 1', severity: 'error', file: trackedFile, line: 1 });
       result1.valid = false;
       cache.set('validator1', result1, [], config1);
 
-      // Get with config1 should hit cache
+      // Get with config1 should hit cache (validatedFiles stripped)
+      const { validatedFiles: _vf, ...expectedStored } = result1;
       const cached1 = cache.get('validator1', [], config1);
-      expect(cached1).toEqual(result1);
+      expect(cached1).toEqual(expectedStored);
 
       // Load config2 (different rules)
       const config2 = loadConfigWithExtends(config2Path);

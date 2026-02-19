@@ -199,9 +199,9 @@ export class ValidationCache {
   private areFingerprintsValid(stored: Record<string, string>): boolean {
     const storedFiles = Object.keys(stored);
 
-    // No files tracked — always valid (e.g., validators that found no files)
+    // No files tracked — re-run discovery to detect newly added files
     if (storedFiles.length === 0) {
-      return true;
+      return false;
     }
 
     for (const file of storedFiles) {
