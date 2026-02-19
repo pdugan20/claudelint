@@ -528,15 +528,17 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 ### Hook not running at session start
 
+**Note:** SessionStart command hooks send output to Claude's context, not your terminal. Claude will mention any issues when you start chatting. If Claude doesn't mention validation results:
+
 **Solutions:**
 
 1. Verify `.claude/hooks.json` (or `.claude/hooks/hooks.json`) exists
 2. Validate: `claudelint validate-hooks`
 3. Check event name is `"SessionStart"` (capital S)
-4. Test command manually first:
+4. Test the command manually to confirm it works:
 
    ```bash
-   claudelint check-all --format compact
+   claudelint check-all --format json
    ```
 
 ## Cache Issues

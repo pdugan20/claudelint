@@ -143,28 +143,7 @@ See the [CLI Reference](/guide/cli-reference) for all available flags when using
 
 ## Automatic Validation
 
-Set up a SessionStart hook to validate automatically when Claude Code starts.
-
-Create `.claude/hooks/hooks.json`:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "claudelint check-all --format compact"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-See [Claude Code Hooks](/integrations/pre-commit) for more hook examples.
+You can set up a SessionStart hook so Claude is automatically aware of validation issues at the start of every session. See [Claude Code Hooks](/integrations/pre-commit) for setup instructions.
 
 ## Configuration
 
@@ -214,7 +193,7 @@ Plugin updates and npm package updates are independent. When upgrading, update b
 /plugin marketplace update pdugan20-plugins
 ```
 
-The SessionStart hook will warn you if the plugin version and npm package version are out of sync.
+The plugin's SessionStart hook detects version mismatches — Claude will mention it and offer to fix it at the start of your session.
 
 ## Troubleshooting
 
