@@ -143,7 +143,7 @@ See the [CLI Reference](/guide/cli-reference) for all available flags when using
 
 ## Automatic Validation
 
-You can set up a SessionStart hook so Claude is automatically aware of validation issues at the start of every session. See [Claude Code Hooks](/integrations/pre-commit) for setup instructions.
+You can set up a SessionStart hook so Claude is automatically aware of validation issues at the start of every session. See [Claude Code Hooks](/integrations/hooks) for setup instructions.
 
 ## Configuration
 
@@ -267,6 +267,6 @@ To remove the plugin:
 ## See Also
 
 - [Configuration Guide](/guide/configuration) - Customize validation rules
-- [Claude Code Hooks](/integrations/pre-commit) - Automatic validation hooks
+- [Claude Code Hooks](/integrations/hooks) - Automatic validation hooks
 - [Rules Reference](/rules/overview) - What gets validated
 - [CLI Reference](/guide/cli-reference) - All commands and flags

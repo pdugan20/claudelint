@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "claudelint check-all --format compact"
+            "command": "claudelint check-all --format json"
           }
         ]
       }

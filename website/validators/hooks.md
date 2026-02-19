@@ -34,4 +34,4 @@ claudelint validate-hooks --verbose
 ## See Also
 
 - [Claude Code Hooks](https://code.claude.com/docs/en/hooks) - Official hooks documentation
-- [Claude Code Hooks Integration](/integrations/pre-commit) - Using hooks with claudelint
+- [Claude Code Hooks Integration](/integrations/hooks) - Using hooks with claudelint

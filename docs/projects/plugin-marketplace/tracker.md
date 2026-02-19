@@ -517,7 +517,7 @@ Bugs found and fixed:
 ### Phase 7 bugs requiring follow-up
 
 - [x] **Slash command syntax audit:** Updated all references from `/claudelint:skill-name` to `/skill-name` across docs, CLI output, website, tests, skills, and README. Also added `argument-hint` and `$ARGUMENTS` support to all 9 skills.
-- [x] **Hooks documentation audit:** Rewrote `website/integrations/pre-commit.md` — SessionStart command hook stdout goes to Claude's context, not the terminal. Removed misleading format options section. Added prompt hook alternative. Removed duplicate hooks code block from plugin page (replaced with link). Fixed version mismatch troubleshooting on plugin page and troubleshooting guide. Added missing `async` field to hooks schema docs.
+- [x] **Hooks documentation audit:** Rewrote `website/integrations/hooks.md` (renamed from `pre-commit.md`) — SessionStart command hook stdout goes to Claude's context, not the terminal. Removed misleading format options section. Added prompt hook alternative. Removed duplicate hooks code block from plugin page (replaced with link). Fixed version mismatch troubleshooting on plugin page and troubleshooting guide. Added missing `async` field to hooks schema docs.
 - [ ] **Publish new release:** The published plugin on GitHub/npm still has all pre-Phase 7 bugs (hook path, version prefix, output mechanism). Needs a new release after all fixes are complete.
 
 ---

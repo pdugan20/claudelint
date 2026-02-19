@@ -131,15 +131,14 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/integrations/overview' },
             { text: 'CI/CD', link: '/integrations/ci' },
-            { text: 'Claude Code Hooks', link: '/integrations/pre-commit' },
+            { text: 'Claude Code Hooks', link: '/integrations/hooks' },
             { text: 'Npm Scripts', link: '/integrations/npm-scripts' },
             {
               text: 'Claude Code Plugin',
               link: '/integrations/claude-code-plugin',
             },
             { text: 'Monorepos', link: '/integrations/monorepos' },
-            { text: 'FAQ Mockups', link: '/integrations/faq-mockups' },
-            { text: 'SARIF', link: '/integrations/sarif' },
+{ text: 'SARIF', link: '/integrations/sarif' },
           ],
         },
       ],

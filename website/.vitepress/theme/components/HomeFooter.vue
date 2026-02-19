@@ -29,7 +29,7 @@
           <p class="footer-heading">Integrations</p>
           <ul class="footer-links">
             <li><a href="/integrations/ci">CI/CD</a></li>
-            <li><a href="/integrations/pre-commit">Claude Code Hooks</a></li>
+            <li><a href="/integrations/hooks">Claude Code Hooks</a></li>
             <li><a href="/integrations/npm-scripts">Npm Scripts</a></li>
             <li><a href="/integrations/claude-code-plugin">Claude Code Plugin</a></li>
             <li><a href="/integrations/monorepos">Monorepos</a></li>
