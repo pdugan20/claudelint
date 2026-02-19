@@ -19,7 +19,7 @@
     "publish": true,
     "publishPath": ".",
     "access": "public",
-    "tag": "${version.isPreRelease ? 'beta' : 'latest'}"
+    "tag": null
   },
   "hooks": {
     "before:init": ["npm run lint", "npm run test", "npm run build"],
