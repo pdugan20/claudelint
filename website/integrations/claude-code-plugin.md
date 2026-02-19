@@ -80,7 +80,7 @@ Once installed, the plugin adds 9 skills that Claude can use automatically. Ask 
 <SkillCard
   name="validate-all"
   description="Runs every validator on your entire project — CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests."
-  example="Check my Claude Code project for issues"
+  example="Run all validators on my project"
 />
 
 <SkillCard
@@ -128,7 +128,7 @@ Once installed, the plugin adds 9 skills that Claude can use automatically. Ask 
 <SkillCard
   name="format-cc"
   description="Auto-formats Claude Code files with markdownlint, prettier, and shellcheck."
-  example="Format my Claude Code files"
+  example="Fix my markdown formatting"
 />
 
 <SkillCard

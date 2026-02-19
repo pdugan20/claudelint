@@ -6,7 +6,7 @@ Validate and optimize your Claude Code project files directly in conversation wi
 
 This plugin gives Claude the ability to check your Claude Code projects for errors, validate configurations, and help you fix issues - all through natural conversation. No need to remember command syntax or manually run validators.
 
-**Simply ask Claude**: "Check my Claude Code project" or "Why isn't my skill loading?" and Claude will automatically run the right validators and explain any issues.
+**Simply ask Claude**: "Run all validators" or "Why isn't my skill loading?" and Claude will automatically run the right validators and explain any issues.
 
 ## Skills Included
 
@@ -108,7 +108,7 @@ claude --plugin-dir /path/to/claude-lint
 
 Simply ask Claude to validate your files:
 
-- "Check my Claude Code project"
+- "Check everything"
 - "Validate my CLAUDE.md"
 - "Why isn't my skill loading?"
 - "Optimize my config"

@@ -490,7 +490,7 @@ Bugs found and fixed:
 ### 7.3 Plugin functionality
 
 - [x] Run `/validate-all` — verify skill executes (39 findings on nextup-backend, as expected)
-- [ ] Try natural language: "Check my Claude Code project" — verify skill triggers
+- [ ] Try natural language: "Check everything" or "Run all validators" — verify skill triggers
 - [ ] Verify all skills appear: `/skills` (filter by "claudelint")
 
 Note: Skills show as `/skill-name` (e.g., `/validate-all`), NOT `/claudelint:skill-name`. All references have been updated — see Phase 7 bugs below.
