@@ -19,6 +19,7 @@ Read the [Architecture](/development/architecture) overview, then dive into the 
 
 ## Sections
 
+- [Design Philosophy](/development/design-philosophy) - Validation philosophy, scope boundaries, design principles
 - [Architecture](/development/architecture) - System design, validation philosophy, project structure
 - [Rule System](/development/rule-system) - Rule patterns, registries, and implementation details
 - [Internals](/development/internals) - Caching, parallel validation, progress indicators, CLI

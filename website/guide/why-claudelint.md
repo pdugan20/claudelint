@@ -87,3 +87,4 @@ skills/cleanup/cleanup.sh (1 error)
 - [Introduction](/guide/getting-started) - Install and run your first check
 - [Configuration](/guide/configuration) - Customize rules for your project
 - [Rules Reference](/rules/overview) - Browse all <RuleCount category="total" /> rules
+- [Design Philosophy](/development/design-philosophy) - Scope boundaries and design principles

@@ -4,69 +4,43 @@ description: "Understand claudelint's validation philosophy: why it focuses excl
 
 # Design Philosophy
 
-This document describes claudelint's validation philosophy, scope boundaries, and design principles.
+claudelint is built on a simple premise: Claude Code projects need their own linter, but that linter shouldn't try to do everything. These are the principles that guide what claudelint does and — just as importantly — what it doesn't.
 
-## Overview
+## Separation of Concerns
 
-claudelint is designed as a dual-purpose tool:
+claudelint follows the pattern established by successful linter ecosystems (ESLint + Prettier, markdownlint + Vale). It validates Claude-specific configurations and delegates everything else to specialized tools — markdownlint for markdown formatting, prettier for code style, Vale for prose quality. See the [Integrations Overview](/integrations/overview) for multi-tool setups.
 
-1. **NPM Package** - Standalone CLI and library for validation
-2. **Claude Code Plugin** - Interactive skills and hooks for Claude Code
+claudelint enforces this through <RuleCount category="total" /> rules across <RuleCount category="categories" /> categories, all focused on Claude-specific validation:
 
-Both interfaces share the same validation logic through a common core.
-
-## Validation Philosophy
-
-claudelint follows the **separation of concerns** pattern established by successful linter ecosystems (ESLint + Prettier, markdownlint + Vale).
-
-### Complementary Tools, Not Comprehensive
-
-claudelint is **not** a comprehensive linting solution. Instead, it:
-
-- **Does one thing well** - Validates Claude-specific configurations
-- **Works alongside existing tools** - Complements markdownlint, prettier, etc.
-- **Avoids duplication** - Delegates generic validation to specialized tools
-
-### Scope: Claude-Specific Validation Only
-
-**In Scope:**
-
-- Claude context constraints (file size limits, import depth)
+- Context constraints (file size limits, import depth)
 - Claude-specific syntax (`@import` statements)
-- Claude configuration schemas (skills frontmatter, settings, hooks)
-- Claude ecosystem validation (MCP servers, plugins)
+- Configuration schemas (skills frontmatter, settings, hooks)
+- Ecosystem validation (MCP servers, plugins)
 - Cross-reference integrity (files referenced actually exist)
 
-**Out of Scope (delegate to existing tools):**
-
-- Generic markdown formatting (MD041, MD031, etc.) - Use **markdownlint**
-- Code formatting and whitespace - Use **prettier**
-- Spelling and grammar - Use **Vale** or similar
-- JSON/YAML syntax errors - Handled by parsers, not validated separately
-
-### Design Principles
-
-1. **Domain Expertise** - Focus on deep Claude knowledge, not generic rules
-2. **No Conflicts** - Never overlap with existing tool responsibilities
-3. **User Control** - Users configure complementary tools independently
-4. **Performance** - Stay lightweight by avoiding redundant validation
-5. **Ecosystem Integration** - Provide clear guidance on multi-tool setups
+claudelint is available as both an [NPM package](/integrations/npm-scripts) for CI pipelines and npm scripts, and a [Claude Code plugin](/integrations/claude-code-plugin) for interactive use via slash commands. Both share the same validation engine and rule set.
 
 ## Project-Scoped by Design
 
-claudelint validates **project-level** and **plugin-level** files only. Global user configurations are explicitly out of scope.
+claudelint validates **project-level** and **plugin-level** files only. Global user configurations (`~/.claude/`) and runtime flags (`--agents`) are out of scope. See [File Discovery](/guide/file-discovery) for the complete list of files and locations.
 
-### What's Covered
+- **CI/CD integration** — claudelint runs in pipelines where only project files exist
+- **Version control** — Project files are committed to git; global configs are personal preferences
+- **Config as code** — Project config should be validated like any other committed artifact
+- **Reproducibility** — Every developer sees the same validation results
 
-claudelint covers all project-level files (`.claude/`, `.mcp.json`, `CLAUDE.md`) and plugin-level files (`agents/`, `skills/`, `plugin.json`). See [File Discovery](/guide/file-discovery) for the complete file type reference.
+## Guiding Principles
 
-**Not covered:** Global user configurations (`~/.claude/`) and runtime flags (`--agents`) are out of scope.
+1. **Domain Expertise** — Focus on deep Claude knowledge, not generic rules
+2. **No Conflicts** — Never overlap with existing tool responsibilities
+3. **User Control** — Users configure complementary tools independently
+4. **Performance** — Stay lightweight by avoiding redundant validation
+5. **Ecosystem Integration** — Provide clear guidance on multi-tool setups
 
-### Rationale
+## See Also
 
-Project-scoped linting aligns with:
-
-- **CI/CD integration** - claudelint runs in pipelines where only project files exist
-- **Version control** - Project files are committed to git; global configs are personal preferences
-- **Config as code** - Project config should be validated like any other committed artifact
-- **Reproducibility** - Every developer working on the project sees the same validation results
+- [Why claudelint?](/guide/why-claudelint) — The problem space and value proposition
+- [Architecture](/development/architecture) — Internal system design and project structure
+- [Rules Overview](/rules/overview) — Browse all <RuleCount category="total" /> rules by category
+- [File Discovery](/guide/file-discovery) — How claudelint finds files to validate
+- [Getting Started](/guide/getting-started) — Install and run your first check
