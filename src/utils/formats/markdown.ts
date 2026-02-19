@@ -3,6 +3,7 @@
  */
 
 import yaml from 'js-yaml';
+import { escapeRegExp, isImportPath } from '../patterns';
 
 export interface FrontmatterResult<T = Record<string, unknown>> {
   frontmatter: T | null;
@@ -55,54 +56,62 @@ export interface Import {
   line: number;
 }
 
+/**
+ * Extract import paths from markdown content (without line numbers).
+ *
+ * Delegates to `extractImportsWithLineNumbers()` and strips metadata.
+ * This follows the "simple wraps complex" pattern from @eslint-community/eslint-utils.
+ */
 export function extractImports(content: string): string[] {
-  // Remove code blocks (triple backticks) to avoid matching @ inside code
-  const withoutCodeBlocks = content.replace(/```[\s\S]*?```/g, '');
-
-  // Remove inline code (single backticks) to avoid matching @ inside inline code
-  const withoutInlineCode = withoutCodeBlocks.replace(/`[^`]*`/g, '');
-
-  const importRegex = /@([^\s]+)/g;
-  const imports: string[] = [];
-  let match;
-
-  while ((match = importRegex.exec(withoutInlineCode)) !== null) {
-    imports.push(match[1]);
-  }
-
-  return imports;
+  return extractImportsWithLineNumbers(content).map((imp) => imp.path);
 }
 
+/**
+ * Extract import statements with line numbers from markdown content.
+ *
+ * Skips code blocks (backtick and tilde fences) and inline code.
+ * Filters out non-import @ references (decorators, JSDoc tags, emails)
+ * using `isImportPath()` from patterns.ts.
+ */
 export function extractImportsWithLineNumbers(content: string): Import[] {
   const lines = content.split('\n');
   const imports: Import[] = [];
   let inCodeBlock = false;
+  let fenceChar = '';
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const trimmed = line.trim();
 
-    // Track code block boundaries (triple backticks)
-    if (line.trim().startsWith('```')) {
-      inCodeBlock = !inCodeBlock;
-      continue;
-    }
-
-    // Skip lines inside code blocks
-    if (inCodeBlock) {
+    // Track code block boundaries (backtick and tilde fences)
+    if (!inCodeBlock) {
+      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
+        inCodeBlock = true;
+        fenceChar = trimmed[0];
+        continue;
+      }
+    } else {
+      if (
+        (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
+        (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
+      ) {
+        inCodeBlock = false;
+        fenceChar = '';
+      }
       continue;
     }
 
     // Remove inline code (single backticks) from this line
     const withoutInlineCode = line.replace(/`[^`]*`/g, '');
 
-    const importRegex = /@([^\s]+)/g;
-    let match;
+    // Match @ references preceded by start of line or whitespace
+    for (const match of withoutInlineCode.matchAll(/(?:^|\s)@(\S+)/g)) {
+      const path = match[1];
 
-    while ((match = importRegex.exec(withoutInlineCode)) !== null) {
-      imports.push({
-        path: match[1],
-        line: i + 1,
-      });
+      // Filter out decorators (@Injected), JSDoc tags (@param), etc.
+      if (isImportPath(path)) {
+        imports.push({ path, line: i + 1 });
+      }
     }
   }
 
@@ -133,8 +142,7 @@ export function getFrontmatterFieldLine(content: string, fieldName: string): num
 
   for (let i = 0; i < lines.length; i++) {
     // Match field at start of line (accounting for whitespace)
-    // P1-3: Escape regex metacharacters in fieldName to prevent injection
-    const escaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escaped = escapeRegExp(fieldName);
     const fieldRegex = new RegExp(`^\\s*${escaped}\\s*:`);
     if (fieldRegex.test(lines[i])) {
       return i + 2; // +1 for 0-indexed, +1 for opening ---

@@ -78,6 +78,15 @@ export class AppComponent {}
           filePath: 'CLAUDE.md',
         },
 
+        // Swift @Injected decorator in code block (regression: was flagged as import)
+        {
+          content: `\`\`\`swift
+@Injected(\\.userService) private var userService
+@Environment(\\.dismiss) private var dismiss
+\`\`\``,
+          filePath: 'CLAUDE.md',
+        },
+
         // JSDoc tags in code blocks (not imports)
         {
           content: `\`\`\`javascript

@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
     "./package.json": "./package.json"
   },
   "bin": {
@@ -65,6 +69,7 @@
     "check:deadcode": "knip",
     "check:deadcode:production": "knip --production",
     "check:emojis": "node scripts/check/emoji.js",
+    "check:export-sync": "ts-node scripts/check/export-sync.ts",
     "check:file-naming": "ts-node scripts/check/file-naming.ts",
     "check:message-content": "ts-node scripts/check/message-content.ts",
     "check:message-length": "ts-node scripts/check/message-length.ts",

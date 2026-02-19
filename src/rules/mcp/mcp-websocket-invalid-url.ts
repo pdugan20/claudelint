@@ -5,6 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { containsEnvVar } from '../../utils/patterns';
 import { formatError } from '../../utils/validators/helpers';
 import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
@@ -82,8 +83,8 @@ export const rule: Rule = {
 
       const url = server.url;
 
-      // P4-3: Skip validation only for env var placeholders, not any URL containing $
-      if (/\$\{[A-Z_]+\}|\$[A-Z_]+\b/.test(url)) {
+      // Skip validation for env var placeholders (resolved at runtime)
+      if (containsEnvVar(url)) {
         continue;
       }
 

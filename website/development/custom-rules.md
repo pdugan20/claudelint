@@ -20,7 +20,7 @@ Example custom rule that validates SKILL.md files have cross-references:
 ```typescript
 // .claudelint/rules/require-skill-see-also.ts
 import type { Rule } from 'claude-code-lint';
-import { hasHeading } from 'claudelint/utils';
+import { hasHeading } from 'claude-code-lint/utils';
 
 export const rule: Rule = {
   meta: {
@@ -153,7 +153,7 @@ Detects hardcoded user-specific paths (`/Users/name/`, `/home/name/`, `C:\Users\
 
 ```typescript
 import type { Rule } from 'claude-code-lint';
-import { findLinesMatching } from 'claudelint/utils';
+import { findLinesMatching } from 'claude-code-lint/utils';
 
 const USER_PATH_PATTERN = /(?:\/Users\/|\/home\/|C:\\Users\\)[^\s/\\]+/;
 
@@ -312,7 +312,7 @@ This rule limits heading depth to keep documents flat and scannable:
 ```typescript
 import { z } from 'zod';
 import type { Rule } from 'claude-code-lint';
-import { extractHeadings } from 'claudelint/utils';
+import { extractHeadings } from 'claude-code-lint/utils';
 
 const optionsSchema = z.object({
   maxDepth: z.number().int().min(1).max(6).optional(),

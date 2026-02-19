@@ -26,8 +26,15 @@ export function formatError(error: unknown): string {
 }
 
 /**
- * Checks if a path contains variable expansion syntax
- * Variable expansion includes ${VAR} or $VAR patterns
+ * Checks if a path contains shell variable expansion syntax.
+ *
+ * Broader than `containsEnvVar()` from `utils/patterns` — matches any `$`
+ * in the string, including lowercase vars, positional params (`$1`), and
+ * default-value syntax (`${VAR:-default}`). Used for file path validation
+ * in settings where any variable expansion should skip existence checks.
+ *
+ * For env-var-specific checks (uppercase `$VAR` / `${VAR}`), use
+ * `containsEnvVar()` from `utils/patterns` instead.
  *
  * @param path - The path to check
  * @returns True if the path contains variable expansion

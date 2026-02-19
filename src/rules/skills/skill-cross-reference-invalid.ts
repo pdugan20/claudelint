@@ -64,8 +64,7 @@ export const rule: Rule = {
     // Match markdown links that reference other SKILL.md files via relative paths
     const crossRefRegex = /\[([^\]]+)\]\((\.\.\/[^)]*SKILL\.md)\)/g;
 
-    let match;
-    while ((match = crossRefRegex.exec(fileContent)) !== null) {
+    for (const match of fileContent.matchAll(crossRefRegex)) {
       const refPath = match[2];
       const absolutePath = path.resolve(path.dirname(filePath), refPath);
 

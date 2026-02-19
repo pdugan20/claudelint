@@ -5,14 +5,11 @@
  */
 
 import { Rule } from '../../types/rule';
+import { isValidSemver } from '../../utils/patterns';
 import { PluginManifestSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type PluginManifest = z.infer<typeof PluginManifestSchema>;
-
-// Regex pattern for semantic versioning validation
-const SEMVER_PATTERN =
-  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
 /**
  * Validates that plugin version follows semver format
@@ -93,7 +90,7 @@ export const rule: Rule = {
     }
 
     // Validate semver format
-    if (!SEMVER_PATTERN.test(plugin.version)) {
+    if (!isValidSemver(plugin.version)) {
       context.report({
         message: `Invalid semantic version: "${plugin.version}"`,
       });

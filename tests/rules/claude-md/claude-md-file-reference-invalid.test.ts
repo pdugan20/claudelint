@@ -67,6 +67,16 @@ describe('claude-md-file-reference-invalid', () => {
           content: '# Project\n\n```json\n{"path": "src/nonexistent.ts"}\n```\n',
           filePath: claudeFile,
         },
+        // Tilde fence bash block with existing file
+        {
+          content: '# Project\n\n~~~bash\n./scripts/build.sh\n~~~\n',
+          filePath: claudeFile,
+        },
+        // Tilde fence non-bash block should be skipped
+        {
+          content: '# Project\n\n~~~json\n{"path": "src/nonexistent.ts"}\n~~~\n',
+          filePath: claudeFile,
+        },
         // Version-like patterns should be skipped
         {
           content: '# Project\n\nVersion `0.2.0` released.\n',
@@ -91,6 +101,12 @@ describe('claude-md-file-reference-invalid', () => {
           content: '# Project\n\nSee `src/foo.ts` and `src/bar.ts`.\n',
           filePath: claudeFile,
           errors: [{ message: 'src/foo.ts' }, { message: 'src/bar.ts' }],
+        },
+        // Tilde fence bash block with missing file
+        {
+          content: '# Project\n\n~~~bash\n./scripts/deploy.sh\n~~~\n',
+          filePath: claudeFile,
+          errors: [{ message: 'File reference "./scripts/deploy.sh" does not exist' }],
         },
       ],
     });

@@ -463,3 +463,59 @@ describe('Custom Rules Integration', () => {
     loader.clear();
   });
 });
+
+describe('Custom rule using claude-code-lint/utils barrel', () => {
+  type Issue = { message: string; line?: number };
+
+  it('should work with utilities imported from the public utils barrel', async () => {
+    // Import the fixture rule that uses hasHeading, extractFrontmatter, etc.
+    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule');
+
+    expect(rule.meta.id).toBe('require-changelog-heading');
+
+    // Test: missing Changelog heading triggers report
+    const issues1: Issue[] = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: '# My Project\nSome content without changelog.',
+      options: {},
+      report: (issue: Issue) => issues1.push(issue),
+    });
+    expect(issues1).toHaveLength(1);
+    expect(issues1[0].message).toBe('Missing Changelog heading');
+
+    // Test: with Changelog heading, no report
+    const issues2: Issue[] = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: '# My Project\n## Changelog\n- Fixed bug',
+      options: {},
+      report: (issue: Issue) => issues2.push(issue),
+    });
+    expect(issues2).toHaveLength(0);
+
+    // Test: "Change Log" variant also accepted
+    const issues3: Issue[] = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: '# My Project\n## Change Log\n- v1.0.0',
+      options: {},
+      report: (issue: Issue) => issues3.push(issue),
+    });
+    expect(issues3).toHaveLength(0);
+  });
+
+  it('should detect invalid version in frontmatter via utils', async () => {
+    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule');
+
+    const issues: Issue[] = [];
+    await rule.validate({
+      filePath: '/fake/CLAUDE.md',
+      fileContent: '---\nversion: not-a-version\n---\n# Project\n## Changelog\n- Entry',
+      options: {},
+      report: (issue: Issue) => issues.push(issue),
+    });
+    expect(issues).toHaveLength(1);
+    expect(issues[0].message).toBe('Invalid version in frontmatter');
+  });
+});

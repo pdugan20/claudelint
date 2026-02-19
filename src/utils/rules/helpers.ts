@@ -6,7 +6,7 @@
  *
  * Import in custom rules:
  * ```javascript
- * const { hasHeading, matchesPattern } = require('claudelint/utils');
+ * const { hasHeading, matchesPattern } = require('claude-code-lint/utils');
  * ```
  *
  * Note: Some functions (fileExists, readFileContent, extractFrontmatter) are
@@ -14,6 +14,7 @@
  */
 
 import yaml from 'js-yaml';
+import { escapeRegExp, SEMVER_RE } from '../patterns';
 
 // Re-export commonly used functions from other modules
 export { fileExists, readFileContent } from '../filesystem/files';
@@ -33,7 +34,7 @@ export { extractFrontmatter, type FrontmatterResult } from '../formats/markdown'
  * }
  */
 export function hasHeading(content: string, text: string, level?: number): boolean {
-  const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapedText = escapeRegExp(text);
 
   if (level) {
     // Match specific heading level
@@ -133,7 +134,6 @@ export function countOccurrences(content: string, search: string | RegExp): numb
 }
 
 // fileExists and extractFrontmatter are re-exported from other modules above
-// No duplicate implementations needed
 
 /**
  * Validate semantic versioning format
@@ -147,12 +147,10 @@ export function countOccurrences(content: string, search: string | RegExp): numb
  * }
  */
 export function validateSemver(version: string): boolean {
-  const semverPattern =
-    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
-  return semverPattern.test(version);
+  return SEMVER_RE.test(version);
 }
 
-// fileExists and readFileContent re-exported from './file-system' above
+// fileExists and readFileContent re-exported from '../filesystem/files' above
 
 /**
  * Safely parse JSON content

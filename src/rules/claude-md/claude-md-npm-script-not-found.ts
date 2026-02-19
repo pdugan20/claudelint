@@ -46,8 +46,7 @@ function extractNpmRunReferences(content: string): Array<{ script: string; line:
   const npmRunRegex = /npm\s+run\s+([\w:.-]+)/g;
 
   for (let i = 0; i < lines.length; i++) {
-    let match;
-    while ((match = npmRunRegex.exec(lines[i])) !== null) {
+    for (const match of lines[i].matchAll(npmRunRegex)) {
       refs.push({ script: match[1], line: i + 1 });
     }
   }

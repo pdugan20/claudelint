@@ -363,6 +363,68 @@ Check @api/reference for details.`;
 
       expect(imports).toEqual([{ path: 'docs/guide', line: 4 }]);
     });
+
+    it('should not match Swift decorators like @Injected', () => {
+      const content = `Use the @Injected property wrapper for DI.
+Also @Observable is useful.
+@docs/guide is an actual import.`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/guide', line: 3 }]);
+    });
+
+    it('should not match JSDoc tags like @param', () => {
+      const content = `The @param tag documents parameters.
+The @returns tag documents return values.
+See @docs/api-reference for more.`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/api-reference', line: 3 }]);
+    });
+
+    it('should not match email addresses', () => {
+      const content = `Contact user@example.com for help.
+See @docs/contact for more.`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/contact', line: 2 }]);
+    });
+
+    it('should match bare file imports like @file.md', () => {
+      const content = `Include @imported.md in your project.`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'imported.md', line: 1 }]);
+    });
+
+    it('should skip tilde-fenced code blocks', () => {
+      const content = `Before fence
+~~~bash
+@docs/should-not-match
+~~~
+@docs/guide after fence`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/guide', line: 5 }]);
+    });
+
+    it('should not close backtick fence with tilde fence in imports', () => {
+      const content = `\`\`\`
+@docs/in-code-block
+~~~
+@docs/still-in-code-block
+\`\`\`
+@docs/outside`;
+
+      const imports = extractImportsWithLineNumbers(content);
+
+      expect(imports).toEqual([{ path: 'docs/outside', line: 6 }]);
+    });
   });
 
   describe('getFrontmatterFieldLine', () => {

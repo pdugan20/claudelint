@@ -10,8 +10,8 @@ import { z } from 'zod';
 
 type SettingsConfig = z.infer<typeof SettingsSchema>;
 
-// Regex pattern for environment variable name validation
-const ENV_VAR_NAME_PATTERN = /^[A-Z][A-Z0-9_]*$/;
+// Regex pattern for environment variable name validation (POSIX: starts with letter or underscore)
+const ENV_VAR_NAME_PATTERN = /^[A-Z_][A-Z0-9_]*$/;
 
 /**
  * Validates environment variable names and values

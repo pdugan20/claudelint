@@ -6,6 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { isImportPath } from '../../utils/patterns';
 
 /**
  * Import in code block validation rule implementation
@@ -79,31 +80,38 @@ export const rule: Rule = {
 
     // Track code block boundaries and search for imports inside them
     let inCodeBlock = false;
+    let fenceChar = '';
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const trimmed = line.trim();
 
-      // Detect code block boundaries (``` or ~~~)
-      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-        // Toggle code block state
-        inCodeBlock = !inCodeBlock;
+      // Track code block boundaries (backtick and tilde fences)
+      if (!inCodeBlock) {
+        if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
+          inCodeBlock = true;
+          fenceChar = trimmed[0];
+          continue;
+        }
+        continue; // Outside code block — skip
+      }
+
+      // Check for closing fence (must match opening fence character)
+      if (
+        (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
+        (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
+      ) {
+        inCodeBlock = false;
+        fenceChar = '';
         continue;
       }
 
-      // If we're inside a code block, search for imports
-      if (inCodeBlock) {
-        // Only match @-references that look like file paths (contain /)
-        // This avoids false positives on emails (user@example.com),
-        // decorators (@Component), and JSDoc tags (@param, @returns)
-        const importRegex = /@([^\s]*\/[^\s]*)/g;
-        let match;
-
-        while ((match = importRegex.exec(line)) !== null) {
-          const importPath = match[1];
-
+      // Inside a code block — search for import-like @references
+      for (const match of line.matchAll(/(?:^|\s)@(\S+)/g)) {
+        const path = match[1];
+        if (isImportPath(path)) {
           context.report({
-            message: `Import inside code block: ${importPath}`,
+            message: `Import inside code block: ${path}`,
             line: i + 1,
           });
         }

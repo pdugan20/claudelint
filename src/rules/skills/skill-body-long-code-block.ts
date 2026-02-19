@@ -104,21 +104,30 @@ export const rule: Rule = {
     const lines = body.split('\n');
 
     let inCodeBlock = false;
+    let fenceChar = '';
     let codeBlockStart = 0;
     let codeBlockLineCount = 0;
     // Track frontmatter line offset so we report correct line numbers
-    const frontmatterEnd = fileContent.indexOf('---', fileContent.indexOf('---') + 3) + 3;
-    const frontmatterLines = fileContent.substring(0, frontmatterEnd).split('\n').length;
+    const frontmatterMatch = fileContent.match(/^---\s*\n[\s\S]*?\n---\s*\n/);
+    const frontmatterLines = frontmatterMatch ? frontmatterMatch[0].split('\n').length - 1 : 0;
 
     for (let i = 0; i < lines.length; i++) {
       const trimmed = lines[i].trim();
 
-      if (trimmed.startsWith('```')) {
-        if (!inCodeBlock) {
+      if (!inCodeBlock) {
+        if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
           inCodeBlock = true;
+          fenceChar = trimmed[0];
           codeBlockStart = i;
           codeBlockLineCount = 0;
-        } else {
+          continue;
+        }
+      } else {
+        // Check for closing fence (must match opening fence character)
+        if (
+          (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
+          (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
+        ) {
           // End of code block — check length
           if (codeBlockLineCount > maxLines) {
             context.report({
@@ -127,12 +136,10 @@ export const rule: Rule = {
             });
           }
           inCodeBlock = false;
+          fenceChar = '';
           codeBlockLineCount = 0;
+          continue;
         }
-        continue;
-      }
-
-      if (inCodeBlock) {
         codeBlockLineCount++;
       }
     }

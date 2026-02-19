@@ -12,6 +12,7 @@ import {
   extractBodyContent,
   getFrontmatterFieldLine,
 } from '../../utils/formats/markdown';
+import { escapeRegExp } from '../../utils/patterns';
 
 /**
  * Extract the base tool name from an allowed-tools entry.
@@ -42,7 +43,7 @@ function isToolReferencedInBody(toolName: string, body: string): boolean {
   }
 
   // Check for the tool name itself (case-insensitive)
-  const escapedName = toolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapedName = escapeRegExp(toolName);
   const pattern = new RegExp(`\\b${escapedName}\\b`, 'i');
   return pattern.test(body);
 }

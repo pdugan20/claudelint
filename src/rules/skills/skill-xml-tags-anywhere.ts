@@ -155,8 +155,7 @@ export const rule: Rule = {
     const xmlTagRegex = /<\/?([a-zA-Z][a-zA-Z0-9_-]*)\b[^>]{0,200}\/?>/g;
 
     const reportedTags = new Set<string>();
-    let match;
-    while ((match = xmlTagRegex.exec(contentWithoutCode)) !== null) {
+    for (const match of contentWithoutCode.matchAll(xmlTagRegex)) {
       const fullMatch = match[0];
       const tagName = match[1].toLowerCase();
 

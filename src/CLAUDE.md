@@ -53,7 +53,7 @@ export const rule: Rule = {
 
 ### Shared Utilities for Rule Authors
 
-Rules that parse Markdown/YAML content **must** use shared utilities from `../../utils/formats/markdown`. Do not hand-roll parsing logic.
+Rules that parse Markdown/YAML content **must** use shared utilities. Do not hand-roll parsing logic.
 
 | Utility | Purpose | Import from |
 |---|---|---|
@@ -61,14 +61,25 @@ Rules that parse Markdown/YAML content **must** use shared utilities from `../..
 | `extractBodyContent()` | Get content after frontmatter closing `---` | `utils/formats/markdown` |
 | `stripCodeBlocks()` | Remove fenced + inline code blocks (preserves line count) | `utils/formats/markdown` |
 | `getFrontmatterFieldLine()` | Find line number for a specific frontmatter field | `utils/formats/markdown` |
+| `containsEnvVar()` | Check if string contains `${VAR}` or `$VAR` placeholder | `utils/patterns` |
+| `isValidSemver()` | Validate semver format | `utils/patterns` |
+| `escapeRegExp()` | Escape string for safe use in `new RegExp()` | `utils/patterns` |
+| `isImportPath()` | Distinguish `@import` paths from decorators/emails | `utils/patterns` |
+| `ENV_VAR_PLACEHOLDER_RE` | Regex constant for env var placeholders | `utils/patterns` |
+| `SEMVER_RE` | Regex constant for full semver validation | `utils/patterns` |
+| `HEADING_RE` | Regex constant for markdown headings | `utils/patterns` |
 
-**Anti-patterns (enforced by `npm run check:rule-patterns` and ESLint):**
+**Anti-patterns (enforced by `npm run check:rule-patterns`):**
 
 - Do not use `lastIndex` with global regex -- use `matchAll()` instead
+- Do not use `exec()` in while loops -- use `matchAll()` instead
 - Do not strip code blocks with `/```[\s\S]*?```/g` -- use `stripCodeBlocks()`
 - Do not split frontmatter with `.split('---')` -- use `extractBodyContent()`
 - Do not import `js-yaml` directly -- use `extractFrontmatter()`
-- Do not use `url.includes('$')` for env var detection -- use `/\$\{[A-Z_]+\}|\$[A-Z_]+\b/`
+- Do not use `url.includes('$')` for env var detection -- use `containsEnvVar()` from `utils/patterns`
+- Do not duplicate env var placeholder regex -- use `containsEnvVar()` or `ENV_VAR_PLACEHOLDER_RE`
+- Do not inline `escapeRegExp` -- use `escapeRegExp()` from `utils/patterns`
+- Do not duplicate semver regex -- use `isValidSemver()` or `SEMVER_RE` from `utils/patterns`
 
 Pre-parsed data is also available on `context.frontmatter`, `context.bodyContent`, and `context.contentWithoutCode` (lazy-computed).
 

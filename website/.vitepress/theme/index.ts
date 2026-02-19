@@ -15,6 +15,7 @@ import RuleHeader from './components/RuleHeader.vue';
 import SchemaRef from './components/SchemaRef.vue';
 import SkillCard from './components/SkillCard.vue';
 import FaqList from './components/FaqList.vue';
+import HelperCard from './components/HelperCard.vue';
 import './style.css';
 
 export default {
@@ -32,6 +33,7 @@ export default {
     app.component('SchemaRef', SchemaRef);
     app.component('SkillCard', SkillCard);
     app.component('FaqList', FaqList);
+    app.component('HelperCard', HelperCard);
   },
   setup() {
     const route = useRoute();

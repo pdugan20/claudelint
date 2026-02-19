@@ -10,9 +10,12 @@
  * 1. lastIndex usage (use matchAll() instead)
  * 2. Inline code block stripping regex (use stripCodeBlocks() utility)
  * 3. Naive frontmatter splitting on --- (use extractBodyContent() utility)
- * 4. new RegExp() with unescaped input (use escapeRegex or literal regex)
- * 5. Overly broad $ detection for env vars (use specific env var pattern)
- * 6. Hand-rolled frontmatter regex (use extractFrontmatter() utility)
+ * 4. Overly broad $ detection for env vars (use containsEnvVar() from patterns)
+ * 5. Hand-rolled frontmatter regex (use extractFrontmatter() utility)
+ * 6. exec() loops (use matchAll() instead)
+ * 7. Inline env var placeholder regex (use containsEnvVar() from patterns)
+ * 8. Inline escapeRegExp pattern (use escapeRegExp() from patterns)
+ * 9. Inline semver regex (use isValidSemver() or SEMVER_RE from patterns)
  */
 
 import { readFile, readdir, stat } from 'fs/promises';
@@ -27,6 +30,19 @@ interface Violation {
 }
 
 const projectRoot = join(__dirname, '../..');
+
+/**
+ * Allowlist for legitimate pattern uses.
+ * Key: relative path from project root, Value: set of pattern names allowed.
+ */
+const ALLOWLIST: Record<string, Set<string>> = {
+  // skill-body-long-code-block uses frontmatter regex to compute line offset,
+  // not to parse frontmatter data. extractFrontmatter() returns parsed data,
+  // not line count information.
+  'src/rules/skills/skill-body-long-code-block.ts': new Set([
+    'Hand-rolled frontmatter regex (use extractFrontmatter() from utils/formats/markdown)',
+  ]),
+};
 
 /** Anti-patterns to detect in rule files */
 const ANTI_PATTERNS: {
@@ -54,20 +70,57 @@ const ANTI_PATTERNS: {
       !trimmed.startsWith('*'),
   },
   {
-    name: 'Overly broad $ env var check (use /\\$\\{[A-Z_]+\\}|\\$[A-Z_]+\\b/ pattern)',
+    name: 'Overly broad $ env var check (use containsEnvVar() from utils/patterns)',
     test: (_line, trimmed) =>
       /\.includes\(\s*['"`]\$['"`]\s*\)/.test(trimmed) &&
       !trimmed.startsWith('//') &&
       !trimmed.startsWith('*'),
   },
   {
-    name: "Hand-rolled frontmatter regex (use extractFrontmatter() from utils/formats/markdown)",
+    name: 'Hand-rolled frontmatter regex (use extractFrontmatter() from utils/formats/markdown)',
     test: (_line, trimmed) =>
       /\.match\(\s*\/\^---/.test(trimmed) &&
       !trimmed.startsWith('//') &&
       !trimmed.startsWith('*') &&
       // Allow the utility itself and tests
       !/extractFrontmatter|extractBodyContent/.test(trimmed),
+  },
+  {
+    name: 'exec() in while loop (use matchAll() instead)',
+    test: (line, trimmed) =>
+      // Detect: while ((match = regex.exec(...))) pattern
+      (/while\s*\(.*\.exec\(/.test(trimmed) ||
+        // Detect: assigned in a loop context (= regex.exec on same line as while)
+        (/=\s*\w+\.exec\(/.test(trimmed) && /while/.test(trimmed))) &&
+      !line.trimStart().startsWith('//') &&
+      !line.trimStart().startsWith('*'),
+  },
+  {
+    name: 'Inline env var placeholder regex (use containsEnvVar() from utils/patterns)',
+    test: (_line, trimmed) =>
+      // Detect the raw pattern: /\$\{[A-Z_]+\}|\$[A-Z_]+\b/
+      /\\\$\\\{?\[A-Z_\]/.test(trimmed) &&
+      /\.test\(/.test(trimmed) &&
+      !trimmed.startsWith('//') &&
+      !trimmed.startsWith('*') &&
+      !/containsEnvVar|ENV_VAR_PLACEHOLDER_RE/.test(trimmed),
+  },
+  {
+    name: 'Inline escapeRegExp pattern (use escapeRegExp() from utils/patterns)',
+    test: (_line, trimmed) =>
+      /\.replace\(\s*\/\[.*\?\^\$\{\}/.test(trimmed) &&
+      /\\\\\$&/.test(trimmed) &&
+      !trimmed.startsWith('//') &&
+      !trimmed.startsWith('*'),
+  },
+  {
+    name: 'Inline semver regex (use isValidSemver() or SEMVER_RE from utils/patterns)',
+    test: (_line, trimmed) =>
+      // Detect inline semver patterns: /^(0|[1-9]\d*)\.
+      /\/\^\(0\|\[1-9\]/.test(trimmed) &&
+      !trimmed.startsWith('//') &&
+      !trimmed.startsWith('*') &&
+      !/SEMVER_RE|isValidSemver/.test(trimmed),
   },
 ];
 
@@ -80,12 +133,14 @@ function scanFile(
 ): Violation[] {
   const violations: Violation[] = [];
   const lines = content.split('\n');
+  const allowed = ALLOWLIST[relPath];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
 
     for (const pattern of ANTI_PATTERNS) {
+      if (allowed?.has(pattern.name)) continue;
       if (pattern.test(line, trimmed)) {
         violations.push({
           file: relPath,

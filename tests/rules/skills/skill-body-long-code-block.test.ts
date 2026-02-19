@@ -59,6 +59,23 @@ ${Array.from({ length: 40 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
 `,
           filePath,
         },
+        // Tilde fence within threshold
+        {
+          content: `---
+name: test-skill
+description: Test skill for validation
+---
+
+# Test Skill
+
+~~~bash
+echo "hello"
+echo "world"
+~~~
+`,
+          filePath,
+        },
+
         // Not a SKILL.md file
         {
           content: `---
@@ -108,6 +125,23 @@ ${Array.from({ length: 50 }, (_, i) => `"field${i}": "value${i}"`).join(',\n')}
 `,
           filePath,
           errors: [{ message: 'Code block too long (50/40 lines)' }],
+        },
+
+        // Tilde fence over threshold
+        {
+          content: `---
+name: test-skill
+description: Test skill for validation
+---
+
+# Test Skill
+
+~~~bash
+${Array.from({ length: 45 }, (_, i) => `echo "line ${i + 1}"`).join('\n')}
+~~~
+`,
+          filePath,
+          errors: [{ message: 'Code block too long (45/40 lines)' }],
         },
       ],
     });

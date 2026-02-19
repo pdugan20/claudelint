@@ -6,6 +6,7 @@
 
 import { Rule } from '../../types/rule';
 import { fileExists } from '../../utils/filesystem/files';
+import { containsEnvVar } from '../../utils/patterns';
 import { dirname, join, resolve } from 'path';
 
 /**
@@ -102,8 +103,8 @@ async function validateCommandScript(
     return;
   }
 
-  // Skip validation for commands with variable expansion
-  if (/\$\{[A-Z_]+\}|\$[A-Z_]+\b/.test(command)) {
+  // Skip validation for commands with env var placeholders (resolved at runtime)
+  if (containsEnvVar(command)) {
     return;
   }
 

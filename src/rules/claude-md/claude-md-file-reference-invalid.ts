@@ -55,22 +55,31 @@ function extractFileReferences(content: string): FileRef[] {
   const refs: FileRef[] = [];
   const lines = content.split('\n');
   let inCodeBlock = false;
+  let fenceChar = '';
   let codeBlockLang = '';
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
 
-    // Track code block boundaries
-    if (trimmed.startsWith('```')) {
-      if (!inCodeBlock) {
+    // Track code block boundaries (backtick and tilde fences)
+    if (!inCodeBlock) {
+      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
         inCodeBlock = true;
+        fenceChar = trimmed[0];
         codeBlockLang = trimmed.slice(3).trim().toLowerCase();
-      } else {
-        inCodeBlock = false;
-        codeBlockLang = '';
+        continue;
       }
-      continue;
+    } else {
+      if (
+        (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
+        (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
+      ) {
+        inCodeBlock = false;
+        fenceChar = '';
+        codeBlockLang = '';
+        continue;
+      }
     }
 
     // Inside code blocks: only check bash/shell blocks for file args,

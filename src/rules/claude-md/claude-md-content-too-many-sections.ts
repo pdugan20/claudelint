@@ -6,6 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { HEADING_RE } from '../../utils/patterns';
 import { z } from 'zod';
 
 /**
@@ -113,7 +114,7 @@ export const rule: Rule = {
     const maxSections = (options as ClaudeMdContentTooManySectionsOptions).maxSections ?? 40;
 
     // Count markdown headings (sections)
-    const headingRegex = /^#{1,6}\s+.+$/gm;
+    const headingRegex = new RegExp(HEADING_RE.source, 'gm');
     const headings = fileContent.match(headingRegex) || [];
     const sectionCount = headings.length;
 

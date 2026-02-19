@@ -16,3 +16,32 @@ exports[`Public API surface exports have not changed unexpectedly 1`] = `
   "resolveConfig",
 ]
 `;
+
+exports[`Utils API surface (claude-code-lint/utils) exports have not changed unexpectedly 1`] = `
+[
+  "ENV_VAR_PLACEHOLDER_RE",
+  "HEADING_RE",
+  "SEMVER_RE",
+  "containsEnvVar",
+  "countLines",
+  "countOccurrences",
+  "escapeRegExp",
+  "extractBodyContent",
+  "extractFrontmatter",
+  "extractHeadings",
+  "extractImports",
+  "extractImportsWithLineNumbers",
+  "fileExists",
+  "findLinesMatching",
+  "getFrontmatterFieldLine",
+  "hasHeading",
+  "isImportPath",
+  "isValidSemver",
+  "matchesPattern",
+  "parseJSON",
+  "parseYAML",
+  "readFileContent",
+  "stripCodeBlocks",
+  "validateSemver",
+]
+`;

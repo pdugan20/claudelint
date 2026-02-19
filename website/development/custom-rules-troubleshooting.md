@@ -60,11 +60,11 @@ export const rule: Rule = {
 
 ## Helper Functions Not Found
 
-**Problem:** `Cannot find module 'claudelint/utils'`
+**Problem:** `Cannot find module 'claude-code-lint/utils'`
 
 **Solutions:**
 
-- Use `import { ... } from 'claudelint/utils'` for utility functions
+- Use `import { ... } from 'claude-code-lint/utils'` for utility functions
 - Import types separately: `import type { RuleContext } from 'claude-code-lint'`
 - Ensure you're using the helpers within the `validate` function
 - Check that helpers are exported from your rule file
@@ -72,7 +72,7 @@ export const rule: Rule = {
 Example:
 
 ```typescript
-import { hasHeading, extractFrontmatter } from 'claudelint/utils';
+import { hasHeading, extractFrontmatter } from 'claude-code-lint/utils';
 import type { Rule } from 'claude-code-lint';
 
 export const rule: Rule = {
@@ -179,7 +179,7 @@ Example:
 
 ```typescript
 import { join, dirname } from 'path';
-import { fileExists } from 'claudelint/utils';
+import { fileExists } from 'claude-code-lint/utils';
 
 const dir = dirname(context.filePath);
 const targetFile = join(dir, '../README.md');
@@ -283,7 +283,7 @@ claudelint check-all --verbose
 1. Verify rule loads successfully:
 
 ```typescript
-import { CustomRuleLoader } from 'claudelint/utils';
+import { CustomRuleLoader } from 'claude-code-lint/utils';
 
 const loader = new CustomRuleLoader();
 const results = await loader.loadCustomRules('.');
