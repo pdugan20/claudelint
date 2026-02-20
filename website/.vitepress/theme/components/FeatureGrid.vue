@@ -42,7 +42,7 @@ defineProps<{
 }
 
 .feature-grid-item:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-border);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 

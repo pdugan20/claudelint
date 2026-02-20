@@ -62,13 +62,17 @@ export const rule: Rule = {
   meta: {
     id: 'normalize-code-fences',
     name: 'Normalize Code Fences',
-    description: 'Code fences must specify a language identifier',
+    description: 'Fenced code blocks must specify a language',
     category: 'CLAUDE.md',
     severity: 'warn',
     fixable: true,
   },
 
   validate: async (context) => {
+    if (!context.filePath.endsWith('CLAUDE.md')) {
+      return;
+    }
+
     const { fileContent, filePath } = context;
     const lines = fileContent.split('\n');
     let inCodeBlock = false;

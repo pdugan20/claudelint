@@ -1,18 +1,40 @@
 ---
-outline: 2
-description: Fix common claudelint errors including CLAUDE.md issues, skill misconfigurations, config file problems, CI failures, and cache issues.
+outline: [2, 3]
+description: Fix common claudelint errors including CLAUDE.md issues, skill misconfigurations, cache problems, CI failures, and custom rule debugging.
 ---
 
-# Troubleshooting Guide
+# Troubleshooting
 
-This guide helps you quickly resolve common issues with claudelint.
+Solutions for common errors, cache issues, CI failures, and custom rule debugging. If your issue isn't listed here, [open a GitHub issue](https://github.com/pdugan20/claudelint/issues).
+
+## Reading Error Output
+
+claudelint error messages follow this format:
+
+```text
+/path/to/file.md (1 error)
+  12  error  Referenced skill not found: authentication  skill-referenced-file-not-found
+
+1 problem (1 error, 0 warnings)
+```
+
+- **Path**: `/path/to/file.md (1 error)` — File with the issue and count
+- **Line**: `12` — Line number (0 for file-level issues)
+- **Severity**: `error` or `warning`
+- **Message**: `Referenced skill not found: authentication` — What's wrong
+- **Rule ID**: `skill-referenced-file-not-found` — Which rule triggered this
+
+Every rule ID links to a documentation page with examples and fix guidance. Browse the [Rules Reference](/rules/overview) or use `claudelint check-all --explain` for inline details.
 
 ## Common Errors by Category
 
+Errors grouped by validator. Each entry links to the full rule documentation.
+
 ### CLAUDE.md Issues
 
-#### File exceeds size limit
+File size, `@import` resolution, and circular dependency errors.
 
+::: details File exceeds size limit
 **Cause:** Your CLAUDE.md file exceeds the recommended 40KB limit (configurable). Files this large should be split into smaller, focused files using `@import`.
 
 **Solutions:**
@@ -31,9 +53,9 @@ This guide helps you quickly resolve common issues with claudelint.
 4. Check for accidentally included binary data
 
 **See:** [claude-md-size](/rules/claude-md/claude-md-size)
+:::
 
-#### Imported file not found
-
+::: details Imported file not found
 **Cause:** `@import` statement references a file that doesn't exist.
 
 **Example:**
@@ -50,9 +72,9 @@ This guide helps you quickly resolve common issues with claudelint.
 4. Ensure proper file extension (.md, .txt, etc.)
 
 **See:** [claude-md-import-missing](/rules/claude-md/claude-md-import-missing)
+:::
 
-#### Circular import detected
-
+::: details Circular import detected
 **Cause:** File A imports File B, which imports File A (directly or indirectly).
 
 **Example:**
@@ -74,11 +96,13 @@ This guide helps you quickly resolve common issues with claudelint.
 3. Remove redundant imports
 
 **See:** [claude-md-import-circular](/rules/claude-md/claude-md-import-circular)
+:::
 
 ### Skills Issues
 
-#### Missing version field
+Frontmatter validation, naming conventions, and shell script checks.
 
+::: details Missing version field
 **Cause:** SKILL.md missing required `version` field in frontmatter.
 
 **Example:**
@@ -90,9 +114,7 @@ description: Does something
 ---
 ```
 
-**Solution:**
-
-Add version to frontmatter:
+**Solution:** Add version to frontmatter:
 
 ```yaml
 ---
@@ -105,9 +127,9 @@ version: 1.0.0
 **Auto-fix:** Run `claudelint check-all --fix` to automatically add `version: "1.0.0"`.
 
 **See:** [skill-missing-version](/rules/skills/skill-missing-version)
+:::
 
-#### Name-directory mismatch
-
+::: details Name-directory mismatch
 **Cause:** Skill's `name` field doesn't match its directory.
 
 **Example:**
@@ -125,14 +147,12 @@ name: authentication  <!-- Doesn't match directory 'user-auth' -->
 2. Update skill name in frontmatter to match directory
 
 **See:** [skill-name-directory-mismatch](/rules/skills/skill-name-directory-mismatch)
+:::
 
-#### Missing shebang
-
+::: details Missing shebang
 **Cause:** Executable `.sh` file doesn't start with `#!/bin/bash` or similar.
 
-**Solution:**
-
-Add shebang to first line of script:
+**Solution:** Add shebang to first line of script:
 
 ```bash
 #!/usr/bin/env bash
@@ -143,11 +163,13 @@ Add shebang to first line of script:
 **Auto-fix:** Run `claudelint check-all --fix` to automatically add shebang.
 
 **See:** [skill-missing-shebang](/rules/skills/skill-missing-shebang)
+:::
 
 ### Settings Issues
 
-#### Referenced path not found
+Path references and configuration structure.
 
+::: details Referenced path not found
 **Cause:** Settings file references a path that doesn't exist.
 
 **Example:**
@@ -165,11 +187,13 @@ Add shebang to first line of script:
 3. Remove the reference if no longer needed
 
 **See:** [settings-file-path-not-found](/rules/settings/settings-file-path-not-found)
+:::
 
 ### Hooks Issues
 
-#### Hook script not found
+Script references and event configuration.
 
+::: details Hook script not found
 **Cause:** hooks.json references a script that doesn't exist.
 
 **Example:**
@@ -196,335 +220,9 @@ Add shebang to first line of script:
 3. Verify path is relative to `.claude/hooks.json`
 
 **See:** [hooks-missing-script](/rules/hooks/hooks-missing-script)
-
-## Frequently Asked Questions
-
-### Configuration
-
-#### Disable a rule
-
-Set the rule to `"off"` in `.claudelintrc.json`:
-
-```json
-{
-  "rules": {
-    "skill-missing-changelog": "off"
-  }
-}
-```
-
-See [Configuration Guide](./configuration.md) for details.
-
-#### Disable for one file
-
-Use inline disable comments:
-
-```markdown
-<!-- claudelint-disable-next-line import-missing -->
-
-@import optional-file.md
-```
-
-See [Inline Disables](./inline-disables.md) for details.
-
-#### Config file location
-
-claudelint searches for config files starting from the current directory and moving up:
-
-Supported files:
-
-- `.claudelintrc.json`
-- `package.json` (with `claudelint` key)
-
-Place it in your project root for best results.
-
-#### View resolved config
-
-Run:
-
-```bash
-claudelint print-config
-```
-
-This shows the resolved configuration with all defaults.
-
-### Validation
-
-#### Errors in node_modules
-
-Add a `.claudelintignore` file:
-
-```text
-node_modules/
-dist/
-coverage/
-```
-
-See [Configuration - Ignoring Files](./configuration.md#ignoring-files) for details.
-
-#### Run a single validator
-
-Yes, use specific commands:
-
-```bash
-claudelint validate-claude-md
-claudelint validate-skills
-claudelint validate-settings
-```
-
-See [CLI Reference](./cli-reference.md) for all commands.
-
-#### Detailed error output
-
-Use the `--verbose` flag:
-
-```bash
-claudelint check-all --verbose
-```
-
-This shows timing information and additional context.
-
-### Auto-Fix
-
-#### Fixable rules
-
-Run:
-
-```bash
-claudelint list-rules --fixable
-```
-
-This shows all rules that support auto-fix.
-
-#### Preview fixes
-
-Use `--fix-dry-run`:
-
-```bash
-claudelint check-all --fix-dry-run
-```
-
-This shows what would be fixed without making changes.
-
-#### Fix only errors
-
-```bash
-claudelint check-all --fix --fix-type errors
-```
-
-See [Auto-fix Guide](./auto-fix.md) for details.
-
-### Performance
-
-#### Speed up validation
-
-1. **Use caching** (enabled by default):
-
-   ```bash
-   claudelint check-all  # Uses cache
-   ```
-
-2. **Add ignore patterns** in `.claudelintignore`:
-
-   ```text
-   node_modules/
-   dist/
-   *.log
-   ```
-
-3. **Check timing** to find slow validators:
-
-   ```bash
-   claudelint check-all --verbose
-   ```
-
-See [CLI Reference](./cli-reference.md#cache-management) for cache details.
-
-#### Clear the cache
-
-```bash
-claudelint cache-clear
-```
-
-Run this after upgrading claudelint or changing config.
-
-### Installation
-
-#### Command not found
-
-**Global install:**
-
-<CodeTabs :tabs="[
-  { label: 'npm', code: 'npm install -g claude-code-lint' },
-  { label: 'yarn', code: 'yarn global add claude-code-lint' },
-  { label: 'pnpm', code: 'pnpm add -g claude-code-lint' },
-]" />
-
-Then verify: `claudelint --version`
-
-**Project install:**
-
-<CodeTabs :tabs="[
-  { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
-  { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
-  { label: 'pnpm', code: 'pnpm add -D claude-code-lint' },
-]" />
-
-Then verify: `npx claude-code-lint --version`
-
-**Or use full path:**
-
-```bash
-./node_modules/.bin/claudelint --version
-```
-
-#### Permission denied
-
-**macOS/Linux:**
-
-```bash
-sudo npm install -g claude-code-lint
-```
-
-**Or configure npm to install without sudo:**
-
-```bash
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH
-npm install -g claude-code-lint
-```
-
-## Error Message Guide
-
-### Understanding error output
-
-claudelint error messages follow this format:
-
-```text
-/path/to/file.md (1 error)
-  12  error  Referenced skill not found: authentication  skill-referenced-file-not-found
-
-1 problem (1 error, 0 warnings)
-```
-
-Breaking it down:
-
-- **Path**: `/path/to/file.md (1 error)` - File with the issue and count
-- **Line**: `12` - Line number (0 for file-level issues)
-- **Severity**: `error` or `warning`
-- **Message**: `Referenced skill not found: authentication` - What's wrong
-- **Rule ID**: `skill-referenced-file-not-found` - Which rule triggered this
-
-### Looking up rule details
-
-To see full documentation for a rule:
-
-1. Note the rule ID from the error (e.g., `skill-referenced-file-not-found`)
-2. Browse the [Rules Reference](/rules/overview) in the sidebar
-3. Or use the CLI:
-
-```bash
-claudelint check-all --explain
-```
-
-## Configuration Issues
-
-### Config file not found
-
-**Error:** `No configuration found`
-
-**Solutions:**
-
-1. Create `.claudelintrc.json` in project root:
-
-   ```bash
-   claudelint init
-   ```
-
-2. Or add config to `package.json`:
-
-   ```json
-   {
-     "claudelint": {
-       "rules": {
-         "skill-missing-version": "error"
-       }
-     }
-   }
-   ```
-
-3. Or specify config path:
-
-   ```bash
-   claudelint check-all --config /path/to/config.json
-   ```
-
-### Rules not being applied
-
-**Error:** Rules show in `list-rules` but don't trigger
-
-**Solutions:**
-
-1. **Verify config syntax:**
-
-   ```bash
-   cat .claudelintrc.json | jq
-   ```
-
-2. **Check rule names match exactly:**
-
-   ```json
-   {
-     "rules": {
-       "skill-missing-version": "error" // Correct
-       // "skillMissingVersion": "error"  // Wrong (not kebab-case)
-     }
-   }
-   ```
-
-3. **View resolved config:**
-
-   ```bash
-   claudelint print-config
-   ```
-
-### JSON parsing error
-
-**Error:** `Unexpected token } in JSON`
-
-**Solution:**
-
-Validate your JSON syntax:
-
-```bash
-cat .claudelintrc.json | jq
-```
-
-Common mistakes:
-
-- Trailing commas
-- Missing quotes around keys
-- Incorrect string escaping
+:::
 
 ## CI/CD Issues
-
-### Unexpected exit codes
-
-**Exit codes:**
-
-- **0** - Success (no violations)
-- **1** - Linting issues found (errors or warnings)
-- **2** - Fatal error (crash, invalid config)
-
-**Usage in CI:**
-
-```bash
-# Most CI systems check for non-zero exit
-claudelint check-all || exit 1
-```
-
-See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 
 ### Hook not running at session start
 
@@ -541,6 +239,14 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
    claudelint check-all --format json
    ```
 
+### Environment variables
+
+**Update notification in CI:** Set `CI=true` or `NO_UPDATE_NOTIFIER=1` to suppress version check notifications.
+
+**No color in CI:** Force color with `FORCE_COLOR=1 claudelint check-all` or `claudelint check-all --color`.
+
+**Unwanted color in logs:** Disable with `NO_COLOR=1 claudelint check-all` or `claudelint check-all --no-color`.
+
 ## Cache Issues
 
 ### Stale results after upgrade
@@ -555,77 +261,29 @@ See [CLI Reference - Exit Codes](./cli-reference.md#exit-codes) for details.
 claudelint cache-clear
 ```
 
-This removes the entire `.claudelint-cache/` directory. The next run rebuilds the cache from scratch.
-
 ### Cache not invalidating
 
 **Symptom:** You edited a file but claudelint still reports old results.
 
-**Cause:** Cache invalidation is mtime-based. If a file's modification time didn't change (e.g., `git checkout` restoring a file to its previous state, or a tool that preserves timestamps), the cache considers it unchanged.
+**Cause:** Cache invalidation is mtime-based. If a file's modification time didn't change (e.g., `git checkout` restoring a file to its previous state), the cache considers it unchanged.
 
 **Solutions:**
 
-1. Clear the cache:
-
-   ```bash
-   claudelint cache-clear
-   ```
-
-2. Or bypass the cache for a single run:
-
-   ```bash
-   claudelint check-all --no-cache
-   ```
-
-3. Touch the file to update its mtime:
-
-   ```bash
-   touch CLAUDE.md
-   ```
-
-### Large cache directory
-
-**Symptom:** `.claudelint-cache/` accumulates many files over time.
-
-**Cause:** Each unique combination of validator + config + version creates a separate cache entry. Old entries from previous versions are not automatically pruned.
-
-**Solution:**
-
-```bash
-claudelint cache-clear
-```
-
-Add `.claudelint-cache/` to your `.gitignore` to keep it out of version control:
-
-```text
-.claudelint-cache/
-```
+1. Clear the cache: `claudelint cache-clear`
+2. Bypass for one run: `claudelint check-all --no-cache`
+3. Touch the file: `touch CLAUDE.md`
 
 ### Auto-fix not applying
 
 **Symptom:** Running `--fix` reports issues but doesn't modify files.
 
-**Cause:** Caching is automatically disabled during `--fix` and `--fix-dry-run` to ensure fixes are always applied. If fixes still aren't applying, the issue is likely that the rule doesn't support auto-fix.
+**Cause:** The rule likely doesn't support auto-fix. Only rules with `fixable: true` apply changes.
 
 **Solution:**
-
-Check which rules are fixable:
 
 ```bash
 claudelint list-rules --fixable
 ```
-
-Only rules with `fixable: true` will apply changes with `--fix`.
-
-### Cache CLI reference
-
-| Command / Flag | Description |
-|----------------|-------------|
-| `claudelint cache-clear` | Remove all cached results |
-| `--no-cache` | Disable caching for this run |
-| `--cache-location <path>` | Use a custom cache directory (default: `.claudelint-cache`) |
-
-See [CLI Reference - Cache Management](./cli-reference.md#cache-management) for full details.
 
 ## Custom Rules Issues
 
@@ -680,58 +338,6 @@ See [Custom Rules Guide](/development/custom-rules) for details.
    };
    ```
 
-## Environment Variables
-
-### Update notification in CI
-
-**Symptom:** You see "Update available: X.X.X -> Y.Y.Y" in CI output.
-
-**Cause:** claudelint checks for newer versions once every 24 hours.
-
-**Solution:**
-
-Set one of these environment variables to suppress notifications:
-
-```bash
-# In your CI config
-CI=true claudelint check-all
-
-# Or explicitly
-NO_UPDATE_NOTIFIER=1 claudelint check-all
-```
-
-### No color in CI
-
-**Symptom:** Output is plain text without color formatting.
-
-**Cause:** Color is auto-detected based on TTY status. CI environments typically don't have a TTY.
-
-**Solution:**
-
-Force color output:
-
-```bash
-FORCE_COLOR=1 claudelint check-all
-
-# Or use the flag
-claudelint check-all --color
-```
-
-### Unwanted color in logs
-
-**Symptom:** ANSI escape codes appearing in redirected output or log files.
-
-**Solution:**
-
-Disable color output:
-
-```bash
-NO_COLOR=1 claudelint check-all
-
-# Or use the flag
-claudelint check-all --no-color
-```
-
 ## stdin and Editor Integration
 
 ### stdin not reading input
@@ -741,8 +347,6 @@ claudelint check-all --no-color
 **Cause:** stdin mode expects piped input. Running it interactively (without piped data) will timeout after 5 seconds.
 
 **Solution:**
-
-Pipe content into stdin:
 
 ```bash
 cat CLAUDE.md | claudelint check-all --stdin --stdin-filename CLAUDE.md
@@ -797,61 +401,6 @@ These flags require a git repository. If you're not in a git repo, you'll see a 
 If you can't find a solution here:
 
 1. **Search existing issues:** [GitHub Issues](https://github.com/pdugan20/claudelint/issues)
-2. **Check documentation:**
-   - [Getting Started](./getting-started.md)
-   - [Configuration](./configuration.md)
-   - [CLI Reference](./cli-reference.md)
-3. **Enable verbose output:**
-
-   ```bash
-   claudelint check-all --verbose
-   ```
-
-4. **Open a new issue** with:
-   - Command you ran
-   - Error message
-   - OS and Node version (`node --version`)
-   - Output of `claudelint check-all --verbose`
-
-## Quick Reference
-
-### Common commands
-
-```bash
-# Initialize config
-claudelint init
-
-# Run all validation
-claudelint check-all
-
-# List all rules
-claudelint list-rules
-
-# Auto-fix issues
-claudelint check-all --fix
-
-# Check config
-claudelint print-config
-
-# Clear cache
-claudelint cache-clear
-
-# Get help
-claudelint --help
-```
-
-### Common config patterns
-
-```json
-{
-  "rules": {
-    "skill-missing-version": "off",
-    "claude-md-size": "warn",
-    "skill-dangerous-command": "error"
-  },
-  "extends": [],
-  "ignorePatterns": ["node_modules/", "dist/"]
-}
-```
-
-See [Configuration Guide](./configuration.md) for complete reference.
+2. **Check documentation:** [Getting Started](./getting-started.md), [Configuration](./configuration.md), [CLI Reference](./cli-reference.md)
+3. **Enable verbose output:** `claudelint check-all --verbose`
+4. **Open a new issue** with: command you ran, error message, OS and Node version, verbose output

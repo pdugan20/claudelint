@@ -121,7 +121,7 @@ const effectiveValidators: ValidatorEntry[] =
 }
 
 .vd-box-validator:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-border);
 }
 
 .vd-link {

@@ -33,7 +33,7 @@ defineProps<{
 }
 
 .helper-card:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 

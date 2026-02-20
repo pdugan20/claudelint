@@ -16,7 +16,6 @@ claudelint allows you to define custom validation rules to extend the built-in r
 Example custom rule that validates SKILL.md files have cross-references:
 
 ```typescript
-// .claudelint/rules/require-skill-see-also.ts
 import type { Rule } from 'claude-code-lint';
 import { hasHeading } from 'claude-code-lint/utils';
 
