@@ -214,3 +214,7 @@ This matches ESLint, Prettier, and all modern linting tools.
 Custom rules are loaded from `.claudelint/rules/` and integrate seamlessly with built-in rules. The [`CustomRuleLoader`](https://github.com/pdugan20/claudelint/blob/main/src/utils/rules/loader.ts) discovers, validates, and registers custom rules alongside built-in ones.
 
 See the [Custom Rules Guide](/development/custom-rules) for complete documentation.
+
+::: info "Rules" vs `.claude/rules/`
+claudelint uses the term "rule" to mean a validation check (e.g., `skill-missing-version`). This is different from Claude Code's [`.claude/rules/`](https://code.claude.com/docs/en/memory#modular-rules-with-claude%2Frules%2F) directory, which stores modular behavioral instructions that Claude loads at session start (e.g., code style guidelines, testing conventions). claudelint *validates* those files but doesn't use them as rules.
+:::

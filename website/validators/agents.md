@@ -40,6 +40,10 @@ claudelint validate-agents
 claudelint validate-agents --verbose
 ```
 
+::: info Agent files vs AGENTS.md
+Claude Code agent files (`.claude/agents/<name>.md`) are single markdown files with YAML frontmatter that define sub-agents. Not to be confused with OpenAI's [AGENTS.md](https://developers.openai.com/codex/guides/agents-md/), which provides project-wide instructions for Codex agents (similar to Claude Code's `CLAUDE.md`).
+:::
+
 ## See Also
 
 - [Claude Code Sub-agents](https://code.claude.com/docs/en/sub-agents) - Official sub-agents documentation
