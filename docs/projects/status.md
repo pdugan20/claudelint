@@ -15,7 +15,9 @@ Published as `claude-code-lint@0.2.0-beta.3`. Plugin marketplace complete. DX ov
 
 ## Active Projects
 
-No active projects. Remaining work is tracked in [roadmap.md](./roadmap.md).
+| Project | Status | Tracker |
+|---------|--------|---------|
+| claude-assisted-setup | In Progress | [tracker](./claude-assisted-setup/tracker.md) |
 
 ---
 

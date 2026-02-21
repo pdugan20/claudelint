@@ -92,6 +92,30 @@ describe('InitWizard', () => {
       const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
       expect(config.rules).toBeUndefined();
     });
+
+    it('uses --preset to select strict', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, preset: 'strict' });
+
+      const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
+      expect(config.extends).toBe('claudelint:strict');
+    });
+
+    it('uses --preset to select all', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, preset: 'all' });
+
+      const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
+      expect(config.extends).toBe('claudelint:all');
+    });
+
+    it('falls back to recommended for invalid --preset', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, preset: 'invalid' });
+
+      const config = JSON.parse(readFileSync(join(testDir, '.claudelintrc.json'), 'utf-8'));
+      expect(config.extends).toBe('claudelint:recommended');
+    });
   });
 
   describe('--force flag (P5-3)', () => {
@@ -118,6 +142,64 @@ describe('InitWizard', () => {
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
       expect(config.rules).toBeUndefined();
       expect(config.extends).toBe('claudelint:recommended');
+    });
+  });
+
+  describe('--hooks flag', () => {
+    it('creates .claude/hooks/hooks.json with --yes --hooks', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      const hooksPath = join(testDir, '.claude', 'hooks', 'hooks.json');
+      expect(existsSync(hooksPath)).toBe(true);
+
+      const hooks = JSON.parse(readFileSync(hooksPath, 'utf-8'));
+      expect(hooks.hooks.SessionStart).toHaveLength(1);
+      expect(hooks.hooks.SessionStart[0].hooks).toHaveLength(1);
+      expect(hooks.hooks.SessionStart[0].hooks[0].type).toBe('command');
+      expect(hooks.hooks.SessionStart[0].hooks[0].command).toContain('claudelint check-all');
+    });
+
+    it('does NOT create hooks file with --yes alone', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true });
+
+      const hooksPath = join(testDir, '.claude', 'hooks', 'hooks.json');
+      expect(existsSync(hooksPath)).toBe(false);
+    });
+
+    it('skips existing hooks file without --force', async () => {
+      const hooksDir = join(testDir, '.claude', 'hooks');
+      mkdirSync(hooksDir, { recursive: true });
+      writeFileSync(join(hooksDir, 'hooks.json'), '{"hooks": {"SessionStart": []}}');
+
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      // Should not overwrite — original content preserved
+      const hooks = JSON.parse(readFileSync(join(hooksDir, 'hooks.json'), 'utf-8'));
+      expect(hooks.hooks.SessionStart).toHaveLength(0);
+    });
+
+    it('overwrites existing hooks file with --force', async () => {
+      const hooksDir = join(testDir, '.claude', 'hooks');
+      mkdirSync(hooksDir, { recursive: true });
+      writeFileSync(join(hooksDir, 'hooks.json'), '{"hooks": {"SessionStart": []}}');
+
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true, force: true });
+
+      // Should overwrite with new content
+      const hooks = JSON.parse(readFileSync(join(hooksDir, 'hooks.json'), 'utf-8'));
+      expect(hooks.hooks.SessionStart).toHaveLength(1);
+      expect(hooks.hooks.SessionStart[0].hooks[0].type).toBe('command');
+    });
+
+    it('creates .claude/hooks/ directories when they do not exist', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      expect(existsSync(join(testDir, '.claude', 'hooks'))).toBe(true);
     });
   });
 

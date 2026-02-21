@@ -143,7 +143,13 @@ See the [CLI Reference](/guide/cli-reference) for all available flags when using
 
 ## Automatic Validation
 
-You can set up a SessionStart hook so Claude is automatically aware of validation issues at the start of every session. See [Claude Code Hooks](/integrations/hooks) for setup instructions.
+Set up a SessionStart hook so Claude is automatically aware of validation issues at the start of every session:
+
+```bash
+claudelint init --hooks
+```
+
+This creates `.claude/hooks/hooks.json` with a hook that runs `claudelint check-all` when a Claude Code session begins. See [Claude Code Hooks](/integrations/hooks) for manual setup and alternative hook types.
 
 ## Configuration
 

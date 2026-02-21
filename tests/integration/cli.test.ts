@@ -429,6 +429,25 @@ describe('CLI Integration Tests', () => {
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
       expect(config).toHaveProperty('extends', 'claudelint:recommended');
     });
+
+    it('should create hooks file with --yes --hooks', () => {
+      const { output } = runCLI(claudelintBin, ['init', '--yes', '--hooks'], testProjectDir);
+
+      expect(output).toContain('.claude/hooks/hooks.json');
+
+      const hooksPath = join(testProjectDir, '.claude', 'hooks', 'hooks.json');
+      expect(existsSync(hooksPath)).toBe(true);
+
+      const hooks = JSON.parse(readFileSync(hooksPath, 'utf-8'));
+      expect(hooks.hooks.SessionStart).toBeDefined();
+    });
+
+    it('should NOT create hooks file with --yes alone', () => {
+      runCLI(claudelintBin, ['init', '--yes'], testProjectDir);
+
+      const hooksPath = join(testProjectDir, '.claude', 'hooks', 'hooks.json');
+      expect(existsSync(hooksPath)).toBe(false);
+    });
   });
 
   describe('print-config command', () => {

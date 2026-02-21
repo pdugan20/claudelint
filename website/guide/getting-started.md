@@ -6,7 +6,18 @@ description: Install claudelint and run your first validation of Claude Code pro
 
 claudelint is a comprehensive linter for Claude Code projects. It validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
 
-## Installation
+## Set Up with Claude
+
+The fastest way to get started. Copy this prompt and paste it into a Claude Code session:
+
+```text
+Set up claudelint for this project to validate my Claude Code files.
+Follow the setup guide at https://claudelint.com/setup-guide.md
+```
+
+Claude will read the guide, create a task list, and walk you through each step — install location, rule preset, hooks, validation, and plugin installation.
+
+## Manual Installation
 
 <CodeTabs :tabs="[
   { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
@@ -68,27 +79,4 @@ See the [Rules Overview](/rules/overview) for all available rules.
 
 ## Use with Claude Code
 
-claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions.
-
-**Quick setup:**
-
-1. Install the npm package (if you haven't already):
-
-   ```bash
-   npm install -g claude-code-lint
-   ```
-
-2. Inside Claude Code, add the marketplace and install the plugin:
-
-   ```text
-   /plugin marketplace add pdugan20/claudelint
-   /plugin install claudelint@pdugan20-plugins
-   ```
-
-Key skills include:
-
-- `/validate-all` — Run all validators at once
-- `/optimize-cc-md` — Interactively optimize your CLAUDE.md
-- `/format-cc` — Auto-format Claude Code files
-
-See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for team setup, plugin scopes, and troubleshooting.
+claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions. See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for installation, team setup, and available skills.

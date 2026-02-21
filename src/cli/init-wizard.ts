@@ -5,7 +5,7 @@
  */
 
 import inquirer from 'inquirer';
-import { existsSync, writeFileSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 import { ClaudeLintConfig } from '../utils/config/types';
@@ -24,6 +24,7 @@ interface ProjectInfo {
   hasSkills: boolean;
   hasSettings: boolean;
   hasHooks: boolean;
+  hasProjectHooks: boolean;
   hasAgents: boolean;
   hasOutputStyles: boolean;
   hasCommands: boolean;
@@ -46,6 +47,7 @@ interface WizardAnswers {
   customIgnorePattern?: string;
   outputFormat?: 'stylish' | 'json' | 'compact' | 'sarif';
   addNpmScripts?: boolean;
+  setupHooks?: boolean;
 }
 
 export class InitWizard {
@@ -59,7 +61,9 @@ export class InitWizard {
   /**
    * Run the init wizard
    */
-  async run(options: { yes?: boolean; force?: boolean } = {}): Promise<void> {
+  async run(
+    options: { yes?: boolean; force?: boolean; hooks?: boolean; preset?: string } = {}
+  ): Promise<void> {
     logger.section('Welcome to claudelint configuration wizard!');
 
     this.force = options.force ?? false;
@@ -74,22 +78,36 @@ export class InitWizard {
 
     // Use defaults if --yes flag
     if (options.yes) {
-      logger.info('Using recommended preset (--yes flag)...');
-      this.createPresetConfig('recommended', projectInfo);
+      const validPresets = ['recommended', 'strict', 'all'] as const;
+      const preset = validPresets.includes(options.preset as (typeof validPresets)[number])
+        ? (options.preset as 'recommended' | 'strict' | 'all')
+        : 'recommended';
+      logger.info(`Using ${preset} preset (--yes flag)...`);
+      this.createPresetConfig(preset, projectInfo);
+      if (options.hooks) {
+        this.writeHooksFile();
+      }
       logger.success('Configuration created successfully!');
-      this.displayNextSteps(projectInfo);
+      this.displayNextSteps(projectInfo, !!options.hooks);
       return;
     }
 
     // Interactive prompts
-    const answers = await this.promptConfiguration(projectInfo);
+    const answers = await this.promptConfiguration(projectInfo, !!options.hooks);
 
     // Generate files
     this.generateConfig(answers, projectInfo);
 
+    // Create hooks if requested via prompt or --hooks flag
+    if (answers.setupHooks || options.hooks) {
+      this.writeHooksFile();
+    }
+
+    const hooksCreated = !!(answers.setupHooks || options.hooks);
+
     logger.newline();
     logger.success('Configuration created successfully!');
-    this.displayNextSteps(projectInfo);
+    this.displayNextSteps(projectInfo, hooksCreated);
   }
 
   /**
@@ -101,6 +119,7 @@ export class InitWizard {
       hasSkills: existsSync(join(this.cwd, INIT_DETECTION_PATHS.skills)),
       hasSettings: existsSync(join(this.cwd, INIT_DETECTION_PATHS.settings)),
       hasHooks: existsSync(join(this.cwd, INIT_DETECTION_PATHS.hooks)),
+      hasProjectHooks: existsSync(join(this.cwd, INIT_DETECTION_PATHS.projectHooks)),
       hasAgents: existsSync(join(this.cwd, INIT_DETECTION_PATHS.agents)),
       hasOutputStyles: existsSync(join(this.cwd, INIT_DETECTION_PATHS.outputStyles)),
       hasCommands: existsSync(join(this.cwd, INIT_DETECTION_PATHS.commands)),
@@ -123,6 +142,9 @@ export class InitWizard {
     logger.detail(`${info.hasSkills ? chalk.green('[YES]') : chalk.gray('[NO]')} Skills`);
     logger.detail(`${info.hasSettings ? chalk.green('[YES]') : chalk.gray('[NO]')} Settings`);
     logger.detail(`${info.hasHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Hooks`);
+    logger.detail(
+      `${info.hasProjectHooks ? chalk.green('[YES]') : chalk.gray('[NO]')} Project hooks (.claude/hooks/)`
+    );
     logger.detail(`${info.hasAgents ? chalk.green('[YES]') : chalk.gray('[NO]')} Agents`);
     logger.detail(
       `${info.hasOutputStyles ? chalk.green('[YES]') : chalk.gray('[NO]')} Output styles`
@@ -169,7 +191,7 @@ export class InitWizard {
   /**
    * Prompt user for configuration choices
    */
-  private async promptConfiguration(info: ProjectInfo): Promise<WizardAnswers> {
+  private async promptConfiguration(info: ProjectInfo, hooksFlag: boolean): Promise<WizardAnswers> {
     const answers = await inquirer.prompt([
       {
         type: 'list',
@@ -229,6 +251,13 @@ export class InitWizard {
         message: 'Add npm scripts to package.json?',
         default: info.hasPackageJson,
         when: (_answers: Partial<WizardAnswers>) => info.hasPackageJson,
+      },
+      {
+        type: 'confirm',
+        name: 'setupHooks',
+        message: 'Set up automatic validation hook for Claude Code?',
+        default: info.hasClaudeDir || info.hasCLAUDEmd,
+        when: (_answers: Partial<WizardAnswers>) => !hooksFlag && !info.hasProjectHooks,
       },
     ]);
 
@@ -404,9 +433,44 @@ export class InitWizard {
   }
 
   /**
+   * Write .claude/hooks/hooks.json with SessionStart validation hook
+   */
+  private writeHooksFile(): void {
+    const hooksPath = join(this.cwd, '.claude', 'hooks', 'hooks.json');
+
+    if (existsSync(hooksPath) && !this.force) {
+      logger.warn(
+        '.claude/hooks/hooks.json already exists, skipping... (use --force to overwrite)'
+      );
+      return;
+    }
+
+    const hooksConfig = {
+      hooks: {
+        SessionStart: [
+          {
+            hooks: [
+              {
+                type: 'command' as const,
+                command: 'npx claudelint check-all --format json',
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    mkdirSync(join(this.cwd, '.claude', 'hooks'), { recursive: true });
+
+    const verb = existsSync(hooksPath) ? 'Overwrote' : 'Created';
+    writeFileSync(hooksPath, JSON.stringify(hooksConfig, null, 2) + '\n', 'utf-8');
+    logger.success(`${verb} .claude/hooks/hooks.json`);
+  }
+
+  /**
    * Display next steps
    */
-  private displayNextSteps(info: ProjectInfo): void {
+  private displayNextSteps(info: ProjectInfo, hooksCreated: boolean): void {
     const ruleCount = RuleRegistry.getAll().length;
 
     logger.log(chalk.bold('Next steps:'));
@@ -421,6 +485,18 @@ export class InitWizard {
 
     logger.detail('3. See docs: https://claudelint.com');
     logger.newline();
+
+    if (hooksCreated) {
+      logger.log(chalk.bold('Validation hook:'));
+      logger.newline();
+      logger.detail('SessionStart hook created at .claude/hooks/hooks.json');
+      logger.detail('claudelint will run automatically when Claude Code starts a session.');
+      logger.newline();
+    } else if (!info.hasProjectHooks) {
+      logger.info('Tip: Run "claudelint init --hooks" to add a SessionStart validation hook');
+      logger.newline();
+    }
+
     logger.log(chalk.bold('To enable interactive skills in Claude Code:'));
     logger.newline();
     logger.detail('Load the plugin with:');

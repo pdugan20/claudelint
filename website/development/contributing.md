@@ -17,9 +17,10 @@ Please read the [Code of Conduct](https://github.com/pdugan20/claudelint/blob/ma
 
 ### Prerequisites
 
-- Node.js 18.0.0 or higher
+- Node.js 20.0.0 or higher
 - npm or yarn
 - Git
+- [Claude Code](https://code.claude.com/) — required for testing the [Claude Code plugin](/integrations/claude-code-plugin)
 
 ### Dev environment setup
 
@@ -414,12 +415,6 @@ npm run docs:preview
 - Components: edit Vue files in `website/.vitepress/theme/components/`
 - Navigation: edit sidebar config in `website/.vitepress/config.mts`
 
-### Related docs
-
-For contributing code: [Architecture](/development/architecture), [Custom Rules](/development/custom-rules)
-
-For users: [Getting Started](/guide/getting-started), [Configuration](/guide/configuration), [Rules Reference](/rules/overview), [Troubleshooting](/guide/troubleshooting)
-
 ## Release Process
 
 For maintainers only.
@@ -449,12 +444,9 @@ For maintainers only.
 
 The release command uses [release-it](https://github.com/release-it/release-it) and handles everything: lint, test, build, CHANGELOG generation, version bump, skill version sync, git tag, GitHub release, and npm publish.
 
-## Getting Help
+## See Also
 
-- [Documentation](/)
-- [Issues](https://github.com/pdugan20/claudelint/issues)
-- [Discussions](https://github.com/pdugan20/claudelint/discussions)
-
-## License
-
-By contributing to claudelint, you agree that your contributions will be licensed under the MIT License.
+- [Architecture](/development/architecture) - How the codebase is structured
+- [Custom Rules Guide](/development/custom-rules) - Full walkthrough for writing rules
+- [Rule System](/development/rule-system) - How validators and rules interact
+- [Rules Reference](/rules/overview) - Complete list of built-in rules

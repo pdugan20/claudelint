@@ -23,10 +23,18 @@ export function registerConfigCommands(program: Command): void {
     .description('Initialize claudelint configuration')
     .option('-y, --yes', 'Use default configuration without prompts')
     .option('--force', 'Overwrite existing configuration files')
-    .action(async (options: { yes?: boolean; force?: boolean }) => {
-      const wizard = new InitWizard();
-      await wizard.run(options);
-    });
+    .option('--hooks', 'Create SessionStart validation hook for Claude Code')
+    .option(
+      '--preset <name>',
+      'Preset to use with --yes: recommended, strict, or all',
+      'recommended'
+    )
+    .action(
+      async (options: { yes?: boolean; force?: boolean; hooks?: boolean; preset?: string }) => {
+        const wizard = new InitWizard();
+        await wizard.run(options);
+      }
+    );
 
   // print-config command
   program

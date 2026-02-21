@@ -149,6 +149,7 @@ export const INIT_DETECTION_PATHS = {
   skills: '.claude/skills',
   settings: '.claude/settings.json',
   hooks: 'hooks/hooks.json',
+  projectHooks: '.claude/hooks/hooks.json',
   agents: '.claude/agents',
   outputStyles: '.claude/output-styles',
   commands: '.claude/commands',

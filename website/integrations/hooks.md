@@ -10,9 +10,18 @@ claudelint can automatically validate your Claude Code project when a session st
 
 SessionStart `command` hooks run a shell command when a Claude Code session begins. The command's stdout is fed into Claude's context — not displayed in your terminal. This means Claude is silently made aware of any validation issues and can proactively mention them when you start chatting.
 
-## Setup
+## Quick Setup
 
-Create `.claude/hooks/hooks.json` in your project:
+Run `claudelint init` with the `--hooks` flag to create the hook file automatically:
+
+<CodeTabs :tabs="[
+  { label: 'New project', code: 'claudelint init --hooks' },
+  { label: 'Existing project', code: 'claudelint init --yes --hooks' },
+]" />
+
+## Manual Setup
+
+Alternatively, create `.claude/hooks/hooks.json` in your project manually:
 
 ```json
 {
@@ -22,7 +31,7 @@ Create `.claude/hooks/hooks.json` in your project:
         "hooks": [
           {
             "type": "command",
-            "command": "claudelint check-all --format json"
+            "command": "npx claudelint check-all --format json"
           }
         ]
       }
@@ -47,7 +56,7 @@ If you want Claude to actively run validation and report results (instead of rec
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Run claudelint check-all and briefly report any issues."
+            "prompt": "Run npx claudelint check-all and briefly report any issues."
           }
         ]
       }

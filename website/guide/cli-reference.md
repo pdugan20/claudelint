@@ -152,6 +152,8 @@ claudelint init [options]
 |--------|-------------|
 | `-y, --yes` | Use default configuration without prompts (non-interactive mode) |
 | `--force` | Overwrite existing configuration files |
+| `--hooks` | Create a SessionStart validation hook for Claude Code |
+| `--preset <name>` | Preset to use with `--yes`: `recommended`, `strict`, or `all` (default: `recommended`) |
 
 **Examples:**
 
@@ -162,6 +164,12 @@ claudelint init
 # Non-interactive with defaults
 claudelint init --yes
 
+# Non-interactive with SessionStart hook
+claudelint init --yes --hooks
+
+# Non-interactive with strict preset
+claudelint init --yes --preset strict --hooks
+
 # Overwrite existing config
 claudelint init --yes --force
 ```
@@ -170,6 +178,7 @@ claudelint init --yes --force
 
 - `.claudelintrc.json` - Configuration file with rules
 - `.claudelintignore` - Patterns for files to ignore
+- `.claude/hooks/hooks.json` - SessionStart validation hook (with `--hooks`)
 - Optional: npm scripts in `package.json`
 
 ## Config Management
