@@ -34,57 +34,47 @@ These files reference each other — skills declare tool permissions, agents ref
 
 ### No built-in guardrails
 
-Claude Code's built-in `/doctor` command checks runtime health — installation, MCP connectivity, config file parsing, and search functionality — but it doesn't validate cross-file references, enforce naming conventions, or flag security issues in skills. Mistakes stay hidden until something fails silently or breaks at runtime:
+Claude Code's `/doctor` command checks runtime health, but it doesn't validate cross-file references, naming conventions, or security issues. Mistakes stay hidden until something fails silently:
 
-- A misspelled hook event name like `PreToolUse` → `preToolUse` is silently ignored — the matcher never matches
-- A skill with `eval` or `rm -rf` in its script creates a security hole
-- A missing `description` field in AGENT.md means Claude can't determine when to use the agent — no error, just degraded behavior
-- An `.mcp.json` with `type: "sse"` uses a deprecated transport that may stop working
-- A CLAUDE.md that exceeds the context window size limit degrades Claude's performance
-
-### Keeping skills aligned
-
-Skills are particularly hard to manage at scale. Each skill has frontmatter (name, description, version, tags, allowed tools), script files, and optional documentation. As you add more skills, inconsistencies creep in — mismatched names and directories, missing changelogs, outdated versions, descriptions that don't explain when the skill should trigger. Without a linter, the only way to catch these is manual review.
+- A hook event misspelled as `preToolUse` instead of `PreToolUse` — silently ignored, never fires
+- A skill script containing `eval` or `rm -rf` — no security warning
+- A CLAUDE.md that exceeds the context window size limit — degrades performance with no error
+- A missing agent `description` — Claude can't determine when to use it, just degraded behavior
 
 ## How claudelint Helps
 
 claudelint treats your Claude Code configuration as a first-class codebase. It validates every file against <RuleCount category="total" /> rules, checks cross-file references, enforces naming conventions, and flags security issues — the same way ESLint checks your JavaScript or SwiftLint checks your Swift.
 
-Because it's a standard CLI tool, you can run it in CI alongside your existing linters and tests. Instead of discovering a broken hook or misconfigured skill days later when someone triggers it, your pipeline catches the issue on the pull request that introduced it. Configuration problems become build failures — visible, blocking, and fixable before they reach your team.
+```bash
+npx claude-code-lint check-all
+```
 
-Beyond validation, claudelint includes an interactive optimization skill for CLAUDE.md files. Running `/optimize-cc-md` inside Claude Code walks you through a guided workflow — assessing your file's quality, suggesting improvements, and creating `@import` files to keep your configuration organized and within size limits. See the [Claude Code Plugin](/integrations/claude-code-plugin) guide for setup.
+Because it's a standard CLI tool, you can [run it in CI](/integrations/ci) alongside your existing linters and tests. Configuration problems become build failures — caught on the pull request that introduced them, not days later when someone triggers a broken hook.
 
 ## What It Catches
 
 ```text
 CLAUDE.md (1 error)
-  0  error  File size (42KB) exceeds 40KB limit  claude-md-size
+  0  error  File exceeds 40KB limit (42000 bytes)  claude-md-size
 
 skills/deploy/SKILL.md (1 error)
-  0  error  Missing required 'description' field  skill-description
+  3  error  Description must be at least 10 characters  skill-description
 
-.claude/hooks/hooks.json (1 error)
-  5  error  Invalid hook event 'preToolUse' (did you mean 'PreToolUse'?)  hooks-invalid-event
+.claude/hooks/hooks.json (1 warning)
+  0  warning  Unknown hook event: preToolUse  hooks-invalid-event
 
 skills/cleanup/cleanup.sh (1 error)
-  8  error  Dangerous command detected: rm -rf  skill-dangerous-command
+  8  error  Dangerous command in "cleanup.sh": rm -rf / (deletes entire filesystem)  skill-dangerous-command
 
-4 problems (4 errors, 0 warnings)
+4 problems (3 errors, 1 warning)
 ```
-
-## Key Features
-
-- **Comprehensive** - <RuleCount category="total" /> rules across CLAUDE.md, skills, settings, hooks, MCP, plugins, agents, LSP, output styles, and commands
-- **Fast** - Parallel validation with smart caching
-- **Auto-fix** - Automatically fix common issues with `--fix`
-- **Configurable** - Per-rule severity, inline disables, `.claudelintrc.json` config
-- **Multiple Formats** - Stylish, JSON, SARIF, and compact output
-- **CI-Ready** - Exit codes, SARIF output, GitHub Actions integration
-- **Monorepo Support** - Config inheritance, workspace detection, parallel validation
 
 ## Next Steps
 
 - [Getting Started](/guide/getting-started) - Install and run your first check
-- [Configuration](/guide/configuration) - Customize rules for your project
-- [Rules Reference](/rules/overview) - Browse all <RuleCount category="total" /> rules
-- [Design Philosophy](/development/design-philosophy) - Scope boundaries and design principles
+- [Rules Reference](/rules/overview) - Browse all <RuleCount category="total" /> rules across 10 categories
+- [Auto-fix](/guide/auto-fix) - Automatically fix common issues with `--fix`
+- [Configuration](/guide/configuration) - Per-rule severity, [inline disables](/guide/inline-disables), and `.claudelintrc.json` config
+- [CI/CD Integration](/integrations/ci) - GitHub Actions annotations, [SARIF](/integrations/sarif) upload, and git hooks
+- [Monorepo Support](/integrations/monorepos) - Config inheritance, workspace detection, parallel validation
+- [CLI Reference](/guide/cli-reference) - All commands, output formats, and options
