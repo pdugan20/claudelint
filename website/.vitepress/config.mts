@@ -84,7 +84,7 @@ export default defineConfig({
         {
           text: 'Getting Started',
           items: [
-            { text: 'Introduction', link: '/guide/getting-started' },
+            { text: 'Getting Started', link: '/guide/getting-started' },
             { text: 'Why claudelint?', link: '/guide/why-claudelint' },
           ],
         },

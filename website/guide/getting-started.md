@@ -1,14 +1,15 @@
 ---
 description: Install claudelint and run your first validation of Claude Code project files including CLAUDE.md, skills, hooks, and MCP servers.
+outline: 2
 ---
 
-# Introduction
+# Getting Started
 
-claudelint is a comprehensive linter for Claude Code projects. It validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
+claudelint is a linter for Claude Code projects. It validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, agents, and more — surfacing misconfigurations and standardizing your setup before issues cause silent failures.
 
 ## Set Up with Claude
 
-The fastest way to get started. Copy this prompt and paste it into a Claude Code session:
+Let Claude walk you through setup. Copy this prompt into a Claude Code session:
 
 ```text
 Set up claudelint for this project to validate my Claude Code files.
@@ -17,7 +18,11 @@ Follow the setup guide at https://claudelint.com/setup-guide.md
 
 Claude will read the guide, create a task list, and walk you through each step — install location, rule preset, hooks, validation, and plugin installation.
 
-## Manual Installation
+## Manual Setup
+
+If you prefer to install and configure claudelint yourself, follow these steps.
+
+### 1. Install
 
 <CodeTabs :tabs="[
   { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
@@ -33,15 +38,35 @@ Or install globally:
   { label: 'pnpm', code: 'pnpm add -g claude-code-lint' },
 ]" />
 
-## Quick Start
+### 2. Configure
 
 ```bash
-# Initialize configuration
 claudelint init
+```
 
-# Validate your project
+This creates `.claudelintrc.json` with the recommended preset and `.claudelintignore` for excluding files. See [Configuration](/guide/configuration) for presets, per-rule overrides, and advanced options.
+
+### 3. Validate
+
+```bash
 claudelint
 ```
+
+That's it. claudelint scans your project and reports any issues. See the [CLI Reference](/guide/cli-reference) for all available commands and flags.
+
+### 4. Optional: Claude Code Plugin
+
+Install the claudelint plugin for slash commands like `/validate-all` and `/optimize-cc-md` directly inside Claude Code sessions. See the [Plugin Guide](/integrations/claude-code-plugin) for installation.
+
+### 5. Optional: SessionStart Hook
+
+Automatically validate your project every time a Claude Code session begins:
+
+```bash
+claudelint init --hooks
+```
+
+See [Hooks](/integrations/hooks) for details and alternative hook types.
 
 ## What Gets Validated
 
@@ -58,25 +83,11 @@ claudelint checks <RuleCount category="categories" /> different aspects of your 
 - **[Output Styles](/validators/output-styles)** - Name validation
 - **[Commands](/validators/commands)** - Migration checks
 
-## Configuration
+## Next Steps
 
-With no config file, claudelint uses the recommended preset. Run `claudelint init` to set up configuration interactively, or create a `.claudelintrc.json` with a built-in preset:
-
-<CodeTabs :tabs="[
-  { label: 'Recommended', code: JSON.stringify({ extends: 'claudelint:recommended' }, null, 2) },
-  { label: 'Strict', code: JSON.stringify({ extends: 'claudelint:strict' }, null, 2) }
-]" />
-
-You can also add per-rule overrides:
-
-<ConfigExample
-  filename=".claudelintrc.json"
-  :code='JSON.stringify({ extends: "claudelint:recommended", rules: { "skill-missing-changelog": "off", "skill-body-too-long": "error" } }, null, 2)'
-  caption="Extend a preset and override specific rules"
-/>
-
-See the [Rules Overview](/rules/overview) for all available rules.
-
-## Use with Claude Code
-
-claudelint is also available as a Claude Code plugin, giving you slash commands directly inside Claude Code sessions. See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for installation, team setup, and available skills.
+- **[Configuration](/guide/configuration)** - Presets, per-rule overrides, ignore patterns
+- **[Rules Overview](/rules/overview)** - Browse all <RuleCount category="total" /> rules
+- **[CI/CD Integration](/integrations/ci)** - GitHub Actions, GitLab CI, SARIF output
+- **[Auto-fix](/guide/auto-fix)** - Automatically fix common issues
+- **[Custom Rules](/development/custom-rules)** - Write your own validation rules
+- **[Why claudelint?](/guide/why-claudelint)** - What problems it solves and how
