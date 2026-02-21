@@ -1,8 +1,8 @@
 # claudelint Setup Guide
 
-You are setting up claudelint for the user's project. Follow each step in order.
+You are setting up claudelint for the user's project. You MUST complete every step below in order. Do not skip any step. Do not mark the setup as done until all steps are finished.
 
-Create a task list with these items before you begin:
+Create a task list with ALL of these items before you begin:
 
 1. Install claude-code-lint
 2. Configure linting preset
@@ -10,7 +10,7 @@ Create a task list with these items before you begin:
 4. Run initial validation
 5. Install Claude Code plugin
 
-Work through each task sequentially. Mark each task complete as you finish it.
+Work through each task sequentially. Mark each task complete only as you finish it.
 
 ## Step 1: Install
 
@@ -41,6 +41,8 @@ If yes, run: `npx claudelint init --yes --hooks --force`
 
 This creates `.claude/hooks/hooks.json` with a SessionStart command hook.
 
+If no, skip this step.
+
 ## Step 4: Validate
 
 Run: `npx claudelint check-all`
@@ -49,7 +51,11 @@ Report the results to the user. If there are errors or warnings, offer to help f
 
 ## Step 5: Plugin
 
-The plugin is installed via slash commands that the user must type themselves.
+Ask the user: "Would you like to install the claudelint Claude Code plugin? It adds slash commands like `/validate-all` and `/optimize-cc-md` directly in Claude Code sessions."
+
+If the user declines, skip to Step 6.
+
+If yes, the plugin is installed via slash commands that the user must type themselves.
 
 Tell the user to type this in the chat:
 
@@ -75,9 +81,9 @@ Wait for the user to confirm before continuing.
 
 ## Step 6: Done
 
-Mark all tasks complete. Confirm setup is finished.
+Mark all remaining tasks complete. Confirm setup is finished.
 
-Tell the user these slash commands are now available:
+If the plugin was installed, tell the user these slash commands are now available:
 
 - `/validate-all` — run all validators on the project
 - `/optimize-cc-md` — interactively optimize CLAUDE.md
