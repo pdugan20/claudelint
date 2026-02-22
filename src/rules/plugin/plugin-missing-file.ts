@@ -117,8 +117,10 @@ export const rule: Rule = {
       }
     }
 
-    // Validate hooks references (string path or array of paths)
-    for (const hookPath of toArray(plugin.hooks)) {
+    // Validate hooks references (string path or array of paths; skip inline objects)
+    const hooksValue =
+      typeof plugin.hooks === 'object' && !Array.isArray(plugin.hooks) ? undefined : plugin.hooks;
+    for (const hookPath of toArray(hooksValue)) {
       const resolvedPath = join(pluginRoot, hookPath);
       if (!(await fileExists(resolvedPath))) {
         context.report({

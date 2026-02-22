@@ -278,14 +278,14 @@ describe('PluginManifestSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject hooks as inline object', () => {
+    it('should accept hooks as inline object per documented spec', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         hooks: {
           PostToolUse: [{ type: 'command', command: 'echo test' }],
         },
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
     it('should accept hooks as array of paths', () => {

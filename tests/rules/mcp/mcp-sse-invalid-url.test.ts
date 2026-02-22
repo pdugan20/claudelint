@@ -56,6 +56,30 @@ describe('mcp-sse-invalid-url', () => {
           }),
           filePath: 'test.mcp.json',
         },
+        // Empty URL (handled by mcp-sse-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'sse',
+                  url: '',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
+        // Whitespace-only URL (handled by mcp-sse-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'sse',
+                  url: '   ',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
         // Non-SSE transport (should be ignored)
         {
           content: JSON.stringify({

@@ -620,7 +620,7 @@ export class Reporter {
       'hooks-invalid-config': 'hooks',
       'mcp-invalid-transport': 'mcp',
       'mcp-invalid-env-var': 'mcp',
-      'plugin-invalid-manifest': 'plugin',
+      'plugin-invalid-marketplace-manifest': 'plugin',
       'plugin-invalid-version': 'plugin',
       'plugin-missing-file': 'plugin',
     };

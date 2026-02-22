@@ -44,11 +44,11 @@ Browse every validation rule by category. Each rule page includes severity, exam
 />
 
 <RuleCard
-  rule-id="plugin-invalid-manifest"
-  description="Plugin manifest has structural errors"
+  rule-id="plugin-invalid-marketplace-manifest"
+  description="Marketplace manifest has structural errors"
   severity="error"
   category="Plugin"
-  link="/rules/plugin/plugin-invalid-manifest"
+  link="/rules/plugin/plugin-invalid-marketplace-manifest"
 />
 
 <RuleCard

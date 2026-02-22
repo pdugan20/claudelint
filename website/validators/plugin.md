@@ -26,7 +26,7 @@ This validator includes <RuleCount category="plugin" /> rules. See the [Plugin r
 | [plugin-version-required](/rules/plugin/plugin-version-required) | error | Plugin version is required |
 | [plugin-invalid-version](/rules/plugin/plugin-invalid-version) | error | Invalid semantic version |
 | [plugin-missing-file](/rules/plugin/plugin-missing-file) | error | Referenced file not found |
-| [plugin-invalid-manifest](/rules/plugin/plugin-invalid-manifest) | error | Invalid manifest schema |
+| [plugin-invalid-marketplace-manifest](/rules/plugin/plugin-invalid-marketplace-manifest) | error | Invalid marketplace manifest schema |
 
 ## CLI Usage
 

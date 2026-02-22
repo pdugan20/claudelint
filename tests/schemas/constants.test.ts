@@ -28,6 +28,9 @@ describe('Schema Constants', () => {
       expect(ToolNames.safeParse('Read').success).toBe(true);
       expect(ToolNames.safeParse('Task').success).toBe(true);
       expect(ToolNames.safeParse('Skill').success).toBe(true);
+      expect(ToolNames.safeParse('ToolSearch').success).toBe(true);
+      expect(ToolNames.safeParse('ListMcpResourcesTool').success).toBe(true);
+      expect(ToolNames.safeParse('ReadMcpResourceTool').success).toBe(true);
     });
 
     it('should reject invalid tool names', () => {

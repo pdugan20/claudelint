@@ -8,11 +8,11 @@ description: "Tools listed in allowed-tools are never referenced in the skill bo
 
 ## Rule Details
 
-This rule checks the `allowed-tools` frontmatter array against the SKILL.md body content. If none of the listed tools are referenced anywhere in the body, the entire list is likely copy-pasted or stale. If at least one tool is referenced, the list is considered intentional (tools may be needed for autonomy without being mentioned by name). The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), checking for the short name portion of MCP tools as well.
+This rule checks the `allowed-tools` frontmatter array against the SKILL.md body content. If none of the listed tools appear anywhere in the body, the list is likely stale or copy-pasted. If at least one tool is referenced, the list is considered intentional. Supports both plain tool names and MCP-qualified names (`mcp__server__tool`).
 
 ### Incorrect
 
-Tool listed in allowed-tools but never mentioned in body
+Tools listed in allowed-tools but none referenced in body
 
 ```yaml
 ---
@@ -26,8 +26,7 @@ allowed-tools:
 
 ## Usage
 
-Run `Bash` to execute the build.
-Use `Read` to check config.
+Run the build pipeline and check the output for errors.
 ```
 
 ### Correct

@@ -52,7 +52,7 @@ export const rule: Rule = {
         'Ensure relative source paths in plugin entries point to existing directories ' +
         'that contain a .claude-plugin/plugin.json manifest. Create the plugin directory ' +
         'structure or correct the source path.',
-      relatedRules: ['plugin-invalid-manifest', 'plugin-missing-file'],
+      relatedRules: ['plugin-invalid-marketplace-manifest', 'plugin-missing-file'],
     },
   },
   validate: async (context: RuleContext) => {
@@ -65,12 +65,12 @@ export const rule: Rule = {
 
     const marketplaceData = safeParseJSON(fileContent);
     if (!marketplaceData) {
-      return; // Invalid JSON handled by plugin-invalid-manifest
+      return; // Invalid JSON handled by plugin-invalid-marketplace-manifest
     }
 
     const result = MarketplaceMetadataSchema.safeParse(marketplaceData);
     if (!result.success) {
-      return; // Schema validation handled by plugin-invalid-manifest
+      return; // Schema validation handled by plugin-invalid-marketplace-manifest
     }
 
     const marketplaceDir = dirname(filePath);

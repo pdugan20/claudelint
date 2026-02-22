@@ -376,8 +376,8 @@
         "link": "/rules/plugin/plugin-hook-missing-plugin-root"
       },
       {
-        "text": "plugin-invalid-manifest",
-        "link": "/rules/plugin/plugin-invalid-manifest"
+        "text": "plugin-invalid-marketplace-manifest",
+        "link": "/rules/plugin/plugin-invalid-marketplace-manifest"
       },
       {
         "text": "plugin-invalid-version",
@@ -468,8 +468,8 @@
     "collapsed": true,
     "items": [
       {
-        "text": "lsp-command-not-in-path",
-        "link": "/rules/lsp/lsp-command-not-in-path"
+        "text": "lsp-command-bare-name",
+        "link": "/rules/lsp/lsp-command-bare-name"
       },
       {
         "text": "lsp-extension-missing-dot",
@@ -530,10 +530,6 @@
       {
         "text": "commands-deprecated-directory",
         "link": "/rules/commands/commands-deprecated-directory"
-      },
-      {
-        "text": "commands-migrate-to-skills",
-        "link": "/rules/commands/commands-migrate-to-skills"
       }
     ]
   }

@@ -18,7 +18,6 @@ This validator includes <RuleCount category="commands" /> rules. See the [Comman
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [commands-deprecated-directory](/rules/commands/commands-deprecated-directory) | warn | Deprecated commands directory detected |
-| [commands-migrate-to-skills](/rules/commands/commands-migrate-to-skills) | warn | Migrate commands to skills |
 
 ## CLI Usage
 

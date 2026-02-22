@@ -75,8 +75,9 @@ function analyzeRule(filePath: string): StubRule | null {
     return { file: filePath, category, reason: 'Validate function has minimal logic (< 10 chars)' };
   }
 
-  // Check if validate function has at least one context.report() call
-  if (!content.includes('context.report(')) {
+  // Check if validate function has at least one context.report() call,
+  // either directly or via a shared helper that receives the context
+  if (!content.includes('context.report(') && !content.includes(', context)')) {
     return { file: filePath, category, reason: 'No context.report() calls found' };
   }
 

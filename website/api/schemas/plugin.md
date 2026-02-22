@@ -26,7 +26,7 @@ The `plugin.json` file lives in the `.claude-plugin/` directory and declares the
 | `commands` | string \| string[] | no | Path(s) to command directories |
 | `agents` | string \| string[] | no | Path(s) to agent directories |
 | `skills` | string \| string[] | no | Path(s) to skill directories |
-| `hooks` | string \| string[] | no | Additional [hooks config](/api/schemas/hooks) file paths (see [Auto-discovery](#auto-discovery)). Inline objects are rejected. |
+| `hooks` | string \| string[] \| object | no | Additional [hooks config](/api/schemas/hooks) paths or inline config (see [Auto-discovery](#auto-discovery)) |
 | `mcpServers` | string \| string[] \| object | no | Additional [MCP config](/api/schemas/mcp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
 | `outputStyles` | string \| string[] | no | Path(s) to output style files |
 | `lspServers` | string \| string[] \| object | no | Additional [LSP config](/api/schemas/lsp) paths or inline config (see [Auto-discovery](#auto-discovery)) |

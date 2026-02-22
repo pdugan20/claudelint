@@ -5,7 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { hasProperty, isObject, isString } from '../../utils/type-guards';
+import { mcpServerUrls, mcpServersMissingUrl } from '../../utils/validators/mcp-url';
 
 export const rule: Rule = {
   meta: {
@@ -56,38 +56,12 @@ export const rule: Rule = {
   },
 
   validate: (context) => {
-    const { filePath, fileContent } = context;
-
-    if (!filePath.endsWith('.mcp.json')) {
-      return;
+    for (const _ of mcpServersMissingUrl(context, 'websocket')) {
+      context.report({ message: 'MCP WebSocket transport URL cannot be empty' });
     }
-
-    let config: unknown;
-    try {
-      config = JSON.parse(fileContent);
-    } catch {
-      return;
-    }
-
-    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
-      return;
-    }
-
-    for (const server of Object.values(config.mcpServers)) {
-      if (!isObject(server)) continue;
-      if (!hasProperty(server, 'type') || server.type !== 'websocket') continue;
-
-      if (!hasProperty(server, 'url') || !isString(server.url)) {
-        context.report({
-          message: 'MCP WebSocket transport URL cannot be empty',
-        });
-        continue;
-      }
-
-      if (server.url.trim().length === 0) {
-        context.report({
-          message: 'MCP WebSocket transport URL cannot be empty',
-        });
+    for (const { url } of mcpServerUrls(context, 'websocket')) {
+      if (url.trim().length === 0) {
+        context.report({ message: 'MCP WebSocket transport URL cannot be empty' });
       }
     }
   },

@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rule count: 117
+ * Rule count: 116
  */
 
 /**
@@ -49,11 +49,10 @@ export type RuleId =
   | 'claude-md-rules-circular-symlink'
   | 'claude-md-size'
   | 'commands-deprecated-directory'
-  | 'commands-migrate-to-skills'
   | 'hooks-invalid-config'
   | 'hooks-invalid-event'
   | 'hooks-missing-script'
-  | 'lsp-command-not-in-path'
+  | 'lsp-command-bare-name'
   | 'lsp-extension-missing-dot'
   | 'lsp-invalid-transport'
   | 'lsp-language-id-empty'
@@ -80,7 +79,7 @@ export type RuleId =
   | 'plugin-components-wrong-location'
   | 'plugin-description-required'
   | 'plugin-hook-missing-plugin-root'
-  | 'plugin-invalid-manifest'
+  | 'plugin-invalid-marketplace-manifest'
   | 'plugin-invalid-version'
   | 'plugin-json-wrong-location'
   | 'plugin-marketplace-files-not-found'
@@ -173,11 +172,10 @@ export const ALL_RULE_IDS: readonly RuleId[] = [
   'claude-md-rules-circular-symlink',
   'claude-md-size',
   'commands-deprecated-directory',
-  'commands-migrate-to-skills',
   'hooks-invalid-config',
   'hooks-invalid-event',
   'hooks-missing-script',
-  'lsp-command-not-in-path',
+  'lsp-command-bare-name',
   'lsp-extension-missing-dot',
   'lsp-invalid-transport',
   'lsp-language-id-empty',
@@ -204,7 +202,7 @@ export const ALL_RULE_IDS: readonly RuleId[] = [
   'plugin-components-wrong-location',
   'plugin-description-required',
   'plugin-hook-missing-plugin-root',
-  'plugin-invalid-manifest',
+  'plugin-invalid-marketplace-manifest',
   'plugin-invalid-version',
   'plugin-json-wrong-location',
   'plugin-marketplace-files-not-found',

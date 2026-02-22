@@ -67,16 +67,14 @@ export const rule: Rule = {
         'A tool list with zero references in the body suggests a copy-pasted or stale configuration.',
       details:
         'This rule checks the `allowed-tools` frontmatter array against the SKILL.md body content. ' +
-        'If none of the listed tools are referenced anywhere in the body, the entire list is likely ' +
-        'copy-pasted or stale. If at least one tool is referenced, the list is considered intentional ' +
-        '(tools may be needed for autonomy without being mentioned by name). ' +
-        'The rule supports both plain tool names and MCP-qualified names (e.g., `mcp__server__tool`), ' +
-        'checking for the short name portion of MCP tools as well.',
+        'If none of the listed tools appear anywhere in the body, the list is likely stale or copy-pasted. ' +
+        'If at least one tool is referenced, the list is considered intentional. ' +
+        'Supports both plain tool names and MCP-qualified names (`mcp__server__tool`).',
       examples: {
         incorrect: [
           {
-            description: 'Tool listed in allowed-tools but never mentioned in body',
-            code: '---\nname: build\ndescription: Builds the project\nallowed-tools:\n  - Bash\n  - Read\n  - WebFetch\n---\n\n## Usage\n\nRun `Bash` to execute the build.\nUse `Read` to check config.',
+            description: 'Tools listed in allowed-tools but none referenced in body',
+            code: '---\nname: build\ndescription: Builds the project\nallowed-tools:\n  - Bash\n  - Read\n  - WebFetch\n---\n\n## Usage\n\nRun the build pipeline and check the output for errors.',
           },
         ],
         correct: [

@@ -41,6 +41,16 @@ export const rule: Rule = {
             code: '.claude/\n' + '  commands/\n' + '    deploy.md\n' + '    test-all.md',
             language: 'text',
           },
+          {
+            description: 'Legacy command file in .claude/commands',
+            code:
+              '# .claude/commands/deploy.md\n' +
+              'Run the deployment script.\n\n' +
+              '```bash\n' +
+              './scripts/deploy.sh\n' +
+              '```',
+            language: 'markdown',
+          },
         ],
         correct: [
           {
@@ -56,16 +66,27 @@ export const rule: Rule = {
               '      test-all.sh',
             language: 'text',
           },
+          {
+            description: 'Equivalent skill with proper structure',
+            code:
+              '# .claude/skills/deploy/SKILL.md\n' +
+              '---\n' +
+              'name: deploy\n' +
+              'description: Run the deployment script\n' +
+              '---\n\n' +
+              '## Usage\n\n' +
+              'Invoke with `/deploy` to run the deployment pipeline.',
+            language: 'markdown',
+          },
         ],
       },
       howToFix:
-        'Create equivalent skills in `.claude/skills/` for each command in `.claude/commands/`. ' +
-        'Each skill needs a directory with a SKILL.md file containing YAML frontmatter. ' +
-        'After migrating all commands, remove the `.claude/commands/` directory.',
+        'Create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` (YAML frontmatter for name and description) ' +
+        'and move command scripts into it. Then remove the old `.claude/commands/` directory. ' +
+        'See the [Skills documentation](https://code.claude.com/docs/en/skills) for the full format.',
       whenNotToUse:
         'Disable this rule if you are intentionally maintaining legacy commands ' +
         'alongside skills during a gradual migration.',
-      relatedRules: ['commands-migrate-to-skills'],
     },
   },
 

@@ -30,6 +30,9 @@ export const ToolNames = z.enum([
   'TaskOutput',
   'TaskStop',
   'NotebookEdit',
+  'ToolSearch',
+  'ListMcpResourcesTool',
+  'ReadMcpResourceTool',
 ]);
 
 /**

@@ -56,7 +56,7 @@ export const rule: Rule = {
       howToFix:
         'Add a version field to plugin.json with a non-empty string value following semver ' +
         'format (e.g., "1.0.0"). While optional per the spec, it is strongly recommended.',
-      relatedRules: ['plugin-invalid-manifest'],
+      relatedRules: ['plugin-invalid-marketplace-manifest'],
     },
   },
   validate: (context: RuleContext) => {

@@ -56,6 +56,30 @@ describe('mcp-websocket-invalid-url', () => {
           }),
           filePath: 'test.mcp.json',
         },
+        // Empty URL (handled by mcp-websocket-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'websocket',
+                  url: '',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
+        // Whitespace-only URL (handled by mcp-websocket-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'websocket',
+                  url: '   ',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
         // Non-WebSocket transport (should be ignored)
         {
           content: JSON.stringify({

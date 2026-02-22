@@ -220,8 +220,12 @@ export function validateConfig(config: ClaudeLintConfig): ConfigValidationError[
           severity: 'error',
         });
       } else {
+        // Only warn about deprecated rules that are actually enabled.
+        // Rules set to "off" (e.g., by a preset) don't need a deprecation warning.
+        const ruleValue = config.rules[ruleId];
+        const isOff = ruleValue === 'off' || (Array.isArray(ruleValue) && ruleValue[0] === 'off');
         const rule = RuleRegistry.getRule(ruleId);
-        if (rule && isRuleDeprecated(rule)) {
+        if (rule && isRuleDeprecated(rule) && !isOff) {
           const replacements = getReplacementRuleIds(rule);
           const replacementMsg =
             replacements.length > 0 ? ` Use '${replacements.join("', '")}' instead.` : '';

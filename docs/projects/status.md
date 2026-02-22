@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-02-19
-**Current stats:** 117 rules, 204 test suites
+**Last Updated:** 2026-02-21
+**Current stats:** 116 rules, 204 test suites
 
 All active work is tracked in [roadmap.md](./roadmap.md).
 
@@ -15,9 +15,7 @@ Published as `claude-code-lint@0.2.0-beta.3`. Plugin marketplace complete. DX ov
 
 ## Active Projects
 
-| Project | Status | Tracker |
-|---------|--------|---------|
-| claude-assisted-setup | In Progress | [tracker](./claude-assisted-setup/tracker.md) |
+No active projects.
 
 ---
 
@@ -57,13 +55,15 @@ All project trackers are in `docs/projects/archive/`. Completed or preserved as 
 | pattern-consolidation | Complete | Shared utilities, banned patterns, regex consolidation. |
 | plugin-marketplace | Complete | Marketplace, version sync, install UX, SessionStart hook, e2e testing. docs-tools moved to separate repo. |
 | plugin-spec-alignment | Complete | Fixed marketplace schema, 2 rules, install syntax, JSON schema. |
+| claude-assisted-setup | Complete | `--hooks` and `--preset` flags for `init`, docs updates. |
+| rule-audit | Complete | 12 findings across 117 rules. Renames, consolidation, shared helpers, docs fixes. |
 | vitepress-docs | Launched | claudelint.com live, incremental updates. |
 
 ---
 
 ## Rule Implementation Summary
 
-117 implemented rules across 10 categories:
+116 implemented rules across 10 categories:
 
 | Category | Count |
 |----------|-------|
@@ -76,4 +76,4 @@ All project trackers are in `docs/projects/archive/`. Completed or preserved as 
 | Settings | 5 |
 | Output Styles | 5 |
 | Hooks | 3 |
-| Commands | 3 |
+| Commands | 2 |

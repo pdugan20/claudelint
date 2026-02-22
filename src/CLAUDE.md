@@ -142,6 +142,10 @@ Messages in `context.report({ message })` are shown in the default CLI table. Th
 ## Conventions
 
 - All rule IDs are kebab-case and prefixed by category: `skill-name`, `hook-event-type`
-- Rules delegate to Zod schemas where possible (thin wrapper pattern)
+- Rules delegate to Zod schemas where possible (thin wrapper pattern).
+  Thin-wrapper rules (e.g., `output-style-name`, `agent-events`) have empty `validate` functions
+  because the schema handles validation. They ARE disableable via config: schema errors with
+  matching rule IDs are deduplicated in `mergeSchemaValidationResult()`, the thin wrapper reports
+  with the ruleId, and `getResult()` respects `severity="off"`.
 - `context.report()` takes `{ message, line?, column?, fix? }`
 - Fixable rules must provide a `fix` function in the report
