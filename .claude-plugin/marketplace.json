@@ -1,7 +1,7 @@
 {
   "name": "pdugan20-plugins",
   "description": "Plugins for validating, linting, and improving Claude Code projects.",
-  "version": "0.2.0-beta.3",
+  "version": "0.2.0",
   "owner": {
     "name": "Pat Dugan",
     "email": "dugan.pat@gmail.com"
@@ -14,7 +14,7 @@
       "name": "claudelint",
       "source": "./",
       "description": "A comprehensive linter for Claude Code projects. Validates CLAUDE.md, skills, settings, hooks, MCP servers, plugins, and more.",
-      "version": "0.2.0-beta.3",
+      "version": "0.2.0",
       "author": {
         "name": "Pat Dugan"
       },

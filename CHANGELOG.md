@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0](https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.3...v0.2.0) (2026-02-22)
+
+### Features
+
+* **cli:** add --hooks and --preset flags to init command ([f04f0d8](https://github.com/pdugan20/claudelint/commit/f04f0d866123a5bc9ac1711fe6be236339cba395))
+
+### Bug Fixes
+
+* add relatedRules to commands-deprecated-directory ([#43](https://github.com/pdugan20/claudelint/issues/43)) ([a3ff2fc](https://github.com/pdugan20/claudelint/commit/a3ff2fca04ddfacca358b231bcf04e8da86c4743))
+* **docs:** make plugin step optional and strengthen task completion language ([d13d802](https://github.com/pdugan20/claudelint/commit/d13d80219ef232812aedcf254a982a4bb9c75ec4))
+* rename hooks page from pre-commit to hooks, fix own hook format, remove FAQ mockup ([2d0ec18](https://github.com/pdugan20/claudelint/commit/2d0ec18acf791e01625126ef3992c92423e9f745))
+
+### Documentation
+
+* add config drift monitoring section, clean up tip styling ([f77d161](https://github.com/pdugan20/claudelint/commit/f77d1613f282acb8926ac1f1a77c70b8c3a0dd6b))
+* archive plugin-marketplace, update status and roadmap ([67e5171](https://github.com/pdugan20/claudelint/commit/67e5171780ad036774614ff7fe02d8d04f6423db))
+* close out plugin marketplace tracker, move phases 8-9 to docs-tools repo ([feb2c35](https://github.com/pdugan20/claudelint/commit/feb2c3507078d1a7edef43abc3d1e384fe30af4d))
+* improve dev docs hierarchy and add plugin skill references ([9a9eb61](https://github.com/pdugan20/claudelint/commit/9a9eb61e0119054f1befedd988c9b0ab477bab8f))
+* remove glossary, relocate disambiguations ([3173ccd](https://github.com/pdugan20/claudelint/commit/3173ccdf98cf5a9c6a2751a2954290064eef56d7))
+* restructure design philosophy page ([7fd9f80](https://github.com/pdugan20/claudelint/commit/7fd9f805ca1fc52975344eaa487cbe929564cc99))
+* restructure getting-started page ([c90b0c0](https://github.com/pdugan20/claudelint/commit/c90b0c0e4e46573e9bbae380811412a93d894f03))
+* tighten why-claudelint page ([4dfd00c](https://github.com/pdugan20/claudelint/commit/4dfd00c96d19736d59801283f22db201467fc387))
+* trim troubleshooting page, add collapsible details styling ([6296770](https://github.com/pdugan20/claudelint/commit/6296770736cca85f1b49d1d7b3f6e66ff3ff302b))
+
+### Styles
+
+* add rounded corners to favicon ([e2de721](https://github.com/pdugan20/claudelint/commit/e2de721d2e0cb9955b66ff4d01a5c36bc549db39))
+* update favicon to orange box with white CL lettering ([225133c](https://github.com/pdugan20/claudelint/commit/225133c9a96d43a0adf08af1d7a9a7c64ada222c)), closes [#d97757](https://github.com/pdugan20/claudelint/issues/d97757)
+
+### Code Refactoring
+
+* complete rule audit remediation (12 findings) ([b6c1512](https://github.com/pdugan20/claudelint/commit/b6c15123bd56f7fd4fd8cba7dcf9812a946e65e7))
+
 ## [0.2.0-beta.3](https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.2...v0.2.0-beta.3) (2026-02-19)
 
 ### Features

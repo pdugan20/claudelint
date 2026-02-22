@@ -3,7 +3,7 @@
 # Outputs JSON with additionalContext so Claude is aware of issues and can
 # naturally inform the user and offer to fix them.
 
-PLUGIN_VERSION="0.2.0-beta.3"  # Updated by sync-versions
+PLUGIN_VERSION="0.2.0"  # Updated by sync-versions
 
 # Helper: output JSON with additionalContext (injected into Claude's context)
 warn_json() {
