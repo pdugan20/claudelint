@@ -73,6 +73,10 @@ This rule does not have any configuration options.
 
 Disable this rule if you are intentionally maintaining legacy commands alongside skills during a gradual migration.
 
+## Related Rules
+
+- [`plugin-commands-deprecated`](/rules/plugin/plugin-commands-deprecated)
+
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/commands/commands-deprecated-directory.ts)

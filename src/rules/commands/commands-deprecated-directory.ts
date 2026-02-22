@@ -10,7 +10,7 @@ import { directoryExists, resolvePath } from '../../utils/filesystem/files';
 import { join } from 'path';
 
 /**
- * Deprecated commands directory validation rule implementation
+ * Validates that the deprecated .claude/commands directory does not exist
  */
 export const rule: Rule = {
   meta: {
@@ -87,6 +87,7 @@ export const rule: Rule = {
       whenNotToUse:
         'Disable this rule if you are intentionally maintaining legacy commands ' +
         'alongside skills during a gradual migration.',
+      relatedRules: ['plugin-commands-deprecated'],
     },
   },
 
