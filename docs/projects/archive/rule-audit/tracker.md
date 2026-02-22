@@ -1,6 +1,6 @@
 # Rule Audit
 
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-22
 **Scope:** Audit all 117 rules across 10 categories for conflicts, redundancies, misleading names/messages, and usefulness.
 
 ---
