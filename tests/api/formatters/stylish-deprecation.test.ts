@@ -49,7 +49,7 @@ describe('StylishFormatter - Deprecation Warnings', () => {
           {
             ruleId: 'plugin-dependency-invalid-version' as RuleId,
             reason: 'This rule validates a field that does not exist in the official spec',
-            replacedBy: ['plugin-invalid-manifest' as RuleId],
+            replacedBy: ['plugin-invalid-marketplace-manifest' as RuleId],
             deprecatedSince: '0.3.0',
             removeInVersion: '1.0.0',
             url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
@@ -64,7 +64,7 @@ describe('StylishFormatter - Deprecation Warnings', () => {
     expect(output).toContain(
       'plugin-dependency-invalid-version: This rule validates a field that does not exist in the official spec'
     );
-    expect(output).toContain('(use plugin-invalid-manifest instead)');
+    expect(output).toContain('(use plugin-invalid-marketplace-manifest instead)');
     expect(output).toContain('[will be removed in 1.0.0]');
     expect(output).toContain('Migration guide: https://github.com/pdugan20/claudelint');
   });
@@ -84,7 +84,7 @@ describe('StylishFormatter - Deprecation Warnings', () => {
             ruleId: 'plugin-circular-dependency' as RuleId,
             reason: 'Split into multiple focused rules',
             replacedBy: [
-              'plugin-invalid-manifest' as RuleId,
+              'plugin-invalid-marketplace-manifest' as RuleId,
               'plugin-name-invalid' as RuleId,
               'plugin-version-invalid' as RuleId,
             ],
@@ -98,7 +98,7 @@ describe('StylishFormatter - Deprecation Warnings', () => {
     expect(output).toContain('Deprecated rules used:');
     expect(output).toContain('plugin-circular-dependency: Split into multiple focused rules');
     expect(output).toContain(
-      '(use plugin-invalid-manifest, plugin-name-invalid, plugin-version-invalid instead)'
+      '(use plugin-invalid-marketplace-manifest, plugin-name-invalid, plugin-version-invalid instead)'
     );
   });
 

@@ -8,7 +8,7 @@ description: "Agent body content should meet minimum length requirements"
 
 ## Rule Details
 
-This rule checks that the markdown body of an agent file file (the content after frontmatter) contains enough substantive text. Very short body content typically indicates an incomplete agent definition that lacks the detailed instructions needed for effective agent behavior. The minimum length is configurable via the `minLength` option.
+This rule checks that the markdown body of an agent file (the content after frontmatter) contains enough substantive text. Very short body content typically indicates an incomplete agent definition that lacks the detailed instructions needed for effective agent behavior. The minimum length is configurable via the `minLength` option.
 
 ### Incorrect
 

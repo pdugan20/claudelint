@@ -104,7 +104,7 @@ export const rule: Rule = {
       for (const [extension, languageId] of Object.entries(serverConfig.extensionToLanguage)) {
         if (!isString(languageId) || languageId.trim().length === 0) {
           context.report({
-            message: `Language ID for extension "${extension}" in server "${serverName}" cannot be empty.`,
+            message: `Language ID for extension "${extension}" in server "${serverName}" cannot be empty`,
           });
         }
       }

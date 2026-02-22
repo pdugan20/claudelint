@@ -468,10 +468,27 @@ export class InitWizard {
   }
 
   /**
+   * Check if .gitignore contains a pattern
+   */
+  private gitignoreContains(pattern: string): boolean {
+    const gitignorePath = join(this.cwd, '.gitignore');
+    if (!existsSync(gitignorePath)) return false;
+    const content = readFileSync(gitignorePath, 'utf-8');
+    return content.split('\n').some((line) => line.trim() === pattern);
+  }
+
+  /**
    * Display next steps
    */
   private displayNextSteps(info: ProjectInfo, hooksCreated: boolean): void {
     const ruleCount = RuleRegistry.getAll().length;
+
+    // Remind about .gitignore if needed
+    if (!this.gitignoreContains('.claudelint-cache/')) {
+      logger.newline();
+      logger.warn('Add .claudelint-cache/ to your .gitignore to avoid committing cached files');
+      logger.newline();
+    }
 
     logger.log(chalk.bold('Next steps:'));
     logger.newline();

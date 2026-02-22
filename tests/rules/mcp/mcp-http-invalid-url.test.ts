@@ -56,6 +56,30 @@ describe('mcp-http-invalid-url', () => {
           }),
           filePath: 'test.mcp.json',
         },
+        // Empty URL (handled by mcp-http-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'http',
+                  url: '',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
+        // Whitespace-only URL (handled by mcp-http-empty-url, not this rule)
+        {
+          content: JSON.stringify({
+            mcpServers: {
+              server1: {
+                  type: 'http',
+                  url: '   ',
+                },
+            },
+          }),
+          filePath: 'test.mcp.json',
+        },
         // Non-HTTP transport (should be ignored)
         {
           content: JSON.stringify({

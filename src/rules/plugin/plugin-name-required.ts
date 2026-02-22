@@ -56,7 +56,7 @@ export const rule: Rule = {
       howToFix:
         'Add a name field to plugin.json with a descriptive, non-empty string value that identifies ' +
         'the plugin.',
-      relatedRules: ['plugin-invalid-manifest'],
+      relatedRules: ['plugin-invalid-marketplace-manifest'],
     },
   },
   validate: (context: RuleContext) => {

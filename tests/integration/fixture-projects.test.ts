@@ -104,11 +104,11 @@ describe('Fixture Project Integration Tests', () => {
 
     // Pinned counts -- update intentionally when adding new rules or fixture content
     it('should report expected error count', () => {
-      expect(result.output).toContain('25 errors');
+      expect(result.output).toContain('24 errors');
     });
 
     it('should report expected warning count', () => {
-      expect(result.output).toContain('34 warnings');
+      expect(result.output).toContain('33 warnings');
     });
 
     it('should show summary line with problem count', () => {
@@ -205,7 +205,6 @@ describe('Fixture Project Integration Tests', () => {
 
     it('should detect warnings for deprecated commands', () => {
       expect(result.output).toContain('commands-deprecated-directory');
-      expect(result.output).toContain('commands-migrate-to-skills');
     });
   });
 

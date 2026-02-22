@@ -39,7 +39,7 @@ to:
 Language ID for extension "${extension}" in server "${serverName}" cannot be empty
 ```
 
-**Test impact:** Update expected message string in `tests/rules/lsp-language-id-empty.test.ts`.
+**Test impact:** Update expected message string in `tests/rules/lsp-language-id-empty.test.ts`. Regenerate rule docs with `npm run docs:generate`.
 
 ---
 
@@ -171,11 +171,14 @@ const SUPPLEMENTAL_TOOLS = ['ToolSearch', 'ListMcpResourcesTool', 'ReadMcpResour
 4. **Integration tests:**
    - `tests/integration/fixture-projects.test.ts` -- update any expected rule IDs
 
-5. **Regenerate auto-generated files:**
+5. **Update hand-maintained docs:**
+   - `website/validators/lsp.md` -- rename `lsp-command-not-in-path` to `lsp-command-bare-name` in both the rules table row and the category link at the top
+
+6. **Regenerate auto-generated files:**
    - `npm run generate:types` (updates `src/rules/index.ts` and `src/rules/rule-ids.ts`)
    - `npm run docs:generate` (creates new docs page, old page auto-removed)
 
-6. **Deprecation handling:** Add `lsp-command-not-in-path` as a deprecated alias that maps to `lsp-command-bare-name` so existing user configs don't break silently. Alternatively, document the rename in CHANGELOG and let it be a breaking change in the next minor release.
+7. **Deprecation handling:** Add `lsp-command-not-in-path` as a deprecated alias that maps to `lsp-command-bare-name` so existing user configs don't break silently. Alternatively, document the rename in CHANGELOG and let it be a breaking change in the next minor release.
 
 **Preset question:** This rule is already set to `"off"` in the recommended preset, confirming it's the weakest LSP rule. Consider whether it should remain in `recommended` at all or be `strict`-only.
 
@@ -247,11 +250,14 @@ This is identical in all three files. The guard goes immediately after the `cont
 4. **Update integration tests:**
    - `tests/integration/fixture-projects.test.ts` -- remove expected `commands-migrate-to-skills` violation from fixture results
 
-5. **Regenerate:**
+5. **Update hand-maintained docs:**
+   - `website/validators/commands.md` -- remove the `commands-migrate-to-skills` row from the rules table
+
+6. **Regenerate:**
    - `npm run generate:types`
    - `npm run docs:generate`
 
-6. **Deprecation:** Since the merged rule covers the same condition, no alias is needed. Any user config that disables `commands-migrate-to-skills` was already also getting `commands-deprecated-directory`. Document the merge in CHANGELOG as a breaking change.
+7. **Deprecation:** Since the merged rule covers the same condition, no alias is needed. Any user config that disables `commands-migrate-to-skills` was already also getting `commands-deprecated-directory`. Document the merge in CHANGELOG as a breaking change.
 
 ---
 
@@ -283,11 +289,15 @@ This is identical in all three files. The guard goes immediately after the `cont
 6. **Cross-references:**
    - `src/rules/plugin/plugin-marketplace-files-not-found.ts` -- update `relatedRules` array
 
-7. **Regenerate:**
+7. **Update hand-maintained docs:**
+   - `website/validators/plugin.md` -- rename `plugin-invalid-manifest` to `plugin-invalid-marketplace-manifest` in the rules table
+   - `website/rules/overview.md` -- update the `plugin-invalid-manifest` reference in the rule card example
+
+8. **Regenerate:**
    - `npm run generate:types`
    - `npm run docs:generate`
 
-8. **Deprecation handling:** Add `plugin-invalid-manifest` as a deprecated alias mapping to `plugin-invalid-marketplace-manifest` to avoid breaking existing user configs. Remove the alias in the next major release.
+9. **Deprecation handling:** Add `plugin-invalid-manifest` as a deprecated alias mapping to `plugin-invalid-marketplace-manifest` to avoid breaking existing user configs. Remove the alias in the next major release.
 
 ---
 

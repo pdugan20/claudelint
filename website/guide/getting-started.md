@@ -44,7 +44,7 @@ Or install globally:
 claudelint init
 ```
 
-This creates `.claudelintrc.json` with the recommended preset and `.claudelintignore` for excluding files. See [Configuration](/guide/configuration) for presets, per-rule overrides, and advanced options.
+This creates `.claudelintrc.json` with the recommended preset and `.claudelintignore` for excluding files. Add `.claudelint-cache/` to your `.gitignore` if it isn't there already -- claudelint uses this directory for caching and it should not be committed. See [Configuration](/guide/configuration) for presets, per-rule overrides, and advanced options.
 
 ### 3. Validate
 

@@ -47,10 +47,8 @@ export const rule: Rule = {
       details:
         'This rule checks the top-level keys in `lsp.json`, which serve as server names, ' +
         'and warns when any name is shorter than the configured minimum length. ' +
-        'Descriptive server names like `typescript-language-server` or `python-lsp` ' +
-        'improve readability and maintainability of LSP configuration files. ' +
-        'Single-character or very short names make it hard to identify which ' +
-        'language server is being configured.',
+        'Descriptive names like `typescript-server` or `python-lsp` make configurations ' +
+        'easier to maintain and debug.',
       examples: {
         incorrect: [
           {
@@ -87,15 +85,11 @@ export const rule: Rule = {
           description: 'Require server names of at least 3 characters',
           config: { minLength: 3 },
         },
-        {
-          description: 'Allow single-character server names',
-          config: { minLength: 1 },
-        },
       ],
       whenNotToUse:
         'Disable this rule if you have an established convention using short ' +
         'abbreviations for server names that are well-understood by your team.',
-      relatedRules: ['lsp-command-not-in-path', 'lsp-extension-missing-dot'],
+      relatedRules: ['lsp-command-bare-name', 'lsp-extension-missing-dot'],
     },
   },
   validate: (context: RuleContext) => {

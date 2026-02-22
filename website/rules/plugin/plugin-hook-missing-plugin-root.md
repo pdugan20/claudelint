@@ -1,18 +1,18 @@
 ---
-description: "Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability"
+description: "Inline hook commands must use ${CLAUDE_PLUGIN_ROOT} for portable script paths"
 ---
 
 # plugin-hook-missing-plugin-root
 
-<RuleHeader description="Plugin hooks must use ${CLAUDE_PLUGIN_ROOT} when referencing scripts to ensure portability" severity="error" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="Inline hook commands must use ${CLAUDE_PLUGIN_ROOT} for portable script paths" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-Plugin hooks that reference script files via relative paths (e.g., ./scripts/lint.sh) will break when the plugin is installed in a different location. This rule ensures that hook commands use the ${CLAUDE_PLUGIN_ROOT} variable to form absolute paths that resolve correctly regardless of where the plugin is installed.
+This rule checks inline hook definitions in plugin.json for command-type hooks that reference script files via relative paths. These commands must use ${CLAUDE_PLUGIN_ROOT} to form absolute paths that resolve correctly regardless of where the plugin is installed. String and array hook file paths are resolved by the plugin system and do not need this variable.
 
 ### Incorrect
 
-Hook using a relative script path without ${CLAUDE_PLUGIN_ROOT}
+Inline hook command using a relative path without ${CLAUDE_PLUGIN_ROOT}
 
 ```json
 {
@@ -37,7 +37,7 @@ Hook using a relative script path without ${CLAUDE_PLUGIN_ROOT}
 
 ### Correct
 
-Hook using ${CLAUDE_PLUGIN_ROOT} for the script path
+Inline hook command using ${CLAUDE_PLUGIN_ROOT}
 
 ```json
 {
@@ -62,7 +62,7 @@ Hook using ${CLAUDE_PLUGIN_ROOT} for the script path
 
 ## How To Fix
 
-Replace relative script paths in hook commands with paths that start with ${CLAUDE_PLUGIN_ROOT}. For example, change "./scripts/lint.sh" to "${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh".
+Replace relative script paths in inline hook commands with paths that start with ${CLAUDE_PLUGIN_ROOT}. For example, change `./scripts/lint.sh` to `${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh`.
 
 ## Options
 

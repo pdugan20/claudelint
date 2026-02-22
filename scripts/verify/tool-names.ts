@@ -31,8 +31,9 @@ const DOCS_URL = 'https://code.claude.com/docs/en/settings#tools-available-to-cl
  * Each entry should have a comment explaining why it's supplemental.
  */
 const SUPPLEMENTAL_TOOLS: string[] = [
-  // Add tools here that are valid but CLI doesn't return them
-  // Example: 'LSP', // Valid in docs but not always in CLI output
+  'ToolSearch', // Deferred tool loader, not returned by CLI query
+  'ListMcpResourcesTool', // MCP resource tool, dynamically injected when MCP servers configured
+  'ReadMcpResourceTool', // MCP resource tool, dynamically injected when MCP servers configured
 ];
 
 interface VerificationResult {

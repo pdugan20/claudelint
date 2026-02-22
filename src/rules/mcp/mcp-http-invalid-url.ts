@@ -5,9 +5,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { containsEnvVar } from '../../utils/patterns';
-import { formatError } from '../../utils/validators/helpers';
-import { hasProperty, isObject, isString } from '../../utils/type-guards';
+import { mcpServerUrls, validateMcpUrl } from '../../utils/validators/mcp-url';
 
 export const rule: Rule = {
   meta: {
@@ -53,42 +51,8 @@ export const rule: Rule = {
   },
 
   validate: (context) => {
-    const { filePath, fileContent } = context;
-
-    if (!filePath.endsWith('.mcp.json')) {
-      return;
-    }
-
-    let config: unknown;
-    try {
-      config = JSON.parse(fileContent);
-    } catch {
-      return;
-    }
-
-    if (!hasProperty(config, 'mcpServers') || !isObject(config.mcpServers)) {
-      return;
-    }
-
-    for (const server of Object.values(config.mcpServers)) {
-      if (!isObject(server)) continue;
-      if (!hasProperty(server, 'type') || server.type !== 'http') continue;
-      if (!hasProperty(server, 'url') || !isString(server.url)) continue;
-
-      const url = server.url;
-
-      // Skip validation for env var placeholders (resolved at runtime)
-      if (containsEnvVar(url)) {
-        continue;
-      }
-
-      try {
-        new URL(url);
-      } catch (error) {
-        context.report({
-          message: `Invalid URL in HTTP transport: ${formatError(error)}`,
-        });
-      }
+    for (const { url } of mcpServerUrls(context, 'http')) {
+      validateMcpUrl(url, 'HTTP', context);
     }
   },
 };

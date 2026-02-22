@@ -45,7 +45,7 @@ export const rule: Rule = {
       rationale:
         'Sparse agent definitions lack the detailed instructions needed for consistent, high-quality responses.',
       details:
-        'This rule checks that the markdown body of an agent file file ' +
+        'This rule checks that the markdown body of an agent file ' +
         '(the content after frontmatter) contains enough substantive ' +
         'text. Very short body content typically indicates an incomplete ' +
         'agent definition that lacks the detailed instructions needed ' +

@@ -1,10 +1,10 @@
 ---
-description: "LSP server commands should be in PATH or use absolute paths"
+description: "LSP server commands should use explicit paths instead of bare names"
 ---
 
-# lsp-command-not-in-path
+# lsp-command-bare-name
 
-<RuleHeader description="LSP server commands should be in PATH or use absolute paths" severity="warn" :fixable="false" :configurable="false" category="LSP" />
+<RuleHeader description="LSP server commands should use explicit paths instead of bare names" severity="warn" :fixable="false" :configurable="false" category="LSP" />
 
 ## Rule Details
 
@@ -12,7 +12,7 @@ This rule checks each LSP server entry in `lsp.json` for its `command` field and
 
 ### Incorrect
 
-Server command relies on PATH resolution
+Server command uses a bare name instead of explicit path
 
 ```json
 {
@@ -63,8 +63,8 @@ Disable this rule if you have consistent PATH configuration across all environme
 
 ## Resources
 
-- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-command-not-in-path.ts)
-- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-command-not-in-path.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/lsp/lsp-command-bare-name.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/lsp/lsp-command-bare-name.test.ts)
 
 ## Version
 

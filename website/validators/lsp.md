@@ -16,16 +16,15 @@ The LSP validator checks Language Server Protocol configuration files for transp
 
 ## Rules
 
-This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/lsp/lsp-command-not-in-path) for the complete list.
+This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/lsp/lsp-command-bare-name) for the complete list.
 
 | Rule | Severity | Description |
 |------|----------|-------------|
 | [lsp-server-name-too-short](/rules/lsp/lsp-server-name-too-short) | warn | Server name is too short |
-| [lsp-language-id-not-lowercase](/rules/lsp/lsp-language-id-not-lowercase) | warn | Language ID should be lowercase |
 | [lsp-language-id-empty](/rules/lsp/lsp-language-id-empty) | error | Language ID is empty |
 | [lsp-invalid-transport](/rules/lsp/lsp-invalid-transport) | error | Invalid transport type |
 | [lsp-extension-missing-dot](/rules/lsp/lsp-extension-missing-dot) | warn | File extension missing leading dot |
-| [lsp-command-not-in-path](/rules/lsp/lsp-command-not-in-path) | warn | Command not found in PATH |
+| [lsp-command-bare-name](/rules/lsp/lsp-command-bare-name) | warn | Command uses bare name instead of explicit path |
 
 ## CLI Usage
 

@@ -83,7 +83,7 @@ describe('FileValidator - Deprecation Tracking', () => {
           fixable: false,
           deprecated: {
             reason: 'This rule validates a field that does not exist in the official spec',
-            replacedBy: 'plugin-invalid-manifest' as RuleId,
+            replacedBy: 'plugin-invalid-marketplace-manifest' as RuleId,
             deprecatedSince: '0.3.0',
             removeInVersion: '1.0.0',
             url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
@@ -104,7 +104,7 @@ describe('FileValidator - Deprecation Tracking', () => {
       expect(result.deprecatedRulesUsed![0]).toMatchObject({
         ruleId: 'plugin-dependency-invalid-version',
         reason: 'This rule validates a field that does not exist in the official spec',
-        replacedBy: ['plugin-invalid-manifest'],
+        replacedBy: ['plugin-invalid-marketplace-manifest'],
         deprecatedSince: '0.3.0',
         removeInVersion: '1.0.0',
         url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
@@ -136,7 +136,7 @@ describe('FileValidator - Deprecation Tracking', () => {
           fixable: false,
           deprecated: {
             reason: 'No longer needed',
-            replacedBy: ['plugin-invalid-manifest' as RuleId, 'plugin-name-invalid' as RuleId],
+            replacedBy: ['plugin-invalid-marketplace-manifest' as RuleId, 'plugin-name-invalid' as RuleId],
           },
           since: '1.0.0',
         },
@@ -220,7 +220,7 @@ describe('FileValidator - Deprecation Tracking', () => {
           deprecated: {
             reason: 'Split into multiple rules',
             replacedBy: [
-              'plugin-invalid-manifest' as RuleId,
+              'plugin-invalid-marketplace-manifest' as RuleId,
               'plugin-name-invalid' as RuleId,
               'plugin-version-invalid' as RuleId,
             ],
@@ -236,7 +236,7 @@ describe('FileValidator - Deprecation Tracking', () => {
 
       expect(result.deprecatedRulesUsed).toBeDefined();
       expect(result.deprecatedRulesUsed![0].replacedBy).toEqual([
-        'plugin-invalid-manifest',
+        'plugin-invalid-marketplace-manifest',
         'plugin-name-invalid',
         'plugin-version-invalid',
       ]);
@@ -253,7 +253,7 @@ describe('FileValidator - Deprecation Tracking', () => {
           fixable: false,
           deprecated: {
             reason: 'Replaced by better rule',
-            replacedBy: 'plugin-invalid-manifest' as RuleId,
+            replacedBy: 'plugin-invalid-marketplace-manifest' as RuleId,
           },
           since: '1.0.0',
         },
@@ -265,7 +265,7 @@ describe('FileValidator - Deprecation Tracking', () => {
       const result = await validator.validate();
 
       expect(result.deprecatedRulesUsed).toBeDefined();
-      expect(result.deprecatedRulesUsed![0].replacedBy).toEqual(['plugin-invalid-manifest']);
+      expect(result.deprecatedRulesUsed![0].replacedBy).toEqual(['plugin-invalid-marketplace-manifest']);
     });
 
     it('should handle removeInVersion: null correctly', async () => {
@@ -307,7 +307,7 @@ describe('FileValidator - Deprecation Tracking', () => {
           fixable: false,
           deprecated: {
             reason: 'Old rule',
-            replacedBy: 'plugin-invalid-manifest' as RuleId,
+            replacedBy: 'plugin-invalid-marketplace-manifest' as RuleId,
           },
           since: '1.0.0',
         },

@@ -4,25 +4,13 @@ description: Understand how claudelint automatically discovers Claude Code confi
 
 # File Discovery
 
-claudelint automatically discovers Claude Code configuration files throughout your project. This page explains which files are detected, where they can live, and how the discovery process works.
+claudelint automatically discovers project-level and plugin-level Claude Code configuration files using predefined glob patterns. Global user configurations (`~/.claude/`) are out of scope.
 
-## Overview
-
-When you run `claudelint` or `claudelint format`, the tool scans your project for Claude Code files using predefined glob patterns. All patterns are centralized in a single module (`src/utils/filesystem/patterns.ts`) so that validators, the format command, the watch command, and the init wizard all use the same discovery logic.
-
-Discovery respects:
-
-- `.claudelintignore` (same syntax as `.gitignore`)
-- `.gitignore` patterns
-- `node_modules/` and `.git/` are always excluded
-
-::: tip Project Scope
-claudelint validates project-level and plugin-level files. Global user configurations (`~/.claude/`) are out of scope. See [Design Philosophy](/development/design-philosophy#project-scoped-by-design) for details.
-:::
+Discovery respects `.claudelintignore`, `.gitignore` patterns, and always excludes `node_modules/` and `.git/`.
 
 ## File Type Reference
 
-| File Type | Official Locations | Validator | Recursive |
+| File Type | Locations | Validator | Recursive |
 |---|---|---|---|
 | CLAUDE.md | `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md` | claude-md | Yes (`**/`) |
 | Rules | `.claude/rules/**/*.md` | claude-md | Yes |
@@ -36,31 +24,13 @@ claudelint validates project-level and plugin-level files. Global user configura
 | Plugin | `plugin.json`, `.claude-plugin/plugin.json` | plugin | No |
 | Commands | `.claude/commands/**/*`, `commands/**/*` | commands | Yes |
 
-### Recursive vs Non-recursive
-
-- **Recursive** patterns (prefixed with `**/`) find files in nested directories, supporting monorepo layouts where packages have their own `.claude/` directories.
-- **Non-recursive** patterns only match at the project root.
+Recursive patterns (`**/`) find files in nested directories, supporting monorepo layouts where packages have their own `.claude/` directories.
 
 ## Monorepo Support
 
-claudelint supports monorepo-style projects where multiple packages each have their own Claude Code configuration:
+claudelint supports monorepo-style projects where multiple packages each have their own Claude Code configuration. All `CLAUDE.md` and `CLAUDE.local.md` files are discovered recursively, and skills inside `.claude/skills/` are discovered within nested packages.
 
-```text
-my-monorepo/
-  CLAUDE.md                         # Root CLAUDE.md
-  .claude/settings.json             # Root settings
-  .mcp.json                         # Root MCP config
-  packages/
-    api/
-      CLAUDE.md                     # Package CLAUDE.md (discovered)
-      .claude/
-        skills/deploy/SKILL.md      # Package skill (discovered)
-    web/
-      CLAUDE.md                     # Package CLAUDE.md (discovered)
-      CLAUDE.local.md               # Local overrides (discovered)
-```
-
-All `CLAUDE.md` and `CLAUDE.local.md` files are discovered recursively. Skills inside `.claude/skills/` are also discovered recursively within nested packages.
+For workspace detection, config inheritance, and per-package validation, see [Monorepo Support](/integrations/monorepos).
 
 ## Plugin File Discovery
 
@@ -81,11 +51,7 @@ my-plugin/
     deploy.md                       # Plugin command
 ```
 
-claudelint detects both the standard `.claude/` project structure and the plugin root structure.
-
-::: tip Auto-discovery
-Claude Code automatically loads `hooks/hooks.json`, `.mcp.json`, and `.lsp.json` from the plugin root. The `hooks`, `mcpServers`, and `lspServers` fields in plugin.json are only needed for **additional** config files at non-default paths. Specifying the default location (e.g., `"hooks": "./hooks/hooks.json"`) causes a duplicate load error. See [Plugin Manifest: Auto-discovery](/api/schemas/plugin#auto-discovery) for details.
-:::
+claudelint detects both the standard `.claude/` project structure and the plugin root structure. See [Plugin Manifest: Auto-discovery](/api/schemas/plugin#auto-discovery) for how Claude Code loads plugin config files.
 
 ## Ignoring Files
 
@@ -108,22 +74,3 @@ experiments/**
 ### .gitignore
 
 Patterns in `.gitignore` are also respected automatically. Files matched by `.gitignore` will not be discovered.
-
-## Format Command Coverage
-
-The `claudelint format` command processes all discovered Claude Code files:
-
-| Category | Files Processed |
-|---|---|
-| Markdown | CLAUDE.md, CLAUDE.local.md, SKILL.md, agent .md files, output style .md, command .md |
-| JSON | settings.json, settings.local.json, hooks.json (plugin), lsp.json, .lsp.json, .mcp.json, plugin.json |
-| YAML | `.claude/**/*.{yaml,yml}` |
-| Shell | `.claude/**/*.sh`, `skills/**/*.sh` |
-
-The format pipeline applies three tiers of formatting:
-
-1. **markdownlint** -- Fixes markdown style issues in `.md` files
-2. **Prettier** -- Formats markdown, JSON, and YAML files
-3. **ShellCheck** -- Lints shell scripts (requires system install)
-
-Use `claudelint format --check` to see what needs formatting without making changes, or `claudelint format --fix-dry-run` to preview what would be changed.

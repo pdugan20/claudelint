@@ -25,7 +25,6 @@ This validator includes <RuleCount category="agents" /> rules. See the [Agents r
 |------|----------|-------------|
 | [agent-name](/rules/agents/agent-name) | error | Invalid agent name format |
 | [agent-description](/rules/agents/agent-description) | error | Missing or invalid description |
-| [agent-model](/rules/agents/agent-model) | error | Invalid model configuration |
 | [agent-name-filename-mismatch](/rules/agents/agent-name-filename-mismatch) | error | Name does not match filename |
 | [agent-skills-not-found](/rules/agents/agent-skills-not-found) | error | Referenced skill not found |
 | [agent-body-too-short](/rules/agents/agent-body-too-short) | warn | Agent body content below minimum length |

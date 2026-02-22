@@ -578,7 +578,7 @@ claudelint format --fix
 claudelint format --verbose
 ```
 
-See [File Discovery](/guide/file-discovery#format-command-coverage) for the full list of file patterns and the formatting pipeline.
+See [File Discovery](/guide/file-discovery) for the full list of file patterns discovered by claudelint.
 
 ## Optimization
 

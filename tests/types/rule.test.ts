@@ -142,7 +142,7 @@ describe('Rule Type', () => {
   describe('Deprecation - DeprecationInfo Format', () => {
     const deprecationInfo: DeprecationInfo = {
       reason: 'This rule validates a field that does not exist in the official spec',
-      replacedBy: 'plugin-invalid-manifest' as RuleId,
+      replacedBy: 'plugin-invalid-marketplace-manifest' as RuleId,
       deprecatedSince: '0.3.0',
       removeInVersion: '1.0.0',
       url: 'https://github.com/pdugan20/claudelint/blob/main/docs/migrations/old-to-new.md',
@@ -186,7 +186,7 @@ describe('Rule Type', () => {
 
     describe('getReplacementRuleIds', () => {
       it('should return single replacement as array', () => {
-        expect(getReplacementRuleIds(deprecatedRuleObject)).toEqual(['plugin-invalid-manifest']);
+        expect(getReplacementRuleIds(deprecatedRuleObject)).toEqual(['plugin-invalid-marketplace-manifest']);
       });
 
       it('should return multiple replacements', () => {
@@ -198,14 +198,14 @@ describe('Rule Type', () => {
               reason: 'Split into multiple focused rules',
               replacedBy: [
                 'claude-md-size' as RuleId,
-                'plugin-invalid-manifest' as RuleId,
+                'plugin-invalid-marketplace-manifest' as RuleId,
               ],
             },
           },
         };
         expect(getReplacementRuleIds(rule)).toEqual([
           'claude-md-size',
-          'plugin-invalid-manifest',
+          'plugin-invalid-marketplace-manifest',
         ]);
       });
 

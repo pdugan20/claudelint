@@ -33,6 +33,8 @@ Run: `npx claudelint init --yes --preset <chosen-preset>`
 
 This creates `.claudelintrc.json` and `.claudelintignore`.
 
+Then check if `.claudelint-cache/` is in the project's `.gitignore`. If not, add it. This directory contains auto-generated cache files that should not be committed.
+
 ## Step 3: Hooks
 
 Ask the user: "Set up a SessionStart hook? This runs claudelint automatically when you start a Claude Code session."

@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rules registered: 117
+ * Rules registered: 116
  */
 
 import { RuleRegistry } from '../utils/rules/registry';
@@ -41,11 +41,10 @@ import { rule as claude_md_paths_rule } from './claude-md/claude-md-paths';
 import { rule as claude_md_rules_circular_symlink_rule } from './claude-md/claude-md-rules-circular-symlink';
 import { rule as claude_md_size_rule } from './claude-md/claude-md-size';
 import { rule as commands_deprecated_directory_rule } from './commands/commands-deprecated-directory';
-import { rule as commands_migrate_to_skills_rule } from './commands/commands-migrate-to-skills';
 import { rule as hooks_invalid_config_rule } from './hooks/hooks-invalid-config';
 import { rule as hooks_invalid_event_rule } from './hooks/hooks-invalid-event';
 import { rule as hooks_missing_script_rule } from './hooks/hooks-missing-script';
-import { rule as lsp_command_not_in_path_rule } from './lsp/lsp-command-not-in-path';
+import { rule as lsp_command_bare_name_rule } from './lsp/lsp-command-bare-name';
 import { rule as lsp_extension_missing_dot_rule } from './lsp/lsp-extension-missing-dot';
 import { rule as lsp_invalid_transport_rule } from './lsp/lsp-invalid-transport';
 import { rule as lsp_language_id_empty_rule } from './lsp/lsp-language-id-empty';
@@ -72,7 +71,7 @@ import { rule as plugin_commands_deprecated_rule } from './plugin/plugin-command
 import { rule as plugin_components_wrong_location_rule } from './plugin/plugin-components-wrong-location';
 import { rule as plugin_description_required_rule } from './plugin/plugin-description-required';
 import { rule as plugin_hook_missing_plugin_root_rule } from './plugin/plugin-hook-missing-plugin-root';
-import { rule as plugin_invalid_manifest_rule } from './plugin/plugin-invalid-manifest';
+import { rule as plugin_invalid_marketplace_manifest_rule } from './plugin/plugin-invalid-marketplace-manifest';
 import { rule as plugin_invalid_version_rule } from './plugin/plugin-invalid-version';
 import { rule as plugin_json_wrong_location_rule } from './plugin/plugin-json-wrong-location';
 import { rule as plugin_marketplace_files_not_found_rule } from './plugin/plugin-marketplace-files-not-found';
@@ -161,11 +160,10 @@ RuleRegistry.register(claude_md_paths_rule);
 RuleRegistry.register(claude_md_rules_circular_symlink_rule);
 RuleRegistry.register(claude_md_size_rule);
 RuleRegistry.register(commands_deprecated_directory_rule);
-RuleRegistry.register(commands_migrate_to_skills_rule);
 RuleRegistry.register(hooks_invalid_config_rule);
 RuleRegistry.register(hooks_invalid_event_rule);
 RuleRegistry.register(hooks_missing_script_rule);
-RuleRegistry.register(lsp_command_not_in_path_rule);
+RuleRegistry.register(lsp_command_bare_name_rule);
 RuleRegistry.register(lsp_extension_missing_dot_rule);
 RuleRegistry.register(lsp_invalid_transport_rule);
 RuleRegistry.register(lsp_language_id_empty_rule);
@@ -192,7 +190,7 @@ RuleRegistry.register(plugin_commands_deprecated_rule);
 RuleRegistry.register(plugin_components_wrong_location_rule);
 RuleRegistry.register(plugin_description_required_rule);
 RuleRegistry.register(plugin_hook_missing_plugin_root_rule);
-RuleRegistry.register(plugin_invalid_manifest_rule);
+RuleRegistry.register(plugin_invalid_marketplace_manifest_rule);
 RuleRegistry.register(plugin_invalid_version_rule);
 RuleRegistry.register(plugin_json_wrong_location_rule);
 RuleRegistry.register(plugin_marketplace_files_not_found_rule);
@@ -281,11 +279,10 @@ export {
   claude_md_rules_circular_symlink_rule,
   claude_md_size_rule,
   commands_deprecated_directory_rule,
-  commands_migrate_to_skills_rule,
   hooks_invalid_config_rule,
   hooks_invalid_event_rule,
   hooks_missing_script_rule,
-  lsp_command_not_in_path_rule,
+  lsp_command_bare_name_rule,
   lsp_extension_missing_dot_rule,
   lsp_invalid_transport_rule,
   lsp_language_id_empty_rule,
@@ -312,7 +309,7 @@ export {
   plugin_components_wrong_location_rule,
   plugin_description_required_rule,
   plugin_hook_missing_plugin_root_rule,
-  plugin_invalid_manifest_rule,
+  plugin_invalid_marketplace_manifest_rule,
   plugin_invalid_version_rule,
   plugin_json_wrong_location_rule,
   plugin_marketplace_files_not_found_rule,

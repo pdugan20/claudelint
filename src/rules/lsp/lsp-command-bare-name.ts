@@ -1,10 +1,10 @@
 /**
- * Rule: lsp-command-not-in-path
+ * Rule: lsp-command-bare-name
  *
- * Validates that LSP server commands are in PATH or use absolute paths
+ * Validates that LSP server commands use explicit paths instead of bare names.
  *
- * Commands should either be in the system PATH or use absolute paths
- * to ensure portability and avoid runtime errors.
+ * Bare command names rely on PATH resolution, which may differ across
+ * environments like CI, containers, or other machines.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -13,18 +13,18 @@ import { hasProperty, isObject, isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
-    id: 'lsp-command-not-in-path',
-    name: 'LSP Command Not In PATH',
-    description: 'LSP server commands should be in PATH or use absolute paths',
+    id: 'lsp-command-bare-name',
+    name: 'LSP Command Bare Name',
+    description: 'LSP server commands should use explicit paths instead of bare names',
     category: 'LSP',
     severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://claudelint.com/rules/lsp/lsp-command-not-in-path',
+    docUrl: 'https://claudelint.com/rules/lsp/lsp-command-bare-name',
     docs: {
       strict: true,
-      summary: 'Warns when LSP server commands are not in PATH or lack absolute paths.',
+      summary: 'Warns when LSP server commands use bare names instead of explicit paths.',
       rationale:
         'PATH-dependent commands may fail in CI, containers, or other environments with different PATH configurations.',
       details:
@@ -36,7 +36,7 @@ export const rule: Rule = {
       examples: {
         incorrect: [
           {
-            description: 'Server command relies on PATH resolution',
+            description: 'Server command uses a bare name instead of explicit path',
             code:
               '{\n' +
               '  "typescript-server": {\n' +
@@ -108,7 +108,7 @@ export const rule: Rule = {
       // Warn if command doesn't start with / or ./
       if (!commandName.startsWith('/') && !commandName.startsWith('./')) {
         context.report({
-          message: `Command "${commandName}" not found for server "${serverName}"`,
+          message: `Server "${serverName}" command "${commandName}" is a bare name, not an explicit path`,
         });
       }
     }

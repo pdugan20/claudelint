@@ -1,15 +1,15 @@
 /**
- * Tests for lsp-command-not-in-path rule
+ * Tests for lsp-command-bare-name rule
  */
 
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
-import { rule } from '../../../src/rules/lsp/lsp-command-not-in-path';
+import { rule } from '../../../src/rules/lsp/lsp-command-bare-name';
 
 const ruleTester = new ClaudeLintRuleTester();
 
-describe('lsp-command-not-in-path', () => {
+describe('lsp-command-bare-name', () => {
   it('should pass validation tests', async () => {
-    await ruleTester.run('lsp-command-not-in-path', rule, {
+    await ruleTester.run('lsp-command-bare-name', rule, {
       valid: [
         {
           filePath: '.claude/lsp.json',
@@ -49,7 +49,7 @@ describe('lsp-command-not-in-path', () => {
               extensionToLanguage: { '.ts': 'typescript' },
             },
           }),
-          errors: [{ message: 'Command "typescript-language-server" not found' }],
+          errors: [{ message: 'is a bare name, not an explicit path' }],
         },
       ],
     });

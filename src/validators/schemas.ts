@@ -303,9 +303,10 @@ export const PluginManifestSchema = z.object({
   skills: z.union([z.string(), z.array(z.string())]).optional(),
 
   // Config paths
-  // Note: hooks rejects inline objects (Claude Code only accepts string paths).
-  // Default hooks/hooks.json is auto-loaded; this field is for additional hook files only.
-  hooks: z.union([z.string(), z.array(z.string())]).optional(),
+  // Note: The documented spec accepts string|array|object for hooks, but all three are
+  // currently broken upstream (anthropics/claude-code#16288, #27307). Only auto-discovery
+  // from hooks/hooks.json works. Schema accepts all three per the documented spec.
+  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
   mcpServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
     .optional(),
@@ -364,7 +365,7 @@ export const MarketplacePluginEntrySchema = z.object({
   commands: z.union([z.string(), z.array(z.string())]).optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
-  hooks: z.union([z.string(), z.array(z.string())]).optional(),
+  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
   mcpServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
     .optional(),

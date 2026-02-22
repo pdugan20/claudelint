@@ -8,7 +8,7 @@ description: "LSP server names should be descriptive"
 
 ## Rule Details
 
-This rule checks the top-level keys in `lsp.json`, which serve as server names, and warns when any name is shorter than the configured minimum length. Descriptive server names like `typescript-language-server` or `python-lsp` improve readability and maintainability of LSP configuration files. Single-character or very short names make it hard to identify which language server is being configured.
+This rule checks the top-level keys in `lsp.json`, which serve as server names, and warns when any name is shorter than the configured minimum length. Descriptive names like `typescript-server` or `python-lsp` make configurations easier to maintain and debug.
 
 ### Incorrect
 
@@ -56,21 +56,13 @@ Require server names of at least 3 characters:
 }
 ```
 
-Allow single-character server names:
-
-```json
-{
-  "minLength": 1
-}
-```
-
 ## When Not To Use It
 
 Disable this rule if you have an established convention using short abbreviations for server names that are well-understood by your team.
 
 ## Related Rules
 
-- [`lsp-command-not-in-path`](/rules/lsp/lsp-command-not-in-path)
+- [`lsp-command-bare-name`](/rules/lsp/lsp-command-bare-name)
 - [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
 
 ## Resources

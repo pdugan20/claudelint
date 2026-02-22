@@ -54,7 +54,7 @@ This rule does not have any configuration options.
 
 ## Related Rules
 
-- [`plugin-invalid-manifest`](/rules/plugin/plugin-invalid-manifest)
+- [`plugin-invalid-marketplace-manifest`](/rules/plugin/plugin-invalid-marketplace-manifest)
 - [`plugin-missing-file`](/rules/plugin/plugin-missing-file)
 
 ## Resources

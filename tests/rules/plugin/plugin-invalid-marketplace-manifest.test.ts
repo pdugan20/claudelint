@@ -1,15 +1,15 @@
 /**
- * Tests for plugin-invalid-manifest rule
+ * Tests for plugin-invalid-marketplace-manifest rule
  */
 
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
-import { rule } from '../../../src/rules/plugin/plugin-invalid-manifest';
+import { rule } from '../../../src/rules/plugin/plugin-invalid-marketplace-manifest';
 
 const ruleTester = new ClaudeLintRuleTester();
 
-describe('plugin-invalid-manifest', () => {
+describe('plugin-invalid-marketplace-manifest', () => {
   it('should pass for valid marketplace.json with all required fields', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({
@@ -30,7 +30,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should pass for valid marketplace.json with optional fields', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({
@@ -50,7 +50,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should pass for plugin entries with github source', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({
@@ -71,7 +71,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should pass for plugin entries with url source', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({
@@ -95,7 +95,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should pass for plugin entries with npm source', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({
@@ -116,7 +116,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should skip non-marketplace.json files', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({ name: 'test' }),
@@ -132,7 +132,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report invalid JSON', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -145,7 +145,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report missing name field', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -161,7 +161,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report missing owner field', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -177,7 +177,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report missing plugins array', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -193,7 +193,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report plugin entry missing name', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -210,7 +210,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should report plugin entry missing source', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [],
       invalid: [
         {
@@ -227,7 +227,7 @@ describe('plugin-invalid-manifest', () => {
   });
 
   it('should accept empty plugins array', async () => {
-    await ruleTester.run('plugin-invalid-manifest', rule, {
+    await ruleTester.run('plugin-invalid-marketplace-manifest', rule, {
       valid: [
         {
           content: JSON.stringify({

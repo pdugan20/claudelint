@@ -1,5 +1,5 @@
 {
-  "total": 117,
+  "total": 116,
   "categoryCount": 10,
   "categories": {
     "claude-md": {
@@ -40,8 +40,8 @@
     },
     "commands": {
       "display": "Commands",
-      "count": 2
+      "count": 1
     }
   },
-  "generatedAt": "2026-02-21T18:48:17.921Z"
+  "generatedAt": "2026-02-22T05:36:41.321Z"
 }

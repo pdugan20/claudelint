@@ -124,7 +124,7 @@
       ]
     },
     "hooks": {
-      "description": "Additional hook config file paths (hooks/hooks.json is auto-loaded). Claude Code rejects inline objects.",
+      "description": "Additional hook config file paths (hooks/hooks.json is auto-loaded). Claude Code rejects inline objects at runtime despite the official docs listing the type as string|array|object.",
       "oneOf": [
         {
           "type": "string",

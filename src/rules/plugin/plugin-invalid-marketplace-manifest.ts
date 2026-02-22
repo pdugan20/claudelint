@@ -1,5 +1,5 @@
 /**
- * Rule: plugin-invalid-manifest
+ * Rule: plugin-invalid-marketplace-manifest
  *
  * Validates marketplace.json schema against the official spec.
  * https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
@@ -13,15 +13,15 @@ import { MarketplaceMetadataSchema } from '../../validators/schemas';
  */
 export const rule: Rule = {
   meta: {
-    id: 'plugin-invalid-manifest',
-    name: 'Plugin Invalid Manifest',
+    id: 'plugin-invalid-marketplace-manifest',
+    name: 'Plugin Invalid Marketplace Manifest',
     description: 'marketplace.json must conform to the marketplace schema',
     category: 'Plugin',
     severity: 'error',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
-    docUrl: 'https://claudelint.com/rules/plugin/plugin-invalid-manifest',
+    docUrl: 'https://claudelint.com/rules/plugin/plugin-invalid-marketplace-manifest',
     docs: {
       recommended: true,
       summary: 'Validates that marketplace.json conforms to the official marketplace schema.',

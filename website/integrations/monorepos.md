@@ -21,20 +21,9 @@ claudelint provides full support for monorepo projects with workspace detection 
 
 ## File Discovery
 
-claudelint recursively discovers files throughout your project tree, matching how Claude Code itself discovers CLAUDE.md files in monorepos:
+claudelint recursively discovers Claude Code configuration files throughout your project tree. `CLAUDE.md` files in subdirectories (e.g., `packages/api/CLAUDE.md`, `src/CLAUDE.md`) are automatically found and validated. Skills in nested `.claude/skills/` directories are also discovered, matching Claude Code's on-demand subdirectory skill loading.
 
-| File Type | Discovery Pattern | Recursive? |
-|-----------|------------------|------------|
-| `CLAUDE.md` | `**/CLAUDE.md` | Yes |
-| `CLAUDE.local.md` | `**/CLAUDE.local.md` | Yes |
-| Rules | `.claude/rules/**/*.md` | Yes (within .claude/rules/) |
-| Skills | `**/.claude/skills/*/SKILL.md` | Yes |
-| Settings | `.claude/settings.json` | Root only |
-| Hooks | `.claude/hooks/hooks.json` | Root only |
-| MCP | `.mcp.json` | Root only |
-| Agents | `.claude/agents/*/AGENT.md` | Root only |
-
-This means `CLAUDE.md` files in subdirectories (e.g., `packages/api/CLAUDE.md`, `src/CLAUDE.md`) are automatically found and validated. Skills in nested `.claude/skills/` directories are also discovered, matching Claude Code's on-demand subdirectory skill loading.
+For the complete file discovery table and glob patterns, see [File Discovery](/guide/file-discovery#file-type-reference).
 
 ## Quick Start
 

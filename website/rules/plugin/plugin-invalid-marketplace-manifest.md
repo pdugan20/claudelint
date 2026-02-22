@@ -2,7 +2,7 @@
 description: "marketplace.json must conform to the marketplace schema"
 ---
 
-# plugin-invalid-manifest
+# plugin-invalid-marketplace-manifest
 
 <RuleHeader description="marketplace.json must conform to the marketplace schema" severity="error" :fixable="false" :configurable="false" category="Plugin" />
 
@@ -80,8 +80,8 @@ This rule does not have any configuration options.
 
 ## Resources
 
-- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-invalid-manifest.ts)
-- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-invalid-manifest.test.ts)
+- [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/plugin/plugin-invalid-marketplace-manifest.ts)
+- [Rule Tests](https://github.com/pdugan20/claudelint/blob/main/tests/rules/plugin/plugin-invalid-marketplace-manifest.test.ts)
 
 ## Version
 

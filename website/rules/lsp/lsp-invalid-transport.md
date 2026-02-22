@@ -59,7 +59,7 @@ This rule does not have any configuration options.
 
 ## Related Rules
 
-- [`lsp-command-not-in-path`](/rules/lsp/lsp-command-not-in-path)
+- [`lsp-command-bare-name`](/rules/lsp/lsp-command-bare-name)
 - [`lsp-extension-missing-dot`](/rules/lsp/lsp-extension-missing-dot)
 
 ## Resources

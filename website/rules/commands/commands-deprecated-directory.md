@@ -21,6 +21,17 @@ Project with a .claude/commands directory
     test-all.md
 ```
 
+Legacy command file in .claude/commands
+
+````markdown
+# .claude/commands/deploy.md
+Run the deployment script.
+
+```bash
+./scripts/deploy.sh
+```
+````
+
 ### Correct
 
 Project migrated to Skills
@@ -36,9 +47,23 @@ Project migrated to Skills
       test-all.sh
 ```
 
+Equivalent skill with proper structure
+
+```markdown
+# .claude/skills/deploy/SKILL.md
+---
+name: deploy
+description: Run the deployment script
+---
+
+## Usage
+
+Invoke with `/deploy` to run the deployment pipeline.
+```
+
 ## How To Fix
 
-Create equivalent skills in `.claude/skills/` for each command in `.claude/commands/`. Each skill needs a directory with a SKILL.md file containing YAML frontmatter. After migrating all commands, remove the `.claude/commands/` directory.
+Create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` (YAML frontmatter for name and description) and move command scripts into it. Then remove the old `.claude/commands/` directory. See the [Skills documentation](https://code.claude.com/docs/en/skills) for the full format.
 
 ## Options
 
@@ -50,7 +75,7 @@ Disable this rule if you are intentionally maintaining legacy commands alongside
 
 ## Related Rules
 
-- [`commands-migrate-to-skills`](/rules/commands/commands-migrate-to-skills)
+- [`plugin-commands-deprecated`](/rules/plugin/plugin-commands-deprecated)
 
 ## Resources
 
