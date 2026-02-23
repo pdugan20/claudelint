@@ -201,6 +201,61 @@ describe('InitWizard', () => {
 
       expect(existsSync(join(testDir, '.claude', 'hooks'))).toBe(true);
     });
+
+    it('does not create .claudelintrc.json when --hooks is the only intent', async () => {
+      // User has an existing config and only wants to add hooks
+      const configPath = join(testDir, '.claudelintrc.json');
+      writeFileSync(configPath, '{"extends": "claudelint:strict"}');
+
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      // Config should be unchanged — not overwritten to recommended
+      const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+      expect(config.extends).toBe('claudelint:strict');
+    });
+
+    it('does not create .claudelintrc.json when no config exists and only --hooks is passed', async () => {
+      // No existing config — user only wants hooks, not a full init
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      const configPath = join(testDir, '.claudelintrc.json');
+      expect(existsSync(configPath)).toBe(false);
+    });
+
+    it('does not create .claudelintignore when only --hooks is passed', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      const ignorePath = join(testDir, '.claudelintignore');
+      expect(existsSync(ignorePath)).toBe(false);
+    });
+
+    it('does not modify package.json when only --hooks is passed', async () => {
+      writeFileSync(join(testDir, 'package.json'), '{"scripts": {}}');
+
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true });
+
+      const pkg = JSON.parse(readFileSync(join(testDir, 'package.json'), 'utf-8'));
+      expect(pkg.scripts['lint:claude']).toBeUndefined();
+    });
+
+    it('creates both config and hooks when --hooks --preset are combined', async () => {
+      const wizard = new InitWizard(testDir);
+      await wizard.run({ yes: true, hooks: true, preset: 'strict' });
+
+      // Config should be created with the specified preset
+      const configPath = join(testDir, '.claudelintrc.json');
+      expect(existsSync(configPath)).toBe(true);
+      const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+      expect(config.extends).toBe('claudelint:strict');
+
+      // Hooks should also be created
+      const hooksPath = join(testDir, '.claude', 'hooks', 'hooks.json');
+      expect(existsSync(hooksPath)).toBe(true);
+    });
   });
 
   describe('next-steps output (P5-4)', () => {

@@ -16,10 +16,7 @@
     "releaseNotes": null
   },
   "npm": {
-    "publish": true,
-    "publishPath": ".",
-    "access": "public",
-    "tag": null
+    "publish": false
   },
   "hooks": {
     "before:init": ["npm run lint", "npm run test", "npm run build"],

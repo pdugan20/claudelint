@@ -76,6 +76,14 @@ export class InitWizard {
     const toolInfo = this.detectOptionalTools();
     this.displayToolInfo(toolInfo);
 
+    // --hooks --yes without --preset: hooks-only mode (skip config/ignore/scripts)
+    if (options.yes && options.hooks && !options.preset) {
+      this.writeHooksFile();
+      logger.success('Hooks created successfully!');
+      this.displayNextSteps(projectInfo, true);
+      return;
+    }
+
     // Use defaults if --yes flag
     if (options.yes) {
       const validPresets = ['recommended', 'strict', 'all'] as const;
