@@ -9,11 +9,10 @@
  * plugin root by the plugin system and do NOT need ${CLAUDE_PLUGIN_ROOT}.
  * Only inline object hook commands need this variable.
  *
- * DEPRECATED: The plugin.json hooks field is currently broken upstream:
- * - String paths: not loaded (anthropics/claude-code#16288)
- * - Inline objects: rejected at runtime (anthropics/claude-code#27307)
- * - Only auto-discovery from hooks/hooks.json works
- * This rule will be re-enabled when these upstream issues are resolved.
+ * Off by default: The plugin.json hooks field has upstream issues that prevent
+ * inline hook objects from working at runtime. Only auto-discovery from
+ * hooks/hooks.json is currently supported. This rule will be added to the
+ * recommended preset when upstream support is restored.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -45,7 +44,7 @@ export const rule: Rule = {
     category: 'Plugin',
     severity: 'error',
     fixable: false,
-    deprecated: true,
+    deprecated: false,
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/plugin/plugin-hook-missing-plugin-root',
     docs: {
@@ -80,6 +79,10 @@ export const rule: Rule = {
         'Replace relative script paths in inline hook commands with paths that start with ' +
         '${CLAUDE_PLUGIN_ROOT}. For example, change `./scripts/lint.sh` to ' +
         '`${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh`.',
+      whenNotToUse:
+        'This rule is off by default because inline hook objects in plugin.json are not yet ' +
+        'supported at runtime by Claude Code. Only auto-discovered hooks from hooks/hooks.json ' +
+        'currently work. Enable this rule if you are preparing plugins for future upstream support.',
       relatedRules: ['plugin-missing-file'],
     },
   },

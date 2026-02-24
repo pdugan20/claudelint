@@ -68,6 +68,10 @@ Replace relative script paths in inline hook commands with paths that start with
 
 This rule does not have any configuration options.
 
+## When Not To Use It
+
+This rule is off by default because inline hook objects in plugin.json are not yet supported at runtime by Claude Code. Only auto-discovered hooks from hooks/hooks.json currently work. Enable this rule if you are preparing plugins for future upstream support.
+
 ## Related Rules
 
 - [`plugin-missing-file`](/rules/plugin/plugin-missing-file)
