@@ -167,6 +167,10 @@
     "url": "https://github.com/pdugan20/claudelint/issues"
   },
   "homepage": "https://claudelint.com",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "engines": {
     "node": ">=20.0.0"
   },
