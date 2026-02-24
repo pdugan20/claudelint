@@ -1,5 +1,5 @@
 ---
-description: Run claudelint in GitHub Actions, GitLab CI, and other pipelines to catch Claude Code configuration errors before they reach production.
+description: Run claudelint in GitHub Actions, GitLab CI, and other pipelines to catch Claude Code configuration errors before they reach production. Includes setup for Claude Code GitHub Actions.
 ---
 
 # CI/CD Integration Guide
@@ -146,6 +146,32 @@ Add caching to speed up repeated runs:
 
 - name: Run claudelint
   run: claudelint check-all --cache
+```
+
+### With Claude Code GitHub Actions
+
+[Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions) lets Claude respond to `@claude` mentions in PRs, create PRs from issues, and run automated code review. claudelint validates your Claude Code configuration files — the two complement each other.
+
+Add a claudelint validation job alongside your Claude Code action to catch config issues in the files Claude relies on:
+
+```yaml
+jobs:
+  lint-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+      - run: npm install -g claude-code-lint
+      - run: claudelint check-all --format github
+
+  claude-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
 ## GitLab CI
