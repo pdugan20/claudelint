@@ -1,10 +1,9 @@
 # Releasing
 
-This document covers the release process for claudelint. All releases use [release-it](https://github.com/release-it/release-it) which automates versioning, changelog generation, git tagging, GitHub releases, and npm publishing.
+This document covers the release process for claudelint. Releases use [release-it](https://github.com/release-it/release-it) for versioning, changelog, git tagging, and GitHub releases. npm publishing happens automatically via CI using [OIDC trusted publishing](https://docs.npmjs.com/trusted-publishers/).
 
 ## Prerequisites
 
-- Authenticated with npm (`npm login`)
 - Authenticated with GitHub CLI (`gh auth status`)
 - Push access to `pdugan20/claudelint`
 - Clean working directory (`git status` shows no changes)
@@ -81,7 +80,18 @@ npm run release          # Prompts for version
 4. **Changelog** — Auto-generates CHANGELOG.md section from conventional commits
 5. **Git** — Commits changes, creates `v{version}` tag, pushes to origin
 6. **GitHub** — Creates GitHub release with release notes
-7. **npm** — Publishes to npm with public access
+7. **npm** — CI publishes automatically when the `v*` tag is pushed (see below)
+
+### npm Publishing (CI)
+
+npm publishing is handled by the `.github/workflows/publish.yml` workflow, not by release-it. When release-it pushes a `v*` tag, the CI workflow:
+
+1. Checks out the tagged commit
+2. Builds the package
+3. Publishes to npm using OIDC trusted publishing (no tokens needed)
+4. Attaches [provenance attestation](https://docs.npmjs.com/generating-provenance-statements/) to the package
+
+The trusted publisher is configured on npmjs.com to accept publishes from the `pdugan20/claudelint` repository's `publish.yml` workflow. This eliminates the need for npm tokens or secrets.
 
 ## Version Sync
 
@@ -111,13 +121,6 @@ npm run sync:versions
 
 ## Troubleshooting
 
-### "Not authenticated with npm"
-
-```bash
-npm login
-npm whoami  # Should show your username
-```
-
 ### Dirty working directory
 
 ```bash
@@ -144,19 +147,36 @@ gh auth status
 gh release create v0.x.x --title "v0.x.x" --notes-from-tag
 ```
 
+### CI publish failed
+
+If release-it succeeded (tag pushed, GitHub release created) but the CI publish workflow failed:
+
+```bash
+# Check the workflow run
+gh run list --workflow=publish.yml --limit 3
+
+# View the failure
+gh run view <run-id> --log-failed
+
+# Re-run the failed workflow
+gh run rerun <run-id>
+```
+
+If the issue is with OIDC or trusted publishing configuration, verify the setup at `https://www.npmjs.com/package/claude-code-lint/access`.
+
 ### Failed release mid-way
 
-If release fails after the git tag but before npm publish:
+If release fails after the git tag but before CI publish completes:
 
 ```bash
 # Check what was created
 git tag -l | tail -5
 gh release list | head -5
 
-# Retry npm publish manually
-npm publish --access public
+# Re-trigger the CI publish by re-pushing the tag
+git push origin v0.x.x
 
-# Or delete the tag and re-run
+# Or delete the tag and re-run the full release
 git tag -d v0.x.x
 git push origin :refs/tags/v0.x.x
 npm run release

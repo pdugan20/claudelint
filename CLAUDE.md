@@ -58,7 +58,7 @@ npm run release:minor    # Minor bump
 npm run release:beta     # Pre-release
 ```
 
-Release runs lint/test/build, generates CHANGELOG, bumps versions (including `npm run sync:versions` for skills), tags, pushes, and publishes to npm.
+Release runs lint/test/build, generates CHANGELOG, bumps versions (including `npm run sync:versions` for skills), tags, pushes, and creates a GitHub release. npm publishing happens automatically via CI when the tag is pushed (OIDC trusted publishing with provenance).
 
 ## File Naming Conventions
 

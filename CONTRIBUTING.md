@@ -644,7 +644,8 @@ CI will fail if the API report is stale, the export snapshot doesn't match, or p
    - Creates git commit and tag
    - Pushes to GitHub
    - Creates GitHub release
-   - Publishes to npm
+
+   npm publishing happens automatically via CI when the `v*` tag is pushed, using OIDC trusted publishing with provenance attestation.
 
 **Note:** The `npm run release` command uses [release-it](https://github.com/release-it/release-it) and handles all steps automatically. Manual version/changelog updates are not needed.
 

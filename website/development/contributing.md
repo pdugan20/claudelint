@@ -442,7 +442,7 @@ For maintainers only.
    npm run release          # Interactive (prompts for version)
    ```
 
-The release command uses [release-it](https://github.com/release-it/release-it) and handles everything: lint, test, build, CHANGELOG generation, version bump, skill version sync, git tag, GitHub release, and npm publish.
+The release command uses [release-it](https://github.com/release-it/release-it) and handles: lint, test, build, CHANGELOG generation, version bump, skill version sync, git tag, and GitHub release. npm publishing happens automatically via CI when the tag is pushed, using OIDC trusted publishing with provenance attestation.
 
 ## See Also
 
