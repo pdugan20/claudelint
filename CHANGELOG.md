@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1](https://github.com/pdugan20/claudelint/compare/v0.2.0...v0.2.1) (2026-02-24)
+
+### Bug Fixes
+
+* prevent init --hooks from creating unwanted config files ([7ad6c48](https://github.com/pdugan20/claudelint/commit/7ad6c48b400ac882691787f9986417ace497407b))
+* undeprecate plugin-hook-missing-plugin-root rule ([adf376e](https://github.com/pdugan20/claudelint/commit/adf376ebb22aaed04d80e5e29cce5a21cf0e46c6))
+
+### Documentation
+
+* update release documentation for OIDC trusted publishing ([ac13857](https://github.com/pdugan20/claudelint/commit/ac138574c522d116a0f3a29ee86f051077ffb8fa))
+
+### Continuous Integration
+
+* bump actions/download-artifact from 4 to 7 ([#46](https://github.com/pdugan20/claudelint/issues/46)) ([7250d7d](https://github.com/pdugan20/claudelint/commit/7250d7dc482893be128d628d7b69e10d7dfcc3ab))
+* bump actions/first-interaction from 1 to 3 ([#47](https://github.com/pdugan20/claudelint/issues/47)) ([d35e1ec](https://github.com/pdugan20/claudelint/commit/d35e1ecbf6ff4bae39ce8a5fcdbf23e113e43122))
+* bump actions/labeler from 5 to 6 ([#44](https://github.com/pdugan20/claudelint/issues/44)) ([6a2c104](https://github.com/pdugan20/claudelint/commit/6a2c104e5aca9d52aa9400236b35de27ab861dfe))
+* bump actions/stale from 9 to 10 ([#48](https://github.com/pdugan20/claudelint/issues/48)) ([b4721b9](https://github.com/pdugan20/claudelint/commit/b4721b90e064c7b194af55703cc109d8d32f0416))
+* bump actions/upload-artifact from 4 to 6 ([#45](https://github.com/pdugan20/claudelint/issues/45)) ([74a4de9](https://github.com/pdugan20/claudelint/commit/74a4de97511560189db02758d80d380a287c9b0a))
+* switch npm publish to OIDC trusted publishing ([b60b063](https://github.com/pdugan20/claudelint/commit/b60b063277b890c0879d20f742917570a33fa278))
+
 ## [0.2.0](https://github.com/pdugan20/claudelint/compare/v0.2.0-beta.3...v0.2.0) (2026-02-22)
 
 ### Features
