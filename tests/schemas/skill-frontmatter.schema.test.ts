@@ -120,42 +120,6 @@ describe('SkillFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should accept license field', () => {
-      const result = SkillFrontmatterSchema.safeParse({
-        name: 'my-skill',
-        description: 'This skill does something',
-        license: 'MIT',
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should accept compatibility field', () => {
-      const result = SkillFrontmatterSchema.safeParse({
-        name: 'my-skill',
-        description: 'This skill does something',
-        compatibility: 'Claude Code 1.0+',
-      });
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject compatibility over 500 characters', () => {
-      const result = SkillFrontmatterSchema.safeParse({
-        name: 'my-skill',
-        description: 'This skill does something',
-        compatibility: 'x'.repeat(501),
-      });
-      expect(result.success).toBe(false);
-    });
-
-    it('should accept metadata field', () => {
-      const result = SkillFrontmatterSchema.safeParse({
-        name: 'my-skill',
-        description: 'This skill does something',
-        metadata: { category: 'testing', priority: 1 },
-      });
-      expect(result.success).toBe(true);
-    });
-
     it('should accept any string for tools (validation happens in validator)', () => {
       // Note: allowed-tools uses z.array(z.string()) to allow custom validation
       // with warnings instead of schema errors. The Skills validator validates
@@ -193,33 +157,11 @@ describe('SkillFrontmatterWithRefinements', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should reject both allowed-tools and disallowed-tools', () => {
-    const result = SkillFrontmatterWithRefinements.safeParse({
-      name: 'my-skill',
-      description: 'This skill does something',
-      'allowed-tools': ['Bash'],
-      'disallowed-tools': ['Read'],
-    });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0].message).toContain('both');
-    }
-  });
-
   it('should accept allowed-tools alone', () => {
     const result = SkillFrontmatterWithRefinements.safeParse({
       name: 'my-skill',
       description: 'This skill does something',
       'allowed-tools': ['Bash'],
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it('should accept disallowed-tools alone', () => {
-    const result = SkillFrontmatterWithRefinements.safeParse({
-      name: 'my-skill',
-      description: 'This skill does something',
-      'disallowed-tools': ['Bash'],
     });
     expect(result.success).toBe(true);
   });

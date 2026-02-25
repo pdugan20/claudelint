@@ -13,9 +13,7 @@ const KNOWN_KEYS = new Set([
   'description',
   'version',
   'tags',
-  'dependencies',
   'allowed-tools',
-  'disallowed-tools',
   'model',
   'context',
   'agent',
@@ -23,9 +21,6 @@ const KNOWN_KEYS = new Set([
   'disable-model-invocation',
   'user-invocable',
   'hooks',
-  'license',
-  'compatibility',
-  'metadata',
 ]);
 
 export const rule: Rule = {
@@ -46,16 +41,15 @@ export const rule: Rule = {
         'Unknown keys are silently ignored, which often indicates a typo in a valid key name.',
       details:
         'SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, ' +
-        'dependencies, allowed-tools, disallowed-tools, model, context, agent, argument-hint, ' +
-        'disable-model-invocation, user-invocable, hooks, license, compatibility, and metadata. ' +
-        'This rule detects any top-level keys that are not in this set. Unknown keys are silently ignored ' +
-        'at runtime, which means typos in field names (e.g., "dependecies" instead of "dependencies") ' +
-        'go unnoticed and the intended configuration never takes effect.',
+        'allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, ' +
+        'and hooks. This rule detects any top-level keys that are not in this set. Unknown keys are ' +
+        'silently ignored at runtime, which means typos in field names go unnoticed and the intended ' +
+        'configuration never takes effect.',
       examples: {
         incorrect: [
           {
             description: 'Frontmatter with a typo in a key name',
-            code: '---\nname: deploy\ndescription: Deploys the application\ndependecies:\n  - build\n---',
+            code: '---\nname: deploy\ndescription: Deploys the application\ncontxt: fork\n---',
           },
           {
             description: 'Frontmatter with a completely unknown key',
@@ -65,16 +59,15 @@ export const rule: Rule = {
         correct: [
           {
             description: 'Frontmatter using only recognized keys',
-            code: '---\nname: deploy\ndescription: Deploys the application\ndependencies:\n  - build\nallowed-tools:\n  - Bash\n---',
+            code: '---\nname: deploy\ndescription: Deploys the application\nallowed-tools:\n  - Bash\n---',
           },
         ],
       },
       howToFix:
-        'Valid keys: name, description, version, tags, dependencies, allowed-tools, ' +
-        'disallowed-tools, model, context, agent, argument-hint, disable-model-invocation, ' +
-        'user-invocable, hooks, license, compatibility, metadata. ' +
-        'Check for typos or place custom data under the `metadata` field.',
-      relatedRules: ['skill-description', 'skill-dependencies', 'skill-allowed-tools'],
+        'Valid keys: name, description, version, tags, allowed-tools, model, context, agent, ' +
+        'argument-hint, disable-model-invocation, user-invocable, hooks. ' +
+        'Check for typos in your field names.',
+      relatedRules: ['skill-description', 'skill-allowed-tools'],
     },
   },
 

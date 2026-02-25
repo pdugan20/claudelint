@@ -1,24 +1,20 @@
 /**
  * Rule: skill-allowed-tools
  *
- * Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools
+ * Skill allowed-tools must be an array of tool names
  *
- * Uses thin wrapper pattern: delegates to SkillFrontmatterWithRefinements for cross-field validation
+ * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape for validation
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import {
-  SkillFrontmatterSchema,
-  SkillFrontmatterWithRefinements,
-} from '../../schemas/skill-frontmatter.schema';
+import { SkillFrontmatterSchema } from '../../schemas/skill-frontmatter.schema';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
 
 export const rule: Rule = {
   meta: {
     id: 'skill-allowed-tools',
     name: 'Skill Allowed Tools Format',
-    description:
-      'Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools',
+    description: 'Skill allowed-tools must be an array of tool names',
     category: 'Skills',
     severity: 'error',
     fixable: false,
@@ -27,26 +23,18 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/skills/skill-allowed-tools',
     docs: {
       recommended: true,
-      summary:
-        'Validates that allowed-tools is a proper array and is not used alongside disallowed-tools.',
+      summary: 'Validates that allowed-tools is a proper array of tool name strings.',
       rationale:
-        'Using both allowed-tools and disallowed-tools creates conflicting permissions that are hard to reason about.',
+        'A malformed allowed-tools field is silently ignored, leaving all tools accessible.',
       details:
-        'This rule enforces two constraints on the `allowed-tools` frontmatter field. ' +
-        'First, it must be an array of valid tool name strings. ' +
-        'Second, `allowed-tools` and `disallowed-tools` are mutually exclusive -- ' +
-        'specifying both creates an ambiguous permission model. ' +
-        'The rule delegates to the Zod schema for format validation and uses cross-field refinements ' +
-        'to check mutual exclusivity.',
+        'This rule validates that the `allowed-tools` frontmatter field is an array of valid tool name strings. ' +
+        'Malformed values (e.g., a single string or non-string entries) will cause validation errors. ' +
+        'The rule delegates to the Zod schema for format validation.',
       examples: {
         incorrect: [
           {
             description: 'allowed-tools is not an array',
             code: '---\nname: deploy\ndescription: Deploys the app\nallowed-tools: Bash\n---',
-          },
-          {
-            description: 'Both allowed-tools and disallowed-tools specified',
-            code: '---\nname: deploy\ndescription: Deploys the app\nallowed-tools:\n  - Bash\n  - Read\ndisallowed-tools:\n  - WebFetch\n---',
           },
         ],
         correct: [
@@ -54,21 +42,10 @@ export const rule: Rule = {
             description: 'Valid allowed-tools array',
             code: '---\nname: deploy\ndescription: Deploys the app\nallowed-tools:\n  - Bash\n  - Read\n  - Write\n---',
           },
-          {
-            description: 'Using only disallowed-tools (no conflict)',
-            code: '---\nname: deploy\ndescription: Deploys the app\ndisallowed-tools:\n  - WebFetch\n---',
-          },
         ],
       },
-      howToFix:
-        'Ensure `allowed-tools` is a YAML array of tool name strings. ' +
-        'If you also have `disallowed-tools`, remove one of the two fields. ' +
-        'Use `allowed-tools` for an allowlist approach or `disallowed-tools` for a denylist approach, but not both.',
-      relatedRules: [
-        'skill-disallowed-tools',
-        'skill-allowed-tools-not-used',
-        'skill-mcp-tool-qualified-name',
-      ],
+      howToFix: 'Ensure `allowed-tools` is a YAML array of tool name strings.',
+      relatedRules: ['skill-allowed-tools-not-used', 'skill-mcp-tool-qualified-name'],
     },
   },
   validate: (context: RuleContext) => {
@@ -78,7 +55,6 @@ export const rule: Rule = {
       return;
     }
 
-    // First validate the array itself
     const allowedToolsSchema = SkillFrontmatterSchema.shape['allowed-tools'];
     const result = allowedToolsSchema.safeParse(frontmatter['allowed-tools']);
 
@@ -88,24 +64,6 @@ export const rule: Rule = {
         message: result.error.issues[0].message,
         line,
       });
-      return;
-    }
-
-    // Then check cross-field validation (mutual exclusivity with disallowed-tools)
-    const crossFieldResult = SkillFrontmatterWithRefinements.safeParse(frontmatter);
-
-    if (!crossFieldResult.success) {
-      const allowedToolsError = crossFieldResult.error.issues.find((issue) =>
-        issue.path.includes('allowed-tools')
-      );
-
-      if (allowedToolsError) {
-        const line = getFrontmatterFieldLine(context.fileContent, 'allowed-tools');
-        context.report({
-          message: allowedToolsError.message,
-          line,
-        });
-      }
     }
   },
 };

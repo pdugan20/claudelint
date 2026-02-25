@@ -26,8 +26,11 @@
         "SubagentStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SubagentStop": { "$ref": "#/$defs/matcherGroupArray" },
         "PreCompact": { "$ref": "#/$defs/matcherGroupArray" },
+        "ConfigChange": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionEnd": { "$ref": "#/$defs/matcherGroupArray" },
+        "WorktreeCreate": { "$ref": "#/$defs/matcherGroupArray" },
+        "WorktreeRemove": { "$ref": "#/$defs/matcherGroupArray" },
         "TeammateIdle": { "$ref": "#/$defs/matcherGroupArray" },
         "TaskCompleted": { "$ref": "#/$defs/matcherGroupArray" }
       },

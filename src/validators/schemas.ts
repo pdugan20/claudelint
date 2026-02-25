@@ -46,8 +46,11 @@ export const SettingsHooksSchema = z.object({
   SubagentStart: z.array(SettingsHookMatcherSchema).optional(),
   SubagentStop: z.array(SettingsHookMatcherSchema).optional(),
   PreCompact: z.array(SettingsHookMatcherSchema).optional(),
+  ConfigChange: z.array(SettingsHookMatcherSchema).optional(),
   SessionStart: z.array(SettingsHookMatcherSchema).optional(),
   SessionEnd: z.array(SettingsHookMatcherSchema).optional(),
+  WorktreeCreate: z.array(SettingsHookMatcherSchema).optional(),
+  WorktreeRemove: z.array(SettingsHookMatcherSchema).optional(),
   TeammateIdle: z.array(SettingsHookMatcherSchema).optional(),
   TaskCompleted: z.array(SettingsHookMatcherSchema).optional(),
 });

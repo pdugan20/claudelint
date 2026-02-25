@@ -29,6 +29,7 @@ export const SkillFrontmatterSchema = z.object({
 
   'user-invocable': z.boolean().optional(),
 
+  // claudelint extension: not in official Claude Code docs, used for plugin marketplace
   version: semver().optional(),
 
   model: ModelNames.optional(),
@@ -40,23 +41,10 @@ export const SkillFrontmatterSchema = z.object({
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
   'allowed-tools': z.array(z.string()).optional(),
 
-  // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
-  'disallowed-tools': z.array(z.string()).optional(),
-
+  // claudelint extension: not in official Claude Code docs, used for skill categorization
   tags: z.array(z.string()).optional(),
 
-  dependencies: z.array(z.string()).optional(),
-
   hooks: SettingsHooksSchema.optional(),
-
-  license: z.string().optional(),
-
-  compatibility: z
-    .string()
-    .max(500, 'Compatibility description must be 500 characters or less')
-    .optional(),
-
-  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**
@@ -73,18 +61,6 @@ export const SkillFrontmatterWithRefinements = SkillFrontmatterSchema.refine(
   {
     message: 'When context is "fork", agent field is required',
     path: ['agent'],
-  }
-).refine(
-  (data) => {
-    // allowed-tools and disallowed-tools are mutually exclusive
-    if (data['allowed-tools'] && data['disallowed-tools']) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'Cannot specify both allowed-tools and disallowed-tools',
-    path: ['allowed-tools'],
   }
 );
 

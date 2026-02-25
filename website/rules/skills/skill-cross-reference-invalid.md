@@ -48,10 +48,6 @@ Verify the relative path in the markdown link points to an existing SKILL.md fil
 
 This rule does not have any configuration options.
 
-## Related Rules
-
-- [`skill-dependencies`](/rules/skills/skill-dependencies)
-
 ## Resources
 
 - [Rule Implementation](https://github.com/pdugan20/claudelint/blob/main/src/rules/skills/skill-cross-reference-invalid.ts)

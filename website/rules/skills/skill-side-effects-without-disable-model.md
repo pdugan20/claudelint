@@ -105,7 +105,6 @@ This rule does not have any configuration options.
 ## Related Rules
 
 - [`skill-allowed-tools`](/rules/skills/skill-allowed-tools)
-- [`skill-disallowed-tools`](/rules/skills/skill-disallowed-tools)
 - [`skill-dangerous-command`](/rules/skills/skill-dangerous-command)
 
 ## Resources

@@ -128,10 +128,6 @@
         "link": "/rules/skills/skill-deep-nesting"
       },
       {
-        "text": "skill-dependencies",
-        "link": "/rules/skills/skill-dependencies"
-      },
-      {
         "text": "skill-description",
         "link": "/rules/skills/skill-description"
       },
@@ -146,10 +142,6 @@
       {
         "text": "skill-description-quality",
         "link": "/rules/skills/skill-description-quality"
-      },
-      {
-        "text": "skill-disallowed-tools",
-        "link": "/rules/skills/skill-disallowed-tools"
       },
       {
         "text": "skill-eval-usage",

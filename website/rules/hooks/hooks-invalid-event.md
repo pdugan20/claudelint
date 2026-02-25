@@ -8,7 +8,7 @@ description: "Hook events must be valid event names"
 
 ## Rule Details
 
-This rule validates that the keys in the hooks object of settings.json correspond to recognized Claude Code hook events. Valid events are: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, PreCompact, SessionStart, SessionEnd, TeammateIdle, and TaskCompleted. An unrecognized event name means the hook will never fire, silently failing to provide the intended automation.
+This rule validates that the keys in the hooks object of settings.json correspond to recognized Claude Code hook events. Valid events are: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, PreCompact, ConfigChange, SessionStart, SessionEnd, WorktreeCreate, WorktreeRemove, TeammateIdle, and TaskCompleted. An unrecognized event name means the hook will never fire, silently failing to provide the intended automation.
 
 ### Incorrect
 
@@ -40,7 +40,7 @@ Hook using a valid event name
 
 ## How To Fix
 
-Replace the invalid event name with one of the recognized hook events: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, PreCompact, SessionStart, SessionEnd, TeammateIdle, or TaskCompleted.
+Replace the invalid event name with one of the recognized hook events: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, PreCompact, ConfigChange, SessionStart, SessionEnd, WorktreeCreate, WorktreeRemove, TeammateIdle, or TaskCompleted.
 
 ## Options
 

@@ -49,7 +49,7 @@ export const rule: Rule = {
       howToFix:
         'Verify the relative path in the markdown link points to an existing SKILL.md file. ' +
         'Fix any typos in the path or remove the link if the referenced skill was deleted.',
-      relatedRules: ['skill-dependencies'],
+      relatedRules: [],
     },
   },
 

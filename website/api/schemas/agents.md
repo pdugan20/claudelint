@@ -20,13 +20,15 @@ Agent files are flat `.md` files (e.g., `.claude/agents/code-reviewer.md`). The 
 | `model` | string | no | `sonnet`, `opus`, `haiku`, or `inherit` ([valid values](/api/schemas#model-names)) |
 | `tools` | string[] | no | [Tool names](/api/schemas#tool-names) to allow |
 | `disallowedTools` | string[] | no | [Tool names](/api/schemas#tool-names) to disallow |
-| `permissionMode` | string | no | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, or `delegate` |
+| `permissionMode` | string | no | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, or `plan` |
 | `skills` | string[] | no | Skills this agent can use |
 | `hooks` | object | no | [Hooks configuration](/api/schemas/hooks) |
 | `memory` | string | no | `user`, `project`, or `local` |
 | `maxTurns` | number | no | Maximum agent turns (positive integer) |
 | `mcpServers` | string[] | no | MCP servers available to the agent |
 | `color` | string | no | `blue`, `cyan`, `green`, `yellow`, `magenta`, `red`, or `pink` |
+| `background` | boolean | no | Run as background task (default: `false`) |
+| `isolation` | string | no | `worktree` — run in a temporary git worktree |
 
 **Cross-field validations:**
 

@@ -19,8 +19,6 @@ description: A test skill
 version: 1.0.0
 tags:
   - test
-dependencies:
-  - npm:some-package
 allowed-tools:
   - Bash
   - Read
@@ -115,7 +113,7 @@ unknown-key: value
     });
   });
 
-  it('should pass for newly added official keys', async () => {
+  it('should pass for all official keys', async () => {
     await ruleTester.run('skill-frontmatter-unknown-keys', rule, {
       valid: [
         {
@@ -126,15 +124,9 @@ description: A test skill
 argument-hint: Pass a file path
 disable-model-invocation: true
 user-invocable: true
-disallowed-tools:
-  - Write
 hooks:
   PreToolUse:
     - command: echo check
-license: MIT
-compatibility: Claude Code 1.0+
-metadata:
-  category: testing
 ---
 
 # My Skill`,
@@ -155,8 +147,6 @@ description: A test skill
 tags:
   - automation
   - claude-code
-dependencies:
-  - npm:claude-code-lint
 ---
 
 # My Skill`,

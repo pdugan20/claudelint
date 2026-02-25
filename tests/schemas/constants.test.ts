@@ -96,10 +96,13 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 14 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(14);
+    it('should export all 17 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(17);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
+      expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
+      expect(VALID_HOOK_EVENTS).toContain('WorktreeCreate');
+      expect(VALID_HOOK_EVENTS).toContain('WorktreeRemove');
       expect(VALID_HOOK_EVENTS).toContain('TeammateIdle');
       expect(VALID_HOOK_EVENTS).toContain('TaskCompleted');
     });

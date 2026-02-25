@@ -1,18 +1,27 @@
 /**
  * Tests for update check utility
+ *
+ * Overrides HOME to a temp directory so tests use an empty cache
+ * instead of the real ~/.claudelint/update-check.json.
  */
 
+import { mkdtempSync, rmSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
 import { checkForUpdate } from '../../src/cli/utils/update-check';
 
 describe('update-check', () => {
   const originalEnv = process.env;
+  let tmpDir: string;
 
   beforeEach(() => {
-    process.env = { ...originalEnv };
+    tmpDir = mkdtempSync(join(tmpdir(), 'claudelint-test-'));
+    process.env = { ...originalEnv, HOME: tmpDir };
   });
 
   afterEach(() => {
     process.env = originalEnv;
+    rmSync(tmpDir, { recursive: true, force: true });
   });
 
   it('returns null when NO_UPDATE_NOTIFIER is set', () => {
@@ -28,7 +37,6 @@ describe('update-check', () => {
   });
 
   it('returns null on first run (no cache)', () => {
-    // First run triggers background check and returns null
     delete process.env.NO_UPDATE_NOTIFIER;
     delete process.env.CI;
     const result = checkForUpdate('0.2.0-beta.1');

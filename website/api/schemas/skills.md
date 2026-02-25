@@ -20,23 +20,17 @@ Skills are defined as `SKILL.md` files in skill directories. The YAML frontmatte
 | `argument-hint` | string | no | Hint text for skill arguments |
 | `disable-model-invocation` | boolean | no | Prevent model from invoking this skill |
 | `user-invocable` | boolean | no | Whether users can invoke directly via `/skill-name` |
-| `version` | string | no | Semantic version (e.g., `1.0.0`) |
+| `version` | string | no | Semantic version (e.g., `1.0.0`) (claudelint extension) |
 | `model` | string | no | `sonnet`, `opus`, `haiku`, or `inherit` ([valid values](/api/schemas#model-names)) |
 | `context` | string | no | `fork`, `inline`, or `auto` ([valid values](/api/schemas#context-modes)) |
 | `agent` | string | no | Agent name (required when `context: fork`) |
 | `allowed-tools` | string[] | no | [Tool names](/api/schemas#tool-names) to allow |
-| `disallowed-tools` | string[] | no | [Tool names](/api/schemas#tool-names) to disallow |
-| `tags` | string[] | no | Categorization tags |
-| `dependencies` | string[] | no | Required skill dependencies |
+| `tags` | string[] | no | Categorization tags (claudelint extension) |
 | `hooks` | object | no | [Hooks configuration](/api/schemas/hooks) |
-| `license` | string | no | License identifier |
-| `compatibility` | string | no | Compatibility notes, max 500 chars |
-| `metadata` | object | no | Arbitrary key-value metadata |
 
 **Cross-field validations:**
 
 - When `context` is `fork`, the `agent` field is required
-- `allowed-tools` and `disallowed-tools` are mutually exclusive
 
 ## Example
 

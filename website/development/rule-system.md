@@ -62,7 +62,7 @@ export const rule: Rule = {
     id: 'skill-allowed-tools',
     name: 'Skill Allowed Tools Format',
     description:
-      'Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools',
+      'Skill allowed-tools must be an array of tool names',
     category: 'Skills',
     severity: 'error',
     fixable: false,

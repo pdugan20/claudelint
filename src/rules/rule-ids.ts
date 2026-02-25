@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rule count: 116
+ * Rule count: 114
  */
 
 /**
@@ -104,12 +104,10 @@ export type RuleId =
   | 'skill-cross-reference-invalid'
   | 'skill-dangerous-command'
   | 'skill-deep-nesting'
-  | 'skill-dependencies'
   | 'skill-description'
   | 'skill-description-max-length'
   | 'skill-description-missing-trigger'
   | 'skill-description-quality'
-  | 'skill-disallowed-tools'
   | 'skill-eval-usage'
   | 'skill-frontmatter-unknown-keys'
   | 'skill-hardcoded-secrets'
@@ -227,12 +225,10 @@ export const ALL_RULE_IDS: readonly RuleId[] = [
   'skill-cross-reference-invalid',
   'skill-dangerous-command',
   'skill-deep-nesting',
-  'skill-dependencies',
   'skill-description',
   'skill-description-max-length',
   'skill-description-missing-trigger',
   'skill-description-quality',
-  'skill-disallowed-tools',
   'skill-eval-usage',
   'skill-frontmatter-unknown-keys',
   'skill-hardcoded-secrets',

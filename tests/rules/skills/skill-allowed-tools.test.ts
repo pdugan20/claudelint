@@ -23,18 +23,7 @@ describe('skill-allowed-tools', () => {
         },
       ],
 
-      invalid: [
-        // Both allowed-tools and disallowed-tools (mutually exclusive)
-        {
-          content: '---\nname: my-skill\ndescription: Test skill\nallowed-tools:\n  - Bash\ndisallowed-tools:\n  - Edit\n---\n# Skill',
-          filePath: '/test/SKILL.md',
-          errors: [
-            {
-              message: 'both allowed-tools and disallowed-tools',
-            },
-          ],
-        },
-      ],
+      invalid: [],
     });
   });
 });

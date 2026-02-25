@@ -135,13 +135,40 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should accept delegate permissionMode', () => {
+    it('should reject delegate permissionMode', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
         permissionMode: 'delegate',
       });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept background field', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        background: true,
+      });
       expect(result.success).toBe(true);
+    });
+
+    it('should accept isolation worktree', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        isolation: 'worktree',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid isolation value', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        isolation: 'sandbox',
+      });
+      expect(result.success).toBe(false);
     });
 
     it('should reject invalid permissionMode', () => {

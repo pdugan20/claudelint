@@ -27,7 +27,7 @@ These constant sets are used across multiple schemas. claudelint flags any value
 
 ### Tool Names
 
-Valid values for `allowed-tools`, `disallowed-tools`, `tools`, and `disallowedTools` fields.
+Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 
 | Tool | Description |
 |------|-------------|
@@ -86,9 +86,11 @@ Valid event keys for hooks configuration. All names are PascalCase.
 | `SubagentStart` | When a subagent starts |
 | `SubagentStop` | When a subagent stops |
 | `PreCompact` | Before context compaction |
-| `Setup` | During initial setup |
+| `ConfigChange` | When configuration changes |
 | `SessionStart` | When a session begins |
 | `SessionEnd` | When a session ends |
+| `WorktreeCreate` | When a git worktree is created |
+| `WorktreeRemove` | When a git worktree is removed |
 | `TeammateIdle` | When a teammate agent is idle |
 | `TaskCompleted` | When a task completes |
 

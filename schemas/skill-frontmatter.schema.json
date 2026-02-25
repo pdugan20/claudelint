@@ -63,37 +63,6 @@
       },
       "uniqueItems": true
     },
-    "disallowed-tools": {
-      "type": "array",
-      "description": "Tools Claude cannot use when this skill is active. Mutually exclusive with allowed-tools.",
-      "items": {
-        "type": "string",
-        "enum": [
-          "Bash",
-          "Read",
-          "Write",
-          "Edit",
-          "Glob",
-          "Grep",
-          "Task",
-          "WebFetch",
-          "WebSearch",
-          "LSP",
-          "AskUserQuestion",
-          "EnterPlanMode",
-          "ExitPlanMode",
-          "Skill",
-          "TaskCreate",
-          "TaskUpdate",
-          "TaskGet",
-          "TaskList",
-          "TaskOutput",
-          "TaskStop",
-          "NotebookEdit"
-        ]
-      },
-      "uniqueItems": true
-    },
     "model": {
       "type": "string",
       "description": "Model to use when this skill is active.",
@@ -120,13 +89,6 @@
         "type": "string"
       },
       "uniqueItems": true
-    },
-    "dependencies": {
-      "type": "array",
-      "description": "Other skills or tools this skill depends on.",
-      "items": {
-        "type": "string"
-      }
     },
     "hooks": {
       "type": "object",
@@ -159,13 +121,6 @@
         }
       }
     }
-  },
-  "not": {
-    "allOf": [
-      {
-        "required": ["allowed-tools", "disallowed-tools"]
-      }
-    ]
   },
   "if": {
     "properties": {

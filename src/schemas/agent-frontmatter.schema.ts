@@ -11,14 +11,7 @@ import { SettingsHooksSchema } from '../validators/schemas';
 /**
  * Permission modes for agents
  */
-const PermissionModes = z.enum([
-  'default',
-  'acceptEdits',
-  'dontAsk',
-  'bypassPermissions',
-  'plan',
-  'delegate',
-]);
+const PermissionModes = z.enum(['default', 'acceptEdits', 'dontAsk', 'bypassPermissions', 'plan']);
 
 /**
  * Base agent frontmatter schema without cross-field validations
@@ -55,6 +48,10 @@ export const AgentFrontmatterSchema = z.object({
   memory: z.enum(['user', 'project', 'local']).optional(),
 
   color: z.enum(['blue', 'cyan', 'green', 'yellow', 'magenta', 'red', 'pink']).optional(),
+
+  background: z.boolean().optional(),
+
+  isolation: z.enum(['worktree']).optional(),
 });
 
 /**

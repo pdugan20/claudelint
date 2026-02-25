@@ -10,9 +10,15 @@ import { join } from 'path';
 import { homedir } from 'os';
 import https from 'https';
 
-const CACHE_DIR = join(homedir(), '.claudelint');
-const CACHE_FILE = join(CACHE_DIR, 'update-check.json');
 const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+function getCachePaths(): { dir: string; file: string } {
+  // Use process.env.HOME when available (respects test overrides),
+  // fall back to os.homedir() which reads from the OS environment
+  const home = process.env.HOME || homedir();
+  const dir = join(home, '.claudelint');
+  return { dir, file: join(dir, 'update-check.json') };
+}
 const PACKAGE_NAME = 'claude-code-lint';
 
 interface CacheData {
@@ -65,8 +71,9 @@ export function checkForUpdate(currentVersion: string): string | null {
 
 function readCache(): CacheData | null {
   try {
-    if (!existsSync(CACHE_FILE)) return null;
-    const raw = readFileSync(CACHE_FILE, 'utf-8');
+    const { file } = getCachePaths();
+    if (!existsSync(file)) return null;
+    const raw = readFileSync(file, 'utf-8');
     return JSON.parse(raw) as CacheData;
   } catch {
     return null;
@@ -75,10 +82,11 @@ function readCache(): CacheData | null {
 
 function writeCache(data: CacheData): void {
   try {
-    if (!existsSync(CACHE_DIR)) {
-      mkdirSync(CACHE_DIR, { recursive: true });
+    const { dir, file } = getCachePaths();
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
     }
-    writeFileSync(CACHE_FILE, JSON.stringify(data), 'utf-8');
+    writeFileSync(file, JSON.stringify(data), 'utf-8');
   } catch {
     // Ignore write errors
   }

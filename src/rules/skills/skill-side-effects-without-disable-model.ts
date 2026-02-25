@@ -102,7 +102,7 @@ export const rule: Rule = {
       howToFix:
         'Either scope Bash to specific commands (e.g., `Bash(npm run *)`) or add ' +
         '`disable-model-invocation: true` to require explicit user invocation with `/skill-name`.',
-      relatedRules: ['skill-allowed-tools', 'skill-disallowed-tools', 'skill-dangerous-command'],
+      relatedRules: ['skill-allowed-tools', 'skill-dangerous-command'],
     },
   },
   validate: (context: RuleContext) => {

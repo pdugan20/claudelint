@@ -59,8 +59,11 @@ export const HookEvents = z.enum([
   'SubagentStart',
   'SubagentStop',
   'PreCompact',
+  'ConfigChange',
   'SessionStart',
   'SessionEnd',
+  'WorktreeCreate',
+  'WorktreeRemove',
   'TeammateIdle',
   'TaskCompleted',
 ]);

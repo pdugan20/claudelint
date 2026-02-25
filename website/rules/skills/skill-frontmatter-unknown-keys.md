@@ -8,7 +8,7 @@ description: "Unknown key in SKILL.md frontmatter"
 
 ## Rule Details
 
-SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, dependencies, allowed-tools, disallowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, and metadata. This rule detects any top-level keys that are not in this set. Unknown keys are silently ignored at runtime, which means typos in field names (e.g., "dependecies" instead of "dependencies") go unnoticed and the intended configuration never takes effect.
+SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, and hooks. This rule detects any top-level keys that are not in this set. Unknown keys are silently ignored at runtime, which means typos in field names go unnoticed and the intended configuration never takes effect.
 
 ### Incorrect
 
@@ -18,8 +18,7 @@ Frontmatter with a typo in a key name
 ---
 name: deploy
 description: Deploys the application
-dependecies:
-  - build
+contxt: fork
 ---
 ```
 
@@ -41,8 +40,6 @@ Frontmatter using only recognized keys
 ---
 name: deploy
 description: Deploys the application
-dependencies:
-  - build
 allowed-tools:
   - Bash
 ---
@@ -50,7 +47,7 @@ allowed-tools:
 
 ## How To Fix
 
-Valid keys: name, description, version, tags, dependencies, allowed-tools, disallowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, metadata. Check for typos or place custom data under the `metadata` field.
+Valid keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks. Check for typos in your field names.
 
 ## Options
 
@@ -59,7 +56,6 @@ This rule does not have any configuration options.
 ## Related Rules
 
 - [`skill-description`](/rules/skills/skill-description)
-- [`skill-dependencies`](/rules/skills/skill-dependencies)
 - [`skill-allowed-tools`](/rules/skills/skill-allowed-tools)
 
 ## Resources

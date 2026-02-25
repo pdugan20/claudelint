@@ -41,7 +41,7 @@
     "permissionMode": {
       "type": "string",
       "description": "Permission mode for the subagent",
-      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan", "delegate"]
+      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan"]
     },
     "skills": {
       "type": "array",
@@ -71,6 +71,16 @@
       "type": "string",
       "description": "Display color for the agent in the UI",
       "enum": ["blue", "cyan", "green", "yellow", "magenta", "red", "pink"]
+    },
+    "background": {
+      "type": "boolean",
+      "description": "Set to true to always run this subagent as a background task",
+      "default": false
+    },
+    "isolation": {
+      "type": "string",
+      "description": "Set to 'worktree' to run the subagent in a temporary git worktree",
+      "enum": ["worktree"]
     },
     "hooks": {
       "type": "object",

@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rules registered: 116
+ * Rules registered: 114
  */
 
 import { RuleRegistry } from '../utils/rules/registry';
@@ -96,12 +96,10 @@ import { rule as skill_context_rule } from './skills/skill-context';
 import { rule as skill_cross_reference_invalid_rule } from './skills/skill-cross-reference-invalid';
 import { rule as skill_dangerous_command_rule } from './skills/skill-dangerous-command';
 import { rule as skill_deep_nesting_rule } from './skills/skill-deep-nesting';
-import { rule as skill_dependencies_rule } from './skills/skill-dependencies';
 import { rule as skill_description_max_length_rule } from './skills/skill-description-max-length';
 import { rule as skill_description_missing_trigger_rule } from './skills/skill-description-missing-trigger';
 import { rule as skill_description_quality_rule } from './skills/skill-description-quality';
 import { rule as skill_description_rule } from './skills/skill-description';
-import { rule as skill_disallowed_tools_rule } from './skills/skill-disallowed-tools';
 import { rule as skill_eval_usage_rule } from './skills/skill-eval-usage';
 import { rule as skill_frontmatter_unknown_keys_rule } from './skills/skill-frontmatter-unknown-keys';
 import { rule as skill_hardcoded_secrets_rule } from './skills/skill-hardcoded-secrets';
@@ -215,12 +213,10 @@ RuleRegistry.register(skill_context_rule);
 RuleRegistry.register(skill_cross_reference_invalid_rule);
 RuleRegistry.register(skill_dangerous_command_rule);
 RuleRegistry.register(skill_deep_nesting_rule);
-RuleRegistry.register(skill_dependencies_rule);
 RuleRegistry.register(skill_description_max_length_rule);
 RuleRegistry.register(skill_description_missing_trigger_rule);
 RuleRegistry.register(skill_description_quality_rule);
 RuleRegistry.register(skill_description_rule);
-RuleRegistry.register(skill_disallowed_tools_rule);
 RuleRegistry.register(skill_eval_usage_rule);
 RuleRegistry.register(skill_frontmatter_unknown_keys_rule);
 RuleRegistry.register(skill_hardcoded_secrets_rule);
@@ -334,12 +330,10 @@ export {
   skill_cross_reference_invalid_rule,
   skill_dangerous_command_rule,
   skill_deep_nesting_rule,
-  skill_dependencies_rule,
   skill_description_max_length_rule,
   skill_description_missing_trigger_rule,
   skill_description_quality_rule,
   skill_description_rule,
-  skill_disallowed_tools_rule,
   skill_eval_usage_rule,
   skill_frontmatter_unknown_keys_rule,
   skill_hardcoded_secrets_rule,
