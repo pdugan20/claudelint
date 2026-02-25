@@ -89,17 +89,7 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
   {
     id: 'skill-allowed-tools',
     name: 'Skill Allowed Tools Format',
-    description:
-      'Skill allowed-tools must be an array of tool names, cannot be used with disallowed-tools',
-    category: 'skills',
-    schemaName: 'SkillFrontmatterWithRefinements',
-    schemaValidation:
-      'Array of strings, mutex refinement with disallowed-tools',
-  },
-  {
-    id: 'skill-disallowed-tools',
-    name: 'Skill Disallowed Tools Format',
-    description: 'Skill disallowed-tools must be an array of tool names',
+    description: 'Skill allowed-tools must be an array of tool names',
     category: 'skills',
     schemaName: 'SkillFrontmatterSchema',
     schemaValidation: 'Array of strings',
@@ -108,14 +98,6 @@ const SCHEMA_RULES: SchemaRuleConfig[] = [
     id: 'skill-tags',
     name: 'Skill Tags Format',
     description: 'Skill tags must be an array of strings',
-    category: 'skills',
-    schemaName: 'SkillFrontmatterSchema',
-    schemaValidation: 'Array of strings',
-  },
-  {
-    id: 'skill-dependencies',
-    name: 'Skill Dependencies Format',
-    description: 'Skill dependencies must be an array of strings',
     category: 'skills',
     schemaName: 'SkillFrontmatterSchema',
     schemaValidation: 'Array of strings',
