@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3](https://github.com/pdugan20/claudelint/compare/v0.2.2...v0.2.3) (2026-02-25)
+
+### Features
+
+* add check-schema-drift skill for detecting schema drift against official docs ([5c7eb37](https://github.com/pdugan20/claudelint/commit/5c7eb37e3a6822022e36426b537beca4db3bad11))
+
+### Bug Fixes
+
+* accept license, compatibility, metadata as valid skill frontmatter keys ([b3ba5ee](https://github.com/pdugan20/claudelint/commit/b3ba5eef3756e50d1952b4636342b2b9d8e5dcd3))
+* rewrite check-dependency hook from bash to Node.js ([bbec585](https://github.com/pdugan20/claudelint/commit/bbec5854b69338937370bba8f84a19aff9f53275))
+
 ## [0.2.2](https://github.com/pdugan20/claudelint/compare/v0.2.1...v0.2.2) (2026-02-25)
 
 ### Bug Fixes
