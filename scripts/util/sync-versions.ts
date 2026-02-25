@@ -107,27 +107,27 @@ function syncVersions(): void {
     log.pass('marketplace.json already in sync');
   }
 
-  // 4. Update PLUGIN_VERSION in check-dependency.sh
+  // 4. Update PLUGIN_VERSION in check-dependency.js
   const checkDepPath = path.join(
     rootDir,
     '.claude-plugin',
     'scripts',
-    'check-dependency.sh'
+    'check-dependency.js'
   );
   if (fs.existsSync(checkDepPath)) {
     const script = fs.readFileSync(checkDepPath, 'utf-8');
     const updated = script.replace(
-      /^PLUGIN_VERSION="[^"]*"/m,
-      `PLUGIN_VERSION="${primaryVersion}"`
+      /^const PLUGIN_VERSION = '[^']*'/m,
+      `const PLUGIN_VERSION = '${primaryVersion}'`
     );
     if (updated !== script) {
       log.info(
-        `Updating check-dependency.sh PLUGIN_VERSION → ${primaryVersion}`
+        `Updating check-dependency.js PLUGIN_VERSION → ${primaryVersion}`
       );
       fs.writeFileSync(checkDepPath, updated);
       filesUpdated++;
     } else {
-      log.pass('check-dependency.sh already in sync');
+      log.pass('check-dependency.js already in sync');
     }
   }
 

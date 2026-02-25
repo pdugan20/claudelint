@@ -96,16 +96,15 @@ function checkVersionSync(): boolean {
     const sessionStartHooks = hooksJson?.hooks?.SessionStart?.[0]?.hooks || [];
     for (const hook of sessionStartHooks) {
       if (hook.type === 'command' && hook.command.includes('check-dependency')) {
-        const resolvedPath = hook.command.replace(
-          '${CLAUDE_PLUGIN_ROOT}',
-          rootDir
-        );
+        const resolvedPath = hook.command
+          .replace(/^node\s+/, '')
+          .replace('${CLAUDE_PLUGIN_ROOT}', rootDir);
         if (!fs.existsSync(resolvedPath)) {
           log.fail(`Hook script not found: ${resolvedPath}`);
           allInSync = false;
         } else {
           const scriptContent = fs.readFileSync(resolvedPath, 'utf-8');
-          if (!scriptContent.includes('PLUGIN_VERSION=')) {
+          if (!scriptContent.includes('PLUGIN_VERSION')) {
             log.fail(
               `Hook script missing PLUGIN_VERSION — wrong file? ${hook.command}`
             );

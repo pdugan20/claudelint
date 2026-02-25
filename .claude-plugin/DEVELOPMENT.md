@@ -12,7 +12,7 @@ claude-lint/                     # Repository root
 │   ├── plugin.json              # Plugin manifest (ONLY this goes here)
 │   ├── README.md
 │   └── scripts/
-│       └── check-dependency.sh  # SessionStart hook script
+│       └── check-dependency.js  # SessionStart hook script
 ├── skills/                      # Skills at ROOT (not .claude/skills/)
 │   ├── validate-all/
 │   │   └── SKILL.md
