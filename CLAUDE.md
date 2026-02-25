@@ -58,7 +58,11 @@ npm run release:minor    # Minor bump
 npm run release:beta     # Pre-release
 ```
 
-Release runs lint/test/build, generates CHANGELOG, bumps versions (including `npm run sync:versions` for skills), tags, pushes, and creates a GitHub release. npm publishing happens automatically via CI when the tag is pushed (OIDC trusted publishing with provenance).
+**What happens locally** (release-it): lint, test, build, generate CHANGELOG, bump version, `npm run sync:versions` (syncs version to plugin.json, marketplace.json, check-dependency.js), commit, tag, push. No `GITHUB_TOKEN` needed locally.
+
+**What happens in CI** (`.github/workflows/publish.yml`, triggered by tag push): publishes to npm (OIDC trusted publishing with provenance), then creates a GitHub Release with auto-generated notes. Do NOT create GitHub releases locally — CI handles it.
+
+**Version sync**: `npm run sync:versions` propagates `package.json` version to `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and the `PLUGIN_VERSION` constant in `.claude-plugin/scripts/check-dependency.js`. This runs automatically in the `after:bump` release-it hook. Run `npm run sync:versions:check` to verify all versions match.
 
 ## File Naming Conventions
 
