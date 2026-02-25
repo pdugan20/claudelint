@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2](https://github.com/pdugan20/claudelint/compare/v0.2.1...v0.2.2) (2026-02-25)
+
+### Bug Fixes
+
+* remove stale skill-dependencies and skill-disallowed-tools from schema-rules generator ([eaac0df](https://github.com/pdugan20/claudelint/commit/eaac0dfe34fc31349d81000065c70b86a86a84e4))
+* resolve schema drift against official Claude Code docs ([8791aa4](https://github.com/pdugan20/claudelint/commit/8791aa44b45cefa47bac1dc932b2a9bc3f9185d2))
+
+### Documentation
+
+* add Claude Code GitHub Actions section to CI guide ([d45b1b1](https://github.com/pdugan20/claudelint/commit/d45b1b1a31eae675375011760e4913d33cc0fbdd))
+
 ## [0.2.1](https://github.com/pdugan20/claudelint/compare/v0.2.0...v0.2.1) (2026-02-24)
 
 ### Bug Fixes
