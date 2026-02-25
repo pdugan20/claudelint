@@ -136,6 +136,27 @@ hooks:
     });
   });
 
+  it('should pass for Anthropic guide fields (license, compatibility, metadata)', async () => {
+    await ruleTester.run('skill-frontmatter-unknown-keys', rule, {
+      valid: [
+        {
+          filePath: '/test/.claude/skills/my-skill/SKILL.md',
+          content: `---
+name: my-skill
+description: A test skill
+license: MIT
+compatibility: ">=1.0.0"
+metadata:
+  category: testing
+---
+
+# My Skill`,
+        },
+      ],
+      invalid: [],
+    });
+  });
+
   it('should not flag nested keys as unknown', async () => {
     await ruleTester.run('skill-frontmatter-unknown-keys', rule, {
       valid: [

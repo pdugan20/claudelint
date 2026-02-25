@@ -8,7 +8,7 @@ description: "Unknown key in SKILL.md frontmatter"
 
 ## Rule Details
 
-SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, and hooks. This rule detects any top-level keys that are not in this set. Unknown keys are silently ignored at runtime, which means typos in field names go unnoticed and the intended configuration never takes effect.
+SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, and metadata. This rule detects any top-level keys that are not in this set. Unknown keys are silently ignored at runtime, which means typos in field names go unnoticed and the intended configuration never takes effect.
 
 ### Incorrect
 
@@ -47,7 +47,7 @@ allowed-tools:
 
 ## How To Fix
 
-Valid keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks. Check for typos in your field names.
+Valid keys: name, description, version, tags, allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, metadata. Check for typos in your field names.
 
 ## Options
 

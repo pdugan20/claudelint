@@ -21,6 +21,11 @@ const KNOWN_KEYS = new Set([
   'disable-model-invocation',
   'user-invocable',
   'hooks',
+  // Documented in Anthropic's skills guide but not in code.claude.com docs.
+  // Claude Code doesn't parse these, but they're valid metadata conventions.
+  'license',
+  'compatibility',
+  'metadata',
 ]);
 
 export const rule: Rule = {
@@ -42,9 +47,9 @@ export const rule: Rule = {
       details:
         'SKILL.md frontmatter supports a specific set of known keys: name, description, version, tags, ' +
         'allowed-tools, model, context, agent, argument-hint, disable-model-invocation, user-invocable, ' +
-        'and hooks. This rule detects any top-level keys that are not in this set. Unknown keys are ' +
-        'silently ignored at runtime, which means typos in field names go unnoticed and the intended ' +
-        'configuration never takes effect.',
+        'hooks, license, compatibility, and metadata. This rule detects any top-level keys that are not ' +
+        'in this set. Unknown keys are silently ignored at runtime, which means typos in field names go ' +
+        'unnoticed and the intended configuration never takes effect.',
       examples: {
         incorrect: [
           {
@@ -65,7 +70,7 @@ export const rule: Rule = {
       },
       howToFix:
         'Valid keys: name, description, version, tags, allowed-tools, model, context, agent, ' +
-        'argument-hint, disable-model-invocation, user-invocable, hooks. ' +
+        'argument-hint, disable-model-invocation, user-invocable, hooks, license, compatibility, metadata. ' +
         'Check for typos in your field names.',
       relatedRules: ['skill-description', 'skill-allowed-tools'],
     },

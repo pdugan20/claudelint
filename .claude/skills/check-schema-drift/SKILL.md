@@ -151,3 +151,8 @@ Use this to match `$ARGUMENTS` to registry entries:
 - Some docs pages cover more than just schema fields (e.g., tutorials, examples). Focus on the reference/schema section identified by the URL anchor.
 - If a docs page is unreachable, report the fetch failure and continue with the remaining schemas.
 - Our schemas may intentionally be stricter than docs (extra validations). Focus on structural drift: fields, types, enums, required status.
+
+## See Also
+
+- `src/schemas/registry.ts` - Schema registry with official doc URLs
+- `npm run check:schema-sync` - Verify Zod and JSON schemas match
