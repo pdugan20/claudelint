@@ -1,0 +1,164 @@
+[
+  {
+    "label": "CLAUDE.md",
+    "totalRules": 15,
+    "rules": [
+      {
+        "id": "claude-md-size",
+        "summary": "Ensures CLAUDE.md files do not exceed the maximum file size limit.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/claude-md/claude-md-size"
+      },
+      {
+        "id": "claude-md-import-missing",
+        "summary": "Detects @import directives that reference files which do not exist.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/claude-md/claude-md-import-missing"
+      },
+      {
+        "id": "claude-md-import-circular",
+        "summary": "Detects circular @import chains between CLAUDE.md files that would cause infinite loops.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/claude-md/claude-md-import-circular"
+      }
+    ]
+  },
+  {
+    "label": "Skills",
+    "totalRules": 43,
+    "rules": [
+      {
+        "id": "skill-dangerous-command",
+        "summary": "Detects dangerous shell commands in skill scripts that could cause system damage or data loss.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/skills/skill-dangerous-command"
+      },
+      {
+        "id": "skill-hardcoded-secrets",
+        "summary": "Detects hardcoded API keys, tokens, passwords, and other secrets in skill files.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/skills/skill-hardcoded-secrets"
+      },
+      {
+        "id": "skill-description-quality",
+        "summary": "Checks that skill descriptions start with an action verb and include sufficient context.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/skills/skill-description-quality"
+      }
+    ]
+  },
+  {
+    "label": "Agents",
+    "totalRules": 12,
+    "rules": [
+      {
+        "id": "agent-description",
+        "summary": "Validates that agent descriptions meet minimum length requirements.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/agents/agent-description"
+      },
+      {
+        "id": "agent-model",
+        "summary": "Validates that the agent model field is a recognized model name.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/agents/agent-model"
+      },
+      {
+        "id": "agent-skills-not-found",
+        "summary": "Validates that skills referenced in agent frontmatter exist on disk.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/agents/agent-skills-not-found"
+      }
+    ]
+  },
+  {
+    "label": "MCP",
+    "totalRules": 11,
+    "rules": [
+      {
+        "id": "mcp-invalid-transport",
+        "summary": "Validates that MCP server transport types are supported values.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/mcp/mcp-invalid-transport"
+      },
+      {
+        "id": "mcp-http-invalid-url",
+        "summary": "Validates that MCP HTTP transport URLs are well-formed.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/mcp/mcp-http-invalid-url"
+      },
+      {
+        "id": "mcp-sse-transport-deprecated",
+        "summary": "Warns when an MCP server uses the deprecated SSE transport type.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/mcp/mcp-sse-transport-deprecated"
+      }
+    ]
+  },
+  {
+    "label": "Plugins",
+    "totalRules": 12,
+    "rules": [
+      {
+        "id": "plugin-invalid-version",
+        "summary": "Validates that the plugin version follows semantic versioning format.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/plugin/plugin-invalid-version"
+      },
+      {
+        "id": "plugin-missing-file",
+        "summary": "Validates that files and directories referenced in plugin.json exist on disk.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/plugin/plugin-missing-file"
+      },
+      {
+        "id": "plugin-description-required",
+        "summary": "Warns when plugin.json is missing a description field.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/plugin/plugin-description-required"
+      }
+    ]
+  },
+  {
+    "label": "Hooks & Settings",
+    "totalRules": 8,
+    "rules": [
+      {
+        "id": "hooks-invalid-event",
+        "summary": "Warns when a hook configuration uses an unknown or invalid event name.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/hooks/hooks-invalid-event"
+      },
+      {
+        "id": "settings-invalid-permission",
+        "summary": "Ensures permission rules reference valid Claude Code tool names.",
+        "severity": "error",
+        "fixable": false,
+        "link": "/rules/settings/settings-invalid-permission"
+      },
+      {
+        "id": "settings-invalid-env-var",
+        "summary": "Validates environment variable naming and detects potential hardcoded secrets.",
+        "severity": "warn",
+        "fixable": false,
+        "link": "/rules/settings/settings-invalid-env-var"
+      }
+    ]
+  }
+]

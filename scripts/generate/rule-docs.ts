@@ -70,6 +70,9 @@ async function generateRuleDocs(): Promise<void> {
   // Generate rule stats data file for dynamic counts
   await generateRuleStats(categoryRules);
 
+  // Generate showcase rules data for landing page interactive feature section
+  await generateShowcaseRules();
+
   log.blank();
   log.info(`Results:`);
   log.info(`  Generated from metadata: ${generated}`);
@@ -197,6 +200,100 @@ async function generateRuleStats(
   const statsPath = join(dataDir, 'rule-stats.json');
   await writeFile(statsPath, JSON.stringify(stats, null, 2) + '\n');
   log.info(`Generated rule stats: ${statsPath}`);
+}
+
+/**
+ * Curated showcase rules for the landing page interactive features section.
+ * Each tab shows 3 hand-picked rules that best represent the category.
+ */
+const SHOWCASE_TABS: Array<{
+  label: string;
+  sourceCategories: string[];
+  ruleIds: string[];
+}> = [
+  {
+    label: 'CLAUDE.md',
+    sourceCategories: ['claude-md'],
+    ruleIds: ['claude-md-size', 'claude-md-import-missing', 'claude-md-import-circular'],
+  },
+  {
+    label: 'Skills',
+    sourceCategories: ['skills'],
+    ruleIds: ['skill-dangerous-command', 'skill-hardcoded-secrets', 'skill-description-quality'],
+  },
+  {
+    label: 'Agents',
+    sourceCategories: ['agents'],
+    ruleIds: ['agent-description', 'agent-model', 'agent-skills-not-found'],
+  },
+  {
+    label: 'MCP',
+    sourceCategories: ['mcp'],
+    ruleIds: ['mcp-invalid-transport', 'mcp-http-invalid-url', 'mcp-sse-transport-deprecated'],
+  },
+  {
+    label: 'Plugins',
+    sourceCategories: ['plugin'],
+    ruleIds: [
+      'plugin-invalid-version',
+      'plugin-missing-file',
+      'plugin-description-required',
+    ],
+  },
+  {
+    label: 'Hooks & Settings',
+    sourceCategories: ['hooks', 'settings'],
+    ruleIds: [
+      'hooks-invalid-event',
+      'settings-invalid-permission',
+      'settings-invalid-env-var',
+    ],
+  },
+];
+
+/**
+ * Generate showcase rules JSON for the landing page interactive features section
+ */
+async function generateShowcaseRules(): Promise<void> {
+  const dataDir = join(__dirname, '../../website/data');
+  await mkdir(dataDir, { recursive: true });
+
+  const tabs = SHOWCASE_TABS.map((tab) => {
+    const rules = tab.ruleIds.map((id) => {
+      const rule = RuleRegistry.getRule(id);
+      if (!rule) {
+        log.warn(`Showcase rule not found: ${id}`);
+        return null;
+      }
+      const meta = rule.meta;
+      const categoryDir = getCategoryDir(meta.category);
+      return {
+        id: meta.id,
+        summary: meta.docs?.summary || meta.description,
+        severity: meta.severity,
+        fixable: meta.fixable,
+        link: `/rules/${categoryDir}/${meta.id}`,
+      };
+    }).filter(Boolean);
+
+    // Count total rules across source categories
+    const totalRules = tab.sourceCategories.reduce((sum, cat) => {
+      const displayName = CATEGORY_DISPLAY[cat];
+      if (!displayName) return sum;
+      const catRules = RuleRegistry.getByCategory(displayName as any);
+      return sum + (catRules?.length || 0);
+    }, 0);
+
+    return {
+      label: tab.label,
+      totalRules,
+      rules,
+    };
+  });
+
+  const showcasePath = join(dataDir, 'showcase-rules.json');
+  await writeFile(showcasePath, JSON.stringify(tabs, null, 2) + '\n');
+  log.info(`Generated showcase rules: ${showcasePath}`);
 }
 
 generateRuleDocs().catch((err) => {

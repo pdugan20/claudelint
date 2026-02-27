@@ -19,6 +19,7 @@ import HelperCard from './components/HelperCard.vue';
 import PromptDemo from './components/PromptDemo.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import InstallCTA from './components/InstallCTA.vue';
+import ShowcaseCard from './components/ShowcaseCard.vue';
 import './style.css';
 
 export default {
@@ -40,6 +41,7 @@ export default {
     app.component('PromptDemo', PromptDemo);
     app.component('FeaturesSection', FeaturesSection);
     app.component('InstallCTA', InstallCTA);
+    app.component('ShowcaseCard', ShowcaseCard);
   },
   setup() {
     const route = useRoute();

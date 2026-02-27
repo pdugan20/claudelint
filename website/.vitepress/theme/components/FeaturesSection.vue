@@ -6,44 +6,120 @@
       <p class="features-subtitle">
         claudelint validates every part of your Claude Code setup &mdash; from project memory to
         plugin manifests.
+        <a href="/rules/overview" class="features-rules-link">
+          {{ totalRules }} rules across {{ categoryCount }} categories &rarr;
+        </a>
       </p>
-      <div class="features-grid">
-        <div v-for="feature in features" :key="feature.title" class="features-card">
-          <h3 class="features-card-title">{{ feature.title }}</h3>
-          <p class="features-card-desc">{{ feature.description }}</p>
+
+      <!-- Tabs -->
+      <div class="features-tabs-wrap" @mouseenter="onHoverEnter" @mouseleave="onHoverLeave">
+        <div class="features-tabs">
+          <button
+            v-for="(tab, i) in tabs"
+            :key="tab.label"
+            :class="['features-tab', { active: activeIndex === i }]"
+            type="button"
+            @click="selectTab(i)"
+          >
+            {{ tab.label }}
+          </button>
         </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="features-cards">
+        <ShowcaseCard
+          v-for="(rule, i) in activeRules"
+          :key="`${activeIndex}-${rule.id}`"
+          :rule-id="rule.id"
+          :description="rule.summary"
+          :severity="rule.severity"
+          :fixable="rule.fixable"
+          :link="rule.link"
+          class="features-card-animated"
+          :style="{
+            animationDelay: `${i * 200}ms`,
+          }"
+        />
+      </div>
+
+      <!-- Apple TV-style dots (below cards) -->
+      <div class="features-dots">
+        <span
+          v-for="(_tab, i) in tabs"
+          :key="`dot-${i}`"
+          :class="['features-dot', { active: activeIndex === i }]"
+        >
+          <span
+            v-if="activeIndex === i"
+            :key="`fill-${animKey}`"
+            :class="['features-dot-fill', { paused: isPaused }]"
+            :style="{ animationDuration: `${timerDuration}ms` }"
+            @animationend="advance"
+          />
+        </span>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-const features = [
-  {
-    title: 'CLAUDE.md',
-    description: 'Size limits, @import chains, circular references, and section structure.',
-  },
-  {
-    title: 'Skills',
-    description: 'Frontmatter schema, naming, allowed-tools, security patterns, and docs coverage.',
-  },
-  {
-    title: 'Hooks & Settings',
-    description: 'Event types, permission rules, matcher patterns, and environment variables.',
-  },
-  {
-    title: 'MCP Servers',
-    description: 'Transport config, server URLs, environment variables, and protocol validation.',
-  },
-  {
-    title: 'Plugins',
-    description: 'Manifest schema, semantic versions, component paths, and marketplace metadata.',
-  },
-  {
-    title: '114 Rules',
-    description: 'Recommended and strict presets with configurable severity levels.',
-  },
-];
+import { ref, computed, onMounted } from 'vue';
+import ShowcaseCard from './ShowcaseCard.vue';
+import showcaseTabs from '../../../data/showcase-rules.json';
+import stats from '../../../data/rule-stats.json';
+
+interface ShowcaseRule {
+  id: string;
+  summary: string;
+  severity: 'error' | 'warn' | 'off';
+  fixable: boolean;
+  link: string;
+}
+
+interface ShowcaseTab {
+  label: string;
+  totalRules: number;
+  rules: ShowcaseRule[];
+}
+
+const TIMER_DURATION = 8000;
+
+const tabs = showcaseTabs as ShowcaseTab[];
+const totalRules = stats.total;
+const categoryCount = stats.categoryCount;
+
+const activeIndex = ref(0);
+const isPaused = ref(false);
+const animKey = ref(0);
+const timerDuration = ref(TIMER_DURATION);
+
+const activeRules = computed(() => tabs[activeIndex.value]?.rules || []);
+
+function advance() {
+  const next = (activeIndex.value + 1) % tabs.length;
+  activeIndex.value = next;
+  timerDuration.value = TIMER_DURATION;
+  animKey.value++;
+}
+
+function selectTab(index: number) {
+  activeIndex.value = index;
+  timerDuration.value = TIMER_DURATION;
+  animKey.value++;
+}
+
+function onHoverEnter() {
+  isPaused.value = true;
+}
+
+function onHoverLeave() {
+  isPaused.value = false;
+}
+
+onMounted(() => {
+  animKey.value++;
+});
 </script>
 
 <style scoped>
@@ -81,49 +157,149 @@ const features = [
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--vp-c-text-2);
-  margin: 0 auto 48px;
+  margin: 0 auto 40px;
   max-width: 540px;
 }
 
-.features-grid {
+.features-rules-link {
+  display: inline;
+  font-size: inherit;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.features-rules-link:hover {
+  color: var(--vp-c-text-1);
+}
+
+/* --- Tabs --- */
+
+.features-tabs-wrap {
+  margin-bottom: 32px;
+}
+
+.features-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.features-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.features-tab {
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.features-tab:hover {
+  color: var(--vp-c-text-1);
+  border-color: var(--vp-c-border);
+}
+
+.features-tab.active {
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+  background: var(--vp-c-bg-soft);
+  border-color: var(--vp-c-border);
+}
+
+/* --- Card grid --- */
+
+.features-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   text-align: left;
+  min-height: 160px;
 }
 
-.features-card {
-  padding: 20px;
-  background: var(--vp-c-bg-elv);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+/* Stagger animation */
+.features-card-animated {
+  animation: cardFadeIn 400ms ease both;
 }
 
-.features-card:hover {
-  border-color: var(--vp-c-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.features-card-title {
-  margin: 0 0 8px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+/* --- Dot progress indicator (Apple TV style) --- */
+
+.features-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
 }
 
-.features-card-desc {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.5;
+.features-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--vp-c-divider);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
 }
+
+.features-dot.active {
+  width: 32px;
+}
+
+.features-dot-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--vp-c-text-2);
+  border-radius: 3px;
+  animation: dotFill linear forwards;
+}
+
+.features-dot-fill.paused {
+  animation-play-state: paused;
+}
+
+@keyframes dotFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* --- Responsive --- */
 
 @media (max-width: 959px) {
-  .features-grid {
+  .features-cards {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -133,12 +309,23 @@ const features = [
     padding: 60px 24px;
   }
 
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-
   .features-heading {
     font-size: 1.75rem;
+  }
+
+  .features-tabs {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    padding: 0 4px;
+  }
+
+  .features-tab {
+    padding: 5px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .features-cards {
+    grid-template-columns: 1fr;
   }
 }
 </style>
