@@ -12,11 +12,26 @@
       <!-- Claude Code header -->
       <div class="cc-header">
         <div class="cc-header-row">
-          <pre class="cc-crab" aria-hidden="true">
- &#x2590;&#x259B;&#x2588;&#x2588;&#x2588;&#x259C;&#x258C;
-&#x259D;&#x259C;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x259B;&#x2598;
-  &#x2598;&#x2598; &#x259D;&#x259D;</pre
+          <!-- Clawd mascot — 18×5 pixel grid from Unicode block art -->
+          <svg
+            class="cc-crab"
+            viewBox="0 0 18 5"
+            preserveAspectRatio="none"
+            shape-rendering="crispEdges"
+            role="img"
+            aria-label="Clawd mascot"
           >
+            <rect x="3" y="0" width="12" height="1" fill="currentColor" />
+            <rect x="3" y="1" width="2" height="1" fill="currentColor" />
+            <rect x="6" y="1" width="6" height="1" fill="currentColor" />
+            <rect x="13" y="1" width="2" height="1" fill="currentColor" />
+            <rect x="1" y="2" width="16" height="1" fill="currentColor" />
+            <rect x="3" y="3" width="12" height="1" fill="currentColor" />
+            <rect x="4" y="4" width="1" height="1" fill="currentColor" />
+            <rect x="6" y="4" width="1" height="1" fill="currentColor" />
+            <rect x="11" y="4" width="1" height="1" fill="currentColor" />
+            <rect x="13" y="4" width="1" height="1" fill="currentColor" />
+          </svg>
           <div class="cc-header-text">
             <span class="cc-version"><strong>Claude Code</strong> v2.1.34</span>
             <span class="cc-model">Opus 4.6 &middot; Claude API</span>
@@ -464,28 +479,23 @@ onUnmounted(() => {
 
 .cc-header-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
 }
 
 .cc-crab {
-  color: #d97757;
+  color: #da7756;
+  width: 81px;
+  height: 45px;
   flex-shrink: 0;
-  margin: 0;
-  padding: 0;
-  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Menlo', monospace;
-  font-size: 0.9375rem;
-  line-height: 1;
-  letter-spacing: 0;
-  user-select: none;
 }
 
 .cc-header-text {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0;
   font-size: 0.875rem;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .cc-version {
