@@ -85,7 +85,7 @@ SARIF output follows the v2.1.0 schema. Each validation error or warning becomes
       "tool": {
         "driver": {
           "name": "claudelint",
-          "version": "0.5.0",
+          "version": "0.2.3",
           "informationUri": "https://www.npmjs.com/package/claude-code-lint",
           "rules": [
             {
