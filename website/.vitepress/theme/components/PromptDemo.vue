@@ -2,9 +2,12 @@
   <section ref="sectionRef" class="prompt-demo-section">
     <div class="prompt-demo-header">
       <span class="prompt-demo-eyebrow">Claude Code Plugin</span>
-      <h2 class="prompt-demo-title">Works where you already code</h2>
+      <h2 class="prompt-demo-title">More than a linter</h2>
       <p class="prompt-demo-subtitle">
-        Type what you need in plain English. claudelint skills handle the rest.
+        Install the
+        <a href="/integrations/claude-code-plugin" class="prompt-demo-link">claudelint plugin</a>
+        and Claude can restructure bloated CLAUDE.md files, diagnose broken skills, and walk you
+        through every fix.
       </p>
     </div>
 
@@ -33,7 +36,9 @@
             <rect x="13" y="4" width="1" height="1" fill="currentColor" />
           </svg>
           <div class="cc-header-text">
-            <span class="cc-version"><strong>Claude Code</strong> v2.1.34</span>
+            <span class="cc-version"
+              ><strong>Claude Code</strong>{{ ccVersion ? ` ${ccVersion}` : '' }}</span
+            >
             <span class="cc-model">Opus 4.6 &middot; Claude API</span>
             <span class="cc-path">~/my-project</span>
           </div>
@@ -104,6 +109,21 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+const ccVersion = ref('');
+
+async function fetchCCVersion() {
+  try {
+    const res = await fetch('https://api.github.com/repos/anthropics/claude-code/releases/latest');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.tag_name) {
+      ccVersion.value = data.tag_name;
+    }
+  } catch {
+    // silently fall back to no version shown
+  }
+}
 
 const installTab = ref<'claude' | 'manual'>('claude');
 const installCopied = ref(false);
@@ -396,6 +416,8 @@ async function runCycle() {
 onMounted(() => {
   if (typeof window === 'undefined') return;
 
+  fetchCCVersion();
+
   observer = new IntersectionObserver(
     (entries) => {
       if (entries[0]?.isIntersecting && !animationStarted.value) {
@@ -433,7 +455,7 @@ onUnmounted(() => {
 .prompt-demo-header {
   text-align: center;
   margin-bottom: 48px;
-  max-width: 520px;
+  max-width: 640px;
 }
 
 .prompt-demo-eyebrow {
@@ -460,6 +482,18 @@ onUnmounted(() => {
   line-height: 1.6;
   color: #a8a69d;
   margin: 0;
+  max-width: 640px;
+}
+
+.prompt-demo-link {
+  color: #a8a69d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.prompt-demo-link:hover {
+  color: #e5e5e5;
 }
 
 /* Terminal container */
