@@ -30,7 +30,7 @@ function copy() {
 
 <style scoped>
 .install-cta {
-  background: #1e1b18;
+  background: var(--vp-c-bg-alt);
   padding: 60px 24px 80px;
 }
 
@@ -45,14 +45,14 @@ function copy() {
   font-size: 2rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #e5e5e5;
+  color: var(--vp-c-text-1);
   margin: 0 0 12px;
 }
 
 .install-subtitle {
   font-size: 1rem;
   line-height: 1.6;
-  color: #a8a69d;
+  color: var(--vp-c-text-2);
   margin: 0 0 32px;
 }
 
@@ -61,8 +61,8 @@ function copy() {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
   padding: 14px 16px 14px 20px;
   cursor: pointer;
@@ -70,13 +70,13 @@ function copy() {
 }
 
 .install-command:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--vp-c-border);
 }
 
 .install-code {
   font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Menlo', monospace;
   font-size: 0.9375rem;
-  color: #e5e5e5;
+  color: var(--vp-c-text-1);
   background: none;
   padding: 0;
   white-space: nowrap;
@@ -87,9 +87,9 @@ function copy() {
   padding: 4px 12px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #a8a69d;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
   border-radius: 4px;
   cursor: pointer;
   transition:
@@ -98,13 +98,13 @@ function copy() {
 }
 
 .install-copy:hover {
-  color: #e5e5e5;
-  background: rgba(255, 255, 255, 0.12);
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
 }
 
 .install-copy.copied {
-  color: #98c379;
-  border-color: rgba(152, 195, 121, 0.3);
+  color: #16a34a;
+  border-color: rgba(22, 163, 74, 0.3);
 }
 
 .install-link {
@@ -112,12 +112,12 @@ function copy() {
   margin-top: 24px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #a8a69d;
+  color: var(--vp-c-text-2);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .install-link:hover {
-  color: #e5e5e5;
+  color: var(--vp-c-text-1);
 }
 </style>

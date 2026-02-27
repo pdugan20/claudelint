@@ -50,11 +50,62 @@
         </div>
       </div>
     </div>
+
+    <!-- Install CTA (hidden for now, re-enable when install paths are finalized) -->
+    <div v-if="false" class="prompt-demo-cta">
+      <h3 class="prompt-demo-cta-heading">Try it now</h3>
+      <div class="prompt-demo-cta-tabs">
+        <button
+          :class="['prompt-demo-cta-tab', { active: installTab === 'claude' }]"
+          type="button"
+          @click="installTab = 'claude'"
+        >
+          Set up with Claude
+        </button>
+        <button
+          :class="['prompt-demo-cta-tab', { active: installTab === 'manual' }]"
+          type="button"
+          @click="installTab = 'manual'"
+        >
+          Manual install
+        </button>
+      </div>
+      <div
+        :class="[
+          'prompt-demo-cta-command',
+          { 'prompt-demo-cta-command--prompt': installTab === 'claude' },
+        ]"
+        @click="copyInstall"
+      >
+        <code class="prompt-demo-cta-code">{{ installCommand }}</code>
+        <button class="prompt-demo-cta-copy" :class="{ copied: installCopied }" type="button">
+          {{ installCopied ? 'Copied!' : 'Copy' }}
+        </button>
+      </div>
+      <a href="/guide/getting-started" class="prompt-demo-cta-link">Read the docs &rarr;</a>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+const installTab = ref<'claude' | 'manual'>('claude');
+const installCopied = ref(false);
+
+const installCommand = computed(() =>
+  installTab.value === 'claude'
+    ? 'Set up claudelint for this project. Follow the setup guide at https://claudelint.com/setup-guide.md'
+    : 'npm install --save-dev claude-code-lint'
+);
+
+function copyInstall() {
+  navigator.clipboard.writeText(installCommand.value);
+  installCopied.value = true;
+  setTimeout(() => {
+    installCopied.value = false;
+  }, 2000);
+}
 
 interface ResponseLine {
   type: 'tool' | 'detail' | 'output' | 'summary';
@@ -361,12 +412,12 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   background: #1e1b18;
-  padding: 80px 24px;
+  padding: 96px 24px 48px;
 }
 
 .prompt-demo-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
   max-width: 520px;
 }
 
@@ -399,12 +450,11 @@ onUnmounted(() => {
 /* Terminal container */
 .prompt-demo-terminal {
   background: #1e1b18;
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
   font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Menlo', monospace;
   width: 100%;
   max-width: 760px;
+  min-height: 420px;
 }
 
 /* Claude Code header */
@@ -609,6 +659,139 @@ onUnmounted(() => {
 
 .cc-response-line :deep(.pass) {
   color: #98c379;
+}
+
+/* --- Install CTA --- */
+
+.prompt-demo-cta {
+  margin-top: 48px;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+}
+
+.prompt-demo-cta-heading {
+  font-family: var(--cl-font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #e5e5e5;
+  margin: 0 0 20px;
+}
+
+.prompt-demo-cta-tabs {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 3px;
+  margin-bottom: 20px;
+}
+
+.prompt-demo-cta-tab {
+  padding: 5px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #a8a69d;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.prompt-demo-cta-tab:hover {
+  color: #e5e5e5;
+}
+
+.prompt-demo-cta-tab.active {
+  color: #e5e5e5;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.prompt-demo-cta-command {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 14px 16px 14px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.prompt-demo-cta-command:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.prompt-demo-cta-command--prompt {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.prompt-demo-cta-command--prompt .prompt-demo-cta-code {
+  white-space: normal;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.prompt-demo-cta-command--prompt .prompt-demo-cta-copy {
+  align-self: flex-end;
+}
+
+.prompt-demo-cta-code {
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Menlo', monospace;
+  font-size: 0.9375rem;
+  color: #e5e5e5;
+  background: none;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.prompt-demo-cta-copy {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #a8a69d;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.prompt-demo-cta-copy:hover {
+  color: #e5e5e5;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.prompt-demo-cta-copy.copied {
+  color: #98c379;
+  border-color: rgba(152, 195, 121, 0.3);
+}
+
+.prompt-demo-cta-link {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #a8a69d;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.prompt-demo-cta-link:hover {
+  color: #e5e5e5;
 }
 
 @media (max-width: 639px) {

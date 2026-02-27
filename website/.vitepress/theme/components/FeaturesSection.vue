@@ -4,11 +4,12 @@
       <span class="features-eyebrow">Validators</span>
       <h2 class="features-heading">What it catches</h2>
       <p class="features-subtitle">
-        Circular CLAUDE.md imports, dangerous skill commands, misconfigured MCP servers.
+        Circular CLAUDE.md imports, dangerous skill commands, misconfigured MCP servers &mdash;
+        caught by
         <a href="/rules/overview" class="features-rules-link"
           >{{ totalRules }} rules across {{ categoryCount }} categories</a
         >
-        catch them before Claude does.
+        before Claude ever sees them.
       </p>
 
       <!-- Tabs with sliding underline -->
@@ -198,7 +199,7 @@ onUnmounted(() => {
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--vp-c-text-2);
-  margin: 0 auto 40px;
+  margin: 0 auto 28px;
   max-width: 640px;
 }
 
@@ -206,8 +207,9 @@ onUnmounted(() => {
   display: inline;
   font-size: inherit;
   font-weight: 500;
-  color: var(--vp-c-text-3);
-  text-decoration: none;
+  color: var(--vp-c-text-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
   transition: color 0.2s;
 }
 
@@ -218,7 +220,7 @@ onUnmounted(() => {
 /* --- Tabs --- */
 
 .features-tabs-wrap {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .features-tabs {
@@ -236,7 +238,7 @@ onUnmounted(() => {
 }
 
 .features-tab {
-  padding: 10px 20px;
+  padding: 6px 14px;
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--vp-c-text-2);
