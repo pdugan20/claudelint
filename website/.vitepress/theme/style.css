@@ -202,9 +202,9 @@
   }
 }
 
-/* Hero bottom spacing (FeaturesSection provides visual separation below) */
+/* Hero spacing */
 .VPHero {
-  padding-bottom: 48px !important;
+  padding-bottom: 104px !important;
 }
 
 .VPHome {
@@ -218,7 +218,7 @@
 
 @media (max-width: 959px) {
   .VPHero {
-    padding-bottom: 48px !important;
+    padding-bottom: 60px !important;
   }
 }
 

@@ -133,32 +133,5 @@
         "link": "/rules/plugin/plugin-description-required"
       }
     ]
-  },
-  {
-    "label": "Hooks & Settings",
-    "totalRules": 8,
-    "rules": [
-      {
-        "id": "hooks-invalid-event",
-        "summary": "Warns when a hook configuration uses an unknown or invalid event name.",
-        "severity": "warn",
-        "fixable": false,
-        "link": "/rules/hooks/hooks-invalid-event"
-      },
-      {
-        "id": "settings-invalid-permission",
-        "summary": "Ensures permission rules reference valid Claude Code tool names.",
-        "severity": "error",
-        "fixable": false,
-        "link": "/rules/settings/settings-invalid-permission"
-      },
-      {
-        "id": "settings-invalid-env-var",
-        "summary": "Validates environment variable naming and detects potential hardcoded secrets.",
-        "severity": "warn",
-        "fixable": false,
-        "link": "/rules/settings/settings-invalid-env-var"
-      }
-    ]
   }
 ]

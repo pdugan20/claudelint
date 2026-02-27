@@ -240,15 +240,6 @@ const SHOWCASE_TABS: Array<{
       'plugin-description-required',
     ],
   },
-  {
-    label: 'Hooks & Settings',
-    sourceCategories: ['hooks', 'settings'],
-    ruleIds: [
-      'hooks-invalid-event',
-      'settings-invalid-permission',
-      'settings-invalid-env-var',
-    ],
-  },
 ];
 
 /**

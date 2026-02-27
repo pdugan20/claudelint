@@ -2,18 +2,18 @@
   <section class="features-section">
     <div class="features-inner">
       <span class="features-eyebrow">Validators</span>
-      <h2 class="features-heading">What it checks</h2>
+      <h2 class="features-heading">What it catches</h2>
       <p class="features-subtitle">
-        claudelint validates every part of your Claude Code setup &mdash; from project memory to
-        plugin manifests.
-        <a href="/rules/overview" class="features-rules-link">
-          {{ totalRules }} rules across {{ categoryCount }} categories &rarr;
-        </a>
+        Circular CLAUDE.md imports, dangerous skill commands, misconfigured MCP servers.
+        <a href="/rules/overview" class="features-rules-link"
+          >{{ totalRules }} rules across {{ categoryCount }} categories</a
+        >
+        catch them before Claude does.
       </p>
 
-      <!-- Tabs -->
+      <!-- Tabs with sliding underline -->
       <div class="features-tabs-wrap" @mouseenter="onHoverEnter" @mouseleave="onHoverLeave">
-        <div class="features-tabs">
+        <div ref="tabsRef" class="features-tabs">
           <button
             v-for="(tab, i) in tabs"
             :key="tab.label"
@@ -21,8 +21,11 @@
             type="button"
             @click="selectTab(i)"
           >
-            {{ tab.label }}
+            <span ref="tabTextRefs">{{ tab.label }}</span>
           </button>
+
+          <!-- Sliding underline -->
+          <span class="features-underline" :style="underlineStyle" />
         </div>
       </div>
 
@@ -42,29 +45,12 @@
           }"
         />
       </div>
-
-      <!-- Apple TV-style dots (below cards) -->
-      <div class="features-dots">
-        <span
-          v-for="(_tab, i) in tabs"
-          :key="`dot-${i}`"
-          :class="['features-dot', { active: activeIndex === i }]"
-        >
-          <span
-            v-if="activeIndex === i"
-            :key="`fill-${animKey}`"
-            :class="['features-dot-fill', { paused: isPaused }]"
-            :style="{ animationDuration: `${timerDuration}ms` }"
-            @animationend="advance"
-          />
-        </span>
-      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import ShowcaseCard from './ShowcaseCard.vue';
 import showcaseTabs from '../../../data/showcase-rules.json';
 import stats from '../../../data/rule-stats.json';
@@ -91,41 +77,96 @@ const categoryCount = stats.categoryCount;
 
 const activeIndex = ref(0);
 const isPaused = ref(false);
-const animKey = ref(0);
-const timerDuration = ref(TIMER_DURATION);
+
+const tabsRef = ref<HTMLElement | null>(null);
+const tabTextRefs = ref<HTMLElement[]>([]);
+const underlineLeft = ref(0);
+const underlineWidth = ref(0);
+
+let timer: ReturnType<typeof setTimeout> | null = null;
+let timerStart = 0;
+let remaining = TIMER_DURATION;
 
 const activeRules = computed(() => tabs[activeIndex.value]?.rules || []);
+
+const underlineStyle = computed(() => ({
+  left: `${underlineLeft.value}px`,
+  width: `${underlineWidth.value}px`,
+}));
+
+function measureTab() {
+  const container = tabsRef.value;
+  const el = tabTextRefs.value[activeIndex.value];
+  if (!container || !el) return;
+  const containerRect = container.getBoundingClientRect();
+  const textRect = el.getBoundingClientRect();
+  underlineLeft.value = textRect.left - containerRect.left;
+  underlineWidth.value = textRect.width;
+}
+
+function startTimer() {
+  stopTimer();
+  remaining = TIMER_DURATION;
+  timerStart = Date.now();
+  timer = setTimeout(advance, TIMER_DURATION);
+}
+
+function stopTimer() {
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+}
 
 function advance() {
   const next = (activeIndex.value + 1) % tabs.length;
   activeIndex.value = next;
-  timerDuration.value = TIMER_DURATION;
-  animKey.value++;
+  startTimer();
 }
 
 function selectTab(index: number) {
   activeIndex.value = index;
-  timerDuration.value = TIMER_DURATION;
-  animKey.value++;
+  startTimer();
 }
 
 function onHoverEnter() {
   isPaused.value = true;
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+  const elapsed = Date.now() - timerStart;
+  remaining = Math.max(0, TIMER_DURATION - elapsed);
 }
 
 function onHoverLeave() {
   isPaused.value = false;
+  if (remaining <= 0) {
+    advance();
+    return;
+  }
+  timerStart = Date.now();
+  timer = setTimeout(advance, remaining);
 }
 
+watch(activeIndex, () => {
+  nextTick(measureTab);
+});
+
 onMounted(() => {
-  animKey.value++;
+  measureTab();
+  startTimer();
+});
+
+onUnmounted(() => {
+  stopTimer();
 });
 </script>
 
 <style scoped>
 .features-section {
   background: var(--vp-c-bg-alt);
-  padding: 80px 24px;
+  padding: 96px 24px;
 }
 
 .features-inner {
@@ -158,7 +199,7 @@ onMounted(() => {
   line-height: 1.6;
   color: var(--vp-c-text-2);
   margin: 0 auto 40px;
-  max-width: 540px;
+  max-width: 640px;
 }
 
 .features-rules-link {
@@ -181,10 +222,10 @@ onMounted(() => {
 }
 
 .features-tabs {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -195,32 +236,38 @@ onMounted(() => {
 }
 
 .features-tab {
-  padding: 6px 16px;
-  font-size: 0.875rem;
+  padding: 10px 20px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--vp-c-text-2);
-  background: var(--vp-c-bg-elv);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 20px;
+  background: none;
+  border: none;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition:
-    color 0.2s,
-    background 0.2s,
-    border-color 0.2s;
+  transition: color 0.2s;
 }
 
 .features-tab:hover {
   color: var(--vp-c-text-1);
-  border-color: var(--vp-c-border);
 }
 
 .features-tab.active {
   color: var(--vp-c-text-1);
   font-weight: 600;
-  background: var(--vp-c-bg-soft);
-  border-color: var(--vp-c-border);
+}
+
+/* --- Sliding underline --- */
+
+.features-underline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--vp-c-text-1);
+  border-radius: 1px;
+  transition:
+    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- Card grid --- */
@@ -249,53 +296,6 @@ onMounted(() => {
   }
 }
 
-/* --- Dot progress indicator (Apple TV style) --- */
-
-.features-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 24px;
-}
-
-.features-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--vp-c-divider);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.features-dot.active {
-  width: 32px;
-}
-
-.features-dot-fill {
-  position: absolute;
-  inset: 0;
-  width: 0%;
-  background: var(--vp-c-text-2);
-  border-radius: 3px;
-  animation: dotFill linear forwards;
-}
-
-.features-dot-fill.paused {
-  animation-play-state: paused;
-}
-
-@keyframes dotFill {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
 /* --- Responsive --- */
 
 @media (max-width: 959px) {
@@ -315,12 +315,10 @@ onMounted(() => {
 
   .features-tabs {
     justify-content: flex-start;
-    flex-wrap: nowrap;
-    padding: 0 4px;
   }
 
   .features-tab {
-    padding: 5px 12px;
+    padding: 10px 14px;
     font-size: 0.8125rem;
   }
 
