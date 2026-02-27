@@ -16,6 +16,7 @@ import SchemaRef from './components/SchemaRef.vue';
 import SkillCard from './components/SkillCard.vue';
 import FaqList from './components/FaqList.vue';
 import HelperCard from './components/HelperCard.vue';
+import PromptDemo from './components/PromptDemo.vue';
 import './style.css';
 
 export default {
@@ -34,6 +35,7 @@ export default {
     app.component('SkillCard', SkillCard);
     app.component('FaqList', FaqList);
     app.component('HelperCard', HelperCard);
+    app.component('PromptDemo', PromptDemo);
   },
   setup() {
     const route = useRoute();

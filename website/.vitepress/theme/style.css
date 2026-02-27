@@ -202,9 +202,9 @@
   }
 }
 
-/* Match hero bottom spacing to top spacing (no features section below) */
+/* Hero bottom spacing (PromptDemo section provides visual separation below) */
 .VPHero {
-  padding-bottom: 96px !important;
+  padding-bottom: 48px !important;
 }
 
 .VPHome {

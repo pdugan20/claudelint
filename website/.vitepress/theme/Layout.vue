@@ -3,6 +3,7 @@ import DefaultTheme from 'vitepress/theme';
 import { useData } from 'vitepress';
 import { onMounted, watch, nextTick } from 'vue';
 import TerminalDemo from './components/TerminalDemo.vue';
+import PromptDemo from './components/PromptDemo.vue';
 import HomeFooter from './components/HomeFooter.vue';
 
 const { Layout } = DefaultTheme;
@@ -29,6 +30,9 @@ onMounted(() => {
   <Layout>
     <template v-if="frontmatter.layout === 'home'" #home-hero-image>
       <TerminalDemo />
+    </template>
+    <template v-if="frontmatter.layout === 'home'" #home-hero-after>
+      <PromptDemo />
     </template>
     <template v-if="frontmatter.layout === 'home'" #layout-bottom>
       <HomeFooter />
