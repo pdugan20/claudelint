@@ -50,34 +50,22 @@ The problem matcher parses stylish output and converts errors/warnings into GitH
 
 #### SARIF Upload (Code Scanning)
 
-Use SARIF when you need persistent results, trend tracking, or more than 50 annotations per run (GitHub limits workflow annotations to 50 per run):
+Use SARIF when you need persistent results, trend tracking, or more than 50 annotations per run (GitHub limits workflow annotations to 50 per run). Add `security-events: write` to permissions and replace the run step in the [basic setup](#basic-setup):
 
 ```yaml
-name: Claude Config Analysis
-on: [push, pull_request]
-
-jobs:
-  claudelint:
-    runs-on: ubuntu-latest
     permissions:
       security-events: write
-    steps:
-      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '20'
+    # ... checkout, setup-node, install as above ...
 
-      - run: npm install -g claude-code-lint
+    - name: Run claudelint (SARIF)
+      run: claudelint check-all --format sarif > results.sarif
+      continue-on-error: true
 
-      - name: Run claudelint (SARIF)
-        run: claudelint check-all --format sarif > results.sarif
-        continue-on-error: true
-
-      - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: results.sarif
+    - name: Upload SARIF
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: results.sarif
 ```
 
 ### Optimizing CI Runs
@@ -98,39 +86,20 @@ Use `--since <ref>` to check files changed since a git ref (ideal for PRs), or `
 
 #### Selective Validators
 
-Instead of `check-all`, run individual validators as separate steps:
+Instead of `check-all`, run only the validators relevant to your project:
 
 ```yaml
 - name: Check CLAUDE.md files
   run: claudelint validate-claude-md
 
-- name: Validate skills
-  run: claudelint validate-skills
-
 - name: Validate settings
   run: claudelint validate-settings
 
-- name: Validate hooks
-  run: claudelint validate-hooks
-
 - name: Validate MCP servers
   run: claudelint validate-mcp
-
-- name: Validate plugin manifest
-  run: claudelint validate-plugin
-
-- name: Validate agents
-  run: claudelint validate-agents
-
-- name: Validate commands
-  run: claudelint validate-commands
-
-- name: Validate LSP config
-  run: claudelint validate-lsp
-
-- name: Validate output styles
-  run: claudelint validate-output-styles
 ```
+
+All available validators: `validate-claude-md`, `validate-skills`, `validate-settings`, `validate-hooks`, `validate-mcp`, `validate-plugin`, `validate-agents`, `validate-commands`, `validate-lsp`, `validate-output-styles`. Run `claudelint --help` for descriptions.
 
 #### Caching
 

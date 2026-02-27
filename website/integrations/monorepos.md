@@ -228,35 +228,6 @@ claudelint check-all --workspaces
 
 This runs validation for every package in the workspace and aggregates results.
 
-**Output:**
-
-```text
-Validating 3 workspace packages
-
-=== Package: app-1 ===
-Checked 4 files across 3 categories (claude-md, settings, hooks) in 32ms. No problems found.
-
-=== Package: app-2 ===
-claude-md (28ms)
-
-  src/CLAUDE.md (1 error)
-     0  error  File exceeds 40KB limit (66669 bytes)  claude-md-size
-
-Checked 3 files across 2 categories (claude-md, skills) in 28ms.
-1 problem (1 error, 0 warnings)
-
-=== Package: shared ===
-Checked 2 files across 2 categories (claude-md, settings) in 18ms. No problems found.
-
-=== Workspace Summary ===
-Total packages: 3
-Failed packages: 1
-Total errors: 1
-Total warnings: 0
-```
-
-The summary line for each package shows exactly which categories were validated and how many files were checked, giving you visibility into coverage across the monorepo.
-
 ## Troubleshooting
 
 ### No workspace detected
