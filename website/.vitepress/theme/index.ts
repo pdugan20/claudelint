@@ -17,6 +17,8 @@ import SkillCard from './components/SkillCard.vue';
 import FaqList from './components/FaqList.vue';
 import HelperCard from './components/HelperCard.vue';
 import PromptDemo from './components/PromptDemo.vue';
+import FeaturesSection from './components/FeaturesSection.vue';
+import InstallCTA from './components/InstallCTA.vue';
 import './style.css';
 
 export default {
@@ -36,6 +38,8 @@ export default {
     app.component('FaqList', FaqList);
     app.component('HelperCard', HelperCard);
     app.component('PromptDemo', PromptDemo);
+    app.component('FeaturesSection', FeaturesSection);
+    app.component('InstallCTA', InstallCTA);
   },
   setup() {
     const route = useRoute();

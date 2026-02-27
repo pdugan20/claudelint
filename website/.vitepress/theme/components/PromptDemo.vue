@@ -1,10 +1,10 @@
 <template>
   <section ref="sectionRef" class="prompt-demo-section">
     <div class="prompt-demo-header">
-      <h2 class="prompt-demo-title">Just ask</h2>
+      <span class="prompt-demo-eyebrow">Claude Code Plugin</span>
+      <h2 class="prompt-demo-title">Works where you already code</h2>
       <p class="prompt-demo-subtitle">
-        claudelint works as a Claude Code plugin. Your prompts automatically trigger the right
-        validator.
+        Type what you need in plain English. claudelint skills handle the rest.
       </p>
     </div>
 
@@ -360,13 +360,24 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 24px 80px;
+  background: #1e1b18;
+  padding: 80px 24px;
 }
 
 .prompt-demo-header {
   text-align: center;
   margin-bottom: 40px;
-  max-width: 480px;
+  max-width: 520px;
+}
+
+.prompt-demo-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6e6c64;
+  margin-bottom: 12px;
 }
 
 .prompt-demo-title {
@@ -374,14 +385,14 @@ onUnmounted(() => {
   font-size: 2.25rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--vp-c-text-1);
+  color: #e5e5e5;
   margin: 0 0 12px;
 }
 
 .prompt-demo-subtitle {
   font-size: 1.05rem;
   line-height: 1.6;
-  color: var(--vp-c-text-2);
+  color: #a8a69d;
   margin: 0;
 }
 
@@ -390,9 +401,7 @@ onUnmounted(() => {
   background: #1e1b18;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow:
-    0 20px 68px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
   font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Menlo', monospace;
   width: 100%;
   max-width: 760px;
