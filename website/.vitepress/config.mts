@@ -24,6 +24,19 @@ export default defineConfig({
     ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }],
     ['link', { rel: 'manifest', href: '/site.webmanifest' }],
     ['meta', { name: 'theme-color', content: '#1a1a19' }],
+    // Preload font + logos to eliminate FOUT and logo flash
+    [
+      'link',
+      {
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        href: '/fonts/source-serif-4-latin.woff2',
+        crossorigin: '',
+      },
+    ],
+    ['link', { rel: 'preload', as: 'image', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['link', { rel: 'preload', as: 'image', type: 'image/svg+xml', href: '/logo-dark.svg' }],
     ['meta', { property: 'og:site_name', content: 'claudelint' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
