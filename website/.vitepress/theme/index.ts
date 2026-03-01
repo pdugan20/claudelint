@@ -20,6 +20,7 @@ import PromptDemo from './components/PromptDemo.vue';
 import FeaturesSection from './components/FeaturesSection.vue';
 import InstallCTA from './components/InstallCTA.vue';
 import ShowcaseCard from './components/ShowcaseCard.vue';
+import PipelineDiagram from './components/PipelineDiagram.vue';
 import './style.css';
 
 export default {
@@ -42,6 +43,7 @@ export default {
     app.component('FeaturesSection', FeaturesSection);
     app.component('InstallCTA', InstallCTA);
     app.component('ShowcaseCard', ShowcaseCard);
+    app.component('PipelineDiagram', PipelineDiagram);
   },
   setup() {
     const route = useRoute();

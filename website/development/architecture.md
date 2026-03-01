@@ -1,10 +1,16 @@
 ---
-description: "Explore claudelint's internal architecture: the distinction between rules and validators, project structure, validator implementations, error handling, and configuration."
+description: "Explore claudelint's internal architecture: the validation pipeline, rules vs validators, project structure, and key subsystems."
 ---
 
 # Architecture
 
 This document describes the internal architecture of claudelint for contributors. For the project's validation philosophy, scope boundaries, and design principles, see [Design Philosophy](/development/design-philosophy).
+
+## System Overview
+
+claudelint runs all validators in parallel, each executing its category's rules against discovered files, then aggregates and formats the results.
+
+<PipelineDiagram />
 
 ## Rules vs Validators
 
@@ -33,37 +39,52 @@ Validators are internal orchestrators — classes in `src/validators/` that coll
 - **Implementation detail** - Orchestrate file discovery, parsing, rule execution
 - **Extend FileValidator or SchemaValidator** - Share common validation infrastructure
 
-**Validator Responsibilities:**
+See the [Validators reference](/validators/overview) for details on each validator.
 
-1. **File Discovery** - Find files to validate (glob patterns)
-2. **File Parsing** - Read and parse file contents (YAML, JSON, Markdown)
-3. **Rule Orchestration** - Collect category rules, call validate(), aggregate results
-4. **Result Reporting** - Format and report violations to CLI
+## Validation Pipeline
 
-### Contributor Guidelines
+A `claudelint check-all` invocation flows through these stages:
 
-#### DO: Write Rules
+### Configuration
 
-- Create new rules in [`src/rules/{category}/{rule-id}.ts`](https://github.com/pdugan20/claudelint/tree/main/src/rules/)
-- Follow the Rule interface and metadata schema
-- Write focused, single-purpose validation checks
-- See [Contributing Guide](/development/contributing#adding-validation-rules) for the complete guide
+The CLI loads configuration from `.claudelintrc.json` (if present), merging CLI flags, config file settings, and default values. Config controls which rules are enabled, severity overrides, and options like `--fix` and `--cache`. See the [Configuration Guide](/guide/configuration) for resolution order.
 
-#### DON'T: Extend Validators
+### File Discovery
 
-- Don't create new validators (unless adding a new category)
-- Don't modify validator orchestration logic
-- Don't write validation logic directly in validators
+Each validator declares file patterns (e.g., `SKILL.md`, `.mcp.json`). Validators discover matching files in the project directory, respecting `.gitignore` and path filters. See [File Discovery](/guide/file-discovery) for the complete list.
+
+### Parallel Execution
+
+All enabled validators run concurrently via `Promise.all()`. Each validator independently:
+
+1. Finds files matching its patterns
+2. Reads and parses file contents (Markdown, JSON, YAML)
+3. Executes its category's rules via `executeRulesForCategory()`
+4. Aggregates results
+
+Total wall-clock time equals the slowest validator, not the sum.
+
+### Rule Execution
+
+Each rule receives a `RuleContext` with the file path, content, and user-configured options. Rules call `context.report()` to emit violations with messages, line numbers, and optional auto-fixes. See the [Rule System](/development/rule-system) for implementation patterns.
+
+### Result Formatting
+
+Results are formatted for output. Built-in formatters: `stylish` (default table), `json`, `compact`, `sarif`, and `github` (for PR annotations). Custom formatters can be loaded by path. See the [API Formatters docs](/api/formatters) for details.
+
+### Exit Code
+
+- **0** — No errors or warnings
+- **1** — Warnings found (or errors with `--warnings-as-errors`)
+- **2** — Errors found
 
 ## Project Structure
 
 ```text
 claudelint/
 ├── src/
-│   ├── api/               # Library API layer
-│   ├── cli/               # CLI commands and utilities
-│   │   ├── commands/      # Individual CLI commands
-│   │   └── utils/         # CLI-specific utilities (logger, config-loader)
+│   ├── api/               # Programmatic API (ClaudeLint class, formatters)
+│   ├── cli/               # CLI commands (Commander.js)
 │   ├── rules/             # Validation rules (auto-discovered)
 │   │   ├── claude-md/     # CLAUDE.md rules
 │   │   ├── skills/        # Skills rules
@@ -75,92 +96,39 @@ claudelint/
 │   │   ├── lsp/           # LSP rules
 │   │   ├── output-styles/ # Output Styles rules
 │   │   └── commands/      # Commands rules
-│   ├── schemas/           # Zod schemas and constants
+│   ├── schemas/           # Zod schemas for frontmatter validation
 │   ├── types/             # TypeScript types and interfaces
 │   ├── validators/        # Validator orchestrators
-│   │   ├── file-validator.ts    # Base class for text/markdown validators
-│   │   ├── schema-validator.ts  # Base class for JSON schema validators
-│   │   ├── claude-md.ts         # CLAUDE.md validator
-│   │   ├── skills.ts            # Skills validator
-│   │   └── ...                  # Other validators
 │   └── utils/             # Shared utilities
-│       ├── cache.ts       # Validation result caching
-│       ├── config/        # Configuration loading and resolution
-│       ├── diagnostics/   # Structured diagnostic collection
-│       ├── filesystem/    # File system operations
-│       ├── formats/       # Markdown/JSON/YAML parsing
-│       ├── reporting/     # Output formatting and progress
-│       ├── rules/         # Rule registry and custom rule loader
-│       ├── validators/    # Validator registry and factory
-│       └── workspace/     # Monorepo workspace detection
 ├── tests/                 # Test files
 ├── skills/                # Claude Code plugin skills
-├── .claude/hooks/         # Claude Code plugin hooks
 ├── .claude-plugin/        # Plugin manifest and metadata
 ├── website/               # VitePress documentation site
 ├── scripts/               # Build and automation scripts
 └── schemas/               # Generated JSON schemas
 ```
 
-## Validator Implementations
+## Key Subsystems
 
-### CLAUDE.md Validator
+### API Layer
 
-**Validates (Claude-specific only):**
+claudelint exposes both a CLI and a [programmatic API](/api/overview) that share the same validation engine. The API in [`src/api/`](https://github.com/pdugan20/claudelint/tree/main/src/api) provides a class-based interface (`ClaudeLint`) and functional utilities (`lint`, `lintText`, `formatResults`), making claudelint embeddable in other tools, editors, and CI scripts.
 
-- File size limits (warning at 35KB, error at 40KB)
-- `@import` syntax and referenced file existence
-- Recursive import depth (max 5 levels to prevent circular imports)
-- YAML frontmatter schema in `.claude/rules/*.md` files
-- `paths` glob pattern validity
+### Schema Layer
 
-### Skills Validator
+Zod schemas in [`src/schemas/`](https://github.com/pdugan20/claudelint/tree/main/src/schemas) define the expected structure of skill frontmatter, agent frontmatter, output style frontmatter, and other configuration formats. [Schema-delegating rules](/development/rule-system#schema-delegating-rules) wrap these schemas as thin validators, keeping validation logic in one place while making each check individually configurable.
 
-**Validates (Claude-specific only):**
+### Caching
 
-- `SKILL.md` file existence in skill directories
-- YAML frontmatter schema compliance
-- Required fields: `name`, `description`
-- Optional field types: `usage`, `allowed-tools`, `allowed-prompts`
-- Referenced files in skill directory exist
-- String substitution syntax (`{{VAR}}`) validity
+The [`ValidationCache`](/development/internals#caching) caches results keyed by validator name. Cache entries are invalidated when the claudelint version, configuration, or file modification times change. Enable with `--cache` or the `cache` config option.
 
-### Settings Validator
+### Diagnostic Collection
 
-**Validates:** JSON schema, permission rule syntax, tool/model name validity, file paths, environment variables.
+Library code uses [`DiagnosticCollector`](/development/internals#diagnostic-collection) instead of `console` directly. This keeps the library testable, supports programmatic usage, and provides structured diagnostics with source tracking.
 
-### Hooks Validator
+## See Also
 
-**Validates:** hooks.json schema, event names, hook types, script existence, matcher patterns.
-
-### MCP Server Validator
-
-**Validates:** .mcp.json schema, server name uniqueness, transport types, command/URL syntax, environment variables.
-
-### Plugin Validator
-
-**Validates:** plugin.json schema, semantic versioning, directory structure, file references, cross-references.
-
-### Additional Validators
-
-- **Agents** - Agent structure, frontmatter, model/tool/skill references
-- **LSP** - LSP configuration files, server names, commands
-- **Output Styles** - Style frontmatter and structure
-- **Commands** - Deprecated directory detection, migration suggestions
-
-## Error Handling
-
-Validators distinguish between:
-
-- **Errors** - Must be fixed (exit code 2)
-- **Warnings** - Should be fixed (exit code 1 with `--warnings-as-errors`)
-- **Info** - Informational only (exit code 0)
-
-## Configuration
-
-Validators can be configured via:
-
-1. **CLI flags** - `--verbose`, `--warnings-as-errors`, `--path`, `--fix`
-2. **Config file** - `.claudelintrc.json`
-
-See the [Rule System](/development/rule-system) for details on the rule registry, implementation patterns, and how validators execute rules. See [Internals](/development/internals) for caching, parallel validation, and CLI implementation details.
+- [Rule System](/development/rule-system) — Rule interface, implementation patterns, and registries
+- [Internals](/development/internals) — Caching, parallel execution, and CLI implementation details
+- [Custom Rules](/development/custom-rules) — Build your own validation rules
+- [Contributing](/development/contributing) — Contribution guidelines and rule checklist
