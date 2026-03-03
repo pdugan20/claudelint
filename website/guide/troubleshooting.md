@@ -285,6 +285,42 @@ claudelint cache-clear
 claudelint list-rules --fixable
 ```
 
+### Fixes failed
+
+**Symptom:** "N fixes failed" message appears.
+
+**Causes:** File doesn't exist, invalid file content (can't parse frontmatter), or permission denied.
+
+**Solution:** Run with `--verbose` to see detailed error messages. Check file permissions with `ls -l`.
+
+### Auto-fix makes unexpected changes
+
+**Solution:** Always use `--fix-dry-run` first to preview changes. Use `git checkout .` to revert if needed. [Report an issue](https://github.com/pdugan20/claudelint/issues) if a fix is incorrect, including original content and the diff from `--fix-dry-run`.
+
+## Inline Disable Issues
+
+### Disable directive not working
+
+**Checklist:**
+
+1. Verify syntax: `<!-- claudelint-disable-next-line rule-id -->`
+2. Check rule ID spelling: run `claudelint list-rules`
+3. Confirm `disable-next-line` is immediately before the violation (no blank lines between them)
+
+### Unused disable warnings
+
+**Cause:** `reportUnusedDisableDirectives` is enabled and the directive doesn't suppress any violations.
+
+**Solutions:**
+
+1. Remove the disable if the violation has been fixed
+2. Fix the underlying issue instead of disabling
+3. Set `"reportUnusedDisableDirectives": false` in config to turn off detection
+
+### Wrong line affected by disable
+
+`disable-next-line` affects the line immediately after the comment. If there's a blank line between the comment and the violation, it won't work. Use `disable-line` to disable the current line instead.
+
 ## Custom Rules Issues
 
 ### Custom rule not loading

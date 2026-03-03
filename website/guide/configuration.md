@@ -6,25 +6,6 @@ description: Configure claudelint with rules, presets, ignore patterns, override
 
 claudelint supports configuration through multiple methods, allowing you to customize linting rules and behavior for your project.
 
-## Quick Navigation
-
-**Configuration Topics:**
-
-- [Configuration Files](#configuration-files) - Where to put your config
-- [Rules](#rules) - Enabling, disabling, and configuring rules
-- [Ignoring Files](#ignoring-files) - Skip validation for certain paths
-- [Inline Disables](./inline-disables.md) - Disable rules in specific files
-- [CLI Configuration](./cli-reference.md) - Command-line flags and options
-- [Troubleshooting](./troubleshooting.md) - Troubleshoot configuration issues
-
-**Common Tasks:**
-
-- **Disable a rule:** See [Rules](#rules)
-- **Ignore a directory:** See [Ignoring Files](#ignoring-files)
-- **Disable for one line:** See [Inline Disables](./inline-disables.md)
-- **Check current config:** Run `claudelint print-config`
-- **Fix config errors:** See [Troubleshooting](./troubleshooting.md)
-
 ## Configuration Files
 
 claudelint will automatically search for configuration files in the following order:
@@ -92,9 +73,9 @@ claudelint ships with three built-in presets you can use directly:
 }
 ```
 
-- **`claudelint:recommended`** - A curated subset of rules focused on correctness, security, and broad applicability. Best for most projects. **This is the default when no config file is present.**
-- **`claudelint:strict`** - Everything in recommended, plus additional quality and best-practice rules. Good for teams that want stricter guardrails.
-- **`claudelint:all`** - Every rule at its source-defined severity. Maximum coverage for comprehensive audits.
+- `claudelint:recommended` - A curated subset of rules focused on correctness, security, and broad applicability. Best for most projects. This is the default when no config file is present.
+- `claudelint:strict` - Everything in recommended, plus additional quality and best-practice rules. Good for teams that want stricter guardrails.
+- `claudelint:all` - Every rule at its source-defined severity. Maximum coverage for comprehensive audits.
 
 You can extend a preset and override individual rules:
 
@@ -215,41 +196,9 @@ Options:
 - `verbose` - Enable verbose output
 - `color` - Enable/disable color output (auto-detected by default)
 
-### Report Unused Disable Directives
+### Inline Disables
 
-Report when inline disable comments don't suppress any violations:
-
-```json
-{
-  "reportUnusedDisableDirectives": true
-}
-```
-
-When enabled, claudelint warns about:
-
-- Disable directives that don't match any violations
-- Directives for rules that don't trigger in that location
-- Leftover disables after violations are fixed
-
-**Example:**
-
-```markdown
-<!-- claudelint-disable-next-line size-error -->
-
-Normal line with no violation - will warn about unused disable
-```
-
-**Why use this:**
-
-- Keeps inline disable comments clean and intentional
-- Identifies when violations have been fixed
-- Prevents confusion about which rules are actually active
-
-See [Inline Disable Directives](inline-disables.md) for complete documentation on disable syntax and usage.
-
-### Inline Disable Comments
-
-You can disable specific rules for individual files, lines, or blocks using HTML comments. See [Inline Disable Directives](inline-disables.md) for full syntax, examples, and best practices.
+You can disable rules for specific files, lines, or blocks using HTML comments, and optionally report unused disable directives. See [Inline Disable Directives](./inline-disables.md) for syntax, examples, and the `reportUnusedDisableDirectives` option.
 
 ### Max Warnings
 
@@ -291,61 +240,11 @@ You can also configure claudelint in your `package.json`:
 
 ## .claudelintignore
 
-Create a `.claudelintignore` file to exclude files and directories from linting:
+See [File Discovery — Ignoring Files](./file-discovery.md#ignoring-files) for `.claudelintignore` syntax, `.gitignore` integration, and default ignores.
 
-```text
-# Dependencies
-node_modules/
-vendor/
+## CLI Overrides
 
-# Build outputs
-dist/
-build/
-
-# Generated files
-**/*.generated.ts
-
-# Test fixtures
-fixtures/
-```
-
-Syntax is similar to `.gitignore`:
-
-- `#` for comments
-- `*` matches any characters except `/`
-- `**` matches any characters including `/`
-- Trailing `/` matches directories
-- Blank lines are ignored
-
-Default ignores (always applied):
-
-- `node_modules/**`
-- `.git/**`
-- `dist/**`
-- `build/**`
-
-## CLI Options
-
-Configuration file settings can be overridden with CLI flags like `--config`, `--format`, `--strict`, and `--max-warnings`. See the [CLI Reference](./cli-reference.md) for complete documentation of all commands and options.
-
-### CLI Rule Overrides
-
-The `--rule` flag lets you override rule severity directly from the command line, without editing your config file:
-
-```bash
-# Override a single rule
-claudelint check-all --rule skill-name:error
-
-# Override multiple rules
-claudelint check-all --rule skill-name:error --rule claude-md-size:off
-
-# Disable a rule temporarily
-claudelint check-all --rule skill-missing-version:off
-```
-
-The format is `rule-id:severity` where severity is `off`, `warn`, or `error`. CLI overrides take the highest precedence, above both config files and extends chains.
-
-To debug configuration issues, use `print-config`, `validate-config`, and `resolve-config`. See [CLI Reference - Config Management](./cli-reference.md#config-management) for details.
+Config file settings can be overridden with CLI flags (`--config`, `--format`, `--strict`, `--max-warnings`, `--rule`). See the [CLI Reference](./cli-reference.md) for all commands and options.
 
 ## Example Configuration
 

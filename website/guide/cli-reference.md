@@ -130,11 +130,7 @@ claudelint check-all --format json | jq '.[] | select(.errorCount > 0)'
 cat CLAUDE.md | claudelint check-all --stdin --stdin-filename CLAUDE.md
 ```
 
-**Exit Codes:**
-
-- `0` - No issues found
-- `1` - Issues found (errors or warnings)
-- `2` - Fatal error (invalid config, command failure)
+See [Exit Codes](#exit-codes) for return values.
 
 ### init
 
@@ -502,18 +498,18 @@ Run a specific validator instead of all at once. Usage: `claudelint validate-<ty
 
 **Available validators:**
 
-| Command | Validates | Extra Options |
-|---------|-----------|---------------|
-| `validate-claude-md` | CLAUDE.md files | `--explain` |
-| `validate-skills` | Skill structure and frontmatter | `--skill <name>` |
-| `validate-agents` | Agent structure and frontmatter | - |
-| `validate-hooks` | hooks.json files | - |
-| `validate-mcp` | MCP server configuration | - |
-| `validate-settings` | settings.json files | - |
-| `validate-plugin` | Plugin manifest files | - |
-| `validate-lsp` | LSP configuration | - |
-| `validate-output-styles` | Output style structure and frontmatter | - |
-| `validate-commands` | Deprecated commands (suggests migration to skills) | - |
+| Command | Validates |
+|---------|-----------|
+| `validate-claude-md` | CLAUDE.md files (supports `--explain`) |
+| `validate-skills` | Skill structure and frontmatter (supports `--skill <name>`) |
+| `validate-agents` | Agent structure and frontmatter |
+| `validate-hooks` | hooks.json files |
+| `validate-mcp` | MCP server configuration |
+| `validate-settings` | settings.json files |
+| `validate-plugin` | Plugin manifest files |
+| `validate-lsp` | LSP configuration |
+| `validate-output-styles` | Output style structure and frontmatter |
+| `validate-commands` | Deprecated commands (suggests migration to skills) |
 
 **Examples:**
 
@@ -579,39 +575,6 @@ claudelint format --verbose
 ```
 
 See [File Discovery](/guide/file-discovery) for the full list of file patterns discovered by claudelint.
-
-## Optimization
-
-### optimize-cc-md
-
-Interactively optimize CLAUDE.md files through a guided 3-phase workflow. Available as a [Claude Code plugin skill](/integrations/claude-code-plugin).
-
-**Phases:**
-
-1. **Validate** — Runs claudelint validation and reads the CLAUDE.md file
-2. **Assess** — Evaluates quality against five criteria: specificity, completeness, clarity, organization, and maintenance
-3. **Improve** — Walks you through targeted fixes, creating `@import` files and reorganizing content
-
-**Usage (inside Claude Code):**
-
-```bash
-/optimize-cc-md
-/optimize-cc-md CLAUDE.md
-/optimize-cc-md --verbose
-```
-
-**What it does:**
-
-- Reduces file size by extracting content into `@import` files
-- Removes generic or obvious instructions
-- Reorganizes content by concern
-- Explains each suggestion conversationally
-- Asks before making any changes
-- Verifies improvements after each change
-
-**When to use:** After `claudelint check-all` flags `claude-md-size` violations, or when your CLAUDE.md has grown large and needs restructuring.
-
-See the [Claude Code Plugin Guide](/integrations/claude-code-plugin) for setup instructions.
 
 ## Development
 

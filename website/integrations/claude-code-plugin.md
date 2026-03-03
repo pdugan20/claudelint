@@ -139,6 +139,8 @@ Once installed, the plugin adds 9 skills that Claude can use automatically. Ask 
 
 </div>
 
+The **optimize-cc-md** skill runs a guided 3-phase workflow (validate, assess, improve) to reduce CLAUDE.md file size by extracting content into `@import` files, removing generic instructions, and reorganizing by concern. Use it when `claudelint check-all` flags `claude-md-size` violations or when your CLAUDE.md has grown large.
+
 See the [CLI Reference](/guide/cli-reference) for all available flags when using slash commands directly.
 
 ## Automatic Validation

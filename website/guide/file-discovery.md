@@ -71,6 +71,24 @@ packages/legacy/CLAUDE.md
 experiments/**
 ```
 
+Syntax rules:
+
+- `#` for comments
+- `*` matches any characters except `/`
+- `**` matches any characters including `/`
+- Trailing `/` matches directories
+- Blank lines are ignored
+
+Default ignores (always applied): `node_modules/**`, `.git/**`, `dist/**`, `build/**`.
+
+You can also add patterns in your config file with the `ignorePatterns` field:
+
+```json
+{
+  "ignorePatterns": ["**/*.generated.ts", ".cache/", "coverage/"]
+}
+```
+
 ### .gitignore
 
 Patterns in `.gitignore` are also respected automatically. Files matched by `.gitignore` will not be discovered.
