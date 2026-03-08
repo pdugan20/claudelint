@@ -1,5 +1,5 @@
 ---
-description: Worked examples of custom claudelint rules covering pattern matching, auto-fix with character ranges, and configurable options with Zod schemas.
+description: Practical examples of custom claudelint rules covering pattern matching, auto-fix with character ranges, and configurable options with Zod schemas.
 ---
 
 # Custom Rule Examples

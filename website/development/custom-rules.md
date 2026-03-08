@@ -84,7 +84,7 @@ Custom rules must use one of the built-in categories. The category determines wh
 
 ## Examples
 
-See the [Custom Rule Examples](/development/custom-rules-examples) page for three worked examples covering pattern matching, auto-fix, and configurable options. All examples are real rules from claudelint's own [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules) directory.
+See the [Custom Rule Examples](/development/custom-rules-examples) page for three practical examples covering pattern matching, auto-fix, and configurable options. All examples are real rules from claudelint's own [`.claudelint/rules/`](https://github.com/pdugan20/claudelint/tree/main/.claudelint/rules) directory.
 
 ## Configuration
 
@@ -99,16 +99,6 @@ Custom rules can be configured in `.claudelintrc.json` just like built-in rules:
   }
 }
 ```
-
-## Best Practices
-
-| Practice | Do | Don't |
-|----------|-----|-------|
-| Rule IDs | `no-todo-comments` | `rule1` |
-| Messages | `Found TODO comment on line 42. Create a GitHub issue instead.` | `Invalid` |
-| Scope | One check per rule | Multiple unrelated checks in one rule |
-| Severity | `error` for security/breaking, `warn` for style | Everything as `error` |
-| Auto-fix | Idempotent, precise ranges, simple transforms | Complex multi-step rewrites |
 
 ## Testing
 
