@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.4](https://github.com/pdugan20/claudelint/compare/v0.2.3...v0.2.4) (2026-03-15)
+
+### Features
+
+* **website:** absorb install CTA into PromptDemo, refine section spacing ([1deb966](https://github.com/pdugan20/claudelint/commit/1deb9665f51e3b8918a8a8cf40f5f9ae5c2d9423))
+* **website:** add animated PromptDemo section to landing page (WIP) ([c737d9f](https://github.com/pdugan20/claudelint/commit/c737d9f17b146567eaf0d9a20054ad956eaec488))
+* **website:** add features grid, install CTA, and landing page flow ([1250578](https://github.com/pdugan20/claudelint/commit/12505781757633ec2b566620c7cd26e6c4884c3c))
+* **website:** fetch Claude Code version from GitHub, refine PromptDemo copy ([7fe0099](https://github.com/pdugan20/claudelint/commit/7fe0099384d8021c2331d8d019e8800ef540def0))
+* **website:** interactive tabbed features section with showcase rules ([fc16bf8](https://github.com/pdugan20/claudelint/commit/fc16bf856b1312cabbcdd325ea9ee1f5025c5b84))
+* **website:** sliding underline tabs, copy and spacing refinements ([9506038](https://github.com/pdugan20/claudelint/commit/950603835025cf6cc2ffc869150d965fea996286))
+
+### Bug Fixes
+
+* add relatedRules to skill-cross-reference-invalid ([4c4c8dd](https://github.com/pdugan20/claudelint/commit/4c4c8ddc54038c4cb99daaef577c0f2810e18060))
+* pin inquirer to v9 for CJS compatibility ([6486a68](https://github.com/pdugan20/claudelint/commit/6486a680a56daa5b00d6785c00655f9b38848f92)), closes [#62](https://github.com/pdugan20/claudelint/issues/62)
+* **website:** replace Unicode block crab with inline SVG for cross-browser rendering ([b174b5a](https://github.com/pdugan20/claudelint/commit/b174b5a30fc9857b208437a471b172c839f01d24))
+
+### Performance Improvements
+
+* **website:** preload font and logo SVGs to eliminate FOUT ([48870ca](https://github.com/pdugan20/claudelint/commit/48870ca14f8bd83c721f6b451a1a7ad4414336ec))
+* **website:** self-host Source Serif 4 font ([43acebb](https://github.com/pdugan20/claudelint/commit/43acebb5dc10f244da7ac7c5001cecd07c707efc))
+
+### Documentation
+
+* standardize badge style to use logos ([356c70d](https://github.com/pdugan20/claudelint/commit/356c70d6b5e61226143ca6eed4314033097aa051))
+* trim contributing page and fix wording in custom rules docs ([7dbb53e](https://github.com/pdugan20/claudelint/commit/7dbb53e7eef6a97d4a689724795059870d80d202))
+* **website:** revamp architecture page with pipeline diagram and clearer structure ([e3f2a9c](https://github.com/pdugan20/claudelint/commit/e3f2a9ce0ad169901fdce79ac2adbf043872cd99))
+* **website:** trim Usage section pages and eliminate cross-page redundancy ([4bbb34a](https://github.com/pdugan20/claudelint/commit/4bbb34a501fe17ce312e5bbe3c2ca8479d317186))
+* **website:** trim verbose CI and monorepo examples ([2c8e45a](https://github.com/pdugan20/claudelint/commit/2c8e45a5835cb3e6ae0aca2004eb9626970c04ac))
+
+### Continuous Integration
+
+* bump actions/download-artifact from 7 to 8 ([#55](https://github.com/pdugan20/claudelint/issues/55)) ([91e13fa](https://github.com/pdugan20/claudelint/commit/91e13fa21a16706935aa66914cbdffbc0bd9d8c7))
+* move GitHub release creation to CI workflow ([58f5602](https://github.com/pdugan20/claudelint/commit/58f5602199dc49f0a36b64efd48004d3096f66d2))
+* use CHANGELOG.md for GitHub Release notes ([47d6da5](https://github.com/pdugan20/claudelint/commit/47d6da53ea14c643cfca209fd3200c85cc475d35))
+* use squash merge for Dependabot auto-merge ([c65bb44](https://github.com/pdugan20/claudelint/commit/c65bb44a4855a9f752997b2b9b2817f19c680203))
+
 ## [0.2.3](https://github.com/pdugan20/claudelint/compare/v0.2.2...v0.2.3) (2026-02-25)
 
 ### Features
