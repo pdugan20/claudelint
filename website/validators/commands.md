@@ -15,9 +15,17 @@ The Commands validator checks for deprecated command directory usage and helps m
 
 This validator includes <RuleCount category="commands" /> rules. See the [Commands rules category](/rules/commands/commands-deprecated-directory) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [commands-deprecated-directory](/rules/commands/commands-deprecated-directory) | warn | Deprecated commands directory detected |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="commands-deprecated-directory"
+  description="Deprecated .claude/commands/ directory detected"
+  severity="warning"
+  category="Commands"
+  link="/rules/commands/commands-deprecated-directory"
+/>
+
+</div>
 
 ## CLI Usage
 

@@ -21,13 +21,41 @@ The Agents validator checks Claude Code agent definitions for correctness, inclu
 
 This validator includes <RuleCount category="agents" /> rules. See the [Agents rules category](/rules/agents/agent-body-too-short) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [agent-name](/rules/agents/agent-name) | error | Invalid agent name format |
-| [agent-description](/rules/agents/agent-description) | error | Missing or invalid description |
-| [agent-name-filename-mismatch](/rules/agents/agent-name-filename-mismatch) | error | Name does not match filename |
-| [agent-skills-not-found](/rules/agents/agent-skills-not-found) | error | Referenced skill not found |
-| [agent-body-too-short](/rules/agents/agent-body-too-short) | warn | Agent body content below minimum length |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="agent-name"
+  description="Agent name does not follow naming conventions"
+  severity="error"
+  category="Agents"
+  link="/rules/agents/agent-name"
+/>
+
+<RuleCard
+  rule-id="agent-name-filename-mismatch"
+  description="Agent name in frontmatter does not match the filename"
+  severity="error"
+  category="Agents"
+  link="/rules/agents/agent-name-filename-mismatch"
+/>
+
+<RuleCard
+  rule-id="agent-skills-not-found"
+  description="Referenced skill does not exist in the project"
+  severity="error"
+  category="Agents"
+  link="/rules/agents/agent-skills-not-found"
+/>
+
+<RuleCard
+  rule-id="agent-body-too-short"
+  description="Agent system prompt should have meaningful content"
+  severity="warning"
+  category="Agents"
+  link="/rules/agents/agent-body-too-short"
+/>
+
+</div>
 
 ## CLI Usage
 

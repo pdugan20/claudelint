@@ -18,13 +18,41 @@ The LSP validator checks Language Server Protocol configuration files for transp
 
 This validator includes <RuleCount category="lsp" /> rules. See the [LSP rules category](/rules/lsp/lsp-command-bare-name) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [lsp-server-name-too-short](/rules/lsp/lsp-server-name-too-short) | warn | Server name is too short |
-| [lsp-language-id-empty](/rules/lsp/lsp-language-id-empty) | error | Language ID is empty |
-| [lsp-invalid-transport](/rules/lsp/lsp-invalid-transport) | error | Invalid transport type |
-| [lsp-extension-missing-dot](/rules/lsp/lsp-extension-missing-dot) | warn | File extension missing leading dot |
-| [lsp-command-bare-name](/rules/lsp/lsp-command-bare-name) | warn | Command uses bare name instead of explicit path |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="lsp-invalid-transport"
+  description="LSP server uses an invalid transport type"
+  severity="error"
+  category="LSP"
+  link="/rules/lsp/lsp-invalid-transport"
+/>
+
+<RuleCard
+  rule-id="lsp-language-id-empty"
+  description="Language ID field is empty"
+  severity="error"
+  category="LSP"
+  link="/rules/lsp/lsp-language-id-empty"
+/>
+
+<RuleCard
+  rule-id="lsp-extension-missing-dot"
+  description="File extension is missing the leading dot"
+  severity="warning"
+  category="LSP"
+  link="/rules/lsp/lsp-extension-missing-dot"
+/>
+
+<RuleCard
+  rule-id="lsp-command-bare-name"
+  description="Server command uses a bare name instead of explicit path"
+  severity="warning"
+  category="LSP"
+  link="/rules/lsp/lsp-command-bare-name"
+/>
+
+</div>
 
 ## CLI Usage
 

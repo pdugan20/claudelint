@@ -16,11 +16,33 @@ The Output Styles validator checks Claude Code output style definitions for name
 
 This validator includes <RuleCount category="output-styles" /> rules. See the [Output Styles rules category](/rules/output-styles/output-style-body-too-short) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [output-style-name-directory-mismatch](/rules/output-styles/output-style-name-directory-mismatch) | error | Name does not match directory |
-| [output-style-missing-guidelines](/rules/output-styles/output-style-missing-guidelines) | warn | Missing guidelines content |
-| [output-style-body-too-short](/rules/output-styles/output-style-body-too-short) | warn | Body content too short |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="output-style-name-directory-mismatch"
+  description="Output style name does not match its directory"
+  severity="error"
+  category="Output Styles"
+  link="/rules/output-styles/output-style-name-directory-mismatch"
+/>
+
+<RuleCard
+  rule-id="output-style-missing-guidelines"
+  description="Output style is missing guidelines content"
+  severity="warning"
+  category="Output Styles"
+  link="/rules/output-styles/output-style-missing-guidelines"
+/>
+
+<RuleCard
+  rule-id="output-style-body-too-short"
+  description="Output style body content is too short"
+  severity="warning"
+  category="Output Styles"
+  link="/rules/output-styles/output-style-body-too-short"
+/>
+
+</div>
 
 ## CLI Usage
 

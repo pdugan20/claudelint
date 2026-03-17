@@ -18,11 +18,33 @@ The Hooks validator checks hooks configuration files for schema compliance, even
 
 This validator includes <RuleCount category="hooks" /> rules. See the [Hooks rules category](/rules/hooks/hooks-invalid-config) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [hooks-missing-script](/rules/hooks/hooks-missing-script) | error | Hook script not found |
-| [hooks-invalid-event](/rules/hooks/hooks-invalid-event) | error | Invalid hook event name |
-| [hooks-invalid-config](/rules/hooks/hooks-invalid-config) | error | Invalid hooks.json schema |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="hooks-missing-script"
+  description="Hook references a command script that does not exist"
+  severity="error"
+  category="Hooks"
+  link="/rules/hooks/hooks-missing-script"
+/>
+
+<RuleCard
+  rule-id="hooks-invalid-event"
+  description="Hook uses an unrecognized event name"
+  severity="error"
+  category="Hooks"
+  link="/rules/hooks/hooks-invalid-event"
+/>
+
+<RuleCard
+  rule-id="hooks-invalid-config"
+  description="hooks.json does not match the expected schema"
+  severity="error"
+  category="Hooks"
+  link="/rules/hooks/hooks-invalid-config"
+/>
+
+</div>
 
 ## CLI Usage
 

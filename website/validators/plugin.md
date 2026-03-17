@@ -20,13 +20,41 @@ The Plugin validator checks `.claude-plugin/plugin.json` manifest files for sche
 
 This validator includes <RuleCount category="plugin" /> rules. See the [Plugin rules category](/rules/plugin/plugin-commands-deprecated) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [plugin-name-required](/rules/plugin/plugin-name-required) | error | Plugin name is required |
-| [plugin-version-required](/rules/plugin/plugin-version-required) | error | Plugin version is required |
-| [plugin-invalid-version](/rules/plugin/plugin-invalid-version) | error | Invalid semantic version |
-| [plugin-missing-file](/rules/plugin/plugin-missing-file) | error | Referenced file not found |
-| [plugin-invalid-marketplace-manifest](/rules/plugin/plugin-invalid-marketplace-manifest) | error | Invalid marketplace manifest schema |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="plugin-name-required"
+  description="Plugin manifest is missing the required name field"
+  severity="error"
+  category="Plugin"
+  link="/rules/plugin/plugin-name-required"
+/>
+
+<RuleCard
+  rule-id="plugin-invalid-version"
+  description="Version string does not follow semantic versioning"
+  severity="error"
+  category="Plugin"
+  link="/rules/plugin/plugin-invalid-version"
+/>
+
+<RuleCard
+  rule-id="plugin-missing-file"
+  description="Referenced component file does not exist"
+  severity="error"
+  category="Plugin"
+  link="/rules/plugin/plugin-missing-file"
+/>
+
+<RuleCard
+  rule-id="plugin-invalid-marketplace-manifest"
+  description="Marketplace manifest has structural errors"
+  severity="error"
+  category="Plugin"
+  link="/rules/plugin/plugin-invalid-marketplace-manifest"
+/>
+
+</div>
 
 ## CLI Usage
 

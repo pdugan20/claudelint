@@ -232,47 +232,31 @@ This runs validation for every package in the workspace and aggregates results.
 
 ### No workspace detected
 
-```text
-Error: No workspace detected in current directory.
-Workspace detection supports pnpm-workspace.yaml and package.json workspaces.
-Please run this command from a monorepo root directory.
-```
+**Problem:** claudelint can't find a workspace configuration in the current directory.
 
-Solution: Run the command from your monorepo root (where pnpm-workspace.yaml or package.json with workspaces field exists).
+Workspace detection looks for `pnpm-workspace.yaml` or a `workspaces` field in `package.json`.
+
+**Solution:** Run the command from your monorepo root where the workspace config file exists.
 
 ### Package not found
 
-```text
-Error: Workspace package not found: my-pkg
+**Problem:** `--workspace` flag references a package name that doesn't match any workspace.
 
-Available packages:
-- app-1
-- app-2
-- shared
-```
+The error output lists available packages for reference.
 
-Solution: Use the exact directory name of the package (shown in "Available packages" list).
+**Solution:** Use the exact directory name of the package (shown in the "Available packages" list in the error output).
 
 ### Extended config not found
 
-```text
-Error: Extended config not found: ./base.json
-Resolved to: /path/to/base.json
-Referenced from: /path/to/dir
-```
+**Problem:** A `.claudelintrc.json` uses `extends` to reference a config file that doesn't exist.
 
-Solution: Check that the relative path is correct and the file exists.
+**Solution:** Check that the relative path is correct and the target file exists on disk.
 
 ### Circular dependency
 
-```text
-Error: Circular dependency detected in config extends:
-  1. /path/to/a.json
-  2. /path/to/b.json
-  3. /path/to/a.json
-```
+**Problem:** Config `extends` chain creates a cycle (A extends B, B extends A).
 
-Solution: Remove the circular reference from your config extends chain.
+**Solution:** Remove the circular reference so the extends chain forms a tree.
 
 ## Migration Guide
 

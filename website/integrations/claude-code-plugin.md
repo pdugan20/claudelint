@@ -175,19 +175,26 @@ See the [Configuration Guide](/guide/configuration) for details.
 
 ## Keeping Up to Date
 
-Third-party marketplace plugins do not auto-update by default. You have two options:
+Third-party marketplace plugins do not auto-update by default (official Anthropic marketplaces do). You have two options:
 
 **Enable auto-update** (recommended):
 
-```text
-/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
-```
+1. Run `/plugin` to open the plugin manager
+2. Select **Marketplaces**
+3. Choose **pdugan20-plugins**
+4. Select **Enable auto-update**
+
+When auto-update is enabled, Claude Code refreshes marketplace data and updates installed plugins at startup. You'll see a notification prompting you to run `/reload-plugins` if anything was updated.
 
 **Manual update**:
 
 ```text
 /plugin marketplace update pdugan20-plugins
 ```
+
+::: tip Environment variables
+Set `DISABLE_AUTOUPDATER=true` to disable all automatic updates (Claude Code and plugins). To keep plugin auto-updates while disabling Claude Code updates, also set `FORCE_AUTOUPDATE_PLUGINS=true`.
+:::
 
 Plugin updates and npm package updates are independent. When upgrading, update both:
 
@@ -205,64 +212,78 @@ The plugin's SessionStart hook detects version mismatches — Claude will mentio
 
 ## Troubleshooting
 
-### Skills Don't Appear
+### Skills don't appear
 
-If slash commands aren't available:
+**Problem:** Slash commands from the plugin aren't available in Claude Code.
+
+**Solution:**
 
 1. Check plugin is installed: `/plugin list`
 2. Reinstall if needed: `/plugin uninstall claudelint` then reinstall
 3. Restart Claude Code session
 
-### Validation Fails
+### Validation fails
 
-If validation returns errors:
+**Problem:** Running a validation skill returns unexpected errors.
+
+**Solution:**
 
 1. Run with `--explain` flag for detailed guidance
 2. Check `.claudelintrc.json` for rule configuration
 3. See error messages for specific line numbers and fixes
 4. Review [Rules Reference](/rules/overview) for rule details
 
-### Permission Denied
+### Permission denied
 
-If you get permission errors:
+**Problem:** Permission errors when the plugin tries to run claudelint.
+
+**Solution:**
 
 1. Check `claudelint` is installed: `which claudelint`
 2. Install globally if needed: `npm install -g claude-code-lint`
 3. Check PATH includes npm global bin directory
 
-### False Positives
+### False positives
 
-If you get warnings/errors that shouldn't apply:
+**Problem:** Warnings or errors that don't apply to your project.
+
+**Solution:**
 
 1. Use inline disable comments: `<!-- claudelint-disable rule-name -->`
 2. Configure rules in `.claudelintrc.json`
 3. Add file overrides for specific patterns
-4. Report issue if rule is incorrect
+4. [Report an issue](https://github.com/pdugan20/claudelint/issues) if the rule is incorrect
 
-### Skills Work in One Project but Not Another
+### Skills work in one project but not another
 
-If skills work in some projects but fail in others, the npm package is likely installed locally (in `node_modules`) rather than globally. Either:
+**Problem:** Plugin skills run in some projects but fail in others.
+
+The npm package is likely installed locally (in `node_modules`) rather than globally.
+
+**Solution:**
 
 1. Install globally: `npm install -g claude-code-lint`
 2. Or add `claude-code-lint` to `devDependencies` in each project
 
-### Version Mismatch Warning
+### Version mismatch warning
 
-If Claude mentions a version mismatch between the plugin and npm package when you start a session, the two are out of sync. Claude will offer to fix it for you, or you can update manually:
+**Problem:** Claude mentions a version mismatch between the plugin and npm package at session start.
+
+The plugin and npm package are out of sync. Claude will offer to fix it for you, or you can update manually:
+
+**Solution:**
 
 ```bash
 npm install -g claude-code-lint@latest
 ```
 
-### Auto-Update Not Working
+### Auto-update not working
 
-Third-party marketplaces have auto-update disabled by default. Enable it:
+**Problem:** The plugin doesn't auto-update when new versions are released.
 
-```text
-/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
-```
+Third-party marketplaces have auto-update disabled by default. Also check that `DISABLE_AUTOUPDATER` is not set in your environment.
 
-Or update manually: `/plugin marketplace update pdugan20-plugins`
+**Solution:** Enable auto-update via `/plugin` → **Marketplaces** → **pdugan20-plugins** → **Enable auto-update**, or update manually with `/plugin marketplace update pdugan20-plugins`.
 
 ## Uninstalling
 

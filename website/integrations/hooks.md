@@ -71,15 +71,23 @@ This costs an extra turn at session start — Claude will run the command itself
 
 ### Hook doesn't run
 
-- Check that `claudelint` is installed globally or in your project
-- Verify the command works when run manually: `claudelint check-all --format json`
-- Check hook syntax in `.claude/hooks/hooks.json`
-- Ensure event names are PascalCase (e.g., `SessionStart`, not `session-start`)
+**Problem:** The SessionStart hook doesn't execute when you start a Claude Code session.
+
+**Solution:**
+
+1. Check that `claudelint` is installed globally or in your project
+2. Verify the command works manually: `claudelint check-all --format json`
+3. Check hook syntax in `.claude/hooks/hooks.json`
+4. Ensure event names are PascalCase (e.g., `SessionStart`, not `session-start`)
 
 ### Too many warnings
 
-- Configure rules in `.claudelintrc.json`
-- Use `.claudelintignore` to skip large directories
+**Problem:** The hook produces a large volume of warnings that clutter Claude's context.
+
+**Solution:**
+
+1. Configure rules in `.claudelintrc.json` to disable noisy rules
+2. Use `.claudelintignore` to skip large or irrelevant directories
 
 ## See Also
 

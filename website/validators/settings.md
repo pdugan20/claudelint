@@ -18,13 +18,41 @@ The Settings validator checks `.claude/settings.json` files for schema complianc
 
 This validator includes <RuleCount category="settings" /> rules. See the [Settings rules category](/rules/settings/settings-file-path-not-found) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [settings-file-path-not-found](/rules/settings/settings-file-path-not-found) | error | Referenced path does not exist |
-| [settings-invalid-permission](/rules/settings/settings-invalid-permission) | error | Invalid permission rule |
-| [settings-invalid-env-var](/rules/settings/settings-invalid-env-var) | warn | Invalid environment variable |
-| [settings-permission-invalid-rule](/rules/settings/settings-permission-invalid-rule) | error | Permission rule format invalid |
-| [settings-permission-empty-pattern](/rules/settings/settings-permission-empty-pattern) | warn | Empty permission pattern |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="settings-file-path-not-found"
+  description="Referenced path does not exist on disk"
+  severity="error"
+  category="Settings"
+  link="/rules/settings/settings-file-path-not-found"
+/>
+
+<RuleCard
+  rule-id="settings-invalid-permission"
+  description="Permission rule has invalid structure or syntax"
+  severity="error"
+  category="Settings"
+  link="/rules/settings/settings-invalid-permission"
+/>
+
+<RuleCard
+  rule-id="settings-invalid-env-var"
+  description="Environment variable name is invalid"
+  severity="warning"
+  category="Settings"
+  link="/rules/settings/settings-invalid-env-var"
+/>
+
+<RuleCard
+  rule-id="settings-permission-invalid-rule"
+  description="Permission rule format does not match expected pattern"
+  severity="error"
+  category="Settings"
+  link="/rules/settings/settings-permission-invalid-rule"
+/>
+
+</div>
 
 ## CLI Usage
 

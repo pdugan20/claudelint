@@ -20,13 +20,43 @@ The Skills validator checks Claude Code skill definitions for correctness, secur
 
 This validator includes <RuleCount category="skills" /> rules. See the [Skills rules category](/rules/skills/skill-agent) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [skill-missing-version](/rules/skills/skill-missing-version) | warn | Missing version field |
-| [skill-name](/rules/skills/skill-name) | error | Invalid skill name format |
-| [skill-description](/rules/skills/skill-description) | error | Missing or invalid description |
-| [skill-dangerous-command](/rules/skills/skill-dangerous-command) | error | Dangerous shell command detected |
-| [skill-missing-shebang](/rules/skills/skill-missing-shebang) | error | Shell script lacks shebang |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="skill-dangerous-command"
+  description="Skill contains potentially dangerous shell commands"
+  severity="error"
+  category="Skills"
+  link="/rules/skills/skill-dangerous-command"
+/>
+
+<RuleCard
+  rule-id="skill-missing-version"
+  description="SKILL.md missing required version field in frontmatter"
+  severity="warning"
+  category="Skills"
+  link="/rules/skills/skill-missing-version"
+  :fixable="true"
+/>
+
+<RuleCard
+  rule-id="skill-name"
+  description="Skill name does not follow naming conventions"
+  severity="error"
+  category="Skills"
+  link="/rules/skills/skill-name"
+/>
+
+<RuleCard
+  rule-id="skill-missing-shebang"
+  description="Shell script missing shebang line"
+  severity="error"
+  category="Skills"
+  link="/rules/skills/skill-missing-shebang"
+  :fixable="true"
+/>
+
+</div>
 
 ## CLI Usage
 

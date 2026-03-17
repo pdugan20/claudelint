@@ -19,12 +19,42 @@ The CLAUDE.md validator checks your project's CLAUDE.md files for correctness, s
 
 This validator includes <RuleCount category="claude-md" /> rules. See the [CLAUDE.md rules category](/rules/claude-md/claude-md-content-too-many-sections) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [claude-md-size](/rules/claude-md/claude-md-size) | warn | File exceeds maximum size limit (40KB default) |
-| [claude-md-import-missing](/rules/claude-md/claude-md-import-missing) | error | Imported file not found |
-| [claude-md-import-circular](/rules/claude-md/claude-md-import-circular) | error | Circular import detected |
-| [claude-md-file-not-found](/rules/claude-md/claude-md-file-not-found) | error | CLAUDE.md file not found |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="claude-md-size"
+  description="CLAUDE.md exceeds the maximum allowed size (40KB default)"
+  severity="warning"
+  category="CLAUDE.md"
+  link="/rules/claude-md/claude-md-size"
+  :configurable="true"
+/>
+
+<RuleCard
+  rule-id="claude-md-import-missing"
+  description="Imported file does not exist at the specified path"
+  severity="error"
+  category="CLAUDE.md"
+  link="/rules/claude-md/claude-md-import-missing"
+/>
+
+<RuleCard
+  rule-id="claude-md-import-circular"
+  description="Circular import chain detected between files"
+  severity="error"
+  category="CLAUDE.md"
+  link="/rules/claude-md/claude-md-import-circular"
+/>
+
+<RuleCard
+  rule-id="claude-md-file-not-found"
+  description="CLAUDE.md file not found in expected location"
+  severity="error"
+  category="CLAUDE.md"
+  link="/rules/claude-md/claude-md-file-not-found"
+/>
+
+</div>
 
 ## CLI Usage
 

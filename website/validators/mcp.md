@@ -18,12 +18,41 @@ The MCP validator checks `.mcp.json` configuration files for transport types, UR
 
 This validator includes <RuleCount category="mcp" /> rules. See the [MCP rules category](/rules/mcp/mcp-http-empty-url) for the complete list.
 
-| Rule | Severity | Description |
-|------|----------|-------------|
-| [mcp-invalid-transport](/rules/mcp/mcp-invalid-transport) | error | Unknown transport type |
-| [mcp-stdio-empty-command](/rules/mcp/mcp-stdio-empty-command) | error | Stdio transport command is empty |
-| [mcp-http-invalid-url](/rules/mcp/mcp-http-invalid-url) | error | Invalid HTTP URL |
-| [mcp-invalid-env-var](/rules/mcp/mcp-invalid-env-var) | warn | Invalid environment variable |
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 16px 0;">
+
+<RuleCard
+  rule-id="mcp-invalid-transport"
+  description="Unknown or invalid MCP transport type"
+  severity="error"
+  category="MCP"
+  link="/rules/mcp/mcp-invalid-transport"
+/>
+
+<RuleCard
+  rule-id="mcp-stdio-empty-command"
+  description="Stdio transport is missing the command field"
+  severity="error"
+  category="MCP"
+  link="/rules/mcp/mcp-stdio-empty-command"
+/>
+
+<RuleCard
+  rule-id="mcp-http-invalid-url"
+  description="HTTP transport URL is malformed or invalid"
+  severity="error"
+  category="MCP"
+  link="/rules/mcp/mcp-http-invalid-url"
+/>
+
+<RuleCard
+  rule-id="mcp-invalid-env-var"
+  description="Environment variable name is invalid"
+  severity="warning"
+  category="MCP"
+  link="/rules/mcp/mcp-invalid-env-var"
+/>
+
+</div>
 
 ## CLI Usage
 
