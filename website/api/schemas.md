@@ -54,10 +54,6 @@ Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 | `TaskStop` | Task cancellation |
 | `NotebookEdit` | Jupyter notebook editing |
 
-::: tip
-Custom MCP tool names (e.g., `mcp__server__tool`) are also accepted. claudelint only warns on unrecognized built-in tool names.
-:::
-
 ### Model Names
 
 Valid values for `model` fields in skill and agent frontmatter.
@@ -69,7 +65,9 @@ Valid values for `model` fields in skill and agent frontmatter.
 | `haiku` | Claude Haiku |
 | `inherit` | Inherit from parent context |
 
-> **Note:** Agent `model` fields also accept full model IDs (e.g., `claude-opus-4-6`). The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
+::: info
+Agent `model` fields also accept full model IDs (e.g., `claude-opus-4-6`). The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
+:::
 
 ### Hook Events
 
@@ -146,7 +144,7 @@ claudelint maintains JSON Schema files for IDE integration and external tooling.
 | Rules frontmatter | [`rules-frontmatter.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/rules-frontmatter.schema.json) | Rules file frontmatter |
 | Marketplace | [`marketplace.schema.json`](https://github.com/pdugan20/claudelint/blob/main/schemas/marketplace.schema.json) | marketplace.json structure |
 
-Running `npm run generate:json-schemas` produces auto-generated versions (from Zod schemas) in `schemas/generated/` locally. Use `npm run check:schema-sync` to verify they stay in sync with the hand-written schemas above.
+Running `npm run generate:json-schemas` produces auto-generated versions (from Zod schemas) in `schemas/generated/`. Run `npm run check:schema-sync` to verify generated and published schemas stay in sync.
 
 ## See Also
 
