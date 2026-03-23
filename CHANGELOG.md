@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0](https://github.com/pdugan20/claudelint/compare/v0.2.4...v0.3.0) (2026-03-23)
+
+### Bug Fixes
+
+* resolve schema drift against official Claude Code docs ([7d2f7f9](https://github.com/pdugan20/claudelint/commit/7d2f7f9fdc2d7a9788c25eb3852efe4c98f6ecea))
+
+### Documentation
+
+* standardize troubleshooting format, use RuleCards on validator pages, update auto-update docs ([e427077](https://github.com/pdugan20/claudelint/commit/e427077ee6cdc15e07c4cab50e398260d5022f65))
+
 ## [0.2.4](https://github.com/pdugan20/claudelint/compare/v0.2.3...v0.2.4) (2026-03-15)
 
 ### Features

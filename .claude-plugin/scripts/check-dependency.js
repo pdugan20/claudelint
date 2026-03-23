@@ -3,7 +3,7 @@
 
 const { execSync } = require('child_process');
 
-const PLUGIN_VERSION = '0.2.4'; // Updated by sync-versions
+const PLUGIN_VERSION = '0.3.0'; // Updated by sync-versions
 
 /**
  * Compare two semver strings.
