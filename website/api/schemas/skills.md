@@ -22,7 +22,8 @@ Skills are defined as `SKILL.md` files in skill directories. The YAML frontmatte
 | `user-invocable` | boolean | no | Whether users can invoke directly via `/skill-name` |
 | `version` | string | no | Semantic version (e.g., `1.0.0`) (claudelint extension) |
 | `model` | string | no | `sonnet`, `opus`, `haiku`, or `inherit` ([valid values](/api/schemas#model-names)) |
-| `context` | string | no | `fork`, `inline`, or `auto` ([valid values](/api/schemas#context-modes)) |
+| `effort` | string | no | `low`, `medium`, `high`, or `max` |
+| `context` | string | no | `fork` ([valid values](/api/schemas#context-modes)) |
 | `agent` | string | no | Agent name (required when `context: fork`) |
 | `allowed-tools` | string[] | no | [Tool names](/api/schemas#tool-names) to allow |
 | `tags` | string[] | no | Categorization tags (claudelint extension) |

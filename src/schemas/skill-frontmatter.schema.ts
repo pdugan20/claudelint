@@ -38,6 +38,8 @@ export const SkillFrontmatterSchema = z.object({
 
   agent: z.string().optional(),
 
+  effort: z.enum(['low', 'medium', 'high', 'max']).optional(),
+
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
   'allowed-tools': z.array(z.string()).optional(),
 

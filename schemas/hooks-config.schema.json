@@ -26,13 +26,18 @@
         "SubagentStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SubagentStop": { "$ref": "#/$defs/matcherGroupArray" },
         "PreCompact": { "$ref": "#/$defs/matcherGroupArray" },
+        "PostCompact": { "$ref": "#/$defs/matcherGroupArray" },
         "ConfigChange": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SessionEnd": { "$ref": "#/$defs/matcherGroupArray" },
         "WorktreeCreate": { "$ref": "#/$defs/matcherGroupArray" },
         "WorktreeRemove": { "$ref": "#/$defs/matcherGroupArray" },
         "TeammateIdle": { "$ref": "#/$defs/matcherGroupArray" },
-        "TaskCompleted": { "$ref": "#/$defs/matcherGroupArray" }
+        "TaskCompleted": { "$ref": "#/$defs/matcherGroupArray" },
+        "InstructionsLoaded": { "$ref": "#/$defs/matcherGroupArray" },
+        "Elicitation": { "$ref": "#/$defs/matcherGroupArray" },
+        "ElicitationResult": { "$ref": "#/$defs/matcherGroupArray" },
+        "StopFailure": { "$ref": "#/$defs/matcherGroupArray" }
       },
       "additionalProperties": false
     }
@@ -61,21 +66,35 @@
     },
     "hookHandler": {
       "type": "object",
-      "description": "Individual hook handler (command, prompt, or agent)",
+      "description": "Individual hook handler (command, http, prompt, or agent)",
       "required": ["type"],
       "properties": {
         "type": {
           "type": "string",
           "description": "The type of hook handler",
-          "enum": ["command", "prompt", "agent"]
+          "enum": ["command", "http", "prompt", "agent"]
         },
         "command": {
           "type": "string",
           "description": "Shell command to execute (required if type is 'command')"
         },
+        "url": {
+          "type": "string",
+          "description": "URL to send POST request to (required if type is 'http')"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Additional HTTP headers for http-type hooks",
+          "additionalProperties": { "type": "string" }
+        },
+        "allowedEnvVars": {
+          "type": "array",
+          "description": "Environment variable names allowed in header interpolation for http-type hooks",
+          "items": { "type": "string" }
+        },
         "prompt": {
           "type": "string",
-          "description": "Prompt text to inject (required if type is 'prompt')"
+          "description": "Prompt text to inject (required if type is 'prompt' or 'agent')"
         },
         "agent": {
           "type": "string",
@@ -83,9 +102,8 @@
         },
         "timeout": {
           "type": "number",
-          "description": "Timeout in milliseconds",
-          "minimum": 0,
-          "maximum": 600000
+          "description": "Timeout in seconds",
+          "minimum": 0
         },
         "statusMessage": {
           "type": "string",
@@ -97,7 +115,7 @@
         },
         "model": {
           "type": "string",
-          "description": "Model to use for prompt-type hooks"
+          "description": "Model to use for prompt/agent-type hooks"
         },
         "async": {
           "type": "boolean",
@@ -108,6 +126,10 @@
         {
           "if": { "properties": { "type": { "const": "command" } } },
           "then": { "required": ["command"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "http" } } },
+          "then": { "required": ["url"] }
         },
         {
           "if": { "properties": { "type": { "const": "prompt" } } },

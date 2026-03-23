@@ -16,9 +16,9 @@ describe('skill-agent', () => {
           content: '---\nname: my-skill\ndescription: Test skill\ncontext: fork\nagent: my-agent\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
-        // No agent needed when context is inline
+        // No agent needed when context is omitted
         {
-          content: '---\nname: my-skill\ndescription: Test skill\ncontext: inline\n---\n# Skill',
+          content: '---\nname: my-skill\ndescription: A skill that runs inline\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
         // No context field

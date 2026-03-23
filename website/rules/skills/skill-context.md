@@ -1,14 +1,14 @@
 ---
-description: "Skill context must be one of: fork, inline, auto"
+description: "Skill context must be \"fork\""
 ---
 
 # skill-context
 
-<RuleHeader description="Skill context must be one of: fork, inline, auto" severity="error" :fixable="false" :configurable="false" category="Skills" />
+<RuleHeader description="Skill context must be &quot;fork&quot;" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 
-The `context` field controls how a skill is executed. It must be one of the recognized modes: `fork` (runs in a separate agent process), `inline` (runs in the current conversation context), or `auto` (lets the system decide). Any other value is invalid and will cause the skill to fail at runtime. This rule delegates to the Zod schema for validation.
+The `context` field controls how a skill is executed. The only documented value is `fork`, which runs the skill in a separate subagent process. When using `fork`, the `agent` field must also be specified. If you don't need a separate agent, omit the `context` field entirely. This rule delegates to the Zod schema for validation.
 
 ### Incorrect
 
@@ -34,7 +34,7 @@ context: forked
 
 ### Correct
 
-Using fork context
+Using fork context with agent
 
 ```yaml
 ---
@@ -45,29 +45,18 @@ agent: deploy-agent
 ---
 ```
 
-Using inline context
+No context field (runs inline by default)
 
 ```yaml
 ---
 name: lint
 description: Runs linting checks
-context: inline
----
-```
-
-Using auto context
-
-```yaml
----
-name: test
-description: Runs tests
-context: auto
 ---
 ```
 
 ## How To Fix
 
-Set the `context` field to one of the valid values: `fork`, `inline`, or `auto`. Use `fork` when the skill needs its own agent, `inline` when it should run in the current context, or `auto` to let the system choose.
+Set the `context` field to `fork` and specify an `agent` field, or omit `context` entirely to run the skill inline in the current conversation.
 
 ## Options
 

@@ -317,11 +317,11 @@ describe('MarketplacePluginSourceSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should accept pip source', () => {
+  it('should accept git-subdir source', () => {
     const result = MarketplacePluginSourceSchema.safeParse({
-      source: 'pip',
-      package: 'my-plugin',
-      version: '>=1.0.0',
+      source: 'git-subdir',
+      url: 'https://github.com/acme-corp/monorepo.git',
+      path: 'tools/claude-plugin',
     });
     expect(result.success).toBe(true);
   });

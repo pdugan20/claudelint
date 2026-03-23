@@ -58,6 +58,7 @@ export function validateSettingsHooks(
       hooks: Array<{
         type: string;
         command?: string;
+        url?: string;
         prompt?: string;
         agent?: string;
         timeout?: number;
@@ -103,6 +104,13 @@ export function validateSettingsHooks(
           });
         }
 
+        if (hook.type === 'http' && !hook.url) {
+          issues.push({
+            message: 'Hook with type "http" must have "url" field',
+            severity: 'error',
+          });
+        }
+
         if (hook.type === 'agent' && !hook.agent) {
           issues.push({
             message: 'Hook with type "agent" must have "agent" field',
@@ -111,10 +119,10 @@ export function validateSettingsHooks(
         }
 
         // Validate mutual exclusivity
-        const fieldCount = [hook.command, hook.prompt, hook.agent].filter(Boolean).length;
+        const fieldCount = [hook.command, hook.url, hook.prompt, hook.agent].filter(Boolean).length;
         if (fieldCount > 1) {
           issues.push({
-            message: 'Hook cannot have multiple handler fields (command, prompt, agent)',
+            message: 'Hook cannot have multiple handler fields (command, url, prompt, agent)',
             severity: 'error',
           });
         }

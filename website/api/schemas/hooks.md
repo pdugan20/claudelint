@@ -33,14 +33,17 @@ Each event maps to an array of matcher objects:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | string | yes | `command`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types)) |
+| `type` | string | yes | `command`, `http`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types)) |
 | `command` | string | no | Shell command (when type is `command`) |
-| `prompt` | string | no | Prompt text (when type is `prompt`) |
+| `url` | string | no | POST endpoint URL (when type is `http`) |
+| `headers` | object | no | HTTP headers (when type is `http`) |
+| `allowedEnvVars` | string[] | no | Env vars allowed in header interpolation (when type is `http`) |
+| `prompt` | string | no | Prompt text (when type is `prompt` or `agent`) |
 | `agent` | string | no | Agent name (when type is `agent`) |
-| `timeout` | number | no | Timeout in milliseconds |
+| `timeout` | number | no | Timeout in seconds |
 | `statusMessage` | string | no | Status message shown during execution |
 | `once` | boolean | no | Run only once per session |
-| `model` | string | no | Model override for this hook |
+| `model` | string | no | Model override for prompt/agent hooks |
 | `async` | boolean | no | Run hook asynchronously (non-blocking) |
 
 ## Example

@@ -1,43 +1,47 @@
 /**
  * Rule: agent-model
  *
- * Agent model must be one of: sonnet, opus, haiku, inherit
+ * Agent model should be a known alias or valid full model ID
  *
- * Uses thin wrapper pattern: delegates to AgentFrontmatterSchema.shape.model for validation
+ * Validates that the model field uses a recognized alias (sonnet, opus, haiku, inherit)
+ * or a full Claude model ID pattern (e.g. claude-opus-4-6). Warns on unrecognized values.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { AgentFrontmatterSchema } from '../../schemas/agent-frontmatter.schema';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
+
+/** Known model aliases */
+const MODEL_ALIASES = ['sonnet', 'opus', 'haiku', 'inherit'];
+
+/** Pattern for full Claude model IDs (e.g. claude-sonnet-4-5, claude-opus-4-6) */
+const FULL_MODEL_ID_RE = /^claude-[a-z]+-[\d]+-[\d]+/;
 
 export const rule: Rule = {
   meta: {
     id: 'agent-model',
     name: 'Agent Model Value',
-    description: 'Agent model must be one of: sonnet, opus, haiku, inherit',
+    description: 'Agent model should be a known alias or valid model ID',
     category: 'Agents',
-    severity: 'error',
+    severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/agents/agent-model',
     docs: {
       recommended: true,
-      summary: 'Validates that the agent model field is a recognized ' + 'model name.',
-      rationale: 'An unrecognized model name causes the agent framework to fail at initialization.',
+      summary: 'Validates that the agent model field is a recognized model name or ID.',
+      rationale:
+        'An unrecognized model name may cause the agent framework to fail at initialization.',
       details:
-        'This rule enforces that the `model` field in agent ' +
-        'markdown frontmatter is one of the allowed values: ' +
-        '`sonnet`, `opus`, `haiku`, or `inherit`. Using an ' +
-        'unrecognized model name will cause the agent framework ' +
-        'to fail at initialization. Validation is delegated to ' +
-        'the AgentFrontmatterSchema.shape.model Zod schema ' +
-        'which uses the ModelNames enum. The `inherit` option ' +
-        'tells the agent to use the parent conversation model.',
+        'This rule checks that the `model` field in agent markdown frontmatter is either a known ' +
+        'alias (`sonnet`, `opus`, `haiku`, `inherit`) or a full Claude model ID ' +
+        '(e.g. `claude-opus-4-6`). The `inherit` option tells the agent to use the parent ' +
+        'conversation model. Unrecognized values produce a warning since Claude Code accepts ' +
+        'arbitrary model strings.',
       examples: {
         incorrect: [
           {
-            description: 'Invalid model name',
+            description: 'Non-Claude model name',
             code:
               '---\nname: code-review\n' +
               'description: Reviews code for quality\n' +
@@ -53,11 +57,18 @@ export const rule: Rule = {
         ],
         correct: [
           {
-            description: 'Valid model name',
+            description: 'Valid model alias',
             code:
               '---\nname: code-review\n' +
               'description: Reviews code for quality\n' +
               'model: sonnet\n---',
+          },
+          {
+            description: 'Full model ID',
+            code:
+              '---\nname: code-review\n' +
+              'description: Reviews code for quality\n' +
+              'model: claude-opus-4-6\n---',
           },
           {
             description: 'Using inherit to match the parent model',
@@ -69,28 +80,28 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Set the `model` field to one of: `sonnet`, `opus`, ' +
-        '`haiku`, or `inherit`. Model names are case-sensitive ' +
-        'and must be lowercase.',
+        'Set the `model` field to a known alias (`sonnet`, `opus`, `haiku`, `inherit`) ' +
+        'or a full Claude model ID (e.g. `claude-opus-4-6`).',
       relatedRules: ['agent-name', 'agent-description'],
     },
   },
   validate: (context: RuleContext) => {
     const { frontmatter } = extractFrontmatter(context.fileContent);
 
-    if (!frontmatter || !frontmatter.model) {
+    if (!frontmatter || typeof frontmatter.model !== 'string') {
       return;
     }
 
-    const modelSchema = AgentFrontmatterSchema.shape.model;
-    const result = modelSchema.safeParse(frontmatter.model);
+    const model = frontmatter.model;
 
-    if (!result.success) {
-      const line = getFrontmatterFieldLine(context.fileContent, 'model');
-      context.report({
-        message: result.error.issues[0].message,
-        line,
-      });
+    if (MODEL_ALIASES.includes(model) || FULL_MODEL_ID_RE.test(model)) {
+      return;
     }
+
+    const line = getFrontmatterFieldLine(context.fileContent, 'model');
+    context.report({
+      message: `Unrecognized model: "${model}"`,
+      line,
+    });
   },
 };

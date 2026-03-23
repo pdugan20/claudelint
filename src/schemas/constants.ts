@@ -7,8 +7,10 @@ import { z } from 'zod';
 
 /**
  * Valid Claude Code tool names
+ * Note: Task was renamed to Agent in v2.1.63. Both are accepted for compatibility.
  */
 export const ToolNames = z.enum([
+  'Agent',
   'Bash',
   'Read',
   'Write',
@@ -56,9 +58,11 @@ export const HookEvents = z.enum([
   'UserPromptSubmit',
   'Notification',
   'Stop',
+  'StopFailure',
   'SubagentStart',
   'SubagentStop',
   'PreCompact',
+  'PostCompact',
   'ConfigChange',
   'SessionStart',
   'SessionEnd',
@@ -66,17 +70,21 @@ export const HookEvents = z.enum([
   'WorktreeRemove',
   'TeammateIdle',
   'TaskCompleted',
+  'InstructionsLoaded',
+  'Elicitation',
+  'ElicitationResult',
 ]);
 
 /**
  * Valid hook handler types
  */
-export const HookTypes = z.enum(['command', 'prompt', 'agent']);
+export const HookTypes = z.enum(['command', 'http', 'prompt', 'agent']);
 
 /**
  * Valid skill context modes
+ * Only 'fork' is documented: https://code.claude.com/docs/en/skills#frontmatter-reference
  */
-export const ContextModes = z.enum(['fork', 'inline', 'auto']);
+export const ContextModes = z.enum(['fork']);
 
 /**
  * Valid MCP transport types

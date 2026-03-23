@@ -17,16 +17,17 @@ Agent files are flat `.md` files (e.g., `.claude/agents/code-reviewer.md`). The 
 |-------|------|----------|-------------|
 | `name` | string | yes | Lowercase with hyphens, max 64 chars |
 | `description` | string | yes | Min 10 chars, third-person voice |
-| `model` | string | no | `sonnet`, `opus`, `haiku`, or `inherit` ([valid values](/api/schemas#model-names)) |
+| `model` | string | no | Alias (`sonnet`, `opus`, `haiku`, `inherit`) or full model ID (e.g. `claude-opus-4-6`) |
 | `tools` | string[] | no | [Tool names](/api/schemas#tool-names) to allow |
 | `disallowedTools` | string[] | no | [Tool names](/api/schemas#tool-names) to disallow |
 | `permissionMode` | string | no | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, or `plan` |
 | `skills` | string[] | no | Skills this agent can use |
 | `hooks` | object | no | [Hooks configuration](/api/schemas/hooks) |
 | `memory` | string | no | `user`, `project`, or `local` |
+| `effort` | string | no | `low`, `medium`, `high`, or `max` |
 | `maxTurns` | number | no | Maximum agent turns (positive integer) |
-| `mcpServers` | string[] | no | MCP servers available to the agent |
-| `color` | string | no | `blue`, `cyan`, `green`, `yellow`, `magenta`, `red`, or `pink` |
+| `mcpServers` | (string\|object)[] | no | MCP server references or inline definitions |
+| `color` | string | no | `blue`, `cyan`, `green`, `yellow`, `magenta`, `red`, or `pink` (claudelint extension) |
 | `background` | boolean | no | Run as background task (default: `false`) |
 | `isolation` | string | no | `worktree` — run in a temporary git worktree |
 

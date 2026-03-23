@@ -15,6 +15,10 @@ export const SettingsHookSchema = z.object({
   command: z.string().optional(),
   prompt: z.string().optional(),
   agent: z.string().optional(),
+  // http hook fields
+  url: z.string().optional(),
+  headers: z.record(z.string(), z.string()).optional(),
+  allowedEnvVars: z.array(z.string()).optional(),
   timeout: z.number().optional(),
   statusMessage: z.string().optional(),
   once: z.boolean().optional(),
@@ -46,6 +50,7 @@ export const SettingsHooksSchema = z.object({
   SubagentStart: z.array(SettingsHookMatcherSchema).optional(),
   SubagentStop: z.array(SettingsHookMatcherSchema).optional(),
   PreCompact: z.array(SettingsHookMatcherSchema).optional(),
+  PostCompact: z.array(SettingsHookMatcherSchema).optional(),
   ConfigChange: z.array(SettingsHookMatcherSchema).optional(),
   SessionStart: z.array(SettingsHookMatcherSchema).optional(),
   SessionEnd: z.array(SettingsHookMatcherSchema).optional(),
@@ -53,6 +58,10 @@ export const SettingsHooksSchema = z.object({
   WorktreeRemove: z.array(SettingsHookMatcherSchema).optional(),
   TeammateIdle: z.array(SettingsHookMatcherSchema).optional(),
   TaskCompleted: z.array(SettingsHookMatcherSchema).optional(),
+  InstructionsLoaded: z.array(SettingsHookMatcherSchema).optional(),
+  Elicitation: z.array(SettingsHookMatcherSchema).optional(),
+  ElicitationResult: z.array(SettingsHookMatcherSchema).optional(),
+  StopFailure: z.array(SettingsHookMatcherSchema).optional(),
 });
 
 /**
@@ -327,16 +336,18 @@ export const PluginManifestSchema = z.object({
 export const MarketplacePluginSourceSchema = z.union([
   z.string(), // Relative path like "./plugins/my-plugin"
   z.object({
-    source: z.enum(['github', 'url', 'npm', 'pip']),
+    source: z.enum(['github', 'url', 'git-subdir', 'npm']),
     // github
     repo: z.string().optional(),
-    // url (git)
+    // url (git), git-subdir
     url: z.string().optional(),
-    // npm/pip
+    // git-subdir: subdirectory path within the repo
+    path: z.string().optional(),
+    // npm
     package: z.string().optional(),
     version: z.string().optional(),
     registry: z.string().optional(),
-    // git pinning (github and url)
+    // git pinning (github, url, git-subdir)
     ref: z.string().optional(),
     sha: z.string().optional(),
   }),

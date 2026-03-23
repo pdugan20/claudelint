@@ -8,7 +8,7 @@ description: "Hook configuration must be valid"
 
 ## Rule Details
 
-This rule validates the structure of hook definitions inside settings files. It checks that each hook handler has a valid type (command, prompt, or agent), includes the required field for its type, does not specify multiple handler fields simultaneously, and has a valid timeout value if one is provided. Malformed hook configurations will cause runtime errors when Claude Code attempts to execute them.
+This rule validates the structure of hook definitions inside settings files. It checks that each hook handler has a valid type (command, http, prompt, or agent), includes the required field for its type, does not specify multiple handler fields simultaneously, and has a valid timeout value if one is provided. Malformed hook configurations will cause runtime errors when Claude Code attempts to execute them.
 
 ### Incorrect
 
@@ -97,7 +97,7 @@ Valid prompt hook with timeout
 
 ## How To Fix
 
-Ensure each hook has a valid `type` (command, prompt, or agent) and includes the corresponding handler field. Remove any extra handler fields so only one is present. If a timeout is specified, ensure it is a positive number.
+Ensure each hook has a valid `type` (command, http, prompt, or agent) and includes the corresponding handler field. Remove any extra handler fields so only one is present. If a timeout is specified, ensure it is a positive number.
 
 ## Options
 

@@ -24,6 +24,7 @@ import {
 describe('Schema Constants', () => {
   describe('ToolNames', () => {
     it('should validate valid tool names', () => {
+      expect(ToolNames.safeParse('Agent').success).toBe(true);
       expect(ToolNames.safeParse('Bash').success).toBe(true);
       expect(ToolNames.safeParse('Read').success).toBe(true);
       expect(ToolNames.safeParse('Task').success).toBe(true);
@@ -40,6 +41,7 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
+      expect(VALID_TOOLS).toContain('Agent');
       expect(VALID_TOOLS).toContain('Bash');
       expect(VALID_TOOLS).toContain('Read');
       expect(VALID_TOOLS).toContain('Task');
@@ -89,6 +91,11 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('PostToolUse').success).toBe(true);
       expect(HookEvents.safeParse('SessionStart').success).toBe(true);
       expect(HookEvents.safeParse('SessionEnd').success).toBe(true);
+      expect(HookEvents.safeParse('StopFailure').success).toBe(true);
+      expect(HookEvents.safeParse('PostCompact').success).toBe(true);
+      expect(HookEvents.safeParse('InstructionsLoaded').success).toBe(true);
+      expect(HookEvents.safeParse('Elicitation').success).toBe(true);
+      expect(HookEvents.safeParse('ElicitationResult').success).toBe(true);
     });
 
     it('should reject invalid hook events', () => {
@@ -96,8 +103,8 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 17 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(17);
+    it('should export all 22 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(22);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
@@ -105,12 +112,18 @@ describe('Schema Constants', () => {
       expect(VALID_HOOK_EVENTS).toContain('WorktreeRemove');
       expect(VALID_HOOK_EVENTS).toContain('TeammateIdle');
       expect(VALID_HOOK_EVENTS).toContain('TaskCompleted');
+      expect(VALID_HOOK_EVENTS).toContain('StopFailure');
+      expect(VALID_HOOK_EVENTS).toContain('PostCompact');
+      expect(VALID_HOOK_EVENTS).toContain('InstructionsLoaded');
+      expect(VALID_HOOK_EVENTS).toContain('Elicitation');
+      expect(VALID_HOOK_EVENTS).toContain('ElicitationResult');
     });
   });
 
   describe('HookTypes', () => {
     it('should validate valid hook types', () => {
       expect(HookTypes.safeParse('command').success).toBe(true);
+      expect(HookTypes.safeParse('http').success).toBe(true);
       expect(HookTypes.safeParse('prompt').success).toBe(true);
       expect(HookTypes.safeParse('agent').success).toBe(true);
     });
@@ -121,24 +134,24 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
-      expect(VALID_HOOK_TYPES).toEqual(['command', 'prompt', 'agent']);
+      expect(VALID_HOOK_TYPES).toEqual(['command', 'http', 'prompt', 'agent']);
     });
   });
 
   describe('ContextModes', () => {
     it('should validate valid context modes', () => {
       expect(ContextModes.safeParse('fork').success).toBe(true);
-      expect(ContextModes.safeParse('inline').success).toBe(true);
-      expect(ContextModes.safeParse('auto').success).toBe(true);
     });
 
     it('should reject invalid context modes', () => {
+      expect(ContextModes.safeParse('inline').success).toBe(false);
+      expect(ContextModes.safeParse('auto').success).toBe(false);
       expect(ContextModes.safeParse('spawn').success).toBe(false);
       expect(ContextModes.safeParse('Fork').success).toBe(false);
     });
 
     it('should export runtime values', () => {
-      expect(VALID_CONTEXTS).toEqual(['fork', 'inline', 'auto']);
+      expect(VALID_CONTEXTS).toEqual(['fork']);
     });
   });
 
