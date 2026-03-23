@@ -56,10 +56,11 @@ The `source` field can be a relative path string or an object:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `source` | string | yes | `github`, `url`, `npm`, or `pip` |
+| `source` | string | yes | `github`, `url`, `git-subdir`, or `npm` |
 | `repo` | string | no | GitHub `owner/repo` (for `github`) |
-| `url` | string | no | Git URL (for `url`) |
-| `package` | string | no | Package name (for `npm`/`pip`) |
+| `url` | string | no | Git URL (for `url`/`git-subdir`) |
+| `path` | string | no | Subdirectory path (for `git-subdir`) |
+| `package` | string | no | Package name (for `npm`) |
 | `version` | string | no | Version constraint |
 | `registry` | string | no | Custom registry URL |
 | `ref` | string | no | Git ref (tag, branch, commit) |

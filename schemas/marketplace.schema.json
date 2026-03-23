@@ -85,7 +85,7 @@
           "properties": {
             "source": {
               "type": "string",
-              "enum": ["github", "url", "npm", "pip"],
+              "enum": ["github", "url", "git-subdir", "npm"],
               "description": "Source type"
             },
             "repo": {
@@ -94,27 +94,31 @@
             },
             "url": {
               "type": "string",
-              "description": "Git repository URL, must end with .git (url source)"
+              "description": "Git repository URL (url/git-subdir source)"
+            },
+            "path": {
+              "type": "string",
+              "description": "Subdirectory path within the repo (git-subdir source)"
             },
             "package": {
               "type": "string",
-              "description": "Package name (npm/pip source)"
+              "description": "Package name (npm source)"
             },
             "version": {
               "type": "string",
-              "description": "Package version constraint (npm/pip source)"
+              "description": "Package version constraint (npm source)"
             },
             "registry": {
               "type": "string",
-              "description": "Custom package registry URL (npm/pip source)"
+              "description": "Custom package registry URL (npm source)"
             },
             "ref": {
               "type": "string",
-              "description": "Git branch or tag (github/url source)"
+              "description": "Git branch or tag (github/url/git-subdir source)"
             },
             "sha": {
               "type": "string",
-              "description": "Full 40-character git commit SHA (github/url source)",
+              "description": "Full 40-character git commit SHA (github/url/git-subdir source)",
               "pattern": "^[0-9a-f]{40}$"
             }
           },

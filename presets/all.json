@@ -6,7 +6,7 @@
     "agent-events": "error",
     "agent-hooks": "error",
     "agent-hooks-invalid-schema": "error",
-    "agent-model": "error",
+    "agent-model": "warn",
     "agent-name": "error",
     "agent-name-filename-mismatch": "error",
     "agent-skills": "error",

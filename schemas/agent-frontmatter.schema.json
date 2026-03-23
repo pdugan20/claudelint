@@ -35,8 +35,7 @@
     },
     "model": {
       "type": "string",
-      "description": "Model to use: sonnet, opus, haiku, or inherit",
-      "enum": ["sonnet", "opus", "haiku", "inherit"]
+      "description": "Model to use: aliases (sonnet, opus, haiku, inherit) or full model IDs (e.g. claude-opus-4-6)"
     },
     "permissionMode": {
       "type": "string",
@@ -57,9 +56,12 @@
     },
     "mcpServers": {
       "type": "array",
-      "description": "List of MCP server names available to the agent",
+      "description": "MCP servers available to this agent. Each entry is either a string reference to a configured server or an inline definition object.",
       "items": {
-        "type": "string"
+        "oneOf": [
+          { "type": "string", "description": "Name of an already-configured MCP server" },
+          { "type": "object", "description": "Inline MCP server definition keyed by server name" }
+        ]
       }
     },
     "memory": {
@@ -67,9 +69,14 @@
       "description": "Memory scope for the agent",
       "enum": ["user", "project", "local"]
     },
+    "effort": {
+      "type": "string",
+      "description": "Effort level when this agent is active. Overrides the session effort level. Options: low, medium, high, max (Opus 4.6 only).",
+      "enum": ["low", "medium", "high", "max"]
+    },
     "color": {
       "type": "string",
-      "description": "Display color for the agent in the UI",
+      "description": "claudelint extension: Display color for the agent in the UI (not in official Claude Code docs, but used by /agents UI color picker)",
       "enum": ["blue", "cyan", "green", "yellow", "magenta", "red", "pink"]
     },
     "background": {
@@ -96,7 +103,7 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "type": { "type": "string", "enum": ["command", "prompt", "agent"] },
+                  "type": { "type": "string", "enum": ["command", "http", "prompt", "agent"] },
                   "command": { "type": "string" },
                   "prompt": { "type": "string" },
                   "agent": { "type": "string" },

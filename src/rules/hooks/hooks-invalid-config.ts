@@ -28,7 +28,7 @@ export const rule: Rule = {
         'Malformed hook configs cause runtime errors when Claude Code tries to execute them.',
       details:
         'This rule validates the structure of hook definitions inside settings files. ' +
-        'It checks that each hook handler has a valid type (command, prompt, or agent), ' +
+        'It checks that each hook handler has a valid type (command, http, prompt, or agent), ' +
         'includes the required field for its type, does not specify multiple handler fields ' +
         'simultaneously, and has a valid timeout value if one is provided. ' +
         'Malformed hook configurations will cause runtime errors when Claude Code ' +
@@ -121,7 +121,7 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Ensure each hook has a valid `type` (command, prompt, or agent) and includes ' +
+        'Ensure each hook has a valid `type` (command, http, prompt, or agent) and includes ' +
         'the corresponding handler field. Remove any extra handler fields so only one ' +
         'is present. If a timeout is specified, ensure it is a positive number.',
       relatedRules: ['agent-hooks-invalid-schema', 'agent-hooks'],
@@ -181,6 +181,12 @@ function validateHookHandler(
     });
   }
 
+  if (hook.type === 'http' && !hook.url) {
+    context.report({
+      message: 'Hook with type "http" must have "url" field',
+    });
+  }
+
   if (hook.type === 'agent' && !hook.agent) {
     context.report({
       message: 'Hook with type "agent" must have "agent" field',
@@ -188,10 +194,10 @@ function validateHookHandler(
   }
 
   // Validate mutual exclusivity of handler fields
-  const fieldCount = [hook.command, hook.prompt, hook.agent].filter(Boolean).length;
+  const fieldCount = [hook.command, hook.url, hook.prompt, hook.agent].filter(Boolean).length;
   if (fieldCount > 1) {
     context.report({
-      message: 'Hook cannot have multiple handler fields (command, prompt, agent)',
+      message: 'Hook cannot have multiple handler fields (command, url, prompt, agent)',
     });
   }
 

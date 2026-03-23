@@ -35,19 +35,18 @@ agent: deploy-agent
 ---
 ```
 
-Inline context does not require agent
+No context field does not require agent
 
 ```yaml
 ---
 name: lint
 description: Runs linting on the project
-context: inline
 ---
 ```
 
 ## How To Fix
 
-Add an `agent` field to your SKILL.md frontmatter specifying which agent to use. If you do not need a separate agent process, change `context` to `inline` or `auto` instead.
+Add an `agent` field to your SKILL.md frontmatter specifying which agent to use. If you do not need a separate agent process, remove the `context` field entirely.
 
 ## Options
 

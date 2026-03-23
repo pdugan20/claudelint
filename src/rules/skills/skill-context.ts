@@ -1,7 +1,7 @@
 /**
  * Rule: skill-context
  *
- * Skill context must be one of: fork, inline, auto
+ * Skill context must be 'fork' (the only documented value)
  *
  * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.context for validation
  */
@@ -14,7 +14,7 @@ export const rule: Rule = {
   meta: {
     id: 'skill-context',
     name: 'Skill Context Mode',
-    description: 'Skill context must be one of: fork, inline, auto',
+    description: 'Skill context must be "fork"',
     category: 'Skills',
     severity: 'error',
     fixable: false,
@@ -27,10 +27,10 @@ export const rule: Rule = {
       rationale:
         'An invalid context mode causes a runtime error when Claude Code tries to execute the skill.',
       details:
-        'The `context` field controls how a skill is executed. It must be one of the recognized modes: ' +
-        '`fork` (runs in a separate agent process), `inline` (runs in the current conversation context), ' +
-        'or `auto` (lets the system decide). Any other value is invalid and will cause the skill to fail ' +
-        'at runtime. This rule delegates to the Zod schema for validation.',
+        'The `context` field controls how a skill is executed. The only documented value is ' +
+        '`fork`, which runs the skill in a separate subagent process. When using `fork`, the `agent` ' +
+        "field must also be specified. If you don't need a separate agent, omit the `context` field entirely. " +
+        'This rule delegates to the Zod schema for validation.',
       examples: {
         incorrect: [
           {
@@ -44,23 +44,18 @@ export const rule: Rule = {
         ],
         correct: [
           {
-            description: 'Using fork context',
+            description: 'Using fork context with agent',
             code: '---\nname: deploy\ndescription: Deploys the application\ncontext: fork\nagent: deploy-agent\n---',
           },
           {
-            description: 'Using inline context',
-            code: '---\nname: lint\ndescription: Runs linting checks\ncontext: inline\n---',
-          },
-          {
-            description: 'Using auto context',
-            code: '---\nname: test\ndescription: Runs tests\ncontext: auto\n---',
+            description: 'No context field (runs inline by default)',
+            code: '---\nname: lint\ndescription: Runs linting checks\n---',
           },
         ],
       },
       howToFix:
-        'Set the `context` field to one of the valid values: `fork`, `inline`, or `auto`. ' +
-        'Use `fork` when the skill needs its own agent, `inline` when it should run in the current context, ' +
-        'or `auto` to let the system choose.',
+        'Set the `context` field to `fork` and specify an `agent` field, or omit `context` entirely ' +
+        'to run the skill inline in the current conversation.',
       relatedRules: ['skill-agent'],
     },
   },

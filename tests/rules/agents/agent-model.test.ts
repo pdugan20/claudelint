@@ -19,13 +19,27 @@ describe('agent-model', () => {
           content: '---\nname: my-agent\ndescription: Test agent\nmodel: haiku\n---\n# Agent',
           filePath: '/test/agents/AGENT.md',
         },
+        {
+          content: '---\nname: my-agent\ndescription: Test agent\nmodel: inherit\n---\n# Agent',
+          filePath: '/test/agents/AGENT.md',
+        },
+        {
+          content:
+            '---\nname: my-agent\ndescription: Test agent\nmodel: claude-opus-4-6\n---\n# Agent',
+          filePath: '/test/agents/AGENT.md',
+        },
       ],
 
       invalid: [
         {
           content: '---\nname: my-agent\ndescription: Test agent\nmodel: gpt-4\n---\n# Agent',
           filePath: '/test/agents/AGENT.md',
-          errors: [{ message: 'Invalid' }],
+          errors: [{ message: 'Unrecognized model' }],
+        },
+        {
+          content: '---\nname: my-agent\ndescription: Test agent\nmodel: Sonnet\n---\n# Agent',
+          filePath: '/test/agents/AGENT.md',
+          errors: [{ message: 'Unrecognized model' }],
         },
       ],
     });

@@ -45,14 +45,14 @@ export const rule: Rule = {
             code: '---\nname: deploy\ndescription: Deploys the app to production\ncontext: fork\nagent: deploy-agent\n---',
           },
           {
-            description: 'Inline context does not require agent',
-            code: '---\nname: lint\ndescription: Runs linting on the project\ncontext: inline\n---',
+            description: 'No context field does not require agent',
+            code: '---\nname: lint\ndescription: Runs linting on the project\n---',
           },
         ],
       },
       howToFix:
         'Add an `agent` field to your SKILL.md frontmatter specifying which agent to use. ' +
-        'If you do not need a separate agent process, change `context` to `inline` or `auto` instead.',
+        'If you do not need a separate agent process, remove the `context` field entirely.',
       relatedRules: ['skill-context'],
     },
   },

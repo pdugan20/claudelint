@@ -1,18 +1,18 @@
 ---
-description: "Agent model must be one of: sonnet, opus, haiku, inherit"
+description: "Agent model should be a known alias or valid model ID"
 ---
 
 # agent-model
 
-<RuleHeader description="Agent model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" :configurable="false" category="Agents" />
+<RuleHeader description="Agent model should be a known alias or valid model ID" severity="warn" :fixable="false" :configurable="false" category="Agents" />
 
 ## Rule Details
 
-This rule enforces that the `model` field in agent markdown frontmatter is one of the allowed values: `sonnet`, `opus`, `haiku`, or `inherit`. Using an unrecognized model name will cause the agent framework to fail at initialization. Validation is delegated to the AgentFrontmatterSchema.shape.model Zod schema which uses the ModelNames enum. The `inherit` option tells the agent to use the parent conversation model.
+This rule checks that the `model` field in agent markdown frontmatter is either a known alias (`sonnet`, `opus`, `haiku`, `inherit`) or a full Claude model ID (e.g. `claude-opus-4-6`). The `inherit` option tells the agent to use the parent conversation model. Unrecognized values produce a warning since Claude Code accepts arbitrary model strings.
 
 ### Incorrect
 
-Invalid model name
+Non-Claude model name
 
 ```yaml
 ---
@@ -34,13 +34,23 @@ model: Sonnet
 
 ### Correct
 
-Valid model name
+Valid model alias
 
 ```yaml
 ---
 name: code-review
 description: Reviews code for quality
 model: sonnet
+---
+```
+
+Full model ID
+
+```yaml
+---
+name: code-review
+description: Reviews code for quality
+model: claude-opus-4-6
 ---
 ```
 
@@ -56,7 +66,7 @@ model: inherit
 
 ## How To Fix
 
-Set the `model` field to one of: `sonnet`, `opus`, `haiku`, or `inherit`. Model names are case-sensitive and must be lowercase.
+Set the `model` field to a known alias (`sonnet`, `opus`, `haiku`, `inherit`) or a full Claude model ID (e.g. `claude-opus-4-6`).
 
 ## Options
 

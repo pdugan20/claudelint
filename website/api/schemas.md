@@ -31,13 +31,14 @@ Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 
 | Tool | Description |
 |------|-------------|
+| `Agent` | Subagent delegation (renamed from `Task` in v2.1.63) |
 | `Bash` | Shell command execution |
 | `Read` | File reading |
 | `Write` | File creation |
 | `Edit` | File editing |
 | `Glob` | File pattern matching |
 | `Grep` | Content search |
-| `Task` | Subagent task delegation |
+| `Task` | Subagent task delegation (legacy name, use `Agent`) |
 | `WebFetch` | URL content fetching |
 | `WebSearch` | Web search |
 | `LSP` | Language Server Protocol |
@@ -68,7 +69,7 @@ Valid values for `model` fields in skill and agent frontmatter.
 | `haiku` | Claude Haiku |
 | `inherit` | Inherit from parent context |
 
-> **Note:** The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
+> **Note:** Agent `model` fields also accept full model IDs (e.g., `claude-opus-4-6`). The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
 
 ### Hook Events
 
@@ -83,9 +84,11 @@ Valid event keys for hooks configuration. All names are PascalCase.
 | `UserPromptSubmit` | When the user submits a prompt |
 | `Notification` | When a notification is generated |
 | `Stop` | When the agent stops |
+| `StopFailure` | When a turn ends due to an API error |
 | `SubagentStart` | When a subagent starts |
 | `SubagentStop` | When a subagent stops |
 | `PreCompact` | Before context compaction |
+| `PostCompact` | After context compaction completes |
 | `ConfigChange` | When configuration changes |
 | `SessionStart` | When a session begins |
 | `SessionEnd` | When a session ends |
@@ -93,6 +96,9 @@ Valid event keys for hooks configuration. All names are PascalCase.
 | `WorktreeRemove` | When a git worktree is removed |
 | `TeammateIdle` | When a teammate agent is idle |
 | `TaskCompleted` | When a task completes |
+| `InstructionsLoaded` | When a CLAUDE.md or rules file is loaded |
+| `Elicitation` | When an MCP server requests user input |
+| `ElicitationResult` | After user responds to MCP elicitation |
 
 ### Hook Types
 
@@ -101,6 +107,7 @@ Valid values for the `type` field in hook handlers.
 | Type | Description |
 |------|-------------|
 | `command` | Executes a shell command |
+| `http` | Sends a POST request to a URL |
 | `prompt` | Sends a prompt to Claude |
 | `agent` | Delegates to a named agent |
 
@@ -111,8 +118,6 @@ Valid values for the `context` field in skill frontmatter.
 | Mode | Description |
 |------|-------------|
 | `fork` | Run in a forked subagent (requires `agent` field) |
-| `inline` | Run inline in the current context |
-| `auto` | Let Claude Code decide |
 
 ### MCP Transport Types
 

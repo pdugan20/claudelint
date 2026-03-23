@@ -346,9 +346,14 @@ export class HooksBuilder {
   /**
    * Add a hook to an event
    */
-  addHook(event: string, command: string, type: 'command' | 'prompt' | 'agent' = 'command'): this {
+  addHook(
+    event: string,
+    command: string,
+    type: 'command' | 'http' | 'prompt' | 'agent' = 'command'
+  ): this {
     const handler: Record<string, unknown> = { type };
     if (type === 'command') handler.command = command;
+    else if (type === 'http') handler.url = command;
     else if (type === 'prompt') handler.prompt = command;
     else if (type === 'agent') handler.agent = command;
 

@@ -78,7 +78,7 @@ describe('AgentFrontmatterSchema', () => {
   });
 
   describe('optional fields', () => {
-    it('should accept valid model', () => {
+    it('should accept model aliases', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
@@ -87,13 +87,13 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject invalid model', () => {
+    it('should accept full model IDs', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
-        model: 'invalid',
+        model: 'claude-opus-4-6',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
     it('should accept valid tools', () => {
@@ -198,11 +198,23 @@ describe('AgentFrontmatterSchema', () => {
       expect(result.success).toBe(false);
     });
 
-    it('should accept mcpServers', () => {
+    it('should accept mcpServers as string references', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
         mcpServers: ['github', 'sentry'],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept mcpServers with inline definitions', () => {
+      const result = AgentFrontmatterSchema.safeParse({
+        name: 'my-agent',
+        description: 'This agent does something',
+        mcpServers: [
+          { playwright: { type: 'stdio', command: 'npx', args: ['-y', '@playwright/mcp@latest'] } },
+          'github',
+        ],
       });
       expect(result.success).toBe(true);
     });

@@ -32,12 +32,18 @@
       "description": "Set to false to hide from the / menu. Use for background knowledge users shouldn't invoke directly. Default: true.",
       "default": true
     },
+    "effort": {
+      "type": "string",
+      "description": "Effort level when this skill is active. Overrides the session effort level. Options: low, medium, high, max (Opus 4.6 only).",
+      "enum": ["low", "medium", "high", "max"]
+    },
     "allowed-tools": {
       "type": "array",
       "description": "Tools Claude can use without asking permission when this skill is active.",
       "items": {
         "type": "string",
         "enum": [
+          "Agent",
           "Bash",
           "Read",
           "Write",
@@ -70,8 +76,8 @@
     },
     "context": {
       "type": "string",
-      "description": "Set to 'fork' to run in a forked subagent context, 'inline' for inline execution, or 'auto' to let Claude decide.",
-      "enum": ["fork", "inline", "auto"]
+      "description": "Set to 'fork' to run in a forked subagent context.",
+      "enum": ["fork"]
     },
     "agent": {
       "type": "string",
@@ -104,7 +110,7 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "type": { "type": "string", "enum": ["command", "prompt", "agent"] },
+                  "type": { "type": "string", "enum": ["command", "http", "prompt", "agent"] },
                   "command": { "type": "string" },
                   "prompt": { "type": "string" },
                   "agent": { "type": "string" },

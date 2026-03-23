@@ -66,8 +66,8 @@
       },
       {
         "id": "agent-model",
-        "summary": "Validates that the agent model field is a recognized model name.",
-        "severity": "error",
+        "summary": "Validates that the agent model field is a recognized model name or ID.",
+        "severity": "warn",
         "fixable": false,
         "link": "/rules/agents/agent-model"
       },

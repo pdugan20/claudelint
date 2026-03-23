@@ -29,9 +29,9 @@ export const rule: Rule = {
       details:
         'This rule validates that the keys in the hooks object of settings.json correspond to recognized ' +
         'Claude Code hook events. Valid events are: PreToolUse, PostToolUse, PostToolUseFailure, ' +
-        'PermissionRequest, UserPromptSubmit, Notification, Stop, SubagentStart, SubagentStop, ' +
-        'PreCompact, ConfigChange, SessionStart, SessionEnd, WorktreeCreate, WorktreeRemove, ' +
-        'TeammateIdle, and TaskCompleted. An unrecognized event ' +
+        'PermissionRequest, UserPromptSubmit, Notification, Stop, StopFailure, SubagentStart, SubagentStop, ' +
+        'PreCompact, PostCompact, ConfigChange, SessionStart, SessionEnd, WorktreeCreate, WorktreeRemove, ' +
+        'TeammateIdle, TaskCompleted, InstructionsLoaded, Elicitation, and ElicitationResult. An unrecognized event ' +
         'name means the hook will never fire, silently failing to provide the intended automation.',
       examples: {
         incorrect: [
@@ -52,8 +52,9 @@ export const rule: Rule = {
       howToFix:
         'Replace the invalid event name with one of the recognized hook events: PreToolUse, ' +
         'PostToolUse, PostToolUseFailure, PermissionRequest, UserPromptSubmit, Notification, Stop, ' +
-        'SubagentStart, SubagentStop, PreCompact, ConfigChange, SessionStart, SessionEnd, ' +
-        'WorktreeCreate, WorktreeRemove, TeammateIdle, or TaskCompleted.',
+        'StopFailure, SubagentStart, SubagentStop, PreCompact, PostCompact, ConfigChange, SessionStart, ' +
+        'SessionEnd, WorktreeCreate, WorktreeRemove, TeammateIdle, TaskCompleted, InstructionsLoaded, ' +
+        'Elicitation, or ElicitationResult.',
       relatedRules: ['hooks-missing-script'],
     },
   },
