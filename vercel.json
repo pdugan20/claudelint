@@ -3,6 +3,7 @@
   "framework": "vitepress",
   "buildCommand": "npm run docs:build",
   "outputDirectory": "website/.vitepress/dist",
+  "ignoreCommand": "bash -c '[[ \"$VERCEL_GIT_COMMIT_AUTHOR_LOGIN\" == \"dependabot[bot]\" ]] && exit 0 || exit 1'",
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
