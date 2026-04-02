@@ -175,40 +175,30 @@ See the [Configuration Guide](/guide/configuration) for details.
 
 ## Keeping Up to Date
 
-Third-party marketplace plugins do not auto-update by default (official Anthropic marketplaces do). You have two options:
+The plugin and npm package are updated independently.
 
-**Enable auto-update** (recommended):
+### Plugin Updates
 
-1. Run `/plugin` to open the plugin manager
-2. Select **Marketplaces**
-3. Choose **pdugan20-plugins**
-4. Select **Enable auto-update**
+Third-party marketplace plugins don't auto-update by default. Enable it via `/plugin` → **Marketplaces** → **pdugan20-plugins** → **Enable auto-update**. When enabled, Claude Code checks for updates at startup and prompts you to run `/reload-plugins` when new versions are available.
 
-When auto-update is enabled, Claude Code refreshes marketplace data and updates installed plugins at startup. You'll see a notification prompting you to run `/reload-plugins` if anything was updated.
-
-**Manual update**:
+To update manually:
 
 ```text
 /plugin marketplace update pdugan20-plugins
 ```
 
-::: tip Environment variables
-Set `DISABLE_AUTOUPDATER=true` to disable all automatic updates (Claude Code and plugins). To keep plugin auto-updates while disabling Claude Code updates, also set `FORCE_AUTOUPDATE_PLUGINS=true`.
-:::
-
-Plugin updates and npm package updates are independent. When upgrading, update both:
+### npm Package Updates
 
 <CodeTabs :tabs="[
   { label: 'Global', code: 'npm install -g claude-code-lint@latest' },
   { label: 'Project only', code: 'npm install --save-dev claude-code-lint@latest' },
 ]" />
 
-```text
-# Update plugin (inside Claude Code)
-/plugin marketplace update pdugan20-plugins
-```
+The plugin's SessionStart hook detects version mismatches between the plugin and npm package — Claude will mention it and offer to fix it at the start of your session.
 
-The plugin's SessionStart hook detects version mismatches — Claude will mention it and offer to fix it at the start of your session.
+::: details Environment variables for auto-update control
+Set `DISABLE_AUTOUPDATER=true` to disable all automatic updates (Claude Code and plugins). To keep plugin auto-updates while disabling Claude Code updates, also set `FORCE_AUTOUPDATE_PLUGINS=true`.
+:::
 
 ## Troubleshooting
 
