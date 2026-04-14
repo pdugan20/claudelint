@@ -1,33 +1,34 @@
 <template>
-  <div class="validator-diagram">
-    <div class="vd-input">
-      <div class="vd-box vd-box-input">claudelint check-all</div>
+  <div class="vd-root">
+    <div class="vd-card vd-card-landmark">claudelint check-all</div>
+    <div class="vd-arrow">&#x2193;</div>
+
+    <div class="vd-card vd-card-engine">
+      <span class="vd-engine-label">Validation Engine</span>
+      <span class="vd-engine-meta">{{ totalRules }} rules · parallel execution</span>
     </div>
     <div class="vd-arrow">&#x2193;</div>
-    <div class="vd-engine">
-      <div class="vd-box vd-box-engine">Validation Engine</div>
+
+    <div class="vd-grid">
+      <component
+        :is="v.link ? 'a' : 'div'"
+        v-for="v in effectiveValidators"
+        :key="v.name"
+        :href="v.link"
+        class="vd-card vd-card-validator"
+      >
+        <span class="vd-v-name">{{ v.name }}</span>
+        <span class="vd-v-count">{{ v.rules }} {{ v.rules === 1 ? 'rule' : 'rules' }}</span>
+      </component>
     </div>
     <div class="vd-arrow">&#x2193;</div>
-    <div class="vd-validators">
-      <div v-for="v in effectiveValidators" :key="v.name" class="vd-box vd-box-validator">
-        <a v-if="v.link" :href="v.link" class="vd-link">
-          <strong>{{ v.name }}</strong>
-          <span class="vd-count">{{ v.rules }} rules</span>
-        </a>
-        <template v-else>
-          <strong>{{ v.name }}</strong>
-          <span class="vd-count">{{ v.rules }} rules</span>
-        </template>
-      </div>
-    </div>
-    <div class="vd-arrow">&#x2193;</div>
-    <div class="vd-output">
-      <div class="vd-box vd-box-output">Results + Formatting</div>
-    </div>
+
+    <div class="vd-card vd-card-landmark">Results + Formatting</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import stats from '../../../data/rule-stats.json';
 
 interface ValidatorEntry {
@@ -36,9 +37,7 @@ interface ValidatorEntry {
   link?: string;
 }
 
-const props = defineProps<{
-  validators?: ValidatorEntry[];
-}>();
+const props = defineProps<{ validators?: ValidatorEntry[] }>();
 
 const categoryLinks: Record<string, string> = {
   'claude-md': '/validators/claude-md',
@@ -60,14 +59,16 @@ const effectiveValidators: ValidatorEntry[] =
     rules: (val as { display: string; count: number }).count,
     link: categoryLinks[key],
   }));
+
+const totalRules = computed(() => effectiveValidators.reduce((sum, v) => sum + v.rules, 0));
 </script>
 
 <style scoped>
-.validator-diagram {
+.vd-root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin: 24px 0;
   padding: 24px;
   background: var(--vp-c-bg-soft);
@@ -75,65 +76,80 @@ const effectiveValidators: ValidatorEntry[] =
 }
 
 .vd-arrow {
-  font-size: 1.25rem;
-  color: var(--vp-c-text-3);
+  font-size: 1rem;
   line-height: 1;
+  color: var(--vp-c-text-3);
 }
 
-.vd-box {
-  padding: 10px 20px;
+.vd-card {
+  padding: 8px 16px;
   border-radius: 8px;
-  text-align: center;
-  font-size: 0.875rem;
-}
-
-.vd-box-input,
-.vd-box-output {
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-  font-family: var(--vp-font-family-mono);
-}
-
-.vd-box-engine {
-  background: var(--vp-c-bg);
-  border: 2px solid var(--vp-c-brand-1);
-  color: var(--vp-c-text-1);
-  font-weight: 600;
-}
-
-.vd-validators {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  max-width: 100%;
-}
-
-.vd-box-validator {
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 100px;
-  transition: border-color 0.2s;
-}
-
-.vd-box-validator:hover {
-  border-color: var(--vp-c-border);
-}
-
-.vd-link {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  text-align: center;
   text-decoration: none;
   color: inherit;
+  font-size: 0.8125rem;
 }
 
-.vd-count {
-  font-size: 0.75rem;
+.vd-card-landmark {
+  font-weight: 600;
+  min-width: 180px;
+}
+
+.vd-card-engine {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 20px;
+}
+
+.vd-engine-label {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--vp-c-text-1);
+}
+
+.vd-engine-meta {
+  font-size: 0.7rem;
   color: var(--vp-c-text-3);
+}
+
+.vd-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-width: 640px;
+}
+
+.vd-card-validator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 8px 10px;
+  transition: border-color 0.15s;
+}
+
+.vd-card-validator:hover {
+  border-color: var(--vp-c-brand-1);
+}
+
+.vd-v-name {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--vp-c-text-1);
+}
+
+.vd-v-count {
+  font-size: 0.7rem;
+  color: var(--vp-c-text-3);
+}
+
+@media (max-width: 640px) {
+  .vd-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 </style>
