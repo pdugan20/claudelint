@@ -1,6 +1,6 @@
 <template>
   <a :href="link" class="rule-card">
-    <code class="rule-card-id">{{ ruleId }}</code>
+    <div class="rule-card-id">{{ ruleId }}</div>
     <p class="rule-card-desc">{{ description }}</p>
     <div class="rule-card-footer">
       <span
@@ -51,12 +51,10 @@ defineProps<{
 }
 
 .rule-card-id {
-  font-size: 0.9375rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--vp-c-text-1);
   margin-bottom: 8px;
-  background: none;
-  padding: 0;
 }
 
 .rule-card-desc {

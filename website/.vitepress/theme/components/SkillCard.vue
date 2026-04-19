@@ -1,6 +1,6 @@
 <template>
-  <div class="skill-card">
-    <code class="skill-card-name">/{{ name }}</code>
+  <component :is="link ? 'a' : 'div'" :href="link" class="skill-card">
+    <div class="skill-card-name">/{{ name }}</div>
     <p class="skill-card-desc">
       {{ description }}
     </p>
@@ -14,7 +14,7 @@
         >{{ example }}</span
       >
     </div>
-  </div>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -22,6 +22,7 @@ defineProps<{
   name: string;
   description: string;
   example: string;
+  link?: string;
 }>();
 </script>
 
@@ -47,12 +48,10 @@ defineProps<{
 }
 
 .skill-card-name {
-  font-size: 0.9375rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--vp-c-text-1);
   margin-bottom: 8px;
-  background: none;
-  padding: 0;
 }
 
 .skill-card-desc {

@@ -81,42 +81,49 @@ Once installed, the plugin adds 9 skills that Claude can use automatically. Ask 
   name="validate-all"
   description="Runs every validator on your entire project — CLAUDE.md, skills, settings, hooks, MCP servers, and plugin manifests."
   example="Run all validators on my project"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-all/SKILL.md"
 />
 
 <SkillCard
   name="validate-cc-md"
   description="Checks CLAUDE.md file size, @import directives, frontmatter, and section organization."
   example="Is my CLAUDE.md ok?"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-cc-md/SKILL.md"
 />
 
 <SkillCard
   name="validate-skills"
   description="Checks SKILL.md frontmatter, allowed-tools, file references, and shell script security."
   example="Why is my skill not loading?"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-skills/SKILL.md"
 />
 
 <SkillCard
   name="validate-settings"
   description="Checks settings.json schema, permissions, and environment variables."
   example="Check my settings"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-settings/SKILL.md"
 />
 
 <SkillCard
   name="validate-hooks"
   description="Checks hooks.json events, matcher patterns, and command script references."
   example="Why is my hook not firing?"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-hooks/SKILL.md"
 />
 
 <SkillCard
   name="validate-mcp"
   description="Checks .mcp.json transport types, server names, and environment variables."
   example="Validate my MCP config"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-mcp/SKILL.md"
 />
 
 <SkillCard
   name="validate-plugin"
   description="Checks plugin.json manifest schema, versioning, and component references."
   example="Check my plugin manifest"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/validate-plugin/SKILL.md"
 />
 
 </div>
@@ -129,12 +136,14 @@ Once installed, the plugin adds 9 skills that Claude can use automatically. Ask 
   name="format-cc"
   description="Auto-formats Claude Code files with markdownlint, prettier, and shellcheck."
   example="Fix my markdown formatting"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/format-cc/SKILL.md"
 />
 
 <SkillCard
   name="optimize-cc-md"
   description="Interactive workflow to reduce CLAUDE.md size, remove generic content, and organize @import files."
   example="My CLAUDE.md is too long, help me organize it"
+  link="https://github.com/pdugan20/claudelint/blob/main/skills/optimize-cc-md/SKILL.md"
 />
 
 </div>
