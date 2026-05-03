@@ -19,10 +19,15 @@
         "PreToolUse": { "$ref": "#/$defs/matcherGroupArray" },
         "PostToolUse": { "$ref": "#/$defs/matcherGroupArray" },
         "PostToolUseFailure": { "$ref": "#/$defs/matcherGroupArray" },
+        "PostToolBatch": { "$ref": "#/$defs/matcherGroupArray" },
         "PermissionRequest": { "$ref": "#/$defs/matcherGroupArray" },
+        "PermissionDenied": { "$ref": "#/$defs/matcherGroupArray" },
         "Notification": { "$ref": "#/$defs/matcherGroupArray" },
         "UserPromptSubmit": { "$ref": "#/$defs/matcherGroupArray" },
+        "UserPromptExpansion": { "$ref": "#/$defs/matcherGroupArray" },
         "Stop": { "$ref": "#/$defs/matcherGroupArray" },
+        "StopFailure": { "$ref": "#/$defs/matcherGroupArray" },
+        "Setup": { "$ref": "#/$defs/matcherGroupArray" },
         "SubagentStart": { "$ref": "#/$defs/matcherGroupArray" },
         "SubagentStop": { "$ref": "#/$defs/matcherGroupArray" },
         "PreCompact": { "$ref": "#/$defs/matcherGroupArray" },
@@ -33,11 +38,13 @@
         "WorktreeCreate": { "$ref": "#/$defs/matcherGroupArray" },
         "WorktreeRemove": { "$ref": "#/$defs/matcherGroupArray" },
         "TeammateIdle": { "$ref": "#/$defs/matcherGroupArray" },
+        "TaskCreated": { "$ref": "#/$defs/matcherGroupArray" },
         "TaskCompleted": { "$ref": "#/$defs/matcherGroupArray" },
         "InstructionsLoaded": { "$ref": "#/$defs/matcherGroupArray" },
         "Elicitation": { "$ref": "#/$defs/matcherGroupArray" },
         "ElicitationResult": { "$ref": "#/$defs/matcherGroupArray" },
-        "StopFailure": { "$ref": "#/$defs/matcherGroupArray" }
+        "CwdChanged": { "$ref": "#/$defs/matcherGroupArray" },
+        "FileChanged": { "$ref": "#/$defs/matcherGroupArray" }
       },
       "additionalProperties": false
     }
@@ -66,17 +73,47 @@
     },
     "hookHandler": {
       "type": "object",
-      "description": "Individual hook handler (command, http, prompt, or agent)",
+      "description": "Individual hook handler (command, http, mcp_tool, prompt, or agent)",
       "required": ["type"],
       "properties": {
         "type": {
           "type": "string",
           "description": "The type of hook handler",
-          "enum": ["command", "http", "prompt", "agent"]
+          "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+        },
+        "if": {
+          "type": "string",
+          "description": "Permission rule syntax to filter when this hook runs (e.g. 'Bash(git *)')"
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Timeout in seconds",
+          "minimum": 0
+        },
+        "statusMessage": {
+          "type": "string",
+          "description": "Status message displayed while hook runs"
+        },
+        "once": {
+          "type": "boolean",
+          "description": "Whether the hook should only fire once per session"
         },
         "command": {
           "type": "string",
           "description": "Shell command to execute (required if type is 'command')"
+        },
+        "async": {
+          "type": "boolean",
+          "description": "Whether the command hook runs asynchronously without blocking"
+        },
+        "asyncRewake": {
+          "type": "boolean",
+          "description": "If true, runs in the background and wakes Claude on exit code 2 (command-type hooks)"
+        },
+        "shell": {
+          "type": "string",
+          "description": "Shell to use for command-type hooks. Defaults to bash.",
+          "enum": ["bash", "powershell"]
         },
         "url": {
           "type": "string",
@@ -92,6 +129,18 @@
           "description": "Environment variable names allowed in header interpolation for http-type hooks",
           "items": { "type": "string" }
         },
+        "server": {
+          "type": "string",
+          "description": "Name of a configured MCP server (required if type is 'mcp_tool')"
+        },
+        "tool": {
+          "type": "string",
+          "description": "Name of the tool to call on the MCP server (required if type is 'mcp_tool')"
+        },
+        "input": {
+          "type": "object",
+          "description": "Arguments passed to the MCP tool. Supports ${path} substitution."
+        },
         "prompt": {
           "type": "string",
           "description": "Prompt text to inject (required if type is 'prompt' or 'agent')"
@@ -100,26 +149,9 @@
           "type": "string",
           "description": "Agent to invoke (required if type is 'agent')"
         },
-        "timeout": {
-          "type": "number",
-          "description": "Timeout in seconds",
-          "minimum": 0
-        },
-        "statusMessage": {
-          "type": "string",
-          "description": "Status message displayed while hook runs"
-        },
-        "once": {
-          "type": "boolean",
-          "description": "Whether the hook should only fire once per session"
-        },
         "model": {
           "type": "string",
           "description": "Model to use for prompt/agent-type hooks"
-        },
-        "async": {
-          "type": "boolean",
-          "description": "Whether the hook runs asynchronously without blocking"
         }
       },
       "allOf": [
@@ -130,6 +162,10 @@
         {
           "if": { "properties": { "type": { "const": "http" } } },
           "then": { "required": ["url"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "mcp_tool" } } },
+          "then": { "required": ["server", "tool"] }
         },
         {
           "if": { "properties": { "type": { "const": "prompt" } } },

@@ -103,8 +103,8 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 22 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(22);
+    it('should export all 29 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(29);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
@@ -117,6 +117,13 @@ describe('Schema Constants', () => {
       expect(VALID_HOOK_EVENTS).toContain('InstructionsLoaded');
       expect(VALID_HOOK_EVENTS).toContain('Elicitation');
       expect(VALID_HOOK_EVENTS).toContain('ElicitationResult');
+      expect(VALID_HOOK_EVENTS).toContain('Setup');
+      expect(VALID_HOOK_EVENTS).toContain('UserPromptExpansion');
+      expect(VALID_HOOK_EVENTS).toContain('PermissionDenied');
+      expect(VALID_HOOK_EVENTS).toContain('PostToolBatch');
+      expect(VALID_HOOK_EVENTS).toContain('TaskCreated');
+      expect(VALID_HOOK_EVENTS).toContain('CwdChanged');
+      expect(VALID_HOOK_EVENTS).toContain('FileChanged');
     });
   });
 
@@ -124,6 +131,7 @@ describe('Schema Constants', () => {
     it('should validate valid hook types', () => {
       expect(HookTypes.safeParse('command').success).toBe(true);
       expect(HookTypes.safeParse('http').success).toBe(true);
+      expect(HookTypes.safeParse('mcp_tool').success).toBe(true);
       expect(HookTypes.safeParse('prompt').success).toBe(true);
       expect(HookTypes.safeParse('agent').success).toBe(true);
     });
@@ -134,7 +142,7 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
-      expect(VALID_HOOK_TYPES).toEqual(['command', 'http', 'prompt', 'agent']);
+      expect(VALID_HOOK_TYPES).toEqual(['command', 'http', 'mcp_tool', 'prompt', 'agent']);
     });
   });
 

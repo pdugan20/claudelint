@@ -54,11 +54,15 @@ export const HookEvents = z.enum([
   'PreToolUse',
   'PostToolUse',
   'PostToolUseFailure',
+  'PostToolBatch',
   'PermissionRequest',
+  'PermissionDenied',
   'UserPromptSubmit',
+  'UserPromptExpansion',
   'Notification',
   'Stop',
   'StopFailure',
+  'Setup',
   'SubagentStart',
   'SubagentStop',
   'PreCompact',
@@ -69,16 +73,19 @@ export const HookEvents = z.enum([
   'WorktreeCreate',
   'WorktreeRemove',
   'TeammateIdle',
+  'TaskCreated',
   'TaskCompleted',
   'InstructionsLoaded',
   'Elicitation',
   'ElicitationResult',
+  'CwdChanged',
+  'FileChanged',
 ]);
 
 /**
  * Valid hook handler types
  */
-export const HookTypes = z.enum(['command', 'http', 'prompt', 'agent']);
+export const HookTypes = z.enum(['command', 'http', 'mcp_tool', 'prompt', 'agent']);
 
 /**
  * Valid skill context modes

@@ -8,22 +8,32 @@ import { semver } from '../schemas/refinements';
 
 /**
  * Individual hook handler schema (shared by hooks.json and settings.json)
- * Based on official schema: https://json.schemastore.org/claude-code-settings.json
+ * Based on https://code.claude.com/docs/en/hooks
  */
 export const SettingsHookSchema = z.object({
   type: HookTypes,
+  // Common fields
+  if: z.string().optional(),
+  timeout: z.number().optional(),
+  statusMessage: z.string().optional(),
+  once: z.boolean().optional(),
+  // command hook fields
   command: z.string().optional(),
-  prompt: z.string().optional(),
-  agent: z.string().optional(),
+  async: z.boolean().optional(),
+  asyncRewake: z.boolean().optional(),
+  shell: z.enum(['bash', 'powershell']).optional(),
   // http hook fields
   url: z.string().optional(),
   headers: z.record(z.string(), z.string()).optional(),
   allowedEnvVars: z.array(z.string()).optional(),
-  timeout: z.number().optional(),
-  statusMessage: z.string().optional(),
-  once: z.boolean().optional(),
+  // mcp_tool hook fields
+  server: z.string().optional(),
+  tool: z.string().optional(),
+  input: z.record(z.string(), z.unknown()).optional(),
+  // prompt and agent hook fields
+  prompt: z.string().optional(),
+  agent: z.string().optional(),
   model: z.string().optional(),
-  async: z.boolean().optional(),
 });
 
 /**
@@ -43,10 +53,15 @@ export const SettingsHooksSchema = z.object({
   PreToolUse: z.array(SettingsHookMatcherSchema).optional(),
   PostToolUse: z.array(SettingsHookMatcherSchema).optional(),
   PostToolUseFailure: z.array(SettingsHookMatcherSchema).optional(),
+  PostToolBatch: z.array(SettingsHookMatcherSchema).optional(),
   PermissionRequest: z.array(SettingsHookMatcherSchema).optional(),
+  PermissionDenied: z.array(SettingsHookMatcherSchema).optional(),
   Notification: z.array(SettingsHookMatcherSchema).optional(),
   UserPromptSubmit: z.array(SettingsHookMatcherSchema).optional(),
+  UserPromptExpansion: z.array(SettingsHookMatcherSchema).optional(),
   Stop: z.array(SettingsHookMatcherSchema).optional(),
+  StopFailure: z.array(SettingsHookMatcherSchema).optional(),
+  Setup: z.array(SettingsHookMatcherSchema).optional(),
   SubagentStart: z.array(SettingsHookMatcherSchema).optional(),
   SubagentStop: z.array(SettingsHookMatcherSchema).optional(),
   PreCompact: z.array(SettingsHookMatcherSchema).optional(),
@@ -57,11 +72,13 @@ export const SettingsHooksSchema = z.object({
   WorktreeCreate: z.array(SettingsHookMatcherSchema).optional(),
   WorktreeRemove: z.array(SettingsHookMatcherSchema).optional(),
   TeammateIdle: z.array(SettingsHookMatcherSchema).optional(),
+  TaskCreated: z.array(SettingsHookMatcherSchema).optional(),
   TaskCompleted: z.array(SettingsHookMatcherSchema).optional(),
   InstructionsLoaded: z.array(SettingsHookMatcherSchema).optional(),
   Elicitation: z.array(SettingsHookMatcherSchema).optional(),
   ElicitationResult: z.array(SettingsHookMatcherSchema).optional(),
-  StopFailure: z.array(SettingsHookMatcherSchema).optional(),
+  CwdChanged: z.array(SettingsHookMatcherSchema).optional(),
+  FileChanged: z.array(SettingsHookMatcherSchema).optional(),
 });
 
 /**
