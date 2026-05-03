@@ -28,10 +28,7 @@
     },
     "arguments": {
       "description": "Named positional arguments for $name substitution in the skill content. Accepts a space-separated string or a YAML list.",
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
     },
     "disable-model-invocation": {
       "type": "boolean",
@@ -114,10 +111,7 @@
     },
     "paths": {
       "description": "Glob patterns that limit when this skill is activated. Accepts a comma-separated string or a YAML list. Uses the same format as path-specific rules.",
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
     },
     "shell": {
       "type": "string",
