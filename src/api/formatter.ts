@@ -133,10 +133,7 @@ async function loadCustomFormatter(filePath: string, cwd: string): Promise<Forma
  */
 export function isFormatter(obj: unknown): obj is Formatter {
   return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'format' in obj &&
-    typeof (obj as { format: unknown }).format === 'function'
+    typeof obj === 'object' && obj !== null && 'format' in obj && typeof obj.format === 'function'
   );
 }
 

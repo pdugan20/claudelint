@@ -73,7 +73,7 @@ export const rule: Rule = {
 
     // In object-keyed format, event names are the keys of the hooks object
     if (config.hooks && typeof config.hooks === 'object' && !Array.isArray(config.hooks)) {
-      for (const eventName of Object.keys(config.hooks as Record<string, unknown>)) {
+      for (const eventName of Object.keys(config.hooks)) {
         if (!(VALID_HOOK_EVENTS as readonly string[]).includes(eventName)) {
           context.report({
             message: `Unknown hook event: ${eventName}`,

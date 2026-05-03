@@ -209,7 +209,7 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
 
     // Step 3: Run custom semantic validation
     // This receives the parsed, validated config object
-    await this.validateSemantics(filePath, result.data as z.TypeOf<T>);
+    await this.validateSemantics(filePath, result.data);
   }
 
   /**

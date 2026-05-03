@@ -100,9 +100,7 @@ export class AgentsValidator extends FileValidator {
     // Custom validation: Validate hooks if present
     // Agent hooks in frontmatter use the object-keyed format
     if (frontmatter.hooks) {
-      const issues = validateSettingsHooks(
-        frontmatter.hooks as Parameters<typeof validateSettingsHooks>[0]
-      );
+      const issues = validateSettingsHooks(frontmatter.hooks);
       for (const issue of issues) {
         this.report(issue.message, filePath, undefined, issue.ruleId);
       }

@@ -206,10 +206,8 @@ export class CustomRuleLoader {
         };
       }
 
-      // Register rule (with type assertion since custom rule IDs aren't in the RuleId union)
       this.loadedRules.set(rule.meta.id, rule);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-      RuleRegistry.register(rule as any);
+      RuleRegistry.register(rule);
 
       return {
         filePath,

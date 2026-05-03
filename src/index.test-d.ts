@@ -75,8 +75,8 @@ expectType<string>(ClaudeLint.getVersion());
 // === Type aliases ===
 
 // LintOptions is an alias for ClaudeLintOptions
-expectAssignable<LintOptions>({} as ClaudeLintOptions);
-expectAssignable<ClaudeLintOptions>({} as LintOptions);
+expectAssignable<LintOptions>({});
+expectAssignable<ClaudeLintOptions>({});
 
 // === Constants ===
 
