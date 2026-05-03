@@ -11,21 +11,22 @@ jobs:
   label-size:
     name: Label PR Size
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: cbrgm/pr-size-labeler-action@v1
+      - uses: codelytv/pr-size-labeler@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           xs_label: 'size/xs'
-          xs_diff: '10'
+          xs_max_size: '10'
           s_label: 'size/s'
-          s_diff: '50'
+          s_max_size: '50'
           m_label: 'size/m'
-          m_diff: '200'
+          m_max_size: '200'
           l_label: 'size/l'
-          l_diff: '500'
+          l_max_size: '500'
           xl_label: 'size/xl'
-          xl_diff: '1000'
-          exclude_files: |
+          fail_if_xl: 'false'
+          files_to_ignore: |
             package-lock.json
             website/rules/**/*.md
             website/rules/_sidebar.json

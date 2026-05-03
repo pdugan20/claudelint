@@ -14,16 +14,17 @@ jobs:
   welcome:
     name: Welcome First-Time Contributors
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/first-interaction@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pr-message: |
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_message: |
             Thanks for your first pull request to claudelint! A maintainer will review it soon.
 
             While you wait, please make sure:
             - CI checks are passing
             - Your PR title follows [Conventional Commits](https://www.conventionalcommits.org/) (e.g., `feat: add new rule`)
             - You've read the [Contributing Guide](https://github.com/pdugan20/claudelint/blob/main/CONTRIBUTING.md)
-          issue-message: |
+          issue_message: |
             Thanks for opening your first issue! We'll take a look soon.
