@@ -307,6 +307,43 @@ export const PluginAuthorSchema = z.object({
 });
 
 /**
+ * Plugin user-config option schema
+ * https://code.claude.com/docs/en/plugins-reference#user-configuration
+ */
+export const PluginUserConfigOptionSchema = z.object({
+  type: z.enum(['string', 'number', 'boolean', 'directory', 'file']),
+  title: z.string(),
+  description: z.string(),
+  sensitive: z.boolean().optional(),
+  required: z.boolean().optional(),
+  default: z.unknown().optional(),
+  multiple: z.boolean().optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+});
+
+/**
+ * Plugin channel schema
+ * https://code.claude.com/docs/en/plugins-reference#channels
+ */
+export const PluginChannelSchema = z.object({
+  server: z.string(),
+  userConfig: z.record(z.string(), PluginUserConfigOptionSchema).optional(),
+});
+
+/**
+ * Plugin dependency entry schema
+ * https://code.claude.com/docs/en/plugin-dependencies
+ */
+export const PluginDependencySchema = z.union([
+  z.string(),
+  z.object({
+    name: z.string(),
+    version: z.string().optional(),
+  }),
+]);
+
+/**
  * Plugin manifest schema (plugin.json)
  * Based on official spec: https://code.claude.com/docs/en/plugins-reference#complete-schema
  *
@@ -318,6 +355,7 @@ export const PluginManifestSchema = z.object({
   name: z.string(),
 
   // Optional metadata
+  $schema: z.string().optional(),
   version: semver().optional(),
   description: z.string().optional(),
   author: PluginAuthorSchema.optional(),
@@ -330,6 +368,8 @@ export const PluginManifestSchema = z.object({
   commands: z.union([z.string(), z.array(z.string())]).optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
+  themes: z.union([z.string(), z.array(z.string())]).optional(),
+  monitors: z.union([z.string(), z.array(z.string())]).optional(),
 
   // Config paths
   // Note: The documented spec accepts string|array|object for hooks, but all three are
@@ -343,6 +383,13 @@ export const PluginManifestSchema = z.object({
   lspServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
     .optional(),
+
+  // User-facing configuration
+  userConfig: z.record(z.string(), PluginUserConfigOptionSchema).optional(),
+  channels: z.array(PluginChannelSchema).optional(),
+
+  // Plugin-to-plugin dependencies
+  dependencies: z.array(PluginDependencySchema).optional(),
 });
 
 /**
@@ -381,6 +428,7 @@ export const MarketplacePluginEntrySchema = z.object({
   source: MarketplacePluginSourceSchema,
 
   // Optional metadata
+  $schema: z.string().optional(),
   description: z.string().optional(),
   version: z.string().optional(),
   author: PluginAuthorSchema.optional(),
@@ -396,6 +444,8 @@ export const MarketplacePluginEntrySchema = z.object({
   commands: z.union([z.string(), z.array(z.string())]).optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
+  themes: z.union([z.string(), z.array(z.string())]).optional(),
+  monitors: z.union([z.string(), z.array(z.string())]).optional(),
   hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
   mcpServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
@@ -404,6 +454,11 @@ export const MarketplacePluginEntrySchema = z.object({
   lspServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
     .optional(),
+
+  // User-facing configuration and dependencies (inherited from plugin manifest)
+  userConfig: z.record(z.string(), PluginUserConfigOptionSchema).optional(),
+  channels: z.array(PluginChannelSchema).optional(),
+  dependencies: z.array(PluginDependencySchema).optional(),
 });
 
 /**
@@ -436,4 +491,7 @@ export const MarketplaceMetadataSchema = z.object({
       pluginRoot: z.string().optional(),
     })
     .optional(),
+  // Other marketplaces that plugins in this marketplace may depend on.
+  // https://code.claude.com/docs/en/plugin-marketplaces
+  allowCrossMarketplaceDependenciesOn: z.array(z.string()).optional(),
 });

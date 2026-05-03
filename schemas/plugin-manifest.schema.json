@@ -13,6 +13,10 @@
       "description": "Unique plugin identifier (kebab-case, no spaces). Used as skill namespace prefix.",
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema URL for editor autocomplete and validation. Claude Code ignores this field at load time."
+    },
     "version": {
       "type": "string",
       "description": "Semantic version (MAJOR.MINOR.PATCH)",
@@ -206,6 +210,89 @@
           "description": "Inline LSP servers configuration (see LSP schema for structure)"
         }
       ]
+    },
+    "themes": {
+      "description": "Color theme files/directories that appear in /theme alongside built-in presets.",
+      "oneOf": [
+        { "type": "string", "pattern": "^\\.\\/.*" },
+        {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^\\.\\/.*" },
+          "minItems": 1
+        }
+      ]
+    },
+    "monitors": {
+      "description": "Background Monitor configurations that start automatically when the plugin is active.",
+      "oneOf": [
+        { "type": "string", "pattern": "^\\.\\/.*" },
+        {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^\\.\\/.*" },
+          "minItems": 1
+        }
+      ]
+    },
+    "userConfig": {
+      "type": "object",
+      "description": "User-configurable values prompted at enable time. Keyed by valid identifier names.",
+      "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
+    },
+    "channels": {
+      "type": "array",
+      "description": "Channel declarations that bind to MCP servers for message injection (Telegram, Slack, Discord style).",
+      "items": { "$ref": "#/$defs/channel" }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Other plugins this plugin requires, optionally with semver version constraints.",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "version": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "userConfigOption": {
+      "type": "object",
+      "required": ["type", "title", "description"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "directory", "file"]
+        },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "sensitive": { "type": "boolean" },
+        "required": { "type": "boolean" },
+        "default": {},
+        "multiple": { "type": "boolean" },
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "channel": {
+      "type": "object",
+      "required": ["server"],
+      "properties": {
+        "server": { "type": "string" },
+        "userConfig": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

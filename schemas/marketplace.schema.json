@@ -67,6 +67,11 @@
         }
       },
       "additionalProperties": false
+    },
+    "allowCrossMarketplaceDependenciesOn": {
+      "type": "array",
+      "description": "Other marketplaces that plugins in this marketplace may depend on. Dependencies from a marketplace not listed here are blocked at install.",
+      "items": { "type": "string" }
     }
   },
   "additionalProperties": false,
@@ -241,6 +246,78 @@
             { "type": "array", "items": { "type": "string" } },
             { "type": "object" }
           ]
+        },
+        "$schema": {
+          "type": "string",
+          "description": "JSON Schema reference URL"
+        },
+        "themes": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "monitors": {
+          "oneOf": [
+            { "type": "string", "pattern": "^\\.\\/.*" },
+            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+          ]
+        },
+        "userConfig": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
+        },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/channel" }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "version": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "userConfigOption": {
+      "type": "object",
+      "required": ["type", "title", "description"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "directory", "file"]
+        },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "sensitive": { "type": "boolean" },
+        "required": { "type": "boolean" },
+        "default": {},
+        "multiple": { "type": "boolean" },
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "channel": {
+      "type": "object",
+      "required": ["server"],
+      "properties": {
+        "server": { "type": "string" },
+        "userConfig": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
         }
       },
       "additionalProperties": false
