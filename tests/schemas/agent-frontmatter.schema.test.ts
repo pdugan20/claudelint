@@ -241,7 +241,7 @@ describe('AgentFrontmatterSchema', () => {
       const result = AgentFrontmatterSchema.safeParse({
         name: 'my-agent',
         description: 'This agent does something',
-        color: 'purple',
+        color: 'turquoise',
       });
       expect(result.success).toBe(false);
     });

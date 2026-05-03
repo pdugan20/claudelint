@@ -18,9 +18,20 @@
       "description": "What the skill does and when to use it. Claude uses this to decide when to apply the skill. If omitted, uses the first paragraph of markdown content. Recommended to include.",
       "minLength": 10
     },
+    "when_to_use": {
+      "type": "string",
+      "description": "Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to description in the skill listing."
+    },
     "argument-hint": {
       "type": "string",
       "description": "Hint shown during autocomplete to indicate expected arguments. Example: '[issue-number]' or '[filename] [format]'."
+    },
+    "arguments": {
+      "description": "Named positional arguments for $name substitution in the skill content. Accepts a space-separated string or a YAML list.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
     },
     "disable-model-invocation": {
       "type": "boolean",
@@ -34,40 +45,45 @@
     },
     "effort": {
       "type": "string",
-      "description": "Effort level when this skill is active. Overrides the session effort level. Options: low, medium, high, max (Opus 4.6 only).",
-      "enum": ["low", "medium", "high", "max"]
+      "description": "Effort level when this skill is active. Overrides the session effort level. Available levels depend on the model.",
+      "enum": ["low", "medium", "high", "xhigh", "max"]
     },
     "allowed-tools": {
-      "type": "array",
-      "description": "Tools Claude can use without asking permission when this skill is active.",
-      "items": {
-        "type": "string",
-        "enum": [
-          "Agent",
-          "Bash",
-          "Read",
-          "Write",
-          "Edit",
-          "Glob",
-          "Grep",
-          "Task",
-          "WebFetch",
-          "WebSearch",
-          "LSP",
-          "AskUserQuestion",
-          "EnterPlanMode",
-          "ExitPlanMode",
-          "Skill",
-          "TaskCreate",
-          "TaskUpdate",
-          "TaskGet",
-          "TaskList",
-          "TaskOutput",
-          "TaskStop",
-          "NotebookEdit"
-        ]
-      },
-      "uniqueItems": true
+      "description": "Tools Claude can use without asking permission when this skill is active. Accepts a space-separated string or a YAML list.",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Agent",
+              "Bash",
+              "Read",
+              "Write",
+              "Edit",
+              "Glob",
+              "Grep",
+              "Task",
+              "WebFetch",
+              "WebSearch",
+              "LSP",
+              "AskUserQuestion",
+              "EnterPlanMode",
+              "ExitPlanMode",
+              "Skill",
+              "TaskCreate",
+              "TaskUpdate",
+              "TaskGet",
+              "TaskList",
+              "TaskOutput",
+              "TaskStop",
+              "NotebookEdit"
+            ]
+          },
+          "uniqueItems": true
+        }
+      ]
     },
     "model": {
       "type": "string",
@@ -95,6 +111,18 @@
         "type": "string"
       },
       "uniqueItems": true
+    },
+    "paths": {
+      "description": "Glob patterns that limit when this skill is activated. Accepts a comma-separated string or a YAML list. Uses the same format as path-specific rules.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "shell": {
+      "type": "string",
+      "description": "Shell to use for `!command` and ```! blocks in this skill. Defaults to bash. Setting powershell runs inline shell commands via PowerShell on Windows (requires CLAUDE_CODE_USE_POWERSHELL_TOOL=1).",
+      "enum": ["bash", "powershell"]
     },
     "hooks": {
       "type": "object",

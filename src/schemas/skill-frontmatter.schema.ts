@@ -23,7 +23,11 @@ export const SkillFrontmatterSchema = z.object({
     .refine(noXMLTags().check, { message: noXMLTags().message })
     .refine(thirdPerson().check, { message: thirdPerson().message }),
 
+  when_to_use: z.string().optional(),
+
   'argument-hint': z.string().optional(),
+
+  arguments: z.union([z.string(), z.array(z.string())]).optional(),
 
   'disable-model-invocation': z.boolean().optional(),
 
@@ -38,15 +42,20 @@ export const SkillFrontmatterSchema = z.object({
 
   agent: z.string().optional(),
 
-  effort: z.enum(['low', 'medium', 'high', 'max']).optional(),
+  effort: z.enum(['low', 'medium', 'high', 'xhigh', 'max']).optional(),
 
-  // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
-  'allowed-tools': z.array(z.string()).optional(),
+  // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings.
+  // Docs accept space-separated string or YAML list — we accept both shapes here.
+  'allowed-tools': z.union([z.string(), z.array(z.string())]).optional(),
 
   // claudelint extension: not in official Claude Code docs, used for skill categorization
   tags: z.array(z.string()).optional(),
 
   hooks: SettingsHooksSchema.optional(),
+
+  paths: z.union([z.string(), z.array(z.string())]).optional(),
+
+  shell: z.enum(['bash', 'powershell']).optional(),
 });
 
 /**

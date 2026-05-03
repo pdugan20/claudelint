@@ -40,7 +40,7 @@
     "permissionMode": {
       "type": "string",
       "description": "Permission mode for the subagent",
-      "enum": ["default", "acceptEdits", "dontAsk", "bypassPermissions", "plan"]
+      "enum": ["default", "acceptEdits", "auto", "dontAsk", "bypassPermissions", "plan"]
     },
     "skills": {
       "type": "array",
@@ -71,13 +71,13 @@
     },
     "effort": {
       "type": "string",
-      "description": "Effort level when this agent is active. Overrides the session effort level. Options: low, medium, high, max (Opus 4.6 only).",
-      "enum": ["low", "medium", "high", "max"]
+      "description": "Effort level when this agent is active. Overrides the session effort level. Available levels depend on the model.",
+      "enum": ["low", "medium", "high", "xhigh", "max"]
     },
     "color": {
       "type": "string",
-      "description": "claudelint extension: Display color for the agent in the UI (not in official Claude Code docs, but used by /agents UI color picker)",
-      "enum": ["blue", "cyan", "green", "yellow", "magenta", "red", "pink"]
+      "description": "Display color for the agent in the task list and transcript. Official values: red, blue, green, yellow, purple, orange, pink, cyan. magenta retained as a claudelint backward-compat extension.",
+      "enum": ["red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan", "magenta"]
     },
     "background": {
       "type": "boolean",
@@ -88,6 +88,10 @@
       "type": "string",
       "description": "Set to 'worktree' to run the subagent in a temporary git worktree",
       "enum": ["worktree"]
+    },
+    "initialPrompt": {
+      "type": "string",
+      "description": "Auto-submitted as the first user turn when this agent runs as the main session agent (via --agent or the agent setting). Commands and skills are processed. Prepended to any user-provided prompt."
     },
     "hooks": {
       "type": "object",

@@ -10,7 +10,14 @@ import { SettingsHooksSchema, MCPServerSchema } from '../validators/schemas';
 /**
  * Permission modes for agents
  */
-const PermissionModes = z.enum(['default', 'acceptEdits', 'dontAsk', 'bypassPermissions', 'plan']);
+const PermissionModes = z.enum([
+  'default',
+  'acceptEdits',
+  'auto',
+  'dontAsk',
+  'bypassPermissions',
+  'plan',
+]);
 
 /**
  * Base agent frontmatter schema without cross-field validations
@@ -49,14 +56,19 @@ export const AgentFrontmatterSchema = z.object({
 
   memory: z.enum(['user', 'project', 'local']).optional(),
 
-  effort: z.enum(['low', 'medium', 'high', 'max']).optional(),
+  effort: z.enum(['low', 'medium', 'high', 'xhigh', 'max']).optional(),
 
-  // claudelint extension: not in official Claude Code docs, but used by /agents UI color picker
-  color: z.enum(['blue', 'cyan', 'green', 'yellow', 'magenta', 'red', 'pink']).optional(),
+  // Official enum: red, blue, green, yellow, purple, orange, pink, cyan
+  // `magenta` is retained as a claudelint backward-compat extension for older agent files.
+  color: z
+    .enum(['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'magenta'])
+    .optional(),
 
   background: z.boolean().optional(),
 
   isolation: z.enum(['worktree']).optional(),
+
+  initialPrompt: z.string().optional(),
 });
 
 /**
