@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1](https://github.com/pdugan20/claudelint/compare/v0.4.0...v0.4.1) (2026-05-04)
+
+### Bug Fixes
+
+* **ci:** drop broken npm self-upgrade step from publish workflow ([6d28227](https://github.com/pdugan20/claudelint/commit/6d282272e119a783a0836271662aa9d3bca4ca10))
+
 ## [0.4.0](https://github.com/pdugan20/claudelint/compare/v0.3.0...v0.4.0) (2026-05-04)
 
 ### Features
