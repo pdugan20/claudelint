@@ -33,11 +33,14 @@ Each event maps to an array of matcher objects:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | string | yes | `command`, `http`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types)) |
+| `type` | string | yes | `command`, `http`, `mcp_tool`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types)) |
 | `command` | string | no | Shell command (when type is `command`) |
 | `url` | string | no | POST endpoint URL (when type is `http`) |
 | `headers` | object | no | HTTP headers (when type is `http`) |
 | `allowedEnvVars` | string[] | no | Env vars allowed in header interpolation (when type is `http`) |
+| `server` | string | no | MCP server name (when type is `mcp_tool`); server must already be connected |
+| `tool` | string | no | Tool name on the MCP server (when type is `mcp_tool`) |
+| `input` | object | no | Arguments passed to the tool (when type is `mcp_tool`); supports `${path}` substitution |
 | `prompt` | string | no | Prompt text (when type is `prompt` or `agent`) |
 | `agent` | string | no | Agent name (when type is `agent`) |
 | `timeout` | number | no | Timeout in seconds |

@@ -75,28 +75,35 @@ Valid event keys for hooks configuration. All names are PascalCase.
 
 | Event | Description |
 |-------|-------------|
-| `PreToolUse` | Before a tool is executed |
-| `PostToolUse` | After a tool executes successfully |
-| `PostToolUseFailure` | After a tool execution fails |
-| `PermissionRequest` | When a permission prompt would appear |
-| `UserPromptSubmit` | When the user submits a prompt |
-| `Notification` | When a notification is generated |
-| `Stop` | When the agent stops |
-| `StopFailure` | When a turn ends due to an API error |
-| `SubagentStart` | When a subagent starts |
-| `SubagentStop` | When a subagent stops |
+| `PreToolUse` | Before a tool call executes; can block it |
+| `PostToolUse` | After a tool call succeeds |
+| `PostToolUseFailure` | After a tool call fails |
+| `PostToolBatch` | After a full batch of parallel tool calls resolves, before the next model call |
+| `PermissionRequest` | When a permission dialog appears |
+| `PermissionDenied` | When a tool call is denied by the auto mode classifier; can return `{retry: true}` |
+| `UserPromptSubmit` | When the user submits a prompt, before Claude processes it |
+| `UserPromptExpansion` | When a user-typed command expands into a prompt, before it reaches Claude |
+| `Notification` | When Claude Code sends a notification |
+| `Stop` | When Claude finishes responding |
+| `StopFailure` | When the turn ends due to an API error |
+| `Setup` | When Claude Code starts with `--init-only`, `--init`, or `--maintenance` (one-time CI/script preparation) |
+| `SubagentStart` | When a subagent is spawned |
+| `SubagentStop` | When a subagent finishes |
 | `PreCompact` | Before context compaction |
 | `PostCompact` | After context compaction completes |
-| `ConfigChange` | When configuration changes |
-| `SessionStart` | When a session begins |
-| `SessionEnd` | When a session ends |
+| `ConfigChange` | When a configuration file changes during a session |
+| `SessionStart` | When a session begins or resumes |
+| `SessionEnd` | When a session terminates |
 | `WorktreeCreate` | When a git worktree is created |
 | `WorktreeRemove` | When a git worktree is removed |
-| `TeammateIdle` | When a teammate agent is idle |
-| `TaskCompleted` | When a task completes |
-| `InstructionsLoaded` | When a CLAUDE.md or rules file is loaded |
-| `Elicitation` | When an MCP server requests user input |
-| `ElicitationResult` | After user responds to MCP elicitation |
+| `TeammateIdle` | When an agent team teammate is about to go idle |
+| `TaskCreated` | When a task is being created via `TaskCreate` |
+| `TaskCompleted` | When a task is being marked as completed |
+| `InstructionsLoaded` | When a CLAUDE.md or `.claude/rules/*.md` file is loaded into context |
+| `Elicitation` | When an MCP server requests user input during a tool call |
+| `ElicitationResult` | After user responds to MCP elicitation, before sending back to the server |
+| `CwdChanged` | When the working directory changes (e.g. `cd` command) |
+| `FileChanged` | When a watched file changes on disk; `matcher` specifies which filenames to watch |
 
 ### Hook Types
 
@@ -106,8 +113,46 @@ Valid values for the `type` field in hook handlers.
 |------|-------------|
 | `command` | Executes a shell command |
 | `http` | Sends a POST request to a URL |
+| `mcp_tool` | Calls a tool on an already-connected MCP server |
 | `prompt` | Sends a prompt to Claude |
 | `agent` | Delegates to a named agent |
+
+### Permission Modes
+
+Valid values for the `permissionMode` field in agent frontmatter.
+
+| Mode | Description |
+|------|-------------|
+| `default` | Standard permission prompts |
+| `acceptEdits` | Auto-accept file edits |
+| `auto` | Auto mode classifier decides per tool call |
+| `dontAsk` | Treat permission prompts as denied |
+| `bypassPermissions` | Skip permission checks (use with care) |
+| `plan` | Read-only plan mode |
+
+### Effort Levels
+
+Valid values for the `effort` field in skill and agent frontmatter. Available levels depend on the model.
+
+| Level | Description |
+|-------|-------------|
+| `low` | Minimum reasoning effort |
+| `medium` | Standard effort |
+| `high` | Increased reasoning effort |
+| `xhigh` | Extended reasoning effort |
+| `max` | Maximum reasoning effort |
+
+### Agent Colors
+
+Valid values for the `color` field in agent frontmatter (display color in task list and transcript).
+
+| Color |
+|-------|
+| `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
+
+::: info
+claudelint also accepts `magenta` for backward compatibility with older agent files.
+:::
 
 ### Context Modes
 
