@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.4](https://github.com/pdugan20/claudelint/compare/v0.4.3...v0.4.4) (2026-05-04)
+
+### Bug Fixes
+
+* **ci:** pin npm upgrade to npm@11 to dodge bootstrap bug ([34b317c](https://github.com/pdugan20/claudelint/commit/34b317c4054e428b2f940fb2d0f6a20588529442))
+
 ## [0.4.3](https://github.com/pdugan20/claudelint/compare/v0.4.2...v0.4.3) (2026-05-04)
 
 ### Bug Fixes
