@@ -64,7 +64,7 @@ npm run release:beta     # Pre-release
 
 **Version sync**: `npm run sync:versions` propagates `package.json` version to `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and the `PLUGIN_VERSION` constant in `.claude-plugin/scripts/check-dependency.js`. This runs automatically in the `after:bump` release-it hook. Run `npm run sync:versions:check` to verify all versions match.
 
-**If the publish workflow fails, read [`docs/RELEASING.md`](docs/RELEASING.md) before touching `publish.yml`.** Four independent things must be right at the same time (npm trusted publisher config, no `npm install -g npm@latest`, no `registry-url` on setup-node, Node 24+ for npm 11.5+ OIDC). Toggling them in isolation can mask which one is actually broken — that runbook captures every failure mode and its symptom so the next debug session starts from known ground.
+**If the publish workflow fails, read [`docs/releasing.md`](docs/releasing.md) before touching `publish.yml`.** Four independent things must be right at the same time (npm trusted publisher config, no `npm install -g npm@latest`, no `registry-url` on setup-node, Node 24+ for npm 11.5+ OIDC). Toggling them in isolation can mask which one is actually broken — that runbook captures every failure mode and its symptom so the next debug session starts from known ground.
 
 ## File Naming Conventions
 
