@@ -18,19 +18,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          # Node 24 LTS ships with npm 11+, which has the auto-OIDC-fetch
+          # logic needed for trusted publishing. npm 10 (bundled with
+          # Node 22) only supports the provenance-signing half of OIDC
+          # and silently falls back to "no auth" for the publish itself,
+          # producing an ENEEDAUTH error (or a misleading 404 if a
+          # placeholder NODE_AUTH_TOKEN is in scope).
+          node-version: '24'
           cache: 'npm'
 
-      # Notes:
-      # - Do NOT set `registry-url` on setup-node. It writes an .npmrc with
-      #   `_authToken=${NODE_AUTH_TOKEN}` and injects a placeholder token
-      #   when no NPM_TOKEN secret is set, which causes npm to send the
-      #   bogus token instead of falling back to OIDC trusted publishing
-      #   (resulting in a misleading 404 from the registry).
-      # - Do NOT add `npm install -g npm@latest`. The bundled npm 10.9.7+
-      #   already supports OIDC trusted publishing, and the self-upgrade
-      #   currently crashes mid-bootstrap with `Cannot find module
-      #   'promise-retry'`.
+      # Do NOT set `registry-url` on setup-node — it injects a placeholder
+      # NODE_AUTH_TOKEN that npm uses instead of falling back to OIDC.
+      # Do NOT run `npm install -g npm@latest` — the self-upgrade crashes
+      # the runner with `Cannot find module 'promise-retry'`. Node 24's
+      # bundled npm is already the version we need.
 
       - name: Install dependencies
         run: npm ci
