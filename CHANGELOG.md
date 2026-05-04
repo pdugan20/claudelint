@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.3](https://github.com/pdugan20/claudelint/compare/v0.4.2...v0.4.3) (2026-05-04)
+
+### Bug Fixes
+
+* **ci:** pin publish workflow actions to known-good SHAs ([413aa33](https://github.com/pdugan20/claudelint/commit/413aa332577960bcdf75732f6fda95ad54617a04))
+
+### Reverts
+
+* **ci:** restore registry-url in publish.yml ([b3edf4b](https://github.com/pdugan20/claudelint/commit/b3edf4b857d9675cfba44bfa7e96bd357c80174f))
+
 ## [0.4.2](https://github.com/pdugan20/claudelint/compare/v0.4.1...v0.4.2) (2026-05-04)
 
 ### Bug Fixes
