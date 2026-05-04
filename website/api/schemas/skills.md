@@ -29,6 +29,7 @@ Skills are defined as `SKILL.md` files in skill directories. The YAML frontmatte
 | `agent` | string | no | Agent name (required when `context: fork`) |
 | `allowed-tools` | string \| string[] | no | [Tool names](/api/schemas#tool-names) to allow. Accepts a space-separated string or YAML list |
 | `paths` | string \| string[] | no | Glob patterns that limit when this skill is auto-activated. Accepts a comma-separated string or YAML list |
+| `shell` | string | no | Shell to use for inline `` !`command` `` blocks: `bash` (default) or `powershell` |
 | `tags` | string[] | no | Categorization tags (claudelint extension) |
 | `hooks` | object | no | [Hooks configuration](/api/schemas/hooks) |
 

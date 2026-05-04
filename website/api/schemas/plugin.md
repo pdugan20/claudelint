@@ -15,6 +15,7 @@ The `plugin.json` file lives in the `.claude-plugin/` directory and declares the
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
+| `$schema` | string | no | JSON Schema reference URL |
 | `name` | string | yes | Plugin name |
 | `version` | string | no | Semantic version |
 | `description` | string | no | Plugin description |
@@ -30,6 +31,11 @@ The `plugin.json` file lives in the `.claude-plugin/` directory and declares the
 | `mcpServers` | string \| string[] \| object | no | Additional [MCP config](/api/schemas/mcp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
 | `outputStyles` | string \| string[] | no | Path(s) to output style files |
 | `lspServers` | string \| string[] \| object | no | Additional [LSP config](/api/schemas/lsp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
+| `themes` | string \| string[] | no | Color theme files/directories that appear in `/theme` alongside built-in presets |
+| `monitors` | string \| string[] | no | Background Monitor configurations that start automatically when the plugin is active |
+| `userConfig` | object | no | User-configurable values prompted at enable time, keyed by valid identifier names |
+| `channels` | object[] | no | Channel declarations that bind to MCP servers for message injection (Telegram, Slack, Discord style) |
+| `dependencies` | object[] | no | Other plugins this plugin requires, optionally with semver version constraints |
 
 ## Author
 

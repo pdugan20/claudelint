@@ -22,6 +22,7 @@ The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin cata
 | `owner` | object | yes | [Owner info](#owner) |
 | `plugins` | array | yes | Array of [plugin entries](#plugin-entry) |
 | `metadata` | object | no | Extra metadata (`pluginRoot`, etc.) |
+| `allowCrossMarketplaceDependenciesOn` | string[] | no | Other marketplaces that plugins in this marketplace may depend on. Dependencies from a marketplace not listed here are blocked at install |
 
 ## Owner
 
