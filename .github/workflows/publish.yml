@@ -19,13 +19,18 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
-      # The npm bundled with the Node 22 runner image (10.9.7+) already
-      # supports OIDC trusted publishing and provenance. Avoid
-      # `npm install -g npm@latest` — npm self-upgrade currently crashes
-      # on this runner with `Cannot find module 'promise-retry'`.
+      # Notes:
+      # - Do NOT set `registry-url` on setup-node. It writes an .npmrc with
+      #   `_authToken=${NODE_AUTH_TOKEN}` and injects a placeholder token
+      #   when no NPM_TOKEN secret is set, which causes npm to send the
+      #   bogus token instead of falling back to OIDC trusted publishing
+      #   (resulting in a misleading 404 from the registry).
+      # - Do NOT add `npm install -g npm@latest`. The bundled npm 10.9.7+
+      #   already supports OIDC trusted publishing, and the self-upgrade
+      #   currently crashes mid-bootstrap with `Cannot find module
+      #   'promise-retry'`.
 
       - name: Install dependencies
         run: npm ci
