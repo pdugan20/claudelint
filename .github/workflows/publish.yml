@@ -1,5 +1,17 @@
 name: Release
 
+# DO NOT change action `uses:` versions to floating tags (e.g. `@v6`) without
+# verifying that the underlying SHA still works for OIDC trusted publishing.
+# Combination that's known to publish successfully:
+#   - actions/setup-node SHA 53b83947a5a98c8d113130e565377fae1a50d02f (v6.x as of 2026-03-23)
+#   - npm install -g npm@latest before publishing (so npm has full OIDC support)
+#
+# Floating-tag drift in actions/setup-node between 2026-03-23 and 2026-05-03
+# silently broke OIDC publishing — provenance signing kept working but the
+# registry rejected the upload with a misleading 404. Pinning by SHA prevents
+# that recurrence. Update the pin only after confirming a successful publish
+# with the new SHA.
+
 on:
   push:
     tags:
@@ -13,14 +25,17 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
+
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci
@@ -38,7 +53,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
