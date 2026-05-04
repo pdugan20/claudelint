@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0](https://github.com/pdugan20/claudelint/compare/v0.3.0...v0.4.0) (2026-05-04)
+
+### Features
+
+* **schemas:** align hooks schema with official docs ([4f4f296](https://github.com/pdugan20/claudelint/commit/4f4f296372970e45b93a2deeea41e8d4afefd9d2))
+* **schemas:** align plugin manifest and marketplace schemas with docs ([bdba0a5](https://github.com/pdugan20/claudelint/commit/bdba0a54aaebfde5ca01dde3cb876cb5333314c9))
+* **schemas:** align skill and agent schemas with official docs ([4005edb](https://github.com/pdugan20/claudelint/commit/4005edbdb5f170a89e6f18788ddac0190d35e804))
+
+### Documentation
+
+* align card styles across rules, integrations, and skills ([4f84520](https://github.com/pdugan20/claudelint/commit/4f84520bf1c98c6c04047ba2e6430b613e11018c))
+* clean up "Keeping Up to Date" section on plugin page ([32c8efd](https://github.com/pdugan20/claudelint/commit/32c8efdc4d56b0811ed864464b8c82785ddf4a95))
+* clean up callouts and copy on schemas reference page ([b08e731](https://github.com/pdugan20/claudelint/commit/b08e7312c8f2e271aa0d2e556bf985d023439b4b))
+* refine validator diagram and flesh out integrations overview ([e6ebaa4](https://github.com/pdugan20/claudelint/commit/e6ebaa41415e86b204b51f06bee304b014ef926b))
+
+### Styles
+
+* prettier formatting on skill-frontmatter.schema.json ([5ce44fd](https://github.com/pdugan20/claudelint/commit/5ce44fd9830e11ae750649be279ceedd24529665))
+
+### Continuous Integration
+
+* extend lint-staged to schemas/**/*.json and workflow YAMLs ([472f6cf](https://github.com/pdugan20/claudelint/commit/472f6cf9ae02b27f1bc2d76e011be59837ab0422))
+* harden PR review workflows against version drift ([43832d3](https://github.com/pdugan20/claudelint/commit/43832d3affe22d0871817c4141e6904b71949c0b))
+* skip Vercel preview deploys for Dependabot PRs ([fa1e79b](https://github.com/pdugan20/claudelint/commit/fa1e79b74d59a449c1eba56e2553b12524c08cb9))
+
 ## [0.3.0](https://github.com/pdugan20/claudelint/compare/v0.2.4...v0.3.0) (2026-03-23)
 
 ### Bug Fixes
