@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.5](https://github.com/pdugan20/claudelint/compare/v0.4.4...v0.4.5) (2026-05-04)
+
+### Bug Fixes
+
+* **ci:** switch npm upgrade to corepack to dodge self-upgrade trap ([98097ab](https://github.com/pdugan20/claudelint/commit/98097abe36ec793d422903a513e7377889313ca9))
+
 ## [0.4.4](https://github.com/pdugan20/claudelint/compare/v0.4.3...v0.4.4) (2026-05-04)
 
 ### Bug Fixes
