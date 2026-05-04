@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.2](https://github.com/pdugan20/claudelint/compare/v0.4.1...v0.4.2) (2026-05-04)
+
+### Bug Fixes
+
+* **ci:** drop registry-url from setup-node so OIDC publish works ([fd9a683](https://github.com/pdugan20/claudelint/commit/fd9a683047b809440cfb345a8a041289a8aa71e5))
+
 ## [0.4.1](https://github.com/pdugan20/claudelint/compare/v0.4.0...v0.4.1) (2026-05-04)
 
 ### Bug Fixes
