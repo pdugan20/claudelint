@@ -35,7 +35,6 @@ Available in `website/.vitepress/theme/components/`:
 | `<RuleCount />` | Dynamic rule count from `data/rule-stats.json` |
 | `<RuleHeader />` | Standardized rule page header |
 | `<TerminalDemo />` | Animated terminal on homepage |
-| `<ValidatorDiagram />` | Validator architecture diagram |
 
 Components are registered globally in `.vitepress/theme/index.ts`.
 
