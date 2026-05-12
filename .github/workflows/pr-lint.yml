@@ -30,6 +30,7 @@ jobs:
             ci
             chore
             deps
+            revert
           requireScope: false
           subjectPattern: ^[a-z].*$
           subjectPatternError: |
