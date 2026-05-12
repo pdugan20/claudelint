@@ -14,6 +14,10 @@ jobs:
     steps:
       - uses: amannn/action-semantic-pull-request@v6
         with:
+          # Type must match [a-zA-Z]+ — no hyphens. The conventional-commits
+          # parser rejects hyphenated types regardless of this allowlist, so
+          # Dependabot is configured to use `chore(deps)` / `chore(deps-dev)`
+          # (hyphen lives in the scope, which is fine).
           types: |
             feat
             fix
@@ -26,7 +30,6 @@ jobs:
             ci
             chore
             deps
-            deps-dev
           requireScope: false
           subjectPattern: ^[a-z].*$
           subjectPatternError: |
