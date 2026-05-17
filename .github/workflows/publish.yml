@@ -71,6 +71,12 @@ jobs:
         run: npm run package:plugin
 
       - name: Create GitHub Release
-        run: gh release create "${{ github.ref_name }}" --title "${{ github.ref_name }}" --notes-file release-notes.md claudelint-plugin.zip
+        run: |
+          # A pre-release tag (e.g. v1.2.3-beta.0) must be flagged so it
+          # does not become "latest" — the plugin trial docs point users
+          # at /releases/latest/download/claudelint-plugin.zip.
+          PRERELEASE=
+          case "${{ github.ref_name }}" in *-*) PRERELEASE=--prerelease ;; esac
+          gh release create "${{ github.ref_name }}" --title "${{ github.ref_name }}" --notes-file release-notes.md $PRERELEASE claudelint-plugin.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
