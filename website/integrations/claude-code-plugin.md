@@ -19,6 +19,18 @@ The plugin's skills run claudelint CLI commands under the hood. Install the npm 
 
 **Global** makes `claudelint` available in every project. **Project-local** pins a version for your team via `package.json`. See [Global vs Project Install](#global-vs-project-install) for help choosing.
 
+### Quick Trial
+
+To try the plugin for a single session without registering the marketplace, point Claude Code at the release archive:
+
+```bash
+claude --plugin-url https://github.com/pdugan20/claudelint/releases/latest/download/claudelint-plugin.zip
+```
+
+This loads the plugin's skills for the current session only — nothing is persisted and your installed marketplaces are untouched. The skills still run the `claudelint` CLI, so the npm package above is required.
+
+Requires Claude Code v2.1.129 or newer, when the `--plugin-url` flag was added. For a persistent install, use the marketplace below.
+
 ### From the Marketplace
 
 1. Add the marketplace (one-time setup):

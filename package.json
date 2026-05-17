@@ -118,6 +118,7 @@
     "release:rc": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=rc",
     "sync:versions": "ts-node scripts/util/sync-versions.ts",
     "sync:versions:check": "ts-node scripts/check/version-sync.ts",
+    "package:plugin": "bash scripts/util/package-plugin.sh",
     "setup:hooks": "bash scripts/util/setup-hooks.sh",
     "prepare": "bash scripts/util/setup-hooks.sh || true",
     "prepublishOnly": "npm run build"
