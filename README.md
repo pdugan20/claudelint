@@ -40,7 +40,7 @@ Inside Claude Code, add the marketplace and install the plugin:
 
 Or run `claudelint install-plugin` for guided setup.
 
-To trial the plugin for a single session without registering the marketplace (requires Claude Code v2.1.129+):
+To trial the plugin for a single session without registering the marketplace:
 
 ```bash
 claude --plugin-url https://github.com/pdugan20/claudelint/releases/latest/download/claudelint-plugin.zip

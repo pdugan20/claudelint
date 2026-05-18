@@ -29,7 +29,7 @@ claude --plugin-url https://github.com/pdugan20/claudelint/releases/latest/downl
 
 This loads the plugin's skills for the current session only — nothing is persisted and your installed marketplaces are untouched. The skills still run the `claudelint` CLI, so the npm package above is required.
 
-Requires Claude Code v2.1.129 or newer, when the `--plugin-url` flag was added. For a persistent install, use the marketplace below.
+For a persistent install, use the marketplace below.
 
 ### From the Marketplace
 
