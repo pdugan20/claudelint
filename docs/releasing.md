@@ -3,7 +3,7 @@
 The npm release happens in two places:
 
 - **Locally** — `release-it` runs lint/test/build, bumps the version, generates the CHANGELOG entry, syncs versions to plugin/marketplace files, commits, tags, and pushes.
-- **In CI** — `.github/workflows/publish.yml` triggers on the tag push, publishes to npm with OIDC trusted publishing + provenance, then creates a GitHub Release from the CHANGELOG entry.
+- **In CI** — `.github/workflows/publish.yml` triggers on the tag push, publishes to npm with OIDC trusted publishing + provenance, then creates a GitHub Release from the CHANGELOG entry. The release also gets `claudelint-plugin.zip` attached (`npm run package:plugin`) so users can trial the plugin via `claude --plugin-url` without registering the marketplace.
 
 ## Normal release
 
@@ -73,6 +73,7 @@ After CI completes:
 npm view claude-code-lint@<version> dist          # should show attestations.provenance + signatures
 npm view claude-code-lint dist-tags               # latest should match the new version
 gh release view v<version>                        # GitHub release exists
+gh release view v<version> --json assets --jq '.assets[].name'   # lists claudelint-plugin.zip
 ```
 
 If `dist-tags.latest` did not auto-update (rare but seen with v0.4.0):

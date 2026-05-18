@@ -238,6 +238,9 @@ jobs:
       - name: Check metadata consistency
         run: npm run test:skills:metadata
 
+      - name: Verify plugin archive packages
+        run: npm run package:plugin
+
   integration:
     name: Integration Tests
     needs: [build]
