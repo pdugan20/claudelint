@@ -5,6 +5,9 @@ node_modules/
 dist/
 *.tgz
 
+# Plugin archive (built by npm run package:plugin, attached to releases)
+claudelint-plugin.zip
+
 # IDE
 .vscode/
 .idea/

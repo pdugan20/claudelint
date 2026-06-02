@@ -10,8 +10,11 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "deps"
-      prefix-development: "deps-dev"
+      # Type must be a single word (no hyphens) for the
+      # conventional-commits parser used by PR Lint.
+      # `include: "scope"` adds `(deps)` / `(deps-dev)` automatically,
+      # so we still distinguish prod vs dev in the scope.
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
@@ -20,6 +23,11 @@ updates:
       - "pdugan20"
     reviewers:
       - "pdugan20"
+    # Skip major-version bumps — they're rarely a no-op merge and tend to
+    # break ts-node / CI in ways that need a human. Upgrade majors manually.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     # Group minor and patch updates to reduce PR noise
     groups:
       dev-dependencies:

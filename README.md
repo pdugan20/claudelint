@@ -40,6 +40,14 @@ Inside Claude Code, add the marketplace and install the plugin:
 
 Or run `claudelint install-plugin` for guided setup.
 
+To trial the plugin for a single session without registering the marketplace:
+
+```bash
+claude --plugin-url https://github.com/pdugan20/claudelint/releases/latest/download/claudelint-plugin.zip
+```
+
+The plugin's skills run the `claudelint` CLI, so install the npm package first either way.
+
 See the [Plugin Guide](https://claudelint.com/integrations/claude-code-plugin) for team setup, plugin scopes, and troubleshooting.
 
 ## What It Checks
