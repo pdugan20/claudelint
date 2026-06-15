@@ -249,7 +249,7 @@
     "remark-validate-links": "^13.1.0",
     "satori": "^0.26.0",
     "satori-html": "^0.3.2",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.1",
     "stylelint": "^17.2.0",
     "stylelint-config-recommended-vue": "^1.6.1",
     "ts-jest": "^29.1.1",
