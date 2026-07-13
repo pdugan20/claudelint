@@ -25,7 +25,7 @@ export const rule: Rule = {
       rationale:
         'Using http:// or https:// instead of ws:// or wss:// causes WebSocket connection failures.',
       details:
-        'This rule parses the url field of MCP servers with type "websocket" and checks that the ' +
+        'This rule parses the url field of MCP servers with type "ws" and checks that the ' +
         'protocol is ws: or wss:. Using an incorrect protocol such as http:// or https:// may ' +
         'cause connection failures or unexpected behavior. URLs containing variable expansions ' +
         '(${ or $) are skipped since they are resolved at runtime. Completely invalid URLs are ' +
@@ -78,7 +78,7 @@ export const rule: Rule = {
 
     for (const server of Object.values(config.mcpServers)) {
       if (!isObject(server)) continue;
-      if (!hasProperty(server, 'type') || server.type !== 'websocket') continue;
+      if (!hasProperty(server, 'type') || server.type !== 'ws') continue;
       if (!hasProperty(server, 'url') || !isString(server.url)) continue;
 
       const url = server.url;

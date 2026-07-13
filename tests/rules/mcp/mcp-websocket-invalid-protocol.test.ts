@@ -13,7 +13,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ws://localhost:9000',
                 },
             },
@@ -25,7 +25,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'wss://api.example.com/ws',
                 },
             },
@@ -37,7 +37,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '${WS_URL}',
                 },
             },
@@ -49,7 +49,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '$WS_URL',
                 },
             },
@@ -73,7 +73,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'http://localhost:9000',
                 },
             },
@@ -87,7 +87,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'http://localhost:9000',
                 },
             },
@@ -104,7 +104,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'https://api.example.com/ws',
                 },
             },
@@ -121,7 +121,7 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ftp://server.com',
                 },
             },
@@ -138,11 +138,11 @@ describe('mcp-websocket-invalid-protocol', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'http://localhost:9000',
                 },
               server2: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'https://api.example.com',
                 },
             },

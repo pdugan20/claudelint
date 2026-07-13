@@ -24,7 +24,7 @@ export const rule: Rule = {
       rationale:
         'An invalid URL prevents Claude Code from establishing a WebSocket connection to the MCP server.',
       details:
-        'This rule checks that the url field of MCP servers with type "websocket" is a valid URL ' +
+        'This rule checks that the url field of MCP servers with type "ws" is a valid URL ' +
         'by attempting to parse it with the URL constructor. URLs containing variable expansions ' +
         '(${ or $) are skipped since they are resolved at runtime. An invalid URL will prevent ' +
         'Claude Code from establishing a WebSocket connection to the MCP server.',
@@ -57,7 +57,7 @@ export const rule: Rule = {
   },
 
   validate: (context) => {
-    for (const { url } of mcpServerUrls(context, 'websocket')) {
+    for (const { url } of mcpServerUrls(context, 'ws')) {
       validateMcpUrl(url, 'WebSocket', context);
     }
   },

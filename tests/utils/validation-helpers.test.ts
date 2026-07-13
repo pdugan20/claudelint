@@ -33,10 +33,14 @@ describe('validation-helpers', () => {
     });
 
     it('should pass for valid agent hook', () => {
+      // An `agent` hook is driven by `prompt`. Its documented fields are `prompt`,
+      // `description`, `subagent_type` and `model` (docs-baseline/hooks.md:1441) -- there is
+      // no `agent` field. This test used to assert one, which is how the invented field
+      // stayed invented.
       const hooks = {
         SessionStart: [
           {
-            hooks: [{ type: 'agent', agent: 'setup-agent' }],
+            hooks: [{ type: 'agent', prompt: 'Verify that all unit tests pass.' }],
           },
         ],
       };
@@ -105,7 +109,7 @@ describe('validation-helpers', () => {
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
     });
 
-    it('should error when agent hook missing agent field', () => {
+    it('should error when agent hook missing prompt field', () => {
       const hooks = {
         SessionStart: [
           {
@@ -116,8 +120,28 @@ describe('validation-helpers', () => {
 
       const issues = validateSettingsHooks(hooks);
       expect(issues.length).toBeGreaterThan(0);
-      expect(issues.some((i) => i.message.includes('must have "agent" field'))).toBe(true);
+      expect(issues.some((i) => i.message.includes('must have "prompt" field'))).toBe(true);
       expect(issues.some((i) => i.severity === 'error')).toBe(true);
+    });
+
+    it('accepts the agent hook the docs actually print', () => {
+      // docs-baseline/hooks.md:2909. claudelint rejected this verbatim example, demanding an
+      // `agent` field that upstream has never documented.
+      const hooks = {
+        Stop: [
+          {
+            hooks: [
+              {
+                type: 'agent',
+                prompt: 'Verify that all unit tests pass. Run the test suite. $ARGUMENTS',
+                timeout: 120,
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(validateSettingsHooks(hooks)).toHaveLength(0);
     });
 
     it('should pass for hook with matcher', () => {

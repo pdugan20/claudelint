@@ -5,21 +5,15 @@
  */
 
 import { Rule } from '../../types/rule';
-import {
-  MCPConfigSchema,
-  MCPStdioTransportSchema,
-  MCPSSETransportSchema,
-  MCPHTTPTransportSchema,
-  MCPWebSocketTransportSchema,
-} from '../../validators/schemas';
+import { MCPConfigSchema, MCPServerSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
 type MCPConfig = z.infer<typeof MCPConfigSchema>;
-type MCPTransport =
-  | z.infer<typeof MCPStdioTransportSchema>
-  | z.infer<typeof MCPSSETransportSchema>
-  | z.infer<typeof MCPHTTPTransportSchema>
-  | z.infer<typeof MCPWebSocketTransportSchema>;
+
+// Derived from MCPServerSchema rather than re-listing the transports by hand. The hand-written
+// union silently went stale the moment a transport was added (`streamable-http`), and a type
+// that must be edited in lockstep with the schema is a second source of truth waiting to drift.
+type MCPTransport = z.infer<typeof MCPServerSchema>;
 
 /**
  * Options for mcp-invalid-env-var rule

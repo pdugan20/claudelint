@@ -1,8 +1,7 @@
 ---
 name: wrong-agent-name
 description: Too short
-tools:
-  - Bash
+tools: 42
 disallowedTools:
   - Write
 ---

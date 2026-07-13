@@ -249,17 +249,29 @@ describe('AgentFrontmatterSchema', () => {
 });
 
 describe('AgentFrontmatterWithRefinements', () => {
-  it('should reject both tools and disallowedTools', () => {
+  it('should ACCEPT both tools and disallowedTools', () => {
+    // They are not mutually exclusive. The docs define the combined behavior: "If both are
+    // set, `disallowedTools` is applied first, then `tools` is resolved against the
+    // remaining pool. A tool listed in both is removed." (docs-baseline/sub-agents.md:342)
     const result = AgentFrontmatterWithRefinements.safeParse({
       name: 'my-agent',
       description: 'This agent does something',
       tools: ['Bash'],
       disallowedTools: ['Read'],
     });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0].message).toContain('both');
-    }
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept the comma-separated string form the docs use', () => {
+    // docs-baseline/sub-agents.md:247 -- the canonical code-reviewer example. claudelint
+    // demanded a YAML array, so an agent copied verbatim from the docs failed to lint.
+    const result = AgentFrontmatterWithRefinements.safeParse({
+      name: 'code-reviewer',
+      description: 'Reviews code for quality and best practices',
+      tools: 'Read, Glob, Grep',
+      disallowedTools: 'Bash, Write',
+    });
+    expect(result.success).toBe(true);
   });
 
   it('should accept tools alone', () => {
