@@ -86,15 +86,16 @@ async function main(): Promise<void> {
     log.info(`[OK] ${entry.id} (${markdown.length} bytes)`);
   }
 
-  // Throws if any page yields fewer than its minFacts. See Task 7.
+  // Throws if any page yields fewer than its minFacts, so a refresh cannot commit a
+  // baseline whose extractor has silently stopped finding things.
   const facts = extract(BASELINE_DIR);
   writeFileSync(join(BASELINE_DIR, 'facts.json'), `${JSON.stringify(facts, null, 2)}\n`);
   log.info(`[OK] facts.json (${Object.keys(facts).length} pages)`);
 
   // Persisted last, after every fetch and guard has succeeded. A failed run must leave
   // the previous index intact so the [NEW PAGE] signal survives to the next run instead
-  // of being silently consumed (see Task 7 review: this bit us for real when the
-  // `memory` guard tripped mid-run).
+  // of being silently consumed - writing it earlier cost us a real signal when the
+  // `memory` page's guard tripped mid-run and the pages had already been recorded as seen.
   writeFileSync(indexPath, `${JSON.stringify({ pages }, null, 2)}\n`);
 }
 

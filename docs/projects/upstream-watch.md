@@ -107,11 +107,13 @@ the hooks page must yield ≥ 25 events.
 
 ### 4. Conform — `scripts/check/upstream.ts` (`npm run check:upstream`)
 
-Offline. Compares `docs-baseline/facts.json` against claudelint's live Zod
-constants. Two finding classes:
+Offline. Re-runs the extractor over `docs-baseline/*.md` on every PR — the committed
+`facts.json` is a hand-editable artifact, so it is held to the derived result rather
+than trusted as the source of truth — then compares the facts against claudelint's
+live Zod constants. Two finding classes:
 
-- **documented-but-not-modeled** — upstream has it, we don't (e.g. `MessageDisplay`).
-- **modeled-but-not-documented** — we have it, upstream doesn't. Checked against an
+- **documented-not-modeled** — upstream has it, we don't (e.g. `MessageDisplay`).
+- **modeled-not-documented** — we have it, upstream doesn't. Checked against an
   explicit extensions allowlist in `src/upstream/extensions.ts`, so intentional
   claudelint extensions do not false-positive — **but an undocumented value that is
   not on the allowlist fails the build.**
@@ -137,8 +139,8 @@ Every finding can be suppressed with a mandatory reason string:
 
 ```json
 {
-  "documented-but-not-modeled": [
-    { "fact": "hooks.MessageDisplay", "reason": "tracked in #123", "until": "2026-09-01" }
+  "documented-not-modeled": [
+    { "fact": "hook-event:MessageDisplay", "reason": "tracked in #123" }
   ]
 }
 ```
