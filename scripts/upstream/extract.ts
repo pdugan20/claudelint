@@ -1,0 +1,83 @@
+/**
+ * Deterministic fact extraction from the docs baseline.
+ *
+ * No LLM, no judgment. If upstream changes format such that a parser stops finding
+ * things, assertMinFacts turns that into a loud failure rather than a silent pass.
+ */
+
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { WATCHLIST, WatchEntry } from '../../src/upstream/watchlist';
+
+export type Facts = Record<string, string[]>;
+
+/** Backtick-quoted identifier in the first cell of a markdown table row. */
+const TABLE_ROW = /^\|\s*`([A-Za-z][A-Za-z0-9_-]*)`\s*\|/gm;
+
+export function extractHookEvents(markdown: string): string[] {
+  const events = new Set<string>();
+  for (const match of markdown.matchAll(TABLE_ROW)) {
+    // Hook events are PascalCase; field tables in the same page are not.
+    if (/^[A-Z][A-Za-z]+$/.test(match[1])) {
+      events.add(`hook-event:${match[1]}`);
+    }
+  }
+  return [...events].sort();
+}
+
+export function extractFieldTables(markdown: string): string[] {
+  const fields = new Set<string>();
+  for (const match of markdown.matchAll(TABLE_ROW)) {
+    fields.add(`field:${match[1]}`);
+  }
+  return [...fields].sort();
+}
+
+export function extractJsonKeys(markdown: string): string[] {
+  const keys = new Set<string>();
+  for (const block of markdown.matchAll(/```json[^\n]*\n([\s\S]*?)```/g)) {
+    for (const key of block[1].matchAll(/^\s{2}"([A-Za-z$][A-Za-z0-9_-]*)":/gm)) {
+      keys.add(`json-key:${key[1]}`);
+    }
+  }
+  return [...keys].sort();
+}
+
+/**
+ * A page that suddenly yields almost nothing means the parser broke, not that upstream
+ * deleted its content. Fail loudly: a detector that quietly stops detecting is worse
+ * than no detector.
+ */
+export function assertMinFacts(id: string, facts: string[], minFacts: number): void {
+  if (facts.length < minFacts) {
+    throw new Error(
+      `Extractor guard tripped: ${id} yielded ${facts.length} facts, expected >= ${minFacts}. ` +
+        `Upstream likely changed format. Fix the extractor - do not lower minFacts to make this pass.`
+    );
+  }
+}
+
+function extractPage(markdown: string, entry: WatchEntry): string[] {
+  const facts = new Set<string>();
+  for (const extractor of entry.extractors) {
+    const found =
+      extractor === 'hook-events'
+        ? extractHookEvents(markdown)
+        : extractor === 'field-tables'
+          ? extractFieldTables(markdown)
+          : extractJsonKeys(markdown);
+    found.forEach((f) => facts.add(f));
+  }
+  return [...facts].sort();
+}
+
+export function extract(baselineDir: string): Facts {
+  const facts: Facts = {};
+  for (const entry of WATCHLIST) {
+    const markdown = readFileSync(join(baselineDir, `${entry.id}.md`), 'utf8');
+    const pageFacts = extractPage(markdown, entry);
+    assertMinFacts(entry.id, pageFacts, entry.minFacts);
+    facts[entry.id] = pageFacts;
+  }
+  return facts;
+}
