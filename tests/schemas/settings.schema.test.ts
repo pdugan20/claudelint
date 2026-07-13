@@ -8,6 +8,7 @@ import {
   AttributionSchema,
   SandboxSchema,
   SettingsHooksSchema,
+  MarketplaceConfigSchema,
 } from '../../src/validators/schemas';
 
 describe('SettingsSchema', () => {
@@ -283,37 +284,83 @@ describe('SandboxSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('should accept allowUnsandboxedCommands array', () => {
-    const result = SandboxSchema.safeParse({
-      enabled: true,
-      allowUnsandboxedCommands: ['docker', 'brew'],
-    });
-    expect(result.success).toBe(true);
+  it('accepts allowUnsandboxedCommands as a BOOLEAN', () => {
+    // Documented as a boolean: "Allow commands to run outside the sandbox via the
+    // `dangerouslyDisableSandbox` parameter. When set to `false`, the escape hatch is
+    // completely disabled... Default: true" (docs-baseline/settings.md).
+    // It was modelled as `string[]`, so the documented usage errored with
+    // "expected array, received boolean". This test asserted the wrong type.
+    expect(SandboxSchema.safeParse({ allowUnsandboxedCommands: false }).success).toBe(true);
+    expect(SandboxSchema.safeParse({ allowUnsandboxedCommands: ['docker'] }).success).toBe(false);
   });
 
-  it('should accept network config', () => {
+  it('should accept network config with the DOCUMENTED field names', () => {
     const result = SandboxSchema.safeParse({
       enabled: true,
       network: {
-        allowedHosts: ['api.example.com'],
-        allowedPorts: [443, 8080],
+        allowedDomains: ['github.com', '*.npmjs.org'],
+        deniedDomains: ['sensitive.cloud.example.com'],
+        httpProxyPort: 8080,
+        socksProxyPort: 8081,
+        allowManagedDomainsOnly: true,
       },
     });
     expect(result.success).toBe(true);
   });
 
+  it('does not model the invented network fields', () => {
+    // `allowedHosts` and `allowedPorts` were both fabricated -- the real fields are
+    // `allowedDomains` and `httpProxyPort`/`socksProxyPort`. The schema is non-strict, so
+    // parsing still succeeds; what must be true is that these are STRIPPED rather than
+    // modelled, so claudelint never blesses a key Claude Code ignores.
+    const result = SandboxSchema.parse({
+      network: { allowedHosts: ['api.example.com'], allowedPorts: [443] },
+    });
+
+    expect(result.network).toEqual({});
+  });
+
+  it('does not model the invented ignoreViolations field', () => {
+    // Appears nowhere in the docs.
+    expect(SandboxSchema.parse({ ignoreViolations: true })).toEqual({});
+  });
+
   it('should accept enableWeakerNestedSandbox', () => {
+    // NOT a hallucination -- this one IS documented. Verified before touching it.
     const result = SandboxSchema.safeParse({
       enableWeakerNestedSandbox: true,
     });
     expect(result.success).toBe(true);
   });
 
-  it('should accept ignoreViolations', () => {
+  it('accepts the documented filesystem subtree', () => {
     const result = SandboxSchema.safeParse({
-      ignoreViolations: true,
+      filesystem: {
+        allowWrite: ['/tmp/build', '~/.kube'],
+        denyRead: ['~/.aws/credentials'],
+        allowManagedReadPathsOnly: true,
+      },
     });
     expect(result.success).toBe(true);
+  });
+
+  it('accepts the documented credentials subtree', () => {
+    const result = SandboxSchema.safeParse({
+      credentials: {
+        files: [{ path: '~/.aws/credentials', mode: 'deny' }],
+        envVars: [{ name: 'GITHUB_TOKEN', mode: 'deny' }],
+        allowPlaintextInject: true,
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects an unsupported credential file mode', () => {
+    // `deny` is the only supported mode for files; `mask` is env-vars-only.
+    const result = SandboxSchema.safeParse({
+      credentials: { files: [{ path: '~/.aws/credentials', mode: 'mask' }] },
+    });
+    expect(result.success).toBe(false);
   });
 
   it('should accept all fields optional', () => {
@@ -324,15 +371,18 @@ describe('SandboxSchema', () => {
   it('should accept full sandbox configuration', () => {
     const result = SandboxSchema.safeParse({
       enabled: true,
+      failIfUnavailable: true,
       autoAllowBashIfSandboxed: true,
-      excludedCommands: ['rm -rf'],
-      allowUnsandboxedCommands: ['docker'],
+      excludedCommands: ['docker *'],
+      allowUnsandboxedCommands: false,
+      filesystem: { allowWrite: ['/tmp/build'] },
+      credentials: { envVars: [{ name: 'GITHUB_TOKEN', mode: 'deny' }] },
       network: {
-        allowedHosts: ['localhost'],
-        allowedPorts: [3000],
+        allowedDomains: ['github.com'],
+        httpProxyPort: 8080,
+        tlsTerminate: {},
       },
       enableWeakerNestedSandbox: false,
-      ignoreViolations: false,
     });
     expect(result.success).toBe(true);
   });
@@ -426,6 +476,38 @@ describe('SettingsHooksSchema', () => {
           ],
         },
       ],
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('MarketplaceConfigSchema', () => {
+  it('models autoUpdate, the documented entry toggle', () => {
+    // "Each marketplace entry also accepts an optional `autoUpdate` Boolean... official
+    // Anthropic marketplaces default to `true` and all other marketplaces default to
+    // `false`" (docs-baseline/settings.md:821).
+    const result = MarketplaceConfigSchema.safeParse({
+      source: { source: 'github', repo: 'acme/plugins' },
+      autoUpdate: true,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('does not model the invented `enabled` toggle', () => {
+    // `enabled` appears nowhere on a marketplace entry. The schema is non-strict, so the
+    // parse succeeds -- what matters is that the key is STRIPPED, not modelled, so
+    // claudelint never blesses a toggle Claude Code ignores.
+    const result = MarketplaceConfigSchema.parse({
+      source: { source: 'github', repo: 'acme/plugins' },
+      enabled: true,
+    });
+
+    expect(result).not.toHaveProperty('enabled');
+  });
+
+  it('accepts skipLfs on a git-backed source', () => {
+    const result = MarketplaceConfigSchema.safeParse({
+      source: { source: 'github', repo: 'acme/plugins', skipLfs: true },
     });
     expect(result.success).toBe(true);
   });

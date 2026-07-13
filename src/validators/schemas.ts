@@ -116,24 +116,76 @@ export const AttributionSchema = z.object({
 
 /**
  * Sandbox network schema for settings
+ *
+ * Every field below is a row in the `sandbox` table at docs-baseline/settings.md:376-402.
+ *
+ * claudelint previously modelled exactly two fields here, and BOTH were invented:
+ *   - `allowedHosts`  -- the documented field is `allowedDomains`
+ *   - `allowedPorts`  -- no such concept; the ports upstream exposes are
+ *                        `httpProxyPort` / `socksProxyPort`
+ *
+ * That is worse than modelling nothing. `SettingsSchema` is non-strict, so unknown keys are
+ * stripped silently: a user writing the REAL `allowedDomains` got no validation at all,
+ * while a user writing the INVENTED `allowedHosts` got a clean bill of health for a key
+ * Claude Code ignores entirely.
  */
 export const SandboxNetworkSchema = z.object({
-  allowedHosts: z.array(z.string()).optional(),
-  allowedPorts: z.array(z.number()).optional(),
+  allowUnixSockets: z.array(z.string()).optional(),
+  allowAllUnixSockets: z.boolean().optional(),
+  allowLocalBinding: z.boolean().optional(),
+  allowMachLookup: z.array(z.string()).optional(),
+  allowedDomains: z.array(z.string()).optional(),
+  deniedDomains: z.array(z.string()).optional(),
+  allowManagedDomainsOnly: z.boolean().optional(),
+  httpProxyPort: z.number().optional(),
+  socksProxyPort: z.number().optional(),
+  // Experimental. Documented as an object: "Set `{}` to generate an ephemeral certificate".
+  tlsTerminate: z.record(z.string(), z.unknown()).optional(),
+});
+
+/**
+ * Sandbox filesystem schema for settings (documented, never modelled)
+ */
+export const SandboxFilesystemSchema = z.object({
+  allowWrite: z.array(z.string()).optional(),
+  denyWrite: z.array(z.string()).optional(),
+  denyRead: z.array(z.string()).optional(),
+  allowRead: z.array(z.string()).optional(),
+  allowManagedReadPathsOnly: z.boolean().optional(),
+});
+
+/**
+ * Sandbox credentials schema for settings (documented, never modelled)
+ *
+ * `deny` is the only supported mode for files; env vars additionally support `mask`.
+ */
+export const SandboxCredentialsSchema = z.object({
+  files: z.array(z.object({ path: z.string(), mode: z.enum(['deny']) })).optional(),
+  envVars: z.array(z.object({ name: z.string(), mode: z.enum(['deny', 'mask']) })).optional(),
+  allowPlaintextInject: z.boolean().optional(),
 });
 
 /**
  * Sandbox schema for settings
- * Based on official Claude Code sandbox configuration
+ * Based on the `sandbox` table at docs-baseline/settings.md:376-402.
  */
 export const SandboxSchema = z.object({
   enabled: z.boolean().optional(),
+  failIfUnavailable: z.boolean().optional(),
   autoAllowBashIfSandboxed: z.boolean().optional(),
   excludedCommands: z.array(z.string()).optional(),
-  allowUnsandboxedCommands: z.array(z.string()).optional(),
+
+  // A BOOLEAN, not a list of commands: "Allow commands to run outside the sandbox via the
+  // `dangerouslyDisableSandbox` parameter. When set to `false`, the escape hatch is
+  // completely disabled... Default: true". Modelled as `string[]`, this rejected the
+  // documented usage outright -- `"allowUnsandboxedCommands": false` errored with
+  // "expected array, received boolean".
+  allowUnsandboxedCommands: z.boolean().optional(),
+
+  filesystem: SandboxFilesystemSchema.optional(),
+  credentials: SandboxCredentialsSchema.optional(),
   network: SandboxNetworkSchema.optional(),
   enableWeakerNestedSandbox: z.boolean().optional(),
-  ignoreViolations: z.boolean().optional(),
 });
 
 /**
@@ -153,6 +205,7 @@ export const MarketplaceSourceSchema = z.object({
   package: z.string().optional(), // npm
   path: z.string().optional(), // github (subdir), git (subdir), directory, file
   ref: z.string().optional(), // github, git (branch/tag/SHA)
+  skipLfs: z.boolean().optional(), // github, git -- skip Git LFS downloads (v2.1.153+)
   name: z.string().optional(), // settings (inline marketplace)
   // z.lazy: MarketplacePluginEntrySchema is declared further down this module. An inline
   // marketplace's plugin entries are the same shape as a hosted marketplace.json's, so
@@ -162,10 +215,17 @@ export const MarketplaceSourceSchema = z.object({
 
 /**
  * Marketplace config schema for settings (extraKnownMarketplaces entries)
+ *
+ * The entry toggle is `autoUpdate`, not `enabled`: "Each marketplace entry also accepts an
+ * optional `autoUpdate` Boolean... When omitted, official Anthropic marketplaces default to
+ * `true` and all other marketplaces default to `false`" (docs-baseline/settings.md:821).
+ * `enabled` appears nowhere on a marketplace entry -- it was invented.
+ *
+ * Also documented on the source object for `github` and `git`: `skipLfs`.
  */
 export const MarketplaceConfigSchema = z.object({
   source: MarketplaceSourceSchema,
-  enabled: z.boolean().optional(),
+  autoUpdate: z.boolean().optional(),
 });
 
 /**
