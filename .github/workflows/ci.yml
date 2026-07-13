@@ -77,6 +77,9 @@ jobs:
       - name: Check logger usage
         run: npm run check:logger-usage
 
+      - name: Check upstream docs conformance
+        run: npm run check:upstream
+
   build:
     name: Build
     runs-on: ubuntu-latest
