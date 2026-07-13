@@ -110,15 +110,26 @@ the hooks page must yield ≥ 25 events.
 Offline. Compares `docs-baseline/facts.json` against claudelint's live Zod
 constants. Two finding classes:
 
-- **documented-but-not-modeled** — upstream has it, we don't. (`MessageDisplay`;
-  `marketplace` on a dependency entry.)
-- **modeled-but-not-documented** — we have it, upstream doesn't. Checked against
-  an explicit extensions allowlist in `src/upstream/extensions.ts`, so intentional
-  claudelint extensions (`tags`, `version` on skill frontmatter) do not
-  false-positive — **but an undocumented field that is not on the allowlist fails
-  the build.** This is the mechanism that makes hallucinated fields impossible.
+- **documented-but-not-modeled** — upstream has it, we don't (e.g. `MessageDisplay`).
+- **modeled-but-not-documented** — we have it, upstream doesn't. Checked against an
+  explicit extensions allowlist in `src/upstream/extensions.ts`, so intentional
+  claudelint extensions do not false-positive — **but an undocumented value that is
+  not on the allowlist fails the build.**
 
 Exit 1 on any unsuppressed finding. Runs in `ci.yml` on every PR.
+
+**Scope in v1: hook events only.** This is a deliberate limit, not an oversight.
+Hook events are deterministically extractable because the hooks page has exactly one
+canonical event table. Field-level conformance is a materially harder problem: a docs
+page carries many tables (fields, CLI flags, LSP options, error codes) and nothing in
+the markdown declares which table governs which Zod schema. Mapping them would be
+brittle against any upstream reformat, and it still would not reach a *nested* field
+like `marketplace` inside a `dependencies` entry.
+
+Field-level drift is therefore caught by the other half of the system: the committed
+prose snapshot diff, read by the `/check-upstream` skill. That is the layer with
+judgment, and field semantics need judgment. Extending deterministic conformance to
+top-level manifest keys is a reasonable v2 — see Open questions.
 
 ### 5. Suppression — `docs-baseline/upstream-ignore.json`
 
@@ -228,3 +239,7 @@ prove tedious to read.
   `tools`, `plugin-dependencies`, `discover-plugins`.
 - Does the committed baseline belong in the npm package? (No — should be
   `.npmignore`d; it is repo tooling, not shipped code.)
+- **v2: deterministic conformance for top-level manifest and frontmatter keys.** Would
+  require an explicit per-page mapping from a docs table to a Zod schema, since the
+  markdown does not declare it. Would make the `modeled-not-documented` hallucination
+  guard cover schema fields, not just hook events.

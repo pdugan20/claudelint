@@ -684,7 +684,6 @@ Create `tests/upstream/watchlist.test.ts`:
 
 ```typescript
 import { WATCHLIST } from '../../src/upstream/watchlist';
-import { KNOWN_EXTENSIONS } from '../../src/upstream/extensions';
 
 describe('watchlist', () => {
   it('watches the plugin-dependencies page that was previously missed', () => {
@@ -693,21 +692,22 @@ describe('watchlist', () => {
   });
 
   it('uses the raw markdown endpoint for every entry', () => {
+    expect(WATCHLIST.length).toBeGreaterThan(0);
     for (const entry of WATCHLIST) {
       expect(entry.url).toMatch(/^https:\/\/code\.claude\.com\/docs\/en\/.+\.md$/);
     }
   });
 
   it('declares a positive minFacts guard for every entry', () => {
+    expect(WATCHLIST.length).toBeGreaterThan(0);
     for (const entry of WATCHLIST) {
       expect(entry.minFacts).toBeGreaterThan(0);
     }
   });
 
-  it('gives every known extension a reason', () => {
-    for (const reason of Object.values(KNOWN_EXTENSIONS)) {
-      expect(reason.length).toBeGreaterThan(0);
-    }
+  it('has no duplicate page ids', () => {
+    const ids = WATCHLIST.map((e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
 ```
@@ -830,20 +830,22 @@ Create `src/upstream/extensions.ts`:
 
 ```typescript
 /**
- * Fields claudelint models that official docs do not document.
+ * Values claudelint models that the official docs do not document.
  *
- * The conformance check fails on any modeled-but-undocumented field NOT listed here.
- * That is the mechanism that makes hallucinated schema fields impossible to reintroduce:
- * inventing a field now requires writing down, in this file, why it exists.
+ * The conformance check fails on any modeled-but-undocumented value NOT listed here.
+ * Adding an entry requires writing down why it exists, which is what makes a
+ * hallucinated value visible rather than silently permanent.
  *
- * Key format: "<SchemaName>.<field>".
+ * Key format: "<SchemaName>.<value>".
+ *
+ * v1 scope: the conformance check consults `HooksConfigSchema.*` keys only. Field-level
+ * conformance is deliberately out of scope (see docs/projects/upstream-watch.md,
+ * "Scope in v1"), so do NOT seed this with schema-field entries - an entry no consumer
+ * reads is worse than no entry, because it implies a guard that does not exist.
+ *
+ * Empty today: all 30 modeled hook events are documented upstream.
  */
-export const KNOWN_EXTENSIONS: Record<string, string> = {
-  'SkillFrontmatterSchema.version':
-    'claudelint extension: semver on skills, used by skill-missing-version. Not in official docs.',
-  'SkillFrontmatterSchema.tags':
-    'claudelint extension: categorization, used by skill-tags. Not in official docs.',
-};
+export const KNOWN_EXTENSIONS: Record<string, string> = {};
 ```
 
 - [ ] **Step 5: Run the test**
@@ -1697,7 +1699,11 @@ git commit -m "feat(skills): replace check-schema-drift with check-upstream"
 - `npm run check:upstream` passes offline and runs on every PR.
 - `npm run upstream:refresh` regenerates the baseline and reports new docs pages.
 - A reformatted upstream table trips the `minFacts` guard instead of silently passing.
-- A hallucinated schema field fails CI unless justified in `src/upstream/extensions.ts`.
+- A **hook event** documented upstream but not modeled fails CI; a hook event modeled
+  but not documented fails CI unless justified in `src/upstream/extensions.ts`.
+  (Field-level conformance is explicitly out of scope for v1 — see the spec's
+  "Scope in v1" note. Field drift is surfaced by the prose diff and the
+  `/check-upstream` skill, not by the deterministic gate.)
 - `plugin-dependency-string-with-marketplace` flags the exact manifest that broke
   `mintlify-docs`.
 - `plugin-dependency-not-allowlisted` flags a cross-marketplace dependency with no allowlist.
