@@ -13,7 +13,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ws://localhost:9000',
                 },
             },
@@ -25,7 +25,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'wss://api.example.com/ws',
                 },
             },
@@ -37,7 +37,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '${WS_URL}/socket',
                 },
             },
@@ -49,7 +49,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '$BASE_URL/ws',
                 },
             },
@@ -61,7 +61,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '',
                 },
             },
@@ -73,7 +73,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '   ',
                 },
             },
@@ -97,7 +97,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'invalid',
                 },
             },
@@ -111,7 +111,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'not-a-valid-url',
                 },
             },
@@ -128,7 +128,7 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ws://local host:9000',
                 },
             },
@@ -145,11 +145,11 @@ describe('mcp-websocket-invalid-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'invalid-url-1',
                 },
               server2: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'invalid-url-2',
                 },
             },

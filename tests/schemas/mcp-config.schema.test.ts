@@ -105,7 +105,7 @@ describe('MCPConfigSchema', () => {
             url: 'http://localhost:3000',
           },
           wsServer: {
-            type: 'websocket',
+            type: 'ws',
             url: 'ws://localhost:3001',
           },
         },
@@ -323,14 +323,14 @@ describe('MCPWebSocketTransportSchema', () => {
 
     it('should require url field', () => {
       const result = MCPWebSocketTransportSchema.safeParse({
-        type: 'websocket',
+        type: 'ws',
       });
       expect(result.success).toBe(false);
     });
 
     it('should accept minimal WebSocket config', () => {
       const result = MCPWebSocketTransportSchema.safeParse({
-        type: 'websocket',
+        type: 'ws',
         url: 'ws://localhost:3001',
       });
       expect(result.success).toBe(true);
@@ -338,7 +338,7 @@ describe('MCPWebSocketTransportSchema', () => {
 
     it('should accept wss:// protocol', () => {
       const result = MCPWebSocketTransportSchema.safeParse({
-        type: 'websocket',
+        type: 'ws',
         url: 'wss://api.example.com/ws',
       });
       expect(result.success).toBe(true);
@@ -348,7 +348,7 @@ describe('MCPWebSocketTransportSchema', () => {
   describe('optional fields', () => {
     it('should accept env object', () => {
       const result = MCPWebSocketTransportSchema.safeParse({
-        type: 'websocket',
+        type: 'ws',
         url: 'ws://localhost:3001',
         env: {
           WS_TOKEN: 'secret',
@@ -359,7 +359,7 @@ describe('MCPWebSocketTransportSchema', () => {
 
     it('should accept all fields', () => {
       const result = MCPWebSocketTransportSchema.safeParse({
-        type: 'websocket',
+        type: 'ws',
         url: 'wss://api.example.com/mcp',
         env: {
           API_KEY: 'secret',

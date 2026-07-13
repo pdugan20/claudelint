@@ -13,7 +13,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ws://localhost:9000',
                 },
             },
@@ -25,7 +25,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'wss://api.example.com/ws',
                 },
             },
@@ -49,7 +49,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '',
                 },
             },
@@ -63,7 +63,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '',
                 },
             },
@@ -80,7 +80,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '   ',
                 },
             },
@@ -97,7 +97,7 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                 },
             },
           }),
@@ -113,11 +113,11 @@ describe('mcp-websocket-empty-url', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '',
                 },
               server2: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: '  ',
                 },
             },

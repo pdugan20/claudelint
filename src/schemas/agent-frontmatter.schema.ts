@@ -9,15 +9,32 @@ import { SettingsHooksSchema, MCPServerSchema } from '../validators/schemas';
 
 /**
  * Permission modes for agents
+ *
+ * `manual` is a documented alias for `default` (Claude Code v2.1.200+).
  */
 const PermissionModes = z.enum([
   'default',
+  'manual',
   'acceptEdits',
   'auto',
   'dontAsk',
   'bypassPermissions',
   'plan',
 ]);
+
+/**
+ * A tool list, in either documented form.
+ *
+ * The docs write tool lists as a bare comma-separated string -- `tools: Read, Glob, Grep`
+ * is the canonical sub-agent example (docs-baseline/sub-agents.md:247) -- and also accept a
+ * YAML list: "Accepts a space- or comma-separated string, or a YAML list"
+ * (docs-baseline/skills.md:236).
+ *
+ * claudelint modelled the array form only, so an agent copied VERBATIM from the official
+ * docs failed to lint with "expected array, received string". The skill schema already had
+ * this union; the agent fields simply never got it.
+ */
+const ToolList = z.union([z.string(), z.array(z.string())]);
 
 /**
  * Base agent frontmatter schema without cross-field validations
@@ -36,10 +53,10 @@ export const AgentFrontmatterSchema = z.object({
   model: z.string().optional(),
 
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
-  tools: z.array(z.string()).optional(),
+  tools: ToolList.optional(),
 
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings
-  disallowedTools: z.array(z.string()).optional(),
+  disallowedTools: ToolList.optional(),
 
   permissionMode: PermissionModes.optional(),
 
@@ -73,20 +90,16 @@ export const AgentFrontmatterSchema = z.object({
 
 /**
  * Agent frontmatter schema with cross-field refinements
+ *
+ * `tools` and `disallowedTools` are NOT mutually exclusive. claudelint rejected configs
+ * setting both, but the docs define the combined behavior explicitly: "If both are set,
+ * `disallowedTools` is applied first, then `tools` is resolved against the remaining pool.
+ * A tool listed in both is removed." (docs-baseline/sub-agents.md:342)
+ *
+ * The alias is kept so callers importing it keep working, and so a future genuine
+ * cross-field rule has somewhere to live.
  */
-export const AgentFrontmatterWithRefinements = AgentFrontmatterSchema.refine(
-  (data) => {
-    // tools and disallowedTools are mutually exclusive
-    if (data.tools && data.disallowedTools) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'Cannot specify both tools and disallowedTools',
-    path: ['tools'],
-  }
-);
+export const AgentFrontmatterWithRefinements = AgentFrontmatterSchema;
 
 export type AgentFrontmatter = z.infer<typeof AgentFrontmatterSchema>;
 export type AgentFrontmatterWithValidations = z.infer<typeof AgentFrontmatterWithRefinements>;
