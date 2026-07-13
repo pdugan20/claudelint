@@ -184,20 +184,26 @@ The trap: `name@marketplace` *is* valid CLI syntax (`claude plugin install
 foo@bar`), so it looks correct. The fix is the object form:
 `{ "name": "mintlify", "marketplace": "claude-plugins-official" }`.
 
-### New rule: `plugin-dependency-missing-allowlist` (severity depends on context)
+### New rule: `plugin-dependency-not-allowlisted` (error)
 
 A cross-marketplace dependency requires `allowCrossMarketplaceDependenciesOn` on
-the declaring marketplace.
+the declaring marketplace. Fires when a `marketplace.json` in the scanned tree
+lists a plugin whose dependency names a *different* marketplace not present in
+the allowlist.
 
-**Scoping caveat — this rule cannot always be checked.** In the motivating case the
-plugin (`mintlify-docs`) and the marketplace (`pdugan20-plugins`) live in
-*different repositories*. When linting the plugin alone, `marketplace.json` is not
-on disk. So:
+**Scoping caveat — this rule can only fire when both halves are visible.** In the
+motivating case the plugin (`mintlify-docs`) and the marketplace
+(`pdugan20-plugins`) live in *different repositories*, so linting the plugin alone
+cannot see `marketplace.json`. The rule therefore scopes to trees where the
+marketplace manifest is resolvable (the common case for marketplace repos, which
+`check-all` scans whole).
 
-- Marketplace and plugins in the same tree → **error** (fully checkable).
-- Plugin alone → **warn**, advisory: the hosting marketplace must set the allowlist.
-
-Anything stronger would be a false promise.
+**Rejected alternative — an advisory warn when linting a plugin standalone.** Two
+reasons. First, `RuleIssue` has no severity field; severity is fixed per-rule in
+`meta`, so one rule cannot be error-in-tree and warn-standalone. Second, and more
+importantly, a cross-marketplace dependency in correct object form *is valid* —
+it is exactly the shipped fix. Warning on it would nag correct code. Declining to
+check what we cannot see is better than emitting noise on what is already right.
 
 ## Testing
 
