@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rule count: 114
+ * Rule count: 115
  */
 
 /**
@@ -77,6 +77,7 @@ export type RuleId =
   | 'output-style-name-directory-mismatch'
   | 'plugin-commands-deprecated'
   | 'plugin-components-wrong-location'
+  | 'plugin-dependency-string-with-marketplace'
   | 'plugin-description-required'
   | 'plugin-hook-missing-plugin-root'
   | 'plugin-invalid-marketplace-manifest'
@@ -198,6 +199,7 @@ export const ALL_RULE_IDS: readonly RuleId[] = [
   'output-style-name-directory-mismatch',
   'plugin-commands-deprecated',
   'plugin-components-wrong-location',
+  'plugin-dependency-string-with-marketplace',
   'plugin-description-required',
   'plugin-hook-missing-plugin-root',
   'plugin-invalid-marketplace-manifest',

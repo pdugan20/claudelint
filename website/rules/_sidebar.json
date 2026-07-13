@@ -360,6 +360,10 @@
         "link": "/rules/plugin/plugin-components-wrong-location"
       },
       {
+        "text": "plugin-dependency-string-with-marketplace",
+        "link": "/rules/plugin/plugin-dependency-string-with-marketplace"
+      },
+      {
         "text": "plugin-description-required",
         "link": "/rules/plugin/plugin-description-required"
       },
