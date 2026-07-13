@@ -7,6 +7,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { z } from 'zod';
 import { HookEvents } from '../../src/schemas/constants';
 import { KNOWN_EXTENSIONS } from '../../src/upstream/extensions';
 import type { Facts } from '../upstream/extract';
@@ -14,82 +15,143 @@ import { log } from '../util/logger';
 
 const BASELINE_DIR = join(__dirname, '../../docs-baseline');
 
+/**
+ * Floor on how many hook events the baseline must document before this check is willing
+ * to run at all. Mirrors the intent of the `hooks` page's `minFacts: 25` in the watchlist.
+ *
+ * That `minFacts` does NOT protect this check: `assertMinFacts` gates the page's TOTAL
+ * fact set (hook-events UNION field-tables, ~206 facts), so a hook-event extractor that
+ * yields ZERO still sails past it on the strength of the ~176 field facts alone. Without
+ * the floor below, a dead extractor ships a facts.json with no hook events, this check
+ * prints [SUCCESS], and we have exactly the detector that quietly stopped detecting.
+ *
+ * The floor is deliberately a FIXED constant, never a ratio against the modeled set: a
+ * denominator drawn from `HookEvents` is inflated by the very hallucination the
+ * modeled-not-documented guard is hunting - each fake event added to the enum would
+ * raise its own detection bar.
+ */
+export const MIN_DOCUMENTED_HOOK_EVENTS = 25;
+
 export interface Finding {
   kind: 'documented-not-modeled' | 'modeled-not-documented';
   fact: string;
   schema: string;
 }
 
-interface IgnoreEntry {
-  fact: string;
-  reason: string;
+/**
+ * A suppression MUST carry a non-empty reason. That requirement is the whole point of the
+ * ignore file: it forces someone to write down WHY an undocumented value is permitted,
+ * which is what keeps a hallucinated value visible instead of silently permanent.
+ * Validated with Zod so a missing or blank reason is a hard error, not a quiet pass.
+ */
+const IgnoreEntrySchema = z.object({
+  fact: z.string().min(1, 'fact must be a non-empty string'),
+  reason: z
+    .string()
+    .trim()
+    .min(1, 'reason is required and must be non-empty - write down WHY this is permitted'),
+});
+
+const IgnoreFileSchema = z.object({
+  'documented-not-modeled': z.array(IgnoreEntrySchema).default([]),
+  'modeled-not-documented': z.array(IgnoreEntrySchema).default([]),
+});
+
+export type IgnoreFile = z.infer<typeof IgnoreFileSchema>;
+
+export const EMPTY_IGNORE: IgnoreFile = {
+  'documented-not-modeled': [],
+  'modeled-not-documented': [],
+};
+
+/** Parse and validate docs-baseline/upstream-ignore.json. Throws on any violation. */
+export function parseIgnoreFile(raw: unknown): IgnoreFile {
+  const result = IgnoreFileSchema.safeParse(raw);
+  if (result.success) {
+    return result.data;
+  }
+  const details = result.error.issues
+    .map((issue) => `${issue.path.join('.') || '<root>'}: ${issue.message}`)
+    .join('; ');
+  throw new Error(`Invalid docs-baseline/upstream-ignore.json - ${details}`);
 }
 
-export interface IgnoreFile {
-  'documented-not-modeled': IgnoreEntry[];
-  'modeled-not-documented': IgnoreEntry[];
+function documentedHookEvents(facts: Facts): Set<string> {
+  const events = new Set<string>();
+  for (const pageFacts of Object.values(facts)) {
+    for (const fact of pageFacts) {
+      if (fact.startsWith('hook-event:')) {
+        events.add(fact.slice('hook-event:'.length));
+      }
+    }
+  }
+  return events;
 }
 
-export function conform(facts: Facts, ignore: IgnoreFile): Finding[] {
+/**
+ * @param modeled - the hook events claudelint models. Defaults to the live `HookEvents`
+ *   enum; overridable so tests can simulate a hallucinated schema (an enum carrying
+ *   events upstream never documented) without editing source.
+ */
+export function conform(
+  facts: Facts,
+  ignore: IgnoreFile,
+  modeled: readonly string[] = HookEvents.options
+): Finding[] {
   const findings: Finding[] = [];
   const suppressed = (kind: Finding['kind'], fact: string): boolean =>
     ignore[kind].some((e) => e.fact === fact);
 
-  const modeledEvents = new Set<string>(HookEvents.options);
-  const documentedEvents = new Set<string>();
+  const modeledEvents = new Set<string>(modeled);
+  const documentedEvents = documentedHookEvents(facts);
 
-  for (const pageFacts of Object.values(facts)) {
-    for (const fact of pageFacts) {
-      if (!fact.startsWith('hook-event:')) {
-        continue;
-      }
-      const event = fact.slice('hook-event:'.length);
-      documentedEvents.add(event);
-      if (!modeledEvents.has(event) && !suppressed('documented-not-modeled', fact)) {
-        findings.push({ kind: 'documented-not-modeled', fact, schema: 'HooksConfigSchema' });
-      }
+  // A baseline this thin means the extractor is broken, not that upstream deleted its
+  // hook events. Refuse to run rather than emit a vacuous pass.
+  if (documentedEvents.size < MIN_DOCUMENTED_HOOK_EVENTS) {
+    throw new Error(
+      `Baseline yielded only ${documentedEvents.size} hook events (floor: ${MIN_DOCUMENTED_HOOK_EVENTS}); ` +
+        `the extractor is likely broken. Refusing to run the conformance check vacuously. ` +
+        `Fix the extractor - do not lower this floor.`
+    );
+  }
+
+  for (const event of documentedEvents) {
+    const fact = `hook-event:${event}`;
+    if (!modeledEvents.has(event) && !suppressed('documented-not-modeled', fact)) {
+      findings.push({ kind: 'documented-not-modeled', fact, schema: 'HooksConfigSchema' });
     }
   }
 
-  // Guard against false positives from a partial fact set: absence-based
-  // (modeled-not-documented) findings are only trustworthy once we've observed a
-  // majority of the events claudelint currently models. A single mocked fact (as in a
-  // unit test) or a genuinely broken extractor must not be mistaken for "upstream
-  // deleted everything else" - that would flag every other modeled event as
-  // hallucinated. This scales with the schema instead of a hardcoded count.
-  if (documentedEvents.size > modeledEvents.size / 2) {
-    for (const event of modeledEvents) {
-      const fact = `hook-event:${event}`;
-      if (documentedEvents.has(event)) {
-        continue;
-      }
-      if (
-        KNOWN_EXTENSIONS[`HooksConfigSchema.${event}`] ||
-        suppressed('modeled-not-documented', fact)
-      ) {
-        continue;
-      }
-      findings.push({ kind: 'modeled-not-documented', fact, schema: 'HooksConfigSchema' });
+  // The hallucination guard. Runs UNCONDITIONALLY - it is protected by the fixed floor
+  // above, never by a threshold derived from the very set it is auditing.
+  for (const event of modeledEvents) {
+    const fact = `hook-event:${event}`;
+    if (documentedEvents.has(event)) {
+      continue;
     }
+    if (
+      KNOWN_EXTENSIONS[`HooksConfigSchema.${event}`] ||
+      suppressed('modeled-not-documented', fact)
+    ) {
+      continue;
+    }
+    findings.push({ kind: 'modeled-not-documented', fact, schema: 'HooksConfigSchema' });
   }
 
   return findings;
 }
 
-function main(): void {
+function run(): void {
   const factsPath = join(BASELINE_DIR, 'facts.json');
   if (!existsSync(factsPath)) {
-    log.bracket.error('No baseline. Run: npm run upstream:refresh');
-    process.exit(1);
+    throw new Error('No baseline. Run: npm run upstream:refresh');
   }
 
   const facts = JSON.parse(readFileSync(factsPath, 'utf8')) as Facts;
   const ignorePath = join(BASELINE_DIR, 'upstream-ignore.json');
-  const ignore = (
-    existsSync(ignorePath)
-      ? JSON.parse(readFileSync(ignorePath, 'utf8'))
-      : { 'documented-not-modeled': [], 'modeled-not-documented': [] }
-  ) as IgnoreFile;
+  const ignore = existsSync(ignorePath)
+    ? parseIgnoreFile(JSON.parse(readFileSync(ignorePath, 'utf8')))
+    : EMPTY_IGNORE;
 
   const findings = conform(facts, ignore);
 
@@ -110,6 +172,15 @@ function main(): void {
   log.blank();
   log.error('Fix the schema, or suppress with a reason in docs-baseline/upstream-ignore.json');
   process.exit(1);
+}
+
+function main(): void {
+  try {
+    run();
+  } catch (err) {
+    log.bracket.error(err instanceof Error ? err.message : String(err));
+    process.exit(1);
+  }
 }
 
 if (require.main === module) {
