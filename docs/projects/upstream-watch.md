@@ -1,6 +1,6 @@
 # Upstream Watch — Design
 
-Status: proposed
+Status: Implemented
 Date: 2026-07-12
 
 ## Problem
