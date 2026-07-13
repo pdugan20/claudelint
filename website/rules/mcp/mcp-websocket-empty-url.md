@@ -18,7 +18,7 @@ WebSocket server with an empty URL string
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": ""
     }
   }
@@ -31,7 +31,7 @@ WebSocket server with the url field missing
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket"
+      "type": "ws"
     }
   }
 }
@@ -45,7 +45,7 @@ WebSocket server with a valid URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }

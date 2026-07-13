@@ -8,7 +8,7 @@ description: "MCP transport type must be one of the supported values"
 
 ## Rule Details
 
-This rule checks that the type field of each MCP server is one of the supported transport types: stdio, sse, http, or websocket. An unrecognized transport type will prevent Claude Code from establishing a connection to the MCP server. Servers without an explicit type field are skipped because the type can be inferred from the presence of a command field.
+This rule checks that the type field of each MCP server is one of the supported transport types: stdio, sse, http, streamable-http, or ws. An unrecognized transport type will prevent Claude Code from establishing a connection to the MCP server. Servers without an explicit type field are skipped because the type can be inferred from the presence of a command field.
 
 ### Incorrect
 
@@ -56,7 +56,7 @@ Server with a valid stdio transport type
 
 ## How To Fix
 
-Change the type field to one of the supported values: stdio, sse, http, or websocket. Note that sse is deprecated in favor of http.
+Change the type field to one of the supported values: stdio, sse, http, streamable-http, or ws. Note that sse is deprecated in favor of http, and that the WebSocket literal is "ws" - not "websocket", which is not a valid config value.
 
 ## Options
 

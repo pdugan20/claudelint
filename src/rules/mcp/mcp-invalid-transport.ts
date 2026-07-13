@@ -32,9 +32,10 @@ export const rule: Rule = {
         'An unrecognized transport type prevents Claude Code from establishing any connection to the MCP server.',
       details:
         'This rule checks that the type field of each MCP server is one of the supported transport ' +
-        'types: stdio, sse, http, or websocket. An unrecognized transport type will prevent Claude ' +
-        'Code from establishing a connection to the MCP server. Servers without an explicit type ' +
-        'field are skipped because the type can be inferred from the presence of a command field.',
+        'types: stdio, sse, http, streamable-http, or ws. An unrecognized transport type will ' +
+        'prevent Claude Code from establishing a connection to the MCP server. Servers without an ' +
+        'explicit type field are skipped because the type can be inferred from the presence of a ' +
+        'command field.',
       examples: {
         incorrect: [
           {
@@ -57,8 +58,9 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Change the type field to one of the supported values: stdio, sse, http, or websocket. ' +
-        'Note that sse is deprecated in favor of http.',
+        'Change the type field to one of the supported values: stdio, sse, http, streamable-http, ' +
+        'or ws. Note that sse is deprecated in favor of http, and that the WebSocket literal is ' +
+        '"ws" - not "websocket", which is not a valid config value.',
       relatedRules: ['mcp-sse-transport-deprecated'],
     },
   },

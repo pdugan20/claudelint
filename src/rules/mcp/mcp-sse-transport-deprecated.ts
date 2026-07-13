@@ -45,7 +45,7 @@ export const rule: Rule = {
           },
           {
             description: 'Server using WebSocket transport',
-            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "ws",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],

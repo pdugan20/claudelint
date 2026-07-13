@@ -46,7 +46,7 @@ Server using WebSocket transport
 {
   "mcpServers": {
     "remote": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }
