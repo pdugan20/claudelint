@@ -1,5 +1,9 @@
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { tmpdir } from 'os';
 import {
   conform,
+  deriveFacts,
   parseIgnoreFile,
   EMPTY_IGNORE,
   MIN_DOCUMENTED_HOOK_EVENTS,
@@ -178,5 +182,78 @@ describe('parseIgnoreFile', () => {
     expect(() => parseIgnoreFile({ 'documented-not-modeled': [{ reason: 'why' }] })).toThrow(
       /fact/
     );
+  });
+});
+
+/**
+ * The committed `facts.json` is an artifact, not evidence. These tests pin the property
+ * that makes every other guard here mean something: the check re-derives the facts from
+ * `docs-baseline/*.md` and refuses to run against an artifact that does not match them.
+ * Without it, a hallucinated hook event added to BOTH the enum and facts.json - the exact
+ * shortcut an agent takes when it cannot run the network-bound refresh - prints [SUCCESS].
+ */
+describe('deriveFacts', () => {
+  const REAL_BASELINE = join(__dirname, '../../docs-baseline');
+  const tempDirs: string[] = [];
+
+  /** A working copy of the real committed baseline, safe to tamper with. */
+  function copyBaseline(): string {
+    const dir = mkdtempSync(join(tmpdir(), 'claudelint-baseline-'));
+    tempDirs.push(dir);
+    cpSync(REAL_BASELINE, dir, { recursive: true });
+    return dir;
+  }
+
+  afterAll(() => {
+    for (const dir of tempDirs) {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('accepts the committed baseline: facts.json matches what the extractor derives', () => {
+    const facts = deriveFacts(REAL_BASELINE);
+
+    const committed = JSON.parse(
+      readFileSync(join(REAL_BASELINE, 'facts.json'), 'utf8')
+    ) as Facts;
+    expect(facts).toEqual(committed);
+  });
+
+  it('throws when facts.json carries a fact the markdown does not support', () => {
+    const dir = copyBaseline();
+    const factsPath = join(dir, 'facts.json');
+    const facts = JSON.parse(readFileSync(factsPath, 'utf8')) as Facts;
+    // The bypass: assert an event upstream never documented, straight into the artifact.
+    facts.hooks = [...facts.hooks, 'hook-event:FakeEvent'].sort();
+    writeFileSync(factsPath, `${JSON.stringify(facts, null, 2)}\n`);
+
+    expect(() => deriveFacts(dir)).toThrow(/stale or hand-edited/);
+  });
+
+  it('throws when facts.json is missing a fact the markdown does document', () => {
+    const dir = copyBaseline();
+    const factsPath = join(dir, 'facts.json');
+    const facts = JSON.parse(readFileSync(factsPath, 'utf8')) as Facts;
+    facts.hooks = facts.hooks.filter((f) => f !== 'hook-event:PreToolUse');
+    writeFileSync(factsPath, `${JSON.stringify(facts, null, 2)}\n`);
+
+    expect(() => deriveFacts(dir)).toThrow(/stale or hand-edited/);
+  });
+
+  it('throws when a baseline page falls below its minFacts floor (assertMinFacts now fires on every PR)', () => {
+    const dir = copyBaseline();
+    // Upstream reformats its tables into prose, or the extractor breaks: either way the
+    // page yields almost nothing. Before this check re-derived, the stale facts.json
+    // covered for it and the run went green.
+    writeFileSync(join(dir, 'hooks.md'), '# Hooks\n\nAll hook events are now described in prose.\n');
+
+    expect(() => deriveFacts(dir)).toThrow(/Extractor guard tripped: hooks yielded/);
+  });
+
+  it('throws when there is no baseline at all', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'claudelint-baseline-empty-'));
+    tempDirs.push(dir);
+
+    expect(() => deriveFacts(dir)).toThrow('No baseline. Run: npm run upstream:refresh');
   });
 });

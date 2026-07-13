@@ -2,7 +2,9 @@
  * Offline conformance check: does claudelint model what the docs baseline documents?
  *
  * Runs on every PR. Never touches the network - it reads only the committed baseline,
- * so drift cannot creep in between weekly refreshes.
+ * so drift cannot creep in between weekly refreshes. The facts it checks against are
+ * re-derived from the committed `.md` pages every run (see `deriveFacts`), never taken
+ * on trust from the committed `facts.json`.
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -10,7 +12,7 @@ import { join } from 'path';
 import { z } from 'zod';
 import { HookEvents } from '../../src/schemas/constants';
 import { KNOWN_EXTENSIONS } from '../../src/upstream/extensions';
-import type { Facts } from '../upstream/extract';
+import { extract, type Facts } from '../upstream/extract';
 import { log } from '../util/logger';
 
 const BASELINE_DIR = join(__dirname, '../../docs-baseline');
@@ -141,13 +143,44 @@ export function conform(
   return findings;
 }
 
-function run(): void {
-  const factsPath = join(BASELINE_DIR, 'facts.json');
+/**
+ * Derive the facts from the evidence, then hold the committed artifact to them.
+ *
+ * `facts.json` is a hand-editable file in the repo, so trusting it makes every guard
+ * downstream a formality: append `hook-event:FakeEvent` to it, add the same event to the
+ * `HookEvents` enum, and the hallucination guard reports [SUCCESS] on an event no page
+ * mentions. The realistic path there is not malice - it is an agent told to make this
+ * check pass that cannot run the network-bound refresh, so it edits the artifact instead.
+ *
+ * So re-run the real extractor over `docs-baseline/*.md` on every PR. `extract` is pure
+ * `readFileSync` - no network - and it calls `assertMinFacts`, which until now fired only
+ * inside the weekly refresh, leaving the per-page floors inert in CI. Comparing the result
+ * against the committed artifact then catches the other half: a stale or hand-edited
+ * `facts.json` becomes a hard error instead of the thing we validate against.
+ */
+export function deriveFacts(baselineDir: string): Facts {
+  const factsPath = join(baselineDir, 'facts.json');
   if (!existsSync(factsPath)) {
     throw new Error('No baseline. Run: npm run upstream:refresh');
   }
 
-  const facts = JSON.parse(readFileSync(factsPath, 'utf8')) as Facts;
+  // The evidence, re-derived. Throws if any page falls below its minFacts floor.
+  const facts = extract(baselineDir);
+
+  const committed = JSON.parse(readFileSync(factsPath, 'utf8')) as Facts;
+  if (JSON.stringify(facts) !== JSON.stringify(committed)) {
+    throw new Error(
+      'docs-baseline/facts.json does not match the facts extracted from docs-baseline/*.md. ' +
+        'It is stale or hand-edited. Run: npm run upstream:refresh - do not edit facts.json by hand.'
+    );
+  }
+
+  return facts;
+}
+
+function run(): void {
+  const facts = deriveFacts(BASELINE_DIR);
+
   const ignorePath = join(BASELINE_DIR, 'upstream-ignore.json');
   const ignore = existsSync(ignorePath)
     ? parseIgnoreFile(JSON.parse(readFileSync(ignorePath, 'utf8')))
