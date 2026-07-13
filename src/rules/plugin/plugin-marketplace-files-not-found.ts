@@ -47,7 +47,9 @@ export const rule: Rule = {
         'manifest. Relative sources resolve against the marketplace root - the directory containing ' +
         '.claude-plugin/ - not the .claude-plugin/ directory itself, and metadata.pluginRoot is prepended ' +
         'when present. External sources (github, url, npm, pip) are skipped since they cannot be ' +
-        'validated locally.',
+        'validated locally. Entries with "strict": false are exempt from the plugin.json check - the ' +
+        'marketplace entry is the entire definition for those plugins - but the source directory itself ' +
+        'must still exist.',
       examples: {
         incorrect: [
           {
@@ -107,6 +109,13 @@ export const rule: Rule = {
         context.report({
           message: `plugins[${i}] "${plugin.name}": source directory not found: ${plugin.source}`,
         });
+        continue;
+      }
+
+      // strict: false means the marketplace entry is the entire definition and the plugin
+      // does not need its own plugin.json (https://code.claude.com/docs/en/plugin-marketplaces#strict-mode).
+      // The directory-existence check above still applies — only the manifest requirement is skipped.
+      if (plugin.strict === false) {
         continue;
       }
 

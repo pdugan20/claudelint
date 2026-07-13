@@ -21,16 +21,23 @@
  *
  * ## Architecture
  *
- * SchemaValidator provides a 4-step validation process:
+ * SchemaValidator provides a multi-step validation process:
  * 1. **Read** - Load file content
  * 2. **Parse** - Parse JSON and report syntax errors
- * 3. **Schema Validation** - Validate against Zod schema and report structure errors
- * 4. **Semantic Validation** - Run custom validators and category-based rules
+ * 3. **Exemption check** - If the file is schema-exempt (see below), hand it to
+ *    `validateSchemaExemptFile()` and stop; otherwise continue to schema validation
+ * 4. **Schema Validation** - Validate against Zod schema and report structure errors
+ * 5. **Semantic Validation** - Run custom validators and category-based rules
  *
  * Subclasses implement three abstract methods to customize behavior:
  * - `findConfigFiles()` - Discover config files in the project
  * - `getSchema()` - Return the Zod schema for structure validation
  * - `validateSemantics()` - Perform additional validation and execute rules
+ *
+ * A validator that owns files of more than one shape (for example, PluginValidator also
+ * discovers marketplace.json, which is not a plugin manifest) overrides two further hooks,
+ * `isSchemaExempt()` and `validateSchemaExemptFile()`, to route those files around
+ * `getSchema()`/`validateSemantics()` entirely. See each hook's own doc comment for details.
  *
  * ## Validation Layers
  *

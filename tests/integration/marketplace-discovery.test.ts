@@ -157,6 +157,40 @@ describe('Marketplace discovery (real validator)', () => {
     expect(ruleIds(result)).toContain('plugin-marketplace-files-not-found');
   });
 
+  it('does not warn on a missing plugin.json when the entry sets strict: false', async () => {
+    // Per https://code.claude.com/docs/en/plugin-marketplaces#strict-mode, strict: false means
+    // the marketplace entry is the entire definition — the plugin does not need its own
+    // plugin.json. The source directory itself still needs to exist (checked below).
+    const root = createProject({
+      name: 'demo-marketplace',
+      owner: { name: 'Pat Dugan' },
+      plugins: [{ name: 'raw-files', source: './raw-files', strict: false }],
+    });
+    mkdirSync(join(root, 'raw-files'), { recursive: true });
+    writeFileSync(join(root, 'raw-files/README.md'), '# raw-files\n');
+
+    const result = await validateProject(root);
+
+    expect(ruleIds(result)).not.toContain('plugin-marketplace-files-not-found');
+  });
+
+  it('still fires plugin-marketplace-files-not-found for strict: false when the source directory itself is missing', async () => {
+    // A missing source directory is a different problem than a missing manifest — strict: false
+    // must not swallow it.
+    const root = createProject({
+      name: 'demo-marketplace',
+      owner: { name: 'Pat Dugan' },
+      plugins: [{ name: 'ghost', source: './plugins/ghost', strict: false }],
+    });
+
+    const result = await validateProject(root);
+
+    expect(ruleIds(result)).toContain('plugin-marketplace-files-not-found');
+    expect(
+      result.warnings.some((w) => w.message.includes('source directory not found'))
+    ).toBe(true);
+  });
+
   it('honors metadata.pluginRoot when resolving relative sources', async () => {
     const root = createProject({
       name: 'demo-marketplace',
