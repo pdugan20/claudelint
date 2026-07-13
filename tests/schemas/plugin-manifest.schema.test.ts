@@ -2,10 +2,7 @@
  * Tests for plugin manifest schema
  */
 
-import {
-  PluginManifestSchema,
-  PluginAuthorSchema,
-} from '../../src/validators/schemas';
+import { PluginManifestSchema, PluginAuthorSchema } from '../../src/validators/schemas';
 
 describe('PluginManifestSchema', () => {
   describe('required fields', () => {
@@ -373,6 +370,18 @@ describe('PluginManifestSchema', () => {
         lspServers: './.lsp.json',
       });
       expect(result.success).toBe(true);
+    });
+
+    it('accepts a dependency with a marketplace field', () => {
+      const result = PluginManifestSchema.safeParse({
+        name: 'deploy-kit',
+        dependencies: [{ name: 'mintlify', marketplace: 'claude-plugins-official' }],
+      });
+      expect(result.success).toBe(true);
+      expect(result.data?.dependencies?.[0]).toEqual({
+        name: 'mintlify',
+        marketplace: 'claude-plugins-official',
+      });
     });
   });
 });

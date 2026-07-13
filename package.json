@@ -47,8 +47,8 @@
     "lint:css": "stylelint 'website/.vitepress/theme/**/*.{css,vue}'",
     "lint:css:fix": "stylelint 'website/.vitepress/theme/**/*.{css,vue}' --fix",
     "lint:fix": "npm-run-all --parallel lint:ts:fix lint:vue:fix lint:css:fix lint:md:fix",
-    "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp",
-    "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp --fix",
+    "lint:md": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp --ignore docs-baseline",
+    "lint:md:fix": "markdownlint --config .markdownlint.json '**/*.md' --ignore node_modules --ignore etc --ignore temp --ignore docs-baseline --fix",
     "lint:pkg": "npmPkgJsonLint .",
     "lint:pkg:quiet": "npmPkgJsonLint . --quiet",
     "lint:ts": "eslint src --ext .ts",
@@ -102,10 +102,12 @@
     "check:source-paths": "ts-node scripts/check/source-paths.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "check:tool-names": "ts-node scripts/verify/tool-names.ts",
+    "check:upstream": "ts-node scripts/check/upstream.ts",
     "check:types:api": "tsd --typings dist/index.d.ts --files 'src/index.test-d.ts'",
     "check:api-examples": "tsc --noEmit -p tsconfig.api-examples.json",
     "check:api-report": "api-extractor run",
     "check:api-report:update": "api-extractor run --local --verbose",
+    "upstream:refresh": "ts-node scripts/upstream/refresh.ts",
     "validate": "npm-run-all lint format:check build test check:publint",
     "validate:all": "npm-run-all lint format:check build test check:all",
     "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
@@ -145,7 +147,7 @@
       "prettier --write"
     ],
     "*.md": [
-      "markdownlint --fix --ignore etc"
+      "markdownlint --fix --ignore etc --ignore docs-baseline"
     ],
     "schemas/**/*.json": [
       "prettier --write"

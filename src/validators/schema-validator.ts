@@ -21,16 +21,23 @@
  *
  * ## Architecture
  *
- * SchemaValidator provides a 4-step validation process:
+ * SchemaValidator provides a multi-step validation process:
  * 1. **Read** - Load file content
  * 2. **Parse** - Parse JSON and report syntax errors
- * 3. **Schema Validation** - Validate against Zod schema and report structure errors
- * 4. **Semantic Validation** - Run custom validators and category-based rules
+ * 3. **Exemption check** - If the file is schema-exempt (see below), hand it to
+ *    `validateSchemaExemptFile()` and stop; otherwise continue to schema validation
+ * 4. **Schema Validation** - Validate against Zod schema and report structure errors
+ * 5. **Semantic Validation** - Run custom validators and category-based rules
  *
  * Subclasses implement three abstract methods to customize behavior:
  * - `findConfigFiles()` - Discover config files in the project
  * - `getSchema()` - Return the Zod schema for structure validation
  * - `validateSemantics()` - Perform additional validation and execute rules
+ *
+ * A validator that owns files of more than one shape (for example, PluginValidator also
+ * discovers marketplace.json, which is not a plugin manifest) overrides two further hooks,
+ * `isSchemaExempt()` and `validateSchemaExemptFile()`, to route those files around
+ * `getSchema()`/`validateSemantics()` entirely. See each hook's own doc comment for details.
  *
  * ## Validation Layers
  *
@@ -195,6 +202,16 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
     }
 
     // Step 2: Validate against Zod schema
+    //
+    // Some validators own files that their schema does not describe (for example the Plugin
+    // validator also lints marketplace.json, which is not a plugin manifest). Validating those
+    // against getSchema() would emit misleading structure errors, so they are routed to
+    // validateSchemaExemptFile() instead, which runs the rules that do describe them.
+    if (this.isSchemaExempt(filePath)) {
+      await this.validateSchemaExemptFile(filePath, content);
+      return;
+    }
+
     const schema = this.getSchema();
     const result = schema.safeParse(parsed);
 
@@ -282,6 +299,39 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
    * ```
    */
   protected abstract validateSemantics(filePath: string, config: z.infer<T>): Promise<void>;
+
+  /**
+   * Whether a discovered file is exempt from this validator's Zod schema
+   *
+   * Returns false by default: every discovered file is validated against `getSchema()`.
+   * Override when a validator owns files of more than one shape — the exempt files skip both
+   * the schema step and `validateSemantics()`, and are handled by `validateSchemaExemptFile()`.
+   *
+   * @param filePath - Path to the config file being validated
+   *
+   * @example
+   * ```typescript
+   * protected isSchemaExempt(filePath: string): boolean {
+   *   return basename(filePath) === 'marketplace.json';
+   * }
+   * ```
+   */
+  protected isSchemaExempt(_filePath: string): boolean {
+    return false;
+  }
+
+  /**
+   * Validate a file that `isSchemaExempt()` excluded from the Zod schema step
+   *
+   * The file has already been parsed as JSON (syntax errors are reported before this runs).
+   * Override to execute the rules that do describe this file shape.
+   *
+   * @param filePath - Path to the config file being validated
+   * @param content - Raw file content
+   */
+  protected async validateSchemaExemptFile(_filePath: string, _content: string): Promise<void> {
+    // No-op by default; only reached when isSchemaExempt() is overridden to return true.
+  }
 
   /**
    * Get the warning message to display when no config files are found

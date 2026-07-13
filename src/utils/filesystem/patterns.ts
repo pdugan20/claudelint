@@ -53,6 +53,13 @@ export const LSP_PATTERNS = ['.claude/lsp.json', '.lsp.json'] as const;
 /** Plugin manifest files */
 export const PLUGIN_PATTERNS = ['plugin.json', '.claude-plugin/plugin.json'] as const;
 
+/**
+ * Marketplace manifest files.
+ * Owned by the Plugin validator, but described by MarketplaceMetadataSchema rather than
+ * PluginManifestSchema — see PluginValidator.isSchemaExempt().
+ */
+export const MARKETPLACE_PATTERNS = ['.claude-plugin/marketplace.json'] as const;
+
 /** Slash-command files */
 export const COMMANDS_PATTERNS = ['.claude/commands/**/*', 'commands/**/*'] as const;
 

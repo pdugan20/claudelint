@@ -1,0 +1,69 @@
+name: Upstream Watch
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    name: Check upstream docs for drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Refresh docs baseline
+        id: refresh
+        run: npm run upstream:refresh 2>&1 | tee refresh.log
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet -- docs-baseline/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- docs-baseline/ > diff.txt
+          fi
+
+      - name: Run conformance check
+        id: conform
+        if: steps.diff.outputs.changed == 'true'
+        continue-on-error: true
+        run: npm run check:upstream 2>&1 | tee conform.log
+
+      - name: Open or update drift issue
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BODY=$(
+            printf '## Upstream docs changed\n\n'
+            printf 'The weekly refresh found changes in the Claude Code docs.\n\n'
+            printf '### New or removed pages\n\n```text\n'
+            grep -E '^\[(NEW|REMOVED) PAGE\]' refresh.log || echo 'None'
+            printf '```\n\n### Conformance findings\n\n```text\n'
+            cat conform.log
+            printf '```\n\n### Baseline diff\n\n```text\n'
+            cat diff.txt
+            printf '```\n\nTo accept: run `npm run upstream:refresh`, review, and commit.\n'
+          )
+          EXISTING=$(gh issue list --state open --label upstream-drift --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title 'Upstream drift' --label upstream-drift --body "$BODY"
+          fi
