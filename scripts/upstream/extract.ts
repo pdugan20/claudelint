@@ -44,6 +44,24 @@ export function extractJsonKeys(markdown: string): string[] {
 }
 
 /**
+ * Top-level keys of YAML frontmatter shown inside fenced code examples (` --- ... --- `).
+ * Some pages (e.g. memory.md's `paths` field) document their one field only via a
+ * frontmatter example, never as a `field:` table row - field-tables legitimately finds
+ * nothing there, so this extractor covers that documentation style instead.
+ */
+export function extractFrontmatterKeys(markdown: string): string[] {
+  const keys = new Set<string>();
+  for (const block of markdown.matchAll(/```[^\n]*\n([\s\S]*?)```/g)) {
+    const frontmatter = block[1].match(/^---\n([\s\S]*?)\n---/);
+    if (!frontmatter) continue;
+    for (const key of frontmatter[1].matchAll(/^([A-Za-z][A-Za-z0-9_-]*):/gm)) {
+      keys.add(`frontmatter-key:${key[1]}`);
+    }
+  }
+  return [...keys].sort();
+}
+
+/**
  * A page that suddenly yields almost nothing means the parser broke, not that upstream
  * deleted its content. Fail loudly: a detector that quietly stops detecting is worse
  * than no detector.
@@ -65,7 +83,9 @@ function extractPage(markdown: string, entry: WatchEntry): string[] {
         ? extractHookEvents(markdown)
         : extractor === 'field-tables'
           ? extractFieldTables(markdown)
-          : extractJsonKeys(markdown);
+          : extractor === 'json-keys'
+            ? extractJsonKeys(markdown)
+            : extractFrontmatterKeys(markdown);
     found.forEach((f) => facts.add(f));
   }
   return [...facts].sort();

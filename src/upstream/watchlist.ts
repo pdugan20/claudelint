@@ -9,7 +9,7 @@
  * than minFacts is a hard error, not an empty result.
  */
 
-export type ExtractorId = 'hook-events' | 'field-tables' | 'json-keys';
+export type ExtractorId = 'hook-events' | 'field-tables' | 'json-keys' | 'frontmatter-keys';
 
 export interface WatchEntry {
   /** Stable slug; also the baseline filename. */
@@ -93,7 +93,9 @@ export const WATCHLIST: WatchEntry[] = [
   {
     id: 'memory',
     url: `${DOCS}/memory.md`,
-    extractors: ['field-tables'],
+    // memory.md documents the `paths` field only via a YAML frontmatter example, never
+    // as a `field:` table row, so field-tables alone legitimately finds nothing here.
+    extractors: ['field-tables', 'frontmatter-keys'],
     governs: ['RulesFrontmatterSchema'],
     minFacts: 1,
   },
