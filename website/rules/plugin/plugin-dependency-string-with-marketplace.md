@@ -8,16 +8,32 @@ description: "Bare-string dependency must be a plugin name and cannot contain \"
 
 ## Rule Details
 
-The "name@marketplace" form is valid CLI syntax (claude plugin install foo@bar), which is why it looks correct in a manifest. It is not valid manifest syntax. To depend on a plugin in another marketplace, use the object form with an explicit marketplace field, and ensure the root marketplace lists that marketplace in allowCrossMarketplaceDependenciesOn.
+The "name@marketplace" form is valid CLI syntax (claude plugin install foo@bar), which is why it looks correct in a manifest. It is not valid manifest syntax. To depend on a plugin in another marketplace, use the object form with an explicit marketplace field, and ensure the root marketplace lists that marketplace in allowCrossMarketplaceDependenciesOn. Dependencies can be declared in two places and break identically in both: a plugin.json, and a plugin entry inside marketplace.json. This rule checks both.
 
 ### Incorrect
 
-CLI syntax used in a manifest dependency string
+CLI syntax used in a plugin.json dependency string
 
 ```json
 {
   "name": "mintlify-docs",
   "dependencies": ["mintlify@claude-plugins-official"]
+}
+```
+
+The same string inside a marketplace.json plugin entry
+
+```json
+{
+  "name": "acme-tools",
+  "owner": { "name": "Acme" },
+  "plugins": [
+    {
+      "name": "mintlify-docs",
+      "source": "./mintlify-docs",
+      "dependencies": ["mintlify@claude-plugins-official"]
+    }
+  ]
 }
 ```
 

@@ -8,7 +8,7 @@ description: "Relative plugin source path does not resolve to a valid plugin dir
 
 ## Rule Details
 
-When a marketplace.json lists plugins with relative path sources (e.g., "./plugins/my-plugin"), this rule checks that the referenced directory exists and contains a .claude-plugin/plugin.json manifest. Relative sources resolve against the marketplace root - the directory containing .claude-plugin/ - not the .claude-plugin/ directory itself, and metadata.pluginRoot is prepended when present. External sources (github, url, npm, pip) are skipped since they cannot be validated locally.
+When a marketplace.json lists plugins with relative path sources (e.g., "./plugins/my-plugin"), this rule checks that the referenced directory exists and contains a .claude-plugin/plugin.json manifest. Relative sources resolve against the marketplace root - the directory containing .claude-plugin/ - not the .claude-plugin/ directory itself, and metadata.pluginRoot is prepended when present. External sources (github, url, npm, pip) are skipped since they cannot be validated locally. Entries with "strict": false are exempt from the plugin.json check - the marketplace entry is the entire definition for those plugins - but the source directory itself must still exist.
 
 ### Incorrect
 

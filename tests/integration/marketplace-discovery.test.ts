@@ -111,6 +111,40 @@ describe('Marketplace discovery (real validator)', () => {
     ).toBe(true);
   });
 
+  it('fires plugin-dependency-string-with-marketplace for a bare "@" string in a marketplace entry', async () => {
+    // The flagship rule originally early-returned unless the file was plugin.json, so this
+    // exact production failure - the mintlify-docs install bug - passed clean one file over.
+    // MarketplacePluginEntrySchema.dependencies accepts the same shape plugin.json does.
+    const root = createProject({
+      name: 'pdugan20-plugins',
+      owner: { name: 'Pat Dugan' },
+      plugins: [
+        {
+          name: 'mintlify-docs',
+          source: './mintlify-docs',
+          dependencies: ['mintlify@claude-plugins-official'],
+        },
+      ],
+    });
+    mkdirSync(join(root, 'mintlify-docs/.claude-plugin'), { recursive: true });
+    writeFileSync(
+      join(root, 'mintlify-docs/.claude-plugin/plugin.json'),
+      JSON.stringify({ name: 'mintlify-docs', version: '1.0.0', description: 'Docs' })
+    );
+
+    const result = await validateProject(root);
+
+    expect(ruleIds(result)).toContain('plugin-dependency-string-with-marketplace');
+    expect(
+      result.errors.some((e) =>
+        e.message.includes('"mintlify@claude-plugins-official" is not a valid plugin name')
+      )
+    ).toBe(true);
+    // The bare string is this rule's business, not the allowlist rule's - the sibling rule
+    // skips strings on purpose, so a change there must not silently take over this case.
+    expect(ruleIds(result)).not.toContain('plugin-dependency-not-allowlisted');
+  });
+
   it('stays quiet when the dependency marketplace is allowlisted', async () => {
     const root = createProject({
       name: 'pdugan20-plugins',
