@@ -88,6 +88,13 @@ jobs:
       - name: Check publish workflow for known-broken patterns
         run: npm run check:publish-workflow
 
+      # The rest of the `check` aggregate, for the same reason. `check:schema-docs-coverage`
+      # lives only in there, so adding `manual` to the agent permissionMode enum left the
+      # website docs stale and NO CI job noticed -- the check that exists to catch exactly
+      # that had never run on a pull request.
+      - name: Run the check aggregate
+        run: npm run check
+
   build:
     name: Build
     runs-on: ubuntu-latest

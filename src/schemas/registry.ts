@@ -14,6 +14,7 @@ import {
   MCPConfigSchema,
   MarketplaceMetadataSchema,
 } from '../validators/schemas';
+import { SettingsSchema } from '../validators/schemas';
 import { SkillFrontmatterSchema } from './skill-frontmatter.schema';
 import { LSPConfigSchema } from './lsp-config.schema';
 import { AgentFrontmatterSchema } from './agent-frontmatter.schema';
@@ -51,6 +52,14 @@ export interface SchemaRegistryEntry {
  * 5. Run: npm run check:schema-sync
  */
 export const SCHEMA_REGISTRY: SchemaRegistryEntry[] = [
+  {
+    name: 'SettingsSchema',
+    zodSchema: SettingsSchema,
+    manualSchemaFile: 'settings.schema.json',
+    generatedSchemaFile: 'settings.generated.json',
+    description: 'Generated JSON Schema for .claude/settings.json',
+    officialDocsUrl: 'https://code.claude.com/docs/en/settings',
+  },
   {
     name: 'PluginManifestSchema',
     zodSchema: PluginManifestSchema,

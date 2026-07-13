@@ -98,7 +98,10 @@ export const WATCHLIST: WatchEntry[] = [
     id: 'settings',
     url: `${DOCS}/settings.md`,
     extractors: ['field-tables', 'json-keys'],
-    governs: [],
+    // Was `[]`: 162 facts that asserted nothing. SettingsSchema is now registered and
+    // conformance is enforced in both directions by tests/upstream/settings-keys.test.ts
+    // (names) and tests/upstream/field-types.test.ts (documented example values).
+    governs: ['SettingsSchema'],
     minFacts: 10,
   },
   {
