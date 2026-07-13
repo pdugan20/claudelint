@@ -42,24 +42,31 @@ Watch for two things in the output:
 
 Run `git diff -- docs-baseline/`.
 
-The scripts catch structural change (fields, enum values, new pages). They cannot catch
-a constraint stated only in prose, and that class of change causes real bugs. The
-mintlify-docs install failure came from one sentence: "a bare string with only the
-plugin name". Read the diff for sentences like that.
+This step is not optional, and it is not a skim. The scripts catch exactly two things:
+new pages, and hook-event drift. They do NOT catch field-level drift - a new, renamed,
+or removed field in any schema is caught ONLY by a human or agent reading this diff.
+They also cannot catch a constraint stated only in prose, and that class of change
+causes real bugs: the mintlify-docs install failure came from one sentence, "a bare
+string with only the plugin name".
 
-For each meaningful change, ask: does claudelint model this? Could a user violate it
-and have us report success?
+So read the diff for both - changed fields and changed sentences. For each meaningful
+change, ask: does claudelint model this? Could a user violate it and have us report
+success?
 
 ### Step 3: Run the conformance check
 
 Run `npm run check:upstream`.
 
-- `documented-not-modeled` - upstream has a field or enum value we lack. Add it to the
-  Zod schema, the manual schema in `schemas/`, and the website docs, then run
+Its conformance findings cover hook events ONLY. A clean run means the `HookEvents` enum
+matches the baseline - it says nothing about whether any other field is up to date. Field
+drift is caught only by Step 2.
+
+- `documented-not-modeled` - upstream documents a hook event we do not model. Add it to
+  the Zod schema, the manual schema in `schemas/`, and the website docs, then run
   `npm run check:schema-sync`.
-- `modeled-not-documented` - we model something the docs do not. Treat this as a
-  probable hallucination. Verify against the official page before assuming it is real.
-  If it is a deliberate claudelint extension, add it to `src/upstream/extensions.ts`
+- `modeled-not-documented` - we model a hook event the docs do not document. Treat this
+  as a probable hallucination. Verify against the official page before assuming it is
+  real. If it is a deliberate claudelint extension, add it to `src/upstream/extensions.ts`
   with a reason. Never silence it by deleting the check.
 
 ### Step 4: Report
