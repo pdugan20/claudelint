@@ -7,7 +7,7 @@
  * Run 'npm run generate:types' to regenerate
  *
  * @generated
- * Rules registered: 115
+ * Rules registered: 116
  */
 
 import { RuleRegistry } from '../utils/rules/registry';
@@ -69,6 +69,7 @@ import { rule as output_style_name_directory_mismatch_rule } from './output-styl
 import { rule as output_style_name_rule } from './output-styles/output-style-name';
 import { rule as plugin_commands_deprecated_rule } from './plugin/plugin-commands-deprecated';
 import { rule as plugin_components_wrong_location_rule } from './plugin/plugin-components-wrong-location';
+import { rule as plugin_dependency_not_allowlisted_rule } from './plugin/plugin-dependency-not-allowlisted';
 import { rule as plugin_dependency_string_with_marketplace_rule } from './plugin/plugin-dependency-string-with-marketplace';
 import { rule as plugin_description_required_rule } from './plugin/plugin-description-required';
 import { rule as plugin_hook_missing_plugin_root_rule } from './plugin/plugin-hook-missing-plugin-root';
@@ -187,6 +188,7 @@ RuleRegistry.register(output_style_name_directory_mismatch_rule);
 RuleRegistry.register(output_style_name_rule);
 RuleRegistry.register(plugin_commands_deprecated_rule);
 RuleRegistry.register(plugin_components_wrong_location_rule);
+RuleRegistry.register(plugin_dependency_not_allowlisted_rule);
 RuleRegistry.register(plugin_dependency_string_with_marketplace_rule);
 RuleRegistry.register(plugin_description_required_rule);
 RuleRegistry.register(plugin_hook_missing_plugin_root_rule);
@@ -305,6 +307,7 @@ export {
   output_style_name_rule,
   plugin_commands_deprecated_rule,
   plugin_components_wrong_location_rule,
+  plugin_dependency_not_allowlisted_rule,
   plugin_dependency_string_with_marketplace_rule,
   plugin_description_required_rule,
   plugin_hook_missing_plugin_root_rule,

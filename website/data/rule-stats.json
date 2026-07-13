@@ -1,5 +1,5 @@
 {
-  "total": 115,
+  "total": 116,
   "categoryCount": 10,
   "categories": {
     "claude-md": {
@@ -24,7 +24,7 @@
     },
     "plugin": {
       "display": "Plugin",
-      "count": 13
+      "count": 14
     },
     "agents": {
       "display": "Agents",
@@ -43,5 +43,5 @@
       "count": 1
     }
   },
-  "generatedAt": "2026-07-13T02:29:21.799Z"
+  "generatedAt": "2026-07-13T02:38:45.571Z"
 }

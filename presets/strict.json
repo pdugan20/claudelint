@@ -56,6 +56,7 @@
     "output-style-name-directory-mismatch": "error",
     "plugin-commands-deprecated": "warn",
     "plugin-components-wrong-location": "warn",
+    "plugin-dependency-not-allowlisted": "error",
     "plugin-dependency-string-with-marketplace": "error",
     "plugin-description-required": "warn",
     "plugin-hook-missing-plugin-root": "off",

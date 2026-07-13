@@ -109,7 +109,7 @@
   },
   {
     "label": "Plugins",
-    "totalRules": 13,
+    "totalRules": 14,
     "rules": [
       {
         "id": "plugin-invalid-version",
