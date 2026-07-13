@@ -125,6 +125,7 @@ Valid values for the `permissionMode` field in agent frontmatter.
 | Mode | Description |
 |------|-------------|
 | `default` | Standard permission prompts |
+| `manual` | Alias for `default` (Claude Code v2.1.200+) |
 | `acceptEdits` | Auto-accept file edits |
 | `auto` | Auto mode classifier decides per tool call |
 | `dontAsk` | Treat permission prompts as denied |

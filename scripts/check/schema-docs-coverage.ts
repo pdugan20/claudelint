@@ -40,9 +40,9 @@ const violations: Violation[] = [];
 
 /**
  * Map a registry entry's schema name to its docs page filename.
- * Settings is intentionally absent from the registry but documented separately.
  */
 const SCHEMA_TO_DOC: Record<string, string> = {
+  SettingsSchema: 'settings.md',
   PluginManifestSchema: 'plugin.md',
   SkillFrontmatterSchema: 'skills.md',
   HooksConfigSchema: 'hooks.md',
