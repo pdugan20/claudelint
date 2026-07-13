@@ -254,7 +254,11 @@
             "required": ["name"],
             "properties": {
               "name": { "type": "string" },
-              "version": { "type": "string" }
+              "version": { "type": "string" },
+              "marketplace": {
+                "type": "string",
+                "description": "Marketplace to resolve name in. Requires allowCrossMarketplaceDependenciesOn."
+              }
             },
             "additionalProperties": false
           }

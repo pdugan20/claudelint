@@ -341,6 +341,10 @@ export const PluginDependencySchema = z.union([
   z.object({
     name: z.string(),
     version: z.string().optional(),
+    // Resolve `name` in a different marketplace. Requires the root marketplace to list
+    // that marketplace in allowCrossMarketplaceDependenciesOn.
+    // https://code.claude.com/docs/en/plugin-dependencies
+    marketplace: z.string().optional(),
   }),
 ]);
 
