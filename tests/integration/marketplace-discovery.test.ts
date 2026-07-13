@@ -191,6 +191,26 @@ describe('Marketplace discovery (real validator)', () => {
     ).toBe(true);
   });
 
+  it('fires plugin-marketplace-files-not-found for a missing plugin.json when strict is unset (default)', async () => {
+    // Default behavior (no "strict" field at all) must still require a .claude-plugin/plugin.json
+    // in the source directory. This guards against weakening the `plugin.strict === false` check
+    // to a truthy check like `!plugin.strict`, which would also suppress the warning here.
+    const root = createProject({
+      name: 'demo-marketplace',
+      owner: { name: 'Pat Dugan' },
+      plugins: [{ name: 'no-manifest', source: './no-manifest' }],
+    });
+    mkdirSync(join(root, 'no-manifest'), { recursive: true });
+    writeFileSync(join(root, 'no-manifest/README.md'), '# no-manifest\n');
+
+    const result = await validateProject(root);
+
+    expect(ruleIds(result)).toContain('plugin-marketplace-files-not-found');
+    expect(
+      result.warnings.some((w) => w.message.includes('missing .claude-plugin/plugin.json'))
+    ).toBe(true);
+  });
+
   it('honors metadata.pluginRoot when resolving relative sources', async () => {
     const root = createProject({
       name: 'demo-marketplace',
