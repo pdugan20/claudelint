@@ -1,9 +1,5 @@
 import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
-import {
-  findMarketplaceManifests,
-  findPluginManifests,
-  readFileContent,
-} from '../utils/filesystem/files';
+import { findMarketplaceManifests, findPluginManifests } from '../utils/filesystem/files';
 import { basename } from 'path';
 import { z } from 'zod';
 import { PluginManifestSchema } from './schemas';
@@ -58,7 +54,7 @@ export class PluginValidator extends SchemaValidator<typeof PluginManifestSchema
     _plugin: z.infer<typeof PluginManifestSchema>
   ): Promise<void> {
     // Read file content for rule execution
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
 
     // Execute ALL Plugin rules via category-based discovery
     // This includes: plugin.json validation, marketplace.json file references, and all other validations

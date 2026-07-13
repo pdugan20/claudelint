@@ -1,5 +1,5 @@
 import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
-import { findSettingsFiles, readFileContent } from '../utils/filesystem/files';
+import { findSettingsFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { SettingsSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
@@ -35,7 +35,7 @@ export class SettingsValidator extends SchemaValidator<typeof SettingsSchema> {
     settings: z.infer<typeof SettingsSchema>
   ): Promise<void> {
     // Read file content for rule execution
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
 
     // Execute ALL Settings rules via category-based discovery
     await this.executeRulesForCategory('Settings', filePath, content);

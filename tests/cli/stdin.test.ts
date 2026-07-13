@@ -106,3 +106,63 @@ describe('stdin support', () => {
     });
   });
 });
+
+/**
+ * Regressions: stdin mode used to lint the wrong thing, or nothing at all.
+ *
+ * Each case here piped VALID-looking content and got a misleading result, because the
+ * validator either could not be matched or ignored the piped content and read the disk.
+ * Assert BEHAVIOR (a finding about the piped document), never just an exit code.
+ */
+describe('stdin lints the piped document, not the filesystem', () => {
+  function pipe(filename: string, content: string) {
+    const result = spawnSync(
+      'node',
+      [claudelintBin, 'check-all', '--stdin', '--stdin-filename', filename],
+      { encoding: 'utf-8', input: content }
+    );
+    return result.stdout + result.stderr;
+  }
+
+  it('matches a plugin manifest at its canonical dot-directory path', () => {
+    // minimatch's `**` will not cross a dot-directory without `{ dot: true }`, so the plugin
+    // validator's `**/plugin.json` never matched `.claude-plugin/plugin.json` and this
+    // printed "No validator matches filename".
+    const output = pipe(
+      '.claude-plugin/plugin.json',
+      '{"name":"demo","version":"not-semver","description":"A demo plugin for testing."}'
+    );
+
+    expect(output).not.toContain('No validator matches');
+    expect(output).toContain('Invalid semantic version format');
+  });
+
+  it('runs RULES against the piped content, not against the file on disk', () => {
+    // The settings validator re-read `filePath` from disk inside validateSemantics, so the
+    // schema saw the piped content while the rules saw whatever was on disk at that path --
+    // a blend of two documents, or an ENOENT when nothing was there.
+    const output = pipe('.claude/settings.json', '{"permissions":{"defaultMode":"bogus-mode"}}');
+
+    expect(output).toContain('defaultMode');
+    expect(output).not.toContain('ENOENT');
+  });
+
+  it('validates a piped agent (validator used to ignore stdin and glob the filesystem)', () => {
+    const output = pipe(
+      '.claude/agents/demo.md',
+      '---\nname: demo\ndescription: Short\n---\n\nBody.\n'
+    );
+
+    expect(output).toContain('agent-description');
+  });
+
+  it('validates a piped SKILL.md without requiring the directory to exist on disk', () => {
+    const output = pipe(
+      '.claude/skills/demo/SKILL.md',
+      '---\nname: NOT_KEBAB\ndescription: Formats currency values for display in reports.\n---\n\n## Usage\n\nx\n'
+    );
+
+    expect(output).not.toContain('SKILL.md not found');
+    expect(output).toContain('skill-name');
+  });
+});

@@ -3,7 +3,7 @@ import { findSkillDirectories, readFileContent, fileExists } from '../utils/file
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { SkillFrontmatterWithRefinements } from '../schemas/skill-frontmatter.schema';
 import { SCRIPT_EXTENSIONS } from '../schemas/constants';
-import { basename, join } from 'path';
+import { basename, join, dirname } from 'path';
 import { readdir } from 'fs/promises';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
@@ -32,6 +32,18 @@ export class SkillsValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
+    // Handle stdin mode. Without this the validator globs the filesystem and ignores the
+    // content it was handed, so `lintText`/`--stdin` on a SKILL.md validated nothing at all.
+    // `validateSkill` takes the skill DIRECTORY and reads `SKILL.md` inside it, which
+    // `readContent()` resolves back to the virtual file.
+    const virtualFile = this.getVirtualFile();
+    if (virtualFile) {
+      this.trackValidatedFiles([virtualFile.path]);
+      this.markScanned([virtualFile.path]);
+      await this.validateSkill(dirname(virtualFile.path));
+      return this.getResult();
+    }
+
     const skillDirs = await this.findSkillDirs();
     const skillFiles = skillDirs.map((dir) => join(dir, 'SKILL.md'));
     this.trackValidatedFiles(skillFiles);
@@ -64,14 +76,18 @@ export class SkillsValidator extends FileValidator {
   private async validateSkill(skillDir: string): Promise<void> {
     const skillMdPath = join(skillDir, 'SKILL.md');
 
-    // Check SKILL.md exists
-    const exists = await fileExists(skillMdPath);
-    if (!exists) {
-      throw new Error(`SKILL.md not found in skill directory: ${skillDir}`);
+    // Check SKILL.md exists. In stdin mode the content was handed to us and there is no
+    // directory on disk to look in -- the whole point is to lint a document that is not
+    // (or not yet) a file.
+    if (!this.isStdinMode()) {
+      const exists = await fileExists(skillMdPath);
+      if (!exists) {
+        throw new Error(`SKILL.md not found in skill directory: ${skillDir}`);
+      }
     }
 
     // Read content
-    const content = await readFileContent(skillMdPath);
+    const content = await this.readContent(skillMdPath);
 
     // Parse disable comments
     this.parseDisableComments(skillMdPath, content);
