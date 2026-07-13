@@ -7,7 +7,7 @@
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { WATCHLIST, WatchEntry } from '../../src/upstream/watchlist';
+import { WATCHLIST, WatchEntry, ExtractorId } from '../../src/upstream/watchlist';
 
 export type Facts = Record<string, string[]>;
 
@@ -75,18 +75,22 @@ export function assertMinFacts(id: string, facts: string[], minFacts: number): v
   }
 }
 
+/**
+ * A lookup table, not a ternary chain: TypeScript enforces that every ExtractorId has
+ * an entry here, so adding a 5th extractor without wiring it up is a compile error
+ * instead of a silent fall-through to the wrong extractor.
+ */
+const EXTRACTORS: Record<ExtractorId, (markdown: string) => string[]> = {
+  'hook-events': extractHookEvents,
+  'field-tables': extractFieldTables,
+  'json-keys': extractJsonKeys,
+  'frontmatter-keys': extractFrontmatterKeys,
+};
+
 function extractPage(markdown: string, entry: WatchEntry): string[] {
   const facts = new Set<string>();
   for (const extractor of entry.extractors) {
-    const found =
-      extractor === 'hook-events'
-        ? extractHookEvents(markdown)
-        : extractor === 'field-tables'
-          ? extractFieldTables(markdown)
-          : extractor === 'json-keys'
-            ? extractJsonKeys(markdown)
-            : extractFrontmatterKeys(markdown);
-    found.forEach((f) => facts.add(f));
+    EXTRACTORS[extractor](markdown).forEach((f) => facts.add(f));
   }
   return [...facts].sort();
 }

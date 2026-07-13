@@ -25,13 +25,29 @@ export function normalize(markdown: string): string {
     .trim();
 }
 
+/**
+ * The real docs index currently yields ~125 pages. New-page detection is the core
+ * mechanism of this system - if llms.txt reshapes its URL format and this regex stops
+ * matching, silently returning [] would overwrite _index.json with an empty page list
+ * and permanently kill the [NEW PAGE] signal with no error. Fail loudly instead: fix
+ * the parser, do not lower this floor.
+ */
+const MIN_INDEX_PAGES = 50;
+
 /** Page slugs referenced by the docs index. A new slug here is itself a finding. */
 export function parseIndex(llmsTxt: string): string[] {
   const slugs = new Set<string>();
   for (const match of llmsTxt.matchAll(/code\.claude\.com\/docs\/en\/([a-z0-9-]+)/g)) {
     slugs.add(match[1]);
   }
-  return [...slugs].sort();
+  const pages = [...slugs].sort();
+  if (pages.length < MIN_INDEX_PAGES) {
+    throw new Error(
+      `Index parser guard tripped: parseIndex yielded ${pages.length} pages, expected >= ${MIN_INDEX_PAGES}. ` +
+        `llms.txt likely changed URL format. Fix parseIndex - do not lower MIN_INDEX_PAGES to make this pass.`
+    );
+  }
+  return pages;
 }
 
 async function fetchText(url: string): Promise<string> {
@@ -64,8 +80,6 @@ async function main(): Promise<void> {
     log.info(`[REMOVED PAGE] ${page}`);
   }
 
-  writeFileSync(indexPath, `${JSON.stringify({ pages }, null, 2)}\n`);
-
   for (const entry of WATCHLIST) {
     const markdown = normalize(await fetchText(entry.url));
     writeFileSync(join(BASELINE_DIR, `${entry.id}.md`), `${markdown}\n`);
@@ -76,6 +90,12 @@ async function main(): Promise<void> {
   const facts = extract(BASELINE_DIR);
   writeFileSync(join(BASELINE_DIR, 'facts.json'), `${JSON.stringify(facts, null, 2)}\n`);
   log.info(`[OK] facts.json (${Object.keys(facts).length} pages)`);
+
+  // Persisted last, after every fetch and guard has succeeded. A failed run must leave
+  // the previous index intact so the [NEW PAGE] signal survives to the next run instead
+  // of being silently consumed (see Task 7 review: this bit us for real when the
+  // `memory` guard tripped mid-run).
+  writeFileSync(indexPath, `${JSON.stringify({ pages }, null, 2)}\n`);
 }
 
 if (require.main === module) {

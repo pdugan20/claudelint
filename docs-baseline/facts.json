@@ -289,6 +289,12 @@
     "field:version",
     "field:when",
     "field:workspaceFolder",
+    "frontmatter-key:description",
+    "frontmatter-key:disallowedTools",
+    "frontmatter-key:effort",
+    "frontmatter-key:maxTurns",
+    "frontmatter-key:model",
+    "frontmatter-key:name",
     "json-key:agents",
     "json-key:author",
     "json-key:base",
@@ -404,7 +410,13 @@
     "field:paths",
     "field:shell",
     "field:user-invocable",
-    "field:when_to_use"
+    "field:when_to_use",
+    "frontmatter-key:agent",
+    "frontmatter-key:allowed-tools",
+    "frontmatter-key:context",
+    "frontmatter-key:description",
+    "frontmatter-key:disable-model-invocation",
+    "frontmatter-key:name"
   ],
   "sub-agents": [
     "field:Enter",
@@ -439,7 +451,16 @@
     "field:skills",
     "field:tools",
     "field:user",
-    "field:x"
+    "field:x",
+    "frontmatter-key:description",
+    "frontmatter-key:disallowedTools",
+    "frontmatter-key:hooks",
+    "frontmatter-key:mcpServers",
+    "frontmatter-key:memory",
+    "frontmatter-key:model",
+    "frontmatter-key:name",
+    "frontmatter-key:skills",
+    "frontmatter-key:tools"
   ],
   "mcp": [
     "field:CLAUDE_CODE_MCP_SERVER_NAME",

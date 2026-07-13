@@ -37,9 +37,11 @@ export const WATCHLIST: WatchEntry[] = [
   {
     id: 'plugins-reference',
     url: `${DOCS}/plugins-reference.md`,
-    extractors: ['field-tables', 'json-keys'],
+    extractors: ['field-tables', 'json-keys', 'frontmatter-keys'],
     governs: ['PluginManifestSchema', 'LSPConfigSchema'],
-    minFacts: 15,
+    // Raised from 15 after confirming frontmatter-keys' real yield (110 facts as of
+    // this refresh); still well below the true count for margin.
+    minFacts: 60,
   },
   {
     id: 'plugin-dependencies',
@@ -58,16 +60,25 @@ export const WATCHLIST: WatchEntry[] = [
   {
     id: 'skills',
     url: `${DOCS}/skills.md`,
-    extractors: ['field-tables'],
+    // Documents claudelint-governed frontmatter fields the same YAML-example-only way
+    // memory.md does for `paths`; also covered by tables today, but frontmatter-keys
+    // closes the blind spot if a future field is added example-only.
+    extractors: ['field-tables', 'frontmatter-keys'],
     governs: ['SkillFrontmatterSchema'],
-    minFacts: 8,
+    // Raised from 8 after confirming frontmatter-keys' real yield (22 facts as of this
+    // refresh); still well below the true count for margin.
+    minFacts: 15,
   },
   {
     id: 'sub-agents',
     url: `${DOCS}/sub-agents.md`,
-    extractors: ['field-tables'],
+    // Same rationale as `skills` above: frontmatter-only documentation style exists
+    // upstream (memory.md), so close the blind spot here too.
+    extractors: ['field-tables', 'frontmatter-keys'],
     governs: ['AgentFrontmatterSchema'],
-    minFacts: 4,
+    // Raised from 4 after confirming frontmatter-keys' real yield (42 facts as of this
+    // refresh); still well below the true count for margin.
+    minFacts: 20,
   },
   {
     id: 'mcp',
