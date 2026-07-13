@@ -258,7 +258,12 @@ export const SettingsSchema = z.object({
   apiKeyHelper: z.string().optional(),
   hooks: SettingsHooksSchema.optional(),
   attribution: AttributionSchema.optional(),
-  statusLine: z.string().optional(),
+  // An OBJECT, not a string: `{"type": "command", "command": "~/.claude/statusline.sh"}`.
+  // Modelled as `z.string()`, claudelint rejected the documented example outright. The inner
+  // shape (`type`, `command`, plus optional `padding`, `refreshInterval`,
+  // `hideVimModeIndicator`) is described in prose only, so it stays a loose record rather
+  // than being narrowed by guesswork -- tighten it when a page documenting it is watched.
+  statusLine: z.record(z.string(), z.unknown()).optional(),
   outputStyle: z.string().optional(),
   sandbox: SandboxSchema.optional(),
   enabledPlugins: z.record(z.string(), z.boolean()).optional(),
@@ -270,7 +275,10 @@ export const SettingsSchema = z.object({
   respectGitignore: z.boolean().optional(),
   enableAllProjectMcpServers: z.boolean().optional(),
   disableAllHooks: z.boolean().optional(),
-  teammateMode: z.boolean().optional(),
+  // A STRING, not a boolean: "**Default**: `in-process`. How agent team teammates display:
+  // `in-process`, `auto`, ...". Modelled as `z.boolean()`, so the documented `"auto"` was
+  // rejected with "expected boolean, received string".
+  teammateMode: z.string().optional(),
   showTurnDuration: z.boolean().optional(),
   terminalProgressBarEnabled: z.boolean().optional(),
   spinnerTipsEnabled: z.boolean().optional(),
@@ -278,6 +286,131 @@ export const SettingsSchema = z.object({
   prefersReducedMotion: z.boolean().optional(),
   plansDirectory: z.string().optional(),
   skipWebFetchPreflight: z.boolean().optional(),
+
+  // ---------------------------------------------------------------------------------
+  // The rest of the documented `settings.json` surface (docs-baseline/settings.md,
+  // "### Available settings"). claudelint modelled 23 of the 117 documented keys; the
+  // other 94 were stripped silently by this non-strict object, so a user writing them got
+  // no validation at all and a typo got no warning.
+  //
+  // Each type below comes from the Example column of that table -- the same evidence the
+  // type-conformance gate (tests/upstream/field-types.test.ts) checks these against, so
+  // every field here is verified rather than inferred.
+  //
+  // Types are deliberately permissive where the table is the only source: an enum-looking
+  // field is `z.string()` and an object is a loose record. Narrowing them from prose is
+  // exactly the guesswork that produced `websocket` and `allowedHosts`. A field documented
+  // in depth elsewhere can be tightened later, once that page is watched.
+  //
+  // NOT included: the "### Global config settings" keys. Those live in `~/.claude.json`,
+  // and the docs are explicit that "adding them to settings.json will trigger a schema
+  // validation error" -- modelling them here would have invented a fifth hallucination.
+  // ---------------------------------------------------------------------------------
+  // Documented as containing `environment`, `allow`, `soft_deny` and `hard_deny`, plus the
+  // separately-documented `classifyAllShell` row. `.passthrough()` is not used: the object
+  // is non-strict already, and enumerating only the keys the docs name keeps this honest
+  // about what is actually evidenced.
+  autoMode: z
+    .object({
+      environment: z.record(z.string(), z.unknown()).optional(),
+      allow: z.array(z.string()).optional(),
+      soft_deny: z.array(z.string()).optional(),
+      hard_deny: z.array(z.string()).optional(),
+      classifyAllShell: z.boolean().optional(),
+    })
+    .optional(),
+  advisorModel: z.string().optional(),
+  agent: z.string().optional(),
+  agentPushNotifEnabled: z.boolean().optional(),
+  allowAllClaudeAiMcps: z.boolean().optional(),
+  allowManagedHooksOnly: z.boolean().optional(),
+  allowManagedMcpServersOnly: z.boolean().optional(),
+  allowManagedPermissionRulesOnly: z.boolean().optional(),
+  allowedChannelPlugins: z.array(z.record(z.string(), z.unknown())).optional(),
+  allowedHttpHookUrls: z.array(z.string()).optional(),
+  allowedMcpServers: z.array(z.record(z.string(), z.unknown())).optional(),
+  askUserQuestionTimeout: z.string().optional(),
+  autoCompactEnabled: z.boolean().optional(),
+  autoMemoryDirectory: z.string().optional(),
+  autoMemoryEnabled: z.boolean().optional(),
+  autoScrollEnabled: z.boolean().optional(),
+  availableModels: z.array(z.string()).optional(),
+  awaySummaryEnabled: z.boolean().optional(),
+  awsAuthRefresh: z.string().optional(),
+  awsCredentialExport: z.string().optional(),
+  axScreenReader: z.boolean().optional(),
+  blockedMarketplaces: z.array(z.record(z.string(), z.unknown())).optional(),
+  browserExternalPageTools: z.string().optional(),
+  channelsEnabled: z.boolean().optional(),
+  claudeMd: z.string().optional(),
+  claudeMdExcludes: z.array(z.string()).optional(),
+  companyAnnouncements: z.array(z.string()).optional(),
+  defaultShell: z.string().optional(),
+  deniedMcpServers: z.array(z.record(z.string(), z.unknown())).optional(),
+  disableAgentView: z.boolean().optional(),
+  disableArtifact: z.boolean().optional(),
+  disableAutoMode: z.string().optional(),
+  disableBundledSkills: z.boolean().optional(),
+  disableClaudeAiConnectors: z.boolean().optional(),
+  disableDeepLinkRegistration: z.string().optional(),
+  disableRemoteControl: z.boolean().optional(),
+  disableSideloadFlags: z.boolean().optional(),
+  disableSkillShellExecution: z.boolean().optional(),
+  disableWorkflows: z.boolean().optional(),
+  disabledMcpjsonServers: z.array(z.string()).optional(),
+  editorMode: z.string().optional(),
+  effortLevel: z.string().optional(),
+  enableArtifact: z.boolean().optional(),
+  enabledMcpjsonServers: z.array(z.string()).optional(),
+  enforceAvailableModels: z.boolean().optional(),
+  fallbackModel: z.array(z.string()).optional(),
+  fastModePerSessionOptIn: z.boolean().optional(),
+  feedbackSurveyRate: z.number().optional(),
+  fileCheckpointingEnabled: z.boolean().optional(),
+  fileSuggestion: z.record(z.string(), z.unknown()).optional(),
+  footerLinksRegexes: z.array(z.record(z.string(), z.unknown())).optional(),
+  forceLoginGatewayUrl: z.string().optional(),
+  forceLoginMethod: z.string().optional(),
+  forceLoginOrgUUID: z.string().optional(),
+  forceRemoteSettingsRefresh: z.boolean().optional(),
+  gcpAuthRefresh: z.string().optional(),
+  httpHookAllowedEnvVars: z.array(z.string()).optional(),
+  includeGitInstructions: z.boolean().optional(),
+  inputNeededNotifEnabled: z.boolean().optional(),
+  minimumVersion: z.string().optional(),
+  modelOverrides: z.record(z.string(), z.unknown()).optional(),
+  otelHeadersHelper: z.string().optional(),
+  parentSettingsBehavior: z.string().optional(),
+  pluginSuggestionMarketplaces: z.array(z.string()).optional(),
+  pluginTrustMessage: z.string().optional(),
+  policyHelper: z.record(z.string(), z.unknown()).optional(),
+  prUrlTemplate: z.string().optional(),
+  preferredNotifChannel: z.string().optional(),
+  remoteControlAtStartup: z.boolean().optional(),
+  requiredMaximumVersion: z.string().optional(),
+  requiredMinimumVersion: z.string().optional(),
+  respondToBashCommands: z.boolean().optional(),
+  showClearContextOnPlanAccept: z.boolean().optional(),
+  showThinkingSummaries: z.boolean().optional(),
+  skillListingBudgetFraction: z.number().optional(),
+  skillListingMaxDescChars: z.number().optional(),
+  skillOverrides: z.record(z.string(), z.unknown()).optional(),
+  spinnerTipsOverride: z.record(z.string(), z.unknown()).optional(),
+  spinnerVerbs: z.record(z.string(), z.unknown()).optional(),
+  sshConfigs: z.array(z.record(z.string(), z.unknown())).optional(),
+  strictPluginOnlyCustomization: z.array(z.string()).optional(),
+  syntaxHighlightingDisabled: z.boolean().optional(),
+  theme: z.string().optional(),
+  tui: z.string().optional(),
+  ultracode: z.boolean().optional(),
+  useAutoModeDuringPlan: z.boolean().optional(),
+  verbose: z.boolean().optional(),
+  viewMode: z.string().optional(),
+  voice: z.record(z.string(), z.unknown()).optional(),
+  voiceEnabled: z.boolean().optional(),
+  wheelScrollAccelerationEnabled: z.boolean().optional(),
+  workflowKeywordTriggerEnabled: z.boolean().optional(),
+  wslInheritsWindowsSettings: z.boolean().optional(),
 });
 
 /**

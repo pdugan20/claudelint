@@ -35,13 +35,20 @@ export interface FieldExample {
 }
 
 /**
- * Which settings key each documented table hangs under.
+ * Which settings key each documented table hangs under. `''` means the table's rows are
+ * top-level keys of settings.json.
  *
- * Only sections whose binding is unambiguous. `### Available settings` is deliberately
- * absent: its rows are top-level and mix scalars with deep objects whose Example cells are
- * abridged, so binding it would manufacture failures rather than find them.
+ * `Available settings` is bound now that the surface it documents is actually modelled:
+ * every one of its 117 rows is checked against the schema, so the additions are verified
+ * against upstream's own example values rather than trusted.
+ *
+ * `Global config settings` is deliberately NOT bound, and must never be: those keys live in
+ * `~/.claude.json`, and the docs are explicit that "adding them to settings.json will
+ * trigger a schema validation error". Binding that table would assert the opposite of what
+ * upstream says.
  */
 export const SECTION_BINDINGS: Record<string, string> = {
+  'Available settings': '',
   'Sandbox settings': 'sandbox',
   'Permission settings': 'permissions',
   'Attribution settings': 'attribution',
