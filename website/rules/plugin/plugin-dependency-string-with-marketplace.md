@@ -61,7 +61,7 @@ Bare string for a plugin in the same marketplace
 
 ## How To Fix
 
-Replace the string with an object: { "name": "<plugin>", "marketplace": "<marketplace>" }. Then add the target marketplace to allowCrossMarketplaceDependenciesOn in the root marketplace.json, or the install will fail with a cross-marketplace error.
+Replace the string with an object of the form { "name": "my-plugin", "marketplace": "their-marketplace" }. Then add the target marketplace to allowCrossMarketplaceDependenciesOn in the root marketplace.json, or the install will fail with a cross-marketplace error.
 
 ## Options
 
