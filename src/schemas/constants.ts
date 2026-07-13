@@ -96,9 +96,16 @@ export const ContextModes = z.enum(['fork']);
 
 /**
  * Valid MCP transport types
- * Note: 'sse' is deprecated, but still supported
+ *
+ * Note: 'sse' is deprecated, but still supported.
+ * Note: 'streamable-http' is a documented alias for 'http' (mcp.md:74).
+ *
+ * The WebSocket literal is 'ws'. It is NOT 'websocket' -- that value appears nowhere in the
+ * docs as a config value, only in prose ("Add a remote WebSocket server"), and modelling it
+ * meant claudelint rejected the real thing while three rules keyed themselves to a
+ * transport that cannot exist.
  */
-export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'websocket']);
+export const TransportTypes = z.enum(['stdio', 'sse', 'http', 'streamable-http', 'ws']);
 
 /**
  * Script file extensions

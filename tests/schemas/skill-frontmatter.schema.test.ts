@@ -135,16 +135,17 @@ describe('SkillFrontmatterSchema', () => {
 });
 
 describe('SkillFrontmatterWithRefinements', () => {
-  it('should require agent when context is fork', () => {
+  it('should NOT require agent when context is fork', () => {
+    // `agent` is documented `Required: No` -- "Which subagent type to use when
+    // `context: fork` is set" (docs-baseline/skills.md:241) -- and the docs print exactly
+    // this skill at skills.md:193. claudelint made it mandatory and rejected that example.
+    // This test asserted the false positive.
     const result = SkillFrontmatterWithRefinements.safeParse({
-      name: 'my-skill',
-      description: 'This skill does something',
+      name: 'deploy',
+      description: 'Deploy the application to production',
       context: 'fork',
     });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0].message).toContain('agent');
-    }
+    expect(result.success).toBe(true);
   });
 
   it('should pass when agent provided with fork context', () => {

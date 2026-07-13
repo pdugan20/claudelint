@@ -52,7 +52,7 @@ export const rule: Rule = {
       },
       howToFix:
         'Change the server type from "sse" to "http" and update the url to point to the HTTP ' +
-        'streamable endpoint. Alternatively, use "websocket" if the server supports it.',
+        'streamable endpoint. Alternatively, use "ws" if the server supports it.',
       whenNotToUse:
         'Disable this rule if you are intentionally targeting an MCP server that only supports ' +
         'the SSE transport and cannot be upgraded.',

@@ -96,7 +96,11 @@ export const PermissionsSchema = z.object({
   allow: z.array(z.string()).optional(),
   deny: z.array(z.string()).optional(),
   ask: z.array(z.string()).optional(),
-  defaultMode: z.enum(['acceptEdits', 'bypassPermissions', 'default', 'plan']).optional(),
+  // All seven documented modes. claudelint modelled four, so `auto` -- common in current
+  // usage -- errored with "Invalid option". `manual` is an alias for `default`.
+  defaultMode: z
+    .enum(['default', 'manual', 'acceptEdits', 'auto', 'dontAsk', 'plan', 'bypassPermissions'])
+    .optional(),
   disableBypassPermissionsMode: z.enum(['disable']).optional(),
   additionalDirectories: z.array(z.string()).optional(),
 });
@@ -135,15 +139,25 @@ export const SandboxSchema = z.object({
 /**
  * Marketplace source schema for settings (extraKnownMarketplaces)
  * Based on: https://code.claude.com/docs/en/settings
- * Supports: github, git, url, npm, directory, file
+ * Supports: github, git, url, npm, directory, file, settings
+ *
+ * `settings` is an INLINE marketplace declared directly in settings.json, with no hosted
+ * repository: "`settings`: inline marketplace declared directly in settings.json without a
+ * separate hosted repository (uses `name` and `plugins`)" (docs-baseline/settings.md:815).
+ * Omitting it meant claudelint rejected the docs' own `extraKnownMarketplaces` example.
  */
 export const MarketplaceSourceSchema = z.object({
-  source: z.enum(['github', 'git', 'url', 'npm', 'directory', 'file']),
+  source: z.enum(['github', 'git', 'url', 'npm', 'directory', 'file', 'settings']),
   repo: z.string().optional(), // github
   url: z.string().optional(), // git, url
   package: z.string().optional(), // npm
   path: z.string().optional(), // github (subdir), git (subdir), directory, file
   ref: z.string().optional(), // github, git (branch/tag/SHA)
+  name: z.string().optional(), // settings (inline marketplace)
+  // z.lazy: MarketplacePluginEntrySchema is declared further down this module. An inline
+  // marketplace's plugin entries are the same shape as a hosted marketplace.json's, so
+  // reference it rather than duplicating a second, drifting copy of the shape.
+  plugins: z.lazy(() => z.array(MarketplacePluginEntrySchema)).optional(),
 });
 
 /**
@@ -249,12 +263,32 @@ export const MCPHTTPTransportSchema = z.object({
 });
 
 /**
+ * MCP streamable-http transport schema
+ *
+ * A documented ALIAS for `http`, not a distinct transport: "the `type` field accepts
+ * `streamable-http` as an alias for `http`. The MCP specification uses the name
+ * `streamable-http` for this transport, so configurations copied from server documentation
+ * work without modification." (docs-baseline/mcp.md:74)
+ */
+export const MCPStreamableHTTPTransportSchema = MCPHTTPTransportSchema.extend({
+  type: z.literal('streamable-http'),
+});
+
+/**
  * MCP WebSocket transport schema
- * For remote servers using WebSocket
+ *
+ * The config literal is `ws`, NOT `websocket`. claudelint modelled `websocket` for three
+ * releases -- a value that appears nowhere in the docs as a config value; the word occurs
+ * only in prose ("Add a remote WebSocket server"). The real one was rejected outright.
+ * See docs-baseline/mcp.md:141.
+ *
+ * `headers` belongs here for the same reason: "The `type: "ws"` entry accepts the same
+ * `url`, `headers`, `headersHelper`, `timeout`, and `alwaysLoad` fields as `http`."
  */
 export const MCPWebSocketTransportSchema = z.object({
-  type: z.literal('websocket'),
+  type: z.literal('ws'),
   url: z.string(),
+  headers: z.record(z.string(), z.string()).optional(),
   env: z.record(z.string(), z.string()).optional(),
 });
 
@@ -265,6 +299,7 @@ export const MCPWebSocketTransportSchema = z.object({
 export const MCPServerSchema = z
   .discriminatedUnion('type', [
     MCPHTTPTransportSchema,
+    MCPStreamableHTTPTransportSchema,
     MCPSSETransportSchema,
     MCPWebSocketTransportSchema,
   ])

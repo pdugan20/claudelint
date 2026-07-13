@@ -9,12 +9,20 @@
  */
 
 /**
- * Match environment variable placeholders: ${VAR_NAME} or $VAR_NAME
+ * Match environment variable placeholders: ${VAR_NAME}, ${VAR_NAME:-default}, or $VAR_NAME
+ *
+ * The `:-default` form is documented upstream and is not optional to support:
+ *   "${VAR:-default}: expands to VAR if set, otherwise uses default" (docs-baseline/mcp.md:400)
+ *
+ * Omitting it made every url/path carrying a default look like a literal value rather than
+ * a placeholder, so claudelint tried to parse `${API_BASE_URL:-https://api.example.com}/mcp`
+ * -- from the docs' own example -- as a URL and reported it invalid. Callers use this to
+ * SKIP values resolved at runtime, so a miss here is a false positive, not a missed bug.
  *
  * Use `containsEnvVar()` for boolean checks. Use the regex directly
  * only when you need match positions or capture groups.
  */
-export const ENV_VAR_PLACEHOLDER_RE = /\$\{[A-Z_]+\}|\$[A-Z_]+\b/;
+export const ENV_VAR_PLACEHOLDER_RE = /\$\{[A-Z_][A-Z0-9_]*(?::-[^}]*)?\}|\$[A-Z_][A-Z0-9_]*\b/;
 
 /**
  * Full semantic versioning regex (major.minor.patch with optional pre-release and build metadata)

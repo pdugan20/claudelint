@@ -172,12 +172,17 @@ describe('Schema Constants', () => {
       expect(TransportTypes.safeParse('stdio').success).toBe(true);
       expect(TransportTypes.safeParse('sse').success).toBe(true);
       expect(TransportTypes.safeParse('http').success).toBe(true);
-      expect(TransportTypes.safeParse('websocket').success).toBe(true);
+      expect(TransportTypes.safeParse('streamable-http').success).toBe(true);
+      expect(TransportTypes.safeParse('ws').success).toBe(true);
     });
 
     it('should reject invalid transport types', () => {
       expect(TransportTypes.safeParse('tcp').success).toBe(false);
       expect(TransportTypes.safeParse('STDIO').success).toBe(false);
+      // The literal claudelint used to model. It is not a config value anywhere in the
+      // docs -- "WebSocket" appears only in prose -- and modelling it meant the real
+      // literal (`ws`) was rejected outright. Pin it as INVALID so it cannot creep back.
+      expect(TransportTypes.safeParse('websocket').success).toBe(false);
     });
 
     it('should export runtime values', () => {
@@ -185,7 +190,8 @@ describe('Schema Constants', () => {
         'stdio',
         'sse',
         'http',
-        'websocket',
+        'streamable-http',
+        'ws',
       ]);
     });
   });
