@@ -98,13 +98,17 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('ElicitationResult').success).toBe(true);
     });
 
+    it('accepts the MessageDisplay event', () => {
+      expect(HookEvents.safeParse('MessageDisplay').success).toBe(true);
+    });
+
     it('should reject invalid hook events', () => {
       expect(HookEvents.safeParse('BeforeToolUse').success).toBe(false);
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 29 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(29);
+    it('should export all 30 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(30);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');

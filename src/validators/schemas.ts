@@ -57,6 +57,7 @@ export const SettingsHooksSchema = z.object({
   PermissionRequest: z.array(SettingsHookMatcherSchema).optional(),
   PermissionDenied: z.array(SettingsHookMatcherSchema).optional(),
   Notification: z.array(SettingsHookMatcherSchema).optional(),
+  MessageDisplay: z.array(SettingsHookMatcherSchema).optional(),
   UserPromptSubmit: z.array(SettingsHookMatcherSchema).optional(),
   UserPromptExpansion: z.array(SettingsHookMatcherSchema).optional(),
   Stop: z.array(SettingsHookMatcherSchema).optional(),

@@ -84,6 +84,7 @@ Valid event keys for hooks configuration. All names are PascalCase.
 | `UserPromptSubmit` | When the user submits a prompt, before Claude processes it |
 | `UserPromptExpansion` | When a user-typed command expands into a prompt, before it reaches Claude |
 | `Notification` | When Claude Code sends a notification |
+| `MessageDisplay` | While assistant message text is displayed |
 | `Stop` | When Claude finishes responding |
 | `StopFailure` | When the turn ends due to an API error |
 | `Setup` | When Claude Code starts with `--init-only`, `--init`, or `--maintenance` (one-time CI/script preparation) |
