@@ -102,6 +102,7 @@
     "check:source-paths": "ts-node scripts/check/source-paths.ts",
     "check:schemas": "ts-node scripts/verify/compare-schemas.ts",
     "check:tool-names": "ts-node scripts/verify/tool-names.ts",
+    "check:upstream": "ts-node scripts/check/upstream.ts",
     "check:types:api": "tsd --typings dist/index.d.ts --files 'src/index.test-d.ts'",
     "check:api-examples": "tsc --noEmit -p tsconfig.api-examples.json",
     "check:api-report": "api-extractor run",
