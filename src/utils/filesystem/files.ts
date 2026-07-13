@@ -11,6 +11,7 @@ import {
   HOOKS_PATTERNS,
   LSP_PATTERNS,
   PLUGIN_PATTERNS,
+  MARKETPLACE_PATTERNS,
   FORMATTABLE_MARKDOWN,
   FORMATTABLE_JSON,
   FORMATTABLE_YAML,
@@ -200,6 +201,20 @@ export async function findMcpFiles(basePath: string = process.cwd()): Promise<st
 export async function findPluginManifests(basePath: string = process.cwd()): Promise<string[]> {
   const allFiles: string[] = [];
   for (const pattern of PLUGIN_PATTERNS) {
+    const files = await findFiles(pattern, basePath);
+    allFiles.push(...files);
+  }
+  return allFiles;
+}
+
+/**
+ * Find marketplace manifest files (.claude-plugin/marketplace.json)
+ */
+export async function findMarketplaceManifests(
+  basePath: string = process.cwd()
+): Promise<string[]> {
+  const allFiles: string[] = [];
+  for (const pattern of MARKETPLACE_PATTERNS) {
     const files = await findFiles(pattern, basePath);
     allFiles.push(...files);
   }

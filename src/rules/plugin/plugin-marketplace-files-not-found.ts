@@ -8,8 +8,21 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { safeParseJSON } from '../../utils/formats/json';
 import { directoryExists, fileExists } from '../../utils/filesystem/files';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 import { MarketplaceMetadataSchema } from '../../validators/schemas';
+
+/**
+ * Resolve the marketplace root — the directory relative sources are resolved against.
+ *
+ * Per the official docs, a relative source "resolves relative to the marketplace root, not the
+ * `.claude-plugin/` directory": `./plugins/my-plugin` in `<repo>/.claude-plugin/marketplace.json`
+ * points at `<repo>/plugins/my-plugin`.
+ * https://code.claude.com/docs/en/plugin-marketplaces#relative-paths
+ */
+function getMarketplaceRoot(filePath: string): string {
+  const dir = dirname(filePath);
+  return basename(dir) === '.claude-plugin' ? dirname(dir) : dir;
+}
 
 export const rule: Rule = {
   meta: {
@@ -31,7 +44,10 @@ export const rule: Rule = {
       details:
         'When a marketplace.json lists plugins with relative path sources (e.g., "./plugins/my-plugin"), ' +
         'this rule checks that the referenced directory exists and contains a .claude-plugin/plugin.json ' +
-        'manifest. External sources (github, url, npm, pip) are skipped since they cannot be validated locally.',
+        'manifest. Relative sources resolve against the marketplace root - the directory containing ' +
+        '.claude-plugin/ - not the .claude-plugin/ directory itself, and metadata.pluginRoot is prepended ' +
+        'when present. External sources (github, url, npm, pip) are skipped since they cannot be ' +
+        'validated locally.',
       examples: {
         incorrect: [
           {
@@ -73,7 +89,8 @@ export const rule: Rule = {
       return; // Schema validation handled by plugin-invalid-marketplace-manifest
     }
 
-    const marketplaceDir = dirname(filePath);
+    // metadata.pluginRoot is prepended to relative source paths (default: the marketplace root)
+    const sourceRoot = join(getMarketplaceRoot(filePath), result.data.metadata?.pluginRoot ?? '.');
 
     for (let i = 0; i < result.data.plugins.length; i++) {
       const plugin = result.data.plugins[i];
@@ -83,7 +100,7 @@ export const rule: Rule = {
         continue;
       }
 
-      const pluginDir = join(marketplaceDir, plugin.source);
+      const pluginDir = join(sourceRoot, plugin.source);
 
       // Check if the directory exists
       if (!(await directoryExists(pluginDir))) {

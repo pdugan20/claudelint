@@ -195,6 +195,16 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
     }
 
     // Step 2: Validate against Zod schema
+    //
+    // Some validators own files that their schema does not describe (for example the Plugin
+    // validator also lints marketplace.json, which is not a plugin manifest). Validating those
+    // against getSchema() would emit misleading structure errors, so they are routed to
+    // validateSchemaExemptFile() instead, which runs the rules that do describe them.
+    if (this.isSchemaExempt(filePath)) {
+      await this.validateSchemaExemptFile(filePath, content);
+      return;
+    }
+
     const schema = this.getSchema();
     const result = schema.safeParse(parsed);
 
@@ -282,6 +292,39 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
    * ```
    */
   protected abstract validateSemantics(filePath: string, config: z.infer<T>): Promise<void>;
+
+  /**
+   * Whether a discovered file is exempt from this validator's Zod schema
+   *
+   * Returns false by default: every discovered file is validated against `getSchema()`.
+   * Override when a validator owns files of more than one shape — the exempt files skip both
+   * the schema step and `validateSemantics()`, and are handled by `validateSchemaExemptFile()`.
+   *
+   * @param filePath - Path to the config file being validated
+   *
+   * @example
+   * ```typescript
+   * protected isSchemaExempt(filePath: string): boolean {
+   *   return basename(filePath) === 'marketplace.json';
+   * }
+   * ```
+   */
+  protected isSchemaExempt(_filePath: string): boolean {
+    return false;
+  }
+
+  /**
+   * Validate a file that `isSchemaExempt()` excluded from the Zod schema step
+   *
+   * The file has already been parsed as JSON (syntax errors are reported before this runs).
+   * Override to execute the rules that do describe this file shape.
+   *
+   * @param filePath - Path to the config file being validated
+   * @param content - Raw file content
+   */
+  protected async validateSchemaExemptFile(_filePath: string, _content: string): Promise<void> {
+    // No-op by default; only reached when isSchemaExempt() is overridden to return true.
+  }
 
   /**
    * Get the warning message to display when no config files are found
