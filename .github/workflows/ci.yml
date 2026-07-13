@@ -80,6 +80,14 @@ jobs:
       - name: Check upstream docs conformance
         run: npm run check:upstream
 
+      # Both workflow guards live in the `check` aggregate, which CI never invokes.
+      # Run them explicitly, or they only ever fire on a developer's machine.
+      - name: Check upstream-watch workflow cannot clobber issues
+        run: npm run check:upstream-workflow
+
+      - name: Check publish workflow for known-broken patterns
+        run: npm run check:publish-workflow
+
   build:
     name: Build
     runs-on: ubuntu-latest
