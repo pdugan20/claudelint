@@ -18,7 +18,7 @@ WebSocket server with a malformed URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "not-a-valid-url"
     }
   }
@@ -33,7 +33,7 @@ WebSocket server with a valid URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }
@@ -46,7 +46,7 @@ WebSocket server with a variable-expanded URL (skipped)
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "${MCP_WS_URL}"
     }
   }

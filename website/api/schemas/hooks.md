@@ -1,5 +1,5 @@
 ---
-description: "Schema reference for hooks.json configuration including events, matchers, and handler types."
+description: 'Schema reference for hooks.json configuration including events, matchers, and handler types.'
 ---
 
 # Hooks Configuration
@@ -15,39 +15,40 @@ Hooks run commands or prompts in response to Claude Code events. Each key is a [
 
 Top-level hooks object (standalone `hooks.json`):
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `description` | string | no | Human-readable description |
-| `hooks` | object | yes | Event-keyed hooks configuration |
+| Field         | Type   | Required | Description                     |
+| ------------- | ------ | -------- | ------------------------------- |
+| `description` | string | no       | Human-readable description      |
+| `hooks`       | object | yes      | Event-keyed hooks configuration |
 
 ## Hook Matcher
 
 Each event maps to an array of matcher objects:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `matcher` | string | no | Pattern to match against (e.g., tool name for PreToolUse) |
-| `hooks` | object[] | yes | Array of [hook handlers](#hook-handler) |
+| Field     | Type     | Required | Description                                               |
+| --------- | -------- | -------- | --------------------------------------------------------- |
+| `matcher` | string   | no       | Pattern to match against (e.g., tool name for PreToolUse) |
+| `hooks`   | object[] | yes      | Array of [hook handlers](#hook-handler)                   |
 
 ## Hook Handler
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | yes | `command`, `http`, `mcp_tool`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types)) |
-| `command` | string | no | Shell command (when type is `command`) |
-| `url` | string | no | POST endpoint URL (when type is `http`) |
-| `headers` | object | no | HTTP headers (when type is `http`) |
-| `allowedEnvVars` | string[] | no | Env vars allowed in header interpolation (when type is `http`) |
-| `server` | string | no | MCP server name (when type is `mcp_tool`); server must already be connected |
-| `tool` | string | no | Tool name on the MCP server (when type is `mcp_tool`) |
-| `input` | object | no | Arguments passed to the tool (when type is `mcp_tool`); supports `${path}` substitution |
-| `prompt` | string | no | Prompt text (when type is `prompt` or `agent`) |
-| `agent` | string | no | Agent name (when type is `agent`) |
-| `timeout` | number | no | Timeout in seconds |
-| `statusMessage` | string | no | Status message shown during execution |
-| `once` | boolean | no | Run only once per session |
-| `model` | string | no | Model override for prompt/agent hooks |
-| `async` | boolean | no | Run hook asynchronously (non-blocking) |
+| Field            | Type     | Required | Description                                                                                                           |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `type`           | string   | yes      | `command`, `http`, `mcp_tool`, `prompt`, or `agent` ([valid values](/api/schemas#hook-types))                         |
+| `command`        | string   | no       | Shell command (when type is `command`)                                                                                |
+| `url`            | string   | no       | POST endpoint URL (when type is `http`)                                                                               |
+| `headers`        | object   | no       | HTTP headers (when type is `http`)                                                                                    |
+| `allowedEnvVars` | string[] | no       | Env vars allowed in header interpolation (when type is `http`)                                                        |
+| `server`         | string   | no       | MCP server name (when type is `mcp_tool`); server must already be connected                                           |
+| `tool`           | string   | no       | Tool name on the MCP server (when type is `mcp_tool`)                                                                 |
+| `input`          | object   | no       | Arguments passed to the tool (when type is `mcp_tool`); supports `${path}` substitution                               |
+| `prompt`         | string   | no       | Prompt text. Required when type is `prompt` or `agent` — an agent hook is driven by `prompt`, not by an `agent` field |
+| `subagent_type`  | string   | no       | Type of specialized agent to use (when type is `agent`)                                                               |
+| `description`    | string   | no       | Short description of the task (when type is `agent`)                                                                  |
+| `timeout`        | number   | no       | Timeout in seconds                                                                                                    |
+| `statusMessage`  | string   | no       | Status message shown during execution                                                                                 |
+| `once`           | boolean  | no       | Run only once per session                                                                                             |
+| `model`          | string   | no       | Model override for prompt/agent hooks                                                                                 |
+| `async`          | boolean  | no       | Run hook asynchronously (non-blocking)                                                                                |
 
 ## Example
 

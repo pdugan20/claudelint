@@ -1,5 +1,37 @@
 # Upstream Drift Audit — 2026-07-12
 
+> **RESOLVED 2026-07-13. Kept as a record of what the first sweep found, and of what it
+> got wrong. Do not work from the list below — everything in it is shipped, superseded,
+> or corrected.** Tracked in [#132]; shipped in #136, #140, #141, #142, #143.
+>
+> **What shipped**
+>
+> - **9 false positives fixed** — claudelint rejected documented config in nine cases, not
+>   the three this audit identified. Six were found by gates built during the work, not by
+>   this sweep: an agent-hook using `prompt`, `context: fork` without `agent`, a URL with a
+>   `${VAR:-default}`, a marketplace `source: "settings"`, `allowUnsandboxedCommands: false`,
+>   `statusLine` as an object, and `teammateMode` as a string.
+> - **4 invented fields removed**, and `settings.json` coverage went from 23 of 117
+>   documented keys to all of them.
+> - **Three new gates**, each of which caught bugs the others structurally could not see:
+>   whole-document examples (#136), documented example *values* (#141), and key *names* in
+>   both directions (#143).
+>
+> **What this audit got wrong** — worth reading before trusting a future one:
+>
+> - **Severity 1.3 (skill `name` required) does not reproduce.** `skill-name.ts` returns
+>   early before the schema is consulted, so nothing enforced it. Read off the Zod
+>   declaration; never exercised against the CLI.
+> - **`enableWeakerNestedSandbox` was not cleared, and it is documented.** It fits the
+>   hallucination pattern exactly. Deleting it on that basis would have repeated the
+>   `disallowed-tools` mistake — the one this document itself flags in Severity 3.
+> - **The method could not see type drift.** Comparing field *names* against the docs calls
+>   `tools` conformant while the docs' own canonical sub-agent example fails to lint.
+>
+> The lesson is in the shape of the errors, not the count: a field-name diff, read off the
+> schema rather than exercised, is blind both to what a field *accepts* and to whether the
+> code enforces the schema at all.
+
 First full sweep of every claudelint schema against the official Claude Code docs,
 run against the committed `docs-baseline/` snapshot.
 

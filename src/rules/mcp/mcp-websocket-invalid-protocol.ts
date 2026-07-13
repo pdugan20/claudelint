@@ -34,19 +34,19 @@ export const rule: Rule = {
         incorrect: [
           {
             description: 'WebSocket server using https:// instead of wss://',
-            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "https://mcp.example.com/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "ws",\n      "url": "https://mcp.example.com/ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],
         correct: [
           {
             description: 'WebSocket server using wss:// protocol',
-            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "ws",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
             language: 'json',
           },
           {
             description: 'WebSocket server using ws:// protocol for local development',
-            code: '{\n  "mcpServers": {\n    "local": {\n      "type": "websocket",\n      "url": "ws://localhost:8080/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "local": {\n      "type": "ws",\n      "url": "ws://localhost:8080/ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],

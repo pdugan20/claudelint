@@ -31,19 +31,19 @@ export const rule: Rule = {
         incorrect: [
           {
             description: 'WebSocket server with an empty URL string',
-            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": ""\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "ws",\n      "url": ""\n    }\n  }\n}',
             language: 'json',
           },
           {
             description: 'WebSocket server with the url field missing',
-            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],
         correct: [
           {
             description: 'WebSocket server with a valid URL',
-            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "realtime": {\n      "type": "ws",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],
