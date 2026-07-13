@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0](https://github.com/pdugan20/claudelint/compare/v0.5.0...v0.6.0) (2026-07-13)
+
+### Features
+
+* **check:** add schema docs coverage check + close 8 latent gaps ([b9d9bd0](https://github.com/pdugan20/claudelint/commit/b9d9bd0814a6bbdb6d8b265d002d3e3b17e36a1b))
+* distribute plugin as a downloadable archive for claude --plugin-url ([#111](https://github.com/pdugan20/claudelint/issues/111)) ([472f3f4](https://github.com/pdugan20/claudelint/commit/472f3f496f3477968f93d607eaf414391b413ecb))
+* upstream docs watch + plugin dependency rules ([#131](https://github.com/pdugan20/claudelint/issues/131)) ([f0f7bb7](https://github.com/pdugan20/claudelint/commit/f0f7bb7d92b390eddd51c3fa932156ddea18ac14))
+* **upstream:** register SettingsSchema and enforce key conformance ([#143](https://github.com/pdugan20/claudelint/issues/143)) ([bb64dd6](https://github.com/pdugan20/claudelint/commit/bb64dd69c2d73ec74ecca664825de6a38b01fbd8)), closes [#132](https://github.com/pdugan20/claudelint/issues/132) [#136](https://github.com/pdugan20/claudelint/issues/136) [#132](https://github.com/pdugan20/claudelint/issues/132) [#136](https://github.com/pdugan20/claudelint/issues/136) [#141](https://github.com/pdugan20/claudelint/issues/141)
+
+### Bug Fixes
+
+* **api:** make lintText and lintFiles actually validate ([#139](https://github.com/pdugan20/claudelint/issues/139)) ([dfb0b51](https://github.com/pdugan20/claudelint/commit/dfb0b5158203d74b096be8fc52b9d963f3ec4648)), closes [#138](https://github.com/pdugan20/claudelint/issues/138) [#138](https://github.com/pdugan20/claudelint/issues/138) [#133](https://github.com/pdugan20/claudelint/issues/133) [#136](https://github.com/pdugan20/claudelint/issues/136)
+* **ci:** stop upstream-watch from overwriting human-authored issues ([#133](https://github.com/pdugan20/claudelint/issues/133)) ([612c915](https://github.com/pdugan20/claudelint/commit/612c915df081e09e3ccd65cd50b3e38a2a229ad7)), closes [#131](https://github.com/pdugan20/claudelint/issues/131) [#131](https://github.com/pdugan20/claudelint/issues/131) [#132](https://github.com/pdugan20/claudelint/issues/132) [#132](https://github.com/pdugan20/claudelint/issues/132)
+* model the documented settings.json surface (and 2 more false positives) ([#142](https://github.com/pdugan20/claudelint/issues/142)) ([95fa1a6](https://github.com/pdugan20/claudelint/commit/95fa1a6886034c814b3d95905975c63eaf2da7ea)), closes [#141](https://github.com/pdugan20/claudelint/issues/141) [#141](https://github.com/pdugan20/claudelint/issues/141) [#132](https://github.com/pdugan20/claudelint/issues/132)
+* rename docs/RELEASING.md to docs/releasing.md ([e5ea65b](https://github.com/pdugan20/claudelint/commit/e5ea65b4106829a6943ff8565748589c5dc94fb5))
+* replace invented sandbox/marketplace fields with the documented ones ([#140](https://github.com/pdugan20/claudelint/issues/140)) ([183ba82](https://github.com/pdugan20/claudelint/commit/183ba828134e3b48dab19efe32c06c18a926d0b9)), closes [#132](https://github.com/pdugan20/claudelint/issues/132) [#136](https://github.com/pdugan20/claudelint/issues/136) [#136](https://github.com/pdugan20/claudelint/issues/136)
+* stop rejecting valid Claude Code config (6 false positives) ([#136](https://github.com/pdugan20/claudelint/issues/136)) ([368fa07](https://github.com/pdugan20/claudelint/commit/368fa07ea86d642284416e90bc0ec1f910a42a0c)), closes [#131](https://github.com/pdugan20/claudelint/issues/131)
+
+### Documentation
+
+* align schema reference with v0.5.0 + add release runbook ([7398280](https://github.com/pdugan20/claudelint/commit/7398280536b5956548865a66eca3dafeab184670))
+* bump SARIF example driver version to 0.5.0 ([0d9e548](https://github.com/pdugan20/claudelint/commit/0d9e54872737f5e4e0bea47690f7a98fe95d6692))
+* correct the public docs the schema fixes left stale ([#144](https://github.com/pdugan20/claudelint/issues/144)) ([8c578f3](https://github.com/pdugan20/claudelint/commit/8c578f3341747337181903a80c7f082ab8777a89)), closes [#143](https://github.com/pdugan20/claudelint/issues/143) [#136](https://github.com/pdugan20/claudelint/issues/136)
+* drop hardcoded Claude Code version note from --plugin-url trial ([#112](https://github.com/pdugan20/claudelint/issues/112)) ([a32c738](https://github.com/pdugan20/claudelint/commit/a32c7380238bc3d3642023402b162f031f421e03))
+* point plugin install at pdugan20-plugins marketplace ([#118](https://github.com/pdugan20/claudelint/issues/118)) ([61c346e](https://github.com/pdugan20/claudelint/commit/61c346ea6f6253b51c50f889fb00b1f0733cfe9a))
+* **website:** replace validator diagram with featured cards ([6ab70f8](https://github.com/pdugan20/claudelint/commit/6ab70f8b3a4cd0013e12955c1dfc78184ba950ef))
+
+### Tests
+
+* **upstream:** gate schema field types against the documented examples ([#141](https://github.com/pdugan20/claudelint/issues/141)) ([8aae2fc](https://github.com/pdugan20/claudelint/commit/8aae2fc306d5232572f0c48e8de28d7edf970aa2)), closes [#132](https://github.com/pdugan20/claudelint/issues/132) [#136](https://github.com/pdugan20/claudelint/issues/136) [#136](https://github.com/pdugan20/claudelint/issues/136)
+
+### Build System
+
+* pin node types for ts-node so scripts work under TS 6+ ([01e6c39](https://github.com/pdugan20/claudelint/commit/01e6c391b94a467436fe55b45fd4f3fe51a56853))
+
+### Continuous Integration
+
+* allow revert type in PR Lint allowlist ([098f3b8](https://github.com/pdugan20/claudelint/commit/098f3b8c05232c9bd39cb8db098ecf3f5479a097))
+* bump codecov/codecov-action from 5 to 6 ([#70](https://github.com/pdugan20/claudelint/issues/70)) ([bbc406b](https://github.com/pdugan20/claudelint/commit/bbc406b25e0c7deb59959b3e26ef60bb30c020c7))
+* bump default Node version 20 -> 22 ([#104](https://github.com/pdugan20/claudelint/issues/104)) ([33d5523](https://github.com/pdugan20/claudelint/commit/33d5523634e411295f704e45ea550f023d27c6b0)), closes [#82](https://github.com/pdugan20/claudelint/issues/82)
+* bump dependabot/fetch-metadata from 2 to 3 ([#82](https://github.com/pdugan20/claudelint/issues/82)) ([21abab6](https://github.com/pdugan20/claudelint/commit/21abab64fb63c019398759181d6c980e895c8ded))
+* fix Dependabot prefix + ignore major-version bumps ([#108](https://github.com/pdugan20/claudelint/issues/108)) ([00e274b](https://github.com/pdugan20/claudelint/commit/00e274ba1e13fb7a7663464020502a7953d1fa9e)), closes [#64](https://github.com/pdugan20/claudelint/issues/64) [#66](https://github.com/pdugan20/claudelint/issues/66) [#79](https://github.com/pdugan20/claudelint/issues/79) [#91](https://github.com/pdugan20/claudelint/issues/91) [#100](https://github.com/pdugan20/claudelint/issues/100) [#101](https://github.com/pdugan20/claudelint/issues/101) [#102](https://github.com/pdugan20/claudelint/issues/102) [#106](https://github.com/pdugan20/claudelint/issues/106)
+
 ## [0.5.0](https://github.com/pdugan20/claudelint/compare/v0.3.0...v0.5.0) (2026-05-04)
 
 ### Features
