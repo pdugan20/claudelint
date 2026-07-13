@@ -140,11 +140,17 @@ export function registerCheckAllCommand(program: Command): void {
         const { readStdin } = await import('../utils/stdin-reader');
         const stdinContent = await readStdin();
 
-        // Find matching validator(s) based on filename
+        // Find matching validator(s) based on filename.
+        //
+        // `{ dot: true }` is load-bearing: minimatch's `**` will not cross a dot-directory
+        // without it, so the plugin validator's `**\/plugin.json` never matched
+        // `.claude-plugin/plugin.json` and stdin mode simply could not lint a plugin
+        // manifest. Marketplace worked only because its pattern spells the dot-directory
+        // out literally.
         const { minimatch } = await import('minimatch');
         const allValidators = ValidatorRegistry.getAllMetadata().filter((m) => m.enabled);
         const matchingValidators = allValidators.filter((meta) =>
-          meta.filePatterns.some((pattern) => minimatch(stdinFilename, pattern))
+          meta.filePatterns.some((pattern) => minimatch(stdinFilename, pattern, { dot: true }))
         );
 
         if (matchingValidators.length === 0) {

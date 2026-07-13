@@ -1,5 +1,5 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
-import { findAgentFiles, readFileContent } from '../utils/filesystem/files';
+import { findAgentFiles } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { AgentFrontmatterWithRefinements } from '../schemas/agent-frontmatter.schema';
 import { basename } from 'path';
@@ -34,6 +34,16 @@ export class AgentsValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
+    // Handle stdin mode. Without this the validator globs the filesystem and ignores the
+    // content it was handed, so `lintText`/`--stdin` on an agent validated nothing at all.
+    const virtualFile = this.getVirtualFile();
+    if (virtualFile) {
+      this.trackValidatedFiles([virtualFile.path]);
+      this.markScanned([virtualFile.path]);
+      await this.validateAgent(virtualFile.path);
+      return this.getResult();
+    }
+
     const agentFiles = await this.findAgentFilePaths();
     this.trackValidatedFiles(agentFiles);
 
@@ -63,7 +73,7 @@ export class AgentsValidator extends FileValidator {
 
   private async validateAgent(filePath: string): Promise<void> {
     // Read content
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
 
     // Parse disable comments
     this.parseDisableComments(filePath, content);

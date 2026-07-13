@@ -1,5 +1,5 @@
 import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
-import { findMcpFiles, readFileContent } from '../utils/filesystem/files';
+import { findMcpFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { MCPConfigSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
@@ -34,7 +34,7 @@ export class MCPValidator extends SchemaValidator<typeof MCPConfigSchema> {
     _config: z.infer<typeof MCPConfigSchema>
   ): Promise<void> {
     // Read file content for rule execution
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
 
     // Normalize flat format to wrapped format for rules
     // Rules always expect { "mcpServers": { ... } } format

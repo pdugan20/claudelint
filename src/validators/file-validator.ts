@@ -325,6 +325,29 @@ export abstract class FileValidator {
   }
 
   /**
+   * Read a file's content, honouring the virtual (stdin) file when it IS that file.
+   *
+   * Use this instead of `readFileContent()` for the document under validation. Every
+   * schema validator used to reach straight back to disk inside `validateSemantics`, so in
+   * stdin mode the SCHEMA saw the supplied content while the RULES saw whatever happened to
+   * be on disk at that path -- a blend of two different documents, or an ENOENT if nothing
+   * was there. Callers piping content got a silently incomplete result.
+   *
+   * Secondary files (a skill's shell scripts, a plugin's referenced components) still come
+   * from disk: they are not the virtual file, and the path check below keeps them that way.
+   */
+  protected async readContent(filePath: string): Promise<string> {
+    const virtual = this.getVirtualFile();
+
+    if (virtual && virtual.path === filePath) {
+      return virtual.content;
+    }
+
+    const { readFileContent } = await import('../utils/filesystem/files');
+    return readFileContent(filePath);
+  }
+
+  /**
    * Merge schema validation results into this validator
    *
    * Converts pre-classified errors/warnings from schema validation into issues.

@@ -1,5 +1,5 @@
 import { SchemaValidator, SchemaValidatorOptions } from './schema-validator';
-import { findHooksFiles, readFileContent } from '../utils/filesystem/files';
+import { findHooksFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { HooksConfigSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
@@ -34,7 +34,7 @@ export class HooksValidator extends SchemaValidator<typeof HooksConfigSchema> {
     _config: z.infer<typeof HooksConfigSchema>
   ): Promise<void> {
     // Read file content for rule execution
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
 
     // Execute ALL Hooks rules via category-based discovery
     // Rules cover: type validation, required fields, mutual exclusivity,

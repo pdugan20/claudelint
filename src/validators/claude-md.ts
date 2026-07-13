@@ -1,5 +1,5 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
-import { findClaudeMdFiles, readFileContent, fileExists } from '../utils/filesystem/files';
+import { findClaudeMdFiles, fileExists } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { RulesFrontmatterSchema } from '../schemas/rules-frontmatter.schema';
 import { ValidatorRegistry } from '../utils/validators/factory';
@@ -69,7 +69,7 @@ export class ClaudeMdValidator extends FileValidator {
     }
 
     // Read content
-    const content = await readFileContent(filePath);
+    const content = await this.readContent(filePath);
     await this.validateFileContent(filePath, content);
   }
 
