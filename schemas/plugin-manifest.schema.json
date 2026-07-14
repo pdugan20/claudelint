@@ -128,7 +128,7 @@
       ]
     },
     "hooks": {
-      "description": "Additional hook config file paths (hooks/hooks.json is auto-loaded). Claude Code rejects inline objects at runtime despite the official docs listing the type as string|array|object.",
+      "description": "Hook configuration: path to a hooks.json, array of paths, or an inline hook config object (hooks/hooks.json is auto-loaded). Commands inside an inline object must use ${CLAUDE_PLUGIN_ROOT}, or the hook silently never fires.",
       "oneOf": [
         {
           "type": "string",
@@ -143,6 +143,10 @@
             "pattern": "^\\.\\/.*\\.json$"
           },
           "minItems": 1
+        },
+        {
+          "type": "object",
+          "description": "Inline hook configuration, keyed by event name"
         }
       ]
     },
@@ -254,7 +258,11 @@
             "required": ["name"],
             "properties": {
               "name": { "type": "string" },
-              "version": { "type": "string" }
+              "version": { "type": "string" },
+              "marketplace": {
+                "type": "string",
+                "description": "Marketplace to resolve name in. Requires allowCrossMarketplaceDependenciesOn."
+              }
             },
             "additionalProperties": false
           }

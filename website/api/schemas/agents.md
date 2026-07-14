@@ -1,5 +1,5 @@
 ---
-description: "Schema reference for agent file YAML frontmatter fields, types, and constraints."
+description: 'Schema reference for agent file YAML frontmatter fields, types, and constraints.'
 ---
 
 # Agent Frontmatter
@@ -13,28 +13,29 @@ Agent files are flat `.md` files (e.g., `.claude/agents/code-reviewer.md`). The 
 
 ## Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | yes | Lowercase with hyphens, max 64 chars |
-| `description` | string | yes | Min 10 chars, third-person voice |
-| `model` | string | no | Alias (`sonnet`, `opus`, `haiku`, `inherit`) or full model ID (e.g. `claude-opus-4-6`) |
-| `tools` | string[] | no | [Tool names](/api/schemas#tool-names) to allow |
-| `disallowedTools` | string[] | no | [Tool names](/api/schemas#tool-names) to disallow |
-| `permissionMode` | string | no | [Permission mode](/api/schemas#permission-modes): `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, or `plan` |
-| `skills` | string[] | no | Skills this agent can use |
-| `hooks` | object | no | [Hooks configuration](/api/schemas/hooks) |
-| `memory` | string | no | `user`, `project`, or `local` |
-| `effort` | string | no | [Effort level](/api/schemas#effort-levels): `low`, `medium`, `high`, `xhigh`, or `max` |
-| `maxTurns` | number | no | Maximum agent turns (positive integer) |
-| `mcpServers` | (string\|object)[] | no | MCP server references or inline definitions |
-| `color` | string | no | [Display color](/api/schemas#agent-colors): `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan` |
-| `background` | boolean | no | Run as background task (default: `false`) |
-| `isolation` | string | no | `worktree` — run in a temporary git worktree |
-| `initialPrompt` | string | no | Auto-submitted as the first user turn when this agent runs as the main session agent (via `--agent` or the `agent` setting). Prepended to any user-provided prompt |
+| Field             | Type               | Required | Description                                                                                                                                                        |
+| ----------------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`            | string             | yes      | Lowercase with hyphens, max 64 chars                                                                                                                               |
+| `description`     | string             | yes      | Min 10 chars, third-person voice                                                                                                                                   |
+| `model`           | string             | no       | Alias (`sonnet`, `opus`, `haiku`, `inherit`) or full model ID (e.g. `claude-opus-4-6`)                                                                             |
+| `tools`           | string \| string[] | no       | [Tool names](/api/schemas#tool-names) to allow. A space- or comma-separated string (`Read, Glob, Grep`) or a YAML list                                             |
+| `disallowedTools` | string \| string[] | no       | [Tool names](/api/schemas#tool-names) to disallow. Same forms as `tools`                                                                                           |
+| `permissionMode`  | string             | no       | [Permission mode](/api/schemas#permission-modes): `default`, `manual`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, or `plan`                            |
+| `skills`          | string[]           | no       | Skills this agent can use                                                                                                                                          |
+| `hooks`           | object             | no       | [Hooks configuration](/api/schemas/hooks)                                                                                                                          |
+| `memory`          | string             | no       | `user`, `project`, or `local`                                                                                                                                      |
+| `effort`          | string             | no       | [Effort level](/api/schemas#effort-levels): `low`, `medium`, `high`, `xhigh`, or `max`                                                                             |
+| `maxTurns`        | number             | no       | Maximum agent turns (positive integer)                                                                                                                             |
+| `mcpServers`      | (string\|object)[] | no       | MCP server references or inline definitions                                                                                                                        |
+| `color`           | string             | no       | [Display color](/api/schemas#agent-colors): `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan`                                                |
+| `background`      | boolean            | no       | Run as background task (default: `false`)                                                                                                                          |
+| `isolation`       | string             | no       | `worktree` — run in a temporary git worktree                                                                                                                       |
+| `initialPrompt`   | string             | no       | Auto-submitted as the first user turn when this agent runs as the main session agent (via `--agent` or the `agent` setting). Prepended to any user-provided prompt |
 
-**Cross-field validations:**
+**Combining `tools` and `disallowedTools`:**
 
-- `tools` and `disallowedTools` are mutually exclusive
+Both may be set. `disallowedTools` is applied first, then `tools` is resolved against the
+remaining pool; a tool listed in both is removed.
 
 ## Example
 

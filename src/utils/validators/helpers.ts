@@ -111,18 +111,24 @@ export function validateSettingsHooks(
           });
         }
 
-        if (hook.type === 'agent' && !hook.agent) {
+        // An `agent` hook is driven by `prompt`, not by an `agent` field. The documented
+        // fields are `prompt`, `description`, `subagent_type` and `model`
+        // (docs-baseline/hooks.md:1441-1447) -- `agent` appears nowhere. claudelint both
+        // invented the field AND made it mandatory, so the docs' own agent-hook example was
+        // rejected outright.
+        if (hook.type === 'agent' && !hook.prompt) {
           issues.push({
-            message: 'Hook with type "agent" must have "agent" field',
+            message: 'Hook with type "agent" must have "prompt" field',
             severity: 'error',
           });
         }
 
-        // Validate mutual exclusivity
-        const fieldCount = [hook.command, hook.url, hook.prompt, hook.agent].filter(Boolean).length;
+        // Validate mutual exclusivity. `prompt` is the handler for BOTH the `prompt` and
+        // `agent` types, so it is counted once, not paired with a phantom `agent` field.
+        const fieldCount = [hook.command, hook.url, hook.prompt].filter(Boolean).length;
         if (fieldCount > 1) {
           issues.push({
-            message: 'Hook cannot have multiple handler fields (command, url, prompt, agent)',
+            message: 'Hook cannot have multiple handler fields (command, url, prompt)',
             severity: 'error',
           });
         }

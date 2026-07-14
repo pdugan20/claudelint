@@ -1,5 +1,5 @@
 import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-validator';
-import { findOutputStyleFiles, readFileContent } from '../utils/filesystem/files';
+import { findOutputStyleFiles } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
 import { basename, dirname } from 'path';
@@ -30,6 +30,16 @@ export class OutputStylesValidator extends FileValidator {
   }
 
   async validate(): Promise<ValidationResult> {
+    // Handle stdin mode. Without this the validator globs the filesystem and ignores the
+    // content it was handed, so `lintText`/`--stdin` on an output style validated nothing.
+    const virtualFile = this.getVirtualFile();
+    if (virtualFile) {
+      this.trackValidatedFiles([virtualFile.path]);
+      this.markScanned([virtualFile.path]);
+      await this.validateOutputStyle(virtualFile.path);
+      return this.getResult();
+    }
+
     const outputStyleFiles = await this.findOutputStyleFiles();
     this.trackValidatedFiles(outputStyleFiles);
 
@@ -57,12 +67,12 @@ export class OutputStylesValidator extends FileValidator {
       );
     }
 
-    return allOutputStyleFiles;
+    return this.scopeToChangedFiles(allOutputStyleFiles);
   }
 
   private async validateOutputStyle(outputStylePath: string): Promise<void> {
     // Read content
-    const content = await readFileContent(outputStylePath);
+    const content = await this.readContent(outputStylePath);
 
     // Parse disable comments
     this.parseDisableComments(outputStylePath, content);

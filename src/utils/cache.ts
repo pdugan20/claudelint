@@ -31,6 +31,16 @@ export interface CacheOptions {
   location: string;
   /** Cache strategy: 'content' for content-based, 'mtime' for modification time */
   strategy: 'content' | 'mtime';
+  /**
+   * Identifies the FILE SCOPE this run validated (--changed / --since), or undefined for a
+   * full run.
+   *
+   * A scoped run validates a subset, so its result is not interchangeable with a full run's.
+   * Without this in the cache key, `claudelint --since main` followed by `claudelint
+   * check-all` returns the scoped run's cached "clean" verdict and misses real errors in
+   * files the scoped run never looked at -- a silent false negative.
+   */
+  scope?: string;
 }
 
 interface CacheIndex {
@@ -64,6 +74,9 @@ export class ValidationCache {
       enabled: options.enabled ?? true,
       location: options.location || '.claudelint-cache',
       strategy: options.strategy || 'content',
+      // Must be carried through: this constructor rebuilds `options` field by field, so a
+      // field omitted here is silently dropped and getCacheKey() sees undefined.
+      scope: options.scope,
     };
 
     this.indexPath = join(this.options.location, 'index.json');
@@ -171,6 +184,9 @@ export class ValidationCache {
     if (config) {
       hash.update(JSON.stringify(config));
     }
+
+    // Include the file scope: a --since run and a full run must never share an entry.
+    hash.update(this.options.scope ?? 'full');
 
     return hash.digest('hex');
   }

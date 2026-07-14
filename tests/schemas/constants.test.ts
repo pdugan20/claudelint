@@ -54,6 +54,8 @@ describe('Schema Constants', () => {
       expect(ModelNames.safeParse('sonnet').success).toBe(true);
       expect(ModelNames.safeParse('opus').success).toBe(true);
       expect(ModelNames.safeParse('haiku').success).toBe(true);
+      // docs-baseline/sub-agents.md:290 — "sonnet, opus, haiku, or fable"
+      expect(ModelNames.safeParse('fable').success).toBe(true);
       expect(ModelNames.safeParse('inherit').success).toBe(true);
     });
 
@@ -64,7 +66,7 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
-      expect(VALID_MODELS).toEqual(['sonnet', 'opus', 'haiku', 'inherit']);
+      expect(VALID_MODELS).toEqual(['sonnet', 'opus', 'haiku', 'fable', 'inherit']);
     });
   });
 
@@ -98,13 +100,17 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('ElicitationResult').success).toBe(true);
     });
 
+    it('accepts the MessageDisplay event', () => {
+      expect(HookEvents.safeParse('MessageDisplay').success).toBe(true);
+    });
+
     it('should reject invalid hook events', () => {
       expect(HookEvents.safeParse('BeforeToolUse').success).toBe(false);
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 29 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(29);
+    it('should export all 30 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(30);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
@@ -168,12 +174,17 @@ describe('Schema Constants', () => {
       expect(TransportTypes.safeParse('stdio').success).toBe(true);
       expect(TransportTypes.safeParse('sse').success).toBe(true);
       expect(TransportTypes.safeParse('http').success).toBe(true);
-      expect(TransportTypes.safeParse('websocket').success).toBe(true);
+      expect(TransportTypes.safeParse('streamable-http').success).toBe(true);
+      expect(TransportTypes.safeParse('ws').success).toBe(true);
     });
 
     it('should reject invalid transport types', () => {
       expect(TransportTypes.safeParse('tcp').success).toBe(false);
       expect(TransportTypes.safeParse('STDIO').success).toBe(false);
+      // The literal claudelint used to model. It is not a config value anywhere in the
+      // docs -- "WebSocket" appears only in prose -- and modelling it meant the real
+      // literal (`ws`) was rejected outright. Pin it as INVALID so it cannot creep back.
+      expect(TransportTypes.safeParse('websocket').success).toBe(false);
     });
 
     it('should export runtime values', () => {
@@ -181,7 +192,8 @@ describe('Schema Constants', () => {
         'stdio',
         'sse',
         'http',
-        'websocket',
+        'streamable-http',
+        'ws',
       ]);
     });
   });

@@ -45,14 +45,14 @@ export const rule: Rule = {
           },
           {
             description: 'Server using WebSocket transport',
-            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "websocket",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
+            code: '{\n  "mcpServers": {\n    "remote": {\n      "type": "ws",\n      "url": "wss://mcp.example.com/ws"\n    }\n  }\n}',
             language: 'json',
           },
         ],
       },
       howToFix:
         'Change the server type from "sse" to "http" and update the url to point to the HTTP ' +
-        'streamable endpoint. Alternatively, use "websocket" if the server supports it.',
+        'streamable endpoint. Alternatively, use "ws" if the server supports it.',
       whenNotToUse:
         'Disable this rule if you are intentionally targeting an MCP server that only supports ' +
         'the SSE transport and cannot be upgraded.',

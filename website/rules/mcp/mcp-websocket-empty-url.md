@@ -8,7 +8,7 @@ description: "MCP WebSocket transport URL cannot be empty"
 
 ## Rule Details
 
-This rule checks that MCP servers configured with type "websocket" include a url field that is present and non-empty. A missing or blank URL means Claude Code cannot establish a WebSocket connection to the MCP server, resulting in connection failures at runtime.
+This rule checks that MCP servers configured with type "ws" include a url field that is present and non-empty. A missing or blank URL means Claude Code cannot establish a WebSocket connection to the MCP server, resulting in connection failures at runtime.
 
 ### Incorrect
 
@@ -18,7 +18,7 @@ WebSocket server with an empty URL string
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": ""
     }
   }
@@ -31,7 +31,7 @@ WebSocket server with the url field missing
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket"
+      "type": "ws"
     }
   }
 }
@@ -45,7 +45,7 @@ WebSocket server with a valid URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }

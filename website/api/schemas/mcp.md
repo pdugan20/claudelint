@@ -1,5 +1,5 @@
 ---
-description: "Schema reference for .mcp.json MCP server configuration including all transport types."
+description: 'Schema reference for .mcp.json MCP server configuration including all transport types.'
 ---
 
 # MCP Configuration
@@ -19,38 +19,46 @@ Server configuration varies by [transport type](/api/schemas#mcp-transport-types
 
 Default transport when `command` is present.
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | no | Optional, inferred from `command` |
-| `command` | string | yes | Command to execute |
-| `args` | string[] | no | Command arguments |
-| `env` | object | no | Environment variables |
+| Field     | Type     | Required | Description                       |
+| --------- | -------- | -------- | --------------------------------- |
+| `type`    | string   | no       | Optional, inferred from `command` |
+| `command` | string   | yes      | Command to execute                |
+| `args`    | string[] | no       | Command arguments                 |
+| `env`     | object   | no       | Environment variables             |
 
 ### http
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | yes | Must be `"http"` |
-| `url` | string | yes | HTTP endpoint URL |
-| `headers` | object | no | HTTP headers |
-| `env` | object | no | Environment variables |
+| Field     | Type   | Required | Description           |
+| --------- | ------ | -------- | --------------------- |
+| `type`    | string | yes      | Must be `"http"`      |
+| `url`     | string | yes      | HTTP endpoint URL     |
+| `headers` | object | no       | HTTP headers          |
+| `env`     | object | no       | Environment variables |
 
 ### sse (deprecated)
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | yes | Must be `"sse"` |
-| `url` | string | yes | SSE endpoint URL |
-| `headers` | object | no | HTTP headers |
-| `env` | object | no | Environment variables |
+| Field     | Type   | Required | Description           |
+| --------- | ------ | -------- | --------------------- |
+| `type`    | string | yes      | Must be `"sse"`       |
+| `url`     | string | yes      | SSE endpoint URL      |
+| `headers` | object | no       | HTTP headers          |
+| `env`     | object | no       | Environment variables |
 
-### websocket
+### ws (WebSocket)
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | yes | Must be `"websocket"` |
-| `url` | string | yes | WebSocket URL |
-| `env` | object | no | Environment variables |
+The config literal is `"ws"` — not `"websocket"`, which is not a valid value.
+
+| Field     | Type   | Required | Description                                     |
+| --------- | ------ | -------- | ----------------------------------------------- |
+| `type`    | string | yes      | Must be `"ws"`                                  |
+| `url`     | string | yes      | WebSocket URL (`ws://` or `wss://`)             |
+| `headers` | object | no       | Request headers (WebSocket auth is header-only) |
+| `env`     | object | no       | Environment variables                           |
+
+### streamable-http
+
+A documented alias for `http`, accepted so configurations copied from MCP server
+documentation work unmodified. Same fields as `http`.
 
 ## Example
 

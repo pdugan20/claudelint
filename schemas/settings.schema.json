@@ -1,0 +1,3922 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pdugan20/claudelint/main/schemas/settings.schema.json",
+  "title": "Claude Code Settings",
+  "description": "Schema for .claude/settings.json",
+  "source": "https://code.claude.com/docs/en/settings",
+  "sourceType": "documentation",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "permissions": {
+      "type": "object",
+      "properties": {
+        "allow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deny": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ask": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaultMode": {
+          "type": "string",
+          "enum": [
+            "default",
+            "manual",
+            "acceptEdits",
+            "auto",
+            "dontAsk",
+            "plan",
+            "bypassPermissions"
+          ]
+        },
+        "disableBypassPermissionsMode": {
+          "type": "string",
+          "enum": ["disable"]
+        },
+        "additionalDirectories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "env": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "model": {
+      "type": "string"
+    },
+    "apiKeyHelper": {
+      "type": "string"
+    },
+    "hooks": {
+      "type": "object",
+      "properties": {
+        "PreToolUse": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PostToolUse": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PostToolUseFailure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PostToolBatch": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PermissionRequest": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PermissionDenied": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "Notification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "MessageDisplay": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "UserPromptSubmit": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "UserPromptExpansion": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "Stop": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "StopFailure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "Setup": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "SubagentStart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "SubagentStop": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PreCompact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "PostCompact": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "ConfigChange": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "SessionStart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "SessionEnd": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "WorktreeCreate": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "WorktreeRemove": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "TeammateIdle": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "TaskCreated": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "TaskCompleted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "InstructionsLoaded": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "Elicitation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "ElicitationResult": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "CwdChanged": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        },
+        "FileChanged": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "matcher": {
+                "type": "string"
+              },
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                    },
+                    "if": {
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "type": "number"
+                    },
+                    "statusMessage": {
+                      "type": "string"
+                    },
+                    "once": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "string"
+                    },
+                    "async": {
+                      "type": "boolean"
+                    },
+                    "asyncRewake": {
+                      "type": "boolean"
+                    },
+                    "shell": {
+                      "type": "string",
+                      "enum": ["bash", "powershell"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "allowedEnvVars": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "server": {
+                      "type": "string"
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "agent": {
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["hooks"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "attribution": {
+      "type": "object",
+      "properties": {
+        "commit": {
+          "type": "string"
+        },
+        "pr": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "statusLine": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "outputStyle": {
+      "type": "string"
+    },
+    "sandbox": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "failIfUnavailable": {
+          "type": "boolean"
+        },
+        "autoAllowBashIfSandboxed": {
+          "type": "boolean"
+        },
+        "excludedCommands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowUnsandboxedCommands": {
+          "type": "boolean"
+        },
+        "filesystem": {
+          "type": "object",
+          "properties": {
+            "allowWrite": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "denyWrite": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "denyRead": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowRead": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowManagedReadPathsOnly": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": ["deny"]
+                  }
+                },
+                "required": ["path", "mode"],
+                "additionalProperties": false
+              }
+            },
+            "envVars": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": ["deny", "mask"]
+                  }
+                },
+                "required": ["name", "mode"],
+                "additionalProperties": false
+              }
+            },
+            "allowPlaintextInject": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "allowUnixSockets": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowAllUnixSockets": {
+              "type": "boolean"
+            },
+            "allowLocalBinding": {
+              "type": "boolean"
+            },
+            "allowMachLookup": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowedDomains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "deniedDomains": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowManagedDomainsOnly": {
+              "type": "boolean"
+            },
+            "httpProxyPort": {
+              "type": "number"
+            },
+            "socksProxyPort": {
+              "type": "number"
+            },
+            "tlsTerminate": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "additionalProperties": false
+        },
+        "enableWeakerNestedSandbox": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "enabledPlugins": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "extraKnownMarketplaces": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "enum": ["github", "git", "url", "npm", "directory", "file", "settings"]
+              },
+              "repo": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "package": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "skipLfs": {
+                "type": "boolean"
+              },
+              "name": {
+                "type": "string"
+              },
+              "plugins": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "source": {
+                              "type": "string",
+                              "enum": ["github", "url", "git-subdir", "npm"]
+                            },
+                            "repo": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            },
+                            "path": {
+                              "type": "string"
+                            },
+                            "package": {
+                              "type": "string"
+                            },
+                            "version": {
+                              "type": "string"
+                            },
+                            "registry": {
+                              "type": "string"
+                            },
+                            "ref": {
+                              "type": "string"
+                            },
+                            "sha": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["source"],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "$schema": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "author": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["name"],
+                      "additionalProperties": false
+                    },
+                    "homepage": {
+                      "type": "string"
+                    },
+                    "repository": {
+                      "type": "string"
+                    },
+                    "license": {
+                      "type": "string"
+                    },
+                    "keywords": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "strict": {
+                      "type": "boolean"
+                    },
+                    "commands": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "agents": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "skills": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "themes": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "monitors": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "hooks": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      ]
+                    },
+                    "mcpServers": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      ]
+                    },
+                    "outputStyles": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "lspServers": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      ]
+                    },
+                    "userConfig": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["string", "number", "boolean", "directory", "file"]
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "sensitive": {
+                            "type": "boolean"
+                          },
+                          "required": {
+                            "type": "boolean"
+                          },
+                          "default": {},
+                          "multiple": {
+                            "type": "boolean"
+                          },
+                          "min": {
+                            "type": "number"
+                          },
+                          "max": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["type", "title", "description"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "channels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "server": {
+                            "type": "string"
+                          },
+                          "userConfig": {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": ["string", "number", "boolean", "directory", "file"]
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "sensitive": {
+                                  "type": "boolean"
+                                },
+                                "required": {
+                                  "type": "boolean"
+                                },
+                                "default": {},
+                                "multiple": {
+                                  "type": "boolean"
+                                },
+                                "min": {
+                                  "type": "number"
+                                },
+                                "max": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": ["type", "title", "description"],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": ["server"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "dependencies": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              },
+                              "marketplace": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["name"],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["name", "source"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["source"],
+            "additionalProperties": false
+          },
+          "autoUpdate": {
+            "type": "boolean"
+          }
+        },
+        "required": ["source"],
+        "additionalProperties": false
+      }
+    },
+    "strictKnownMarketplaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["github", "git", "url", "npm", "directory", "file", "hostPattern"]
+          },
+          "repo": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "package": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "hostPattern": {
+            "type": "string"
+          }
+        },
+        "required": ["source"],
+        "additionalProperties": false
+      }
+    },
+    "autoUpdatesChannel": {
+      "type": "string"
+    },
+    "cleanupPeriodDays": {
+      "type": "number"
+    },
+    "language": {
+      "type": "string"
+    },
+    "respectGitignore": {
+      "type": "boolean"
+    },
+    "enableAllProjectMcpServers": {
+      "type": "boolean"
+    },
+    "disableAllHooks": {
+      "type": "boolean"
+    },
+    "teammateMode": {
+      "type": "string"
+    },
+    "showTurnDuration": {
+      "type": "boolean"
+    },
+    "terminalProgressBarEnabled": {
+      "type": "boolean"
+    },
+    "spinnerTipsEnabled": {
+      "type": "boolean"
+    },
+    "alwaysThinkingEnabled": {
+      "type": "boolean"
+    },
+    "prefersReducedMotion": {
+      "type": "boolean"
+    },
+    "plansDirectory": {
+      "type": "string"
+    },
+    "skipWebFetchPreflight": {
+      "type": "boolean"
+    },
+    "autoMode": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "allow": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "soft_deny": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hard_deny": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "classifyAllShell": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "advisorModel": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "agentPushNotifEnabled": {
+      "type": "boolean"
+    },
+    "allowAllClaudeAiMcps": {
+      "type": "boolean"
+    },
+    "allowManagedHooksOnly": {
+      "type": "boolean"
+    },
+    "allowManagedMcpServersOnly": {
+      "type": "boolean"
+    },
+    "allowManagedPermissionRulesOnly": {
+      "type": "boolean"
+    },
+    "allowedChannelPlugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "allowedHttpHookUrls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowedMcpServers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "askUserQuestionTimeout": {
+      "type": "string"
+    },
+    "autoCompactEnabled": {
+      "type": "boolean"
+    },
+    "autoMemoryDirectory": {
+      "type": "string"
+    },
+    "autoMemoryEnabled": {
+      "type": "boolean"
+    },
+    "autoScrollEnabled": {
+      "type": "boolean"
+    },
+    "availableModels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "awaySummaryEnabled": {
+      "type": "boolean"
+    },
+    "awsAuthRefresh": {
+      "type": "string"
+    },
+    "awsCredentialExport": {
+      "type": "string"
+    },
+    "axScreenReader": {
+      "type": "boolean"
+    },
+    "blockedMarketplaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "browserExternalPageTools": {
+      "type": "string"
+    },
+    "channelsEnabled": {
+      "type": "boolean"
+    },
+    "claudeMd": {
+      "type": "string"
+    },
+    "claudeMdExcludes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "companyAnnouncements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "defaultShell": {
+      "type": "string"
+    },
+    "deniedMcpServers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "disableAgentView": {
+      "type": "boolean"
+    },
+    "disableArtifact": {
+      "type": "boolean"
+    },
+    "disableAutoMode": {
+      "type": "string"
+    },
+    "disableBundledSkills": {
+      "type": "boolean"
+    },
+    "disableClaudeAiConnectors": {
+      "type": "boolean"
+    },
+    "disableDeepLinkRegistration": {
+      "type": "string"
+    },
+    "disableRemoteControl": {
+      "type": "boolean"
+    },
+    "disableSideloadFlags": {
+      "type": "boolean"
+    },
+    "disableSkillShellExecution": {
+      "type": "boolean"
+    },
+    "disableWorkflows": {
+      "type": "boolean"
+    },
+    "disabledMcpjsonServers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "editorMode": {
+      "type": "string"
+    },
+    "effortLevel": {
+      "type": "string"
+    },
+    "enableArtifact": {
+      "type": "boolean"
+    },
+    "enabledMcpjsonServers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "enforceAvailableModels": {
+      "type": "boolean"
+    },
+    "fallbackModel": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fastModePerSessionOptIn": {
+      "type": "boolean"
+    },
+    "feedbackSurveyRate": {
+      "type": "number"
+    },
+    "fileCheckpointingEnabled": {
+      "type": "boolean"
+    },
+    "fileSuggestion": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "footerLinksRegexes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "forceLoginGatewayUrl": {
+      "type": "string"
+    },
+    "forceLoginMethod": {
+      "type": "string"
+    },
+    "forceLoginOrgUUID": {
+      "type": "string"
+    },
+    "forceRemoteSettingsRefresh": {
+      "type": "boolean"
+    },
+    "gcpAuthRefresh": {
+      "type": "string"
+    },
+    "httpHookAllowedEnvVars": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "includeGitInstructions": {
+      "type": "boolean"
+    },
+    "inputNeededNotifEnabled": {
+      "type": "boolean"
+    },
+    "minimumVersion": {
+      "type": "string"
+    },
+    "modelOverrides": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "otelHeadersHelper": {
+      "type": "string"
+    },
+    "parentSettingsBehavior": {
+      "type": "string"
+    },
+    "pluginSuggestionMarketplaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pluginTrustMessage": {
+      "type": "string"
+    },
+    "policyHelper": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "prUrlTemplate": {
+      "type": "string"
+    },
+    "preferredNotifChannel": {
+      "type": "string"
+    },
+    "remoteControlAtStartup": {
+      "type": "boolean"
+    },
+    "requiredMaximumVersion": {
+      "type": "string"
+    },
+    "requiredMinimumVersion": {
+      "type": "string"
+    },
+    "respondToBashCommands": {
+      "type": "boolean"
+    },
+    "showClearContextOnPlanAccept": {
+      "type": "boolean"
+    },
+    "showThinkingSummaries": {
+      "type": "boolean"
+    },
+    "skillListingBudgetFraction": {
+      "type": "number"
+    },
+    "skillListingMaxDescChars": {
+      "type": "number"
+    },
+    "skillOverrides": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "spinnerTipsOverride": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "spinnerVerbs": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "sshConfigs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      }
+    },
+    "strictPluginOnlyCustomization": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "syntaxHighlightingDisabled": {
+      "type": "boolean"
+    },
+    "theme": {
+      "type": "string"
+    },
+    "tui": {
+      "type": "string"
+    },
+    "ultracode": {
+      "type": "boolean"
+    },
+    "useAutoModeDuringPlan": {
+      "type": "boolean"
+    },
+    "verbose": {
+      "type": "boolean"
+    },
+    "viewMode": {
+      "type": "string"
+    },
+    "voice": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "voiceEnabled": {
+      "type": "boolean"
+    },
+    "wheelScrollAccelerationEnabled": {
+      "type": "boolean"
+    },
+    "workflowKeywordTriggerEnabled": {
+      "type": "boolean"
+    },
+    "wslInheritsWindowsSettings": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

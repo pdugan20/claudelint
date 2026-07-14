@@ -31,6 +31,11 @@ import {
   RuleMetadata,
 } from './types';
 import { RuleMetadata as InternalRuleMetadata } from '../types/rule';
+// Side-effect import: validators self-register with ValidatorRegistry when their modules
+// load. Only `src/cli.ts` did this, so for every programmatic consumer the registry was
+// EMPTY -- no validator matched anything, and `lintFiles`/`lintText` reported every input
+// clean. The CLI worked; the public API silently did nothing.
+import '../validators';
 import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
 import { getBuiltinPresetPath } from '../utils/config/extends';
 import { loadFormatter as loadFormatterUtil } from './formatter';
@@ -236,9 +241,6 @@ export class ClaudeLint {
    * ```
    */
   async lintText(code: string, options: LintTextOptions = {}): Promise<LintResult[]> {
-    const { writeFileSync, unlinkSync, mkdirSync } = await import('fs');
-    const { tmpdir } = await import('os');
-    const { join } = await import('path');
     const { randomBytes } = await import('crypto');
 
     // Determine the effective file path
@@ -272,30 +274,11 @@ export class ClaudeLint {
       ];
     }
 
-    // Create a temporary file to validate
-    const tmpDir = join(tmpdir(), 'claudelint-linttext');
-    const tmpFile = join(tmpDir, `${randomBytes(16).toString('hex')}.tmp`);
-
-    try {
-      // Ensure tmp directory exists
-      mkdirSync(tmpDir, { recursive: true });
-
-      // Write content to temporary file
-      writeFileSync(tmpFile, code, 'utf-8');
-
-      // Create a temporary validator that points to the tmp file
-      // but we'll use the effective path for reporting
-      const result = await this.validateTextFile(tmpFile, effectivePath, code);
-
-      return [result];
-    } finally {
-      // Clean up temporary file
-      try {
-        unlinkSync(tmpFile);
-      } catch {
-        // Ignore cleanup errors
-      }
-    }
+    // No temp file. The old implementation wrote `code` to a random `<hex>.tmp` path and
+    // handed validators THAT -- so a validator looking for `SKILL.md` or `.mcp.json` matched
+    // nothing, and every call returned clean. The content goes straight to the validators,
+    // labelled with the path the caller says it belongs at.
+    return [await this.validateSource(effectivePath, code, Date.now())];
   }
 
   /**
@@ -698,71 +681,13 @@ export class ClaudeLint {
    * Task 1.4.2 & 1.4.3: Validation orchestration and validator integration
    */
   private async validateFile(filePath: string): Promise<LintResult> {
-    const { ValidatorRegistry } = await import('../utils/validators/factory');
-    const { buildLintResult, buildCleanResult } = await import('./result-builder');
     const { readFileSync } = await import('fs');
     const fileStartTime = Date.now();
 
     try {
-      // Read file content
       const source = readFileSync(filePath, 'utf-8');
 
-      // Get all registered validators
-      const allValidators = ValidatorRegistry.getAll({
-        path: filePath,
-        verbose: false,
-        config: this.config,
-      });
-
-      // Determine which validators should run for this file
-      const applicableValidators = this.getApplicableValidators(filePath, allValidators);
-
-      // If no validators apply, return clean result
-      if (applicableValidators.length === 0) {
-        return buildCleanResult(filePath, source, Date.now() - fileStartTime);
-      }
-
-      // Run all applicable validators
-      const validationResults = await Promise.all(
-        applicableValidators.map(async (validator) => {
-          try {
-            return await validator.validate();
-          } catch (error) {
-            // If a validator fails, return it as an error in ValidationResult
-            return {
-              valid: false,
-              errors: [
-                {
-                  message: `Validator failed: ${error instanceof Error ? error.message : String(error)}`,
-                  file: filePath,
-                  severity: 'error' as const,
-                },
-              ],
-              warnings: [],
-            };
-          }
-        })
-      );
-
-      // Merge all validation results
-      const mergedResult = this.mergeValidationResults(validationResults);
-
-      // Apply fixes if fix option is enabled
-      let output: string | undefined;
-      if (this.shouldApplyFixes()) {
-        output = this.applyFixes(source, mergedResult);
-      }
-
-      // Convert to LintResult format
-      const lintResult = buildLintResult(
-        filePath,
-        mergedResult,
-        source,
-        output,
-        Date.now() - fileStartTime
-      );
-
-      return lintResult;
+      return await this.validateSource(filePath, source, fileStartTime);
     } catch (error) {
       // File read error or other unexpected error
       const { createFileReadError } = await import('./message-builder');
@@ -784,112 +709,100 @@ export class ClaudeLint {
   }
 
   /**
-   * Determine which validators should run for a given file
+   * Validate one document: content plus the path that says what KIND of document it is.
    *
-   * Currently runs all validators for every file. Could be optimized to filter
-   * validators based on file patterns and config, but this is not a priority
-   * since validation is already fast.
+   * The single entry point for both `lintFiles` and `lintText`, because they differ only in
+   * where the content came from.
+   *
+   * Both used to hand each validator `{ path: filePath }` -- but a validator expects a
+   * PROJECT ROOT to glob inside, not a file. So the settings validator would glob for
+   * `.claude/settings.json` UNDERNEATH `/some/path/.claude/settings.json`, find nothing, and
+   * report clean. Every input, every category, always clean. Validators are instead selected
+   * here by matching the path against the patterns they register, and handed the content
+   * directly as a virtual file.
    */
-  private getApplicableValidators(
-    _filePath: string,
-    allValidators: import('../validators/file-validator').FileValidator[]
-  ): import('../validators/file-validator').FileValidator[] {
-    return allValidators;
-  }
-
-  /**
-   * Validate text content from a temporary file
-   *
-   * Similar to validateFile but uses a temporary file location for validation
-   * while reporting results against the effective file path.
-   *
-   * @param tmpFile - Path to temporary file containing the content
-   * @param effectivePath - Path to report in results (the "virtual" file path)
-   * @param source - The original source code
-   * @returns Promise resolving to lint result
-   */
-  private async validateTextFile(
-    tmpFile: string,
-    effectivePath: string,
-    source: string
+  private async validateSource(
+    filePath: string,
+    source: string,
+    startTime: number
   ): Promise<LintResult> {
     const { ValidatorRegistry } = await import('../utils/validators/factory');
     const { buildLintResult, buildCleanResult } = await import('./result-builder');
-    const fileStartTime = Date.now();
 
-    try {
-      // Get all registered validators (using the effective path for determining applicability)
-      const allValidators = ValidatorRegistry.getAll({
-        path: tmpFile, // Validators will read from tmpFile
-        verbose: false,
-        config: this.config,
-      });
+    const applicable = await this.getApplicableValidatorIds(filePath);
 
-      // Determine which validators should run based on the effective path
-      const applicableValidators = this.getApplicableValidators(effectivePath, allValidators);
-
-      // If no validators apply, return clean result
-      if (applicableValidators.length === 0) {
-        return buildCleanResult(effectivePath, source, Date.now() - fileStartTime);
-      }
-
-      // Run all applicable validators
-      const validationResults = await Promise.all(
-        applicableValidators.map(async (validator) => {
-          try {
-            return await validator.validate();
-          } catch (error) {
-            // If a validator fails, return it as an error in ValidationResult
-            return {
-              valid: false,
-              errors: [
-                {
-                  message: `Validator failed: ${error instanceof Error ? error.message : String(error)}`,
-                  file: effectivePath,
-                  severity: 'error' as const,
-                },
-              ],
-              warnings: [],
-            };
-          }
-        })
-      );
-
-      // Merge all validation results
-      const mergedResult = this.mergeValidationResults(validationResults);
-
-      // Apply fixes if fix option is enabled
-      let output: string | undefined;
-      if (this.shouldApplyFixes()) {
-        output = this.applyFixes(source, mergedResult);
-      }
-
-      // Convert to LintResult format, using effectivePath for reporting
-      const lintResult = buildLintResult(
-        effectivePath,
-        mergedResult,
-        source,
-        output,
-        Date.now() - fileStartTime
-      );
-
-      return lintResult;
-    } catch (error) {
-      // Validation error or other unexpected error
-      const { createFileReadError } = await import('./message-builder');
-      const errorMessage = createFileReadError(effectivePath, error as Error);
-
-      return {
-        filePath: effectivePath,
-        messages: [errorMessage],
-        suppressedMessages: [],
-        errorCount: 1,
-        warningCount: 0,
-        fixableErrorCount: 0,
-        fixableWarningCount: 0,
-        source,
-      };
+    if (applicable.length === 0) {
+      return buildCleanResult(filePath, source, Date.now() - startTime);
     }
+
+    const validationResults = await Promise.all(
+      applicable.map(async (id) => {
+        try {
+          return await ValidatorRegistry.create(id, {
+            config: this.config,
+            verbose: false,
+            stdinContent: source,
+            stdinFilename: filePath,
+          }).validate();
+        } catch (error) {
+          return {
+            valid: false,
+            errors: [
+              {
+                message: `Validator failed: ${error instanceof Error ? error.message : String(error)}`,
+                file: filePath,
+                severity: 'error' as const,
+              },
+            ],
+            warnings: [],
+          };
+        }
+      })
+    );
+
+    const mergedResult = this.mergeValidationResults(validationResults);
+
+    let output: string | undefined;
+    if (this.shouldApplyFixes()) {
+      output = this.applyFixes(source, mergedResult);
+    }
+
+    return buildLintResult(filePath, mergedResult, source, output, Date.now() - startTime);
+  }
+
+  /**
+   * Determine which validators should run for a given file.
+   *
+   * This returned every validator unconditionally, ignoring its `_filePath` argument -- with
+   * a comment calling that an unmade optimization. It was not: filtering is load-bearing.
+   * A validator handed a virtual file does not re-check that the file is its kind, so
+   * without this, settings.json would be dragged through the skill validator and reported on
+   * as a malformed SKILL.md.
+   *
+   * `{ dot: true }` is required: minimatch's `**` will not cross a dot-directory without it,
+   * so `**\/plugin.json` would never match `.claude-plugin/plugin.json`.
+   */
+  private async getApplicableValidatorIds(filePath: string): Promise<string[]> {
+    const { ValidatorRegistry } = await import('../utils/validators/factory');
+    const { minimatch } = await import('minimatch');
+    const { relative, isAbsolute } = await import('path');
+
+    // Match on the absolute path AND the cwd-relative one. Registered patterns are written
+    // both ways across the codebase (`**/.claude/settings.json`, `.claude-plugin/plugin.json`),
+    // and a caller may pass either form.
+    const candidates = new Set<string>([filePath]);
+    if (isAbsolute(filePath)) {
+      candidates.add(relative(this.cwd, filePath));
+    }
+
+    return ValidatorRegistry.getAllMetadata()
+      .filter((meta) => meta.enabled)
+      .filter((meta) =>
+        meta.filePatterns.some((pattern) =>
+          [...candidates].some((candidate) => minimatch(candidate, pattern, { dot: true }))
+        )
+      )
+      .map((meta) => meta.id);
   }
 
   /**

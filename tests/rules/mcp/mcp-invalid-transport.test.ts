@@ -49,7 +49,7 @@ describe('mcp-invalid-transport', () => {
           content: JSON.stringify({
             mcpServers: {
               server1: {
-                  type: 'websocket',
+                  type: 'ws',
                   url: 'ws://localhost:9000',
                 },
             },

@@ -175,6 +175,16 @@ export interface BaseValidatorOptions {
   stdinContent?: string;
   /** Filename for stdin content (used for validator matching and reporting) */
   stdinFilename?: string;
+  /**
+   * ABSOLUTE paths of the files that changed, from --changed / --since.
+   *
+   * When set, a validator scans only the intersection of what it discovers and this list.
+   * Undefined means "no VCS filter" -- scan everything, which is the default.
+   *
+   * An EMPTY array is meaningful and must not be confused with undefined: it means the VCS
+   * reported no changed files, so a validator should scan nothing.
+   */
+  changedFiles?: string[];
 }
 
 /**
@@ -322,6 +332,29 @@ export abstract class FileValidator {
       };
     }
     return null;
+  }
+
+  /**
+   * Read a file's content, honouring the virtual (stdin) file when it IS that file.
+   *
+   * Use this instead of `readFileContent()` for the document under validation. Every
+   * schema validator used to reach straight back to disk inside `validateSemantics`, so in
+   * stdin mode the SCHEMA saw the supplied content while the RULES saw whatever happened to
+   * be on disk at that path -- a blend of two different documents, or an ENOENT if nothing
+   * was there. Callers piping content got a silently incomplete result.
+   *
+   * Secondary files (a skill's shell scripts, a plugin's referenced components) still come
+   * from disk: they are not the virtual file, and the path check below keeps them that way.
+   */
+  protected async readContent(filePath: string): Promise<string> {
+    const virtual = this.getVirtualFile();
+
+    if (virtual && virtual.path === filePath) {
+      return virtual.content;
+    }
+
+    const { readFileContent } = await import('../utils/filesystem/files');
+    return readFileContent(filePath);
   }
 
   /**
@@ -533,6 +566,52 @@ export abstract class FileValidator {
       filesFound: files,
       skipped: false,
     };
+  }
+
+  /**
+   * Narrow a set of discovered files to those the VCS reports as changed.
+   *
+   * The single choke point for --changed / --since. Every validator discovers files its own
+   * way, so scoping is applied here, to the RESULT of discovery, rather than pushed into
+   * each glob.
+   *
+   * Returns `files` untouched when no VCS filter is active. Note the difference between an
+   * empty `changedFiles` array (VCS says nothing changed -- scan nothing) and `undefined`
+   * (no filter -- scan everything); `?? undefined` on the caller side would collapse them.
+   *
+   * Both sides are resolved to absolute paths before comparison: git speaks in paths
+   * relative to the git root, validators in paths relative to cwd, and the two only agree
+   * when claudelint happens to run from the root.
+   */
+  protected scopeToChangedFiles(files: string[]): string[] {
+    const changed = this.options.changedFiles;
+    if (changed === undefined) {
+      return files;
+    }
+
+    const changedSet = new Set(changed.map((f) => path.resolve(f)));
+    return files.filter((file) => changedSet.has(path.resolve(file)));
+  }
+
+  /**
+   * Narrow a set of discovered DIRECTORIES to those containing a changed file.
+   *
+   * Skills are validated as a unit -- a skill directory is more than its SKILL.md, and rules
+   * reach into the scripts and reference files beside it. So a skill is in scope when ANY
+   * file under it changed, not only when its SKILL.md did. Filtering these by exact path
+   * against a file list would match nothing and silently skip every skill.
+   */
+  protected scopeDirsToChangedFiles(dirs: string[]): string[] {
+    const changed = this.options.changedFiles;
+    if (changed === undefined) {
+      return dirs;
+    }
+
+    const changedPaths = changed.map((f) => path.resolve(f));
+    return dirs.filter((dir) => {
+      const prefix = path.resolve(dir) + path.sep;
+      return changedPaths.some((file) => file.startsWith(prefix));
+    });
   }
 
   /**

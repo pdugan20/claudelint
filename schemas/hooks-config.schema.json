@@ -20,6 +20,7 @@
         "PostToolUse": { "$ref": "#/$defs/matcherGroupArray" },
         "PostToolUseFailure": { "$ref": "#/$defs/matcherGroupArray" },
         "PostToolBatch": { "$ref": "#/$defs/matcherGroupArray" },
+        "MessageDisplay": { "$ref": "#/$defs/matcherGroupArray" },
         "PermissionRequest": { "$ref": "#/$defs/matcherGroupArray" },
         "PermissionDenied": { "$ref": "#/$defs/matcherGroupArray" },
         "Notification": { "$ref": "#/$defs/matcherGroupArray" },

@@ -89,6 +89,17 @@ claudelint check-all [options]
 | `--workspace <name>` | Validate specific workspace package by name | - |
 | `--workspaces` | Validate all workspace packages | `false` |
 
+**Scoping to changed files:**
+
+`--changed` and `--since <ref>` narrow validation to the files git reports as changed, which is what makes claudelint usable as a PR check: a pull request is not failed for pre-existing findings in files it never touched.
+
+Two details are worth knowing:
+
+- **Deleted files are excluded.** A deletion is a change, so git lists it, but validating a path that no longer exists would report on a file you intentionally removed.
+- **Cross-file findings can be missed.** Some rules report on file A because of file B — `claude-md-import-missing` fires on the importer when the imported file is gone. If a change deletes B without touching A, a scoped run does not see it. Run an unscoped `claudelint check-all` (in CI, on the merged result) to catch that class.
+
+A skill is in scope when **any** file inside its directory changed, not only its `SKILL.md`, since rules also read the scripts and reference files beside it.
+
 **Examples:**
 
 ```bash

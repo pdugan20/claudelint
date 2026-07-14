@@ -84,6 +84,7 @@ Valid event keys for hooks configuration. All names are PascalCase.
 | `UserPromptSubmit` | When the user submits a prompt, before Claude processes it |
 | `UserPromptExpansion` | When a user-typed command expands into a prompt, before it reaches Claude |
 | `Notification` | When Claude Code sends a notification |
+| `MessageDisplay` | While assistant message text is displayed |
 | `Stop` | When Claude finishes responding |
 | `StopFailure` | When the turn ends due to an API error |
 | `Setup` | When Claude Code starts with `--init-only`, `--init`, or `--maintenance` (one-time CI/script preparation) |
@@ -124,6 +125,7 @@ Valid values for the `permissionMode` field in agent frontmatter.
 | Mode | Description |
 |------|-------------|
 | `default` | Standard permission prompts |
+| `manual` | Alias for `default` (Claude Code v2.1.200+) |
 | `acceptEdits` | Auto-accept file edits |
 | `auto` | Auto mode classifier decides per tool call |
 | `dontAsk` | Treat permission prompts as denied |

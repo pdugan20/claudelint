@@ -46,7 +46,7 @@ Server using WebSocket transport
 {
   "mcpServers": {
     "remote": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }
@@ -55,7 +55,7 @@ Server using WebSocket transport
 
 ## How To Fix
 
-Change the server type from "sse" to "http" and update the url to point to the HTTP streamable endpoint. Alternatively, use "websocket" if the server supports it.
+Change the server type from "sse" to "http" and update the url to point to the HTTP streamable endpoint. Alternatively, use "ws" if the server supports it.
 
 ## Options
 

@@ -8,7 +8,7 @@ description: "MCP WebSocket transport URL must be valid"
 
 ## Rule Details
 
-This rule checks that the url field of MCP servers with type "websocket" is a valid URL by attempting to parse it with the URL constructor. URLs containing variable expansions (${ or $) are skipped since they are resolved at runtime. An invalid URL will prevent Claude Code from establishing a WebSocket connection to the MCP server.
+This rule checks that the url field of MCP servers with type "ws" is a valid URL by attempting to parse it with the URL constructor. URLs containing variable expansions (${ or $) are skipped since they are resolved at runtime. An invalid URL will prevent Claude Code from establishing a WebSocket connection to the MCP server.
 
 ### Incorrect
 
@@ -18,7 +18,7 @@ WebSocket server with a malformed URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "not-a-valid-url"
     }
   }
@@ -33,7 +33,7 @@ WebSocket server with a valid URL
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "wss://mcp.example.com/ws"
     }
   }
@@ -46,7 +46,7 @@ WebSocket server with a variable-expanded URL (skipped)
 {
   "mcpServers": {
     "realtime": {
-      "type": "websocket",
+      "type": "ws",
       "url": "${MCP_WS_URL}"
     }
   }

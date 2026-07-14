@@ -60,20 +60,16 @@ export const SkillFrontmatterSchema = z.object({
 
 /**
  * Skill frontmatter schema with cross-field refinements
+ *
+ * `context: fork` does NOT require `agent`. The docs mark `agent` as `Required: No` --
+ * "Which subagent type to use when `context: fork` is set" (docs-baseline/skills.md:241) --
+ * and print a `context: fork` skill with no `agent` at skills.md:193. claudelint made it
+ * mandatory and rejected that example.
+ *
+ * The alias is kept so callers importing it keep working, and so a future genuine
+ * cross-field rule has somewhere to live.
  */
-export const SkillFrontmatterWithRefinements = SkillFrontmatterSchema.refine(
-  (data) => {
-    // If context is 'fork', agent must be specified
-    if (data.context === 'fork' && !data.agent) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'When context is "fork", agent field is required',
-    path: ['agent'],
-  }
-);
+export const SkillFrontmatterWithRefinements = SkillFrontmatterSchema;
 
 export type SkillFrontmatter = z.infer<typeof SkillFrontmatterSchema>;
 export type SkillFrontmatterWithValidations = z.infer<typeof SkillFrontmatterWithRefinements>;
