@@ -375,20 +375,35 @@ export function registerCheckAllCommand(program: Command): void {
       let totalWarnings = 0;
       const timings: Record<string, number> = {};
 
-      // Initialize cache (disable when using --fix to preserve autoFix functions)
+      // Initialize cache (disable when using --fix to preserve autoFix functions).
+      //
+      // `scope` keeps a --changed/--since run's results out of the entry a full run reads.
+      // A scoped run only validated a SUBSET, so caching it as though it were a full result
+      // makes the next `claudelint check-all` report "No problems found" while real errors
+      // sit in files the scoped run never opened.
       const cache =
         options.cache !== false && !options.fix && !options.fixDryRun
           ? new ValidationCache({
               enabled: true,
               location: options.cacheLocation || '.claudelint-cache',
               strategy: options.cacheStrategy === 'content' ? 'content' : 'mtime',
+              scope: changedFiles ? `changed:${[...changedFiles].sort().join(' ')}` : undefined,
             })
           : null;
 
-      // Prepare validator options with config
+      // Prepare validator options with config.
+      //
+      // `changedFiles` is what makes --changed / --since actually scope anything. It used to
+      // be computed above and then dropped on the floor: the only reads were the verbose log
+      // and the emptiness gate, so every validator went on to glob the whole tree and a
+      // one-file PR was flagged for findings in every Claude config file in the repo (#115).
+      //
+      // Spread `options` first: it carries the raw `changed`/`since` FLAGS, not the resolved
+      // list, and must not shadow the list below.
       const validatorOptions = {
         ...options,
         config: config,
+        changedFiles,
       };
 
       // Get all enabled validator metadata from registry

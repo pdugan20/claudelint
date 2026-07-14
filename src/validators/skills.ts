@@ -70,7 +70,8 @@ export class SkillsValidator extends FileValidator {
       return allSkillDirs.filter((dir) => basename(dir) === this.specificSkill);
     }
 
-    return allSkillDirs;
+    // A skill is in scope when any file under it changed, not only its SKILL.md.
+    return this.scopeDirsToChangedFiles(allSkillDirs);
   }
 
   private async validateSkill(skillDir: string): Promise<void> {

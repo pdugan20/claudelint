@@ -163,7 +163,7 @@ export abstract class SchemaValidator<T extends z.ZodType> extends FileValidator
       return [this.options.path];
     }
 
-    return this.findConfigFiles(this.basePath);
+    return this.scopeToChangedFiles(await this.findConfigFiles(this.basePath));
   }
 
   /**
