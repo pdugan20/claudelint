@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0](https://github.com/pdugan20/claudelint/compare/v0.6.0...v0.7.0) (2026-07-14)
+
+### Bug Fixes
+
+* accept documented `fable` model and `pathPattern` marketplace source ([#145](https://github.com/pdugan20/claudelint/issues/145)) ([2e4d7eb](https://github.com/pdugan20/claudelint/commit/2e4d7ebdbcb2414c49b8fc2764fc4a20817a4481)), closes [#132](https://github.com/pdugan20/claudelint/issues/132) [#140](https://github.com/pdugan20/claudelint/issues/140) [#142](https://github.com/pdugan20/claudelint/issues/142) [#140](https://github.com/pdugan20/claudelint/issues/140) [#143](https://github.com/pdugan20/claudelint/issues/143) [#136](https://github.com/pdugan20/claudelint/issues/136) [#141](https://github.com/pdugan20/claudelint/issues/141)
+* accept inline plugin hooks, re-enable plugin-hook-missing-plugin-root, document hook output ([#149](https://github.com/pdugan20/claudelint/issues/149)) ([36215f8](https://github.com/pdugan20/claudelint/commit/36215f823e474266123d87587694636e29da103d)), closes [#40](https://github.com/pdugan20/claudelint/issues/40) [#39](https://github.com/pdugan20/claudelint/issues/39)
+* make --changed and --since actually scope validation ([#148](https://github.com/pdugan20/claudelint/issues/148)) ([7670ece](https://github.com/pdugan20/claudelint/commit/7670ece3aa7c327efbc957721d44ed3f76954e09)), closes [#115](https://github.com/pdugan20/claudelint/issues/115)
+* model every documented tool, and put the tool list under doc authority ([#147](https://github.com/pdugan20/claudelint/issues/147)) ([248c695](https://github.com/pdugan20/claudelint/commit/248c695f443eaa6d2678bae8e123833d96477cb2)), closes [#143](https://github.com/pdugan20/claudelint/issues/143)
+
+### Documentation
+
+* regenerate the settings-invalid-permission page after the tool-list fix ([#150](https://github.com/pdugan20/claudelint/issues/150)) ([88b05cd](https://github.com/pdugan20/claudelint/commit/88b05cd159938122e84bceda8a18b8be6ccfd910)), closes [#122](https://github.com/pdugan20/claudelint/issues/122)
+
+### Continuous Integration
+
+* bump codecov/codecov-action from 6 to 7 ([#119](https://github.com/pdugan20/claudelint/issues/119)) ([f2e9a78](https://github.com/pdugan20/claudelint/commit/f2e9a78323c48946dcc20b847e0c40c8e6d79903))
+
 ## [0.6.0](https://github.com/pdugan20/claudelint/compare/v0.5.0...v0.6.0) (2026-07-13)
 
 ### Features
