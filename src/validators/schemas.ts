@@ -621,9 +621,18 @@ export const PluginManifestSchema = z.object({
   monitors: z.union([z.string(), z.array(z.string())]).optional(),
 
   // Config paths
-  // Note: The documented spec accepts string|array|object for hooks, but all three are
-  // currently broken upstream (anthropics/claude-code#16288, #27307). Only auto-discovery
-  // from hooks/hooks.json works. Schema accepts all three per the documented spec.
+  //
+  // All three documented forms (string | array | object) work as of Claude Code 2.1.208,
+  // verified by firing a real SessionStart hook from each. An earlier comment here claimed
+  // they were "all broken upstream" and that only auto-discovery from hooks/hooks.json
+  // worked; that is false, and it was the premise for disabling
+  // `plugin-hook-missing-plugin-root` (#40).
+  //
+  // docs-baseline/plugins-reference.md:83 -- "Location: `hooks/hooks.json` in plugin root,
+  // or inline in plugin.json"
+  //
+  // What DOES fail is a hook command using a relative path: the plugin loads, the hook
+  // silently never fires, and `claude plugin validate --strict` passes it.
   hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
   mcpServers: z
     .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])

@@ -70,7 +70,7 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-This rule is off by default because inline hook objects in plugin.json are not yet supported at runtime by Claude Code. Only auto-discovered hooks from hooks/hooks.json currently work. Enable this rule if you are preparing plugins for future upstream support.
+There is no good reason to disable this. A hook command that omits ${CLAUDE_PLUGIN_ROOT} does not fire, and it fails silently: the plugin loads, the hook never runs, and no error is printed.
 
 ## Related Rules
 

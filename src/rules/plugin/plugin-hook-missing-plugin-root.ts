@@ -9,10 +9,12 @@
  * plugin root by the plugin system and do NOT need ${CLAUDE_PLUGIN_ROOT}.
  * Only inline object hook commands need this variable.
  *
- * Off by default: The plugin.json hooks field has upstream issues that prevent
- * inline hook objects from working at runtime. Only auto-discovery from
- * hooks/hooks.json is currently supported. This rule will be added to the
- * recommended preset when upstream support is restored.
+ * This rule was disabled on the premise that inline hook objects in plugin.json were
+ * rejected at runtime. That premise is false as of Claude Code 2.1.208, verified by firing
+ * a real SessionStart hook: inline objects are accepted AND they fire. What actually fails
+ * is a hook whose command uses a relative path -- it silently never runs, and
+ * `claude plugin validate --strict` passes it. That silent failure is exactly what this
+ * rule catches, and nothing else does (#40).
  */
 
 import { Rule, RuleContext } from '../../types/rule';
@@ -48,12 +50,12 @@ export const rule: Rule = {
     since: '0.2.0',
     docUrl: 'https://claudelint.com/rules/plugin/plugin-hook-missing-plugin-root',
     docs: {
-      recommended: false,
+      recommended: true,
       summary:
         'Requires inline plugin hook commands to use ${CLAUDE_PLUGIN_ROOT} for portable path references.',
       rationale:
-        'Relative paths in hook commands break when the plugin is installed elsewhere; ' +
-        '${CLAUDE_PLUGIN_ROOT} ensures portability.',
+        'A hook command with a relative path silently never fires, and `claude plugin validate` ' +
+        'passes it, so nothing else catches this; ${CLAUDE_PLUGIN_ROOT} makes the path resolve.',
       details:
         'This rule checks inline hook definitions in plugin.json for command-type hooks that ' +
         'reference script files via relative paths. These commands must use ${CLAUDE_PLUGIN_ROOT} ' +
@@ -80,9 +82,9 @@ export const rule: Rule = {
         '${CLAUDE_PLUGIN_ROOT}. For example, change `./scripts/lint.sh` to ' +
         '`${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh`.',
       whenNotToUse:
-        'This rule is off by default because inline hook objects in plugin.json are not yet ' +
-        'supported at runtime by Claude Code. Only auto-discovered hooks from hooks/hooks.json ' +
-        'currently work. Enable this rule if you are preparing plugins for future upstream support.',
+        'There is no good reason to disable this. A hook command that omits ${CLAUDE_PLUGIN_ROOT} ' +
+        'does not fire, and it fails silently: the plugin loads, the hook never runs, and no ' +
+        'error is printed.',
       relatedRules: ['plugin-missing-file'],
     },
   },
