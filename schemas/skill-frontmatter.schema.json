@@ -85,7 +85,7 @@
     "model": {
       "type": "string",
       "description": "Model to use when this skill is active.",
-      "enum": ["sonnet", "opus", "haiku", "inherit"]
+      "enum": ["sonnet", "opus", "haiku", "fable", "inherit"]
     },
     "context": {
       "type": "string",

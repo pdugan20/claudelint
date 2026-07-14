@@ -10,8 +10,13 @@
 import { Rule, RuleContext } from '../../types/rule';
 import { extractFrontmatter, getFrontmatterFieldLine } from '../../utils/formats/markdown';
 
-/** Known model aliases */
-const MODEL_ALIASES = ['sonnet', 'opus', 'haiku', 'inherit'];
+/**
+ * Known model aliases
+ *
+ * docs-baseline/sub-agents.md:290 — "use one of the available aliases: `sonnet`,
+ * `opus`, `haiku`, or `fable`". `inherit` is documented alongside them at :273.
+ */
+const MODEL_ALIASES = ['sonnet', 'opus', 'haiku', 'fable', 'inherit'];
 
 /** Pattern for full Claude model IDs (e.g. claude-sonnet-4-5, claude-opus-4-6) */
 const FULL_MODEL_ID_RE = /^claude-[a-z]+-[\d]+-[\d]+/;

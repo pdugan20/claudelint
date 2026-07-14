@@ -39,8 +39,11 @@ export const ToolNames = z.enum([
 
 /**
  * Valid Claude model names
+ *
+ * docs-baseline/sub-agents.md:290 — "use one of the available aliases: `sonnet`,
+ * `opus`, `haiku`, or `fable`". `inherit` is documented alongside them at :273.
  */
-export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'inherit']);
+export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'fable', 'inherit']);
 
 /**
  * Valid permission action types
