@@ -46,38 +46,12 @@
       "enum": ["low", "medium", "high", "xhigh", "max"]
     },
     "allowed-tools": {
-      "description": "Tools Claude can use without asking permission when this skill is active. Accepts a space-separated string or a YAML list.",
+      "description": "Tools Claude can use without asking permission when this skill is active. Accepts a space- or comma-separated string, or a YAML list. Entries are permission rules, not bare tool names: `Bash(git add *)` and `mcp__server__tool` are both valid.",
       "oneOf": [
         { "type": "string" },
         {
           "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "Agent",
-              "Bash",
-              "Read",
-              "Write",
-              "Edit",
-              "Glob",
-              "Grep",
-              "Task",
-              "WebFetch",
-              "WebSearch",
-              "LSP",
-              "AskUserQuestion",
-              "EnterPlanMode",
-              "ExitPlanMode",
-              "Skill",
-              "TaskCreate",
-              "TaskUpdate",
-              "TaskGet",
-              "TaskList",
-              "TaskOutput",
-              "TaskStop",
-              "NotebookEdit"
-            ]
-          },
+          "items": { "type": "string" },
           "uniqueItems": true
         }
       ]

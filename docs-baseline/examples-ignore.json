@@ -2,12 +2,12 @@
   "_comment": "Documented examples that are ABRIDGED FRAGMENTS, not complete documents. Suppressing one asserts 'a user copying this verbatim would correctly get an error, because upstream printed only part of a file'. It must never be used to silence a genuine false positive - that is the whole point of the gate. Every entry needs a reason, and a stale entry (one whose example no longer exists) is a hard failure.",
   "fragments": [
     {
-      "example": "plugin-marketplaces.md:751",
-      "reason": "Partial marketplace manifest. Upstream is illustrating plugin `source` variants and prints only `name` + `plugins`, omitting the required top-level `owner`. A real marketplace.json without `owner` IS invalid, so the error is correct here."
+      "example": "plugin-marketplaces.md:764",
+      "reason": "Partial marketplace manifest. Upstream is illustrating plugin `source` variants and prints only `name` + `plugins`, omitting the required top-level `owner`. A real marketplace.json without `owner` IS invalid, so the error is correct here. (Was :751 before the baseline refresh moved it; `owner` remains documented as required at plugin-marketplaces.md:155.)"
     },
     {
-      "example": "plugin-marketplaces.md:767",
-      "reason": "Same abridged marketplace shape as :751 - shows a `source` variant only, omits the required top-level `owner`."
+      "example": "plugin-marketplaces.md:780",
+      "reason": "Same abridged marketplace shape as :764 - shows a `source` variant only, omits the required top-level `owner`. (Was :767 before the baseline refresh moved it.)"
     }
   ]
 }
