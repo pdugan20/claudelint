@@ -57,8 +57,9 @@ export class ClaudeMdValidator extends FileValidator {
       return [this.options.path];
     }
 
-    // Otherwise find all CLAUDE.md files
-    return findClaudeMdFiles(this.basePath);
+    // Otherwise find all CLAUDE.md files, narrowed to the VCS-changed set when --changed
+    // or --since is active.
+    return this.scopeToChangedFiles(await findClaudeMdFiles(this.basePath));
   }
 
   private async validateFile(filePath: string): Promise<void> {

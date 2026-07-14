@@ -68,7 +68,7 @@ export class AgentsValidator extends FileValidator {
       return allAgentFiles.filter((file) => basename(file, '.md') === this.specificAgent);
     }
 
-    return allAgentFiles;
+    return this.scopeToChangedFiles(allAgentFiles);
   }
 
   private async validateAgent(filePath: string): Promise<void> {

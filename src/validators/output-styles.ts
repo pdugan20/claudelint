@@ -67,7 +67,7 @@ export class OutputStylesValidator extends FileValidator {
       );
     }
 
-    return allOutputStyleFiles;
+    return this.scopeToChangedFiles(allOutputStyleFiles);
   }
 
   private async validateOutputStyle(outputStylePath: string): Promise<void> {
