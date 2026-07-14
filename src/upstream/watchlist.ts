@@ -105,6 +105,16 @@ export const WATCHLIST: WatchEntry[] = [
     minFacts: 10,
   },
   {
+    id: 'tools-reference',
+    url: `${DOCS}/tools-reference.md`,
+    extractors: ['field-tables'],
+    // `ToolNames` is a z.enum rather than a document schema, so it has no SCHEMA_REGISTRY
+    // entry to name here. Conformance is enforced in both directions by
+    // tests/upstream/tool-names.test.ts, the same way settings keys are.
+    governs: [],
+    minFacts: 30,
+  },
+  {
     id: 'memory',
     url: `${DOCS}/memory.md`,
     // memory.md documents the `paths` field only via a YAML frontmatter example, never

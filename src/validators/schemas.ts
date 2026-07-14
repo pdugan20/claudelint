@@ -231,16 +231,32 @@ export const MarketplaceConfigSchema = z.object({
 /**
  * Strict marketplace source schema for settings (strictKnownMarketplaces)
  * Based on: https://code.claude.com/docs/en/settings#strictknownmarketplaces
- * Same source types as extraKnownMarketplaces plus hostPattern for regex matching
+ *
+ * Same source types as extraKnownMarketplaces, plus the two regex-matching sources.
+ * docs-baseline/settings.md:872 — "Most sources use exact matching, while `hostPattern`
+ * and `pathPattern` use regex matching against the marketplace host and filesystem path
+ * respectively."
  */
 export const StrictMarketplaceSourceSchema = z.object({
-  source: z.enum(['github', 'git', 'url', 'npm', 'directory', 'file', 'hostPattern']),
+  source: z.enum([
+    'github',
+    'git',
+    'url',
+    'npm',
+    'directory',
+    'file',
+    'hostPattern',
+    'pathPattern',
+  ]),
   repo: z.string().optional(),
   url: z.string().optional(),
   package: z.string().optional(),
   path: z.string().optional(),
   ref: z.string().optional(),
   hostPattern: z.string().optional(), // regex pattern for hostPattern source
+  // docs-baseline/settings.md:959 — "Fields: `pathPattern` (required: regex pattern
+  // matched against the `path` field of `file` and `directory` sources)"
+  pathPattern: z.string().optional(),
 });
 
 /**

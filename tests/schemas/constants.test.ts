@@ -54,6 +54,8 @@ describe('Schema Constants', () => {
       expect(ModelNames.safeParse('sonnet').success).toBe(true);
       expect(ModelNames.safeParse('opus').success).toBe(true);
       expect(ModelNames.safeParse('haiku').success).toBe(true);
+      // docs-baseline/sub-agents.md:290 — "sonnet, opus, haiku, or fable"
+      expect(ModelNames.safeParse('fable').success).toBe(true);
       expect(ModelNames.safeParse('inherit').success).toBe(true);
     });
 
@@ -64,7 +66,7 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
-      expect(VALID_MODELS).toEqual(['sonnet', 'opus', 'haiku', 'inherit']);
+      expect(VALID_MODELS).toEqual(['sonnet', 'opus', 'haiku', 'fable', 'inherit']);
     });
   });
 
