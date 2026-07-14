@@ -36,7 +36,7 @@ Permission using valid tool names
 
 ## How To Fix
 
-Check the tool name against the list of valid tools: Bash, Read, Write, Edit, Glob, Grep, Task, WebFetch, WebSearch, LSP, AskUserQuestion, EnterPlanMode, ExitPlanMode, Skill, TaskCreate, TaskUpdate, TaskGet, TaskList, TaskOutput, TaskStop, NotebookEdit. For MCP servers, use the mcp__ prefix followed by the server name.
+Check the tool name against the list of valid tools: Agent, Artifact, AskUserQuestion, Bash, CronCreate, CronDelete, CronList, Edit, EnterPlanMode, EnterWorktree, ExitPlanMode, ExitWorktree, Glob, Grep, ListMcpResourcesTool, LSP, Monitor, NotebookEdit, PowerShell, PushNotification, Read, ReadMcpResourceTool, RemoteTrigger, ReportFindings, ScheduleWakeup, SendMessage, SendUserFile, ShareOnboardingGuide, Skill, TaskCreate, TaskGet, TaskList, TaskOutput, TaskStop, TaskUpdate, TodoWrite, ToolSearch, WaitForMcpServers, WebFetch, WebSearch, Workflow, Write, Task, SlashCommand. For MCP servers, use the mcp__ prefix followed by the server name.
 
 ## Options
 
