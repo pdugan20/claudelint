@@ -7,40 +7,72 @@ import { z } from 'zod';
 
 /**
  * Valid Claude Code tool names
- * Note: Task was renamed to Agent in v2.1.63. Both are accepted for compatibility.
+ *
+ * Kept in conformance with the tool table in `docs-baseline/tools-reference.md` by
+ * tests/upstream/tool-names.test.ts, in both directions. Before that gate existed this
+ * list had drifted 18 documented tools behind, and every one was a false positive: a user
+ * writing `Artifact` or `TodoWrite` in `permissions.allow` was told it was invalid (#122).
+ *
+ * `Task` and `SlashCommand` are deliberate back-compat entries, not documented tools. Both
+ * carry their reason in KNOWN_TOOL_EXTENSIONS (scripts/upstream/tool-names.ts); the gate
+ * fails on any other undocumented name.
  */
 export const ToolNames = z.enum([
   'Agent',
+  'Artifact',
+  'AskUserQuestion',
   'Bash',
-  'Read',
-  'Write',
+  'CronCreate',
+  'CronDelete',
+  'CronList',
   'Edit',
+  'EnterPlanMode',
+  'EnterWorktree',
+  'ExitPlanMode',
+  'ExitWorktree',
   'Glob',
   'Grep',
-  'Task',
-  'WebFetch',
-  'WebSearch',
+  'ListMcpResourcesTool',
   'LSP',
-  'AskUserQuestion',
-  'EnterPlanMode',
-  'ExitPlanMode',
+  'Monitor',
+  'NotebookEdit',
+  'PowerShell',
+  'PushNotification',
+  'Read',
+  'ReadMcpResourceTool',
+  'RemoteTrigger',
+  'ReportFindings',
+  'ScheduleWakeup',
+  'SendMessage',
+  'SendUserFile',
+  'ShareOnboardingGuide',
   'Skill',
   'TaskCreate',
-  'TaskUpdate',
   'TaskGet',
   'TaskList',
   'TaskOutput',
   'TaskStop',
-  'NotebookEdit',
+  'TaskUpdate',
+  'TodoWrite',
   'ToolSearch',
-  'ListMcpResourcesTool',
-  'ReadMcpResourceTool',
+  'WaitForMcpServers',
+  'WebFetch',
+  'WebSearch',
+  'Workflow',
+  'Write',
+
+  // Back-compat aliases. Not in the documented tool table; see KNOWN_TOOL_EXTENSIONS.
+  'Task', // renamed to Agent in v2.1.63; the live CLI still exposes it
+  'SlashCommand', // retired upstream, folded into the Skill tool
 ]);
 
 /**
  * Valid Claude model names
+ *
+ * docs-baseline/sub-agents.md:290 — "use one of the available aliases: `sonnet`,
+ * `opus`, `haiku`, or `fable`". `inherit` is documented alongside them at :273.
  */
-export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'inherit']);
+export const ModelNames = z.enum(['sonnet', 'opus', 'haiku', 'fable', 'inherit']);
 
 /**
  * Valid permission action types

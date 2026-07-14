@@ -24,6 +24,12 @@ describe('skill-model', () => {
           content: '---\nname: my-skill\ndescription: Test skill\nmodel: opus\n---\n# Skill',
           filePath: '/test/SKILL.md',
         },
+        // docs-baseline/sub-agents.md:290 lists the aliases as
+        // "sonnet, opus, haiku, or fable"
+        {
+          content: '---\nname: my-skill\ndescription: Test skill\nmodel: fable\n---\n# Skill',
+          filePath: '/test/SKILL.md',
+        },
         // No model field (optional)
         {
           content: '---\nname: my-skill\ndescription: Test skill\n---\n# Skill',

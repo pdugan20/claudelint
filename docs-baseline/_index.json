@@ -1,5 +1,6 @@
 {
   "pages": [
+    "accessibility",
     "admin-setup",
     "advisor",
     "agent-sdk",
@@ -41,6 +42,7 @@
     "desktop-linux",
     "desktop-quickstart",
     "desktop-scheduled-tasks",
+    "desktop-wsl",
     "devcontainer",
     "discover-plugins",
     "env-vars",

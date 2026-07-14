@@ -542,6 +542,31 @@ describe('SettingsSchema — the documented surface', () => {
     }
   });
 
+  it('accepts every documented strictKnownMarketplaces source type', () => {
+    // docs-baseline/settings.md:872 — "The allowlist supports multiple marketplace source
+    // types. Most sources use exact matching, while `hostPattern` and `pathPattern` use
+    // regex matching against the marketplace host and filesystem path respectively."
+    //
+    // `pathPattern` was missing from the enum, so the documented example at
+    // settings.md:955 — { "source": "pathPattern", "pathPattern": "^/opt/approved/" } —
+    // was rejected with "Invalid option".
+    const documentedSources = [
+      { source: 'github', repo: 'owner/repo' },
+      { source: 'git', url: 'https://example.com/x.git' },
+      { source: 'url', url: 'https://example.com/m.json' },
+      { source: 'npm', package: '@scope/pkg' },
+      { source: 'directory', path: '/opt/approved' },
+      { source: 'file', path: '/opt/approved/m.json' },
+      { source: 'hostPattern', hostPattern: '^github\\.com$' },
+      { source: 'pathPattern', pathPattern: '^/opt/approved/' },
+    ];
+
+    for (const entry of documentedSources) {
+      const result = SettingsSchema.safeParse({ strictKnownMarketplaces: [entry] });
+      expect(result.success).toBe(true);
+    }
+  });
+
   it('does NOT model the global config keys, which belong in ~/.claude.json', () => {
     // "These settings are stored in `~/.claude.json` rather than `settings.json`. Adding
     // them to `settings.json` will trigger a schema validation error." Modelling them here

@@ -3,10 +3,12 @@
  *
  * Validates permission tool names in settings.json.
  *
- * Permission rules use Tool or Tool(pattern) syntax.
- * Valid tools: Bash, Read, Write, Edit, Glob, Grep, Task, WebFetch, WebSearch,
- * LSP, AskUserQuestion, EnterPlanMode, ExitPlanMode, Skill, TaskCreate, TaskUpdate,
- * TaskGet, TaskList, TaskOutput, TaskStop, NotebookEdit, or mcp__* for MCP servers.
+ * Permission rules use Tool or Tool(pattern) syntax. The valid names are `VALID_TOOLS`
+ * (src/schemas/constants.ts), or `mcp__*` for MCP servers.
+ *
+ * This file used to restate the tool list in prose, in two places. Both went stale, and the
+ * rule then reported real tools as invalid (#122). The list is now derived from the single
+ * source of truth so it cannot drift again.
  */
 
 import { Rule } from '../../types/rule';
@@ -81,10 +83,8 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Check the tool name against the list of valid tools: Bash, Read, Write, Edit, Glob, Grep, ' +
-        'Task, WebFetch, WebSearch, LSP, AskUserQuestion, EnterPlanMode, ExitPlanMode, Skill, ' +
-        'TaskCreate, TaskUpdate, TaskGet, TaskList, TaskOutput, TaskStop, NotebookEdit. For MCP ' +
-        'servers, use the mcp__ prefix followed by the server name.',
+        `Check the tool name against the list of valid tools: ${VALID_TOOLS.join(', ')}. ` +
+        'For MCP servers, use the mcp__ prefix followed by the server name.',
       relatedRules: ['settings-permission-invalid-rule'],
     },
   },
