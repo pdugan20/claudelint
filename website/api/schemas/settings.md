@@ -34,16 +34,31 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 
 ### Sandbox
 
-| Field                       | Type     | Required | Description                      |
-| --------------------------- | -------- | -------- | -------------------------------- |
-| `enabled`                   | boolean  | no       | Enable sandboxing                |
-| `autoAllowBashIfSandboxed`  | boolean  | no       | Auto-allow bash in sandbox       |
-| `excludedCommands`          | string[] | no       | Commands excluded from sandbox   |
-| `allowUnsandboxedCommands`  | string[] | no       | Commands allowed outside sandbox |
-| `network.allowedHosts`      | string[] | no       | Allowed network hosts            |
-| `network.allowedPorts`      | number[] | no       | Allowed network ports            |
-| `enableWeakerNestedSandbox` | boolean  | no       | Allow weaker nested sandbox      |
-| `ignoreViolations`          | boolean  | no       | Ignore sandbox violations        |
+| Field                       | Type     | Required | Description                                                  |
+| --------------------------- | -------- | -------- | ------------------------------------------------------------ |
+| `enabled`                   | boolean  | no       | Enable sandboxing                                            |
+| `failIfUnavailable`         | boolean  | no       | Fail rather than run unsandboxed when the sandbox is missing |
+| `autoAllowBashIfSandboxed`  | boolean  | no       | Auto-allow bash in sandbox                                   |
+| `excludedCommands`          | string[] | no       | Commands excluded from sandbox                               |
+| `allowUnsandboxedCommands`  | boolean  | no       | Allow the `dangerouslyDisableSandbox` escape hatch           |
+| `enableWeakerNestedSandbox` | boolean  | no       | Allow weaker nested sandbox                                  |
+| `filesystem`                | object   | no       | Filesystem read/write allow and deny lists                   |
+| `credentials`               | object   | no       | Credential file and env var protection                       |
+| `network`                   | object   | no       | Network restrictions (see below)                             |
+
+### Sandbox network
+
+| Field                     | Type     | Required | Description                             |
+| ------------------------- | -------- | -------- | --------------------------------------- |
+| `allowedDomains`          | string[] | no       | Domains the sandbox may reach           |
+| `deniedDomains`           | string[] | no       | Domains the sandbox may not reach       |
+| `allowManagedDomainsOnly` | boolean  | no       | Restrict to managed domains             |
+| `allowUnixSockets`        | string[] | no       | Unix sockets the sandbox may connect to |
+| `allowAllUnixSockets`     | boolean  | no       | Allow all Unix sockets                  |
+| `allowLocalBinding`       | boolean  | no       | Allow binding to local ports            |
+| `allowMachLookup`         | string[] | no       | Mach services the sandbox may look up   |
+| `httpProxyPort`           | number   | no       | HTTP proxy port                         |
+| `socksProxyPort`          | number   | no       | SOCKS proxy port                        |
 
 ## Example
 

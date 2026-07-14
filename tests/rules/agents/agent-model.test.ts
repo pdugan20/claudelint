@@ -28,6 +28,12 @@ describe('agent-model', () => {
             '---\nname: my-agent\ndescription: Test agent\nmodel: claude-opus-4-6\n---\n# Agent',
           filePath: '/test/agents/AGENT.md',
         },
+        // docs-baseline/sub-agents.md:290 lists the aliases as
+        // "sonnet, opus, haiku, or fable"
+        {
+          content: '---\nname: my-agent\ndescription: Test agent\nmodel: fable\n---\n# Agent',
+          filePath: '/test/agents/AGENT.md',
+        },
       ],
 
       invalid: [
