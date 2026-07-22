@@ -14,10 +14,10 @@ jobs:
     name: Check upstream docs for drift
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -63,6 +63,8 @@ jobs:
             --description "Rolling drift report, owned by the Upstream Watch workflow" \
             --color ededed --force
 
+          # The backticks below are literal Markdown fences, not shell expansion.
+          # shellcheck disable=SC2016
           BODY=$(
             printf '%s\n\n' "$MARKER"
             printf '## Upstream docs changed\n\n'
