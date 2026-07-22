@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import { checkGitHubActionsSecurity } from '../../scripts/check/github-actions-security-policy';
@@ -273,6 +273,46 @@ describe('GitHub Actions security policy', () => {
       expect(messages(root)).toContain('exactly one action.yml or action.yaml');
     });
 
+    test.each([
+      [
+        'Node action',
+        `name: Node action
+runs:
+  using: node20
+  main: dist/main.js
+  pre: dist/pre.js
+  post: dist/post.js
+`,
+      ],
+      [
+        'Docker action',
+        `name: Docker action
+runs:
+  using: docker
+  image: Dockerfile
+`,
+      ],
+    ])('rejects a non-composite local %s fail closed', (_name, manifest) => {
+      replaceCiCheckoutWithUses(root, './.github/actions/non-composite');
+      write(root, '.github/actions/non-composite/action.yml', manifest);
+
+      expect(messages(root)).toContain('non-composite local actions are not allowed');
+    });
+
+    it('rejects a local action directory symlink that resolves outside the repository', () => {
+      const outsideRoot = mkdtempSync(join(tmpdir(), 'claudelint-outside-action-'));
+      try {
+        write(outsideRoot, 'action.yml', compositeAction('    - run: echo outside'));
+        mkdirSync(join(root, '.github/actions'), { recursive: true });
+        symlinkSync(outsideRoot, join(root, '.github/actions/linked'), 'dir');
+        replaceCiCheckoutWithUses(root, './.github/actions/linked');
+
+        expect(messages(root)).toContain('resolves outside the repository');
+      } finally {
+        rmSync(outsideRoot, { recursive: true, force: true });
+      }
+    });
+
     it('rejects checkout credential persistence inside a local composite action', () => {
       replaceCiCheckoutWithUses(root, './.github/actions/build');
       write(
@@ -321,6 +361,17 @@ describe('GitHub Actions security policy', () => {
         `cat <<'EOF'
 uses: untrusted/example@main # v1.2.3
 EOF`
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    test.each(['|-2', '|2-'])('accepts the YAML block scalar indicator order %s', (indicator) => {
+      replace(
+        root,
+        '.github/workflows/ci.yml',
+        checkoutStep(),
+        `${checkoutStep()}\n      - run: ${indicator}\n          cat <<'EOF'\n          uses: example/unsafe@main # v1.2.3\n          EOF`
       );
 
       expect(checkGitHubActionsSecurity(root)).toEqual([]);
@@ -478,6 +529,25 @@ console.log('safe');
       expect(checkGitHubActionsSecurity(root)).toEqual([]);
     });
 
+    test.each([
+      ['character-class slashes', 'const slash = /[//]/;'],
+      ['comment-like block text', 'const block = /[/*]/;'],
+    ])('does not let a valid regex literal with %s hide a later forbidden call', (_name, regex) => {
+      write(
+        root,
+        'scripts/dangerous-regex.ts',
+        `${regex} github.rest.pulls.merge({ pull_number: 1 });\n`
+      );
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { danger: 'tsx scripts/dangerous-regex.ts' } }, null, 2)
+      );
+      addCiRun(root, 'npm run danger');
+
+      expect(messages(root)).toContain('scripts/dangerous-regex.ts');
+    });
+
     it('scans a directly invoked repository-owned script', () => {
       write(root, '.github/scripts/merge.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
       addCiRun(root, 'bash .github/scripts/merge.sh');
@@ -579,6 +649,48 @@ console.log('safe');
       addCiRun(root, 'bash scripts/outer.sh');
 
       expect(messages(root)).toContain('scripts/inner.sh');
+    });
+
+    test.each([
+      ['npm global option', 'npm --silent run dangerous'],
+      ['pnpm global option', 'pnpm --silent run dangerous'],
+      ['yarn global option', 'yarn --silent run dangerous'],
+      ['npm operand option', 'npm --prefix . run dangerous'],
+      ['pnpm operand option', 'pnpm --dir . run dangerous'],
+      ['yarn operand option', 'yarn --cwd . run dangerous'],
+    ])('follows package scripts behind %s', (_name, invocation) => {
+      write(root, 'scripts/dangerous.ts', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { dangerous: 'tsx scripts/dangerous.ts' } }, null, 2)
+      );
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.ts');
+    });
+
+    test.each([
+      [
+        'separate require operand and main',
+        'node --require scripts/safe-hook.js scripts/dangerous.js',
+      ],
+      ['inline require operand', 'node --require=scripts/dangerous.js scripts/safe-main.js'],
+      ['env launcher', '/usr/bin/env node scripts/dangerous.js'],
+    ])('resolves every executable operand for %s', (_name, invocation) => {
+      write(root, 'scripts/safe-hook.js', 'console.log("safe hook");\n');
+      write(root, 'scripts/safe-main.js', 'console.log("safe main");\n');
+      write(root, 'scripts/dangerous.js', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.js');
+    });
+
+    it('fails closed for an unsupported interpreter option', () => {
+      write(root, 'scripts/safe.js', 'console.log("safe");\n');
+      addCiRun(root, 'node --mystery-option scripts/safe.js');
+
+      expect(messages(root)).toContain('cannot resolve interpreter option');
     });
   });
 

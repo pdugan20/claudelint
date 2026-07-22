@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'fs';
 import { join, relative, resolve } from 'path';
 import { load } from 'js-yaml';
+import ts from 'typescript';
 
 type YamlRecord = Record<string, unknown>;
 type PermissionMap = Record<string, 'read' | 'write' | 'none'>;
@@ -213,7 +214,7 @@ function collectUsesSourceEntries(
       blockScalarIndent = undefined;
     }
 
-    if (/^\s*(?:-\s*)?[A-Za-z0-9_-]+\s*:\s*[>|][+-]?[1-9]?\s*(?:#.*)?$/.test(line)) {
+    if (/^\s*(?:-\s*)?[A-Za-z0-9_-]+\s*:\s*[>|](?:[+-][1-9]?|[1-9][+-]?|)\s*(?:#.*)?$/.test(line)) {
       blockScalarIndent = indentation;
       continue;
     }
@@ -380,6 +381,10 @@ function checkLocalAction(entry: UsesEntry, actionRef: string, context: ActionCh
           }
         }
       }
+    } else {
+      context.violations.push(
+        `${manifestRelativePath}: non-composite local actions are not allowed by policy`
+      );
     }
   }
   context.localActionStack.pop();
@@ -518,67 +523,48 @@ function checkWorkflowPermissions(
   }
 }
 
-function stripJavaScriptComments(source: string): string {
-  let result = '';
-  let quote: '"' | "'" | '`' | undefined;
-  let escaped = false;
-  let lineComment = false;
-  let blockComment = false;
+function stripJavaScriptComments(source: string, relativePath: string): string {
+  const scriptKind = relativePath.endsWith('x')
+    ? relativePath.includes('.ts')
+      ? ts.ScriptKind.TSX
+      : ts.ScriptKind.JSX
+    : relativePath.includes('.ts')
+      ? ts.ScriptKind.TS
+      : ts.ScriptKind.JS;
+  const sourceFile = ts.createSourceFile(
+    relativePath,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    scriptKind
+  );
+  const ranges = new Map<string, ts.CommentRange>();
+  const collectRanges = (commentRanges: ts.CommentRange[] | undefined): void => {
+    for (const range of commentRanges ?? []) {
+      ranges.set(`${range.pos}:${range.end}`, range);
+    }
+  };
+  const visit = (node: ts.Node): void => {
+    collectRanges(ts.getLeadingCommentRanges(source, node.pos));
+    collectRanges(ts.getTrailingCommentRanges(source, node.end));
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
 
-  for (let index = 0; index < source.length; index += 1) {
-    const character = source[index];
-    const next = source[index + 1];
-    if (lineComment) {
-      if (character === '\n') {
-        lineComment = false;
-        result += character;
-      } else {
-        result += ' ';
+  const characters = source.split('');
+  for (const range of ranges.values()) {
+    for (let index = range.pos; index < range.end; index += 1) {
+      if (characters[index] !== '\n' && characters[index] !== '\r') {
+        characters[index] = ' ';
       }
-      continue;
-    }
-    if (blockComment) {
-      if (character === '*' && next === '/') {
-        result += '  ';
-        index += 1;
-        blockComment = false;
-      } else {
-        result += character === '\n' ? '\n' : ' ';
-      }
-      continue;
-    }
-    if (quote) {
-      result += character;
-      if (escaped) {
-        escaped = false;
-      } else if (character === '\\') {
-        escaped = true;
-      } else if (character === quote) {
-        quote = undefined;
-      }
-      continue;
-    }
-    if (character === '"' || character === "'" || character === '`') {
-      quote = character;
-      result += character;
-    } else if (character === '/' && next === '/') {
-      result += '  ';
-      index += 1;
-      lineComment = true;
-    } else if (character === '/' && next === '*') {
-      result += '  ';
-      index += 1;
-      blockComment = true;
-    } else {
-      result += character;
     }
   }
-  return result;
+  return characters.join('');
 }
 
 function executableSource(relativePath: string, source: string): string {
   const withoutJavaScriptComments = /\.(?:[cm]?[jt]sx?)$/.test(relativePath)
-    ? stripJavaScriptComments(source)
+    ? stripJavaScriptComments(source, relativePath)
     : source;
   return withoutJavaScriptComments
     .split('\n')
@@ -637,29 +623,143 @@ function shellWords(source: string): string[] {
   return words;
 }
 
+function unwrapEnvironmentCommand(
+  words: string[],
+  violations: string[],
+  location: string
+): string[] {
+  if (!['env', '/usr/bin/env'].includes(words[0])) {
+    return words;
+  }
+
+  let index = 1;
+  while (index < words.length) {
+    const word = words[index];
+    if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(word)) {
+      index += 1;
+    } else if (['-i', '--ignore-environment', '-0', '--null'].includes(word)) {
+      index += 1;
+    } else if (['-u', '--unset', '-C', '--chdir'].includes(word)) {
+      if (index + 1 >= words.length) {
+        violations.push(`${location}: cannot resolve env option operand: ${word}`);
+        return [];
+      }
+      index += 2;
+    } else if (/^(?:--unset|--chdir)=/.test(word) || /^-(?:u|C).+/.test(word)) {
+      index += 1;
+    } else if (word === '--') {
+      index += 1;
+      break;
+    } else if (word.startsWith('-')) {
+      violations.push(`${location}: cannot resolve env option: ${word}`);
+      return [];
+    } else {
+      break;
+    }
+  }
+  if (index >= words.length) {
+    violations.push(`${location}: env invocation does not identify a command`);
+    return [];
+  }
+  return words.slice(index);
+}
+
+function packageManagerCommandIndex(
+  manager: string,
+  words: string[],
+  currentDirectory: string,
+  projectRoot: string,
+  violations: string[],
+  location: string
+): number | undefined {
+  const noOperandOptions = new Set([
+    '-s',
+    '--silent',
+    '--verbose',
+    '--json',
+    '--offline',
+    '--color',
+    '--no-color',
+  ]);
+  const directoryOptions: Record<string, Set<string>> = {
+    npm: new Set(['--prefix']),
+    pnpm: new Set(['--dir', '-C']),
+    yarn: new Set(['--cwd']),
+  };
+  let index = 1;
+  while (index < words.length && words[index].startsWith('-')) {
+    const word = words[index];
+    const separator = word.indexOf('=');
+    const option = separator >= 0 ? word.slice(0, separator) : word;
+    if (noOperandOptions.has(option)) {
+      index += 1;
+      continue;
+    }
+    if (directoryOptions[manager].has(option)) {
+      const operand = separator >= 0 ? word.slice(separator + 1) : words[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve package-manager option operand: ${option}`);
+        return undefined;
+      }
+      if (resolve(currentDirectory, operand) !== projectRoot) {
+        violations.push(
+          `${location}: package-manager directory must resolve to the repository root: ${operand}`
+        );
+        return undefined;
+      }
+      index += separator >= 0 ? 1 : 2;
+      continue;
+    }
+    violations.push(`${location}: cannot resolve package-manager option: ${word}`);
+    return undefined;
+  }
+  return index;
+}
+
 function packageScriptTargets(
-  command: string,
+  words: string[],
   scripts: YamlRecord,
+  currentDirectory: string,
+  projectRoot: string,
   violations: string[],
   location: string
 ): string[] {
   const targets: string[] = [];
-  const npmMatch = command.match(/^(?:npm|pnpm)\s+run\s+([^\s]+)/);
-  const npmLifecycleMatch = command.match(/^npm\s+(test|start|stop|restart)\b/);
-  const yarnRunMatch = command.match(/^yarn\s+run\s+([^\s]+)/);
-  const yarnShorthandMatch = command.match(/^yarn\s+([^\s]+)/);
-  const directTarget = npmMatch?.[1] ?? npmLifecycleMatch?.[1] ?? yarnRunMatch?.[1];
+  const manager = words[0];
+  let directTarget: string | undefined;
+  if (['npm', 'pnpm', 'yarn'].includes(manager)) {
+    const commandIndex = packageManagerCommandIndex(
+      manager,
+      words,
+      currentDirectory,
+      projectRoot,
+      violations,
+      location
+    );
+    if (commandIndex === undefined) {
+      return targets;
+    }
+    const command = words[commandIndex];
+    if (command === 'run') {
+      directTarget = words[commandIndex + 1];
+      if (!directTarget) {
+        violations.push(`${location}: package-manager run command is missing a script target`);
+        return targets;
+      }
+    } else if (manager === 'npm' && ['test', 'start', 'stop', 'restart'].includes(command)) {
+      directTarget = command;
+    } else if ((manager === 'yarn' || manager === 'pnpm') && typeof scripts[command] === 'string') {
+      directTarget = command;
+    }
+  }
   if (directTarget) {
     if (typeof scripts[directTarget] === 'string') {
       targets.push(directTarget);
     } else {
       violations.push(`${location}: referenced package script does not exist: ${directTarget}`);
     }
-  } else if (yarnShorthandMatch && typeof scripts[yarnShorthandMatch[1]] === 'string') {
-    targets.push(yarnShorthandMatch[1]);
   }
 
-  const words = shellWords(command);
   if (['npm-run-all', 'run-s', 'run-p'].includes(words[0])) {
     const patterns = words.slice(1).filter((word) => !word.startsWith('-'));
     for (const pattern of patterns) {
@@ -682,28 +782,151 @@ function firstShellWord(source: string): string | undefined {
   return shellWords(source)[0];
 }
 
-function invokedExecutable(command: string): string | undefined {
-  let remainder = command;
-  const interpreter = remainder.match(SCRIPT_INTERPRETER);
-  if (interpreter) {
-    remainder = remainder.slice(interpreter[0].length).trimStart();
-    while (/^--?[A-Za-z][A-Za-z0-9-]*(?:=[^\s]+)?(?:\s+|$)/.test(remainder)) {
-      remainder = remainder.replace(/^--?[A-Za-z][A-Za-z0-9-]*(?:=[^\s]+)?(?:\s+|$)/, '');
+function addRepositoryOperand(paths: string[], operand: string | undefined): void {
+  if (operand && REPOSITORY_PATH_PREFIX.test(operand)) {
+    paths.push(operand);
+  }
+}
+
+function nodeExecutableOperands(words: string[], violations: string[], location: string): string[] {
+  const paths: string[] = [];
+  const executableOperandOptions = new Set([
+    '-r',
+    '--require',
+    '--import',
+    '--loader',
+    '--experimental-loader',
+  ]);
+  const codeOperandOptions = new Set(['-e', '--eval', '-p', '--print']);
+  const valueOptions = new Set([
+    '--conditions',
+    '--input-type',
+    '--test-name-pattern',
+    '--test-reporter',
+  ]);
+  const noOperandOptions = new Set([
+    '-c',
+    '--check',
+    '--test',
+    '--watch',
+    '--inspect',
+    '--inspect-brk',
+    '--enable-source-maps',
+    '--no-warnings',
+    '--trace-warnings',
+    '--use-strict',
+  ]);
+  let index = 1;
+  let hasInlineCode = false;
+  while (index < words.length && words[index].startsWith('-')) {
+    const word = words[index];
+    if (word === '--') {
+      index += 1;
+      break;
     }
-    return firstShellWord(remainder);
+    const separator = word.indexOf('=');
+    const option = separator >= 0 ? word.slice(0, separator) : word;
+    if (executableOperandOptions.has(option)) {
+      const operand = separator >= 0 ? word.slice(separator + 1) : words[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve interpreter option operand: ${option}`);
+        return paths;
+      }
+      addRepositoryOperand(paths, operand);
+      index += separator >= 0 ? 1 : 2;
+    } else if (/^-r.+/.test(word)) {
+      addRepositoryOperand(paths, word.slice(2));
+      index += 1;
+    } else if (codeOperandOptions.has(option)) {
+      if (separator < 0 && index + 1 >= words.length) {
+        violations.push(`${location}: cannot resolve interpreter option operand: ${option}`);
+        return paths;
+      }
+      hasInlineCode = true;
+      index += separator >= 0 ? 1 : 2;
+    } else if (/^-(?:e|p).+/.test(word)) {
+      hasInlineCode = true;
+      index += 1;
+    } else if (valueOptions.has(option)) {
+      if (separator < 0 && index + 1 >= words.length) {
+        violations.push(`${location}: cannot resolve interpreter option operand: ${option}`);
+        return paths;
+      }
+      index += separator >= 0 ? 1 : 2;
+    } else if (noOperandOptions.has(option) || /^--(?:no|trace)-/.test(option)) {
+      index += 1;
+    } else {
+      violations.push(`${location}: cannot resolve interpreter option: ${word}`);
+      return paths;
+    }
   }
-  const sourceBuiltin = remainder.match(/^(?:\.|source)\s+(.+)$/);
-  if (sourceBuiltin) {
-    return firstShellWord(sourceBuiltin[1]);
+  addRepositoryOperand(paths, words[index]);
+  if (index >= words.length && !hasInlineCode) {
+    violations.push(`${location}: interpreter invocation does not identify an entrypoint`);
   }
-  const direct = firstShellWord(remainder);
-  return direct && REPOSITORY_PATH_PREFIX.test(direct) ? direct : undefined;
+  return paths;
+}
+
+function genericInterpreterOperands(
+  interpreter: string,
+  words: string[],
+  violations: string[],
+  location: string
+): string[] {
+  const paths: string[] = [];
+  let index = 1;
+  while (index < words.length && words[index].startsWith('-')) {
+    const word = words[index];
+    if (word === '--') {
+      index += 1;
+      break;
+    }
+    if ((interpreter === 'bash' || interpreter === 'sh') && /^-[A-Za-z]+$/.test(word)) {
+      index += 1;
+    } else if (['--noprofile', '--norc', '--posix'].includes(word)) {
+      index += 1;
+    } else if (['-r', '--require'].includes(word)) {
+      const operand = words[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve interpreter option operand: ${word}`);
+        return paths;
+      }
+      addRepositoryOperand(paths, operand);
+      index += 2;
+    } else {
+      violations.push(`${location}: cannot resolve interpreter option: ${word}`);
+      return paths;
+    }
+  }
+  addRepositoryOperand(paths, words[index]);
+  if (index >= words.length) {
+    violations.push(`${location}: interpreter invocation does not identify an entrypoint`);
+  }
+  return paths;
+}
+
+function invokedExecutables(words: string[], violations: string[], location: string): string[] {
+  const commandName = words[0]?.split('/').pop();
+  if (commandName === 'node') {
+    return nodeExecutableOperands(words, violations, location);
+  }
+  if (commandName && SCRIPT_INTERPRETER.test(commandName)) {
+    return genericInterpreterOperands(commandName, words, violations, location);
+  }
+  if (words[0] === '.' || words[0] === 'source') {
+    if (!words[1]) {
+      violations.push(`${location}: source invocation does not identify a script`);
+      return [];
+    }
+    return REPOSITORY_PATH_PREFIX.test(words[1]) ? [words[1]] : [];
+  }
+  return words[0] && REPOSITORY_PATH_PREFIX.test(words[0]) ? [words[0]] : [];
 }
 
 function stripCommandPreamble(command: string): string {
   return command
     .trim()
-    .replace(/^(?:exec\s+)?(?:env\s+)?/, '')
+    .replace(/^(?:exec\s+)?/, '')
     .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|\S+)\s+)*/, '');
 }
 
@@ -751,16 +974,25 @@ function checkDelegatedScripts(
             }
             continue;
           }
+          const words = unwrapEnvironmentCommand(
+            shellWords(command),
+            violations,
+            commandSource.relativePath
+          );
+          if (words.length === 0) {
+            continue;
+          }
           for (const target of packageScriptTargets(
-            command,
+            words,
             scripts,
+            currentDirectory,
+            projectRoot,
             violations,
             commandSource.relativePath
           )) {
             packageQueue.push(...lifecycleScripts(target, scripts));
           }
-          const path = invokedExecutable(command);
-          if (path) {
+          for (const path of invokedExecutables(words, violations, commandSource.relativePath)) {
             executableQueue.push({ cwd: currentDirectory, path });
           }
         }
