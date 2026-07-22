@@ -48,7 +48,9 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "06:00"
-      timezone: "America/New_York"
+      timezone: "America/Los_Angeles"
+    cooldown:
+      default-days: 14
     open-pull-requests-limit: 5
     commit-message:
       prefix: "ci"
