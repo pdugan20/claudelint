@@ -511,6 +511,11 @@ function checkWorkflow(
   violations: string[]
 ): void {
   const relativePath = `.github/workflows/${filename}`;
+  if (filename === 'ci.yml' && !hasWorkflowTrigger(workflow.on, 'workflow_dispatch')) {
+    violations.push(
+      `${relativePath}: workflow_dispatch trigger is required for manual default-branch canaries`
+    );
+  }
   const jobs = asRecord(workflow.jobs);
   if (!jobs) {
     violations.push(`${relativePath}: jobs must be an object`);

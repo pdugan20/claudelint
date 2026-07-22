@@ -89,7 +89,12 @@ function setCiWorkflow(
   steps: string,
   options: { event?: string; jobPermissions?: string } = {}
 ): void {
-  write(root, '.github/workflows/ci.yml', workflow(permissions, steps, options));
+  const event = options.event ?? 'push';
+  const source = workflow(permissions, steps, options).replace(
+    `on: ${event}\n`,
+    `on:\n  ${event}:\n  workflow_dispatch:\n`
+  );
+  write(root, '.github/workflows/ci.yml', source);
   const provenancePath = join(root, 'scripts/check/github-actions-provenance.json');
   const provenance = JSON.parse(readFileSync(provenancePath, 'utf8')) as Record<string, unknown>;
   for (const action of [
@@ -143,6 +148,14 @@ describe('GitHub Actions capability policy', () => {
 
   test('accepts the repository workflows and exact privileged profiles', () => {
     expect(checkGitHubActionsSecurity(root)).toEqual([]);
+  });
+
+  test('requires workflow_dispatch on CI for manual default-branch canaries', () => {
+    replace(root, '.github/workflows/ci.yml', '  workflow_dispatch:\n', '');
+
+    expect(messages(root)).toContain(
+      '.github/workflows/ci.yml: workflow_dispatch trigger is required for manual default-branch canaries'
+    );
   });
 
   describe('effective permissions', () => {
