@@ -241,6 +241,13 @@ function hasWorkflowTrigger(value: unknown, trigger: string): boolean {
   return Object.prototype.hasOwnProperty.call(asRecord(value) ?? {}, trigger);
 }
 
+function hasStructuredWorkflowTrigger(value: unknown, trigger: string): boolean {
+  const triggers = asRecord(value);
+  if (!triggers || !Object.prototype.hasOwnProperty.call(triggers, trigger)) return false;
+  const configuration = triggers[trigger];
+  return configuration === null || asRecord(configuration) !== undefined;
+}
+
 function checkAction(
   entry: UsesEntry,
   provenance: Record<string, ActionProvenance>,
@@ -511,7 +518,7 @@ function checkWorkflow(
   violations: string[]
 ): void {
   const relativePath = `.github/workflows/${filename}`;
-  if (filename === 'ci.yml' && !hasWorkflowTrigger(workflow.on, 'workflow_dispatch')) {
+  if (filename === 'ci.yml' && !hasStructuredWorkflowTrigger(workflow.on, 'workflow_dispatch')) {
     violations.push(
       `${relativePath}: workflow_dispatch trigger is required for manual default-branch canaries`
     );

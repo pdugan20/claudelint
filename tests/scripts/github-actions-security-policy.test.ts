@@ -158,6 +158,19 @@ describe('GitHub Actions capability policy', () => {
     );
   });
 
+  test('rejects an invalid workflow_dispatch configuration', () => {
+    replace(
+      root,
+      '.github/workflows/ci.yml',
+      '  workflow_dispatch:\n',
+      '  workflow_dispatch: false\n'
+    );
+
+    expect(messages(root)).toContain(
+      '.github/workflows/ci.yml: workflow_dispatch trigger is required for manual default-branch canaries'
+    );
+  });
+
   describe('effective permissions', () => {
     test.each([
       ['missing workflow and job permissions', '', undefined],
