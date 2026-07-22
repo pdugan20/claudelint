@@ -643,6 +643,56 @@ console.log('safe');
       expect(messages(root)).toContain('scripts/dangerous.sh');
     });
 
+    it('follows a nested shell command passed through bash -c', () => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, "bash -c 'bash scripts/dangerous.sh'");
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    test.each([
+      ['Node', 'node dangerous.js', 'dangerous.js'],
+      ['bash', 'bash dangerous.sh', 'dangerous.sh'],
+    ])('treats a root-relative %s entrypoint as repository owned', (_name, invocation, path) => {
+      write(root, path, 'gh pr merge 1 --squash\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain(path);
+    });
+
+    it('applies the working directory selected by env -C', () => {
+      write(root, 'scripts/dangerous.js', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      addCiRun(root, '/usr/bin/env -C scripts node dangerous.js');
+
+      expect(messages(root)).toContain('scripts/dangerous.js');
+    });
+
+    test.each([
+      ['short option', 'bash -O extglob dangerous.sh'],
+      ['long option', 'bash --rcfile dangerous.sh -c "echo safe"'],
+    ])('does not mistake a shell operand-bearing %s for the entrypoint', (_name, invocation) => {
+      write(root, 'dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('dangerous.sh');
+    });
+
+    test.each([
+      ['quoted separator', "echo 'safe; ./missing.sh'"],
+      ['escaped separator', 'echo safe\\; ./missing.sh'],
+      ['multiline quoted value', "printf '%s' 'safe\n./missing.sh'"],
+    ])('does not split a %s into a delegated command', (_name, invocation) => {
+      addCiRun(root, invocation);
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('fails closed on ambiguous unterminated shell syntax', () => {
+      addCiRun(root, "echo 'unterminated");
+
+      expect(messages(root)).toContain('cannot parse shell command');
+    });
+
     it('follows flagged child executables from a delegated script', () => {
       write(root, 'scripts/outer.sh', '#!/bin/bash\nbash -eu scripts/inner.sh\n');
       write(root, 'scripts/inner.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
@@ -691,6 +741,77 @@ console.log('safe');
       addCiRun(root, 'node --mystery-option scripts/safe.js');
 
       expect(messages(root)).toContain('cannot resolve interpreter option');
+    });
+
+    test.each([
+      ['static import', "import './dangerous.js';"],
+      ['re-export', "export { danger } from './dangerous.js';"],
+      ['literal require', "require('./dangerous.js');"],
+      ['literal dynamic import', "import('./dangerous.js');"],
+    ])('follows a repository-relative JavaScript dependency from a %s', (_name, statement) => {
+      write(root, 'scripts/entry.js', `${statement}\nconsole.log('entry');\n`);
+      write(
+        root,
+        'scripts/dangerous.js',
+        'export const danger = github.rest.pulls.merge({ pull_number: 1 });\n'
+      );
+      addCiRun(root, 'node scripts/entry.js');
+
+      expect(messages(root)).toContain('scripts/dangerous.js');
+    });
+
+    test.each([
+      ['extensionless file', './dangerous', 'scripts/dangerous.ts'],
+      ['directory index', './dangerous', 'scripts/dangerous/index.ts'],
+    ])('resolves a repository-relative %s dependency', (_name, specifier, dependencyPath) => {
+      write(root, 'scripts/entry.ts', `import '${specifier}';\n`);
+      write(root, dependencyPath, 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      addCiRun(root, 'tsx scripts/entry.ts');
+
+      expect(messages(root)).toContain(dependencyPath);
+    });
+
+    it('cycle-protects recursive repository-relative dependencies', () => {
+      write(root, 'scripts/entry.ts', "import './cycle-a';\n");
+      write(
+        root,
+        'scripts/cycle-a.ts',
+        "import './entry';\ngithub.rest.pulls.merge({ pull_number: 1 });\n"
+      );
+      addCiRun(root, 'tsx scripts/entry.ts');
+
+      expect(messages(root)).toContain('scripts/cycle-a.ts');
+    });
+
+    it('fails closed on an unresolved repository-relative dependency', () => {
+      write(root, 'scripts/entry.ts', "import './missing';\n");
+      addCiRun(root, 'tsx scripts/entry.ts');
+
+      expect(messages(root)).toContain('cannot resolve repository-relative dependency: ./missing');
+    });
+
+    it('fails closed when a repository-relative dependency escapes the repository', () => {
+      write(root, 'scripts/entry.ts', "import '../../outside.js';\n");
+      addCiRun(root, 'tsx scripts/entry.ts');
+
+      expect(messages(root)).toContain('dependency resolves outside the repository');
+    });
+
+    test.each([
+      ['.ts', "type Marker = string;\nimport './dangerous.js';"],
+      ['.tsx', "const marker = <div />;\nimport './dangerous.js';"],
+      ['.mts', "type Marker = string;\nimport './dangerous.js';"],
+      ['.cts', "type Marker = string;\nrequire('./dangerous.js');"],
+      ['.js', "import './dangerous.js';"],
+      ['.jsx', "const marker = <div />;\nimport './dangerous.js';"],
+      ['.mjs', "import './dangerous.js';"],
+      ['.cjs', "require('./dangerous.js');"],
+    ])('uses suffix-aware parsing for reachable %s files', (suffix, source) => {
+      write(root, `scripts/entry${suffix}`, `${source}\n`);
+      write(root, 'scripts/dangerous.js', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      addCiRun(root, `${suffix.includes('ts') ? 'tsx' : 'node'} scripts/entry${suffix}`);
+
+      expect(messages(root)).toContain('scripts/dangerous.js');
     });
   });
 

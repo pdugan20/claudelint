@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'fs';
-import { join, relative, resolve } from 'path';
+import { dirname, extname, join, relative, resolve } from 'path';
 import { load } from 'js-yaml';
 import ts from 'typescript';
 
@@ -61,6 +61,8 @@ const WORKFLOW_POLICIES: Record<string, WorkflowPermissionPolicy> = {
 
 const SCRIPT_INTERPRETER = /^(?:bash|sh|node|tsx|ts-node|python|python3|bun|ruby)\b/;
 const REPOSITORY_PATH_PREFIX = /^(?:\.\.?\/|\.github\/scripts\/|scripts\/|bin\/)/;
+const JAVASCRIPT_TYPESCRIPT_SUFFIX = /\.(?:[cm]?[jt]sx?)$/;
+const MODULE_FILE_SUFFIXES = ['.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs'];
 
 const FORBIDDEN_EXECUTABLE_PATTERNS: Array<[RegExp, string]> = [
   [/\bgh\s+pr\s+merge\b/i, 'GitHub CLI pull request merge'],
@@ -72,8 +74,8 @@ const FORBIDDEN_EXECUTABLE_PATTERNS: Array<[RegExp, string]> = [
   ],
   [/\/pulls\/[^\s"'`]+\/merge\b/i, 'REST pull request merge endpoint'],
   [/\/pulls\/[^\s"'`]+\/reviews\b[\s\S]{0,500}\bAPPROVE\b/i, 'REST pull request approval endpoint'],
-  [/\bmergePullRequest\b/i, 'GraphQL mergePullRequest mutation'],
-  [/\benablePullRequestAutoMerge\b/i, 'GraphQL enablePullRequestAutoMerge mutation'],
+  [/\bmergePullRequest\b/i, 'GraphQL pull request merge mutation'],
+  [/\benablePullRequestAutoMerge\b/i, 'GraphQL automatic pull request merge mutation'],
   [/\baddPullRequestReview\b[\s\S]{0,500}\bAPPROVE\b/i, 'GraphQL pull request approval mutation'],
   [/\bpullRequests?\s*\.\s*merge\s*\(/i, 'pull request merge call'],
 ];
@@ -523,28 +525,47 @@ function checkWorkflowPermissions(
   }
 }
 
-function stripJavaScriptComments(source: string, relativePath: string): string {
-  const scriptKind = relativePath.endsWith('x')
-    ? relativePath.includes('.ts')
-      ? ts.ScriptKind.TSX
-      : ts.ScriptKind.JSX
-    : relativePath.includes('.ts')
-      ? ts.ScriptKind.TS
-      : ts.ScriptKind.JS;
-  const sourceFile = ts.createSourceFile(
+function scriptKindForPath(relativePath: string): ts.ScriptKind {
+  switch (extname(relativePath)) {
+    case '.tsx':
+      return ts.ScriptKind.TSX;
+    case '.jsx':
+      return ts.ScriptKind.JSX;
+    case '.ts':
+    case '.mts':
+    case '.cts':
+      return ts.ScriptKind.TS;
+    case '.js':
+    case '.mjs':
+    case '.cjs':
+    default:
+      return ts.ScriptKind.JS;
+  }
+}
+
+function javaScriptSourceFile(relativePath: string, source: string): ts.SourceFile {
+  return ts.createSourceFile(
     relativePath,
     source,
     ts.ScriptTarget.Latest,
     true,
-    scriptKind
+    scriptKindForPath(relativePath)
   );
-  const ranges = new Map<string, ts.CommentRange>();
+}
+
+function stripJavaScriptNonExecutableTrivia(source: string, relativePath: string): string {
+  const sourceFile = javaScriptSourceFile(relativePath, source);
+  const ranges = new Map<string, { end: number; pos: number }>();
   const collectRanges = (commentRanges: ts.CommentRange[] | undefined): void => {
     for (const range of commentRanges ?? []) {
       ranges.set(`${range.pos}:${range.end}`, range);
     }
   };
   const visit = (node: ts.Node): void => {
+    if (ts.isRegularExpressionLiteral(node)) {
+      const range = { pos: node.getStart(sourceFile), end: node.end };
+      ranges.set(`${range.pos}:${range.end}`, range);
+    }
     collectRanges(ts.getLeadingCommentRanges(source, node.pos));
     collectRanges(ts.getTrailingCommentRanges(source, node.end));
     ts.forEachChild(node, visit);
@@ -563,10 +584,10 @@ function stripJavaScriptComments(source: string, relativePath: string): string {
 }
 
 function executableSource(relativePath: string, source: string): string {
-  const withoutJavaScriptComments = /\.(?:[cm]?[jt]sx?)$/.test(relativePath)
-    ? stripJavaScriptComments(source, relativePath)
+  const sanitizedSource = JAVASCRIPT_TYPESCRIPT_SUFFIX.test(relativePath)
+    ? stripJavaScriptNonExecutableTrivia(source, relativePath)
     : source;
-  return withoutJavaScriptComments
+  return sanitizedSource
     .split('\n')
     .filter((line) => !/^\s*#/.test(line))
     .join('\n')
@@ -615,53 +636,225 @@ function collectRunBlocks(
   return runs;
 }
 
-function shellWords(source: string): string[] {
-  const words: string[] = [];
-  for (const match of source.matchAll(/"([^"]*)"|'([^']*)'|([^\s]+)/g)) {
-    words.push(match[1] ?? match[2] ?? match[3]);
+function shellCommands(source: string, violations: string[], location: string): string[][] {
+  const commands: string[][] = [];
+  let words: string[] = [];
+  let word = '';
+  let wordStarted = false;
+  let quote: "'" | '"' | undefined;
+  let escaped = false;
+
+  const finishWord = (): void => {
+    if (wordStarted) {
+      words.push(word);
+      word = '';
+      wordStarted = false;
+    }
+  };
+  const finishCommand = (): void => {
+    finishWord();
+    if (words.length > 0) {
+      commands.push(words);
+      words = [];
+    }
+  };
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (escaped) {
+      if (character !== '\n') {
+        word += character;
+        wordStarted = true;
+      }
+      escaped = false;
+      continue;
+    }
+    if (quote === "'") {
+      if (character === "'") {
+        quote = undefined;
+      } else {
+        word += character;
+      }
+      continue;
+    }
+    if (quote === '"') {
+      if (character === '"') {
+        quote = undefined;
+      } else if (character === '\\') {
+        const nextCharacter = source[index + 1];
+        if (nextCharacter && ['$', '`', '"', '\\', '\n'].includes(nextCharacter)) {
+          escaped = true;
+        } else {
+          word += character;
+        }
+      } else {
+        word += character;
+      }
+      continue;
+    }
+    if (character === "'" || character === '"') {
+      quote = character;
+      wordStarted = true;
+      continue;
+    }
+    if (character === '\\') {
+      escaped = true;
+      wordStarted = true;
+      continue;
+    }
+    if (character === '#' && !wordStarted) {
+      finishWord();
+      while (index + 1 < source.length && source[index + 1] !== '\n') {
+        index += 1;
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      finishWord();
+      if (character === '\n' || character === '\r') {
+        finishCommand();
+      }
+      continue;
+    }
+    if (character === ';' || character === '|') {
+      finishCommand();
+      if (source[index + 1] === character) {
+        index += 1;
+      }
+      continue;
+    }
+    if (character === '&') {
+      if (source[index + 1] !== '&') {
+        if (word.endsWith('>') || word.endsWith('<') || source[index + 1] === '>') {
+          word += character;
+          wordStarted = true;
+          continue;
+        }
+        violations.push(`${location}: cannot parse shell command with an unescaped &: ${source}`);
+        return [];
+      }
+      finishCommand();
+      index += 1;
+      continue;
+    }
+    word += character;
+    wordStarted = true;
   }
-  return words;
+
+  if (quote || escaped) {
+    violations.push(`${location}: cannot parse shell command with unterminated quoting or escape`);
+    return [];
+  }
+  finishCommand();
+  return commands;
+}
+
+interface EnvironmentCommand {
+  cwd: string;
+  words: string[];
+}
+
+function resolveRepositoryDirectory(
+  currentDirectory: string,
+  operand: string,
+  projectRoot: string,
+  realRoot: string,
+  violations: string[],
+  location: string
+): string | undefined {
+  const directory = resolve(currentDirectory, operand);
+  if (!isWithinDirectory(projectRoot, directory)) {
+    violations.push(`${location}: command working directory resolves outside the repository`);
+    return undefined;
+  }
+  if (!existsSync(directory) || !statSync(directory).isDirectory()) {
+    violations.push(`${location}: command working directory does not exist: ${operand}`);
+    return undefined;
+  }
+  if (!isWithinDirectory(realRoot, realpathSync(directory))) {
+    violations.push(`${location}: command working directory resolves outside the repository`);
+    return undefined;
+  }
+  return directory;
 }
 
 function unwrapEnvironmentCommand(
   words: string[],
+  currentDirectory: string,
+  projectRoot: string,
+  realRoot: string,
   violations: string[],
   location: string
-): string[] {
+): EnvironmentCommand | undefined {
   if (!['env', '/usr/bin/env'].includes(words[0])) {
-    return words;
+    return { cwd: currentDirectory, words };
   }
 
   let index = 1;
+  let cwd = currentDirectory;
   while (index < words.length) {
     const word = words[index];
     if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(word)) {
       index += 1;
     } else if (['-i', '--ignore-environment', '-0', '--null'].includes(word)) {
       index += 1;
-    } else if (['-u', '--unset', '-C', '--chdir'].includes(word)) {
+    } else if (['-u', '--unset'].includes(word)) {
       if (index + 1 >= words.length) {
         violations.push(`${location}: cannot resolve env option operand: ${word}`);
-        return [];
+        return undefined;
       }
       index += 2;
-    } else if (/^(?:--unset|--chdir)=/.test(word) || /^-(?:u|C).+/.test(word)) {
+    } else if (['-C', '--chdir'].includes(word)) {
+      const operand = words[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve env option operand: ${word}`);
+        return undefined;
+      }
+      const directory = resolveRepositoryDirectory(
+        cwd,
+        operand,
+        projectRoot,
+        realRoot,
+        violations,
+        location
+      );
+      if (!directory) {
+        return undefined;
+      }
+      cwd = directory;
+      index += 2;
+    } else if (/^--unset=/.test(word) || /^-u.+/.test(word)) {
+      index += 1;
+    } else if (/^(?:--chdir=|-C.+)/.test(word)) {
+      const operand = word.startsWith('--chdir=') ? word.slice('--chdir='.length) : word.slice(2);
+      const directory = resolveRepositoryDirectory(
+        cwd,
+        operand,
+        projectRoot,
+        realRoot,
+        violations,
+        location
+      );
+      if (!directory) {
+        return undefined;
+      }
+      cwd = directory;
       index += 1;
     } else if (word === '--') {
       index += 1;
       break;
     } else if (word.startsWith('-')) {
       violations.push(`${location}: cannot resolve env option: ${word}`);
-      return [];
+      return undefined;
     } else {
       break;
     }
   }
   if (index >= words.length) {
     violations.push(`${location}: env invocation does not identify a command`);
-    return [];
+    return undefined;
   }
-  return words.slice(index);
+  return { cwd, words: words.slice(index) };
 }
 
 function packageManagerCommandIndex(
@@ -778,12 +971,14 @@ function packageScriptTargets(
   return targets;
 }
 
-function firstShellWord(source: string): string | undefined {
-  return shellWords(source)[0];
-}
-
 function addRepositoryOperand(paths: string[], operand: string | undefined): void {
   if (operand && REPOSITORY_PATH_PREFIX.test(operand)) {
+    paths.push(operand);
+  }
+}
+
+function addInterpreterEntrypoint(paths: string[], operand: string | undefined): void {
+  if (operand && operand !== '-') {
     paths.push(operand);
   }
 }
@@ -860,20 +1055,26 @@ function nodeExecutableOperands(words: string[], violations: string[], location:
       return paths;
     }
   }
-  addRepositoryOperand(paths, words[index]);
+  addInterpreterEntrypoint(paths, words[index]);
   if (index >= words.length && !hasInlineCode) {
     violations.push(`${location}: interpreter invocation does not identify an entrypoint`);
   }
   return paths;
 }
 
-function genericInterpreterOperands(
+interface InvocationTargets {
+  nestedCommands: string[];
+  paths: string[];
+}
+
+function genericInterpreterTargets(
   interpreter: string,
   words: string[],
   violations: string[],
   location: string
-): string[] {
+): InvocationTargets {
   const paths: string[] = [];
+  const nestedCommands: string[] = [];
   let index = 1;
   while (index < words.length && words[index].startsWith('-')) {
     const word = words[index];
@@ -882,58 +1083,212 @@ function genericInterpreterOperands(
       break;
     }
     if ((interpreter === 'bash' || interpreter === 'sh') && /^-[A-Za-z]+$/.test(word)) {
+      const flags = word.slice(1);
+      if (flags.includes('c')) {
+        const command = words[index + 1];
+        if (!command) {
+          violations.push(`${location}: cannot resolve interpreter option operand: -c`);
+          return { nestedCommands, paths };
+        }
+        nestedCommands.push(command);
+        return { nestedCommands, paths };
+      }
+      if (flags.includes('O') || flags.includes('o')) {
+        if (!words[index + 1]) {
+          violations.push(`${location}: cannot resolve interpreter option operand: ${word}`);
+          return { nestedCommands, paths };
+        }
+        index += 2;
+        continue;
+      }
       index += 1;
     } else if (['--noprofile', '--norc', '--posix'].includes(word)) {
       index += 1;
+    } else if (['--init-file', '--rcfile'].includes(word)) {
+      const operand = words[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve interpreter option operand: ${word}`);
+        return { nestedCommands, paths };
+      }
+      addInterpreterEntrypoint(paths, operand);
+      index += 2;
     } else if (['-r', '--require'].includes(word)) {
       const operand = words[index + 1];
       if (!operand) {
         violations.push(`${location}: cannot resolve interpreter option operand: ${word}`);
-        return paths;
+        return { nestedCommands, paths };
       }
       addRepositoryOperand(paths, operand);
       index += 2;
     } else {
       violations.push(`${location}: cannot resolve interpreter option: ${word}`);
-      return paths;
+      return { nestedCommands, paths };
     }
   }
-  addRepositoryOperand(paths, words[index]);
+  addInterpreterEntrypoint(paths, words[index]);
   if (index >= words.length) {
     violations.push(`${location}: interpreter invocation does not identify an entrypoint`);
   }
-  return paths;
+  return { nestedCommands, paths };
 }
 
-function invokedExecutables(words: string[], violations: string[], location: string): string[] {
+function invokedTargets(
+  words: string[],
+  violations: string[],
+  location: string
+): InvocationTargets {
   const commandName = words[0]?.split('/').pop();
   if (commandName === 'node') {
-    return nodeExecutableOperands(words, violations, location);
+    return { nestedCommands: [], paths: nodeExecutableOperands(words, violations, location) };
   }
   if (commandName && SCRIPT_INTERPRETER.test(commandName)) {
-    return genericInterpreterOperands(commandName, words, violations, location);
+    return genericInterpreterTargets(commandName, words, violations, location);
   }
   if (words[0] === '.' || words[0] === 'source') {
     if (!words[1]) {
       violations.push(`${location}: source invocation does not identify a script`);
-      return [];
+      return { nestedCommands: [], paths: [] };
     }
-    return REPOSITORY_PATH_PREFIX.test(words[1]) ? [words[1]] : [];
+    return {
+      nestedCommands: [],
+      paths: REPOSITORY_PATH_PREFIX.test(words[1]) ? [words[1]] : [],
+    };
   }
-  return words[0] && REPOSITORY_PATH_PREFIX.test(words[0]) ? [words[0]] : [];
+  return {
+    nestedCommands: [],
+    paths: words[0] && REPOSITORY_PATH_PREFIX.test(words[0]) ? [words[0]] : [],
+  };
 }
 
-function stripCommandPreamble(command: string): string {
-  return command
-    .trim()
-    .replace(/^(?:exec\s+)?/, '')
-    .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|\S+)\s+)*/, '');
+function stripCommandPreamble(words: string[]): string[] {
+  let index = words[0] === 'exec' ? 1 : 0;
+  while (index < words.length && /^[A-Za-z_][A-Za-z0-9_]*=/.test(words[index])) {
+    index += 1;
+  }
+  return words.slice(index);
+}
+
+function staticShellDirectoryVariables(
+  commandSource: CommandSource,
+  projectRoot: string,
+  realRoot: string
+): Map<string, string> {
+  const variables = new Map<string, string>();
+  if (!/\.(?:bash|sh)$/.test(commandSource.relativePath)) {
+    return variables;
+  }
+  const scriptPath = resolve(projectRoot, commandSource.relativePath);
+  if (!existsSync(scriptPath) || !statSync(scriptPath).isFile()) {
+    return variables;
+  }
+  const rootAssignment =
+    /^([A-Za-z_][A-Za-z0-9_]*)="\$\(cd "\$\(dirname "\$\{BASH_SOURCE\[0\]\}"\)\/([^"]+)" && pwd\)"$/gm;
+  for (const match of commandSource.source.matchAll(rootAssignment)) {
+    const relativeDirectory = match[2];
+    if (!/^\.\.(?:\/\.\.)*$/.test(relativeDirectory)) {
+      continue;
+    }
+    const directory = resolve(dirname(scriptPath), relativeDirectory);
+    if (
+      isWithinDirectory(projectRoot, directory) &&
+      existsSync(directory) &&
+      statSync(directory).isDirectory() &&
+      isWithinDirectory(realRoot, realpathSync(directory))
+    ) {
+      variables.set(match[1], directory);
+    }
+  }
+  return variables;
 }
 
 function lifecycleScripts(target: string, scripts: YamlRecord): string[] {
   return [`pre${target}`, target, `post${target}`].filter(
     (name) => typeof scripts[name] === 'string'
   );
+}
+
+function staticRepositoryDependencies(relativePath: string, source: string): string[] {
+  if (!JAVASCRIPT_TYPESCRIPT_SUFFIX.test(relativePath)) {
+    return [];
+  }
+  const dependencies = new Set<string>();
+  const sourceFile = javaScriptSourceFile(relativePath, source);
+  const addSpecifier = (value: ts.Expression | undefined): void => {
+    if (value && ts.isStringLiteralLike(value) && /^\.\.?\//.test(value.text)) {
+      dependencies.add(value.text);
+    }
+  };
+  const visit = (node: ts.Node): void => {
+    if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+      addSpecifier(node.moduleSpecifier);
+    } else if (
+      ts.isImportEqualsDeclaration(node) &&
+      ts.isExternalModuleReference(node.moduleReference)
+    ) {
+      addSpecifier(node.moduleReference.expression);
+    } else if (ts.isCallExpression(node) && node.arguments.length === 1) {
+      if (
+        (ts.isIdentifier(node.expression) && node.expression.text === 'require') ||
+        node.expression.kind === ts.SyntaxKind.ImportKeyword
+      ) {
+        addSpecifier(node.arguments[0]);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sourceFile);
+  return [...dependencies];
+}
+
+function resolveRepositoryDependency(
+  importerPath: string,
+  specifier: string,
+  projectRoot: string,
+  realRoot: string,
+  violations: string[],
+  location: string
+): string | undefined {
+  const basePath = resolve(dirname(importerPath), specifier);
+  if (!isWithinDirectory(projectRoot, basePath)) {
+    violations.push(`${location}: dependency resolves outside the repository: ${specifier}`);
+    return undefined;
+  }
+
+  const candidates = new Set<string>();
+  const addFile = (candidate: string): void => {
+    if (existsSync(candidate) && statSync(candidate).isFile()) {
+      candidates.add(candidate);
+    }
+  };
+  addFile(basePath);
+  for (const suffix of MODULE_FILE_SUFFIXES) {
+    addFile(`${basePath}${suffix}`);
+  }
+  if (existsSync(basePath) && statSync(basePath).isDirectory()) {
+    for (const suffix of MODULE_FILE_SUFFIXES) {
+      addFile(join(basePath, `index${suffix}`));
+    }
+  }
+
+  if (candidates.size === 0) {
+    violations.push(`${location}: cannot resolve repository-relative dependency: ${specifier}`);
+    return undefined;
+  }
+  if (candidates.size > 1) {
+    violations.push(`${location}: repository-relative dependency is ambiguous: ${specifier}`);
+    return undefined;
+  }
+  const [candidate] = candidates;
+  const realCandidate = realpathSync(candidate);
+  if (!isWithinDirectory(realRoot, realCandidate)) {
+    violations.push(`${location}: dependency resolves outside the repository: ${specifier}`);
+    return undefined;
+  }
+  if (!isWithinDirectory(projectRoot, candidate)) {
+    violations.push(`${location}: dependency resolves outside the repository: ${specifier}`);
+    return undefined;
+  }
+  return candidate;
 }
 
 function checkDelegatedScripts(
@@ -958,43 +1313,78 @@ function checkDelegatedScripts(
     if (commandSource) {
       checkMergeMutations(commandSource.relativePath, commandSource.source, violations);
       let currentDirectory = commandSource.cwd;
+      const directoryVariables = staticShellDirectoryVariables(
+        commandSource,
+        projectRoot,
+        realRoot
+      );
       const executable = executableSource(commandSource.relativePath, commandSource.source);
-      for (const sourceLine of executable.split('\n')) {
-        const line = sourceLine.trim();
-        if (!line) {
+      for (const parsedWords of shellCommands(executable, violations, commandSource.relativePath)) {
+        const commandWords = stripCommandPreamble(parsedWords);
+        if (commandWords.length === 0) {
           continue;
         }
-        for (const rawSegment of line.split(/\s*(?:&&|\|\||;|\|)\s*/)) {
-          const command = stripCommandPreamble(rawSegment);
-          const cdTarget = command.match(/^cd\s+(.+)$/);
-          if (cdTarget) {
-            const directory = firstShellWord(cdTarget[1]);
-            if (directory) {
-              currentDirectory = resolve(currentDirectory, directory);
-            }
+        if (commandWords[0] === 'cd') {
+          if (commandWords.length !== 2) {
+            violations.push(
+              `${commandSource.relativePath}: cannot resolve cd invocation unambiguously`
+            );
             continue;
           }
-          const words = unwrapEnvironmentCommand(
-            shellWords(command),
-            violations,
-            commandSource.relativePath
+          const variable = commandWords[1].match(
+            /^\$(?:\{([A-Za-z_][A-Za-z0-9_]*)\}|([A-Za-z_][A-Za-z0-9_]*))$/
           );
-          if (words.length === 0) {
-            continue;
+          const directory = variable
+            ? directoryVariables.get(variable[1] ?? variable[2])
+            : resolveRepositoryDirectory(
+                currentDirectory,
+                commandWords[1],
+                projectRoot,
+                realRoot,
+                violations,
+                commandSource.relativePath
+              );
+          if (variable && !directory) {
+            violations.push(
+              `${commandSource.relativePath}: cannot resolve cd variable statically: ${commandWords[1]}`
+            );
           }
-          for (const target of packageScriptTargets(
-            words,
-            scripts,
-            currentDirectory,
-            projectRoot,
-            violations,
-            commandSource.relativePath
-          )) {
-            packageQueue.push(...lifecycleScripts(target, scripts));
+          if (directory) {
+            currentDirectory = directory;
           }
-          for (const path of invokedExecutables(words, violations, commandSource.relativePath)) {
-            executableQueue.push({ cwd: currentDirectory, path });
-          }
+          continue;
+        }
+        const environment = unwrapEnvironmentCommand(
+          commandWords,
+          currentDirectory,
+          projectRoot,
+          realRoot,
+          violations,
+          commandSource.relativePath
+        );
+        if (!environment) {
+          continue;
+        }
+        for (const target of packageScriptTargets(
+          environment.words,
+          scripts,
+          environment.cwd,
+          projectRoot,
+          violations,
+          commandSource.relativePath
+        )) {
+          packageQueue.push(...lifecycleScripts(target, scripts));
+        }
+        const targets = invokedTargets(environment.words, violations, commandSource.relativePath);
+        for (const source of targets.nestedCommands) {
+          sourceQueue.push({
+            cwd: environment.cwd,
+            relativePath: commandSource.relativePath,
+            source,
+          });
+        }
+        for (const path of targets.paths) {
+          executableQueue.push({ cwd: environment.cwd, path });
         }
       }
       continue;
@@ -1043,11 +1433,28 @@ function checkDelegatedScripts(
       continue;
     }
     const source = readFileSync(absolutePath, 'utf8');
-    sourceQueue.push({
-      cwd: executableReference.cwd,
-      relativePath: displayPath,
-      source,
-    });
+    for (const specifier of staticRepositoryDependencies(displayPath, source)) {
+      const dependency = resolveRepositoryDependency(
+        absolutePath,
+        specifier,
+        projectRoot,
+        realRoot,
+        violations,
+        displayPath
+      );
+      if (dependency) {
+        executableQueue.push({ cwd: executableReference.cwd, path: dependency });
+      }
+    }
+    if (JAVASCRIPT_TYPESCRIPT_SUFFIX.test(displayPath)) {
+      checkMergeMutations(displayPath, source, violations);
+    } else {
+      sourceQueue.push({
+        cwd: executableReference.cwd,
+        relativePath: displayPath,
+        source,
+      });
+    }
   }
 }
 
