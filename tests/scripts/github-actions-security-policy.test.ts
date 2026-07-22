@@ -21,6 +21,7 @@ const REQUIRED_FILES = [
   '.github/workflows/upstream-watch.yml',
   '.github/workflows/welcome.yml',
   'package.json',
+  'scripts/check/github-automation-profiles.json',
   'scripts/check/github-actions-provenance.json',
   'scripts/util/package-plugin.sh',
 ] as const;
@@ -109,6 +110,22 @@ function addProvenance(root: string, action: string, version: string, sha: strin
   const provenance = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
   provenance[action] = { version, sha };
   writeFileSync(path, `${JSON.stringify(provenance, null, 2)}\n`);
+}
+
+function addProfile(root: string, path: string, sha256: string): void {
+  const manifestPath = join(root, 'scripts/check/github-automation-profiles.json');
+  let profiles: Record<string, string> = {};
+  try {
+    profiles = JSON.parse(readFileSync(manifestPath, 'utf8')) as Record<string, string>;
+  } catch {
+    // The production manifest is introduced by the implementation under test.
+  }
+  profiles[path] = sha256;
+  write(
+    root,
+    'scripts/check/github-automation-profiles.json',
+    `${JSON.stringify(profiles, null, 2)}\n`
+  );
 }
 
 describe('GitHub Actions capability policy', () => {
@@ -292,6 +309,22 @@ describe('GitHub Actions capability policy', () => {
       expect(messages(root)).toContain('event-controlled');
     });
 
+    test.each([
+      ["github['event']", "${{ github['event'].pull_request.head.sha }}"],
+      ['full bracket event path', "${{ github['event']['pull_request']['head']['sha'] }}"],
+      ['dynamic github namespace', '${{ github[inputs.namespace].pull_request.head.sha }}'],
+    ])('rejects %s laundering through privileged env', (_name, expression) => {
+      setPrivilegedWorkflow(
+        root,
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        env:
+          PR_REF: ${expression}`,
+        'pull_request_target'
+      );
+
+      expect(messages(root)).toContain('event-controlled');
+    });
+
     test('keeps welcome pull_request_target safe only with fixed pinned action inputs', () => {
       replace(
         root,
@@ -305,6 +338,96 @@ describe('GitHub Actions capability policy', () => {
   });
 
   describe('unbounded GitHub credentials', () => {
+    test.each([
+      ['quoted bracket', "${{ secrets['RELEASE_PAT'] }}"],
+      ['dynamic bracket', '${{ secrets[inputs.name] }}'],
+      ['whole namespace', '${{ toJSON(secrets) }}'],
+      ['unsupported bracket built-in', "${{ secrets['GITHUB_TOKEN'] }}"],
+    ])('rejects %s secret expression in an arbitrary action input', (_name, expression) => {
+      setCiWorkflow(
+        root,
+        'contents: read',
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        with:
+          arbitrary-value: "${expression}"`
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
+    test.each([
+      ['quoted bracket', "${{ secrets['RELEASE_PAT'] }}"],
+      ['dynamic bracket', '${{ secrets[inputs.name] }}'],
+      ['whole namespace', '${{ toJSON(secrets) }}'],
+    ])('rejects %s secret expression in arbitrary env', (_name, expression) => {
+      setCiWorkflow(
+        root,
+        'contents: read',
+        `      - run: echo safe
+        env:
+          BOT_CREDENTIAL: "${expression}"`
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
+    test.each([
+      ['quoted bracket', "${{ secrets['RELEASE_PAT'] }}"],
+      ['dynamic bracket', '${{ secrets[inputs.name] }}'],
+      ['whole namespace', '${{ toJSON(secrets) }}'],
+    ])('rejects %s secret expression in a reusable secret input', (_name, expression) => {
+      addProvenance(root, 'acme/platform/.github/workflows/build.yml', 'v1.2.3', REUSABLE_SHA);
+      write(
+        root,
+        '.github/workflows/ci.yml',
+        `name: CI
+on: push
+permissions:
+  contents: read
+jobs:
+  reuse:
+    uses: acme/platform/.github/workflows/build.yml@${REUSABLE_SHA} # v1.2.3
+    secrets:
+      arbitrary: "${expression}"
+`
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
+    test.each([
+      ['quoted bracket', "${{ secrets['RELEASE_PAT'] }}"],
+      ['dynamic bracket', '${{ secrets[inputs.name] }}'],
+      ['whole namespace', '${{ toJSON(secrets) }}'],
+    ])('rejects %s as an extra Codecov secret', (_name, expression) => {
+      replace(
+        root,
+        '.github/workflows/ci.yml',
+        '          token: ${{ secrets.CODECOV_TOKEN }}',
+        `          token: \${{ secrets.CODECOV_TOKEN }}\n          audit: "${expression}"`
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
+    test.each([
+      ["${{ secrets['RELEASE_PAT'] }}"],
+      ['${{ secrets[inputs.name] }}'],
+      ['${{ toJSON(secrets) }}'],
+    ])('escalates a read-only job using %s and requires an exact profile', (expression) => {
+      setCiWorkflow(
+        root,
+        'contents: read',
+        `      - run: echo safe
+        env:
+          BOT_CREDENTIAL: "${expression}"`
+      );
+
+      const result = messages(root);
+      expect(result).toContain('unbounded GitHub token');
+      expect(result).toContain('exact privileged workflow profile');
+    });
+
     test.each(['BOT_CREDENTIAL', 'APP_PRIVATE_KEY'])(
       'rejects arbitrary custom secret %s regardless of input key',
       (secret) => {
@@ -637,6 +760,34 @@ ${checkoutStep()}`
       addProvenance(root, 'unused/example', 'v1.2.3', REUSABLE_SHA);
 
       expect(messages(root)).toContain('unused provenance');
+    });
+
+    test.each([
+      ['labeler.yml', 'name: Labeler', 'name: Labeler drifted'],
+      ['pr-size.yml', 'name: PR Size Label', 'name: PR Size Label drifted'],
+      ['stale.yml', 'name: Stale', 'name: Stale drifted'],
+      ['welcome.yml', 'name: Welcome', 'name: Welcome drifted'],
+    ])('rejects whole-file privileged profile drift in %s', (filename, from, to) => {
+      replace(root, `.github/workflows/${filename}`, from, to);
+
+      expect(messages(root)).toContain('exact privileged workflow profile');
+    });
+
+    test('rejects obfuscated merge code by invalidating the exact privileged profile', () => {
+      replace(
+        root,
+        '.github/workflows/pr-size.yml',
+        "          xs_label: 'size/xs'",
+        `          xs_label: "github.rest.pulls[['mer','ge'].join('')]()"`
+      );
+
+      expect(messages(root)).toContain('exact privileged workflow profile');
+    });
+
+    test('rejects unused exact profile entries', () => {
+      addProfile(root, '.github/workflows/unused.yml', '3'.repeat(64));
+
+      expect(messages(root)).toContain('unused profile');
     });
   });
 

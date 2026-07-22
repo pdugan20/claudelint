@@ -1,0 +1,8 @@
+{
+  ".github/dependabot.yml": "8211d28ccca08491451a5ef9bbee03398d7e3ddfca92555251d4d500f3e6d068",
+  ".github/workflows/labeler.yml": "527dba38d36c1ec66a1d6def9f8c3bd6e2bbb85e6da8adc3ca85f1ac267f1731",
+  ".github/workflows/pr-size.yml": "d35c78a67953d33f0d4e9421b2f10ba6a5a9d3064f1d46cd2b58478b78a78c0b",
+  ".github/workflows/publish.yml": "5e5f121491c2139c96a193a786c75109157565b55edb5d89e048bcbda74a015a",
+  ".github/workflows/stale.yml": "38df688c3312e044136274e7ff1908bd7441b7f4e3f3aeb5cdd0cd0db45e3e1f",
+  ".github/workflows/welcome.yml": "72557e1f754810ce434b631c791c6424b3e97c5406ae72ba89813898eb36e8e7"
+}

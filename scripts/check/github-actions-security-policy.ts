@@ -42,15 +42,14 @@ const REQUIRED_WORKFLOWS = [
 
 const RELEASE_PACKAGE_SCRIPT = 'bash scripts/util/package-plugin.sh';
 const RELEASE_PACKAGE_SHA256 = 'a34a41ecdda6ffe2174f5d9ac2237f16fd602685162efb1aee45c5b1e9f552b8';
-const RELEASE_WORKFLOW_SHA256 = '5e5f121491c2139c96a193a786c75109157565b55edb5d89e048bcbda74a015a';
-const DEPENDABOT_SHA256 = '8211d28ccca08491451a5ef9bbee03398d7e3ddfca92555251d4d500f3e6d068';
+const PROFILE_MANIFEST = 'scripts/check/github-automation-profiles.json';
 const BUILTIN_GITHUB_TOKEN = /^\${{\s*(?:github\.token|secrets\.GITHUB_TOKEN)\s*}}$/;
 const SEMVER_COMMENT = /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const FULL_SHA = /^[0-9a-f]{40}$/;
+const FULL_SHA256 = /^[0-9a-f]{64}$/;
 const FORBIDDEN_ACTION =
   /(?:auto.?merge|auto.?approve|approve.?pull.?request|pull.?request.?approve)/i;
 const APP_TOKEN_ACTION = /(?:^|\/)create-github-app-token$/i;
-const EVENT_CONTROLLED_EXPRESSION = /\${{[^}]*\bgithub\.event\b[^}]*}}/i;
 const DYNAMIC_EXPRESSION = /\${{/;
 
 const FORBIDDEN_RUN_PATTERNS: ReadonlyArray<readonly [RegExp, string]> = [
@@ -189,13 +188,6 @@ function checkCheckout(entry: UsesEntry, actionId: string, violations: string[])
   }
 }
 
-function hasEventControlledValue(value: unknown): boolean {
-  if (typeof value === 'string') return EVENT_CONTROLLED_EXPRESSION.test(value);
-  if (Array.isArray(value)) return value.some(hasEventControlledValue);
-  const record = asRecord(value);
-  return record ? Object.values(record).some(hasEventControlledValue) : false;
-}
-
 function hasDynamicValue(value: unknown): boolean {
   if (typeof value === 'string') {
     return DYNAMIC_EXPRESSION.test(value) && !BUILTIN_GITHUB_TOKEN.test(value);
@@ -218,6 +210,31 @@ function forEachString(value: unknown, callback: (value: string) => void): void 
   if (record) for (const entry of Object.values(record)) forEachString(entry, callback);
 }
 
+function expressionBodies(value: string): string[] {
+  return [...value.matchAll(/\${{([\s\S]*?)}}/g)].map((match) => match[1]);
+}
+
+function hasSecretNamespace(value: unknown): boolean {
+  let found = false;
+  forEachString(value, (text) => {
+    if (BUILTIN_GITHUB_TOKEN.test(text)) return;
+    if (expressionBodies(text).some((body) => /\bsecrets\b/i.test(body))) found = true;
+  });
+  return found;
+}
+
+function hasEventControlledValue(value: unknown): boolean {
+  let found = false;
+  forEachString(value, (text) => {
+    for (const body of expressionBodies(text)) {
+      if (/\bgithub\s*\.\s*event\b/i.test(body) || /\bgithub\s*\[/i.test(body)) {
+        found = true;
+      }
+    }
+  });
+  return found;
+}
+
 function hasWorkflowTrigger(value: unknown, trigger: string): boolean {
   if (value === trigger) return true;
   if (Array.isArray(value)) return value.includes(trigger);
@@ -237,8 +254,15 @@ function checkAction(
     return;
   }
   const reference = entry.value;
-  if (mergeCapable && hasEventControlledValue(entry.step.with)) {
-    violations.push(`${entry.location}: merge-capable action inputs must not be event-controlled`);
+  if (
+    mergeCapable &&
+    hasEventControlledValue({
+      env: entry.step.env,
+      secrets: entry.step.secrets,
+      with: entry.step.with,
+    })
+  ) {
+    violations.push(`${entry.location}: merge-capable action values must not be event-controlled`);
   }
   if (mergeCapable && hasDynamicValue(entry.step.with)) {
     violations.push(`${entry.location}: merge-capable action inputs must not be dynamic`);
@@ -292,25 +316,16 @@ function checkAction(
 
 function isExactCodecovStep(filename: string, mergeCapable: boolean, step: YamlRecord): boolean {
   const withConfig = asRecord(step.with);
-  const secretNames = customSecretNames(step);
+  const otherWith = { ...withConfig };
+  delete otherWith.token;
+  const withoutToken = { ...step, with: otherWith };
   return (
     filename === 'ci.yml' &&
     !mergeCapable &&
     step.uses === 'codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f' &&
     withConfig?.token === '${{ secrets.CODECOV_TOKEN }}' &&
-    secretNames.length === 1 &&
-    secretNames[0] === 'CODECOV_TOKEN'
+    !hasSecretNamespace(withoutToken)
   );
-}
-
-function customSecretNames(value: unknown): string[] {
-  const names: string[] = [];
-  forEachString(value, (text) => {
-    for (const match of text.matchAll(/\bsecrets\.([A-Za-z0-9_]+)\b/g)) {
-      if (match[1] !== 'GITHUB_TOKEN') names.push(match[1]);
-    }
-  });
-  return names;
 }
 
 function tokenSinkIsUnbounded(record: YamlRecord | undefined): boolean {
@@ -337,14 +352,14 @@ function checkTokenUse(
 ): boolean {
   let unbounded = false;
   const exactCodecov = isExactCodecovStep(filename, mergeCapable, step);
-  const secretNames = customSecretNames(step);
-  if (secretNames.includes('CODECOV_TOKEN') && !exactCodecov) {
+  const hasCustomSecret = hasSecretNamespace(step);
+  if (JSON.stringify(step).includes('CODECOV_TOKEN') && !exactCodecov) {
     violations.push(
       `${location}: CODECOV_TOKEN is allowed only on the exact pinned Codecov action`
     );
     unbounded = true;
   }
-  if (secretNames.length > 0 && !exactCodecov) {
+  if (hasCustomSecret && !exactCodecov) {
     violations.push(`${location}: custom secret is an unbounded GitHub token`);
     unbounded = true;
   }
@@ -377,8 +392,8 @@ function checkEmbeddedStrings(location: string, value: unknown, violations: stri
   forEachString(value, (text) => checkInlineRun(location, text, violations));
 }
 
-function checkReleaseProfile(projectRoot: string, source: string, violations: string[]): boolean {
-  let exact = createHash('sha256').update(source).digest('hex') === RELEASE_WORKFLOW_SHA256;
+function checkReleaseArtifacts(projectRoot: string, violations: string[]): boolean {
+  let exact = true;
 
   try {
     const packageJson = JSON.parse(
@@ -402,13 +417,34 @@ function checkReleaseProfile(projectRoot: string, source: string, violations: st
   return exact;
 }
 
-function checkDependabot(projectRoot: string, violations: string[]): void {
+function checkExactProfile(
+  relativePath: string,
+  source: string | Buffer,
+  profiles: Record<string, string>,
+  usedProfiles: Set<string>
+): boolean {
+  const expected = profiles[relativePath];
+  if (!expected) return false;
+  usedProfiles.add(relativePath);
+  return createHash('sha256').update(source).digest('hex') === expected;
+}
+
+function checkDependabot(
+  projectRoot: string,
+  profiles: Record<string, string>,
+  usedProfiles: Set<string>,
+  violations: string[]
+): void {
   const relativePath = '.github/dependabot.yml';
   try {
-    const digest = createHash('sha256')
-      .update(readFileSync(join(projectRoot, relativePath)))
-      .digest('hex');
-    if (digest !== DEPENDABOT_SHA256) {
+    if (
+      !checkExactProfile(
+        relativePath,
+        readFileSync(join(projectRoot, relativePath)),
+        profiles,
+        usedProfiles
+      )
+    ) {
       violations.push(`${relativePath}: exact Dependabot profile drifted`);
     }
   } catch (error) {
@@ -447,6 +483,29 @@ function readProvenance(
   }
 }
 
+function readProfiles(projectRoot: string, violations: string[]): Record<string, string> {
+  try {
+    const parsed = asRecord(JSON.parse(readFileSync(join(projectRoot, PROFILE_MANIFEST), 'utf8')));
+    if (!parsed) throw new Error('root must be an object');
+    const profiles: Record<string, string> = {};
+    for (const [relativePath, digest] of Object.entries(parsed)) {
+      if (
+        !/^\.github\/(?:dependabot\.yml|workflows\/[A-Za-z0-9_.-]+\.ya?ml)$/.test(relativePath) ||
+        typeof digest !== 'string' ||
+        !FULL_SHA256.test(digest)
+      ) {
+        violations.push(`${PROFILE_MANIFEST}: invalid exact profile entry for ${relativePath}`);
+        continue;
+      }
+      profiles[relativePath] = digest;
+    }
+    return profiles;
+  } catch (error) {
+    violations.push(`${PROFILE_MANIFEST}: could not read exact profiles (${String(error)})`);
+    return {};
+  }
+}
+
 function checkWorkflow(
   projectRoot: string,
   filename: string,
@@ -454,6 +513,8 @@ function checkWorkflow(
   source: string,
   provenance: Record<string, ActionProvenance>,
   usedProvenance: Set<string>,
+  profiles: Record<string, string>,
+  usedProfiles: Set<string>,
   violations: string[]
 ): void {
   const relativePath = `.github/workflows/${filename}`;
@@ -467,8 +528,12 @@ function checkWorkflow(
   const workflowPermissions = hasWorkflowPermissions
     ? parsePermissions(workflow.permissions, `${relativePath}: workflow permissions`, violations)
     : undefined;
-  const exactReleaseProfile =
-    filename === 'publish.yml' ? checkReleaseProfile(projectRoot, source, violations) : false;
+  const workflowProfileExact = checkExactProfile(relativePath, source, profiles, usedProfiles);
+  const releaseArtifactsExact =
+    filename === 'publish.yml' ? checkReleaseArtifacts(projectRoot, violations) : false;
+  if (filename === 'publish.yml' && !workflowProfileExact) {
+    violations.push(`${relativePath}: exact release profile drifted`);
+  }
   const untrustedPullRequest =
     hasWorkflowTrigger(workflow.on, 'pull_request') ||
     hasWorkflowTrigger(workflow.on, 'pull_request_target');
@@ -512,8 +577,6 @@ function checkWorkflow(
     ) {
       mergeCapable = true;
     }
-    const releaseException =
-      filename === 'publish.yml' && jobId === 'github-release' && exactReleaseProfile;
     checkEmbeddedStrings(
       location,
       { env: job.env, secrets: job.secrets, with: job.with },
@@ -553,10 +616,19 @@ function checkWorkflow(
         `${location}: CODECOV_TOKEN is allowed only on the exact pinned Codecov action in non-merge CI`
       );
     }
-    if (mergeCapable && !releaseException && hasEventControlledValue(workflow.env)) {
+    const approvedPrivilegedProfile =
+      mergeCapable &&
+      workflowProfileExact &&
+      (filename !== 'publish.yml' || jobId !== 'github-release' || releaseArtifactsExact);
+    if (mergeCapable && !approvedPrivilegedProfile) {
+      violations.push(
+        `${location}: merge-capable job requires an exact privileged workflow profile`
+      );
+    }
+    if (mergeCapable && !approvedPrivilegedProfile && hasEventControlledValue(workflow.env)) {
       violations.push(`${location}: merge-capable workflow env must not be event-controlled`);
     }
-    if (mergeCapable && !releaseException && hasEventControlledValue(job.env)) {
+    if (mergeCapable && !approvedPrivilegedProfile && hasEventControlledValue(job.env)) {
       violations.push(`${location}: merge-capable job env must not be event-controlled`);
     }
 
@@ -581,11 +653,11 @@ function checkWorkflow(
       }
       if (typeof step.run === 'string') {
         checkInlineRun(stepLocation, step.run, violations);
-        if (mergeCapable && !releaseException) {
+        if (mergeCapable && !approvedPrivilegedProfile) {
           violations.push(`${stepLocation}: merge-capable jobs may not execute run steps`);
         }
       }
-      if (mergeCapable && !releaseException && hasEventControlledValue(step.env)) {
+      if (mergeCapable && !approvedPrivilegedProfile && hasEventControlledValue(step.env)) {
         violations.push(`${stepLocation}: merge-capable step env must not be event-controlled`);
       }
     }
@@ -594,7 +666,7 @@ function checkWorkflow(
         entry,
         provenance,
         usedProvenance,
-        mergeCapable && !releaseException,
+        mergeCapable && !approvedPrivilegedProfile,
         untrustedPullRequest,
         violations
       );
@@ -607,6 +679,8 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
   const workflowsDirectory = join(projectRoot, '.github/workflows');
   const provenance = readProvenance(projectRoot, violations);
   const usedProvenance = new Set<string>();
+  const profiles = readProfiles(projectRoot, violations);
+  const usedProfiles = new Set<string>();
   let workflowFiles: string[] = [];
   try {
     workflowFiles = readdirSync(workflowsDirectory)
@@ -634,6 +708,8 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
         source,
         provenance,
         usedProvenance,
+        profiles,
+        usedProfiles,
         violations
       );
   }
@@ -644,6 +720,11 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
       );
     }
   }
-  checkDependabot(projectRoot, violations);
+  checkDependabot(projectRoot, profiles, usedProfiles, violations);
+  for (const relativePath of Object.keys(profiles)) {
+    if (!usedProfiles.has(relativePath)) {
+      violations.push(`${PROFILE_MANIFEST}: unused profile entry for ${relativePath}`);
+    }
+  }
   return violations;
 }
