@@ -1,0 +1,404 @@
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { dirname, join } from 'path';
+import { checkGitHubActionsSecurity } from '../../scripts/check/github-actions-security-policy';
+
+const CHECKOUT_SHA = '3d3c42e5aac5ba805825da76410c181273ba90b1';
+const REUSABLE_SHA = '0123456789abcdef0123456789abcdef01234567';
+const DOCKER_DIGEST = 'a'.repeat(64);
+
+const WORKFLOW_PERMISSIONS: Record<string, string> = {
+  'labeler.yml': 'pull-requests: write',
+  'pr-lint.yml': 'pull-requests: read',
+  'pr-size.yml': 'pull-requests: write',
+  'stale.yml': 'issues: write\n  pull-requests: write',
+  'welcome.yml': 'issues: write\n  pull-requests: write',
+};
+
+function write(root: string, path: string, content: string): void {
+  const absolutePath = join(root, path);
+  mkdirSync(dirname(absolutePath), { recursive: true });
+  writeFileSync(absolutePath, content);
+}
+
+function checkoutStep(persistCredentials = 'false'): string {
+  return `      - uses: actions/checkout@${CHECKOUT_SHA} # v7.0.1
+        with:
+          persist-credentials: ${persistCredentials}`;
+}
+
+function workflowWithTopPermissions(permissions: string, steps = '      - run: echo safe'): string {
+  return `name: Fixture
+on: push
+permissions:
+  ${permissions}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+${steps}
+`;
+}
+
+function baseDependabot(): string {
+  return `version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      production-dependencies:
+        dependency-type: production
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      timezone: America/Los_Angeles
+    cooldown:
+      default-days: 14
+    groups:
+      github-actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
+`;
+}
+
+function writeBaseRepository(root: string): void {
+  write(
+    root,
+    '.github/workflows/ci.yml',
+    workflowWithTopPermissions('contents: read', checkoutStep())
+  );
+
+  for (const [filename, permissions] of Object.entries(WORKFLOW_PERMISSIONS)) {
+    write(root, `.github/workflows/${filename}`, workflowWithTopPermissions(permissions));
+  }
+
+  write(
+    root,
+    '.github/workflows/publish.yml',
+    `name: Release
+on: push
+jobs:
+  publish:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+${checkoutStep()}
+  github-release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo release
+`
+  );
+
+  write(
+    root,
+    '.github/workflows/upstream-watch.yml',
+    workflowWithTopPermissions('contents: read\n  issues: write', checkoutStep())
+  );
+
+  write(root, '.github/dependabot.yml', baseDependabot());
+  write(root, 'package.json', JSON.stringify({ scripts: {} }, null, 2));
+  write(
+    root,
+    'scripts/check/github-actions-provenance.json',
+    JSON.stringify(
+      {
+        'actions/checkout': { version: 'v7.0.1', sha: CHECKOUT_SHA },
+      },
+      null,
+      2
+    )
+  );
+}
+
+function replace(root: string, path: string, from: string, to: string): void {
+  const absolutePath = join(root, path);
+  const source = readFileSync(absolutePath, 'utf8');
+  expect(source).toContain(from);
+  writeFileSync(absolutePath, source.replace(from, to));
+}
+
+function messages(root: string): string {
+  return checkGitHubActionsSecurity(root).join('\n');
+}
+
+function addCiRun(root: string, command: string): void {
+  const indentedCommand = command
+    .split('\n')
+    .map((line) => `          ${line}`)
+    .join('\n');
+  replace(
+    root,
+    '.github/workflows/ci.yml',
+    checkoutStep(),
+    `${checkoutStep()}\n      - run: |\n${indentedCommand}`
+  );
+}
+
+describe('GitHub Actions security policy', () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = mkdtempSync(join(tmpdir(), 'claudelint-actions-policy-'));
+    writeBaseRepository(root);
+  });
+
+  afterEach(() => {
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('accepts the classified least-privilege baseline', () => {
+    expect(checkGitHubActionsSecurity(root)).toEqual([]);
+  });
+
+  describe('checkout credentials', () => {
+    test.each(['ci.yml', 'publish.yml', 'upstream-watch.yml'])(
+      'requires persist-credentials false in %s',
+      (filename) => {
+        replace(
+          root,
+          `.github/workflows/${filename}`,
+          'persist-credentials: false',
+          'persist-credentials: true'
+        );
+
+        expect(messages(root)).toContain('persist-credentials must be false');
+      }
+    );
+  });
+
+  describe('parsed action references', () => {
+    test.each([
+      {
+        name: 'multiword release comment',
+        uses: `actions/checkout@${CHECKOUT_SHA} # v7.0.1 trusted release`,
+      },
+      { name: 'quoted mutable ref', uses: '"actions/checkout@v7" # v7.0.1' },
+      { name: 'expression ref', uses: 'actions/checkout@${{ github.ref }} # v7.0.1' },
+      { name: 'mutable Docker tag', uses: 'docker://alpine:3.20' },
+    ])('rejects $name', ({ uses }) => {
+      replace(root, '.github/workflows/ci.yml', `actions/checkout@${CHECKOUT_SHA} # v7.0.1`, uses);
+
+      expect(checkGitHubActionsSecurity(root).length).toBeGreaterThan(0);
+    });
+
+    test.each([
+      { name: 'local action', uses: './.github/actions/build', manifest: {} },
+      {
+        name: 'digest-pinned Docker action',
+        uses: `docker://alpine@sha256:${DOCKER_DIGEST}`,
+        manifest: {},
+      },
+      {
+        name: 'quoted immutable action',
+        uses: `"actions/checkout@${CHECKOUT_SHA}" # v7.0.1`,
+        manifest: { 'actions/checkout': { version: 'v7.0.1', sha: CHECKOUT_SHA } },
+      },
+    ])('accepts $name', ({ uses, manifest }) => {
+      replace(root, '.github/workflows/ci.yml', `actions/checkout@${CHECKOUT_SHA} # v7.0.1`, uses);
+      replace(root, '.github/workflows/publish.yml', checkoutStep(), '      - run: echo publish');
+      replace(
+        root,
+        '.github/workflows/upstream-watch.yml',
+        checkoutStep(),
+        '      - run: echo upstream'
+      );
+      write(
+        root,
+        'scripts/check/github-actions-provenance.json',
+        JSON.stringify(manifest, null, 2)
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('checks job-level reusable workflow references from parsed YAML', () => {
+      write(
+        root,
+        '.github/workflows/ci.yml',
+        `name: CI
+on: push
+permissions:
+  contents: read
+jobs:
+  reuse:
+    uses: acme/platform/.github/workflows/build.yml@main # v1.2.3
+`
+      );
+
+      expect(messages(root)).toContain('not pinned to a 40-character commit');
+    });
+
+    it('accepts an immutable reusable workflow recorded in provenance', () => {
+      write(
+        root,
+        '.github/workflows/ci.yml',
+        `name: CI
+on: push
+permissions:
+  contents: read
+jobs:
+  reuse:
+    uses: acme/platform/.github/workflows/build.yml@${REUSABLE_SHA} # v1.2.3
+`
+      );
+      replace(root, '.github/workflows/publish.yml', checkoutStep(), '      - run: echo publish');
+      replace(
+        root,
+        '.github/workflows/upstream-watch.yml',
+        checkoutStep(),
+        '      - run: echo upstream'
+      );
+      write(
+        root,
+        'scripts/check/github-actions-provenance.json',
+        JSON.stringify(
+          {
+            'acme/platform/.github/workflows/build.yml': {
+              version: 'v1.2.3',
+              sha: REUSABLE_SHA,
+            },
+          },
+          null,
+          2
+        )
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('rejects a release comment that disagrees with provenance', () => {
+      replace(root, '.github/workflows/ci.yml', '# v7.0.1', '# v7.0.0');
+
+      expect(messages(root)).toContain('does not match provenance');
+    });
+  });
+
+  describe('merge and approval mutations', () => {
+    test.each([
+      ['Octokit merge', 'github.rest.pulls.merge({ owner, repo, pull_number: 1 })'],
+      ['Octokit approval', "github.rest.pulls.createReview({ event: 'APPROVE' })"],
+      ['gh merge', 'gh pr merge 1 --squash'],
+      ['gh approval', 'gh pr review 1 --approve'],
+      ['REST merge', 'gh api --method PUT repos/acme/repo/pulls/1/merge'],
+      [
+        'REST approval',
+        `curl -X POST https://api.github.com/repos/acme/repo/pulls/1/reviews -d '{"event":"APPROVE"}'`,
+      ],
+      ['GraphQL merge', 'mutation { mergePullRequest(input: $input) { clientMutationId } }'],
+      [
+        'GraphQL auto-merge',
+        'mutation { enablePullRequestAutoMerge(input: $input) { clientMutationId } }',
+      ],
+      [
+        'GraphQL approval',
+        'mutation { addPullRequestReview(input: {event: APPROVE}) { clientMutationId } }',
+      ],
+    ])('rejects %s', (_name, command) => {
+      addCiRun(root, command);
+
+      expect(messages(root)).toContain('forbidden');
+    });
+
+    it('does not reject a read-only generic gh api call', () => {
+      addCiRun(root, 'gh api repos/acme/repo/issues');
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('scans a directly invoked repository-owned script', () => {
+      write(root, '.github/scripts/merge.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, 'bash .github/scripts/merge.sh');
+
+      expect(messages(root)).toContain('.github/scripts/merge.sh');
+    });
+
+    it('does not treat repository paths in delegated-script comments as invocations', () => {
+      write(
+        root,
+        '.github/scripts/safe.sh',
+        '#!/bin/bash\n# Migration note: scripts/removed-manual-check.sh no longer exists.\necho safe\n'
+      );
+      addCiRun(root, 'bash .github/scripts/safe.sh');
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('recursively scans a repository-owned script actually invoked by a delegated script', () => {
+      write(root, '.github/scripts/outer.sh', '#!/bin/bash\nbash .github/scripts/inner.sh\n');
+      write(root, '.github/scripts/inner.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, 'bash .github/scripts/outer.sh');
+
+      expect(messages(root)).toContain('.github/scripts/inner.sh');
+    });
+
+    it('resolves and scans a repository-owned script invoked through npm', () => {
+      write(root, 'scripts/dangerous.ts', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { dangerous: 'tsx scripts/dangerous.ts' } }, null, 2)
+      );
+      addCiRun(root, 'npm run dangerous');
+
+      expect(messages(root)).toContain('scripts/dangerous.ts');
+    });
+  });
+
+  describe('least-privilege permission classification', () => {
+    test.each([
+      ['write-all', 'permissions:\n  contents: read', 'permissions: write-all'],
+      [
+        'unknown write scope',
+        'permissions:\n  contents: read',
+        'permissions:\n  contents: read\n  packages: write',
+      ],
+      ['omitted permissions', 'permissions:\n  contents: read\n', ''],
+      [
+        'job override',
+        '    runs-on: ubuntu-latest',
+        '    permissions: write-all\n    runs-on: ubuntu-latest',
+      ],
+    ])('rejects %s', (_name, from, to) => {
+      replace(root, '.github/workflows/ci.yml', from, to);
+
+      expect(messages(root)).toContain('permissions');
+    });
+
+    it('rejects an unclassified workflow even when it requests read access', () => {
+      write(
+        root,
+        '.github/workflows/new-workflow.yml',
+        workflowWithTopPermissions('contents: read')
+      );
+
+      expect(messages(root)).toContain('workflow is not explicitly classified');
+    });
+  });
+
+  describe('Dependabot application dependency policy', () => {
+    test.each([
+      ['npm major ignore', 'update-types: [version-update:semver-major]', 'update-types: [minor]'],
+      ['development group', 'dependency-type: development', 'dependency-type: production'],
+      ['production group', 'production-dependencies:', 'runtime-dependencies:'],
+    ])('rejects drift in the %s', (_name, from, to) => {
+      replace(root, '.github/dependabot.yml', from, to);
+
+      expect(messages(root)).toContain('npm');
+    });
+  });
+});
