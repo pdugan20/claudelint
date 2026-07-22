@@ -744,6 +744,86 @@ console.log('safe');
       expect(checkGitHubActionsSecurity(root)).toEqual([]);
     });
 
+    test.each([
+      ['direct entrypoint', 'SAFE=$(scripts/dangerous.sh)'],
+      ['interpreter entrypoint', 'SAFE=$(bash scripts/dangerous.sh)'],
+      ['pipelined entrypoint', 'SAFE=$(scripts/dangerous.sh | cat)'],
+    ])('follows a repository executable in an assignment-valued %s substitution', (_name, line) => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      write(root, 'scripts/outer.sh', `#!/bin/bash\n${line}\n`);
+      addCiRun(root, 'bash scripts/outer.sh');
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    it('does not exempt a dangerous substitution after a static directory variable is reassigned', () => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      write(
+        root,
+        'scripts/outer.sh',
+        '#!/bin/bash\nPROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"\nPROJECT_ROOT=$(scripts/dangerous.sh)\n'
+      );
+      addCiRun(root, 'bash scripts/outer.sh');
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    it('does not close a command substitution on a parenthesis inside a comment', () => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      write(
+        root,
+        'scripts/outer.sh',
+        '#!/bin/bash\nSAFE=$(echo safe # ) ignored\nscripts/dangerous.sh)\n'
+      );
+      addCiRun(root, 'bash scripts/outer.sh');
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    it('does not lose an entrypoint after a command-substituted redirection operand', () => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, '> $(printf /dev/null) scripts/dangerous.sh');
+
+      const violations = messages(root);
+      expect(violations).toContain('cannot parse shell command substitution');
+      expect(violations).toContain('scripts/dangerous.sh');
+    });
+
+    test.each([
+      ['embedded command name', 'b$(printf ash) scripts/dangerous.sh'],
+      ['embedded command path', '/bin/$(printf bash) scripts/dangerous.sh'],
+    ])('fails closed on a substitution in an %s', (_name, invocation) => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\necho safe\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('cannot parse shell command substitution');
+    });
+
+    test.each([
+      ['attached operand', '{output}>/dev/null scripts/dangerous.sh'],
+      ['spaced operand', '{output}> /dev/null scripts/dangerous.sh'],
+    ])('follows an entrypoint after a named-fd redirect with an %s', (_name, invocation) => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    test.each([
+      ['dollar-parenthesis', 'echo safe $(printf'],
+      ['backtick', 'echo safe `printf'],
+    ])('fails closed on an unterminated %s substitution', (_name, invocation) => {
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('cannot parse shell command substitution');
+    });
+
+    test.each([';', ';;'])('fails closed on a leading %s separator', (separator) => {
+      addCiRun(root, `${separator} echo safe`);
+
+      expect(messages(root)).toContain('cannot parse shell command with a dangling separator');
+    });
+
     it('follows flagged child executables from a delegated script', () => {
       write(root, 'scripts/outer.sh', '#!/bin/bash\nbash -eu scripts/inner.sh\n');
       write(root, 'scripts/inner.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
@@ -831,6 +911,124 @@ console.log('safe');
 
       expect(messages(root)).toContain('scripts/dangerous.sh');
     });
+
+    test.each(['npm', 'pnpm', 'yarn'])(
+      'follows %s install lifecycle scripts with a separated false ignore-scripts value',
+      (manager) => {
+        write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+        write(
+          root,
+          'package.json',
+          JSON.stringify({ scripts: { prepare: 'bash scripts/dangerous.sh' } }, null, 2)
+        );
+        addCiRun(root, `${manager} install --ignore-scripts false`);
+
+        expect(messages(root)).toContain('scripts/dangerous.sh');
+      }
+    );
+
+    test.each(['npm', 'pnpm', 'yarn'])(
+      'skips %s install lifecycle scripts with a separated true ignore-scripts value',
+      (manager) => {
+        write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+        write(
+          root,
+          'package.json',
+          JSON.stringify({ scripts: { prepare: 'bash scripts/dangerous.sh' } }, null, 2)
+        );
+        addCiRun(root, `${manager} install --ignore-scripts true`);
+
+        expect(checkGitHubActionsSecurity(root)).toEqual([]);
+      }
+    );
+
+    test.each(['yarn', 'yarn --silent'])(
+      'treats bare %s as install lifecycle reachability',
+      (invocation) => {
+        write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+        write(
+          root,
+          'package.json',
+          JSON.stringify({ scripts: { prepare: 'bash scripts/dangerous.sh' } }, null, 2)
+        );
+        addCiRun(root, invocation);
+
+        expect(messages(root)).toContain('scripts/dangerous.sh');
+      }
+    );
+
+    test.each(['i', 'in', 'ins', 'inst', 'insta', 'instal', 'isnt', 'isnta', 'isntal', 'isntall'])(
+      'normalizes the npm %s install alias',
+      (alias) => {
+        write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+        write(
+          root,
+          'package.json',
+          JSON.stringify({ scripts: { prepare: 'bash scripts/dangerous.sh' } }, null, 2)
+        );
+        addCiRun(root, `npm ${alias}`);
+
+        expect(messages(root)).toContain('scripts/dangerous.sh');
+      }
+    );
+
+    it('fails closed on an unmodeled npm install abbreviation', () => {
+      addCiRun(root, 'npm insall');
+
+      expect(messages(root)).toContain('cannot resolve package-manager install invocation');
+    });
+
+    test.each([
+      ['explicit local package operand', 'npm install ./packages/fixture'],
+      ['bare local package operand', 'npm install packages/fixture'],
+      ['npm workspace operand', 'npm install --workspace packages/fixture'],
+      ['pnpm filter operand', 'pnpm install --filter ./packages/fixture'],
+    ])('fails closed rather than scanning root scripts for a %s', (_name, invocation) => {
+      write(root, 'packages/fixture/package.json', JSON.stringify({ scripts: {} }, null, 2));
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('cannot resolve package-manager install invocation');
+    });
+
+    test.each([
+      ['npm ci', 'npm ci'],
+      ['npm install', 'npm install'],
+    ])('follows the prepublish lifecycle reached by %s', (_name, invocation) => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { prepublish: 'bash scripts/dangerous.sh' } }, null, 2)
+      );
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    test.each([
+      ['prepublishOnly', 'npm publish --provenance --access public', 'prepublishOnly'],
+      ['prepack', 'npm publish', 'prepack'],
+      ['prepare', 'npm publish', 'prepare'],
+      ['postpack', 'npm publish', 'postpack'],
+      ['publish', 'npm publish', 'publish'],
+      ['postpublish', 'npm publish', 'postpublish'],
+      ['npm pack', 'npm pack', 'prepack'],
+      ['pnpm publish', 'pnpm publish', 'prepublishOnly'],
+      ['yarn publish', 'yarn publish', 'prepublishOnly'],
+    ])(
+      'follows the %s lifecycle reached by a package publication command',
+      (_name, invocation, lifecycle) => {
+        write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+        write(
+          root,
+          'package.json',
+          JSON.stringify({ scripts: { [lifecycle]: 'bash scripts/dangerous.sh' } }, null, 2)
+        );
+        addCiRun(root, invocation);
+
+        expect(messages(root)).toContain('scripts/dangerous.sh');
+      }
+    );
 
     test.each([
       [

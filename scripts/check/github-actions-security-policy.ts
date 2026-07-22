@@ -636,6 +636,200 @@ function collectRunBlocks(
   return runs;
 }
 
+interface ShellSubstitutionExtraction {
+  nestedCommands: string[];
+  source: string;
+}
+
+const SHELL_SUBSTITUTION_MARKER = '__CLAUDELINT_COMMAND_SUBSTITUTION__';
+
+function extractShellCommandSubstitutions(
+  source: string,
+  violations: string[],
+  location: string
+): ShellSubstitutionExtraction | undefined {
+  const nestedCommands: string[] = [];
+  let extracted = '';
+  let quote: "'" | '"' | undefined;
+  let escaped = false;
+  let wordStarted = false;
+
+  const dollarSubstitution = (start: number): { command: string; end: number } | undefined => {
+    let depth = 1;
+    let innerQuote: "'" | '"' | '`' | undefined;
+    let innerEscaped = false;
+    let innerWordStarted = false;
+    for (let index = start + 2; index < source.length; index += 1) {
+      const character = source[index];
+      if (innerEscaped) {
+        innerEscaped = false;
+        innerWordStarted = true;
+        continue;
+      }
+      if (innerQuote === "'") {
+        if (character === "'") {
+          innerQuote = undefined;
+        }
+        continue;
+      }
+      if (innerQuote === '"') {
+        if (character === '"') {
+          innerQuote = undefined;
+        } else if (character === '\\') {
+          innerEscaped = true;
+        } else if (character === '$' && source[index + 1] === '(' && source[index + 2] !== '(') {
+          const nested = dollarSubstitution(index);
+          if (!nested) {
+            return undefined;
+          }
+          index = nested.end;
+        }
+        continue;
+      }
+      if (innerQuote === '`') {
+        if (character === '`') {
+          innerQuote = undefined;
+        } else if (character === '\\') {
+          innerEscaped = true;
+        }
+        continue;
+      }
+      if (character === '\\') {
+        innerEscaped = true;
+      } else if (character === "'" || character === '"' || character === '`') {
+        innerQuote = character;
+        innerWordStarted = true;
+      } else if (character === '#' && !innerWordStarted) {
+        const newline = source.indexOf('\n', index);
+        if (newline < 0) {
+          return undefined;
+        }
+        index = newline;
+        innerWordStarted = false;
+      } else if (character === '$' && source[index + 1] === '(' && source[index + 2] !== '(') {
+        const nested = dollarSubstitution(index);
+        if (!nested) {
+          return undefined;
+        }
+        index = nested.end;
+        innerWordStarted = true;
+      } else if (character === '(') {
+        depth += 1;
+        innerWordStarted = true;
+      } else if (character === ')') {
+        depth -= 1;
+        if (depth === 0) {
+          return { command: source.slice(start + 2, index), end: index };
+        }
+      } else if (/\s/.test(character) || [';', '|', '&'].includes(character)) {
+        innerWordStarted = false;
+      } else {
+        innerWordStarted = true;
+      }
+    }
+    return undefined;
+  };
+
+  const backtickSubstitution = (start: number): { command: string; end: number } | undefined => {
+    let innerEscaped = false;
+    for (let index = start + 1; index < source.length; index += 1) {
+      const character = source[index];
+      if (innerEscaped) {
+        innerEscaped = false;
+      } else if (character === '\\') {
+        innerEscaped = true;
+      } else if (character === '`') {
+        return { command: source.slice(start + 1, index), end: index };
+      }
+    }
+    return undefined;
+  };
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (escaped) {
+      extracted += character;
+      escaped = false;
+      wordStarted = true;
+      continue;
+    }
+    if (quote === "'") {
+      extracted += character;
+      if (character === "'") {
+        quote = undefined;
+      }
+      continue;
+    }
+    if (character === '\\') {
+      extracted += character;
+      escaped = true;
+      wordStarted = true;
+      continue;
+    }
+    if (quote === '"' && character === '"') {
+      extracted += character;
+      quote = undefined;
+      continue;
+    }
+    if (!quote && character === "'") {
+      extracted += character;
+      quote = "'";
+      wordStarted = true;
+      continue;
+    }
+    if (!quote && character === '"') {
+      extracted += character;
+      quote = '"';
+      wordStarted = true;
+      continue;
+    }
+    if (!quote && character === '#' && !wordStarted) {
+      const newline = source.indexOf('\n', index);
+      if (newline < 0) {
+        extracted += source.slice(index);
+        break;
+      }
+      extracted += source.slice(index, newline + 1);
+      index = newline;
+      wordStarted = false;
+      continue;
+    }
+    if (character === '$' && source[index + 1] === '(' && source[index + 2] !== '(') {
+      const substitution = dollarSubstitution(index);
+      if (!substitution) {
+        violations.push(`${location}: cannot parse shell command substitution: unterminated $(`);
+        return undefined;
+      }
+      nestedCommands.push(substitution.command);
+      extracted += `$(${SHELL_SUBSTITUTION_MARKER})`;
+      index = substitution.end;
+      wordStarted = true;
+      continue;
+    }
+    if (character === '`') {
+      const substitution = backtickSubstitution(index);
+      if (!substitution) {
+        violations.push(
+          `${location}: cannot parse shell command substitution: unterminated backtick`
+        );
+        return undefined;
+      }
+      nestedCommands.push(substitution.command);
+      extracted += `\`${SHELL_SUBSTITUTION_MARKER}\``;
+      index = substitution.end;
+      wordStarted = true;
+      continue;
+    }
+    extracted += character;
+    if (!quote && (/\s/.test(character) || [';', '|', '&'].includes(character))) {
+      wordStarted = false;
+    } else {
+      wordStarted = true;
+    }
+  }
+  return { nestedCommands, source: extracted };
+}
+
 function shellCommands(source: string, violations: string[], location: string): string[][] {
   const commands: string[][] = [];
   let words: string[] = [];
@@ -724,7 +918,7 @@ function shellCommands(source: string, violations: string[], location: string): 
       const doubled = source[index + 1] === character;
       const requiresFollowingCommand = character === '|';
       const hadCommand = finishCommand();
-      if ((requiresFollowingCommand && !hadCommand) || awaitingCommandAfterSeparator) {
+      if (!hadCommand || awaitingCommandAfterSeparator) {
         violations.push(`${location}: cannot parse shell command with a dangling separator`);
         return [];
       }
@@ -933,14 +1127,39 @@ function packageInstallLifecycleTargets(
   manager: string,
   command: string | undefined,
   args: string[],
+  scripts: YamlRecord,
+  currentDirectory: string,
   violations: string[],
   location: string
 ): string[] | undefined {
+  const npmInstallAliases = new Set([
+    'add',
+    'i',
+    'in',
+    'ins',
+    'inst',
+    'insta',
+    'instal',
+    'install',
+    'isnt',
+    'isnta',
+    'isntal',
+    'isntall',
+  ]);
   const installCommands: Record<string, Set<string>> = {
-    npm: new Set(['add', 'ci', 'i', 'install']),
+    npm: new Set(['ci', ...npmInstallAliases]),
     pnpm: new Set(['add', 'i', 'install']),
     yarn: new Set(['add', 'install']),
   };
+  if (
+    manager === 'npm' &&
+    command &&
+    /^(?:ins|isnt)/.test(command) &&
+    !npmInstallAliases.has(command)
+  ) {
+    violations.push(`${location}: cannot resolve package-manager install invocation: ${command}`);
+    return [];
+  }
   if (!command || !installCommands[manager]?.has(command)) {
     return undefined;
   }
@@ -960,7 +1179,7 @@ function packageInstallLifecycleTargets(
     '--save-dev',
     '-D',
   ]);
-  const operandOptions = new Set(['--filter', '--workspace', '-w']);
+  const unsupportedScopeOptions = new Set(['--filter', '--workspace', '-w']);
   const positionals: string[] = [];
   let scriptsEnabled = true;
   for (let index = 0; index < args.length; index += 1) {
@@ -973,7 +1192,8 @@ function packageInstallLifecycleTargets(
     const option = separator >= 0 ? word.slice(0, separator) : word;
     if (noOperandOptions.has(option)) {
       if (option === '--ignore-scripts') {
-        const value = separator >= 0 ? word.slice(separator + 1) : 'true';
+        const separatedValue = separator < 0 ? args[index + 1] : undefined;
+        const value = separator >= 0 ? word.slice(separator + 1) : (separatedValue ?? 'true');
         if (!['false', 'true'].includes(value)) {
           violations.push(
             `${location}: cannot resolve package-manager install invocation: ${word}`
@@ -981,19 +1201,25 @@ function packageInstallLifecycleTargets(
           return [];
         }
         scriptsEnabled = value === 'false';
+        if (separator < 0 && separatedValue && ['false', 'true'].includes(separatedValue)) {
+          index += 1;
+        }
       }
       continue;
     }
-    if (operandOptions.has(option)) {
-      const operand = separator >= 0 ? word.slice(separator + 1) : args[index + 1];
-      if (!operand) {
-        violations.push(`${location}: cannot resolve package-manager install invocation`);
-        return [];
-      }
-      index += separator >= 0 ? 0 : 1;
-      continue;
+    if (unsupportedScopeOptions.has(option)) {
+      violations.push(`${location}: cannot resolve package-manager install invocation: ${word}`);
+      return [];
     }
     if (word.startsWith('-')) {
+      violations.push(`${location}: cannot resolve package-manager install invocation: ${word}`);
+      return [];
+    }
+    if (
+      /^(?:file:|link:|workspace:|\.\.?\/)/.test(word) ||
+      word.startsWith('/') ||
+      existsSync(resolve(currentDirectory, word))
+    ) {
       violations.push(`${location}: cannot resolve package-manager install invocation: ${word}`);
       return [];
     }
@@ -1007,7 +1233,88 @@ function packageInstallLifecycleTargets(
     violations.push(`${location}: cannot resolve package-manager install invocation`);
     return [];
   }
-  return scriptsEnabled ? ['install', 'prepare'] : [];
+  return scriptsEnabled
+    ? [
+        'prepublish',
+        'preinstall',
+        'install',
+        'postinstall',
+        'preprepare',
+        'prepare',
+        'postprepare',
+      ].filter((name) => typeof scripts[name] === 'string')
+    : [];
+}
+
+function packagePublicationLifecycleTargets(
+  manager: string,
+  command: string | undefined,
+  args: string[],
+  scripts: YamlRecord,
+  violations: string[],
+  location: string
+): string[] | undefined {
+  if (!command || !['pack', 'publish'].includes(command)) {
+    return undefined;
+  }
+  const noOperandOptions = new Set([
+    '--dry-run',
+    '--ignore-scripts',
+    '--json',
+    '--provenance',
+    '--silent',
+  ]);
+  const operandOptions = new Set(['--access', '--new-version', '--otp', '--registry', '--tag']);
+  let scriptsEnabled = true;
+  for (let index = 0; index < args.length; index += 1) {
+    const word = args[index];
+    const separator = word.indexOf('=');
+    const option = separator >= 0 ? word.slice(0, separator) : word;
+    if (noOperandOptions.has(option)) {
+      if (option === '--ignore-scripts') {
+        const separatedValue = separator < 0 ? args[index + 1] : undefined;
+        const value = separator >= 0 ? word.slice(separator + 1) : (separatedValue ?? 'true');
+        if (!['false', 'true'].includes(value)) {
+          violations.push(
+            `${location}: cannot resolve package-manager publication invocation: ${word}`
+          );
+          return [];
+        }
+        scriptsEnabled = value === 'false';
+        if (separator < 0 && separatedValue && ['false', 'true'].includes(separatedValue)) {
+          index += 1;
+        }
+      }
+      continue;
+    }
+    if (operandOptions.has(option)) {
+      const operand = separator >= 0 ? word.slice(separator + 1) : args[index + 1];
+      if (!operand) {
+        violations.push(`${location}: cannot resolve package-manager publication invocation`);
+        return [];
+      }
+      index += separator >= 0 ? 0 : 1;
+      continue;
+    }
+    violations.push(`${location}: cannot resolve package-manager publication invocation: ${word}`);
+    return [];
+  }
+  if (!scriptsEnabled) {
+    return [];
+  }
+  const lifecycle =
+    command === 'pack'
+      ? ['prepack', 'prepare', 'postpack']
+      : [
+          ...(manager === 'npm' ? [] : ['prepublish']),
+          'prepublishOnly',
+          'prepack',
+          'prepare',
+          'postpack',
+          'publish',
+          'postpublish',
+        ];
+  return lifecycle.filter((name) => typeof scripts[name] === 'string');
 }
 
 function packageScriptTargets(
@@ -1033,16 +1340,30 @@ function packageScriptTargets(
     if (commandIndex === undefined) {
       return targets;
     }
-    const command = words[commandIndex];
+    const command =
+      manager === 'yarn' && commandIndex === words.length ? 'install' : words[commandIndex];
     const installTargets = packageInstallLifecycleTargets(
       manager,
       command,
       words.slice(commandIndex + 1),
+      scripts,
+      currentDirectory,
       violations,
       location
     );
     if (installTargets) {
       return installTargets;
+    }
+    const publicationTargets = packagePublicationLifecycleTargets(
+      manager,
+      command,
+      words.slice(commandIndex + 1),
+      scripts,
+      violations,
+      location
+    );
+    if (publicationTargets) {
+      return publicationTargets;
     }
     if (command === 'run') {
       directTarget = words[commandIndex + 1];
@@ -1058,7 +1379,7 @@ function packageScriptTargets(
   }
   if (directTarget) {
     if (typeof scripts[directTarget] === 'string') {
-      targets.push(directTarget);
+      targets.push(...lifecycleScripts(directTarget, scripts));
     } else {
       violations.push(`${location}: referenced package script does not exist: ${directTarget}`);
     }
@@ -1076,7 +1397,9 @@ function packageScriptTargets(
       if (matches.length === 0) {
         violations.push(`${location}: package-script pattern matched nothing: ${pattern}`);
       }
-      targets.push(...matches);
+      for (const match of matches) {
+        targets.push(...lifecycleScripts(match, scripts));
+      }
     }
   }
   return targets;
@@ -1318,9 +1641,10 @@ function stripLeadingRedirections(
   location: string
 ): string[] | undefined {
   let index = 0;
+  const descriptor = String.raw`(?:\d*|\{[A-Za-z_][A-Za-z0-9_]*\})`;
   while (index < words.length) {
     const word = words[index];
-    const duplicate = word.match(/^\d*[<>]&(.+)?$/);
+    const duplicate = word.match(new RegExp(`^${descriptor}[<>]&(.+)?$`));
     if (duplicate) {
       const operand = duplicate[1] || words[index + 1];
       if (!operand || !/^(?:\d+|-)$/.test(operand)) {
@@ -1331,17 +1655,33 @@ function stripLeadingRedirections(
       continue;
     }
 
-    const separated = word.match(/^(?:\d*(?:>>?|<<<?|<<-|<>|>\|)|&>>?)$/);
+    const separated = word.match(
+      new RegExp(`^(?:${descriptor}(?:>>?|<<-|<<<|<<|<>|<|>\\|)|&>>?)$`)
+    );
     if (separated) {
-      if (!words[index + 1]) {
+      const operand = words[index + 1];
+      if (!operand) {
         violations.push(`${location}: cannot parse shell redirection: ${word}`);
         return undefined;
+      }
+      if (/\$\(|`/.test(operand)) {
+        violations.push(
+          `${location}: cannot parse shell command substitution in redirection operand`
+        );
       }
       index += 2;
       continue;
     }
 
-    if (/^\d*(?:>>?|<<<?|<<-|<>|>\|).+/.test(word) || /^&>>?.+/.test(word)) {
+    if (
+      new RegExp(`^${descriptor}(?:>>?|<<-|<<<|<<|<>|<|>\\|).+`).test(word) ||
+      /^&>>?.+/.test(word)
+    ) {
+      if (/\$\(|`/.test(word)) {
+        violations.push(
+          `${location}: cannot parse shell command substitution in redirection operand`
+        );
+      }
       index += 1;
       continue;
     }
@@ -1404,6 +1744,29 @@ function staticShellDirectoryVariables(
     }
   }
   return variables;
+}
+
+function staticShellDirectorySubstitutions(
+  source: string,
+  variables: Map<string, string>
+): Set<string> {
+  const substitutions = new Set<string>();
+  for (const line of source.split('\n')) {
+    const assignment = line.match(/^([A-Za-z_][A-Za-z0-9_]*)="\$\((.*)\)"$/);
+    const body = assignment?.[2];
+    const safeBody =
+      body &&
+      (/^cd "\$\(dirname "\$\{BASH_SOURCE\[0\]\}"\)(?:\/\.{1,2}(?:\/\.{1,2})*)?" && pwd$/.test(
+        body
+      ) ||
+        /^cd "\$(?:\{[A-Za-z_][A-Za-z0-9_]*\}|[A-Za-z_][A-Za-z0-9_]*)\/\.{1,2}(?:\/\.{1,2})*" && pwd$/.test(
+          body
+        ));
+    if (assignment && safeBody && variables.has(assignment[1])) {
+      substitutions.add(assignment[2]);
+    }
+  }
+  return substitutions;
 }
 
 function lifecycleScripts(target: string, scripts: YamlRecord): string[] {
@@ -1523,7 +1886,32 @@ function checkDelegatedScripts(
         projectRoot,
         realRoot
       );
-      const executable = executableSource(commandSource.relativePath, commandSource.source);
+      const safeDirectorySubstitutions = staticShellDirectorySubstitutions(
+        commandSource.source,
+        directoryVariables
+      );
+      let executable = executableSource(commandSource.relativePath, commandSource.source);
+      if (!JAVASCRIPT_TYPESCRIPT_SUFFIX.test(commandSource.relativePath)) {
+        const extracted = extractShellCommandSubstitutions(
+          executable,
+          violations,
+          commandSource.relativePath
+        );
+        if (!extracted) {
+          continue;
+        }
+        executable = extracted.source;
+        for (const nestedCommand of extracted.nestedCommands) {
+          if (safeDirectorySubstitutions.has(nestedCommand)) {
+            continue;
+          }
+          sourceQueue.push({
+            cwd: currentDirectory,
+            relativePath: commandSource.relativePath,
+            source: nestedCommand,
+          });
+        }
+      }
       for (const parsedWords of shellCommands(executable, violations, commandSource.relativePath)) {
         const redirectedWords = stripLeadingRedirections(
           parsedWords,
@@ -1537,7 +1925,7 @@ function checkDelegatedScripts(
         let normalizationFailed = false;
         while (commandWords.length > 0) {
           const substitutionIndex = commandPositionIndex(commandWords);
-          if (/^(?:\$\(|`)/.test(commandWords[substitutionIndex] ?? '')) {
+          if (/\$\(|`/.test(commandWords[substitutionIndex] ?? '')) {
             violations.push(
               `${commandSource.relativePath}: cannot parse shell command substitution in command position`
             );
@@ -1617,7 +2005,7 @@ function checkDelegatedScripts(
           violations,
           commandSource.relativePath
         )) {
-          packageQueue.push(...lifecycleScripts(target, scripts));
+          packageQueue.push(target);
         }
         const targets = invokedTargets(environment.words, violations, commandSource.relativePath);
         for (const source of targets.nestedCommands) {
