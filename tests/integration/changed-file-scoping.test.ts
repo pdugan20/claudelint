@@ -14,20 +14,37 @@
 
 import { execSync, spawnSync } from 'child_process';
 import { join } from 'path';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, realpathSync } from 'fs';
 import { tmpdir } from 'os';
+
+function withoutGitEnvironment(): NodeJS.ProcessEnv {
+  const env = { ...process.env };
+  for (const name of Object.keys(env)) {
+    if (name.startsWith('GIT_')) delete env[name];
+  }
+  return env;
+}
 
 function runCLI(args: string[], cwd: string): { output: string; exitCode: number } {
   const bin = join(__dirname, '../../bin/claudelint');
-  const result = spawnSync(bin, args, { cwd, encoding: 'utf-8' });
+  const result = spawnSync(bin, args, {
+    cwd,
+    encoding: 'utf-8',
+    env: withoutGitEnvironment(),
+  });
   return {
     output: (result.stdout || '') + (result.stderr || ''),
     exitCode: result.status ?? 1,
   };
 }
 
-function git(cmd: string, cwd: string): void {
-  execSync(`git ${cmd}`, { cwd, stdio: 'pipe' });
+function git(cmd: string, cwd: string): string {
+  return execSync(`git ${cmd}`, {
+    cwd,
+    encoding: 'utf8',
+    env: withoutGitEnvironment(),
+    stdio: 'pipe',
+  }).trim();
 }
 
 describe('--since / --changed file scoping', () => {
@@ -67,6 +84,28 @@ describe('--since / --changed file scoping', () => {
     // The whole point: a finding in a file the diff never touched must not be reported.
     expect(output).not.toContain('claude-md-import-missing');
     expect(exitCode).toBe(0);
+  });
+
+  it('isolates temp commands from inherited Git repository environment', () => {
+    const inherited = {
+      GIT_DIR: process.env.GIT_DIR,
+      GIT_INDEX_FILE: process.env.GIT_INDEX_FILE,
+      GIT_WORK_TREE: process.env.GIT_WORK_TREE,
+    };
+    try {
+      process.env.GIT_DIR = '/invalid/parent/.git';
+      process.env.GIT_INDEX_FILE = '/invalid/parent/index';
+      process.env.GIT_WORK_TREE = '/invalid/parent';
+
+      expect(realpathSync(git('rev-parse --show-toplevel', repo))).toBe(realpathSync(repo));
+      writeFileSync(join(repo, 'packages/foo/CLAUDE.md'), `${CLEAN}\nInherited env test.\n`);
+      expect(runCLI(['check-all', '--changed'], repo).exitCode).toBe(0);
+    } finally {
+      for (const [name, value] of Object.entries(inherited)) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+    }
   });
 
   it('--changed reports only the changed file', () => {
