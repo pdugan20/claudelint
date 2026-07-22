@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'fs';
+import { join, relative, resolve } from 'path';
 import { load } from 'js-yaml';
 
 type YamlRecord = Record<string, unknown>;
@@ -26,6 +26,22 @@ interface WorkflowPermissionPolicy {
   workflow?: PermissionMap;
 }
 
+interface CommandSource {
+  cwd: string;
+  relativePath: string;
+  source: string;
+}
+
+interface ActionCheckContext {
+  checkedLocalActions: Set<string>;
+  commandSources: CommandSource[];
+  localActionStack: string[];
+  projectRoot: string;
+  provenance: Record<string, ActionProvenance>;
+  usedProvenance: Set<string>;
+  violations: string[];
+}
+
 const WORKFLOW_POLICIES: Record<string, WorkflowPermissionPolicy> = {
   'ci.yml': { workflow: { contents: 'read' } },
   'labeler.yml': { workflow: { 'pull-requests': 'write' } },
@@ -42,9 +58,8 @@ const WORKFLOW_POLICIES: Record<string, WorkflowPermissionPolicy> = {
   'welcome.yml': { workflow: { issues: 'write', 'pull-requests': 'write' } },
 };
 
-const REPOSITORY_EXECUTABLE_PATH =
-  /^(?:["']?)((?:\.\/)?(?:\.github\/scripts|scripts|bin)\/[A-Za-z0-9_./-]+)(?:["']?)(?=\s|$)/;
-const SCRIPT_INTERPRETER = /^(?:bash|sh|node|tsx|ts-node|python|python3|bun|ruby)\s+/;
+const SCRIPT_INTERPRETER = /^(?:bash|sh|node|tsx|ts-node|python|python3|bun|ruby)\b/;
+const REPOSITORY_PATH_PREFIX = /^(?:\.\.?\/|\.github\/scripts\/|scripts\/|bin\/)/;
 
 const FORBIDDEN_EXECUTABLE_PATTERNS: Array<[RegExp, string]> = [
   [/\bgh\s+pr\s+merge\b/i, 'GitHub CLI pull request merge'],
@@ -188,7 +203,21 @@ function collectUsesSourceEntries(
   violations: string[]
 ): UsesSourceEntry[] {
   const entries: UsesSourceEntry[] = [];
+  let blockScalarIndent: number | undefined;
   for (const [index, line] of source.split('\n').entries()) {
+    const indentation = line.match(/^ */)?.[0].length ?? 0;
+    if (blockScalarIndent !== undefined) {
+      if (!line.trim() || indentation > blockScalarIndent) {
+        continue;
+      }
+      blockScalarIndent = undefined;
+    }
+
+    if (/^\s*(?:-\s*)?[A-Za-z0-9_-]+\s*:\s*[>|][+-]?[1-9]?\s*(?:#.*)?$/.test(line)) {
+      blockScalarIndent = indentation;
+      continue;
+    }
+
     const match = line.match(/^\s*(?:-\s*)?uses\s*:\s*(.*)$/);
     if (!match) {
       continue;
@@ -215,24 +244,165 @@ function isExactSemverComment(value: string | undefined): boolean {
   );
 }
 
+function isWithinDirectory(parent: string, candidate: string): boolean {
+  const pathFromParent = relative(parent, candidate);
+  return (
+    pathFromParent === '' ||
+    (pathFromParent !== '..' &&
+      !pathFromParent.startsWith('../') &&
+      !pathFromParent.startsWith('/'))
+  );
+}
+
+function collectCompositeUsesEntries(manifest: YamlRecord, relativePath: string): UsesEntry[] {
+  const runs = asRecord(manifest.runs);
+  if (runs?.using !== 'composite' || !Array.isArray(runs.steps)) {
+    return [];
+  }
+
+  const entries: UsesEntry[] = [];
+  runs.steps.forEach((stepValue, index) => {
+    const step = asRecord(stepValue);
+    if (step?.uses !== undefined) {
+      entries.push({
+        location: `${relativePath}:runs.steps[${index}].uses`,
+        value: step.uses,
+        with: asRecord(step.with),
+      });
+    }
+  });
+  return entries;
+}
+
+function checkUsesEntries(
+  entries: UsesEntry[],
+  source: string,
+  relativePath: string,
+  context: ActionCheckContext
+): void {
+  const sourceEntries = collectUsesSourceEntries(source, relativePath, context.violations);
+  if (entries.length !== sourceEntries.length) {
+    context.violations.push(
+      `${relativePath}: every parsed uses entry must have unambiguous source metadata`
+    );
+  }
+
+  entries.forEach((entry, index) => {
+    const sourceEntry = sourceEntries[index];
+    const comment = sourceEntry?.value === entry.value ? sourceEntry.comment : undefined;
+    if (sourceEntry && sourceEntry.value !== entry.value) {
+      context.violations.push(
+        `${entry.location}: parsed uses value does not match source metadata`
+      );
+    }
+    checkActionReference(entry, comment, context);
+  });
+}
+
+function checkLocalAction(entry: UsesEntry, actionRef: string, context: ActionCheckContext): void {
+  const lexicalDirectory = resolve(context.projectRoot, actionRef);
+  if (!isWithinDirectory(context.projectRoot, lexicalDirectory)) {
+    context.violations.push(`${entry.location}: local action escapes the repository: ${actionRef}`);
+    return;
+  }
+  if (!existsSync(lexicalDirectory) || !statSync(lexicalDirectory).isDirectory()) {
+    context.violations.push(
+      `${entry.location}: local action directory does not exist: ${actionRef}`
+    );
+    return;
+  }
+
+  const realRoot = realpathSync(context.projectRoot);
+  const actionDirectory = realpathSync(lexicalDirectory);
+  if (!isWithinDirectory(realRoot, actionDirectory)) {
+    context.violations.push(`${entry.location}: local action resolves outside the repository`);
+    return;
+  }
+
+  const manifests = ['action.yml', 'action.yaml']
+    .map((name) => join(actionDirectory, name))
+    .filter((path) => existsSync(path) && statSync(path).isFile());
+  if (manifests.length !== 1) {
+    context.violations.push(
+      `${entry.location}: local action must contain exactly one action.yml or action.yaml`
+    );
+    return;
+  }
+
+  const manifestPath = realpathSync(manifests[0]);
+  if (!isWithinDirectory(realRoot, manifestPath)) {
+    context.violations.push(
+      `${entry.location}: local action manifest resolves outside the repository`
+    );
+    return;
+  }
+  const manifestRelativePath = relative(realRoot, manifestPath);
+  if (context.localActionStack.includes(manifestRelativePath)) {
+    context.violations.push(
+      `${entry.location}: local action cycle detected: ${[
+        ...context.localActionStack,
+        manifestRelativePath,
+      ].join(' -> ')}`
+    );
+    return;
+  }
+  if (context.checkedLocalActions.has(manifestRelativePath)) {
+    return;
+  }
+
+  context.localActionStack.push(manifestRelativePath);
+  const manifest = parseYaml(manifestPath, manifestRelativePath, context.violations);
+  if (manifest) {
+    const runs = asRecord(manifest.runs);
+    if (runs?.using === 'composite') {
+      if (!Array.isArray(runs.steps)) {
+        context.violations.push(`${manifestRelativePath}: composite action steps must be an array`);
+      } else {
+        const source = readFileSync(manifestPath, 'utf8');
+        checkUsesEntries(
+          collectCompositeUsesEntries(manifest, manifestRelativePath),
+          source,
+          manifestRelativePath,
+          context
+        );
+        for (const stepValue of runs.steps) {
+          const step = asRecord(stepValue);
+          if (typeof step?.run === 'string') {
+            const workingDirectory =
+              typeof step['working-directory'] === 'string'
+                ? resolve(context.projectRoot, step['working-directory'])
+                : context.projectRoot;
+            context.commandSources.push({
+              cwd: workingDirectory,
+              relativePath: manifestRelativePath,
+              source: step.run,
+            });
+          }
+        }
+      }
+    }
+  }
+  context.localActionStack.pop();
+  context.checkedLocalActions.add(manifestRelativePath);
+}
+
 function checkActionReference(
   entry: UsesEntry,
   comment: string | undefined,
-  provenance: Record<string, ActionProvenance>,
-  usedProvenance: Set<string>,
-  violations: string[]
+  context: ActionCheckContext
 ): void {
   if (typeof entry.value !== 'string') {
-    violations.push(`${entry.location}: uses must be a string`);
+    context.violations.push(`${entry.location}: uses must be a string`);
     return;
   }
   const actionRef = entry.value;
   if (actionRef.startsWith('./')) {
+    checkLocalAction(entry, actionRef, context);
     return;
   }
   if (actionRef.startsWith('docker://')) {
     if (!/^docker:\/\/[^\s@]+@sha256:[0-9a-f]{64}$/.test(actionRef)) {
-      violations.push(`${entry.location}: Docker action must be pinned by sha256 digest`);
+      context.violations.push(`${entry.location}: Docker action must be pinned by sha256 digest`);
     }
     return;
   }
@@ -241,33 +411,44 @@ function checkActionReference(
   const actionId = separator >= 0 ? actionRef.slice(0, separator) : actionRef;
   const ref = separator >= 0 ? actionRef.slice(separator + 1) : '';
   if (!/^[0-9a-f]{40}$/.test(ref)) {
-    violations.push(
+    context.violations.push(
       `${entry.location}: external action is not pinned to a 40-character commit: ${actionRef}`
     );
   }
   if (!isExactSemverComment(comment)) {
-    violations.push(
+    context.violations.push(
       `${entry.location}: external action must have one exact semver release comment`
     );
   }
   if (
     /(?:^|[-_/])(?:auto-?merge|merge-pull-request|pull-request-merge)(?:$|[-_/])/i.test(actionId)
   ) {
-    violations.push(`${entry.location}: forbidden merge action: ${actionId}`);
+    context.violations.push(`${entry.location}: forbidden merge action: ${actionId}`);
+  }
+  if (
+    /(?:^|[-_/])(?:auto-?approve|approve-pull-request|pull-request-approve)(?:$|[-_/])/i.test(
+      actionId
+    )
+  ) {
+    context.violations.push(`${entry.location}: forbidden approval action: ${actionId}`);
   }
 
-  const expected = provenance[actionId];
+  const expected = context.provenance[actionId];
   if (!expected) {
-    violations.push(`${entry.location}: ${actionId} is missing from action provenance`);
+    context.violations.push(`${entry.location}: ${actionId} is missing from action provenance`);
   } else {
-    usedProvenance.add(actionId);
+    context.usedProvenance.add(actionId);
     if (expected.sha !== ref || expected.version !== comment) {
-      violations.push(`${entry.location}: action ref or release comment does not match provenance`);
+      context.violations.push(
+        `${entry.location}: action ref or release comment does not match provenance`
+      );
     }
   }
 
   if (actionId === 'actions/checkout' && entry.with?.['persist-credentials'] !== false) {
-    violations.push(`${entry.location}: actions/checkout persist-credentials must be false`);
+    context.violations.push(
+      `${entry.location}: actions/checkout persist-credentials must be false`
+    );
   }
 }
 
@@ -275,26 +456,9 @@ function checkActionPins(
   workflow: YamlRecord,
   source: string,
   relativePath: string,
-  provenance: Record<string, ActionProvenance>,
-  usedProvenance: Set<string>,
-  violations: string[]
+  context: ActionCheckContext
 ): void {
-  const parsedEntries = collectUsesEntries(workflow, relativePath);
-  const sourceEntries = collectUsesSourceEntries(source, relativePath, violations);
-  if (parsedEntries.length !== sourceEntries.length) {
-    violations.push(
-      `${relativePath}: every parsed uses entry must have unambiguous source metadata`
-    );
-  }
-
-  parsedEntries.forEach((entry, index) => {
-    const sourceEntry = sourceEntries[index];
-    const comment = sourceEntry?.value === entry.value ? sourceEntry.comment : undefined;
-    if (sourceEntry && sourceEntry.value !== entry.value) {
-      violations.push(`${entry.location}: parsed uses value does not match source metadata`);
-    }
-    checkActionReference(entry, comment, provenance, usedProvenance, violations);
-  });
+  checkUsesEntries(collectUsesEntries(workflow, relativePath), source, relativePath, context);
 }
 
 function checkWorkflowPermissions(
@@ -354,15 +518,77 @@ function checkWorkflowPermissions(
   }
 }
 
-function executableSource(source: string): string {
-  return source
+function stripJavaScriptComments(source: string): string {
+  let result = '';
+  let quote: '"' | "'" | '`' | undefined;
+  let escaped = false;
+  let lineComment = false;
+  let blockComment = false;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (lineComment) {
+      if (character === '\n') {
+        lineComment = false;
+        result += character;
+      } else {
+        result += ' ';
+      }
+      continue;
+    }
+    if (blockComment) {
+      if (character === '*' && next === '/') {
+        result += '  ';
+        index += 1;
+        blockComment = false;
+      } else {
+        result += character === '\n' ? '\n' : ' ';
+      }
+      continue;
+    }
+    if (quote) {
+      result += character;
+      if (escaped) {
+        escaped = false;
+      } else if (character === '\\') {
+        escaped = true;
+      } else if (character === quote) {
+        quote = undefined;
+      }
+      continue;
+    }
+    if (character === '"' || character === "'" || character === '`') {
+      quote = character;
+      result += character;
+    } else if (character === '/' && next === '/') {
+      result += '  ';
+      index += 1;
+      lineComment = true;
+    } else if (character === '/' && next === '*') {
+      result += '  ';
+      index += 1;
+      blockComment = true;
+    } else {
+      result += character;
+    }
+  }
+  return result;
+}
+
+function executableSource(relativePath: string, source: string): string {
+  const withoutJavaScriptComments = /\.(?:[cm]?[jt]sx?)$/.test(relativePath)
+    ? stripJavaScriptComments(source)
+    : source;
+  return withoutJavaScriptComments
     .split('\n')
     .filter((line) => !/^\s*#/.test(line))
-    .join('\n');
+    .join('\n')
+    .replace(/\$\{\{[\s\S]*?\}\}/g, '__GITHUB_EXPRESSION__');
 }
 
 function checkMergeMutations(relativePath: string, source: string, violations: string[]): void {
-  const executable = executableSource(source);
+  const executable = executableSource(relativePath, source);
   for (const [pattern, description] of FORBIDDEN_EXECUTABLE_PATTERNS) {
     if (pattern.test(executable)) {
       violations.push(`${relativePath}: forbidden merge or approval path found (${description})`);
@@ -370,8 +596,12 @@ function checkMergeMutations(relativePath: string, source: string, violations: s
   }
 }
 
-function collectRunBlocks(workflow: YamlRecord): string[] {
-  const runs: string[] = [];
+function collectRunBlocks(
+  workflow: YamlRecord,
+  projectRoot: string,
+  relativePath: string
+): CommandSource[] {
+  const runs: CommandSource[] = [];
   const jobs = asRecord(workflow.jobs);
   if (!jobs) {
     return runs;
@@ -382,42 +612,110 @@ function collectRunBlocks(workflow: YamlRecord): string[] {
       continue;
     }
     for (const stepValue of job.steps) {
-      const run = asRecord(stepValue)?.run;
+      const step = asRecord(stepValue);
+      const run = step?.run;
       if (typeof run === 'string') {
-        runs.push(run);
+        runs.push({
+          cwd:
+            typeof step?.['working-directory'] === 'string'
+              ? resolve(projectRoot, step['working-directory'])
+              : projectRoot,
+          relativePath,
+          source: run,
+        });
       }
     }
   }
   return runs;
 }
 
-function collectInvokedExecutablePaths(source: string): string[] {
-  const paths: string[] = [];
+function shellWords(source: string): string[] {
+  const words: string[] = [];
+  for (const match of source.matchAll(/"([^"]*)"|'([^']*)'|([^\s]+)/g)) {
+    words.push(match[1] ?? match[2] ?? match[3]);
+  }
+  return words;
+}
 
-  for (const sourceLine of source.split('\n')) {
-    const line = sourceLine.trim();
-    if (!line || line.startsWith('#') || line.startsWith('//') || line.startsWith('*')) {
-      continue;
+function packageScriptTargets(
+  command: string,
+  scripts: YamlRecord,
+  violations: string[],
+  location: string
+): string[] {
+  const targets: string[] = [];
+  const npmMatch = command.match(/^(?:npm|pnpm)\s+run\s+([^\s]+)/);
+  const npmLifecycleMatch = command.match(/^npm\s+(test|start|stop|restart)\b/);
+  const yarnRunMatch = command.match(/^yarn\s+run\s+([^\s]+)/);
+  const yarnShorthandMatch = command.match(/^yarn\s+([^\s]+)/);
+  const directTarget = npmMatch?.[1] ?? npmLifecycleMatch?.[1] ?? yarnRunMatch?.[1];
+  if (directTarget) {
+    if (typeof scripts[directTarget] === 'string') {
+      targets.push(directTarget);
+    } else {
+      violations.push(`${location}: referenced package script does not exist: ${directTarget}`);
     }
+  } else if (yarnShorthandMatch && typeof scripts[yarnShorthandMatch[1]] === 'string') {
+    targets.push(yarnShorthandMatch[1]);
+  }
 
-    for (const shellSegment of line.split(/\s*(?:&&|\|\||;|\|)\s*/)) {
-      let command = shellSegment
-        .trim()
-        .replace(/^(?:exec\s+)?(?:env\s+)?/, '')
-        .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|\S+)\s+)*/, '');
-      command = command.replace(SCRIPT_INTERPRETER, '');
-      const match = command.match(REPOSITORY_EXECUTABLE_PATH);
-      if (match) {
-        paths.push(match[1].replace(/^\.\//, ''));
+  const words = shellWords(command);
+  if (['npm-run-all', 'run-s', 'run-p'].includes(words[0])) {
+    const patterns = words.slice(1).filter((word) => !word.startsWith('-'));
+    for (const pattern of patterns) {
+      const matcher = new RegExp(
+        `^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`
+      );
+      const matches = Object.keys(scripts).filter(
+        (name) => typeof scripts[name] === 'string' && matcher.test(name)
+      );
+      if (matches.length === 0) {
+        violations.push(`${location}: package-script pattern matched nothing: ${pattern}`);
       }
+      targets.push(...matches);
     }
   }
-  return paths;
+  return targets;
+}
+
+function firstShellWord(source: string): string | undefined {
+  return shellWords(source)[0];
+}
+
+function invokedExecutable(command: string): string | undefined {
+  let remainder = command;
+  const interpreter = remainder.match(SCRIPT_INTERPRETER);
+  if (interpreter) {
+    remainder = remainder.slice(interpreter[0].length).trimStart();
+    while (/^--?[A-Za-z][A-Za-z0-9-]*(?:=[^\s]+)?(?:\s+|$)/.test(remainder)) {
+      remainder = remainder.replace(/^--?[A-Za-z][A-Za-z0-9-]*(?:=[^\s]+)?(?:\s+|$)/, '');
+    }
+    return firstShellWord(remainder);
+  }
+  const sourceBuiltin = remainder.match(/^(?:\.|source)\s+(.+)$/);
+  if (sourceBuiltin) {
+    return firstShellWord(sourceBuiltin[1]);
+  }
+  const direct = firstShellWord(remainder);
+  return direct && REPOSITORY_PATH_PREFIX.test(direct) ? direct : undefined;
+}
+
+function stripCommandPreamble(command: string): string {
+  return command
+    .trim()
+    .replace(/^(?:exec\s+)?(?:env\s+)?/, '')
+    .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|\S+)\s+)*/, '');
+}
+
+function lifecycleScripts(target: string, scripts: YamlRecord): string[] {
+  return [`pre${target}`, target, `post${target}`].filter(
+    (name) => typeof scripts[name] === 'string'
+  );
 }
 
 function checkDelegatedScripts(
   projectRoot: string,
-  workflowRuns: Array<{ relativePath: string; source: string }>,
+  initialSources: CommandSource[],
   violations: string[]
 ): void {
   const packagePath = join(projectRoot, 'package.json');
@@ -425,33 +723,99 @@ function checkDelegatedScripts(
     ? asRecord(JSON.parse(readFileSync(packagePath, 'utf8')))
     : undefined;
   const scripts = asRecord(packageJson?.scripts) ?? {};
-  const sources = [
-    ...workflowRuns,
-    ...Object.entries(scripts)
-      .filter((entry): entry is [string, string] => typeof entry[1] === 'string')
-      .map(([name, source]) => ({ relativePath: `package.json#scripts.${name}`, source })),
-  ];
-  const queuedPaths = sources.flatMap(({ source }) => collectInvokedExecutablePaths(source));
-  const scannedPaths = new Set<string>();
+  const sourceQueue = [...initialSources];
+  const packageQueue: string[] = [];
+  const executableQueue: Array<{ cwd: string; path: string }> = [];
+  const scannedPackageScripts = new Set<string>();
+  const scannedExecutables = new Set<string>();
+  const realRoot = realpathSync(projectRoot);
 
-  for (const { relativePath, source } of sources) {
-    checkMergeMutations(relativePath, source, violations);
-  }
-
-  while (queuedPaths.length > 0) {
-    const candidate = queuedPaths.shift();
-    if (!candidate || scannedPaths.has(candidate)) {
+  while (sourceQueue.length > 0 || packageQueue.length > 0 || executableQueue.length > 0) {
+    const commandSource = sourceQueue.shift();
+    if (commandSource) {
+      checkMergeMutations(commandSource.relativePath, commandSource.source, violations);
+      let currentDirectory = commandSource.cwd;
+      const executable = executableSource(commandSource.relativePath, commandSource.source);
+      for (const sourceLine of executable.split('\n')) {
+        const line = sourceLine.trim();
+        if (!line) {
+          continue;
+        }
+        for (const rawSegment of line.split(/\s*(?:&&|\|\||;|\|)\s*/)) {
+          const command = stripCommandPreamble(rawSegment);
+          const cdTarget = command.match(/^cd\s+(.+)$/);
+          if (cdTarget) {
+            const directory = firstShellWord(cdTarget[1]);
+            if (directory) {
+              currentDirectory = resolve(currentDirectory, directory);
+            }
+            continue;
+          }
+          for (const target of packageScriptTargets(
+            command,
+            scripts,
+            violations,
+            commandSource.relativePath
+          )) {
+            packageQueue.push(...lifecycleScripts(target, scripts));
+          }
+          const path = invokedExecutable(command);
+          if (path) {
+            executableQueue.push({ cwd: currentDirectory, path });
+          }
+        }
+      }
       continue;
     }
-    scannedPaths.add(candidate);
-    const absolutePath = join(projectRoot, candidate);
+
+    const packageScript = packageQueue.shift();
+    if (packageScript) {
+      if (scannedPackageScripts.has(packageScript)) {
+        continue;
+      }
+      scannedPackageScripts.add(packageScript);
+      const source = scripts[packageScript];
+      if (typeof source === 'string') {
+        sourceQueue.push({
+          cwd: projectRoot,
+          relativePath: `package.json#scripts.${packageScript}`,
+          source,
+        });
+      }
+      continue;
+    }
+
+    const executableReference = executableQueue.shift();
+    if (!executableReference) {
+      continue;
+    }
+    const absolutePath = resolve(executableReference.cwd, executableReference.path);
+    if (!isWithinDirectory(projectRoot, absolutePath)) {
+      continue;
+    }
+    const displayPath = relative(projectRoot, absolutePath);
+    const scanKey = `${absolutePath}\0${executableReference.cwd}`;
+    if (scannedExecutables.has(scanKey)) {
+      continue;
+    }
+    scannedExecutables.add(scanKey);
     if (!existsSync(absolutePath) || !statSync(absolutePath).isFile()) {
-      violations.push(`${candidate}: referenced repository-owned executable does not exist`);
+      violations.push(`${displayPath}: referenced repository-owned executable does not exist`);
+      continue;
+    }
+    const realPath = realpathSync(absolutePath);
+    if (!isWithinDirectory(realRoot, realPath)) {
+      violations.push(
+        `${displayPath}: repository-owned executable resolves outside the repository`
+      );
       continue;
     }
     const source = readFileSync(absolutePath, 'utf8');
-    checkMergeMutations(candidate, source, violations);
-    queuedPaths.push(...collectInvokedExecutablePaths(source));
+    sourceQueue.push({
+      cwd: executableReference.cwd,
+      relativePath: displayPath,
+      source,
+    });
   }
 }
 
@@ -571,7 +935,16 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
   const workflowsDir = join(projectRoot, '.github', 'workflows');
   const provenance = readProvenance(projectRoot, violations);
   const usedProvenance = new Set<string>();
-  const workflowRuns: Array<{ relativePath: string; source: string }> = [];
+  const commandSources: CommandSource[] = [];
+  const actionContext: ActionCheckContext = {
+    checkedLocalActions: new Set<string>(),
+    commandSources,
+    localActionStack: [],
+    projectRoot,
+    provenance,
+    usedProvenance,
+    violations,
+  };
   const workflowFiles = readdirSync(workflowsDir)
     .filter((name) => /\.ya?ml$/.test(name))
     .sort();
@@ -592,11 +965,8 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
     }
 
     checkWorkflowPermissions(filename, workflow, violations);
-    checkActionPins(workflow, source, relativePath, provenance, usedProvenance, violations);
-    for (const run of collectRunBlocks(workflow)) {
-      checkMergeMutations(relativePath, run, violations);
-      workflowRuns.push({ relativePath, source: run });
-    }
+    checkActionPins(workflow, source, relativePath, actionContext);
+    commandSources.push(...collectRunBlocks(workflow, projectRoot, relativePath));
   }
 
   for (const actionId of Object.keys(provenance)) {
@@ -605,7 +975,7 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
     }
   }
 
-  checkDelegatedScripts(projectRoot, workflowRuns, violations);
+  checkDelegatedScripts(projectRoot, commandSources, violations);
   checkDependabot(projectRoot, violations);
 
   return violations;

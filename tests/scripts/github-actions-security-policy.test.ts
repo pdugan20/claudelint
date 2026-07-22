@@ -5,6 +5,7 @@ import { checkGitHubActionsSecurity } from '../../scripts/check/github-actions-s
 
 const CHECKOUT_SHA = '3d3c42e5aac5ba805825da76410c181273ba90b1';
 const REUSABLE_SHA = '0123456789abcdef0123456789abcdef01234567';
+const REVIEW_ACTION_SHA = '89abcdef0123456789abcdef0123456789abcdef';
 const DOCKER_DIGEST = 'a'.repeat(64);
 
 const WORKFLOW_PERMISSIONS: Record<string, string> = {
@@ -149,6 +150,19 @@ function addCiRun(root: string, command: string): void {
   );
 }
 
+function replaceCiCheckoutWithUses(root: string, uses: string): void {
+  replace(root, '.github/workflows/ci.yml', checkoutStep(), `      - uses: ${uses}`);
+}
+
+function compositeAction(steps: string): string {
+  return `name: Fixture composite action
+runs:
+  using: composite
+  steps:
+${steps}
+`;
+}
+
 describe('GitHub Actions security policy', () => {
   let root: string;
 
@@ -197,7 +211,6 @@ describe('GitHub Actions security policy', () => {
     });
 
     test.each([
-      { name: 'local action', uses: './.github/actions/build', manifest: {} },
       {
         name: 'digest-pinned Docker action',
         uses: `docker://alpine@sha256:${DOCKER_DIGEST}`,
@@ -221,6 +234,93 @@ describe('GitHub Actions security policy', () => {
         root,
         'scripts/check/github-actions-provenance.json',
         JSON.stringify(manifest, null, 2)
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    it('accepts and recursively inspects a safe local composite action', () => {
+      replaceCiCheckoutWithUses(root, './.github/actions/build');
+      write(
+        root,
+        '.github/actions/build/action.yml',
+        compositeAction(
+          `    - uses: actions/checkout@${CHECKOUT_SHA} # v7.0.1
+      with:
+        persist-credentials: false
+    - run: echo safe
+      shell: bash`
+        )
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    test.each([
+      ['missing manifest', './.github/actions/missing'],
+      ['repository escape', './../outside-action'],
+    ])('rejects a local action with %s', (_name, uses) => {
+      replaceCiCheckoutWithUses(root, uses);
+
+      expect(messages(root)).toContain('local action');
+    });
+
+    it('rejects a local action with ambiguous action.yml and action.yaml manifests', () => {
+      replaceCiCheckoutWithUses(root, './.github/actions/ambiguous');
+      write(root, '.github/actions/ambiguous/action.yml', compositeAction('    - run: echo one'));
+      write(root, '.github/actions/ambiguous/action.yaml', compositeAction('    - run: echo two'));
+
+      expect(messages(root)).toContain('exactly one action.yml or action.yaml');
+    });
+
+    it('rejects checkout credential persistence inside a local composite action', () => {
+      replaceCiCheckoutWithUses(root, './.github/actions/build');
+      write(
+        root,
+        '.github/actions/build/action.yml',
+        compositeAction(
+          `    - uses: actions/checkout@${CHECKOUT_SHA} # v7.0.1
+      with:
+        persist-credentials: true`
+        )
+      );
+
+      expect(messages(root)).toContain('persist-credentials must be false');
+    });
+
+    it('rejects merge commands inside a local composite action', () => {
+      replaceCiCheckoutWithUses(root, './.github/actions/release');
+      write(
+        root,
+        '.github/actions/release/action.yml',
+        compositeAction('    - run: gh pr merge 1 --squash\n      shell: bash')
+      );
+
+      expect(messages(root)).toContain('.github/actions/release/action.yml');
+    });
+
+    it('detects cycles between local composite actions', () => {
+      replaceCiCheckoutWithUses(root, './.github/actions/one');
+      write(
+        root,
+        '.github/actions/one/action.yml',
+        compositeAction('    - uses: ./.github/actions/two')
+      );
+      write(
+        root,
+        '.github/actions/two/action.yml',
+        compositeAction('    - uses: ./.github/actions/one')
+      );
+
+      expect(messages(root)).toContain('local action cycle');
+    });
+
+    it('does not treat uses-like text inside a run block as an action reference', () => {
+      addCiRun(
+        root,
+        `cat <<'EOF'
+uses: untrusted/example@main # v1.2.3
+EOF`
       );
 
       expect(checkGitHubActionsSecurity(root)).toEqual([]);
@@ -320,6 +420,64 @@ jobs:
       expect(checkGitHubActionsSecurity(root)).toEqual([]);
     });
 
+    test.each(['acme/auto-approve', 'acme/approve-pull-request', 'acme/pull-request-approve'])(
+      'rejects the otherwise valid approval action %s',
+      (actionId) => {
+        replaceCiCheckoutWithUses(root, `${actionId}@${REVIEW_ACTION_SHA} # v1.2.3`);
+        write(
+          root,
+          'scripts/check/github-actions-provenance.json',
+          JSON.stringify(
+            {
+              'actions/checkout': { version: 'v7.0.1', sha: CHECKOUT_SHA },
+              [actionId]: { version: 'v1.2.3', sha: REVIEW_ACTION_SHA },
+            },
+            null,
+            2
+          )
+        );
+
+        expect(messages(root)).toContain('forbidden approval action');
+      }
+    );
+
+    test.each([
+      [
+        'expression-based REST merge route',
+        'gh api --method PUT "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge"',
+      ],
+      [
+        'expression-based REST approval route',
+        'gh api --method POST "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews" -f event=APPROVE',
+      ],
+    ])('rejects %s', (_name, command) => {
+      addCiRun(root, command);
+
+      expect(messages(root)).toContain('forbidden');
+    });
+
+    it('ignores forbidden-call text in ordinary JavaScript comments', () => {
+      write(
+        root,
+        'scripts/safe.ts',
+        `// github.rest.pulls.merge({ pull_number: 1 })
+// github.rest.pulls.merge({ pull_number: 1 })
+/*
+octokit.rest.pulls.createReview({ event: 'APPROVE' })
+*/
+console.log('safe');
+`
+      );
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { safe: 'tsx scripts/safe.ts' } }, null, 2)
+      );
+      addCiRun(root, 'npm run safe');
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
     it('scans a directly invoked repository-owned script', () => {
       write(root, '.github/scripts/merge.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
       addCiRun(root, 'bash .github/scripts/merge.sh');
@@ -356,6 +514,71 @@ jobs:
       addCiRun(root, 'npm run dangerous');
 
       expect(messages(root)).toContain('scripts/dangerous.ts');
+    });
+
+    test.each([
+      ['npm', 'npm run dangerous', 'dangerous'],
+      ['npm lifecycle shorthand', 'npm test', 'test'],
+      ['yarn run', 'yarn run dangerous', 'dangerous'],
+      ['yarn shorthand', 'yarn dangerous', 'dangerous'],
+      ['pnpm', 'pnpm run dangerous', 'dangerous'],
+    ])('follows a reachable package script invoked with %s', (_name, invocation, scriptName) => {
+      write(root, 'scripts/dangerous.ts', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { [scriptName]: 'tsx scripts/dangerous.ts' } }, null, 2)
+      );
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.ts');
+    });
+
+    it('follows child package scripts only after their parent is reachable', () => {
+      write(root, 'scripts/dangerous.ts', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify(
+          { scripts: { parent: 'npm run child', child: 'tsx scripts/dangerous.ts' } },
+          null,
+          2
+        )
+      );
+      addCiRun(root, 'npm run parent');
+
+      expect(messages(root)).toContain('scripts/dangerous.ts');
+    });
+
+    it('does not scan an unreferenced manual-only package script', () => {
+      write(root, 'scripts/manual-merge.ts', 'github.rest.pulls.merge({ pull_number: 1 });\n');
+      write(
+        root,
+        'package.json',
+        JSON.stringify({ scripts: { 'manual:merge': 'tsx scripts/manual-merge.ts' } }, null, 2)
+      );
+
+      expect(checkGitHubActionsSecurity(root)).toEqual([]);
+    });
+
+    test.each([
+      ['dot source', '. scripts/dangerous.sh'],
+      ['source builtin', 'source scripts/dangerous.sh'],
+      ['interpreter flags', 'bash -e scripts/dangerous.sh'],
+      ['working-directory change', 'cd scripts && ./dangerous.sh'],
+    ])('follows a script invoked via %s', (_name, invocation) => {
+      write(root, 'scripts/dangerous.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, invocation);
+
+      expect(messages(root)).toContain('scripts/dangerous.sh');
+    });
+
+    it('follows flagged child executables from a delegated script', () => {
+      write(root, 'scripts/outer.sh', '#!/bin/bash\nbash -eu scripts/inner.sh\n');
+      write(root, 'scripts/inner.sh', '#!/bin/bash\ngh pr merge 1 --squash\n');
+      addCiRun(root, 'bash scripts/outer.sh');
+
+      expect(messages(root)).toContain('scripts/inner.sh');
     });
   });
 
