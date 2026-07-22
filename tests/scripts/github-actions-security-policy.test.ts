@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { dirname, join } from 'path';
@@ -770,7 +771,9 @@ ${checkoutStep()}`
     ])('rejects whole-file privileged profile drift in %s', (filename, from, to) => {
       replace(root, `.github/workflows/${filename}`, from, to);
 
-      expect(messages(root)).toContain('exact privileged workflow profile');
+      const result = messages(root);
+      expect(result).toContain('exact privileged workflow profile drifted');
+      expect(result).toContain(`unused profile entry for .github/workflows/${filename}`);
     });
 
     test('rejects obfuscated merge code by invalidating the exact privileged profile', () => {
@@ -788,6 +791,23 @@ ${checkoutStep()}`
       addProfile(root, '.github/workflows/unused.yml', '3'.repeat(64));
 
       expect(messages(root)).toContain('unused profile');
+    });
+
+    test('rejects a mismatched profile preseeded for an existing read-only workflow', () => {
+      addProfile(root, '.github/workflows/ci.yml', '4'.repeat(64));
+
+      expect(messages(root)).toContain('unused profile entry for .github/workflows/ci.yml');
+    });
+
+    test('rejects an exact profile preseeded for an existing read-only workflow', () => {
+      const source = readFileSync(join(root, '.github/workflows/ci.yml'));
+      addProfile(
+        root,
+        '.github/workflows/ci.yml',
+        createHash('sha256').update(source).digest('hex')
+      );
+
+      expect(messages(root)).toContain('unused profile entry for .github/workflows/ci.yml');
     });
   });
 

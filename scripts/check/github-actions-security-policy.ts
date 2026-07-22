@@ -420,12 +420,10 @@ function checkReleaseArtifacts(projectRoot: string, violations: string[]): boole
 function checkExactProfile(
   relativePath: string,
   source: string | Buffer,
-  profiles: Record<string, string>,
-  usedProfiles: Set<string>
+  profiles: Record<string, string>
 ): boolean {
   const expected = profiles[relativePath];
   if (!expected) return false;
-  usedProfiles.add(relativePath);
   return createHash('sha256').update(source).digest('hex') === expected;
 }
 
@@ -437,15 +435,10 @@ function checkDependabot(
 ): void {
   const relativePath = '.github/dependabot.yml';
   try {
-    if (
-      !checkExactProfile(
-        relativePath,
-        readFileSync(join(projectRoot, relativePath)),
-        profiles,
-        usedProfiles
-      )
-    ) {
+    if (!checkExactProfile(relativePath, readFileSync(join(projectRoot, relativePath)), profiles)) {
       violations.push(`${relativePath}: exact Dependabot profile drifted`);
+    } else {
+      usedProfiles.add(relativePath);
     }
   } catch (error) {
     violations.push(`${relativePath}: could not read exact Dependabot profile (${String(error)})`);
@@ -528,7 +521,7 @@ function checkWorkflow(
   const workflowPermissions = hasWorkflowPermissions
     ? parsePermissions(workflow.permissions, `${relativePath}: workflow permissions`, violations)
     : undefined;
-  const workflowProfileExact = checkExactProfile(relativePath, source, profiles, usedProfiles);
+  const workflowProfileExact = checkExactProfile(relativePath, source, profiles);
   const releaseArtifactsExact =
     filename === 'publish.yml' ? checkReleaseArtifacts(projectRoot, violations) : false;
   if (filename === 'publish.yml' && !workflowProfileExact) {
@@ -546,6 +539,7 @@ function checkWorkflow(
     false,
     violations
   );
+  let profileDriftReported = filename === 'publish.yml' && !workflowProfileExact;
 
   for (const [jobId, jobValue] of Object.entries(jobs)) {
     const job = asRecord(jobValue);
@@ -620,6 +614,17 @@ function checkWorkflow(
       mergeCapable &&
       workflowProfileExact &&
       (filename !== 'publish.yml' || jobId !== 'github-release' || releaseArtifactsExact);
+    if (approvedPrivilegedProfile) {
+      usedProfiles.add(relativePath);
+    } else if (
+      mergeCapable &&
+      Object.prototype.hasOwnProperty.call(profiles, relativePath) &&
+      !workflowProfileExact &&
+      !profileDriftReported
+    ) {
+      violations.push(`${relativePath}: exact privileged workflow profile drifted`);
+      profileDriftReported = true;
+    }
     if (mergeCapable && !approvedPrivilegedProfile) {
       violations.push(
         `${location}: merge-capable job requires an exact privileged workflow profile`
