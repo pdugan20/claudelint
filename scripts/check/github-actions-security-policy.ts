@@ -42,6 +42,8 @@ const REQUIRED_WORKFLOWS = [
 
 const RELEASE_PACKAGE_SCRIPT = 'bash scripts/util/package-plugin.sh';
 const RELEASE_PACKAGE_SHA256 = 'a34a41ecdda6ffe2174f5d9ac2237f16fd602685162efb1aee45c5b1e9f552b8';
+const RELEASE_WORKFLOW_SHA256 = '5e5f121491c2139c96a193a786c75109157565b55edb5d89e048bcbda74a015a';
+const DEPENDABOT_SHA256 = '8211d28ccca08491451a5ef9bbee03398d7e3ddfca92555251d4d500f3e6d068';
 const BUILTIN_GITHUB_TOKEN = /^\${{\s*(?:github\.token|secrets\.GITHUB_TOKEN)\s*}}$/;
 const SEMVER_COMMENT = /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const FULL_SHA = /^[0-9a-f]{40}$/;
@@ -50,13 +52,6 @@ const FORBIDDEN_ACTION =
 const APP_TOKEN_ACTION = /(?:^|\/)create-github-app-token$/i;
 const EVENT_CONTROLLED_EXPRESSION = /\${{[^}]*\bgithub\.event\b[^}]*}}/i;
 const DYNAMIC_EXPRESSION = /\${{/;
-const REPOSITORY_DELEGATION = [
-  /(?:^|[\n;&|]\s*)(?:\.\/|scripts\/|bin\/|\.github\/)/m,
-  /\b(?:bash|sh|node|tsx|ts-node|python|python3|bun|ruby)\s+(?:[^\n;&|]*\s)?(?:\.\/|scripts\/|bin\/|\.github\/)/i,
-  /\b(?:npm|pnpm|yarn|bun)\s+(?:run|exec|ci|install|publish|pack)\b/i,
-  /(?:^|[\n;&|]\s*)(?:source|\.)\s+(?:\.\/|scripts\/|bin\/|\.github\/)/im,
-  /(?:^|[\n;&|]\s*)(?:make|just)(?:\s|$)/im,
-] as const;
 
 const FORBIDDEN_RUN_PATTERNS: ReadonlyArray<readonly [RegExp, string]> = [
   [/\bgh\s+pr\s+merge\b/i, 'GitHub CLI pull request merge'],
@@ -72,43 +67,6 @@ const FORBIDDEN_RUN_PATTERNS: ReadonlyArray<readonly [RegExp, string]> = [
   [/\benablePullRequestAutoMerge\b/i, 'GraphQL automatic merge mutation'],
   [/\baddPullRequestReview\b[\s\S]{0,500}\bAPPROVE\b/i, 'GraphQL approval mutation'],
 ];
-
-const EXPECTED_RELEASE_JOB: YamlRecord = {
-  name: 'Create GitHub Release',
-  'runs-on': 'ubuntu-latest',
-  needs: 'publish',
-  permissions: { contents: 'write' },
-  steps: [
-    {
-      uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
-      with: { 'persist-credentials': false, 'fetch-depth': 0 },
-    },
-    {
-      name: 'Extract release notes from CHANGELOG.md',
-      id: 'notes',
-      run: `# Extract the section for this version (between first and second ## heading)
-VERSION="\${{ github.ref_name }}"
-VERSION="\${VERSION#v}"
-awk -v ver="$VERSION" '
-  /^## \\[/ { if (found) exit; if (index($0, ver)) found=1; next }
-  found { print }
-' CHANGELOG.md > release-notes.md
-`,
-    },
-    { name: 'Package plugin archive', run: 'npm run package:plugin' },
-    {
-      name: 'Create GitHub Release',
-      run: `# A pre-release tag (e.g. v1.2.3-beta.0) must be flagged so it
-# does not become "latest" — the plugin trial docs point users
-# at /releases/latest/download/claudelint-plugin.zip.
-PRERELEASE=
-case "\${{ github.ref_name }}" in *-*) PRERELEASE=--prerelease ;; esac
-gh release create "\${{ github.ref_name }}" --title "\${{ github.ref_name }}" --notes-file release-notes.md $PRERELEASE claudelint-plugin.zip
-`,
-      env: { GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}' },
-    },
-  ],
-};
 
 function asRecord(value: unknown): YamlRecord | undefined {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return undefined;
@@ -128,14 +86,6 @@ function parseYaml(
     violations.push(`${relativePath}: invalid YAML (${String(error)})`);
     return undefined;
   }
-}
-
-function sameStringSet(value: unknown, expected: readonly string[]): boolean {
-  return (
-    Array.isArray(value) &&
-    value.length === expected.length &&
-    [...value].sort().every((entry, index) => entry === [...expected].sort()[index])
-  );
 }
 
 function parsePermissions(
@@ -246,6 +196,28 @@ function hasEventControlledValue(value: unknown): boolean {
   return record ? Object.values(record).some(hasEventControlledValue) : false;
 }
 
+function hasDynamicValue(value: unknown): boolean {
+  if (typeof value === 'string') {
+    return DYNAMIC_EXPRESSION.test(value) && !BUILTIN_GITHUB_TOKEN.test(value);
+  }
+  if (Array.isArray(value)) return value.some(hasDynamicValue);
+  const record = asRecord(value);
+  return record ? Object.values(record).some(hasDynamicValue) : false;
+}
+
+function forEachString(value: unknown, callback: (value: string) => void): void {
+  if (typeof value === 'string') {
+    callback(value);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) forEachString(entry, callback);
+    return;
+  }
+  const record = asRecord(value);
+  if (record) for (const entry of Object.values(record)) forEachString(entry, callback);
+}
+
 function hasWorkflowTrigger(value: unknown, trigger: string): boolean {
   if (value === trigger) return true;
   if (Array.isArray(value)) return value.includes(trigger);
@@ -255,6 +227,7 @@ function hasWorkflowTrigger(value: unknown, trigger: string): boolean {
 function checkAction(
   entry: UsesEntry,
   provenance: Record<string, ActionProvenance>,
+  usedProvenance: Set<string>,
   mergeCapable: boolean,
   untrustedPullRequest: boolean,
   violations: string[]
@@ -264,6 +237,12 @@ function checkAction(
     return;
   }
   const reference = entry.value;
+  if (mergeCapable && hasEventControlledValue(entry.step.with)) {
+    violations.push(`${entry.location}: merge-capable action inputs must not be event-controlled`);
+  }
+  if (mergeCapable && hasDynamicValue(entry.step.with)) {
+    violations.push(`${entry.location}: merge-capable action inputs must not be dynamic`);
+  }
   if (reference.startsWith('./')) {
     if (mergeCapable) {
       violations.push(`${entry.location}: merge-capable jobs may not delegate to a local action`);
@@ -280,6 +259,7 @@ function checkAction(
   const separator = reference.lastIndexOf('@');
   const actionId = separator > 0 ? reference.slice(0, separator) : reference;
   const sha = separator > 0 ? reference.slice(separator + 1) : '';
+  usedProvenance.add(actionId);
   if (!FULL_SHA.test(sha)) {
     violations.push(`${entry.location}: action is not pinned to a 40-character commit`);
     return;
@@ -308,26 +288,29 @@ function checkAction(
       `${entry.location}: merge-capable pull_request job may not checkout untrusted code`
     );
   }
-  if (mergeCapable && hasEventControlledValue(entry.step.with)) {
-    violations.push(`${entry.location}: merge-capable action inputs must not be event-controlled`);
-  }
 }
 
 function isExactCodecovStep(filename: string, mergeCapable: boolean, step: YamlRecord): boolean {
   const withConfig = asRecord(step.with);
+  const secretNames = customSecretNames(step);
   return (
     filename === 'ci.yml' &&
     !mergeCapable &&
     step.uses === 'codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f' &&
-    withConfig?.token === '${{ secrets.CODECOV_TOKEN }}'
+    withConfig?.token === '${{ secrets.CODECOV_TOKEN }}' &&
+    secretNames.length === 1 &&
+    secretNames[0] === 'CODECOV_TOKEN'
   );
 }
 
-function customSecret(value: unknown): boolean {
-  if (typeof value !== 'string') return false;
-  return [...value.matchAll(/\${{\s*secrets\.([A-Za-z0-9_]+)\s*}}/g)].some(
-    (match) => match[1] !== 'GITHUB_TOKEN'
-  );
+function customSecretNames(value: unknown): string[] {
+  const names: string[] = [];
+  forEachString(value, (text) => {
+    for (const match of text.matchAll(/\bsecrets\.([A-Za-z0-9_]+)\b/g)) {
+      if (match[1] !== 'GITHUB_TOKEN') names.push(match[1]);
+    }
+  });
+  return names;
 }
 
 function tokenSinkIsUnbounded(record: YamlRecord | undefined): boolean {
@@ -352,13 +335,17 @@ function checkTokenUse(
   mergeCapable: boolean,
   violations: string[]
 ): boolean {
-  const serialized = JSON.stringify(step);
   let unbounded = false;
   const exactCodecov = isExactCodecovStep(filename, mergeCapable, step);
-  if (serialized.includes('CODECOV_TOKEN') && !exactCodecov) {
+  const secretNames = customSecretNames(step);
+  if (secretNames.includes('CODECOV_TOKEN') && !exactCodecov) {
     violations.push(
       `${location}: CODECOV_TOKEN is allowed only on the exact pinned Codecov action`
     );
+    unbounded = true;
+  }
+  if (secretNames.length > 0 && !exactCodecov) {
+    violations.push(`${location}: custom secret is an unbounded GitHub token`);
     unbounded = true;
   }
   const uses = typeof step.uses === 'string' ? step.uses.split('@')[0] : '';
@@ -377,18 +364,6 @@ function checkTokenUse(
     );
     unbounded = true;
   }
-  const run = typeof step.run === 'string' ? step.run : '';
-  if (/Authorization\s*:/i.test(serialized) && customSecret(serialized)) {
-    violations.push(`${location}: custom Authorization credential is an unbounded GitHub token`);
-    unbounded = true;
-  }
-  if (
-    (/api\.github\.com|\bgh\s+api\b/i.test(run) || /graphql/i.test(run)) &&
-    customSecret(serialized)
-  ) {
-    violations.push(`${location}: custom GitHub API credential is an unbounded GitHub token`);
-    unbounded = true;
-  }
   return unbounded;
 }
 
@@ -398,29 +373,12 @@ function checkInlineRun(location: string, run: string, violations: string[]): vo
   }
 }
 
-function checkPrivilegedRun(location: string, run: string, violations: string[]): void {
-  if (DYNAMIC_EXPRESSION.test(run)) {
-    violations.push(`${location}: merge-capable jobs may not use dynamic run commands`);
-  }
-  if (REPOSITORY_DELEGATION.some((pattern) => pattern.test(run))) {
-    violations.push(`${location}: merge-capable jobs may not delegate to repository-owned code`);
-  }
+function checkEmbeddedStrings(location: string, value: unknown, violations: string[]): void {
+  forEachString(value, (text) => checkInlineRun(location, text, violations));
 }
 
-function canonical(value: unknown): string {
-  return JSON.stringify(value);
-}
-
-function checkReleaseProfile(
-  projectRoot: string,
-  workflow: YamlRecord,
-  violations: string[]
-): boolean {
-  const jobs = asRecord(workflow.jobs);
-  const releaseJob = asRecord(jobs?.['github-release']);
-  let exact = true;
-  if (canonical(workflow.on) !== canonical({ push: { tags: ['v*'] } })) exact = false;
-  if (canonical(releaseJob) !== canonical(EXPECTED_RELEASE_JOB)) exact = false;
+function checkReleaseProfile(projectRoot: string, source: string, violations: string[]): boolean {
+  let exact = createHash('sha256').update(source).digest('hex') === RELEASE_WORKFLOW_SHA256;
 
   try {
     const packageJson = JSON.parse(
@@ -444,74 +402,17 @@ function checkReleaseProfile(
   return exact;
 }
 
-function exactGroup(groups: YamlRecord | undefined, name: string, dependencyType: string): boolean {
-  const group = asRecord(groups?.[name]);
-  return Boolean(
-    group &&
-    Object.keys(group).length === 2 &&
-    group['dependency-type'] === dependencyType &&
-    sameStringSet(group['update-types'], ['minor', 'patch'])
-  );
-}
-
 function checkDependabot(projectRoot: string, violations: string[]): void {
   const relativePath = '.github/dependabot.yml';
-  const config = parseYaml(join(projectRoot, relativePath), relativePath, violations);
-  const updates = config?.updates;
-  if (!Array.isArray(updates)) {
-    violations.push(`${relativePath}: updates must be an array`);
-    return;
-  }
-  const npmUpdates = updates.filter((entry) => asRecord(entry)?.['package-ecosystem'] === 'npm');
-  const actionUpdates = updates.filter(
-    (entry) => asRecord(entry)?.['package-ecosystem'] === 'github-actions'
-  );
-  if (npmUpdates.length !== 1) {
-    violations.push(`${relativePath}: expected exactly one npm update configuration`);
-  } else {
-    const npmConfig = asRecord(npmUpdates[0]);
-    const ignore = npmConfig?.ignore;
-    const groups = asRecord(npmConfig?.groups);
-    const majorIgnore =
-      Array.isArray(ignore) &&
-      ignore.length === 1 &&
-      asRecord(ignore[0])?.['dependency-name'] === '*' &&
-      sameStringSet(asRecord(ignore[0])?.['update-types'], ['version-update:semver-major']);
-    if (!majorIgnore) violations.push(`${relativePath}: npm major-version ignore policy drifted`);
-    if (
-      !groups ||
-      Object.keys(groups).length !== 2 ||
-      !exactGroup(groups, 'dev-dependencies', 'development') ||
-      !exactGroup(groups, 'production-dependencies', 'production')
-    ) {
-      violations.push(`${relativePath}: npm dependency grouping drifted`);
+  try {
+    const digest = createHash('sha256')
+      .update(readFileSync(join(projectRoot, relativePath)))
+      .digest('hex');
+    if (digest !== DEPENDABOT_SHA256) {
+      violations.push(`${relativePath}: exact Dependabot profile drifted`);
     }
-  }
-
-  if (actionUpdates.length !== 1) {
-    violations.push(`${relativePath}: expected exactly one github-actions update configuration`);
-    return;
-  }
-  const actionConfig = asRecord(actionUpdates[0]);
-  const schedule = asRecord(actionConfig?.schedule);
-  const cooldown = asRecord(actionConfig?.cooldown);
-  const groups = asRecord(actionConfig?.groups);
-  const actionGroup = asRecord(groups?.['github-actions']);
-  if (schedule?.timezone !== 'America/Los_Angeles') {
-    violations.push(`${relativePath}: github-actions timezone must be America/Los_Angeles`);
-  }
-  if (cooldown?.['default-days'] !== 14) {
-    violations.push(`${relativePath}: github-actions cooldown.default-days must be 14`);
-  }
-  if (
-    !groups ||
-    Object.keys(groups).length !== 1 ||
-    !actionGroup ||
-    Object.keys(actionGroup).length !== 2 ||
-    !sameStringSet(actionGroup.patterns, ['*']) ||
-    !sameStringSet(actionGroup['update-types'], ['minor', 'patch'])
-  ) {
-    violations.push(`${relativePath}: github-actions grouping must remain minor and patch only`);
+  } catch (error) {
+    violations.push(`${relativePath}: could not read exact Dependabot profile (${String(error)})`);
   }
 }
 
@@ -552,6 +453,7 @@ function checkWorkflow(
   workflow: YamlRecord,
   source: string,
   provenance: Record<string, ActionProvenance>,
+  usedProvenance: Set<string>,
   violations: string[]
 ): void {
   const relativePath = `.github/workflows/${filename}`;
@@ -566,8 +468,10 @@ function checkWorkflow(
     ? parsePermissions(workflow.permissions, `${relativePath}: workflow permissions`, violations)
     : undefined;
   const exactReleaseProfile =
-    filename === 'publish.yml' ? checkReleaseProfile(projectRoot, workflow, violations) : false;
-  const untrustedPullRequest = hasWorkflowTrigger(workflow.on, 'pull_request');
+    filename === 'publish.yml' ? checkReleaseProfile(projectRoot, source, violations) : false;
+  const untrustedPullRequest =
+    hasWorkflowTrigger(workflow.on, 'pull_request') ||
+    hasWorkflowTrigger(workflow.on, 'pull_request_target');
   const sourceUses = collectUsesSourceEntries(source, relativePath, violations);
   let usesIndex = 0;
   const workflowCredentialsUnbounded = checkTokenUse(
@@ -610,6 +514,11 @@ function checkWorkflow(
     }
     const releaseException =
       filename === 'publish.yml' && jobId === 'github-release' && exactReleaseProfile;
+    checkEmbeddedStrings(
+      location,
+      { env: job.env, secrets: job.secrets, with: job.with },
+      violations
+    );
     const entries: UsesEntry[] = [];
     if ('uses' in job) {
       const sourceUse = sourceUses[usesIndex++];
@@ -644,9 +553,20 @@ function checkWorkflow(
         `${location}: CODECOV_TOKEN is allowed only on the exact pinned Codecov action in non-merge CI`
       );
     }
+    if (mergeCapable && !releaseException && hasEventControlledValue(workflow.env)) {
+      violations.push(`${location}: merge-capable workflow env must not be event-controlled`);
+    }
+    if (mergeCapable && !releaseException && hasEventControlledValue(job.env)) {
+      violations.push(`${location}: merge-capable job env must not be event-controlled`);
+    }
 
     for (const { index, step } of parsedSteps) {
       const stepLocation = `${location}.steps[${index}]`;
+      checkEmbeddedStrings(
+        stepLocation,
+        { env: step.env, secrets: step.secrets, with: step.with },
+        violations
+      );
       if ('uses' in step) {
         const sourceUse = sourceUses[usesIndex++];
         if (!sourceUse || sourceUse.value !== step.uses) {
@@ -661,27 +581,19 @@ function checkWorkflow(
       }
       if (typeof step.run === 'string') {
         checkInlineRun(stepLocation, step.run, violations);
-        if (mergeCapable && !releaseException)
-          checkPrivilegedRun(stepLocation, step.run, violations);
+        if (mergeCapable && !releaseException) {
+          violations.push(`${stepLocation}: merge-capable jobs may not execute run steps`);
+        }
       }
-      if (mergeCapable && !releaseException && hasEventControlledValue(step.with)) {
-        violations.push(
-          `${stepLocation}: merge-capable action inputs must not be event-controlled`
-        );
-      }
-      if (
-        mergeCapable &&
-        !releaseException &&
-        typeof asRecord(step.with)?.ref === 'string' &&
-        /github\.event\.pull_request\.(?:head|base)/i.test(String(asRecord(step.with)?.ref))
-      ) {
-        violations.push(`${stepLocation}: merge-capable job may not checkout an untrusted PR ref`);
+      if (mergeCapable && !releaseException && hasEventControlledValue(step.env)) {
+        violations.push(`${stepLocation}: merge-capable step env must not be event-controlled`);
       }
     }
     for (const entry of entries) {
       checkAction(
         entry,
         provenance,
+        usedProvenance,
         mergeCapable && !releaseException,
         untrustedPullRequest,
         violations
@@ -694,6 +606,7 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
   const violations: string[] = [];
   const workflowsDirectory = join(projectRoot, '.github/workflows');
   const provenance = readProvenance(projectRoot, violations);
+  const usedProvenance = new Set<string>();
   let workflowFiles: string[] = [];
   try {
     workflowFiles = readdirSync(workflowsDirectory)
@@ -713,7 +626,23 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
     const path = join(workflowsDirectory, filename);
     const source = readFileSync(path, 'utf8');
     const workflow = parseYaml(path, relativePath, violations);
-    if (workflow) checkWorkflow(projectRoot, filename, workflow, source, provenance, violations);
+    if (workflow)
+      checkWorkflow(
+        projectRoot,
+        filename,
+        workflow,
+        source,
+        provenance,
+        usedProvenance,
+        violations
+      );
+  }
+  for (const actionId of Object.keys(provenance)) {
+    if (!usedProvenance.has(actionId)) {
+      violations.push(
+        `scripts/check/github-actions-provenance.json: unused provenance entry for ${actionId}`
+      );
+    }
   }
   checkDependabot(projectRoot, violations);
   return violations;

@@ -8,6 +8,8 @@ const CHECKOUT_SHA = '3d3c42e5aac5ba805825da76410c181273ba90b1';
 const SETUP_NODE_SHA = '249970729cb0ef3589644e2896645e5dc5ba9c38';
 const APP_TOKEN_SHA = '0123456789abcdef0123456789abcdef01234567';
 const REUSABLE_SHA = 'abcdef0123456789abcdef0123456789abcdef01';
+const GITHUB_SCRIPT_SHA = '1111111111111111111111111111111111111111';
+const DOCKER_DIGEST = '2'.repeat(64);
 const REQUIRED_FILES = [
   '.github/dependabot.yml',
   '.github/workflows/ci.yml',
@@ -86,6 +88,16 @@ function setCiWorkflow(
   options: { event?: string; jobPermissions?: string } = {}
 ): void {
   write(root, '.github/workflows/ci.yml', workflow(permissions, steps, options));
+  const provenancePath = join(root, 'scripts/check/github-actions-provenance.json');
+  const provenance = JSON.parse(readFileSync(provenancePath, 'utf8')) as Record<string, unknown>;
+  for (const action of [
+    'actions/download-artifact',
+    'actions/upload-artifact',
+    'codecov/codecov-action',
+  ]) {
+    delete provenance[action];
+  }
+  writeFileSync(provenancePath, `${JSON.stringify(provenance, null, 2)}\n`);
 }
 
 function setPrivilegedWorkflow(root: string, steps: string, event = 'pull_request'): void {
@@ -180,6 +192,7 @@ describe('GitHub Actions capability policy', () => {
       ['repository script', '      - run: bash scripts/safe.sh'],
       ['local action', '      - uses: ./.github/actions/safe'],
       ['dynamic command', '      - run: ${{ github.event.pull_request.title }}'],
+      ['literal command', '      - run: echo safe'],
     ])('denies privileged %s execution', (_name, steps) => {
       setPrivilegedWorkflow(root, steps);
       const manifest = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
@@ -213,6 +226,72 @@ describe('GitHub Actions capability policy', () => {
       expect(messages(root)).toContain('untrusted');
     });
 
+    test('denies default checkout on a privileged pull_request_target job', () => {
+      setPrivilegedWorkflow(root, checkoutStep(), 'pull_request_target');
+
+      expect(messages(root)).toContain('untrusted');
+    });
+
+    test('rejects a workflow-env-laundered pull request head ref', () => {
+      setPrivilegedWorkflow(
+        root,
+        `${checkoutStep()}\n          ref: \${{ env.PR_HEAD }}`,
+        'pull_request_target'
+      );
+      replace(
+        root,
+        '.github/workflows/pr-size.yml',
+        'on: pull_request_target',
+        'on: pull_request_target\nenv:\n  PR_HEAD: ${{ github.event.pull_request.head.sha }}'
+      );
+
+      const result = messages(root);
+      expect(result).toContain('event-controlled');
+      expect(result).toContain('untrusted');
+    });
+
+    test('rejects untrusted event expressions in privileged job and step env', () => {
+      setPrivilegedWorkflow(
+        root,
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        env:
+          STEP_REF: \${{ github.event.pull_request.head.sha }}`,
+        'pull_request_target'
+      );
+      replace(
+        root,
+        '.github/workflows/pr-size.yml',
+        '    runs-on: ubuntu-latest',
+        '    runs-on: ubuntu-latest\n    env:\n      JOB_REF: ${{ github.event.pull_request.head.ref }}'
+      );
+
+      expect(messages(root)).toContain('event-controlled');
+    });
+
+    test('rejects every dynamic privileged action input', () => {
+      setPrivilegedWorkflow(
+        root,
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        with:
+          node-version: \${{ env.NODE_VERSION }}`,
+        'push'
+      );
+
+      expect(messages(root)).toContain('dynamic');
+    });
+
+    test('checks Docker digest action inputs before returning from pin validation', () => {
+      setPrivilegedWorkflow(
+        root,
+        `      - uses: docker://example/image@sha256:${DOCKER_DIGEST}
+        with:
+          ref: \${{ github.event.pull_request.head.sha }}`,
+        'pull_request_target'
+      );
+
+      expect(messages(root)).toContain('event-controlled');
+    });
+
     test('keeps welcome pull_request_target safe only with fixed pinned action inputs', () => {
       replace(
         root,
@@ -226,6 +305,55 @@ describe('GitHub Actions capability policy', () => {
   });
 
   describe('unbounded GitHub credentials', () => {
+    test.each(['BOT_CREDENTIAL', 'APP_PRIVATE_KEY'])(
+      'rejects arbitrary custom secret %s regardless of input key',
+      (secret) => {
+        setCiWorkflow(
+          root,
+          'contents: read',
+          `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        with:
+          arbitrary-value: \${{ secrets.${secret} }}`
+        );
+
+        expect(messages(root)).toContain('unbounded GitHub token');
+      }
+    );
+
+    test('rejects an arbitrary secret passed to a reusable workflow', () => {
+      addProvenance(root, 'acme/platform/.github/workflows/build.yml', 'v1.2.3', REUSABLE_SHA);
+      write(
+        root,
+        '.github/workflows/ci.yml',
+        `name: CI
+on: push
+permissions:
+  contents: read
+jobs:
+  reuse:
+    uses: acme/platform/.github/workflows/build.yml@${REUSABLE_SHA} # v1.2.3
+    secrets:
+      bot: \${{ secrets.BOT_CREDENTIAL }}
+`
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
+    test('rejects an arbitrary workflow-level secret and escalates every run step', () => {
+      setCiWorkflow(root, 'contents: read', '      - run: echo safe');
+      replace(
+        root,
+        '.github/workflows/ci.yml',
+        'jobs:',
+        'env:\n  BOT_CREDENTIAL: ${{ secrets.BOT_CREDENTIAL }}\njobs:'
+      );
+
+      const result = messages(root);
+      expect(result).toContain('unbounded GitHub token');
+      expect(result).toContain('merge-capable');
+    });
+
     test.each(['GH_TOKEN', 'GITHUB_TOKEN'])('rejects a custom PAT in %s', (name) => {
       setCiWorkflow(
         root,
@@ -353,6 +481,17 @@ jobs:
       expect(messages(root)).toContain('CODECOV_TOKEN');
     });
 
+    test('rejects an extra secret on the otherwise exact Codecov action', () => {
+      replace(
+        root,
+        '.github/workflows/ci.yml',
+        '          token: ${{ secrets.CODECOV_TOKEN }}',
+        '          token: ${{ secrets.CODECOV_TOKEN }}\n          audit: ${{ secrets.RELEASE_PAT }}'
+      );
+
+      expect(messages(root)).toContain('unbounded GitHub token');
+    });
+
     test('does not classify npm OIDC publishing as GitHub merge capability', () => {
       expect(messages(root)).not.toContain('Publish to npm: merge-capable');
     });
@@ -384,6 +523,47 @@ jobs:
       ],
     ])('rejects %s in a read-only inline run block', (_name, command) => {
       setCiWorkflow(root, 'contents: read', `      - run: |\n          ${command}`);
+
+      expect(messages(root)).toContain('forbidden');
+    });
+
+    test.each([
+      [
+        'action input',
+        `      - uses: actions/github-script@${GITHUB_SCRIPT_SHA} # v7.1.0
+        with:
+          script: |
+            github.rest.pulls.merge({ pull_number: 1 })`,
+      ],
+      [
+        'action env',
+        `      - uses: actions/github-script@${GITHUB_SCRIPT_SHA} # v7.1.0
+        env:
+          SCRIPT: gh pr review 1 --approve`,
+      ],
+    ])('rejects forbidden mutation code in an %s', (_name, step) => {
+      addProvenance(root, 'actions/github-script', 'v7.1.0', GITHUB_SCRIPT_SHA);
+      setCiWorkflow(root, 'contents: read', step);
+
+      expect(messages(root)).toContain('forbidden');
+    });
+
+    test('rejects forbidden mutation code in reusable workflow inputs', () => {
+      addProvenance(root, 'acme/platform/.github/workflows/build.yml', 'v1.2.3', REUSABLE_SHA);
+      write(
+        root,
+        '.github/workflows/ci.yml',
+        `name: CI
+on: push
+permissions:
+  contents: read
+jobs:
+  reuse:
+    uses: acme/platform/.github/workflows/build.yml@${REUSABLE_SHA} # v1.2.3
+    with:
+      script: gh pr merge 1 --squash
+`
+      );
 
       expect(messages(root)).toContain('forbidden');
     });
@@ -443,6 +623,21 @@ ${checkoutStep()}`
 
       expect(messages(root)).toContain('release profile');
     });
+
+    test.each([
+      ['workflow defaults', 'defaults:\n  run:\n    shell: bash'],
+      ['workflow env', 'env:\n  RELEASE_MODE: trusted'],
+    ])('rejects release-profile drift in %s', (_name, addition) => {
+      replace(root, '.github/workflows/publish.yml', '\njobs:\n', `\n${addition}\n\njobs:\n`);
+
+      expect(messages(root)).toContain('release profile');
+    });
+
+    test('rejects provenance entries that are not used by any workflow', () => {
+      addProvenance(root, 'unused/example', 'v1.2.3', REUSABLE_SHA);
+
+      expect(messages(root)).toContain('unused provenance');
+    });
   });
 
   describe('Dependabot hardening', () => {
@@ -454,6 +649,8 @@ ${checkoutStep()}`
         '        update-types: ["version-update:semver-major"]',
         '        update-types: []',
       ],
+      ['interval', '      interval: "weekly"', '      interval: "daily"'],
+      ['directory', '    directory: "/"', '    directory: "/packages/cli"'],
     ])('rejects drift in %s', (_name, from, to) => {
       replace(root, '.github/dependabot.yml', from, to);
 
