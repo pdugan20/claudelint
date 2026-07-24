@@ -24,8 +24,8 @@
     "sha": "1e223db275d687790206a7acac4d1a11bd6fe629"
   },
   "actions/upload-artifact": {
-    "version": "v6.0.0",
-    "sha": "b7c566a772e6b6bfb58ed0dc250532a479d7789f"
+    "version": "v7.0.1",
+    "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
   },
   "amannn/action-semantic-pull-request": {
     "version": "v6.1.1",
