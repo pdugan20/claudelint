@@ -7,7 +7,7 @@
  */
 
 import { Rule, RuleContext } from '../../types/rule';
-import { stripCodeBlocks } from '../../utils/formats/markdown';
+import { extractBodyContent, stripCodeBlocks } from '../../utils/formats/markdown';
 
 // Standard HTML/markdown tags that are safe to use.
 // Tracks the HTML Living Standard — update when new elements are widely adopted.
@@ -85,7 +85,8 @@ export const rule: Rule = {
       details:
         'Claude interprets XML tags as structural delimiters in its prompt processing. Rogue XML-like ' +
         'tags (e.g., `<instructions>`, `<system>`) in SKILL.md can cause prompt injection or unexpected ' +
-        'behavior by altering how Claude parses the skill content. This rule strips fenced code blocks ' +
+        'behavior by altering how Claude parses the skill content. This rule scans the SKILL.md body ' +
+        '(frontmatter is covered by the dedicated field rules), strips fenced code blocks ' +
         'and inline code, then scans for XML-like tags that are not standard HTML elements. Standard ' +
         'tags like `<b>`, `<code>`, `<table>`, `<details>`, etc. are allowed. Each unique non-standard ' +
         'tag is reported once.',
@@ -123,6 +124,13 @@ export const rule: Rule = {
             language: 'markdown',
           },
           {
+            description: 'Angle-bracket placeholders in argument-hint are not flagged',
+            code:
+              '---\nname: greet\ndescription: Greets a user by name\n' +
+              'argument-hint: "<user name>"\n---\n\nSay hello to $ARGUMENTS.',
+            language: 'markdown',
+          },
+          {
             description: 'XML tags inside code blocks are not flagged',
             code:
               '---\nname: deploy-app\ndescription: Deploys the application\n---\n\n' +
@@ -135,7 +143,11 @@ export const rule: Rule = {
         'Remove non-standard XML tags from the SKILL.md body, or move them inside a fenced ' +
         'code block if they are example content. Use markdown formatting instead of custom XML tags ' +
         'for structuring instructions.',
-      relatedRules: ['skill-description', 'skill-hardcoded-secrets'],
+      relatedRules: [
+        'skill-description',
+        'skill-hardcoded-secrets',
+        'skill-arguments-without-hint',
+      ],
     },
   },
 
@@ -147,8 +159,16 @@ export const rule: Rule = {
       return;
     }
 
+    // Scan the body only. Frontmatter fields have their own XML checks
+    // (skill-description, skill-frontmatter-name-xml-tags), and scanning it here
+    // also flagged the `argument-hint: "<file path>"` placeholder convention that
+    // skill-arguments-without-hint documents as the correct form.
+    // Files without frontmatter are still scanned in full.
+    const hasFrontmatter = /^---\s*\n[\s\S]*?\n---\s*\n/.test(fileContent.replace(/\r\n/g, '\n'));
+    const body = hasFrontmatter ? extractBodyContent(fileContent) : fileContent;
+
     // Strip fenced code blocks and inline code to avoid false positives
-    const contentWithoutCode = stripCodeBlocks(fileContent);
+    const contentWithoutCode = stripCodeBlocks(body);
 
     // Match XML-like tags (opening or self-closing)
     // P3-3: Cap attribute length at 200 chars to prevent backtracking on malformed input
