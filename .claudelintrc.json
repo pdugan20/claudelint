@@ -5,5 +5,16 @@
     "no-user-paths": "warn",
     "normalize-code-fences": "warn",
     "max-section-depth": ["warn", { "maxDepth": 4 }]
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/.agents/skills/check-upstream/SKILL.md",
+        "**/.claude/skills/check-upstream/SKILL.md"
+      ],
+      "rules": {
+        "skill-missing-version": "off"
+      }
+    }
+  ]
 }

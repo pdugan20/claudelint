@@ -1,13 +1,6 @@
 ---
 name: check-upstream
 description: Refreshes the Claude Code docs baseline, runs the conformance check, and recommends schema and rule updates. Use when asked to "check for upstream changes", "check schema drift", "are our schemas up to date", or "what is new in Claude Code".
-version: 1.0.0
-allowed-tools:
-  - Bash(npm run *)
-  - Bash(git diff*)
-  - Read
-  - Edit
-  - Glob
 ---
 
 # Check Upstream
