@@ -11,7 +11,9 @@ All active work is tracked in [roadmap.md](./roadmap.md).
 
 **Next milestone:** Stable 0.2.0 release.
 
-Published as `claude-code-lint@0.2.0-beta.3`. Plugin marketplace complete. DX overhaul complete. docs-tools plugin scaffolded in [separate repo](https://github.com/pdugan20/claude-docs-tools).
+Published as `claude-code-lint@0.2.0-beta.3`. Plugin marketplace complete. DX overhaul complete. The archived
+`claude-docs-tools` prototype has been superseded by
+[`mintlify-docs`](https://github.com/pdugan20/mintlify-docs) and its shared agent-tooling integration.
 
 ## Active Projects
 
