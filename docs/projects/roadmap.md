@@ -90,4 +90,4 @@ Work these when demand exists or as time permits.
 | CLI Best Practices | `--output-file`, `--rule`, `--changed`, `--stdin`, option-builders, stdin-reader |
 | Plugin Marketplace | Marketplace, version sync, install UX, SessionStart hook, e2e testing (0.2.0-beta.3) |
 | Developer Experience Overhaul | Default presets, strict tier, rule improvements, bug fixes |
-| docs-tools Plugin | Scaffolded in [separate repo](https://github.com/pdugan20/claude-docs-tools) |
+| docs-tools Plugin | Archived prototype; superseded by [mintlify-docs](https://github.com/pdugan20/mintlify-docs) and its shared agent-tooling integration |

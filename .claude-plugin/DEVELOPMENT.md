@@ -129,13 +129,15 @@ Common errors:
 We have comprehensive manual tests in `scripts/test/manual/`:
 
 ```bash
+plugin_root=$(git rev-parse --show-toplevel)
+
 # Task 1: Baseline (no skill)
 ./scripts/test/manual/task-1-optimize-without-skill/setup.sh
 
 # Task 2: With skill (development testing)
 ./scripts/test/manual/task-2-optimize-with-skill/setup.sh
 cd /tmp/claudelint-test-2
-claude --plugin-dir /Users/patdugan/Documents/GitHub/claude-lint
+claude --plugin-dir "$plugin_root"
 ```
 
 See `/tmp/claudelint-manual-testing-guide.md` for complete testing protocol.
