@@ -102,7 +102,7 @@ function checkVersions({ latestNpm, installedCli, isGlobal, pluginVersion }) {
     if (compareSemver(latestNpm, pluginVersion) > 0) {
       messages.push(
         `IMPORTANT: The claudelint plugin is outdated (${pluginVersion} installed, ${latestNpm} available). ` +
-          `Tell the user to run: /plugin marketplace update pdugan20-plugins -- ` +
+          `Tell the user to run: /plugin marketplace update patrick-plugins -- ` +
           `then run /plugin, go to Installed, select claudelint, and choose "Update now".`
       );
     }

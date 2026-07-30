@@ -92,10 +92,10 @@ export function registerInstallPluginCommand(program: Command): void {
       logger.detail(chalk.bold('From the marketplace (recommended):'));
       logger.newline();
       logger.detail(`${chalk.dim('1.')} Add the marketplace (one-time):`);
-      logger.detail(chalk.cyan('   /plugin marketplace add pdugan20/claudelint'));
+      logger.detail(chalk.cyan('   /plugin marketplace add pdugan20/plugins'));
       logger.newline();
       logger.detail(`${chalk.dim('2.')} Install the plugin:`);
-      logger.detail(chalk.cyan('   /plugin install claudelint@pdugan20-plugins'));
+      logger.detail(chalk.cyan('   /plugin install claudelint@patrick-plugins'));
       logger.newline();
       logger.detail('Choose your scope when prompted:');
       logger.detail(
@@ -115,7 +115,7 @@ export function registerInstallPluginCommand(program: Command): void {
       logger.newline();
       logger.detail('Third-party marketplace plugins do not auto-update by default.');
       logger.detail('To enable, inside Claude Code:');
-      logger.detail(chalk.cyan('/plugin > Marketplaces > pdugan20-plugins > Enable auto-update'));
+      logger.detail(chalk.cyan('/plugin > Marketplaces > patrick-plugins > Enable auto-update'));
       logger.newline();
 
       // Step 4: verify
@@ -149,12 +149,12 @@ function outputJson(): void {
     },
     plugin: {
       marketplace: {
-        add: '/plugin marketplace add pdugan20/claudelint',
-        install: '/plugin install claudelint@pdugan20-plugins',
+        add: '/plugin marketplace add pdugan20/plugins',
+        install: '/plugin install claudelint@patrick-plugins',
       },
       development: 'claude --plugin-dir ./node_modules/claude-code-lint',
     },
-    autoUpdate: '/plugin > Marketplaces > pdugan20-plugins > Enable auto-update',
+    autoUpdate: '/plugin > Marketplaces > patrick-plugins > Enable auto-update',
     verify: '/validate-all',
     status: {
       globalInstall: isGloballyInstalled(),

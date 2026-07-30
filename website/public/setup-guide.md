@@ -62,7 +62,7 @@ If yes, the plugin is installed via slash commands that the user must type thems
 Tell the user to type this in the chat:
 
 ```text
-/plugin marketplace add pdugan20/claudelint
+/plugin marketplace add pdugan20/plugins
 ```
 
 Wait for the user to confirm before continuing.
@@ -70,7 +70,7 @@ Wait for the user to confirm before continuing.
 Then tell the user to type:
 
 ```text
-/plugin install claudelint@pdugan20-plugins
+/plugin install claudelint@patrick-plugins
 ```
 
 The user will be prompted to choose an installation scope. Explain the options:

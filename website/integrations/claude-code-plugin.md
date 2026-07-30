@@ -36,13 +36,13 @@ For a persistent install, use the marketplace below.
 1. Add the marketplace (one-time setup):
 
    ```text
-   /plugin marketplace add pdugan20/claudelint
+   /plugin marketplace add pdugan20/plugins
    ```
 
 2. Install the plugin:
 
    ```text
-   /plugin install claudelint@pdugan20-plugins
+   /plugin install claudelint@patrick-plugins
    ```
 
 Choose your installation scope when prompted:
@@ -58,15 +58,15 @@ To pre-configure the plugin for all collaborators, commit this to `.claude/setti
 ```json
 {
   "extraKnownMarketplaces": {
-    "pdugan20-plugins": {
+    "patrick-plugins": {
       "source": {
         "source": "github",
-        "repo": "pdugan20/claudelint"
+        "repo": "pdugan20/plugins"
       }
     }
   },
   "enabledPlugins": {
-    "claudelint@pdugan20-plugins": true
+    "claudelint@patrick-plugins": true
   }
 }
 ```
@@ -200,12 +200,12 @@ The plugin and npm package are updated independently.
 
 ### Plugin Updates
 
-Third-party marketplace plugins don't auto-update by default. Enable it via `/plugin` → **Marketplaces** → **pdugan20-plugins** → **Enable auto-update**. When enabled, Claude Code checks for updates at startup and prompts you to run `/reload-plugins` when new versions are available.
+Third-party marketplace plugins don't auto-update by default. Enable it via `/plugin` → **Marketplaces** → **patrick-plugins** → **Enable auto-update**. When enabled, Claude Code checks for updates at startup and prompts you to run `/reload-plugins` when new versions are available.
 
 To update manually:
 
 ```text
-/plugin marketplace update pdugan20-plugins
+/plugin marketplace update patrick-plugins
 ```
 
 ### npm Package Updates
@@ -294,7 +294,7 @@ npm install -g claude-code-lint@latest
 
 Third-party marketplaces have auto-update disabled by default. Also check that `DISABLE_AUTOUPDATER` is not set in your environment.
 
-**Solution:** Enable auto-update via `/plugin` → **Marketplaces** → **pdugan20-plugins** → **Enable auto-update**, or update manually with `/plugin marketplace update pdugan20-plugins`.
+**Solution:** Enable auto-update via `/plugin` → **Marketplaces** → **patrick-plugins** → **Enable auto-update**, or update manually with `/plugin marketplace update patrick-plugins`.
 
 ## Uninstalling
 

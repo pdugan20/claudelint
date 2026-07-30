@@ -1,5 +1,5 @@
 {
-  "name": "pdugan20-plugins",
+  "name": "claudelint",
   "description": "Plugins for validating, linting, and improving Claude Code projects.",
   "version": "0.7.0",
   "owner": {
