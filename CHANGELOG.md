@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1](https://github.com/pdugan20/claudelint/compare/v0.7.0...v0.7.1) (2026-07-30)
+
+### Bug Fixes
+
+* use renamed plugin marketplace ([#169](https://github.com/pdugan20/claudelint/issues/169)) ([4dd1ddc](https://github.com/pdugan20/claudelint/commit/4dd1ddc3c7b72f92be26badaa8891fa3e388f824))
+
+### Documentation
+
+* retire docs-tools references ([#168](https://github.com/pdugan20/claudelint/issues/168)) ([dcda8c6](https://github.com/pdugan20/claudelint/commit/dcda8c69e245752e95d8a484704d5b4893668dbe))
+
+### Continuous Integration
+
+* add manual CI recovery trigger ([#159](https://github.com/pdugan20/claudelint/issues/159)) ([9222afa](https://github.com/pdugan20/claudelint/commit/9222afaa36b81957830c4b3d5c8079c8afbd1c7e))
+* bump actions/checkout from 6 to 7 ([#125](https://github.com/pdugan20/claudelint/issues/125)) ([2c34b5c](https://github.com/pdugan20/claudelint/commit/2c34b5cc5fee494702abd3542a033c7876f7313e))
+* bump actions/upload-artifact from 6.0.0 to 7.0.1 ([#156](https://github.com/pdugan20/claudelint/issues/156)) ([310629c](https://github.com/pdugan20/claudelint/commit/310629ca4f17504962531fe62b0281dd03253a9e))
+* drop the needless self-approve step from dependabot auto-merge ([#154](https://github.com/pdugan20/claudelint/issues/154)) ([c8cd8ea](https://github.com/pdugan20/claudelint/commit/c8cd8ea354b9c57979654fd92a08b22d4027bdae))
+* harden GitHub automation policy ([#155](https://github.com/pdugan20/claudelint/issues/155)) ([ee905c1](https://github.com/pdugan20/claudelint/commit/ee905c1f28b9fe4dac1ddccfbc85ea724af3dc0e))
+
 ## [0.7.0](https://github.com/pdugan20/claudelint/compare/v0.6.0...v0.7.0) (2026-07-14)
 
 ### Bug Fixes
