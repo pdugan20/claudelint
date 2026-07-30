@@ -34,8 +34,8 @@ Use claudelint as a Claude Code plugin for interactive validation via slash comm
 Inside Claude Code, add the marketplace and install the plugin:
 
 ```text
-/plugin marketplace add pdugan20/pdugan20-plugins
-/plugin install claudelint@pdugan20-plugins
+/plugin marketplace add pdugan20/plugins
+/plugin install claudelint@patrick-plugins
 ```
 
 Or run `claudelint install-plugin` for guided setup.

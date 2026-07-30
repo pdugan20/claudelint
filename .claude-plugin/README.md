@@ -71,13 +71,13 @@ npm install --save-dev claude-code-lint
 1. Add the marketplace (one-time):
 
    ```text
-   /plugin marketplace add pdugan20/claudelint
+   /plugin marketplace add pdugan20/plugins
    ```
 
 2. Install the plugin:
 
    ```text
-   /plugin install claudelint@pdugan20-plugins
+   /plugin install claudelint@patrick-plugins
    ```
 
 Choose your scope when prompted: **User** (all projects, recommended), **Project** (shared with collaborators), or **Local** (only you, this repo).
@@ -87,10 +87,10 @@ Choose your scope when prompted: **User** (all projects, recommended), **Project
 Third-party marketplace plugins do not auto-update by default. Enable auto-update:
 
 ```text
-/plugin > Marketplaces > pdugan20-plugins > Enable auto-update
+/plugin > Marketplaces > patrick-plugins > Enable auto-update
 ```
 
-Or update manually: `/plugin marketplace update pdugan20-plugins`
+Or update manually: `/plugin marketplace update patrick-plugins`
 
 See the [Plugin Guide](https://claudelint.com/integrations/claude-code-plugin) for full details on version sync.
 
