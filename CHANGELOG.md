@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0](https://github.com/pdugan20/claudelint/compare/v0.7.1...v0.8.0) (2026-08-09)
+
+### Bug Fixes
+
+* address recent runtime and validation regressions ([#180](https://github.com/pdugan20/claudelint/issues/180)) ([fac6971](https://github.com/pdugan20/claudelint/commit/fac6971f904e1ba03ec63743320a6728d0ada62f))
+
 ## [0.7.1](https://github.com/pdugan20/claudelint/compare/v0.7.0...v0.7.1) (2026-07-30)
 
 ### Bug Fixes
