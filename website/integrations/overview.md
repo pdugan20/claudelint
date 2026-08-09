@@ -80,7 +80,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm install -g claude-code-lint
       - run: claudelint check-all --format github
 ```
