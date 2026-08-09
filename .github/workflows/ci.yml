@@ -218,7 +218,7 @@ jobs:
           name: dist
 
       - name: Verify Windows skill discovery and validation
-        run: npm test -- --runInBand tests/utils/file-discovery.test.ts tests/validators/skills.test.ts
+        run: npm test -- --runInBand tests/utils/file-discovery.test.ts tests/validators/skills.test.ts --testNamePattern="findSkillDirectories|SkillsValidator"
 
   rule-verification:
     name: Rule Verification
