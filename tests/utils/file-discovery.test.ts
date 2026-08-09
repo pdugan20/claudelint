@@ -116,7 +116,7 @@ describe('Recursive File Discovery', () => {
 
       const dirs = await findSkillDirectories(getTestDir());
       expect(dirs).toHaveLength(1);
-      expect(dirs[0]).toContain('test-skill');
+      expect(dirs[0]).toBe(skillDir);
     });
 
     it('should find skills in nested monorepo package .claude/skills/', async () => {
@@ -145,7 +145,7 @@ describe('Recursive File Discovery', () => {
 
       const dirs = await findSkillDirectories(getTestDir());
       expect(dirs).toHaveLength(1);
-      expect(dirs[0]).toContain('my-skill');
+      expect(dirs[0]).toBe(skillDir);
     });
 
     it('should exclude node_modules', async () => {
