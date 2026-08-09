@@ -77,13 +77,19 @@ describe('settings-file-path-not-found', () => {
     });
   });
 
-  it('should skip when outputStyle is not a string', async () => {
+  it('should not treat outputStyle names as file paths', async () => {
     await ruleTester.run('settings-file-path-not-found', rule, {
       valid: [
         {
           filePath: '/test/.claude/settings.json',
           content: JSON.stringify({
-            outputStyle: true,
+            outputStyle: 'i-have-adhd',
+          }),
+        },
+        {
+          filePath: '/test/.claude/settings.json',
+          content: JSON.stringify({
+            outputStyle: 'Explanatory',
           }),
         },
       ],
