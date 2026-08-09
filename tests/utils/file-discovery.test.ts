@@ -6,7 +6,7 @@
  */
 
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { basename, join } from 'path';
 import { setupTestDir } from '../helpers/test-utils';
 import {
   findClaudeMdFiles,
@@ -116,7 +116,7 @@ describe('Recursive File Discovery', () => {
 
       const dirs = await findSkillDirectories(getTestDir());
       expect(dirs).toHaveLength(1);
-      expect(dirs[0]).toContain('test-skill');
+      expect(dirs[0]).toBe(skillDir);
     });
 
     it('should find skills in nested monorepo package .claude/skills/', async () => {
@@ -133,7 +133,7 @@ describe('Recursive File Discovery', () => {
       const dirs = await findSkillDirectories(getTestDir());
       expect(dirs).toHaveLength(2);
 
-      const names = dirs.map((d) => d.split('/').pop());
+      const names = dirs.map((dir) => basename(dir));
       expect(names).toContain('root-skill');
       expect(names).toContain('pkg-skill');
     });
@@ -145,7 +145,7 @@ describe('Recursive File Discovery', () => {
 
       const dirs = await findSkillDirectories(getTestDir());
       expect(dirs).toHaveLength(1);
-      expect(dirs[0]).toContain('my-skill');
+      expect(dirs[0]).toBe(skillDir);
     });
 
     it('should exclude node_modules', async () => {
@@ -180,13 +180,7 @@ describe('Recursive File Discovery', () => {
     });
 
     it('should exclude node_modules', async () => {
-      const nmAgentsDir = join(
-        getTestDir(),
-        'node_modules',
-        'pkg',
-        '.claude',
-        'agents'
-      );
+      const nmAgentsDir = join(getTestDir(), 'node_modules', 'pkg', '.claude', 'agents');
       await mkdir(nmAgentsDir, { recursive: true });
       await writeFile(join(nmAgentsDir, 'nm-agent.md'), '# Ignored');
 

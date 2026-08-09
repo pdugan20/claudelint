@@ -20,10 +20,10 @@ describe('package.json validation', () => {
     expect(pkg.exports['.'].default).toBeDefined();
   });
 
-  it('engines field specifies Node.js >= 20', () => {
+  it('engines field specifies Node.js >= 22', () => {
     expect(pkg.engines).toBeDefined();
     expect(pkg.engines.node).toBeDefined();
-    expect(pkg.engines.node).toMatch(/>=\s*20/);
+    expect(pkg.engines.node).toMatch(/>=\s*22/);
   });
 
   it('has no @types/* in production dependencies', () => {

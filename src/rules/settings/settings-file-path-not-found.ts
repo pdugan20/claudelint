@@ -3,7 +3,7 @@
  *
  * Validates that file paths in settings.json actually exist
  *
- * Settings can reference files like apiKeyHelper scripts or outputStyle files.
+ * Settings can reference files like apiKeyHelper scripts.
  * This rule ensures those files exist (unless they contain variables).
  */
 
@@ -30,8 +30,8 @@ export const rule: Rule = {
       rationale:
         'Missing file paths cause runtime errors when Claude Code attempts to load the referenced resource.',
       details:
-        'This rule validates that file paths in `settings.json` properties such as ' +
-        '`apiKeyHelper` and `outputStyle` point to files that actually exist on disk. ' +
+        'This rule validates that the `apiKeyHelper` path in `settings.json` points to a file ' +
+        'that actually exists on disk. ' +
         'Missing files will cause runtime errors when Claude Code tries to use them. ' +
         'Paths containing variable expansion syntax (e.g., `${HOME}/...`) are skipped ' +
         'since they cannot be resolved statically.',
@@ -39,22 +39,14 @@ export const rule: Rule = {
         incorrect: [
           {
             description: 'Settings referencing a non-existent script',
-            code:
-              '{\n' +
-              '  "apiKeyHelper": "/scripts/get-api-key.sh",\n' +
-              '  "outputStyle": "./styles/missing-style.md"\n' +
-              '}',
+            code: '{\n' + '  "apiKeyHelper": "/scripts/get-api-key.sh"\n' + '}',
             language: 'json',
           },
         ],
         correct: [
           {
             description: 'Settings referencing existing files',
-            code:
-              '{\n' +
-              '  "apiKeyHelper": "./scripts/get-api-key.sh",\n' +
-              '  "outputStyle": ".claude/styles/concise.md"\n' +
-              '}',
+            code: '{\n' + '  "apiKeyHelper": "./scripts/get-api-key.sh"\n' + '}',
             language: 'json',
           },
           {
@@ -87,11 +79,6 @@ export const rule: Rule = {
     // Validate apiKeyHelper path if present
     if (hasProperty(settings, 'apiKeyHelper') && isString(settings.apiKeyHelper)) {
       await validateFilePath(context, settings.apiKeyHelper, 'apiKeyHelper');
-    }
-
-    // Validate outputStyle path if present
-    if (hasProperty(settings, 'outputStyle') && isString(settings.outputStyle)) {
-      await validateFilePath(context, settings.outputStyle, 'outputStyle');
     }
   },
 };

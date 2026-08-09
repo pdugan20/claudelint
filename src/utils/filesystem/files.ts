@@ -1,6 +1,6 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 import { filterIgnored } from '../config/ignore';
 import {
   CLAUDE_MD_PATTERNS,
@@ -108,7 +108,7 @@ export async function findSkillDirectories(basePath: string = process.cwd()): Pr
   }
 
   const uniqueFiles = [...new Set(allFiles)];
-  return uniqueFiles.map((file) => file.replace('/SKILL.md', ''));
+  return uniqueFiles.map((file) => dirname(file));
 }
 
 /**

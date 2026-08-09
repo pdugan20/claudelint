@@ -8,7 +8,7 @@ description: "Referenced file path does not exist"
 
 ## Rule Details
 
-This rule validates that file paths in `settings.json` properties such as `apiKeyHelper` and `outputStyle` point to files that actually exist on disk. Missing files will cause runtime errors when Claude Code tries to use them. Paths containing variable expansion syntax (e.g., `${HOME}/...`) are skipped since they cannot be resolved statically.
+This rule validates that the `apiKeyHelper` path in `settings.json` points to a file that actually exists on disk. Missing files will cause runtime errors when Claude Code tries to use them. Paths containing variable expansion syntax (e.g., `${HOME}/...`) are skipped since they cannot be resolved statically.
 
 ### Incorrect
 
@@ -16,8 +16,7 @@ Settings referencing a non-existent script
 
 ```json
 {
-  "apiKeyHelper": "/scripts/get-api-key.sh",
-  "outputStyle": "./styles/missing-style.md"
+  "apiKeyHelper": "/scripts/get-api-key.sh"
 }
 ```
 
@@ -27,8 +26,7 @@ Settings referencing existing files
 
 ```json
 {
-  "apiKeyHelper": "./scripts/get-api-key.sh",
-  "outputStyle": ".claude/styles/concise.md"
+  "apiKeyHelper": "./scripts/get-api-key.sh"
 }
 ```
 

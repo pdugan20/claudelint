@@ -9,7 +9,7 @@ The most common contribution is [adding a validation rule](#adding-validation-ru
 
 ## Getting Started
 
-Prerequisites: Node.js 20+, npm, Git, and optionally [Claude Code](https://code.claude.com/) for testing the plugin.
+Prerequisites: Node.js 22+, npm, Git, and optionally [Claude Code](https://code.claude.com/) for testing the plugin.
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/claudelint.git

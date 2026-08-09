@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
 
       - run: npm install -g claude-code-lint
 
@@ -131,7 +131,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm install -g claude-code-lint
       - run: claudelint check-all --format github
 
@@ -147,7 +147,7 @@ jobs:
 
 ```yaml
 claudelint:
-  image: node:20
+  image: node:22
   stage: lint
   script:
     - npm install -g claude-code-lint

@@ -16,7 +16,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 ### Prerequisites
 
-- Node.js 20.0.0 or higher
+- Node.js 22.0.0 or higher
 - npm or yarn
 - Git
 
@@ -681,7 +681,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm ci
 
       # Install Claude CLI (example for Linux)
