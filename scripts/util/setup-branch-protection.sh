@@ -56,8 +56,8 @@ gh api "repos/${REPO}/rulesets" --method POST --input - <<'EOF'
           { "context": "Build" },
           { "context": "Test (Node 22, ubuntu-latest)" },
           { "context": "Test (Node 22, macos-latest)" },
-          { "context": "Test (Node 22, windows-latest)" },
           { "context": "Test (Node 24, ubuntu-latest)" },
+          { "context": "Windows Skill Validation" },
           { "context": "Complete Validation" }
         ],
         "strict_required_status_checks_policy": true
@@ -69,7 +69,7 @@ EOF
 
 echo ""
 echo "Ruleset configured:"
-echo "  - Required checks: Build, Test (Node 22/24 on Linux, macOS, and Windows), Complete Validation"
+echo "  - Required checks: Build, Node 22/24 tests, Windows Skill Validation, Complete Validation"
 echo "  - Branches must be up to date"
 echo "  - No force pushes"
 echo "  - No branch deletion"
