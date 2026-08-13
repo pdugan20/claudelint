@@ -4,7 +4,7 @@
 [![npm version](https://img.shields.io/npm/v/claude-code-lint?logo=npm)](https://www.npmjs.com/package/claude-code-lint)
 [![docs](https://img.shields.io/badge/docs-claudelint.com-blue)](https://claudelint.com)
 [![codecov](https://codecov.io/gh/pdugan20/claudelint/graph/badge.svg?token=DNB36W9D5A)](https://codecov.io/gh/pdugan20/claudelint)
-[![Node.js](https://img.shields.io/node/v/claude-code-lint?logo=node.js)](https://nodejs.org)
+[![Node.js](https://img.shields.io/node/v/claude-code-lint?logo=node.js&logoColor=white&color=339933&label=Node.js)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 
 A linter for Claude Code projects. Validates CLAUDE.md files, skills, settings, hooks, MCP servers, plugins, and more.
