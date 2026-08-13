@@ -7,6 +7,7 @@
 
 import { Reporter } from '../../src/utils/reporting/reporting';
 import { ValidationResult } from '../../src/validators/file-validator';
+import { join } from 'path';
 
 describe('Reporter snapshot', () => {
   let consoleLogSpy: jest.SpyInstance;
@@ -27,6 +28,10 @@ describe('Reporter snapshot', () => {
     return consoleLogSpy.mock.calls.map((args: unknown[]) => args.join(' ')).join('\n');
   }
 
+  function projectPath(...segments: string[]): string {
+    return join(process.cwd(), 'project', ...segments);
+  }
+
   it('should produce stable stylish output for a mixed set of issues', () => {
     const reporter = new Reporter({ format: 'stylish', color: false });
 
@@ -34,27 +39,27 @@ describe('Reporter snapshot', () => {
       errors: [
         {
           message: 'File exceeds 40KB limit (50001 bytes)',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           severity: 'error',
           ruleId: 'claude-md-size',
         },
         {
           message: 'Imported file not found: config.md',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 12,
           severity: 'error',
           ruleId: 'claude-md-import-missing',
         },
         {
           message: 'Imported file not found: rules.md',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 15,
           severity: 'error',
           ruleId: 'claude-md-import-missing',
         },
         {
           message: 'Imported file not found: extra.md',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 20,
           severity: 'error',
           ruleId: 'claude-md-import-missing',
@@ -63,7 +68,7 @@ describe('Reporter snapshot', () => {
       warnings: [
         {
           message: 'Too many sections (21, max 20)',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           severity: 'warning',
           ruleId: 'claude-md-content-too-many-sections',
         },
@@ -82,14 +87,14 @@ describe('Reporter snapshot', () => {
       errors: [
         {
           message: 'Must contain only lowercase letters',
-          file: '/project/.claude/skills/my-skill/SKILL.md',
+          file: projectPath('.claude', 'skills', 'my-skill', 'SKILL.md'),
           line: 2,
           severity: 'error',
           ruleId: 'skill-name',
         },
         {
           message: 'Description must be at least 10 characters',
-          file: '/project/.claude/skills/my-skill/SKILL.md',
+          file: projectPath('.claude', 'skills', 'my-skill', 'SKILL.md'),
           severity: 'error',
           ruleId: 'skill-description',
         },
@@ -97,7 +102,7 @@ describe('Reporter snapshot', () => {
       warnings: [
         {
           message: 'Missing "## Usage" section',
-          file: '/project/.claude/skills/my-skill/SKILL.md',
+          file: projectPath('.claude', 'skills', 'my-skill', 'SKILL.md'),
           line: 8,
           severity: 'warning',
           ruleId: 'skill-body-missing-usage-section',
@@ -117,7 +122,7 @@ describe('Reporter snapshot', () => {
       errors: [
         {
           message: 'File exceeds 40KB limit (50001 bytes)',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           severity: 'error',
           ruleId: 'claude-md-size',
           explanation: 'Oversized files cause slow loading and may exceed context window limits.',
@@ -127,7 +132,7 @@ describe('Reporter snapshot', () => {
       warnings: [
         {
           message: 'Too many sections (21, max 20)',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           severity: 'warning',
           ruleId: 'claude-md-content-too-many-sections',
           explanation: 'A bloated CLAUDE.md is hard for both humans and AI to navigate.',
@@ -149,35 +154,35 @@ describe('Reporter snapshot', () => {
       warnings: [
         {
           message: 'File reference "src/rules/" does not exist',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 10,
           severity: 'warning',
           ruleId: 'claude-md-file-reference-invalid',
         },
         {
           message: 'File reference "docs/api/" does not exist',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 20,
           severity: 'warning',
           ruleId: 'claude-md-file-reference-invalid',
         },
         {
           message: 'File reference "tests/" does not exist',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 30,
           severity: 'warning',
           ruleId: 'claude-md-file-reference-invalid',
         },
         {
           message: 'File reference "lib/" does not exist',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 40,
           severity: 'warning',
           ruleId: 'claude-md-file-reference-invalid',
         },
         {
           message: 'File reference "config/" does not exist',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 50,
           severity: 'warning',
           ruleId: 'claude-md-file-reference-invalid',
@@ -197,7 +202,7 @@ describe('Reporter snapshot', () => {
       errors: [
         {
           message: 'Test error message',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 5,
           severity: 'error',
           ruleId: 'claude-md-size',
@@ -206,7 +211,7 @@ describe('Reporter snapshot', () => {
       warnings: [
         {
           message: 'Test warning message',
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 10,
           severity: 'warning',
           ruleId: 'claude-md-size',
@@ -229,7 +234,7 @@ describe('Reporter snapshot', () => {
       errors: [
         {
           message: longMessage,
-          file: '/project/CLAUDE.md',
+          file: projectPath('CLAUDE.md'),
           line: 1,
           severity: 'error',
           ruleId: 'claude-md-size',
