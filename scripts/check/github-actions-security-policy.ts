@@ -52,6 +52,104 @@ const FORBIDDEN_ACTION =
 const APP_TOKEN_ACTION = /(?:^|\/)create-github-app-token$/i;
 const DYNAMIC_EXPRESSION = /\${{/;
 
+const RENOVATE_DISABLED_BOOTSTRAP = {
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  enabled: false,
+  extends: ['config:recommended'],
+  enabledManagers: ['npm', 'github-actions'],
+  timezone: 'America/Los_Angeles',
+  dependencyDashboard: true,
+  dependencyDashboardAutoclose: true,
+  labels: ['dependencies'],
+  semanticCommits: 'enabled',
+  branchConcurrentLimit: 3,
+  prConcurrentLimit: 3,
+  prHourlyLimit: 2,
+  rebaseWhen: 'behind-base-branch',
+  platformAutomerge: true,
+  automergeType: 'pr',
+  automergeStrategy: 'squash',
+  internalChecksFilter: 'strict',
+  minimumReleaseAgeBehaviour: 'timestamp-required',
+  prCreation: 'not-pending',
+  ignoreUnstable: true,
+  vulnerabilityAlerts: { enabled: false },
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ['before 6am on monday'],
+    dependencyDashboardApproval: true,
+    automerge: false,
+  },
+  packageRules: [
+    {
+      description: 'Default every enabled manager to dashboard approval',
+      matchManagers: ['npm', 'github-actions'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Stable npm runtime non-major updates',
+      matchManagers: ['npm'],
+      matchDepTypes: ['dependencies', 'optionalDependencies'],
+      matchCurrentVersion: '/^[1-9]\\d*\\.\\d+\\.\\d+$/',
+      matchUpdateTypes: ['patch', 'minor'],
+      groupName: 'runtime dependencies',
+      minimumReleaseAge: '7 days',
+      dependencyDashboardApproval: false,
+      automerge: true,
+    },
+    {
+      description: 'Stable npm development non-major updates',
+      matchManagers: ['npm'],
+      matchDepTypes: ['devDependencies'],
+      matchCurrentVersion: '/^[1-9]\\d*\\.\\d+\\.\\d+$/',
+      matchUpdateTypes: ['patch', 'minor'],
+      groupName: 'development dependencies',
+      minimumReleaseAge: '7 days',
+      dependencyDashboardApproval: false,
+      automerge: true,
+    },
+    {
+      description: 'Runtime and package-manager contracts require exception handling',
+      matchManagers: ['npm'],
+      matchPackageNames: ['node', 'npm', 'typescript', '@types/node'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'GitHub Actions require immutable-provenance reconciliation',
+      matchManagers: ['github-actions'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Pin, digest, and unsupported update types require exception handling',
+      matchUpdateTypes: ['digest', 'pin', 'pinDigest', 'rollback', 'bump', 'replacement'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Lockfile maintenance requires exception handling',
+      matchUpdateTypes: ['lockFileMaintenance'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Pre-1.0 updates require exception handling',
+      matchCurrentVersion: '/^0\\./',
+      matchUpdateTypes: ['patch', 'minor', 'major'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'All major updates require exception handling',
+      matchUpdateTypes: ['major'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+  ],
+} as const;
+
 const FORBIDDEN_RUN_PATTERNS: ReadonlyArray<readonly [RegExp, string]> = [
   [/\bgh\s+pr\s+merge\b/i, 'GitHub CLI pull request merge'],
   [/\bgh\s+pr\s+review\b[^\n]*(?:--approve|-a)\b/i, 'GitHub CLI pull request approval'],
@@ -452,6 +550,22 @@ function checkDependabot(
   }
 }
 
+function checkRenovate(projectRoot: string, violations: string[]): void {
+  const relativePath = 'renovate.json';
+  try {
+    const source = readFileSync(join(projectRoot, relativePath), 'utf8');
+    const parsed = JSON.parse(source) as unknown;
+    load(source);
+    if (JSON.stringify(parsed) !== JSON.stringify(RENOVATE_DISABLED_BOOTSTRAP)) {
+      violations.push(`${relativePath}: exact disabled-first Renovate policy drifted`);
+    }
+  } catch (error) {
+    violations.push(
+      `${relativePath}: could not read exact disabled-first policy (${String(error)})`
+    );
+  }
+}
+
 function readProvenance(
   projectRoot: string,
   violations: string[]
@@ -737,6 +851,7 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
       );
     }
   }
+  checkRenovate(projectRoot, violations);
   checkDependabot(projectRoot, profiles, usedProfiles, violations);
   for (const relativePath of Object.keys(profiles)) {
     if (!usedProfiles.has(relativePath)) {
