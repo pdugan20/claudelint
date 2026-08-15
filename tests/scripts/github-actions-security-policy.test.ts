@@ -22,6 +22,7 @@ const REQUIRED_FILES = [
   '.github/workflows/upstream-watch.yml',
   '.github/workflows/welcome.yml',
   'package.json',
+  'renovate.json',
   'scripts/check/github-automation-profiles.json',
   'scripts/check/github-actions-provenance.json',
   'scripts/util/package-plugin.sh',
@@ -852,6 +853,65 @@ ${checkoutStep()}`
       replace(root, '.github/dependabot.yml', from, to);
 
       expect(messages(root)).toContain('dependabot');
+    });
+  });
+
+  describe('disabled-first Renovate ownership', () => {
+    test.each([
+      ['enabled state', '  "enabled": false,', '  "enabled": true,'],
+      [
+        'manager ownership',
+        '  "enabledManagers": ["npm", "github-actions"],',
+        '  "enabledManagers": ["npm", "pep621"],',
+      ],
+      ['branch concurrency', '  "branchConcurrentLimit": 3,', '  "branchConcurrentLimit": 10,'],
+      [
+        'release age',
+        '      "minimumReleaseAge": "7 days",',
+        '      "minimumReleaseAge": "1 day",',
+      ],
+      [
+        'unsafe automatic update type',
+        '      "matchUpdateTypes": ["patch", "minor"],',
+        '      "matchUpdateTypes": ["patch", "minor", "digest"],',
+      ],
+      [
+        'approval gate',
+        '      "description": "Pin, digest, and unsupported update types require exception handling",\n      "matchUpdateTypes": [',
+        '      "description": "Pin, digest, and unsupported update types require exception handling",\n      "matchManagers": ["npm"],\n      "matchUpdateTypes": [',
+      ],
+    ])('rejects drift in %s', (_name, from, to) => {
+      replace(root, 'renovate.json', from, to);
+
+      expect(messages(root)).toContain('exact disabled-first Renovate policy drifted');
+    });
+
+    test('rejects duplicate-key ambiguity even when the effective value remains disabled', () => {
+      replace(
+        root,
+        'renovate.json',
+        '  "enabled": false,',
+        '  "enabled": true,\n  "enabled": false,'
+      );
+
+      expect(messages(root)).toContain('duplicated mapping key');
+    });
+
+    test('rejects malformed JSON before applying policy semantics', () => {
+      write(root, 'renovate.json', '{"enabled": false');
+
+      expect(messages(root)).toContain('could not read exact disabled-first policy');
+    });
+
+    test('keeps current Dependabot ownership mandatory during the disabled bootstrap', () => {
+      replace(
+        root,
+        '.github/dependabot.yml',
+        '    open-pull-requests-limit: 10',
+        '    open-pull-requests-limit: 0'
+      );
+
+      expect(messages(root)).toContain('exact Dependabot profile drifted');
     });
   });
 });
