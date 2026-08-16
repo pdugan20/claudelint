@@ -52,9 +52,10 @@ const FORBIDDEN_ACTION =
 const APP_TOKEN_ACTION = /(?:^|\/)create-github-app-token$/i;
 const DYNAMIC_EXPRESSION = /\${{/;
 
-const RENOVATE_DISABLED_BOOTSTRAP = {
+// Activation is the ABSENCE of an enabled key: the exact-serialization
+// equality below rejects both a re-disable and a redundant enabled:true.
+const RENOVATE_ACTIVATED_CONTRACT = {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  enabled: false,
   extends: ['config:recommended'],
   enabledManagers: ['npm', 'github-actions'],
   timezone: 'America/Los_Angeles',
@@ -556,12 +557,12 @@ function checkRenovate(projectRoot: string, violations: string[]): void {
     const source = readFileSync(join(projectRoot, relativePath), 'utf8');
     const parsed = JSON.parse(source) as unknown;
     load(source);
-    if (JSON.stringify(parsed) !== JSON.stringify(RENOVATE_DISABLED_BOOTSTRAP)) {
-      violations.push(`${relativePath}: exact disabled-first Renovate policy drifted`);
+    if (JSON.stringify(parsed) !== JSON.stringify(RENOVATE_ACTIVATED_CONTRACT)) {
+      violations.push(`${relativePath}: exact activated Renovate policy drifted`);
     }
   } catch (error) {
     violations.push(
-      `${relativePath}: could not read exact disabled-first policy (${String(error)})`
+      `${relativePath}: could not read exact activated policy (${String(error)})`
     );
   }
 }
