@@ -840,13 +840,13 @@ ${checkoutStep()}`
 
   describe('Dependabot hardening', () => {
     test.each([
-      ['cooldown', '      default-days: 14', '      default-days: 1'],
-      ['grouping', '        patterns: ["*"]', '        patterns: ["actions/*"]'],
+      ['security prefix', '      prefix: "chore"', '      prefix: "build"'],
       [
-        'major ignore',
-        '        update-types: ["version-update:semver-major"]',
-        '        update-types: []',
+        'reintroduced major ignore',
+        '      - "pdugan20"\n\n  # GitHub Actions',
+        '      - "pdugan20"\n    ignore:\n      - dependency-name: "*"\n        update-types: ["version-update:semver-major"]\n\n  # GitHub Actions',
       ],
+      ['actions label', '      - "github-actions"', '      - "gha"'],
       ['interval', '      interval: "weekly"', '      interval: "daily"'],
       ['directory', '    directory: "/"', '    directory: "/packages/cli"'],
     ])('rejects drift in %s', (_name, from, to) => {
@@ -856,9 +856,18 @@ ${checkoutStep()}`
     });
   });
 
-  describe('disabled-first Renovate ownership', () => {
+  describe('activated Renovate ownership', () => {
     test.each([
-      ['enabled state', '  "enabled": false,', '  "enabled": true,'],
+      [
+        're-disabled state',
+        '  "$schema": "https://docs.renovatebot.com/renovate-schema.json",',
+        '  "$schema": "https://docs.renovatebot.com/renovate-schema.json",\n  "enabled": false,',
+      ],
+      [
+        'redundant enabled key',
+        '  "$schema": "https://docs.renovatebot.com/renovate-schema.json",',
+        '  "$schema": "https://docs.renovatebot.com/renovate-schema.json",\n  "enabled": true,',
+      ],
       [
         'manager ownership',
         '  "enabledManagers": ["npm", "github-actions"],',
@@ -883,32 +892,104 @@ ${checkoutStep()}`
     ])('rejects drift in %s', (_name, from, to) => {
       replace(root, 'renovate.json', from, to);
 
-      expect(messages(root)).toContain('exact disabled-first Renovate policy drifted');
+      expect(messages(root)).toContain('exact activated Renovate policy drifted');
     });
 
-    test('rejects duplicate-key ambiguity even when the effective value remains disabled', () => {
+    test('rejects duplicate-key ambiguity even when the effective value is unchanged', () => {
       replace(
         root,
         'renovate.json',
-        '  "enabled": false,',
-        '  "enabled": true,\n  "enabled": false,'
+        '  "dependencyDashboard": true,',
+        '  "dependencyDashboard": true,\n  "dependencyDashboard": true,'
       );
 
       expect(messages(root)).toContain('duplicated mapping key');
     });
 
     test('rejects malformed JSON before applying policy semantics', () => {
-      write(root, 'renovate.json', '{"enabled": false');
+      write(root, 'renovate.json', '{"dependencyDashboard": true');
 
-      expect(messages(root)).toContain('could not read exact disabled-first policy');
+      expect(messages(root)).toContain('could not read exact activated policy');
     });
 
-    test('keeps current Dependabot ownership mandatory during the disabled bootstrap', () => {
+    test('keeps the security-aware PR title gate pinned', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          subjectPattern: ^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$',
+        '          subjectPattern: ^[a-z].*$'
+      );
+
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('keeps the title-gate types allowlist pinned', () => {
+      replace(root, '.github/workflows/pr-lint.yml', '            ci\n', '');
+
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('rejects any addition to the title-gate step', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '      - uses: amannn/action-semantic-pull-request@',
+        '      - continue-on-error: true\n        uses: amannn/action-semantic-pull-request@'
+      );
+
+      expect(messages(root)).toContain('exactly uses, with, and env');
+    });
+
+    test('keeps the title-gate step unconditional', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '      - uses: amannn/action-semantic-pull-request@',
+        '      - if: false\n        uses: amannn/action-semantic-pull-request@'
+      );
+
+      expect(messages(root)).toContain('exactly uses, with, and env');
+    });
+
+    test('keeps the title-gate job unconditional', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '  validate-title:\n    name: Validate PR Title\n',
+        '  validate-title:\n    if: false\n    name: Validate PR Title\n'
+      );
+
+      expect(messages(root)).toContain('must not be conditional');
+    });
+
+    test('keeps requireScope disabled for scopeless security titles', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          requireScope: false',
+        '          requireScope: true'
+      );
+
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('rejects scope restrictions smuggled into the title gate', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          requireScope: false',
+        '          requireScope: false\n          disallowScopes: |\n            deps'
+      );
+
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('keeps the security-only Dependabot handoff mandatory after activation', () => {
       replace(
         root,
         '.github/dependabot.yml',
-        '    open-pull-requests-limit: 10',
-        '    open-pull-requests-limit: 0'
+        '    open-pull-requests-limit: 0',
+        '    open-pull-requests-limit: 10'
       );
 
       expect(messages(root)).toContain('exact Dependabot profile drifted');

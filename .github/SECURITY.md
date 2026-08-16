@@ -85,7 +85,7 @@ claudelint is a static analysis tool that:
 We use the following tools to maintain security:
 
 - **npm audit** - Automated dependency vulnerability scanning
-- **Dependabot** - Automated dependency updates
+- **Dependabot** - Automated security updates (routine version updates are owned by Renovate via `renovate.json`)
 - **CodeQL** (planned) - Static code analysis for security issues
 - **GitHub Security Advisories** - Coordinated vulnerability disclosure
 
