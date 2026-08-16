@@ -551,6 +551,35 @@ function checkDependabot(
   }
 }
 
+function checkPrLintTitleGate(projectRoot: string, violations: string[]): void {
+  const relativePath = '.github/workflows/pr-lint.yml';
+  // Load-bearing after the Dependabot security-only handoff: alert-driven
+  // security PRs carry the "[security] "/"[Security] " subject marker, and
+  // "Validate PR Title" is a required context, so narrowing this pattern
+  // makes every future security PR unmergeable.
+  const expected = '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$';
+  try {
+    const workflow = load(readFileSync(join(projectRoot, relativePath), 'utf8')) as {
+      jobs?: Record<string, { steps?: { with?: Record<string, unknown> }[] }>;
+    };
+    const patterns: unknown[] = [];
+    for (const job of Object.values(workflow.jobs ?? {})) {
+      for (const step of job.steps ?? []) {
+        if (step.with && 'subjectPattern' in step.with) {
+          patterns.push(step.with.subjectPattern);
+        }
+      }
+    }
+    if (patterns.length !== 1 || patterns[0] !== expected) {
+      violations.push(
+        `${relativePath}: PR title gate must pin exactly the security-aware subjectPattern`
+      );
+    }
+  } catch (error) {
+    violations.push(`${relativePath}: could not read PR title gate (${String(error)})`);
+  }
+}
+
 function checkRenovate(projectRoot: string, violations: string[]): void {
   const relativePath = 'renovate.json';
   try {
@@ -853,6 +882,7 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
     }
   }
   checkRenovate(projectRoot, violations);
+  checkPrLintTitleGate(projectRoot, violations);
   checkDependabot(projectRoot, profiles, usedProfiles, violations);
   for (const relativePath of Object.keys(profiles)) {
     if (!usedProfiles.has(relativePath)) {

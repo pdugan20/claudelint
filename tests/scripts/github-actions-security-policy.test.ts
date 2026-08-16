@@ -912,6 +912,17 @@ ${checkoutStep()}`
       expect(messages(root)).toContain('could not read exact activated policy');
     });
 
+    test('keeps the security-aware PR title gate pinned', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          subjectPattern: ^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$',
+        '          subjectPattern: ^[a-z].*$'
+      );
+
+      expect(messages(root)).toContain('security-aware subjectPattern');
+    });
+
     test('keeps the security-only Dependabot handoff mandatory after activation', () => {
       replace(
         root,
