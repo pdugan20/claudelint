@@ -555,24 +555,61 @@ function checkPrLintTitleGate(projectRoot: string, violations: string[]): void {
   const relativePath = '.github/workflows/pr-lint.yml';
   // Load-bearing after the Dependabot security-only handoff: alert-driven
   // security PRs carry the "[security] "/"[Security] " subject marker, and
-  // "Validate PR Title" is a required context, so narrowing this pattern
-  // makes every future security PR unmergeable.
-  const expected = '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$';
+  // "Validate PR Title" is a required context, so narrowing the pattern,
+  // requiring a scope (actions security PRs have none), or shrinking the
+  // types allowlist makes future security or Renovate PRs unmergeable.
+  const expectedTypes = [
+    'feat',
+    'fix',
+    'docs',
+    'style',
+    'refactor',
+    'perf',
+    'test',
+    'build',
+    'ci',
+    'chore',
+    'deps',
+    'revert',
+  ];
+  const expectedPattern = '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$';
   try {
     const workflow = load(readFileSync(join(projectRoot, relativePath), 'utf8')) as {
-      jobs?: Record<string, { steps?: { with?: Record<string, unknown> }[] }>;
+      jobs?: Record<string, { steps?: { with?: Record<string, unknown>; if?: unknown }[] }>;
     };
-    const patterns: unknown[] = [];
+    const gateSteps: { with?: Record<string, unknown>; if?: unknown }[] = [];
     for (const job of Object.values(workflow.jobs ?? {})) {
       for (const step of job.steps ?? []) {
         if (step.with && 'subjectPattern' in step.with) {
-          patterns.push(step.with.subjectPattern);
+          gateSteps.push(step);
         }
       }
     }
-    if (patterns.length !== 1 || patterns[0] !== expected) {
+    if (gateSteps.length !== 1 || gateSteps[0].with?.subjectPattern !== expectedPattern) {
       violations.push(
         `${relativePath}: PR title gate must pin exactly the security-aware subjectPattern`
+      );
+      return;
+    }
+    if ('if' in gateSteps[0]) {
+      violations.push(
+        `${relativePath}: PR title gate step must not be conditional (a skipped step reports the required context vacuously)`
+      );
+    }
+    const gate = gateSteps[0].with as Record<string, unknown>;
+    const types =
+      typeof gate.types === 'string'
+        ? gate.types
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+        : null;
+    if (!types || JSON.stringify(types) !== JSON.stringify(expectedTypes)) {
+      violations.push(`${relativePath}: PR title gate must pin the exact types allowlist`);
+    }
+    if (gate.requireScope !== false) {
+      violations.push(
+        `${relativePath}: PR title gate must keep requireScope false (actions security PRs carry no scope)`
       );
     }
   } catch (error) {

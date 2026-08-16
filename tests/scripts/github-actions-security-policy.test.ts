@@ -923,6 +923,34 @@ ${checkoutStep()}`
       expect(messages(root)).toContain('security-aware subjectPattern');
     });
 
+    test('keeps the title-gate types allowlist pinned', () => {
+      replace(root, '.github/workflows/pr-lint.yml', '            ci\n', '');
+
+      expect(messages(root)).toContain('exact types allowlist');
+    });
+
+    test('keeps the title-gate step unconditional', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '      - uses: amannn/action-semantic-pull-request@',
+        '      - if: false\n        uses: amannn/action-semantic-pull-request@'
+      );
+
+      expect(messages(root)).toContain('must not be conditional');
+    });
+
+    test('keeps requireScope disabled for scopeless security titles', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          requireScope: false',
+        '          requireScope: true'
+      );
+
+      expect(messages(root)).toContain('requireScope false');
+    });
+
     test('keeps the security-only Dependabot handoff mandatory after activation', () => {
       replace(
         root,
