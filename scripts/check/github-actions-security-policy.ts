@@ -555,61 +555,51 @@ function checkPrLintTitleGate(projectRoot: string, violations: string[]): void {
   const relativePath = '.github/workflows/pr-lint.yml';
   // Load-bearing after the Dependabot security-only handoff: alert-driven
   // security PRs carry the "[security] "/"[Security] " subject marker, and
-  // "Validate PR Title" is a required context, so narrowing the pattern,
-  // requiring a scope (actions security PRs have none), or shrinking the
-  // types allowlist makes future security or Renovate PRs unmergeable.
-  const expectedTypes = [
-    'feat',
-    'fix',
-    'docs',
-    'style',
-    'refactor',
-    'perf',
-    'test',
-    'build',
-    'ci',
-    'chore',
-    'deps',
-    'revert',
-  ];
-  const expectedPattern = '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$';
+  // "Validate PR Title" is a required context. The gate is pinned by exact
+  // contract equality (the checkRenovate shape): any key added to the gate
+  // step, any with-block change, and any conditional on the step or its job
+  // fails by construction rather than extending a field-by-field chase.
+  // A skipped job or step reports the required context as success.
+  const expectedWith = JSON.stringify({
+    types: 'feat\nfix\ndocs\nstyle\nrefactor\nperf\ntest\nbuild\nci\nchore\ndeps\nrevert\n',
+    requireScope: false,
+    subjectPattern: '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$',
+    subjectPatternError:
+      'The subject must start with a lowercase letter, or with the\n' +
+      'Dependabot security marker ("[security] " or "[Security] ").\n' +
+      'Example: "feat: add new validation rule"\n',
+  });
   try {
     const workflow = load(readFileSync(join(projectRoot, relativePath), 'utf8')) as {
-      jobs?: Record<string, { steps?: { with?: Record<string, unknown>; if?: unknown }[] }>;
+      jobs?: Record<string, { steps?: { with?: Record<string, unknown> }[]; if?: unknown }>;
     };
-    const gateSteps: { with?: Record<string, unknown>; if?: unknown }[] = [];
+    const gates: {
+      job: { if?: unknown };
+      step: { with?: Record<string, unknown> };
+    }[] = [];
     for (const job of Object.values(workflow.jobs ?? {})) {
       for (const step of job.steps ?? []) {
         if (step.with && 'subjectPattern' in step.with) {
-          gateSteps.push(step);
+          gates.push({ job, step });
         }
       }
     }
-    if (gateSteps.length !== 1 || gateSteps[0].with?.subjectPattern !== expectedPattern) {
-      violations.push(
-        `${relativePath}: PR title gate must pin exactly the security-aware subjectPattern`
-      );
+    if (gates.length !== 1) {
+      violations.push(`${relativePath}: exactly one PR title gate step must carry subjectPattern`);
       return;
     }
-    if ('if' in gateSteps[0]) {
+    const { job, step } = gates[0];
+    if ('if' in job) {
       violations.push(
-        `${relativePath}: PR title gate step must not be conditional (a skipped step reports the required context vacuously)`
+        `${relativePath}: PR title gate job must not be conditional (a skipped job reports the required context as success)`
       );
     }
-    const gate = gateSteps[0].with as Record<string, unknown>;
-    const types =
-      typeof gate.types === 'string'
-        ? gate.types
-            .split('\n')
-            .map((line) => line.trim())
-            .filter(Boolean)
-        : null;
-    if (!types || JSON.stringify(types) !== JSON.stringify(expectedTypes)) {
-      violations.push(`${relativePath}: PR title gate must pin the exact types allowlist`);
+    if (JSON.stringify(Object.keys(step).sort()) !== JSON.stringify(['env', 'uses', 'with'])) {
+      violations.push(`${relativePath}: PR title gate step must carry exactly uses, with, and env`);
     }
-    if (gate.requireScope !== false) {
+    if (JSON.stringify(step.with) !== expectedWith) {
       violations.push(
-        `${relativePath}: PR title gate must keep requireScope false (actions security PRs carry no scope)`
+        `${relativePath}: PR title gate with-block must equal the pinned security-aware contract`
       );
     }
   } catch (error) {
@@ -627,9 +617,7 @@ function checkRenovate(projectRoot: string, violations: string[]): void {
       violations.push(`${relativePath}: exact activated Renovate policy drifted`);
     }
   } catch (error) {
-    violations.push(
-      `${relativePath}: could not read exact activated policy (${String(error)})`
-    );
+    violations.push(`${relativePath}: could not read exact activated policy (${String(error)})`);
   }
 }
 

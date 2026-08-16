@@ -920,13 +920,24 @@ ${checkoutStep()}`
         '          subjectPattern: ^[a-z].*$'
       );
 
-      expect(messages(root)).toContain('security-aware subjectPattern');
+      expect(messages(root)).toContain('security-aware contract');
     });
 
     test('keeps the title-gate types allowlist pinned', () => {
       replace(root, '.github/workflows/pr-lint.yml', '            ci\n', '');
 
-      expect(messages(root)).toContain('exact types allowlist');
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('rejects any addition to the title-gate step', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '      - uses: amannn/action-semantic-pull-request@',
+        '      - continue-on-error: true\n        uses: amannn/action-semantic-pull-request@'
+      );
+
+      expect(messages(root)).toContain('exactly uses, with, and env');
     });
 
     test('keeps the title-gate step unconditional', () => {
@@ -935,6 +946,17 @@ ${checkoutStep()}`
         '.github/workflows/pr-lint.yml',
         '      - uses: amannn/action-semantic-pull-request@',
         '      - if: false\n        uses: amannn/action-semantic-pull-request@'
+      );
+
+      expect(messages(root)).toContain('exactly uses, with, and env');
+    });
+
+    test('keeps the title-gate job unconditional', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '  validate-title:\n    name: Validate PR Title\n',
+        '  validate-title:\n    if: false\n    name: Validate PR Title\n'
       );
 
       expect(messages(root)).toContain('must not be conditional');
@@ -948,7 +970,18 @@ ${checkoutStep()}`
         '          requireScope: true'
       );
 
-      expect(messages(root)).toContain('requireScope false');
+      expect(messages(root)).toContain('security-aware contract');
+    });
+
+    test('rejects scope restrictions smuggled into the title gate', () => {
+      replace(
+        root,
+        '.github/workflows/pr-lint.yml',
+        '          requireScope: false',
+        '          requireScope: false\n          disallowScopes: |\n            deps'
+      );
+
+      expect(messages(root)).toContain('security-aware contract');
     });
 
     test('keeps the security-only Dependabot handoff mandatory after activation', () => {
