@@ -1,18 +1,18 @@
 ---
-description: "Output style name must match parent directory name"
+description: "Output style name must match the name its path implies"
 ---
 
 # output-style-name-directory-mismatch
 
-<RuleHeader description="Output style name must match parent directory name" severity="error" :fixable="false" :configurable="false" category="Output Styles" />
+<RuleHeader description="Output style name must match the name its path implies" severity="error" :fixable="false" :configurable="false" category="Output Styles" />
 
 ## Rule Details
 
-This rule checks that the name field in the frontmatter of output style markdown files matches the name of the parent directory. This naming convention is required for proper organization and discovery of output styles. A mismatch means the output style may not be found when referenced by directory name, causing unexpected fallback behavior.
+Output styles are flat markdown files, and the filename becomes the style name unless the frontmatter sets `name`. This rule checks that an explicit `name` agrees with the filename, so a file cannot appear to define one style while registering another. In a directory-per-style layout the containing directory supplies the name instead, and `name` is compared with that.
 
 ### Incorrect
 
-Output style name does not match directory (file at styles/compact/README.md)
+Output style name does not match its filename (file at .claude/output-styles/compact.md)
 
 ```yaml
 ---
@@ -24,7 +24,7 @@ Output style content here.
 
 ### Correct
 
-Output style name matches directory (file at styles/compact/README.md)
+Output style name matches its filename (file at .claude/output-styles/compact.md)
 
 ```yaml
 ---
@@ -36,7 +36,7 @@ Output style content here.
 
 ## How To Fix
 
-Either rename the parent directory to match the name in frontmatter, or update the name in frontmatter to match the directory name.
+Either rename the file to match the name in frontmatter, or update the name in frontmatter to match the filename. Omitting `name` entirely is also valid — the filename supplies it.
 
 ## Options
 

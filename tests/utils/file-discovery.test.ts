@@ -190,6 +190,26 @@ describe('Recursive File Discovery', () => {
   });
 
   describe('findOutputStyleFiles', () => {
+    it('should find flat output styles at .claude/output-styles/', async () => {
+      const styleDir = join(getTestDir(), '.claude', 'output-styles');
+      await mkdir(styleDir, { recursive: true });
+      await writeFile(join(styleDir, 'concise.md'), '---\nname: concise\n---\n# Style');
+
+      const files = await findOutputStyleFiles(getTestDir());
+      expect(files).toHaveLength(1);
+      expect(files[0]).toContain('output-styles/concise.md');
+    });
+
+    it('should find flat output styles shipped by a plugin', async () => {
+      const styleDir = join(getTestDir(), 'output-styles');
+      await mkdir(styleDir, { recursive: true });
+      await writeFile(join(styleDir, 'verbose.md'), '---\nname: verbose\n---\n# Style');
+
+      const files = await findOutputStyleFiles(getTestDir());
+      expect(files).toHaveLength(1);
+      expect(files[0]).toContain('output-styles/verbose.md');
+    });
+
     it('should find output styles at .claude/output-styles/', async () => {
       const styleDir = join(getTestDir(), '.claude', 'output-styles', 'concise');
       await mkdir(styleDir, { recursive: true });

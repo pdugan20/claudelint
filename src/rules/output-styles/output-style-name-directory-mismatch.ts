@@ -1,22 +1,23 @@
 /**
  * Rule: output-style-name-directory-mismatch
  *
- * Validates that output style name in frontmatter matches parent directory name
+ * Validates that the output style name in frontmatter matches the name its path implies.
  *
- * The output style name must match the directory name for proper organization and discovery.
- * This ensures consistency between file structure and output style configuration.
+ * Output styles are flat files whose filename is the style name, so `name` is compared with
+ * the filename. In a directory-per-style layout the containing directory supplies the name
+ * instead, and that is what `name` is compared with.
  */
 
 import { Rule, RuleContext } from '../../types/rule';
 import { extractFrontmatter } from '../../utils/formats/markdown';
-import { getParentDirectoryName } from '../../utils/filesystem/paths';
+import { getOutputStyleName, isFlatOutputStyle } from '../../utils/filesystem/paths';
 import { isString } from '../../utils/type-guards';
 
 export const rule: Rule = {
   meta: {
     id: 'output-style-name-directory-mismatch',
     name: 'Output Style Name Directory Mismatch',
-    description: 'Output style name must match parent directory name',
+    description: 'Output style name must match the name its path implies',
     category: 'OutputStyles',
     severity: 'error',
     fixable: false,
@@ -25,34 +26,36 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/output-styles/output-style-name-directory-mismatch',
     docs: {
       recommended: true,
-      summary: 'Ensures the output style name in frontmatter matches its parent directory name.',
+      summary: 'Ensures the output style name in frontmatter matches the name implied by its path.',
       rationale:
-        'A name/directory mismatch prevents style discovery, causing unexpected fallback behavior.',
+        'The filename is the fallback style name, so a disagreeing `name` makes it ambiguous which style a file defines.',
       details:
-        'This rule checks that the name field in the frontmatter of output style markdown files matches ' +
-        'the name of the parent directory. This naming convention is required for proper organization and ' +
-        'discovery of output styles. A mismatch means the output style may not be found when referenced ' +
-        'by directory name, causing unexpected fallback behavior.',
+        'Output styles are flat markdown files, and the filename becomes the style name unless the ' +
+        'frontmatter sets `name`. This rule checks that an explicit `name` agrees with the filename, ' +
+        'so a file cannot appear to define one style while registering another. In a ' +
+        'directory-per-style layout the containing directory supplies the name instead, and `name` is ' +
+        'compared with that.',
       examples: {
         incorrect: [
           {
             description:
-              'Output style name does not match directory (file at styles/compact/README.md)',
+              'Output style name does not match its filename (file at .claude/output-styles/compact.md)',
             code: '---\nname: verbose\n---\n\nOutput style content here.',
             language: 'yaml',
           },
         ],
         correct: [
           {
-            description: 'Output style name matches directory (file at styles/compact/README.md)',
+            description:
+              'Output style name matches its filename (file at .claude/output-styles/compact.md)',
             code: '---\nname: compact\n---\n\nOutput style content here.',
             language: 'yaml',
           },
         ],
       },
       howToFix:
-        'Either rename the parent directory to match the name in frontmatter, or update the name ' +
-        'in frontmatter to match the directory name.',
+        'Either rename the file to match the name in frontmatter, or update the name in frontmatter ' +
+        'to match the filename. Omitting `name` entirely is also valid — the filename supplies it.',
       relatedRules: ['output-style-body-too-short', 'output-style-missing-guidelines'],
     },
   },
@@ -70,11 +73,13 @@ export const rule: Rule = {
       return; // Missing name handled by output-style-name rule
     }
 
-    const dirName = getParentDirectoryName(filePath);
+    const pathName = getOutputStyleName(filePath);
 
-    if (frontmatter.name !== dirName) {
+    if (frontmatter.name !== pathName) {
+      const source = isFlatOutputStyle(filePath) ? 'file name' : 'directory name';
+
       context.report({
-        message: `Output style name "${frontmatter.name}" does not match directory name "${dirName}"`,
+        message: `Output style name "${frontmatter.name}" does not match ${source} "${pathName}"`,
       });
     }
   },
