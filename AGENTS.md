@@ -31,6 +31,15 @@ npm run docs:dev         # VitePress dev server (generates rule docs first)
 npm run docs:build       # Production website build
 ```
 
+## Code Review Rules
+
+- Flag a new or changed lint rule that lacks focused valid/invalid fixtures, stable rule
+  metadata, generated documentation, and registry/type regeneration.
+- Flag hand-edits to generated registries, rule docs, sidebar data, statistics, or the
+  changelog when their documented generator/release source should be changed instead.
+- Flag release changes that desynchronize package/plugin/marketplace versions or bypass
+  the documented OIDC trusted-publishing contract.
+
 ## Auto-Generated Files
 
 **Do NOT hand-edit these files — they are overwritten by scripts:**
