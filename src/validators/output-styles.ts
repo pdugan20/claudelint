@@ -2,7 +2,7 @@ import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-va
 import { findOutputStyleFiles } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
-import { basename, dirname } from 'path';
+import { getOutputStyleName } from '../utils/filesystem/paths';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -61,9 +61,10 @@ export class OutputStylesValidator extends FileValidator {
     const allOutputStyleFiles = await findOutputStyleFiles(this.basePath);
 
     if (this.specificOutputStyle) {
-      // Filter to specific output style by parent directory name
+      // Filter by the style name the path implies: the filename for flat files, the
+      // containing directory for a directory-per-style layout.
       return allOutputStyleFiles.filter(
-        (file) => basename(dirname(file)) === this.specificOutputStyle
+        (file) => getOutputStyleName(file) === this.specificOutputStyle
       );
     }
 

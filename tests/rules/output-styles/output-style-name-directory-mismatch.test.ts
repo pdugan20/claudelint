@@ -12,6 +12,19 @@ describe('output-style-name-directory-mismatch', () => {
     await ruleTester.run('output-style-name-directory-mismatch', rule, {
       valid: [
         {
+          content: '---\nname: concise\ndescription: Concise output\n---\n# Style',
+          filePath: '/path/to/.claude/output-styles/concise.md',
+        },
+        {
+          content: '---\nname: signal-only\ndescription: Terse output\n---\n# Style',
+          filePath: 'output-styles/signal-only.md',
+        },
+        {
+          // The filename supplies the name when frontmatter omits it.
+          content: '---\ndescription: Concise output\n---\n# Style',
+          filePath: '/path/to/.claude/output-styles/concise.md',
+        },
+        {
           content: '---\nname: code-style\ndescription: Formats code output\n---\n# Style',
           filePath: '/path/to/.claude/output-styles/code-style/concise.md',
         },
@@ -26,6 +39,24 @@ describe('output-style-name-directory-mismatch', () => {
       ],
 
       invalid: [
+        {
+          content: '---\nname: verbose\ndescription: Concise output\n---\n# Style',
+          filePath: '/path/to/.claude/output-styles/concise.md',
+          errors: [
+            {
+              message: 'Output style name "verbose" does not match file name "concise"',
+            },
+          ],
+        },
+        {
+          content: '---\nname: wrong-name\ndescription: Terse output\n---\n# Style',
+          filePath: 'output-styles/signal-only.md',
+          errors: [
+            {
+              message: 'Output style name "wrong-name" does not match file name "signal-only"',
+            },
+          ],
+        },
         {
           content: '---\nname: wrong-name\ndescription: Formats code output\n---\n# Style',
           filePath: '/path/to/.claude/output-styles/code-style/concise.md',

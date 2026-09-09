@@ -32,8 +32,16 @@ export const SKILL_PATTERNS = ['**/.claude/skills/*/SKILL.md', 'skills/*/SKILL.m
 /** Agent files (flat .md files named after the agent) */
 export const AGENT_PATTERNS = ['.claude/agents/*.md', 'agents/*.md'] as const;
 
-/** Output style markdown files */
+/**
+ * Output style markdown files.
+ *
+ * Flat files are the documented layout: "The file name becomes the style name unless you
+ * set `name` in the frontmatter." Plugins ship them in an `output-styles/` directory.
+ * The directory-per-style patterns are retained so existing nested trees keep validating.
+ */
 export const OUTPUT_STYLE_PATTERNS = [
+  '.claude/output-styles/*.md',
+  'output-styles/*.md',
   '.claude/output-styles/*/*.md',
   'output-styles/*/*.md',
 ] as const;
@@ -77,6 +85,8 @@ export const FORMATTABLE_MARKDOWN = [
   'skills/*/SKILL.md',
   '.claude/agents/*.md',
   'agents/*.md',
+  '.claude/output-styles/*.md',
+  'output-styles/*.md',
   '.claude/output-styles/*/*.md',
   'output-styles/*/*.md',
   '.claude/commands/**/*.md',
@@ -140,7 +150,12 @@ export const VALIDATOR_FILE_PATTERNS: Record<string, string[]> = {
   mcp: ['**/.mcp.json'],
   settings: ['**/.claude/settings.json', '**/.claude/settings.local.json'],
   agents: ['**/.claude/agents/*.md', 'agents/*.md'],
-  'output-styles': ['**/.claude/output-styles/*/*.md', 'output-styles/*/*.md'],
+  'output-styles': [
+    '**/.claude/output-styles/*.md',
+    'output-styles/*.md',
+    '**/.claude/output-styles/*/*.md',
+    'output-styles/*/*.md',
+  ],
   plugin: ['**/plugin.json', '**/.claude-plugin/marketplace.json'],
   lsp: ['**/.claude/lsp.json'],
   commands: ['**/.claude/commands/**/*', 'commands/**/*'],
