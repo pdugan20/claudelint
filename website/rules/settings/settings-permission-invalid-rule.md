@@ -8,7 +8,7 @@ description: "Permission rules must use valid Tool(pattern) syntax"
 
 ## Rule Details
 
-This rule checks the syntax of permission rule strings in settings.json. Each rule must be either a plain tool name like "Bash" or a tool name with a pattern like "Bash(npm run *)". It detects unmatched parentheses, empty rule strings, and malformed patterns. Incorrect syntax prevents the permission system from matching commands properly, which can lead to unexpected access behavior.
+This rule checks the syntax of permission rule strings in settings.json and settings.local.json. Each rule must be either a plain tool name like "Bash" or a tool name with a pattern like "Bash(npm run *)". It checks the outer delimiter, empty rule strings, and MCP specifiers ignored in settings. Parentheses inside a specifier are literal. Incorrect syntax prevents the permission system from matching commands properly, which can lead to unexpected access behavior.
 
 ### Incorrect
 
@@ -46,7 +46,7 @@ Valid permission rules with proper syntax
 
 ## How To Fix
 
-Ensure each permission rule uses the format "Tool" or "Tool(pattern)". Check for matched parentheses and non-empty values. Remove any trailing or leading whitespace.
+Ensure each permission rule uses the format "Tool" or "Tool(pattern)". Check for outer parentheses and non-empty values. Remove any trailing or leading whitespace.
 
 ## Options
 

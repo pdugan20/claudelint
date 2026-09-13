@@ -156,3 +156,43 @@ Primary migration references: [Commander 15](https://github.com/tj/commander.js/
 [js-yaml 5](https://github.com/nodeca/js-yaml/blob/master/docs/migrate_v4_to_v5.md),
 [Inquirer](https://github.com/SBoudrias/Inquirer.js/blob/main/packages/inquirer/package.json),
 and [ESLint 10](https://eslint.org/docs/latest/use/migrate-to-10.0.0).
+
+## Permission and command conformance follow-through
+
+The next #146 batch fixes all five Settings rules skipping `settings.local.json`.
+Raw nulls, arrays, and non-string values no longer crash semantic rules; schema errors
+remain responsible for malformed shapes. Permission syntax uses the outer delimiter,
+allowing literal parentheses inside patterns. Deny/ask tool-name globs and the `Cd`
+permission target are accepted; unanchored allow globs and MCP specifiers ignored by
+settings are diagnosed. Helper validation checks only plain paths and resolves project
+paths from the settings project, skipping shell commands and expansions.
+
+The permissions reference is now watched and yields 31 positive examples from JSON
+configurations and rule tables. `check:upstream` executes those examples through the
+three semantic permission rules for both filenames, with a fixed minimum of 15.
+Regression tests separately cover invalid syntax, allow-glob restrictions, malformed
+containers, literal parentheses, stdin, severity overrides, and helper paths.
+
+The remaining watchlist candidates were evaluated against their actual consumers:
+
+- `commands`: the current page catalogs built-in slash commands and directs custom
+  command authors to Skills. The existing watched `skills` and `plugins-reference`
+  pages govern the two migration advisories. Their documentation now correctly says
+  command files remain supported, with fixtures checking that authority. No unused
+  built-in-command snapshot is added just to match the rule category's name.
+- `permissions`: added with the concrete semantic consumer above.
+- `permission-modes`: its static `permissions.defaultMode` surface already belongs to
+  the watched settings reference; mode behavior and classifier decisions need a
+  runtime integration consumer, not another schema-key snapshot.
+- `sandboxing`: its static settings already have schema and nested-key coverage from
+  the settings reference. Operating-system isolation behavior is outside this static
+  linter; add this page with a dedicated sandbox semantic check if one is introduced.
+- `agent-teams`: enablement uses `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` in the existing
+  environment map, and `teammateMode` is covered by the settings reference. Session
+  orchestration behavior has no current static rule consumer.
+
+Decision sources checked on September 13: [commands](https://code.claude.com/docs/en/commands),
+[permissions](https://code.claude.com/docs/en/permissions),
+[permission modes](https://code.claude.com/docs/en/permission-modes),
+[sandboxing](https://code.claude.com/docs/en/sandboxing), and
+[agent teams](https://code.claude.com/docs/en/agent-teams).

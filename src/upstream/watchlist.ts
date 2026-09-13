@@ -9,7 +9,8 @@
  * than minFacts is a hard error, not an empty result.
  */
 
-export type ExtractorId = 'hook-events' | 'field-tables' | 'json-keys' | 'frontmatter-keys';
+export type ExtractorId =
+  'hook-events' | 'field-tables' | 'json-keys' | 'frontmatter-keys' | 'permission-rules';
 
 export interface WatchEntry {
   /** Stable slug; also the baseline filename. */
@@ -104,6 +105,15 @@ export const WATCHLIST: WatchEntry[] = [
     // (names) and tests/upstream/field-types.test.ts (documented example values).
     governs: ['SettingsSchema'],
     minFacts: 10,
+  },
+  {
+    id: 'permissions',
+    url: `${DOCS}/permissions.md`,
+    extractors: ['permission-rules'],
+    // This page governs semantic rules, not schema keys. check:upstream runs its
+    // examples through the three permission rules in both settings file scopes.
+    governs: [],
+    minFacts: 15,
   },
   {
     id: 'tools-reference',

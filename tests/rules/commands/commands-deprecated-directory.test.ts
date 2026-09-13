@@ -1,30 +1,29 @@
-/**
- * Tests for commands-deprecated-directory rule
- */
-
+import { mkdir, writeFile } from 'fs/promises';
+import { join } from 'path';
 import { ClaudeLintRuleTester } from '../../helpers/rule-tester';
+import { setupTestDir } from '../../helpers/test-utils';
 import { rule } from '../../../src/rules/commands/commands-deprecated-directory';
 
-const ruleTester = new ClaudeLintRuleTester();
+const tester = new ClaudeLintRuleTester();
 
 describe('commands-deprecated-directory', () => {
-  it('should pass validation tests', async () => {
-    await ruleTester.run('commands-deprecated-directory', rule, {
-      valid: [
-        // Any content (rule checks filesystem)
-        {
-          content: '{}',
-          filePath: '/test/project',
-        },
-      ],
-
+  const { getTestDir } = setupTestDir();
+  it('accepts a project using skills without legacy commands', async () => {
+    await mkdir(join(getTestDir(), '.claude/skills/greet'), { recursive: true });
+    await tester.run(rule.meta.id, rule, {
+      valid: [{ content: '', filePath: getTestDir() }],
+      invalid: [],
+    });
+  });
+  it('reports a migration advisory for supported legacy commands', async () => {
+    await mkdir(join(getTestDir(), '.claude/commands'), { recursive: true });
+    await writeFile(join(getTestDir(), '.claude/commands/greet.md'), 'Greet the user.\n');
+    await tester.run(rule.meta.id, rule, {
+      valid: [],
       invalid: [
-        // Note: This rule requires filesystem access to check if .claude/commands
-        // directory exists. Invalid cases would require creating test directories
-        // with a .claude/commands folder, which is beyond the scope of simple
-        // content-based testing. The rule warns when the deprecated commands
-        // directory is detected and suggests migrating to skills.
+        { content: '', filePath: getTestDir(), errors: [{ message: 'Legacy commands directory' }] },
       ],
     });
+    expect(rule.meta.severity).toBe('warn');
   });
 });

@@ -1,7 +1,8 @@
 /**
  * Rule: plugin-commands-deprecated
  *
- * Warns that the commands field in plugin.json is deprecated.
+ * Advises using skills for new work while the commands field remains supported.
+ * Authority: docs-baseline/plugins-reference.md and docs-baseline/skills.md.
  */
 
 import { Rule } from '../../types/rule';
@@ -11,13 +12,13 @@ import { z } from 'zod';
 type PluginManifest = z.infer<typeof PluginManifestSchema>;
 
 /**
- * Validates that plugin doesn't use deprecated commands field
+ * Identifies use of the legacy commands field
  */
 export const rule: Rule = {
   meta: {
     id: 'plugin-commands-deprecated',
-    name: 'Plugin Commands Deprecated',
-    description: 'The commands field in plugin.json is deprecated',
+    name: 'Plugin Legacy Commands',
+    description: 'The commands field uses the legacy flat-file format',
     category: 'Plugin',
     severity: 'warn',
     fixable: false,
@@ -26,18 +27,18 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/plugin/plugin-commands-deprecated',
     docs: {
       recommended: true,
-      summary: 'Warns when plugin.json uses the deprecated commands field.',
+      summary: 'Advises using skills for new work when plugin.json uses commands.',
       rationale:
-        'The commands field is deprecated; skills provide better structure, versioning, and documentation.',
+        'The commands field remains supported. Skills add a directory for supporting files and are preferred for new work.',
       details:
-        'The "commands" field in plugin.json is deprecated and has been replaced by "skills". ' +
-        'Skills provide better structure, versioning, and documentation capabilities. This rule ' +
-        'warns when a non-empty commands array is found so that plugin authors can migrate to ' +
+        'The "commands" field in plugin.json remains supported for flat Markdown files. ' +
+        'Skills add a directory for supporting files. This optional advisory ' +
+        'warns when a non-empty commands path or array is found so that plugin authors can migrate to ' +
         'the skills-based approach.',
       examples: {
         incorrect: [
           {
-            description: 'Plugin using the deprecated commands field',
+            description: 'Plugin using the legacy commands field',
             code: '{\n  "name": "my-plugin",\n  "version": "1.0.0",\n  "description": "A sample plugin",\n  "commands": [\n    "./commands/greet.md"\n  ]\n}',
             language: 'json',
           },
@@ -54,8 +55,8 @@ export const rule: Rule = {
         'Replace the "commands" field with "skills" and convert each command to the skills format. ' +
         'Skills support SKILL.md files with structured metadata, versioning, and usage examples.',
       whenNotToUse:
-        'Disable this rule if you are maintaining a legacy plugin that must support older ' +
-        'versions of Claude Code that do not recognize the skills field.',
+        'Disable this advisory when intentionally retaining supported command files on ' +
+        'current or older versions of Claude Code.',
       relatedRules: ['plugin-missing-file'],
     },
   },
@@ -78,7 +79,7 @@ export const rule: Rule = {
     // Warn if commands field is present and non-empty
     if (plugin.commands && plugin.commands.length > 0) {
       context.report({
-        message: '"commands" field is deprecated',
+        message: '"commands" uses the legacy flat-file format',
       });
     }
   },

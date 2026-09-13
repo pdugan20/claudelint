@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { HookEvents } from '../../src/schemas/constants';
 import { KNOWN_EXTENSIONS } from '../../src/upstream/extensions';
 import { extract, type Facts } from '../upstream/extract';
+import { checkPermissionExamples } from '../upstream/permissions';
 import { log } from '../util/logger';
 
 const BASELINE_DIR = join(__dirname, '../../docs-baseline');
@@ -178,7 +179,7 @@ export function deriveFacts(baselineDir: string): Facts {
   return facts;
 }
 
-function run(): void {
+async function run(): Promise<void> {
   const facts = deriveFacts(BASELINE_DIR);
 
   const ignorePath = join(BASELINE_DIR, 'upstream-ignore.json');
@@ -187,6 +188,8 @@ function run(): void {
     : EMPTY_IGNORE;
 
   const findings = conform(facts, ignore);
+  const permissions = await checkPermissionExamples(facts.permissions ?? []);
+  if (permissions.length) throw new Error(permissions.join('\n'));
 
   if (findings.length === 0) {
     log.bracket.success('claudelint conforms to the upstream docs baseline');
@@ -207,9 +210,9 @@ function run(): void {
   process.exit(1);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   try {
-    run();
+    await run();
   } catch (err) {
     log.bracket.error(err instanceof Error ? err.message : String(err));
     process.exit(1);
@@ -217,5 +220,5 @@ function main(): void {
 }
 
 if (require.main === module) {
-  main();
+  void main();
 }

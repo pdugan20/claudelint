@@ -8,7 +8,7 @@ description: "Environment variables must follow naming conventions"
 
 ## Rule Details
 
-This rule checks the `env` object in `settings.json` for three issues: (1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` convention (must start with a letter and contain only uppercase letters, digits, and underscores), (2) empty or whitespace-only values, and (3) potential hardcoded secrets in variables whose names contain "secret", "key", "token", or "password". Secrets should use variable expansion syntax instead of plain text values.
+This rule checks the `env` object in `settings.json` and `settings.local.json` for three issues: (1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` convention (must start with a letter and contain only uppercase letters, digits, and underscores), (2) empty or whitespace-only values, and (3) potential hardcoded secrets in variables whose names contain "secret", "key", "token", or "password". Secrets should use variable expansion syntax instead of plain text values.
 
 ### Incorrect
 

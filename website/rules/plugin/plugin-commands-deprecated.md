@@ -1,18 +1,18 @@
 ---
-description: "The commands field in plugin.json is deprecated"
+description: "The commands field uses the legacy flat-file format"
 ---
 
 # plugin-commands-deprecated
 
-<RuleHeader description="The commands field in plugin.json is deprecated" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="The commands field uses the legacy flat-file format" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-The "commands" field in plugin.json is deprecated and has been replaced by "skills". Skills provide better structure, versioning, and documentation capabilities. This rule warns when a non-empty commands array is found so that plugin authors can migrate to the skills-based approach.
+The "commands" field in plugin.json remains supported for flat Markdown files. Skills add a directory for supporting files. This optional advisory warns when a non-empty commands path or array is found so that plugin authors can migrate to the skills-based approach.
 
 ### Incorrect
 
-Plugin using the deprecated commands field
+Plugin using the legacy commands field
 
 ```json
 {
@@ -50,7 +50,7 @@ This rule does not have any configuration options.
 
 ## When Not To Use It
 
-Disable this rule if you are maintaining a legacy plugin that must support older versions of Claude Code that do not recognize the skills field.
+Disable this advisory when intentionally retaining supported command files on current or older versions of Claude Code.
 
 ## Related Rules
 

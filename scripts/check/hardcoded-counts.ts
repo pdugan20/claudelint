@@ -34,6 +34,8 @@ const ALLOWLISTED_PATHS = [
   'src/rules/index.ts',
   'scripts/check/hardcoded-counts.ts',
   'docs/projects/',
+  // Upstream snapshots discuss Claude Code permission rules, not our linter count.
+  'docs-baseline/',
   'CHANGELOG.md',
   'node_modules/',
   '.claude/',

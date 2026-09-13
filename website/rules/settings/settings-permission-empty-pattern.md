@@ -8,7 +8,7 @@ description: "Tool(pattern) syntax should not have empty patterns"
 
 ## Rule Details
 
-This rule checks permission entries in `settings.json` across the `allow`, `deny`, and `ask` arrays for the `Tool(pattern)` syntax and warns when the pattern inside the parentheses is empty. An empty pattern like `Bash()` is likely a mistake and should either include a glob pattern like `Bash(npm test)` or be simplified to just the tool name `Bash`. Empty patterns may cause unexpected permission matching behavior.
+This rule checks permission entries in `settings.json` and `settings.local.json` across the `allow`, `deny`, and `ask` arrays for the `Tool(pattern)` syntax and warns when the pattern inside the parentheses is empty. An empty pattern like `Bash()` is likely a mistake and should either include a glob pattern like `Bash(npm test)` or be simplified to just the tool name `Bash`. Empty patterns may cause unexpected permission matching behavior.
 
 ### Incorrect
 

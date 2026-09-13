@@ -1,8 +1,8 @@
 /**
  * Rule: commands-deprecated-directory
  *
- * Warns when .claude/commands directory is detected. Commands are deprecated
- * in favor of Skills, which provide better structure, versioning, and documentation.
+ * Advises using skills for new work when the supported legacy command format is present.
+ * Authority: docs-baseline/skills.md (custom commands and command-file compatibility).
  */
 
 import { Rule } from '../../types/rule';
@@ -10,13 +10,13 @@ import { directoryExists, resolvePath } from '../../utils/filesystem/files';
 import { join } from 'path';
 
 /**
- * Validates that the deprecated .claude/commands directory does not exist
+ * Identifies the legacy .claude/commands directory for an optional migration advisory
  */
 export const rule: Rule = {
   meta: {
     id: 'commands-deprecated-directory',
-    name: 'Commands Deprecated Directory',
-    description: 'Commands directory is deprecated, migrate to Skills',
+    name: 'Commands Legacy Directory',
+    description: 'Legacy commands directory; prefer skills for new work',
     category: 'Commands',
     severity: 'warn',
     fixable: false,
@@ -25,15 +25,16 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/commands/commands-deprecated-directory',
     docs: {
       recommended: true,
-      summary: 'Warns when the deprecated .claude/commands directory is detected.',
+      summary: 'Advises using skills for new work when .claude/commands is present.',
       rationale:
-        'Commands are deprecated and no longer receive updates; skills provide frontmatter, versioning, and better tooling.',
+        'Existing command files remain supported. Skills add a directory for supporting files and are preferred for new work.',
       details:
         'Commands were the original way to add custom slash commands to Claude Code, ' +
-        'but they have been superseded by Skills. Skills provide better structure with ' +
-        'YAML frontmatter, versioning, documentation, and reference file support. ' +
+        'and remain supported with the same invocation behavior. Skills add a directory for ' +
+        'supporting files and are preferred for new work. ' +
         'This rule fires when a `.claude/commands` directory exists in the project, ' +
-        'prompting migration to the Skills format.',
+        'as an optional migration advisory, not an unsupported-format error. The authority is the ' +
+        '[Skills reference](https://code.claude.com/docs/en/skills).',
       examples: {
         incorrect: [
           {
@@ -81,7 +82,7 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` (YAML frontmatter for name and description) ' +
+        'For new work, create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` ' +
         'and move command scripts into it. Then remove the old `.claude/commands/` directory. ' +
         'See the [Skills documentation](https://code.claude.com/docs/en/skills) for the full format.',
       whenNotToUse:
@@ -101,7 +102,7 @@ export const rule: Rule = {
     const exists = await directoryExists(commandsDir);
     if (exists) {
       context.report({
-        message: 'Commands directory is deprecated',
+        message: 'Legacy commands directory',
       });
     }
   },

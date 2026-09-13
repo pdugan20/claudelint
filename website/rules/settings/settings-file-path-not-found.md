@@ -8,7 +8,7 @@ description: "Referenced file path does not exist"
 
 ## Rule Details
 
-This rule validates that the `apiKeyHelper` path in `settings.json` points to a file that actually exists on disk. Missing files will cause runtime errors when Claude Code tries to use them. Paths containing variable expansion syntax (e.g., `${HOME}/...`) are skipped since they cannot be resolved statically.
+This rule validates that the `apiKeyHelper` path in `settings.json` and `settings.local.json` points to a file that actually exists on disk when the helper is a plain path. Shell command lines and commands on PATH are skipped. Project-relative paths resolve from the project root. Missing files will cause runtime errors when Claude Code tries to use them. Paths containing variable expansion syntax (e.g., `${HOME}/...`) or home expansion (`~/...`) are skipped since they cannot be resolved statically.
 
 ### Incorrect
 
@@ -40,7 +40,7 @@ Settings using variable expansion (skipped)
 
 ## How To Fix
 
-Verify that the file paths in `settings.json` are correct and the files exist. Check for typos in the path, ensure the file has been created, and confirm the path is relative to the correct base directory.
+Verify that the file paths in `settings.json` and `settings.local.json` are correct and the files exist. Check for typos in the path, ensure the file has been created, and confirm the path is relative to the correct base directory.
 
 ## Options
 

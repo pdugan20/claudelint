@@ -1,14 +1,14 @@
 ---
-description: "Commands directory is deprecated, migrate to Skills"
+description: "Legacy commands directory; prefer skills for new work"
 ---
 
 # commands-deprecated-directory
 
-<RuleHeader description="Commands directory is deprecated, migrate to Skills" severity="warn" :fixable="false" :configurable="false" category="Commands" />
+<RuleHeader description="Legacy commands directory; prefer skills for new work" severity="warn" :fixable="false" :configurable="false" category="Commands" />
 
 ## Rule Details
 
-Commands were the original way to add custom slash commands to Claude Code, but they have been superseded by Skills. Skills provide better structure with YAML frontmatter, versioning, documentation, and reference file support. This rule fires when a `.claude/commands` directory exists in the project, prompting migration to the Skills format.
+Commands were the original way to add custom slash commands to Claude Code, and remain supported with the same invocation behavior. Skills add a directory for supporting files and are preferred for new work. This rule fires when a `.claude/commands` directory exists in the project, as an optional migration advisory, not an unsupported-format error. The authority is the [Skills reference](https://code.claude.com/docs/en/skills).
 
 ### Incorrect
 
@@ -63,7 +63,7 @@ Invoke with `/deploy` to run the deployment pipeline.
 
 ## How To Fix
 
-Create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` (YAML frontmatter for name and description) and move command scripts into it. Then remove the old `.claude/commands/` directory. See the [Skills documentation](https://code.claude.com/docs/en/skills) for the full format.
+For new work, create a `.claude/skills/<skill-name>/` directory with a `SKILL.md` and move command scripts into it. Then remove the old `.claude/commands/` directory. See the [Skills documentation](https://code.claude.com/docs/en/skills) for the full format.
 
 ## Options
 
