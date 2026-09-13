@@ -59,11 +59,17 @@ behavior checks, rather than increasing snapshot volume without a consumer.
 
 ## Verification
 
-Build, lint, schema synchronization, the upstream hook gate, field/key conformance,
-CLI documentation examples, and the website production build have been exercised.
-One reviewer checked parser behavior and then the implementation. The full test run
-initially found only an outdated hook-count assertion; that assertion was corrected and
-the relevant suites rerun. Final verification is recorded with the completion report.
+Final verification after a clean dependency install passed:
+
+- 2,627 tests across 223 suites; all 11 snapshots passed.
+- TypeScript build, all linters, formatting, and package validation with publint 0.3.24.
+- Schema synchronization, upstream hook and field/key conformance, CLI documentation
+  examples, and bidirectional website field-table checks.
+- VitePress production build, including generated rule documentation and OG images.
+
+Review used one GPT-5.6 Luna agent at medium effort, reused for bounded parser,
+implementation, and dependency reviews. Findings were addressed and the affected
+changes re-reviewed. Exact billing is not exposed by the tools.
 
 The optional live `check:tool-names` probe could not obtain a result from the Claude CLI.
 The deterministic tool-name check against the refreshed official reference passes.
@@ -72,9 +78,23 @@ No claim is made about binary-level conformance from that unavailable probe.
 ## Dependency maintenance and publication
 
 [#200](https://github.com/pdugan20/claudelint/issues/200) is a rolling Renovate dashboard,
-not a ticket that should be closed after one update. Prioritize compatible security and
-patch updates. Review major runtime/toolchain upgrades separately, especially Node,
-TypeScript, YAML parsing, interactive prompts, and the VitePress/Vite combination.
+not a ticket that should be closed after one update. The reviewed dependency batch updates:
+
+| Dependency | Before | After | Reason |
+| --- | --- | --- | --- |
+| `fflate` | 0.7.4 | 0.7.5 | Fix the malformed ZIP64 infinite-loop advisory [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98), in the Satori development dependency tree |
+| `publint` | 0.3.21 | 0.3.24 | Compatible package-validation patch, including its required transitives |
+| `undici` override | 7.29.0 | 7.29.1 | Compatible patch for release tooling |
+
+A clean `npm ci --ignore-scripts` succeeds. `npm audit` reports zero vulnerabilities,
+down from one moderate development-dependency advisory. Production dependencies and
+package engine requirements are unchanged.
+
+Keep the `run-con` 1.3.2 override. Testing 1.3.3 revealed a new `ini` 7 dependency
+requiring Node `^22.22.2 || ^24.15.0 || >=26.0.0`; the current development runtime is
+22.18.0. Revisit that patch with an intentional Node baseline decision. Review major
+runtime/toolchain upgrades separately, especially Node, TypeScript, YAML parsing,
+interactive prompts, and the VitePress/Vite combination.
 
 Publishing remains a separate action: no push, PR, issue closure, npm release, or external
 marketplace change is included in this local work. The external marketplace's 0.7.1 pin
