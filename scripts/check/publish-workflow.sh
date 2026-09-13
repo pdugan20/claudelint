@@ -23,11 +23,11 @@ echo "Checking $WORKFLOW for known-broken patterns..."
 # patterns don't trigger the check on themselves.
 NON_COMMENT=$(grep -nvE "^\s*#" "$WORKFLOW")
 
-# 1. registry-url on setup-node injects a placeholder NODE_AUTH_TOKEN that
-#    npm tries to authenticate with instead of falling back to OIDC.
+# 1. Keep registry-url unset for the tested token-free OIDC contract.
+#    Older setup-node versions also exported a placeholder token; v7 removed it.
 if echo "$NON_COMMENT" | grep -E "^\s*[0-9]+:\s*registry-url:" >/dev/null; then
   echo "ERROR: setup-node has 'registry-url:' set"
-  echo "  This injects a placeholder NODE_AUTH_TOKEN that breaks OIDC publishing."
+  echo "  This changes the tested token-free OIDC configuration."
   echo "$NON_COMMENT" | grep -E "^\s*[0-9]+:\s*registry-url:"
   echo "  See docs/releasing.md section #3."
   ERRORS=$((ERRORS + 1))

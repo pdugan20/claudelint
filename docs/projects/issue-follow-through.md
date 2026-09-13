@@ -143,8 +143,8 @@ exports or intentional invalid fixtures were removed to silence those diagnostic
   forcing Vite 8 is a separate compatibility migration, not ordinary lock maintenance.
 - Keep release-it's Undici 7 override. Release-it 21 declares Undici 7.29.0; forcing
   Undici 8 underneath it needs separate validation.
-- GitHub action majors remain a separate workflow batch. Keep Node 22 declarations
-  while Node 22 is supported.
+- Keep Node 22 declarations while Node 22 is supported. GitHub action majors are
+  handled in the workflow batch below.
 
 Primary migration references: [Commander 15](https://github.com/tj/commander.js/releases/tag/v15.0.0),
 [js-yaml 5](https://github.com/nodeca/js-yaml/blob/master/docs/migrate_v4_to_v5.md),
@@ -197,6 +197,26 @@ navigation. Analytics and Speed Insights each inject one script across route cha
 local checks verify initialization, not production telemetry delivery. Lint passed.
 The build/tooling delta received one reused Luna review, and its pending lockfile
 finding was resolved before submission.
+
+## GitHub Actions migration
+
+The workflow batch pins setup-node 7, labeler 7, and stale 11 to their verified
+release commits and updates the provenance manifest and exact workflow profiles.
+All three actions use Node 24 internally; package test versions remain unchanged.
+
+Publishing retains its Node 24, token-free OIDC contract. Its setup-node step
+explicitly disables package-manager caching, and release commands use quoted
+`GITHUB_REF_NAME` environment values instead of interpolating tag expressions into
+shell source. The runbook now distinguishes setup-node 7 from older versions that
+exported a placeholder token.
+
+The security contracts and 121 focused tests pass, including actual release-note
+extraction, stable/prerelease arguments, and a malicious tag remaining inert. Core
+actionlint and separate ShellCheck checks of every publish workflow script pass.
+Separate invocation avoids a diagnosed hang in actionlint's external ShellCheck
+integration. Zizmor's five publish findings are resolved; its two remaining trigger
+warnings concern unchanged, pinned metadata-only workflows without checkout or
+untrusted shell execution. One reused Luna reviewer found no actionable regression.
 
 ## Permission and command conformance follow-through
 
