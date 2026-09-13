@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Reporter snapshot should produce stable compact format output 1`] = `
-"../../../../../project/CLAUDE.md:5:0: error: Test error message [claude-md-size]
-../../../../../project/CLAUDE.md:10:0: warning: Test warning message [claude-md-size]"
+"project/CLAUDE.md:5:0: error: Test error message [claude-md-size]
+project/CLAUDE.md:10:0: warning: Test warning message [claude-md-size]"
 `;
 
 exports[`Reporter snapshot should produce stable explain mode output 1`] = `
 "
-../../../../../project/CLAUDE.md (1 error, 1 warning)
+project/CLAUDE.md (1 error, 1 warning)
   0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size
         Why: Oversized files cause slow loading and may exceed context window limits.
         Fix: Split content into smaller files in .claude/rules/ and use @imports
@@ -18,7 +18,7 @@ exports[`Reporter snapshot should produce stable explain mode output 1`] = `
 
 exports[`Reporter snapshot should produce stable output with collapse rows 1`] = `
 "
-../../../../../project/CLAUDE.md (5 warnings)
+project/CLAUDE.md (5 warnings)
   10  warning  File reference "src/rules/" does not exist  claude-md-file-reference-invalid
   20  warning  File reference "docs/api/" does not exist  claude-md-file-reference-invalid
                ... and 3 more claude-md-file-reference-invalid"
@@ -26,13 +26,13 @@ exports[`Reporter snapshot should produce stable output with collapse rows 1`] =
 
 exports[`Reporter snapshot should produce stable output with message truncation 1`] = `
 "
-../../../../../project/CLAUDE.md (1 error)
+project/CLAUDE.md (1 error)
   1  error  This is a very long error message that exceeds the eighty character truncatio...  claude-md-size"
 `;
 
 exports[`Reporter snapshot should produce stable output with mixed line numbers and no-line issues 1`] = `
 "
-../../../../../project/.claude/skills/my-skill/SKILL.md (2 errors, 1 warning)
+project/.claude/skills/my-skill/SKILL.md (2 errors, 1 warning)
   2  error    Must contain only lowercase letters  skill-name
   0  error    Description must be at least 10 characters  skill-description
   8  warning  Missing "## Usage" section  skill-body-missing-usage-section"
@@ -40,7 +40,7 @@ exports[`Reporter snapshot should produce stable output with mixed line numbers 
 
 exports[`Reporter snapshot should produce stable stylish output for a mixed set of issues 1`] = `
 "
-../../../../../project/CLAUDE.md (4 errors, 1 warning)
+project/CLAUDE.md (4 errors, 1 warning)
    0  error    File exceeds 40KB limit (50001 bytes)  claude-md-size
   12  error    Imported file not found: config.md  claude-md-import-missing
   15  error    Imported file not found: rules.md  claude-md-import-missing

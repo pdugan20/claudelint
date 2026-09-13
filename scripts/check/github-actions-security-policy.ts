@@ -52,6 +52,105 @@ const FORBIDDEN_ACTION =
 const APP_TOKEN_ACTION = /(?:^|\/)create-github-app-token$/i;
 const DYNAMIC_EXPRESSION = /\${{/;
 
+// Activation is the ABSENCE of an enabled key: the exact-serialization
+// equality below rejects both a re-disable and a redundant enabled:true.
+const RENOVATE_ACTIVATED_CONTRACT = {
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['config:recommended'],
+  enabledManagers: ['npm', 'github-actions'],
+  timezone: 'America/Los_Angeles',
+  dependencyDashboard: true,
+  dependencyDashboardAutoclose: true,
+  labels: ['dependencies'],
+  semanticCommits: 'enabled',
+  branchConcurrentLimit: 3,
+  prConcurrentLimit: 3,
+  prHourlyLimit: 2,
+  rebaseWhen: 'behind-base-branch',
+  platformAutomerge: true,
+  automergeType: 'pr',
+  automergeStrategy: 'squash',
+  internalChecksFilter: 'strict',
+  minimumReleaseAgeBehaviour: 'timestamp-required',
+  prCreation: 'not-pending',
+  ignoreUnstable: true,
+  vulnerabilityAlerts: { enabled: false },
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ['before 6am on monday'],
+    dependencyDashboardApproval: true,
+    automerge: false,
+  },
+  packageRules: [
+    {
+      description: 'Default every enabled manager to dashboard approval',
+      matchManagers: ['npm', 'github-actions'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Stable npm runtime non-major updates',
+      matchManagers: ['npm'],
+      matchDepTypes: ['dependencies', 'optionalDependencies'],
+      matchCurrentVersion: '/^[1-9]\\d*\\.\\d+\\.\\d+$/',
+      matchUpdateTypes: ['patch', 'minor'],
+      groupName: 'runtime dependencies',
+      minimumReleaseAge: '7 days',
+      dependencyDashboardApproval: false,
+      automerge: true,
+    },
+    {
+      description: 'Stable npm development non-major updates',
+      matchManagers: ['npm'],
+      matchDepTypes: ['devDependencies'],
+      matchCurrentVersion: '/^[1-9]\\d*\\.\\d+\\.\\d+$/',
+      matchUpdateTypes: ['patch', 'minor'],
+      groupName: 'development dependencies',
+      minimumReleaseAge: '7 days',
+      dependencyDashboardApproval: false,
+      automerge: true,
+    },
+    {
+      description: 'Runtime and package-manager contracts require exception handling',
+      matchManagers: ['npm'],
+      matchPackageNames: ['node', 'npm', 'typescript', '@types/node'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'GitHub Actions require immutable-provenance reconciliation',
+      matchManagers: ['github-actions'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Pin, digest, and unsupported update types require exception handling',
+      matchUpdateTypes: ['digest', 'pin', 'pinDigest', 'rollback', 'bump', 'replacement'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Lockfile maintenance requires exception handling',
+      matchUpdateTypes: ['lockFileMaintenance'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'Pre-1.0 updates require exception handling',
+      matchCurrentVersion: '/^0\\./',
+      matchUpdateTypes: ['patch', 'minor', 'major'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+    {
+      description: 'All major updates require exception handling',
+      matchUpdateTypes: ['major'],
+      dependencyDashboardApproval: true,
+      automerge: false,
+    },
+  ],
+} as const;
+
 const FORBIDDEN_RUN_PATTERNS: ReadonlyArray<readonly [RegExp, string]> = [
   [/\bgh\s+pr\s+merge\b/i, 'GitHub CLI pull request merge'],
   [/\bgh\s+pr\s+review\b[^\n]*(?:--approve|-a)\b/i, 'GitHub CLI pull request approval'],
@@ -452,6 +551,76 @@ function checkDependabot(
   }
 }
 
+function checkPrLintTitleGate(projectRoot: string, violations: string[]): void {
+  const relativePath = '.github/workflows/pr-lint.yml';
+  // Load-bearing after the Dependabot security-only handoff: alert-driven
+  // security PRs carry the "[security] "/"[Security] " subject marker, and
+  // "Validate PR Title" is a required context. The gate is pinned by exact
+  // contract equality (the checkRenovate shape): any key added to the gate
+  // step, any with-block change, and any conditional on the step or its job
+  // fails by construction rather than extending a field-by-field chase.
+  // A skipped job or step reports the required context as success.
+  const expectedWith = JSON.stringify({
+    types: 'feat\nfix\ndocs\nstyle\nrefactor\nperf\ntest\nbuild\nci\nchore\ndeps\nrevert\n',
+    requireScope: false,
+    subjectPattern: '^(\\[[Ss]ecurity\\] [A-Za-z]|[a-z]).*$',
+    subjectPatternError:
+      'The subject must start with a lowercase letter, or with the\n' +
+      'Dependabot security marker ("[security] " or "[Security] ").\n' +
+      'Example: "feat: add new validation rule"\n',
+  });
+  try {
+    const workflow = load(readFileSync(join(projectRoot, relativePath), 'utf8')) as {
+      jobs?: Record<string, { steps?: { with?: Record<string, unknown> }[]; if?: unknown }>;
+    };
+    const gates: {
+      job: { if?: unknown };
+      step: { with?: Record<string, unknown> };
+    }[] = [];
+    for (const job of Object.values(workflow.jobs ?? {})) {
+      for (const step of job.steps ?? []) {
+        if (step.with && 'subjectPattern' in step.with) {
+          gates.push({ job, step });
+        }
+      }
+    }
+    if (gates.length !== 1) {
+      violations.push(`${relativePath}: exactly one PR title gate step must carry subjectPattern`);
+      return;
+    }
+    const { job, step } = gates[0];
+    if ('if' in job) {
+      violations.push(
+        `${relativePath}: PR title gate job must not be conditional (a skipped job reports the required context as success)`
+      );
+    }
+    if (JSON.stringify(Object.keys(step).sort()) !== JSON.stringify(['env', 'uses', 'with'])) {
+      violations.push(`${relativePath}: PR title gate step must carry exactly uses, with, and env`);
+    }
+    if (JSON.stringify(step.with) !== expectedWith) {
+      violations.push(
+        `${relativePath}: PR title gate with-block must equal the pinned security-aware contract`
+      );
+    }
+  } catch (error) {
+    violations.push(`${relativePath}: could not read PR title gate (${String(error)})`);
+  }
+}
+
+function checkRenovate(projectRoot: string, violations: string[]): void {
+  const relativePath = 'renovate.json';
+  try {
+    const source = readFileSync(join(projectRoot, relativePath), 'utf8');
+    const parsed = JSON.parse(source) as unknown;
+    load(source);
+    if (JSON.stringify(parsed) !== JSON.stringify(RENOVATE_ACTIVATED_CONTRACT)) {
+      violations.push(`${relativePath}: exact activated Renovate policy drifted`);
+    }
+  } catch (error) {
+    violations.push(`${relativePath}: could not read exact activated policy (${String(error)})`);
+  }
+}
+
 function readProvenance(
   projectRoot: string,
   violations: string[]
@@ -737,6 +906,8 @@ export function checkGitHubActionsSecurity(projectRoot: string): string[] {
       );
     }
   }
+  checkRenovate(projectRoot, violations);
+  checkPrLintTitleGate(projectRoot, violations);
   checkDependabot(projectRoot, profiles, usedProfiles, violations);
   for (const relativePath of Object.keys(profiles)) {
     if (!usedProfiles.has(relativePath)) {
