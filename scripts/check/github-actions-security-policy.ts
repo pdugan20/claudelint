@@ -41,7 +41,7 @@ const REQUIRED_WORKFLOWS = [
 ] as const;
 
 const RELEASE_PACKAGE_SCRIPT = 'bash scripts/util/package-plugin.sh';
-const RELEASE_PACKAGE_SHA256 = 'a34a41ecdda6ffe2174f5d9ac2237f16fd602685162efb1aee45c5b1e9f552b8';
+const RELEASE_PACKAGE_SHA256 = 'e66477775e64e21bcbeff56eb409ca9815c1914332f5e992c92e4f1b4a24c066';
 const PROFILE_MANIFEST = 'scripts/check/github-automation-profiles.json';
 const BUILTIN_GITHUB_TOKEN = /^\${{\s*(?:github\.token|secrets\.GITHUB_TOKEN)\s*}}$/;
 const SEMVER_COMMENT = /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;

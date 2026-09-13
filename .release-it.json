@@ -26,17 +26,50 @@
       "preset": {
         "name": "conventionalcommits",
         "types": [
-          { "type": "feat", "section": "Features" },
-          { "type": "fix", "section": "Bug Fixes" },
-          { "type": "perf", "section": "Performance Improvements" },
-          { "type": "revert", "section": "Reverts" },
-          { "type": "docs", "section": "Documentation" },
-          { "type": "style", "section": "Styles" },
-          { "type": "refactor", "section": "Code Refactoring" },
-          { "type": "test", "section": "Tests" },
-          { "type": "build", "section": "Build System" },
-          { "type": "ci", "section": "Continuous Integration" },
-          { "type": "chore", "hidden": true }
+          {
+            "type": "feat",
+            "section": "Features"
+          },
+          {
+            "type": "fix",
+            "section": "Bug Fixes"
+          },
+          {
+            "type": "perf",
+            "section": "Performance Improvements"
+          },
+          {
+            "type": "revert",
+            "section": "Reverts"
+          },
+          {
+            "type": "docs",
+            "section": "Documentation"
+          },
+          {
+            "type": "style",
+            "section": "Styles"
+          },
+          {
+            "type": "refactor",
+            "section": "Code Refactoring"
+          },
+          {
+            "type": "test",
+            "section": "Tests"
+          },
+          {
+            "type": "build",
+            "section": "Build System"
+          },
+          {
+            "type": "ci",
+            "section": "Continuous Integration"
+          },
+          {
+            "type": "chore",
+            "hidden": true
+          }
         ]
       },
       "infile": "CHANGELOG.md",
@@ -44,6 +77,9 @@
       "strictSemVer": true,
       "gitRawCommitsOpts": {
         "path": "."
+      },
+      "writerOpts": {
+        "mainTemplate": "{{> header}}\n{{#if noteGroups}}\n{{#each noteGroups}}\n\n### {{title}}\n\n{{#each notes}}\n* {{#if commit.scope}}**{{commit.scope}}:** {{/if}}{{text}}\n{{/each}}\n{{/each}}\n{{/if}}\n{{#each commitGroups}}\n\n{{#if title}}\n### {{title}}\n\n{{/if}}\n{{#each commits}}\n{{> commit root=@root}}\n{{/each}}\n{{/each}}\n{{> footer}}\n"
       }
     }
   }

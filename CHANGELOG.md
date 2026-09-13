@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.1](https://github.com/pdugan20/claudelint/compare/v0.8.0...v0.8.1) (2026-09-13)
+
+### BREAKING CHANGES
+
+* migrate to TypeScript 6 (#194)
+
+### Bug Fixes
+
+* correct autoMode.environment schema from record to array ([#191](https://github.com/pdugan20/claudelint/issues/191)) ([e6f365c](https://github.com/pdugan20/claudelint/commit/e6f365c544b349511d28a3cc304291cebaa5c33a))
+* **deps:** clear high-severity dependency vulnerabilities ([#192](https://github.com/pdugan20/claudelint/issues/192)) ([2b92faa](https://github.com/pdugan20/claudelint/commit/2b92faa420b129cf0bcf5d1922899321c01c555a))
+* discover flat output styles ([#202](https://github.com/pdugan20/claudelint/issues/202)) ([0554b5c](https://github.com/pdugan20/claudelint/commit/0554b5c9dcb5947bb3819d7feb807d4683e256a6))
+* honor enforcement flags for stdin exit code ([#203](https://github.com/pdugan20/claudelint/issues/203)) ([d852477](https://github.com/pdugan20/claudelint/commit/d852477ddab852250e73ef60907ea410b4d6505a))
+* **plugin:** include hooks in the release archive ([800f301](https://github.com/pdugan20/claudelint/commit/800f3017f5f0b3529c747e2afe81cb9c4bf55ef3))
+* **plugin:** quote the SessionStart script path ([#222](https://github.com/pdugan20/claudelint/issues/222)) ([c7fac4b](https://github.com/pdugan20/claudelint/commit/c7fac4b4c686a790bb4671a8f3e4e615f96e2299))
+
+### Documentation
+
+* add repository-specific code review guidance ([#190](https://github.com/pdugan20/claudelint/issues/190)) ([6ec4ef7](https://github.com/pdugan20/claudelint/commit/6ec4ef713896e75a13950af2da321e7163c6d372))
+* restore documentation badge ([#196](https://github.com/pdugan20/claudelint/issues/196)) ([deb2e73](https://github.com/pdugan20/claudelint/commit/deb2e735cb148849f443644a43b525944b7d6068))
+* standardize README badges ([#193](https://github.com/pdugan20/claudelint/issues/193)) ([2f292f6](https://github.com/pdugan20/claudelint/commit/2f292f68adcca4d102deb2a3d62a132f5d6863ba))
+* standardize readme badges ([#195](https://github.com/pdugan20/claudelint/issues/195)) ([94057a9](https://github.com/pdugan20/claudelint/commit/94057a9c06bed7b23f277bcfb129432e9ef8f447))
+
+### Build System
+
+* add disabled Renovate bootstrap ([#198](https://github.com/pdugan20/claudelint/issues/198)) ([4385731](https://github.com/pdugan20/claudelint/commit/4385731b2923ade7d3b225c4af3aeaf745986f14))
+* migrate to TypeScript 6 ([#194](https://github.com/pdugan20/claudelint/issues/194)) ([5aab5db](https://github.com/pdugan20/claudelint/commit/5aab5dbc41e78be388019861a60e444aea396a5f))
+
+### Continuous Integration
+
+* activate Renovate routine ownership and reduce Dependabot to security updates ([#199](https://github.com/pdugan20/claudelint/issues/199)) ([76b3033](https://github.com/pdugan20/claudelint/commit/76b3033dce930a32c22d03cdf59381d10c34e464))
+
 ## [0.8.0](https://github.com/pdugan20/claudelint/compare/v0.7.1...v0.8.0) (2026-08-09)
 
 ### Bug Fixes

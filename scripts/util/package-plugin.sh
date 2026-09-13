@@ -2,7 +2,7 @@
 #
 # Package the Claude Code plugin into a distributable .zip archive.
 #
-# The archive bundles `.claude-plugin/` and `skills/` at its root, which
+# The archive bundles `.claude-plugin/`, `hooks/`, and `skills/` at its root, which
 # is the layout `claude --plugin-url <url>` expects. It is attached to
 # each GitHub Release by .github/workflows/publish.yml so users can trial
 # the plugin for a session without registering the marketplace.
@@ -21,7 +21,7 @@ rm -f "$OUT"
 
 # `.claude-plugin` is a dotfile but is included because it is named
 # explicitly. `-x` drops macOS cruft so local runs match CI output.
-zip -r -q "$OUT" .claude-plugin skills -x '*.DS_Store'
+zip -r -q "$OUT" .claude-plugin hooks skills -x '*.DS_Store'
 
 # Fail loudly if the archive is missing the manifest --plugin-url needs.
 # `grep -c` (not -q) reads all input, so it can't SIGPIPE `unzip` under
