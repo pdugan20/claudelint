@@ -128,7 +128,7 @@ export async function getFileInfo(filePath: string, options?: { cwd?: string }):
 
   // Get validators that would run for this file
   // We'll use a minimal approach - import ValidatorRegistry directly
-  const { ValidatorRegistry } = await import('../utils/validators/factory');
+  const { ValidatorRegistry } = await import('../utils/validators/factory.js');
   const allValidators = ValidatorRegistry.getAll({
     path: filePath,
     verbose: false,

@@ -10,6 +10,7 @@
 import { Formatter, FormatterOptions, LoadFormatterOptions, LintResult } from './types';
 import { existsSync } from 'fs';
 import { resolve, isAbsolute } from 'path';
+import { pathToFileURL } from 'url';
 
 /**
  * Built-in formatter names
@@ -62,27 +63,27 @@ export async function loadFormatter(
 async function loadBuiltinFormatter(name: BuiltinFormatterName): Promise<Formatter> {
   switch (name) {
     case 'stylish': {
-      const { StylishFormatter } = await import('./formatters/stylish');
+      const { StylishFormatter } = await import('./formatters/stylish.js');
       return new StylishFormatter();
     }
 
     case 'json': {
-      const { JsonFormatter } = await import('./formatters/json');
+      const { JsonFormatter } = await import('./formatters/json.js');
       return new JsonFormatter();
     }
 
     case 'compact': {
-      const { CompactFormatter } = await import('./formatters/compact');
+      const { CompactFormatter } = await import('./formatters/compact.js');
       return new CompactFormatter();
     }
 
     case 'sarif': {
-      const { SarifFormatter } = await import('./formatters/sarif');
+      const { SarifFormatter } = await import('./formatters/sarif.js');
       return new SarifFormatter();
     }
 
     case 'github': {
-      const { GitHubFormatter } = await import('./formatters/github');
+      const { GitHubFormatter } = await import('./formatters/github.js');
       return new GitHubFormatter();
     }
 
@@ -107,7 +108,8 @@ async function loadCustomFormatter(filePath: string, cwd: string): Promise<Forma
   // Import the formatter module
   let formatterModule: { default?: Formatter } | Formatter;
   try {
-    formatterModule = (await import(resolvedPath)) as { default?: Formatter } | Formatter;
+    formatterModule = (await import(pathToFileURL(resolvedPath).href)) as
+      { default?: Formatter } | Formatter;
   } catch (error) {
     throw new Error(
       `Failed to load formatter from ${resolvedPath}: ${error instanceof Error ? error.message : String(error)}`,

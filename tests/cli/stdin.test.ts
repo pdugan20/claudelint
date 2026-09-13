@@ -92,7 +92,7 @@ describe('stdin support', () => {
 
   describe('VirtualFile support in validators', () => {
     it('ClaudeMdValidator accepts stdinContent', async () => {
-      const { ClaudeMdValidator } = await import('../../src/validators/claude-md');
+      const { ClaudeMdValidator } = await import('../../src/validators/claude-md.js');
       const validator = new ClaudeMdValidator({
         stdinContent: '# CLAUDE.md\n\nInstructions here.\n',
         stdinFilename: 'CLAUDE.md',

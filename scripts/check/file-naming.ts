@@ -181,8 +181,8 @@ async function checkRuleDocs(): Promise<void> {
     return;
   }
 
-  const ruleIdsContent = await import(ruleIdsPath);
-  const allRuleIds = ruleIdsContent.ALL_RULE_IDS || [];
+  const ruleIdsContent = require(ruleIdsPath) as typeof import('../../src/rules/rule-ids');
+  const allRuleIds: readonly string[] = ruleIdsContent.ALL_RULE_IDS || [];
 
   await walkDirectory(rulesDir, async (fullPath, relativePath) => {
     const filename = basename(fullPath);

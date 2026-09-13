@@ -469,7 +469,7 @@ describe('Custom rule using claude-code-lint/utils barrel', () => {
 
   it('should work with utilities imported from the public utils barrel', async () => {
     // Import the fixture rule that uses hasHeading, extractFrontmatter, etc.
-    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule');
+    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule.js');
 
     expect(rule.meta.id).toBe('require-changelog-heading');
 
@@ -506,7 +506,7 @@ describe('Custom rule using claude-code-lint/utils barrel', () => {
   });
 
   it('should detect invalid version in frontmatter via utils', async () => {
-    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule');
+    const { rule } = await import('../fixtures/custom-rules/utils-consumer-rule.js');
 
     const issues: Issue[] = [];
     await rule.validate({

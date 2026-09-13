@@ -129,8 +129,8 @@ async function loadRegisteredRuleIds(): Promise<Set<string>> {
     throw new Error('src/rules/rule-ids.ts not found');
   }
 
-  // Dynamically import the module
-  const ruleIdsModule = await import(ruleIdsPath);
+  // Load through ts-node's CommonJS hook; native import bypasses its TypeScript loader.
+  const ruleIdsModule = require(ruleIdsPath) as typeof import('../../src/rules/rule-ids');
   const allRuleIds: readonly string[] = ruleIdsModule.ALL_RULE_IDS || [];
 
   return new Set(allRuleIds);

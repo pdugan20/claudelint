@@ -353,7 +353,7 @@ export abstract class FileValidator {
       return virtual.content;
     }
 
-    const { readFileContent } = await import('../utils/filesystem/files');
+    const { readFileContent } = await import('../utils/filesystem/files.js');
     return readFileContent(filePath);
   }
 

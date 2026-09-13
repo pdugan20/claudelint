@@ -2,7 +2,7 @@
  * Utilities for parsing and validating markdown files
  */
 
-import yaml from 'js-yaml';
+import { loadYamlDocument } from './yaml';
 import { escapeRegExp, isImportPath } from '../patterns';
 
 export interface FrontmatterResult<T = Record<string, unknown>> {
@@ -33,7 +33,7 @@ export function extractFrontmatter<T = Record<string, unknown>>(
   const [, frontmatterYaml, markdownContent] = match;
 
   try {
-    const frontmatter = yaml.load(frontmatterYaml) as T;
+    const frontmatter = loadYamlDocument(frontmatterYaml) as T;
 
     return {
       frontmatter,

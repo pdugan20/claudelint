@@ -6,7 +6,7 @@
 
 import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
-import { load as parseYaml } from 'js-yaml';
+import { loadYamlDocument as parseYaml } from '../formats/yaml';
 import { glob } from 'glob';
 import { DiagnosticCollector } from '../diagnostics';
 

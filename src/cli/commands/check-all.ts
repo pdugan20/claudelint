@@ -115,7 +115,7 @@ export function registerCheckAllCommand(program: Command): void {
       // Resolve VCS-aware file selection (--changed, --since)
       let changedFiles: string[] | undefined;
       if (options.changed || options.since) {
-        const { getChangedFiles, getFilesSince } = await import('../utils/git-diff');
+        const { getChangedFiles, getFilesSince } = await import('../utils/git-diff.js');
         const files = options.since ? getFilesSince(options.since) : getChangedFiles();
 
         if (files === null) {
@@ -138,7 +138,7 @@ export function registerCheckAllCommand(program: Command): void {
       // Handle stdin mode (--stdin)
       if (options.stdin) {
         const stdinFilename = options.stdinFilename || 'stdin';
-        const { readStdin } = await import('../utils/stdin-reader');
+        const { readStdin } = await import('../utils/stdin-reader.js');
         const stdinContent = await readStdin();
 
         // Find matching validator(s) based on filename.

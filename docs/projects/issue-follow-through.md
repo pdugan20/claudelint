@@ -143,12 +143,6 @@ exports or intentional invalid fixtures were removed to silence those diagnostic
   forcing Vite 8 is a separate compatibility migration, not ordinary lock maintenance.
 - Keep release-it's Undici 7 override. Release-it 21 declares Undici 7.29.0; forcing
   Undici 8 underneath it needs separate validation.
-- Runtime majors need focused consumer tests: Commander 15 and Inquirer 14 are ESM-only;
-  Commander changes paired positive/negative option defaults. Chalk 6 needs the
-  CommonJS postinstall path exercised. Diff 9 needs output stability checks.
-- js-yaml 5 removes its ESM default export and changes empty-input, merge-key, and
-  scalar resolution behavior. Choose and test intentional parsing semantics before
-  replacing version 4; remove external declarations only with that migration.
 - Website analytics/Speed Insights, Satori, and GitHub action majors remain separate
   surface-specific batches. Keep Node 22 declarations while Node 22 is supported.
 
@@ -157,9 +151,38 @@ Primary migration references: [Commander 15](https://github.com/tj/commander.js/
 [Inquirer](https://github.com/SBoudrias/Inquirer.js/blob/main/packages/inquirer/package.json),
 and [ESLint 10](https://eslint.org/docs/latest/use/migrate-to-10.0.0).
 
+## Runtime dependency migration
+
+The runtime batch updates Chalk 6, Commander 15, Diff 9, Inquirer 14, js-yaml 5,
+ignore 7.0.9, and Zod 4.6.4. The published Node minimum becomes 22.13.0 to match
+Inquirer; the separate contributor toolchain floor remains unchanged.
+
+TypeScript uses `module: node20` and `moduleResolution: node16` to resolve package
+exports while emitting CommonJS for this package. Relative dynamic imports now use
+`.js`; custom formatters use file URLs to preserve Windows and special-character
+paths. The three source-registry checkers retain ts-node's CommonJS loader for
+TypeScript source files. External Inquirer and js-yaml declarations are removed
+because these packages now provide their own.
+
+The shared YAML loader preserves the established document model using js-yaml 5's
+schema/tag APIs: merge keys, dates, binary values, collection representations, base
+prefixed integers, and empty input. It keeps YAML 1.2 boolean resolution, rejecting
+an unconditional YAML 1.1 schema swap that would turn `yes` and `on` into booleans.
+Frontmatter, public rule helpers, and workspace detection share that loader. A
+migration probe matched 213 repository documents; committed regression tests cover
+its deliberate value semantics and invalid documents.
+
+Jest transforms the real Commander implementation and TypeScript to CommonJS on
+Node 22. Separate `pretest` TypeScript checking preserves checks on the complete test
+suite before isolated transformation. Actual built-module subprocess tests verify
+CJS/ESM formatter paths containing URL characters, option defaults and flags, unified
+diff dry runs, and real prompt/color module exports. The packed CLI passed invalid
+and valid settings/hook checks on Node 22.13.0, and an actual interactive Inquirer
+prompt completed on that version. API report and docs build passed.
+
 ## Permission and command conformance follow-through
 
-The next #146 batch fixes all five Settings rules skipping `settings.local.json`.
+Merged PR #227 fixes all five Settings rules skipping `settings.local.json`.
 Raw nulls, arrays, and non-string values no longer crash semantic rules; schema errors
 remain responsible for malformed shapes. Permission syntax uses the outer delimiter,
 allowing literal parentheses inside patterns. Deny/ask tool-name globs and the `Cd`
