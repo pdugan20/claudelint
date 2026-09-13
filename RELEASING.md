@@ -72,7 +72,7 @@ npm run release          # Prompts for version
 
 ## What Happens During Release
 
-`npm run release` executes this pipeline (configured in `.release-it.json`):
+`npm run release` executes this pipeline (configured in `.release-it.cjs`):
 
 1. **before:init** — Runs `npm run lint`, `npm run test`, `npm run build`
 2. **Version bump** — Updates `package.json` version
