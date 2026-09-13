@@ -26,6 +26,13 @@ If you prefer to install and configure claudelint yourself, follow these steps.
 
 Requires Node.js 22.13.0 or later.
 
+::: warning Upgrading from 0.8.x
+claudelint 0.9.0 raises the Node.js minimum from 22.0.0 to 22.13.0 for its updated
+interactive prompt dependencies. Check `node --version` in your terminal and CI
+environment, and upgrade Node before updating claudelint if necessary. Existing
+lint configuration files do not need a migration.
+:::
+
 <CodeTabs :tabs="[
   { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
   { label: 'yarn', code: 'yarn add --dev claude-code-lint' },
