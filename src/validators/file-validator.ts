@@ -1032,7 +1032,7 @@ export abstract class FileValidator {
       await rule.validate(context);
     } catch (error) {
       // Re-throw rule execution errors (operational errors, not validation issues)
-      throw new Error(`Rule '${rule.meta.id}' failed: ${formatError(error)}`);
+      throw new Error(`Rule '${rule.meta.id}' failed: ${formatError(error)}`, { cause: error });
     }
   }
 

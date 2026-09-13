@@ -16,9 +16,13 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 
 ### Prerequisites
 
-- Node.js 22.0.0 or higher
-- npm or yarn
+- Node.js 22.22.2 (run `nvm install && nvm use`), or Node 24.15+ / 26+ for development
+- npm 11+
 - Git
+
+The development toolchain uses the Node version in `.nvmrc`. npm 11+ checks the
+`devEngines` requirement before install/run commands. This contributor requirement
+does not change the published CLI's Node 22+ runtime support.
 
 ### Setup Development Environment
 

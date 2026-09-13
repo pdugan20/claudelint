@@ -8,7 +8,8 @@ export function parseYaml<T = unknown>(content: string): T {
     return yaml.load(content) as T;
   } catch (error) {
     throw new Error(
-      `Failed to parse YAML: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to parse YAML: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 }

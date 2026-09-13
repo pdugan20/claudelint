@@ -9,7 +9,9 @@ The most common contribution is [adding a validation rule](#adding-validation-ru
 
 ## Getting Started
 
-Prerequisites: Node.js 22+, npm, Git, and optionally [Claude Code](https://code.claude.com/) for testing the plugin.
+Prerequisites: Node.js 22.22.2 (see `.nvmrc`), Node 24.15+, or Node 26+; npm 11+; Git; and optionally [Claude Code](https://code.claude.com/) for testing the plugin.
+
+The contributor toolchain uses `.nvmrc` and npm's `devEngines` check. The published CLI continues to support Node 22+.
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/claudelint.git

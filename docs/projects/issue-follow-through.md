@@ -1,6 +1,7 @@
 # Issue follow-through — September 2026
 
-Work is local on `fix/217-settings-hooks`, based on the released v0.8.1 main branch.
+The issue fixes merged in [#225](https://github.com/pdugan20/claudelint/pull/225) and
+shipped as [v0.8.2](https://github.com/pdugan20/claudelint/releases/tag/v0.8.2).
 The separate PR closeout task completed its release work before this implementation.
 
 ## Completed implementation
@@ -90,12 +91,68 @@ A clean `npm ci --ignore-scripts` succeeds. `npm audit` reports zero vulnerabili
 down from one moderate development-dependency advisory. Production dependencies and
 package engine requirements are unchanged.
 
-Keep the `run-con` 1.3.2 override. Testing 1.3.3 revealed a new `ini` 7 dependency
-requiring Node `^22.22.2 || ^24.15.0 || >=26.0.0`; the current development runtime is
-22.18.0. Revisit that patch with an intentional Node baseline decision. Review major
-runtime/toolchain upgrades separately, especially Node, TypeScript, YAML parsing,
-interactive prompts, and the VitePress/Vite combination.
+The first batch retained `run-con` 1.3.2 because its 1.3.3 update adds `ini` 7,
+requiring Node `^22.22.2 || ^24.15.0 || >=26.0.0`. The separate tooling batch below
+sets that contributor baseline explicitly before applying the update.
 
-Publishing remains a separate action: no push, PR, issue closure, npm release, or external
-marketplace change is included in this local work. The external marketplace's 0.7.1 pin
-still needs to be updated to the intended released version in its own repository.
+The npm `latest` tag is 0.8.2, its `gitHead` matches the release tag, and provenance
+and registry signatures are present. An isolated consumer installed the published
+package and checked invalid events and valid agent hooks in both settings files,
+plus marketplace-neutral update guidance.
+
+External marketplace [PR #35](https://github.com/pdugan20/plugins/pull/35) updated
+its claudelint pin from 0.7.1 to 0.8.2 and merged after every required CI check passed.
+Marketplace v3.4.1 is published; its release notes match the curated changelog.
+Clean Claude Code and Codex profiles installed every entry from the published catalog
+successfully. Runtime membership remains unchanged: claudelint is Claude-only.
+
+Issues #217, #188, and #189 closed through #225. Issue #146 now marks sections 1–4
+complete while retaining its watchlist work. Rolling trackers #151 and #200 remain open.
+
+## Separate tooling batch
+
+The contributor baseline is Node 22.22.2, with Node 24.15+ and 26+ also accepted by
+`devEngines`. `.nvmrc` selects the minimum; build/check CI jobs consume it, and tests
+cover the exact minimum plus current Node 22 and 24. npm 11+ enforces the developer
+requirement. The published CLI engine remains Node 22+; this batch changes development
+dependencies, not runtime dependencies.
+
+Upgrades: ESLint 10 and JSDoc 64, commitlint 21, release-it 21 with conventional-changelog
+12, CSpell 10, Knip 6, lint-staged 17, npm-package-json-lint 11, npm-run-all2 9,
+postcss-html 2, and stylelint-config-recommended-vue 2. Compatible TypeScript ESLint,
+Node 22 declarations, and API extractor patches accompany them. ESLint's new
+`preserve-caught-error` rule exposed five existing catch/rethrow sites; they now retain
+the cause without changing their messages.
+
+Full validation passed on Node 22.22.2: 2,627 tests / 223 suites / 11 snapshots,
+lint, formatting, build, publint, the aggregate static checks, API report, and website
+build. One reused GPT-5.6 Luna reviewer checked compatibility and the CI/runtime split;
+exact billing is unavailable.
+
+Optional diagnostic commands are not clean release gates today. CSpell 9 and 10 both
+report 64 existing spelling findings across 15 pages. Knip 5 already reports unused
+files, dependencies, exports, and duplicate exports; Knip 6 additionally detects the
+system `shellcheck` and self-invoked `claudelint` binaries plus more exports. No public
+exports or intentional invalid fixtures were removed to silence those diagnostics.
+
+## Remaining dependency decisions
+
+- Keep TypeScript 6: `ts-jest@29.4.12` requires `<7`, and TypeScript ESLint 8.70 requires
+  `<6.1.0`. TypeScript 7 needs compatible test/lint tooling before installation.
+- Keep VitePress 1.6.4 and its tested Vite 6 override. VitePress still declares Vite 5;
+  forcing Vite 8 is a separate compatibility migration, not ordinary lock maintenance.
+- Keep release-it's Undici 7 override. Release-it 21 declares Undici 7.29.0; forcing
+  Undici 8 underneath it needs separate validation.
+- Runtime majors need focused consumer tests: Commander 15 and Inquirer 14 are ESM-only;
+  Commander changes paired positive/negative option defaults. Chalk 6 needs the
+  CommonJS postinstall path exercised. Diff 9 needs output stability checks.
+- js-yaml 5 removes its ESM default export and changes empty-input, merge-key, and
+  scalar resolution behavior. Choose and test intentional parsing semantics before
+  replacing version 4; remove external declarations only with that migration.
+- Website analytics/Speed Insights, Satori, and GitHub action majors remain separate
+  surface-specific batches. Keep Node 22 declarations while Node 22 is supported.
+
+Primary migration references: [Commander 15](https://github.com/tj/commander.js/releases/tag/v15.0.0),
+[js-yaml 5](https://github.com/nodeca/js-yaml/blob/master/docs/migrate_v4_to_v5.md),
+[Inquirer](https://github.com/SBoudrias/Inquirer.js/blob/main/packages/inquirer/package.json),
+and [ESLint 10](https://eslint.org/docs/latest/use/migrate-to-10.0.0).
