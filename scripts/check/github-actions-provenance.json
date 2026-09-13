@@ -12,16 +12,16 @@
     "sha": "1c4688942c71f71d4f5502a26ea67c331730fa4d"
   },
   "actions/labeler": {
-    "version": "v6.2.0",
-    "sha": "b8dd2d9be0f68b860e7dae5dae7d772984eacd6d"
+    "version": "v7.0.0",
+    "sha": "bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13"
   },
   "actions/setup-node": {
-    "version": "v6.5.0",
-    "sha": "249970729cb0ef3589644e2896645e5dc5ba9c38"
+    "version": "v7.0.0",
+    "sha": "820762786026740c76f36085b0efc47a31fe5020"
   },
   "actions/stale": {
-    "version": "v10.4.0",
-    "sha": "1e223db275d687790206a7acac4d1a11bd6fe629"
+    "version": "v11.0.0",
+    "sha": "4391f3da665fdf50b6810c1a66712fb9ba21aa93"
   },
   "actions/upload-artifact": {
     "version": "v7.0.1",

@@ -6,7 +6,7 @@ import { checkGitHubActionsSecurity } from '../../scripts/check/github-actions-s
 
 const REPOSITORY_ROOT = join(__dirname, '../..');
 const CHECKOUT_SHA = '3d3c42e5aac5ba805825da76410c181273ba90b1';
-const SETUP_NODE_SHA = '249970729cb0ef3589644e2896645e5dc5ba9c38';
+const SETUP_NODE_SHA = '820762786026740c76f36085b0efc47a31fe5020';
 const APP_TOKEN_SHA = '0123456789abcdef0123456789abcdef01234567';
 const REUSABLE_SHA = 'abcdef0123456789abcdef0123456789abcdef01';
 const GITHUB_SCRIPT_SHA = '1111111111111111111111111111111111111111';
@@ -298,7 +298,7 @@ describe('GitHub Actions capability policy', () => {
     test('rejects untrusted event expressions in privileged job and step env', () => {
       setPrivilegedWorkflow(
         root,
-        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         env:
           STEP_REF: \${{ github.event.pull_request.head.sha }}`,
         'pull_request_target'
@@ -316,7 +316,7 @@ describe('GitHub Actions capability policy', () => {
     test('rejects every dynamic privileged action input', () => {
       setPrivilegedWorkflow(
         root,
-        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         with:
           node-version: \${{ env.NODE_VERSION }}`,
         'push'
@@ -344,7 +344,7 @@ describe('GitHub Actions capability policy', () => {
     ])('rejects %s laundering through privileged env', (_name, expression) => {
       setPrivilegedWorkflow(
         root,
-        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         env:
           PR_REF: ${expression}`,
         'pull_request_target'
@@ -375,7 +375,7 @@ describe('GitHub Actions capability policy', () => {
       setCiWorkflow(
         root,
         'contents: read',
-        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         with:
           arbitrary-value: "${expression}"`
       );
@@ -462,7 +462,7 @@ jobs:
         setCiWorkflow(
           root,
           'contents: read',
-          `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+          `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         with:
           arbitrary-value: \${{ secrets.${secret} }}`
         );
@@ -602,7 +602,7 @@ jobs:
       setCiWorkflow(
         root,
         'contents: read',
-        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v6.5.0
+        `      - uses: actions/setup-node@${SETUP_NODE_SHA} # v7.0.0
         with:
           headers: "Authorization: Bearer \${{ secrets.RELEASE_PAT }}"`
       );
@@ -752,8 +752,8 @@ ${checkoutStep()}`
       ['exact permission', '      contents: write', '      contents: read'],
       [
         'normalized release body',
-        'gh release create "${{ github.ref_name }}"',
-        'gh release create --draft "${{ github.ref_name }}"',
+        'gh release create "$GITHUB_REF_NAME"',
+        'gh release create --draft "$GITHUB_REF_NAME"',
       ],
       ['ordered pinned checkout config', '          fetch-depth: 0', '          fetch-depth: 1'],
       [
