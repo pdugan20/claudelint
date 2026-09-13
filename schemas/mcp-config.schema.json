@@ -40,6 +40,12 @@
                 "additionalProperties": {
                   "type": "string"
                 }
+              },
+              "timeout": {
+                "type": "number"
+              },
+              "alwaysLoad": {
+                "type": "boolean"
               }
             }
           },
@@ -70,6 +76,32 @@
                 "description": "Environment variables",
                 "additionalProperties": {
                   "type": "string"
+                }
+              },
+              "timeout": {
+                "type": "number"
+              },
+              "alwaysLoad": {
+                "type": "boolean"
+              },
+              "headersHelper": {
+                "type": "string"
+              },
+              "oauth": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "callbackPort": {
+                    "type": "number"
+                  },
+                  "authServerMetadataUrl": {
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -102,6 +134,32 @@
                 "additionalProperties": {
                   "type": "string"
                 }
+              },
+              "timeout": {
+                "type": "number"
+              },
+              "alwaysLoad": {
+                "type": "boolean"
+              },
+              "headersHelper": {
+                "type": "string"
+              },
+              "oauth": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "callbackPort": {
+                    "type": "number"
+                  },
+                  "authServerMetadataUrl": {
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "type": "string"
+                  }
+                }
               }
             }
           },
@@ -126,6 +184,32 @@
                 "description": "Environment variables",
                 "additionalProperties": {
                   "type": "string"
+                }
+              },
+              "timeout": {
+                "type": "number"
+              },
+              "alwaysLoad": {
+                "type": "boolean"
+              },
+              "headersHelper": {
+                "type": "string"
+              },
+              "oauth": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "callbackPort": {
+                    "type": "number"
+                  },
+                  "authServerMetadataUrl": {
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "type": "string"
+                  }
                 }
               }
             }

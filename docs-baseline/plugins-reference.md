@@ -3,10 +3,8 @@
 > Complete technical reference for Claude Code plugin system, including schemas, CLI commands, and component specifications.
 
 <Tip>
-  Looking to install plugins? See [Discover and install plugins](/en/discover-plugins). For creating plugins, see [Plugins](/en/plugins). For distributing plugins, see [Plugin marketplaces](/en/plugin-marketplaces).
+  Looking to install plugins? See [Discover and install plugins](/docs/en/discover-plugins). For creating plugins, see [Plugins](/docs/en/plugins). For distributing plugins, see [Plugin marketplaces](/docs/en/plugin-marketplaces).
 </Tip>
-
-This reference provides complete technical specifications for the Claude Code plugin system, including component schemas, CLI commands, and development tools.
 
 A **plugin** is a self-contained directory of components that extends Claude Code with custom functionality. Plugin components include skills, agents, hooks, MCP servers, LSP servers, and monitors.
 
@@ -32,15 +30,13 @@ skills/
     └── SKILL.md
 ```
 
-**Integration behavior**:
-
-* Skills and commands are automatically discovered when the plugin is installed
-* Claude can invoke them automatically based on task context
-* Skills can include supporting files alongside SKILL.md
+Skills and commands are automatically discovered when the plugin is installed.
 
 If a plugin has no `skills/` directory and no `skills` manifest field, a `SKILL.md` at the plugin root is loaded as a single skill. Set the frontmatter `name` field to control the skill's invocation name. Without it, Claude Code falls back to the install directory name, which for marketplace-installed plugins is a version string that changes on every update. For plugins that ship more than one skill, use the `skills/` directory layout shown above.
 
-For complete details, see [Skills](/en/skills).
+In plugin skills and commands, Boolean frontmatter fields such as `disable-model-invocation` accept `yes`, `no`, `on`, `off`, `1`, and `0` in any letter case, in addition to `true` and `false`. Before v2.1.218, Claude Code recognized only `true` and `false`.
+
+For complete details, see [Skills](/docs/en/skills).
 
 ### Agents
 
@@ -67,14 +63,21 @@ Detailed system prompt for the agent describing its role, expertise, and behavio
 
 Plugin agents support `name`, `description`, `model`, `effort`, `maxTurns`, `tools`, `disallowedTools`, `skills`, `memory`, `background`, and `isolation` frontmatter fields. The only valid `isolation` value is `"worktree"`. For security reasons, `hooks`, `mcpServers`, and `permissionMode` are not supported for plugin-shipped agents.
 
-**Integration points**:
+Claude Code loads a plugin agent even when its frontmatter has no `name` or doesn't parse:
 
-* Agents appear in the [@-mention typeahead](/en/sub-agents#invoke-subagents-explicitly) under their scoped name, such as `my-plugin:code-reviewer`, once the plugin is enabled
-* Claude can invoke agents automatically based on task context
-* Agents can be invoked manually by users
-* Plugin agents work alongside built-in Claude agents
+* No `name`: Claude Code names the agent after the file, so `agents/reviewer.md` in a plugin named `my-plugin` loads as `my-plugin:reviewer`
+* Frontmatter that doesn't parse: Claude Code names the agent after the file, uses `Agent from my-plugin plugin` as its description, and ignores every field in the file
 
-For complete details, see [Subagents](/en/sub-agents).
+By contrast, Claude Code skips a project, user, or managed agent file whose frontmatter has no `name` or doesn't parse.
+
+To find files in a plugin's default `agents/` directory whose frontmatter doesn't parse, run `claude plugin validate`. The path you pass depends on whether the plugin has a manifest, and both examples use `./my-plugin` as the plugin directory:
+
+* A plugin with a manifest: `claude plugin validate ./my-plugin`
+* A plugin without a manifest: `claude plugin validate ./my-plugin/agents`. Requires Claude Code v2.1.233 or later.
+
+Agents appear in the [@-mention typeahead](/docs/en/sub-agents#invoke-subagents-explicitly) under their scoped name, such as `my-plugin:code-reviewer`, once the plugin is enabled.
+
+For complete details, see [Subagents](/docs/en/sub-agents).
 
 ### Hooks
 
@@ -104,50 +107,53 @@ Plugins can provide event handlers that respond to Claude Code events automatica
 }
 ```
 
-Plugin hooks respond to the same lifecycle events as [user-defined hooks](/en/hooks):
+Plugin hooks respond to the same lifecycle events as [user-defined hooks](/docs/en/hooks):
 
-| Event                 | When it fires                                                                                                                                          |
-| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SessionStart`        | When a session begins or resumes                                                                                                                       |
-| `Setup`               | When you start Claude Code with `--init-only`, or with `--init` or `--maintenance` in `-p` mode. For one-time preparation in CI or scripts             |
-| `UserPromptSubmit`    | When you submit a prompt, before Claude processes it                                                                                                   |
-| `UserPromptExpansion` | When a user-typed command expands into a prompt, before it reaches Claude. Can block the expansion                                                     |
-| `PreToolUse`          | Before a tool call executes. Can block it                                                                                                              |
-| `PermissionRequest`   | When a permission dialog appears                                                                                                                       |
-| `PermissionDenied`    | When a tool call is denied by the auto mode classifier. Return `{retry: true}` to tell the model it may retry the denied tool call                     |
-| `PostToolUse`         | After a tool call succeeds                                                                                                                             |
-| `PostToolUseFailure`  | After a tool call fails                                                                                                                                |
-| `PostToolBatch`       | After a full batch of parallel tool calls resolves, before the next model call                                                                         |
-| `Notification`        | When Claude Code sends a notification                                                                                                                  |
-| `MessageDisplay`      | While assistant message text is displayed                                                                                                              |
-| `SubagentStart`       | When a subagent is spawned                                                                                                                             |
-| `SubagentStop`        | When a subagent finishes                                                                                                                               |
-| `TaskCreated`         | When a task is being created via `TaskCreate`                                                                                                          |
-| `TaskCompleted`       | When a task is being marked as completed                                                                                                               |
-| `Stop`                | When Claude finishes responding                                                                                                                        |
-| `StopFailure`         | When the turn ends due to an API error. Output and exit code are ignored                                                                               |
-| `TeammateIdle`        | When an [agent team](/en/agent-teams) teammate is about to go idle                                                                                     |
-| `InstructionsLoaded`  | When a CLAUDE.md or `.claude/rules/*.md` file is loaded into context. Fires at session start and when files are lazily loaded during a session         |
-| `ConfigChange`        | When a configuration file changes during a session                                                                                                     |
-| `CwdChanged`          | When the working directory changes, for example when Claude executes a `cd` command. Useful for reactive environment management with tools like direnv |
-| `FileChanged`         | When a watched file changes on disk. The `matcher` field specifies which filenames to watch                                                            |
-| `WorktreeCreate`      | When a worktree is being created via `--worktree` or `isolation: "worktree"`. Replaces default git behavior                                            |
-| `WorktreeRemove`      | When a worktree is being removed, either at session exit or when a subagent finishes                                                                   |
-| `PreCompact`          | Before context compaction                                                                                                                              |
-| `PostCompact`         | After context compaction completes                                                                                                                     |
-| `Elicitation`         | When an MCP server requests user input during a tool call                                                                                              |
-| `ElicitationResult`   | After a user responds to an MCP elicitation, before the response is sent back to the server                                                            |
-| `SessionEnd`          | When a session terminates                                                                                                                              |
+| Event                 | When it fires                                                                                                                                                                                                                                         |
+| :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SessionStart`        | When a session begins or resumes                                                                                                                                                                                                                      |
+| `Setup`               | When you start Claude Code with `--init-only`, or with `--init` or `--maintenance` in `-p` mode. For one-time preparation in CI or scripts                                                                                                            |
+| `UserPromptSubmit`    | When you submit a prompt, before Claude processes it                                                                                                                                                                                                  |
+| `UserPromptExpansion` | When a user-typed command expands into a prompt, before it reaches Claude. Can block the expansion                                                                                                                                                    |
+| `PreToolUse`          | Before a tool call executes. Can block it                                                                                                                                                                                                             |
+| `PermissionRequest`   | When a tool call needs a permission decision                                                                                                                                                                                                          |
+| `PermissionDenied`    | When auto mode denies a tool call, including denials without a classifier verdict. Use JSON `hookSpecificOutput.retry: true` to tell the model it may retry the denied tool call. Claude Code ignores `retry` when the classifier produced no verdict |
+| `PostToolUse`         | After a tool call succeeds                                                                                                                                                                                                                            |
+| `PostToolUseFailure`  | After a tool call fails                                                                                                                                                                                                                               |
+| `PostToolBatch`       | After a full batch of parallel tool calls resolves, before the next model call                                                                                                                                                                        |
+| `Notification`        | When Claude Code sends a notification                                                                                                                                                                                                                 |
+| `MessageDisplay`      | While assistant message text is displayed                                                                                                                                                                                                             |
+| `SubagentStart`       | When a subagent is spawned                                                                                                                                                                                                                            |
+| `SubagentStop`        | When a subagent finishes                                                                                                                                                                                                                              |
+| `TaskCreated`         | When a task is being created via `TaskCreate`                                                                                                                                                                                                         |
+| `TaskCompleted`       | When a task is being marked as completed                                                                                                                                                                                                              |
+| `Stop`                | When Claude finishes responding                                                                                                                                                                                                                       |
+| `StopFailure`         | When the turn ends due to an API error                                                                                                                                                                                                                |
+| `TeammateIdle`        | When an [agent team](/docs/en/agent-teams) teammate is about to go idle                                                                                                                                                                                    |
+| `InstructionsLoaded`  | When a CLAUDE.md or `.claude/rules/*.md` file is loaded into context. Fires at session start and when files are lazily loaded during a session                                                                                                        |
+| `ConfigChange`        | When a configuration file changes during a session                                                                                                                                                                                                    |
+| `CwdChanged`          | When the working directory changes, for example when Claude executes a `cd` command. Useful for reactive environment management with tools like direnv                                                                                                |
+| `DirectoryAdded`      | When a working directory is added mid-session via `/add-dir` or the SDK `register_repo_root` control request                                                                                                                                          |
+| `FileChanged`         | When a watched file changes on disk. The `matcher` field specifies which filenames to watch                                                                                                                                                           |
+| `WorktreeCreate`      | When a worktree is being created via `--worktree`, `isolation: "worktree"`, or for a background session. Replaces default git behavior                                                                                                                |
+| `WorktreeRemove`      | When a worktree is being removed at session exit, when a subagent finishes, or when you delete a background session                                                                                                                                   |
+| `PreCompact`          | Before context compaction                                                                                                                                                                                                                             |
+| `PostCompact`         | After context compaction completes                                                                                                                                                                                                                    |
+| `PreModelSwitch`      | Before Claude Code applies a model switch that you or a client requested. Can block the switch                                                                                                                                                        |
+| `PostModelSwitch`     | After the session's model changes, including changes Claude Code makes on its own, such as restoring the model when you resume a session                                                                                                              |
+| `Elicitation`         | When an MCP server requests user input during a tool call                                                                                                                                                                                             |
+| `ElicitationResult`   | After a user responds to an MCP elicitation, before the response is sent back to the server                                                                                                                                                           |
+| `SessionEnd`          | When a session terminates                                                                                                                                                                                                                             |
 
 **Hook types**:
 
 * `command`: execute shell commands or scripts
 * `http`: send the event JSON as a POST request to a URL
-* `mcp_tool`: call a tool on a configured [MCP server](/en/mcp)
+* `mcp_tool`: call a tool on a configured [MCP server](/docs/en/mcp)
 * `prompt`: evaluate a prompt with an LLM (uses `$ARGUMENTS` placeholder for context)
 * `agent`: run an agentic verifier with tools for complex verification tasks
 
-Hooks that target the plugin's own [bundled MCP server](#mcp-servers) must use its scoped names. Tool matchers and `if` fields take the scoped tool name `mcp__plugin_<plugin-name>_<server-name>__<tool>`, and an `mcp_tool` hook's `server` field takes `plugin:<plugin-name>:<server-name>`. A matcher written against the bare server key never fires. See [Match MCP tools](/en/hooks#match-mcp-tools) and [Plugin-provided MCP servers](/en/mcp#plugin-provided-mcp-servers).
+Hooks that target the plugin's own [bundled MCP server](#mcp-servers) must use its scoped names. Tool matchers and `if` fields take the scoped tool name `mcp__plugin_<plugin-name>_<server-name>__<tool>`, and an `mcp_tool` hook's `server` field takes `plugin:<plugin-name>:<server-name>`. A matcher written against the bare server key never fires. See [Match MCP tools](/docs/en/hooks#match-mcp-tools) and [Plugin-provided MCP servers](/docs/en/mcp#plugin-provided-mcp-servers).
 
 ### MCP servers
 
@@ -171,8 +177,7 @@ Plugins can bundle Model Context Protocol (MCP) servers to connect Claude Code w
     },
     "plugin-api-client": {
       "command": "npx",
-      "args": ["@company/mcp-server", "--plugin-mode"],
-      "cwd": "${CLAUDE_PLUGIN_ROOT}"
+      "args": ["@company/mcp-server", "--plugin-mode"]
     }
   }
 }
@@ -182,8 +187,8 @@ Plugins can bundle Model Context Protocol (MCP) servers to connect Claude Code w
 
 * Plugin MCP servers start automatically when the plugin is enabled
 * Servers appear as standard MCP tools in Claude's toolkit
-* Server capabilities integrate seamlessly with Claude's existing tools
 * Plugin servers can be configured independently of user MCP servers
+* If you run [`/reload-plugins`](/docs/en/discover-plugins#apply-plugin-changes-without-restarting) mid-session, Claude Code keeps the live connections of servers whose configuration is unchanged
 
 ### LSP servers
 
@@ -191,13 +196,7 @@ Plugins can bundle Model Context Protocol (MCP) servers to connect Claude Code w
   Looking to use LSP plugins? Install them from the official marketplace: search for "lsp" in the `/plugin` Discover tab. This section documents how to create LSP plugins for languages not covered by the official marketplace.
 </Tip>
 
-Plugins can provide [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) (LSP) servers to give Claude real-time code intelligence while working on your codebase.
-
-LSP integration provides:
-
-* **Instant diagnostics**: Claude sees errors and warnings immediately after each edit
-* **Code navigation**: go to definition, find references, and hover information
-* **Language awareness**: type information and documentation for code symbols
+Plugins can provide [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) (LSP) servers to give Claude [real-time code intelligence](/docs/en/discover-plugins#code-intelligence) while working on your codebase.
 
 **Location**: `.lsp.json` in plugin root, or inline in `plugin.json`
 
@@ -243,19 +242,19 @@ LSP integration provides:
 
 **Optional fields:**
 
-| Field                   | Description                                                                                                                                                         |
-| :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `args`                  | Command-line arguments for the LSP server                                                                                                                           |
-| `transport`             | Communication transport: `stdio` (default) or `socket`                                                                                                              |
-| `env`                   | Environment variables to set when starting the server                                                                                                               |
-| `initializationOptions` | Options passed to the server during initialization                                                                                                                  |
-| `settings`              | Settings passed via `workspace/didChangeConfiguration`                                                                                                              |
-| `workspaceFolder`       | Workspace folder path for the server                                                                                                                                |
-| `startupTimeout`        | Max time to wait for server startup (milliseconds)                                                                                                                  |
-| `shutdownTimeout`       | Max time to wait for graceful shutdown (milliseconds). When the timeout elapses, Claude Code terminates the server process. When unset, no timeout applies          |
-| `restartOnCrash`        | Whether to restart the server after it crashes. Defaults to `true`. Set to `false` to leave a crashed server stopped instead of restarting it                       |
-| `maxRestarts`           | Maximum number of restart attempts before giving up                                                                                                                 |
-| `diagnostics`           | Whether to push diagnostics into Claude's context after edits (default `true`). Set to `false` to keep code navigation but suppress automatic diagnostic injection. |
+| Field                   | Description                                                                                                                                                              |
+| :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `args`                  | Command-line arguments for the LSP server                                                                                                                                |
+| `transport`             | Communication transport: `stdio` (default) or `socket`. Claude Code accepts `socket` but runs every server over stdio, so the stdout protocol rules apply to all servers |
+| `env`                   | Environment variables to set when starting the server                                                                                                                    |
+| `initializationOptions` | Options passed to the server during initialization                                                                                                                       |
+| `settings`              | Settings passed via `workspace/didChangeConfiguration`                                                                                                                   |
+| `workspaceFolder`       | Workspace folder path for the server                                                                                                                                     |
+| `startupTimeout`        | Max time to wait for server startup (milliseconds)                                                                                                                       |
+| `shutdownTimeout`       | Max time to wait for graceful shutdown (milliseconds). When the timeout elapses, Claude Code terminates the server process. When unset, no timeout applies               |
+| `restartOnCrash`        | Whether to restart the server after it crashes. Defaults to `true`. Set to `false` to leave a crashed server stopped instead of restarting it                            |
+| `maxRestarts`           | Maximum number of restart attempts before giving up                                                                                                                      |
+| `diagnostics`           | Whether to push diagnostics into Claude's context after edits (default `true`). Set to `false` to keep code navigation but suppress automatic diagnostic injection.      |
 
 `restartOnCrash` and `shutdownTimeout` require Claude Code v2.1.205 or later. Before v2.1.205, the config schema accepted both options but setting either one caused Claude Code to skip that LSP server entirely at startup, with the reason visible only in `claude --debug` output.
 
@@ -263,7 +262,9 @@ LSP integration provides:
 
 **Servers that fail to initialize**: Claude Code skips a server whose configuration is invalid, for example one missing `command` or `extensionToLanguage`, and the other configured servers still start. Run `claude --debug` to see why a server was skipped.
 
-A skipped server doesn't claim its file extensions, so another valid server that declares the same extension, from the same or a different plugin, still handles those files. Before v2.1.205, a server that failed to initialize still claimed its extensions and blocked another valid server for the same extension.
+A skipped server doesn't claim its file extensions, so another valid server that declares the same extension, from the same or a different plugin, still handles those files.
+
+**Send log output to stderr, not stdout**: Claude Code reads a server's stdout as protocol messages only, and accepts message headers up to 64 KiB and a message body up to 32 MiB. Claude Code disconnects a server that exceeds either limit or writes non-protocol output to stdout, and counts the disconnect as a crash for `restartOnCrash` and `maxRestarts`. When you run with `--debug`, Claude Code writes an error naming the cause to the debug log.
 
 <Warning>
   **You must install the language server binary separately.** LSP plugins configure how Claude Code connects to a language server, but they don't include the server itself. If you see `Executable not found in $PATH` in the `/plugin` Errors tab, install the required binary for your language.
@@ -283,11 +284,7 @@ Install the language server first, then install the plugin from the marketplace.
 
 Plugins can declare background monitors that Claude Code starts automatically when the plugin is active. Each monitor runs a shell command for the lifetime of the session and delivers every stdout line to Claude as a notification, so Claude can react to log entries, status changes, or polled events without being asked to start the watch itself.
 
-Plugin monitors use the same mechanism as the [Monitor tool](/en/tools-reference#monitor-tool) and share its availability constraints. They run only in interactive CLI sessions, run unsandboxed at the same trust level as [hooks](#hooks), and are skipped on hosts where the Monitor tool is unavailable.
-
-<Note>
-  Plugin monitors require Claude Code v2.1.105 or later.
-</Note>
+Plugin monitors use the same mechanism as the [Monitor tool](/docs/en/tools-reference#monitor-tool) and share its availability constraints. They run only in interactive CLI sessions, run unsandboxed at the same trust level as [hooks](#hooks), and are skipped on hosts where the Monitor tool is unavailable.
 
 **Location**: `monitors/monitors.json` in the plugin root, or inline in `plugin.json`
 
@@ -329,9 +326,9 @@ To declare monitors inline, set `experimental.monitors` in `plugin.json` to the 
 
 The `command` value supports the [path substitutions](#environment-variables) `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_PLUGIN_DATA}`, and `${CLAUDE_PROJECT_DIR}`, plus any `${ENV_VAR}` from the environment. Prefix the command with `cd "${CLAUDE_PLUGIN_ROOT}" && ` if the script needs to run from the plugin's own directory.
 
-A monitor `command` can't reference [`${user_config.*}`](#user-configuration) values. The command runs through a shell, so Claude Code rejects the monitor with an [error](/en/errors#plugin-command-references-user-config) instead of substituting the value. Have the monitor script read the value from a config file it owns. Before v2.1.207, monitor commands substituted `${user_config.*}` values.
+A monitor `command` can't reference [`${user_config.*}`](#user-configuration) values. The command runs through a shell, so Claude Code rejects the monitor with an [error](/docs/en/errors#plugin-command-references-user-config) instead of substituting the value. Monitor processes don't receive `CLAUDE_PLUGIN_OPTION_<KEY>` environment variables, so have the monitor script read the value from a config file it owns.
 
-Disabling a plugin mid-session does not stop monitors that are already running. They stop when the session ends.
+If you disable a plugin mid-session, Claude Code doesn't stop monitors that are already running; they stop when the session ends.
 
 ### Themes
 
@@ -349,7 +346,7 @@ Plugins can ship color themes that appear in `/theme` alongside the built-in pre
 }
 ```
 
-Selecting a plugin theme persists `custom:<plugin-name>:<slug>` in the user's config. Plugin themes are read-only; pressing `Ctrl+E` on one in `/theme` copies it into `~/.claude/themes/` so the user can edit the copy.
+When a user selects a plugin theme, Claude Code saves `custom:<plugin-name>:<slug>` in their config. Plugin themes are read-only: when a user presses `Ctrl+E` on one in `/theme`, Claude Code copies it into `~/.claude/themes/` so they can edit the copy.
 
 ***
 
@@ -357,51 +354,51 @@ Selecting a plugin theme persists `custom:<plugin-name>:<slug>` in the user's co
 
 When you install a plugin, you choose a **scope** that determines where the plugin is available and who else can use it:
 
-| Scope     | Settings file                                   | Use case                                                 |
-| :-------- | :---------------------------------------------- | :------------------------------------------------------- |
-| `user`    | `~/.claude/settings.json`                       | Personal plugins available across all projects (default) |
-| `project` | `.claude/settings.json`                         | Team plugins shared via version control                  |
-| `local`   | `.claude/settings.local.json`                   | Project-specific plugins, gitignored                     |
-| `managed` | [Managed settings](/en/settings#settings-files) | Managed plugins (read-only, update only)                 |
+| Scope     | Settings file                            | Use case                                                                    |
+| :-------- | :--------------------------------------- | :-------------------------------------------------------------------------- |
+| `user`    | `~/.claude/settings.json`                | Personal plugins available across all projects (default)                    |
+| `project` | `.claude/settings.json`                  | Team plugins shared via version control                                     |
+| `local`   | `.claude/settings.local.json`            | Project-specific plugins, gitignored when Claude Code saves a setting to it |
+| `managed` | [Managed settings](/docs/en/managed-settings) | Managed plugins (read-only, update only)                                    |
 
-Plugins use the same scope system as other Claude Code configurations. For installation instructions and scope flags, see [Install plugins](/en/discover-plugins#install-plugins). For a complete explanation of scopes, see [Configuration scopes](/en/settings#configuration-scopes).
+Plugins use the same scope system as other Claude Code configurations. For installation instructions and scope flags, see [Install plugins](/docs/en/discover-plugins#install-plugins). For a complete explanation of scopes, see [Configuration scopes](/docs/en/settings#where-settings-live).
 
 ***
 
 ## Skills-directory plugins
 
-Any folder under a skills directory that contains a `.claude-plugin/plugin.json` manifest is loaded as a plugin named `<name>@skills-dir` on the next session, with no marketplace and no install step. Scaffold one with [`plugin init`](#plugin-init). Unlike a marketplace install, the plugin is discovered in place rather than copied into the plugin cache.
+Any folder under a skills directory that contains a `.claude-plugin/plugin.json` manifest is loaded as a plugin named `<name>@skills-dir` on the next session, with no marketplace and no install step. Scaffold one with [`plugin init`](#plugin-init). Unlike a copied marketplace install, the plugin is discovered in place rather than copied into the plugin cache.
 
 A skills directory tree supports three distinct things:
 
 | What you have                                 | What it is                                                                          |
 | :-------------------------------------------- | :---------------------------------------------------------------------------------- |
-| `<skills-dir>/foo/SKILL.md` with no manifest  | A plain [skill](/en/skills) named `foo`                                             |
+| `<skills-dir>/foo/SKILL.md` with no manifest  | A plain [skill](/docs/en/skills) named `foo`                                             |
 | `<skills-dir>/foo/.claude-plugin/plugin.json` | A plugin `foo@skills-dir`, which can bundle its own skills, agents, hooks, and more |
 | `<plugin>/skills/bar/SKILL.md`                | A skill `bar` packaged inside a plugin                                              |
 
 ### Choose where the plugin loads from
 
-| Skills directory        | Scope    | Loads                                                                            |
-| :---------------------- | :------- | :------------------------------------------------------------------------------- |
-| `~/.claude/skills/`     | personal | In every project, since the location is yours alone                              |
-| `<cwd>/.claude/skills/` | project  | Only after you accept the workspace [trust dialog](/en/settings) for that folder |
+| Skills directory        | Scope    | Loads                                                                                                                   |
+| :---------------------- | :------- | :---------------------------------------------------------------------------------------------------------------------- |
+| `~/.claude/skills/`     | personal | In every project, since the location is yours alone                                                                     |
+| `<cwd>/.claude/skills/` | project  | Only after you accept the workspace [trust dialog](/docs/en/permissions#what-runs-before-you-trust-a-folder) for that folder |
 
-A project-scope plugin is checked into the repository and reaches every collaborator who clones it. Because that content comes from the repository rather than from you, it loads only after the same trust gate that governs `.claude/settings.json`, and components that run code are restricted further:
+A project-scope plugin is checked into the repository and reaches every collaborator who clones it. Because that content comes from the repository rather than from you, it loads only after the same trust gate that governs project allow rules in `.claude/settings.json`, so trusting a parent folder or running with `-p` isn't enough, and components that run code are restricted further:
 
-* MCP servers it declares go through the [same per-server approval](/en/mcp) as a project `.mcp.json`
+* MCP servers it declares go through the [same per-server approval](/docs/en/mcp) as a project `.mcp.json`
 * LSP servers start only after you trust the workspace
 * [Background monitors](#monitors) do not load
 
 Personal-scope plugins have none of these restrictions.
 
 <Warning>
-  Project-scope `@skills-dir` plugins load only from the `.claude/skills/` of the directory where you start Claude Code. They do not [walk up to the repository root](/en/skills#automatic-discovery-from-parent-and-nested-directories) the way plain skills and commands do, so launching from a subdirectory misses a plugin that lives at the repo root. Launch from the repository root, or run `/reload-plugins` after changing directories.
+  Project-scope `@skills-dir` plugins load only from the `.claude/skills/` of the session's [primary working directory](/docs/en/permissions#working-directories). They don't [walk up to the repository root](/docs/en/skills#discovery-from-parent-and-nested-directories) the way plain skills and commands do, so launching from a subdirectory misses a plugin that lives at the repo root. Launch from the repository root, or [move the session there with `/cd`](/docs/en/permissions#move-the-session-to-another-directory) on v2.1.246 or later.
 </Warning>
 
 ### Edit, reload, and disable a skills-directory plugin
 
-Changes you make to a skill's `SKILL.md` take effect immediately in the current session. Changes to the plugin's other components, such as `hooks/`, `.mcp.json`, `agents/`, and `output-styles/`, do not. Run `/reload-plugins` or restart Claude Code to pick those up. See [Live change detection](/en/skills#live-change-detection).
+Changes you make to a skill's `SKILL.md` take effect immediately in the current session. Changes to the plugin's other components, such as `hooks/`, `.mcp.json`, `agents/`, and `output-styles/`, do not. Run `/reload-plugins` or restart Claude Code to pick those up. See [Live change detection](/docs/en/skills#live-change-detection).
 
 To stop loading a skills-directory plugin, delete its folder or disable it by name. There is no `uninstall` step because nothing was installed from a marketplace.
 
@@ -411,9 +408,24 @@ claude plugin disable my-tool@skills-dir
 
 ***
 
+<h2 id="synced-plugins">
+  Plugins synced from claude.ai
+</h2>
+
+In [Cowork](https://claude.com/product/cowork) and [cloud sessions](/docs/en/cloud-environments#what-carries-over-from-your-setup), Claude Code downloads the plugins enabled for your claude.ai account into `~/.claude/plugins/synced/` in the session's own environment and loads each one as `<name>@synced`, with no marketplace and no install record. Claude Code doesn't load them in sessions you start in your own terminal. Inside that Cowork or cloud environment, `claude plugin list` shows the downloaded copies under a `Synced from claude.ai` heading. Before v2.1.239, Claude Code loaded these plugins as `<name>@inline`, the identity that `--plugin-dir` plugins use.
+
+Manage a synced plugin by the `<name>@synced` ID that `claude plugin list` prints:
+
+* **Turn one off**: in the synced session, run `claude plugin disable <name>@synced`, or ask Claude to run it. Claude Code saves the choice as `"<name>@synced": false` in that environment's user-level [`enabledPlugins`](/docs/en/settings-reference#enabledplugins). To turn the plugin back on, run `claude plugin enable <name>@synced` in the same session. To keep a plugin out of every synced session, [turn it off for your claude.ai account](/docs/en/desktop#extend-claude-code). To keep it out of one project's synced sessions in every environment, set `"<name>@synced": false` under `enabledPlugins` in that project's committed `.claude/settings.json`.
+* **Manage the plugin itself on claude.ai**: `claude plugin install`, `update`, and `uninstall` don't apply to a synced plugin. To remove one, turn the plugin off for your claude.ai account; the next synced session starts without it.
+
+When an enabled plugin from any other source, such as a marketplace install, a [skills-directory plugin](#skills-directory-plugins), or a `--plugin-dir` plugin, matches a synced plugin's name, Claude Code loads that plugin and reports the synced copy as not loaded. To use the claude.ai copy instead, disable your own copy. Before v2.1.239, Claude Code loaded the synced copy instead of a same-named marketplace install.
+
+***
+
 ## Plugin manifest schema
 
-The `.claude-plugin/plugin.json` file defines your plugin's metadata and configuration. This section documents all supported fields and options.
+The `.claude-plugin/plugin.json` file defines your plugin's metadata and configuration.
 
 The manifest is optional. If omitted, Claude Code auto-discovers components in [default locations](#file-locations-reference) and derives the plugin name from the directory name. Use a manifest when you need to provide metadata or custom component paths.
 
@@ -434,6 +446,7 @@ The manifest is optional. If omitted, Claude Code auto-discovers components in [
   "repository": "https://github.com/author/plugin",
   "license": "MIT",
   "keywords": ["keyword1", "keyword2"],
+  "metadata": { "catalogId": "cat-123", "tier": "pro" },
   "skills": "./custom/skills/",
   "commands": ["./custom/commands/special.md"],
   "agents": ["./custom/agents/reviewer.md"],
@@ -443,7 +456,8 @@ The manifest is optional. If omitted, Claude Code auto-discovers components in [
   "lspServers": "./.lsp.json",
   "experimental": {
     "themes": "./themes/",
-    "monitors": "./monitors.json"
+    "monitors": "./monitors.json",
+    "evals": "quality/evals"
   },
   "dependencies": [
     "helper-lib",
@@ -456,9 +470,9 @@ The manifest is optional. If omitted, Claude Code auto-discovers components in [
 
 If you include a manifest, `name` is the only required field.
 
-| Field  | Type   | Description                                                                                                                                                                                                                       | Example              |
-| :----- | :----- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------- |
-| `name` | string | Unique identifier (kebab-case, no spaces). When a [marketplace entry](/en/plugin-marketplaces#plugin-entries) lists the plugin under a different name, the marketplace entry name is what `enabledPlugins` keys and `/plugin` use | `"deployment-tools"` |
+| Field  | Type   | Description                                                                                                                                                                                                                                                                                         | Example              |
+| :----- | :----- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------- |
+| `name` | string | Unique identifier in kebab-case, with no spaces, control characters, or bidirectional-formatting characters. When a [marketplace entry](/docs/en/plugin-marketplaces#plugin-entries) lists the plugin under a different name, the marketplace entry name is what `enabledPlugins` keys and `/plugin` use | `"deployment-tools"` |
 
 This name is used for namespacing components. For example, in the UI, the
 agent `agent-creator` for the plugin with name `plugin-dev` will appear as
@@ -477,9 +491,10 @@ If a field is one or two characters off from a recognized one, the warning
 suggests the likely intended name. A plugin with only unrecognized-field
 warnings still passes validation and loads at runtime.
 
-Fields with the wrong type still fail. For example, a `keywords` value that is
-a string instead of an array is a load error, and `claude plugin validate`
-reports it as one.
+How Claude Code handles a recognized field whose value has the wrong type depends on the field:
+
+* **Most fields**: the plugin fails to load. For example, a `keywords` value that is a string instead of an array is a load error, and `claude plugin validate` reports it as one.
+* **`experimental` and `metadata`**: Claude Code ignores a non-object value, and `claude plugin validate` reports a warning.
 
 Pass `--strict` to treat warnings as errors. Use it in CI to catch a misspelled
 field name or a field left over from another tool's manifest before publishing,
@@ -491,46 +506,49 @@ claude plugin validate ./my-plugin --strict
 
 ### Metadata fields
 
-| Field            | Type    | Description                                                                                                                                                                                                                                                                                                                                      | Example                                                           |
-| :--------------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------- |
-| `$schema`        | string  | JSON Schema URL for editor autocomplete and validation. Claude Code ignores this field at load time.                                                                                                                                                                                                                                             | `"https://json.schemastore.org/claude-code-plugin-manifest.json"` |
-| `displayName`    | string  | {/* min-version: 2.1.143 */}Human-readable name shown in the `/plugin` picker and other UI surfaces. Falls back to `name` when omitted. Unlike `name`, may contain spaces and any casing. Not used for namespacing or lookup. Requires Claude Code v2.1.143 or later.                                                                            | `"Deployment Tools"`                                              |
-| `version`        | string  | Optional. Semantic version. Setting this pins the plugin to that version string, so users only receive updates when you bump it. If omitted, Claude Code falls back to the git commit SHA, so every commit is treated as a new version. If also set in the marketplace entry, `plugin.json` wins. See [Version management](#version-management). | `"2.1.0"`                                                         |
-| `description`    | string  | Brief explanation of plugin purpose                                                                                                                                                                                                                                                                                                              | `"Deployment automation tools"`                                   |
-| `author`         | object  | Author information                                                                                                                                                                                                                                                                                                                               | `{"name": "Dev Team", "email": "dev@company.com"}`                |
-| `homepage`       | string  | Documentation URL                                                                                                                                                                                                                                                                                                                                | `"https://docs.example.com"`                                      |
-| `repository`     | string  | Source code URL                                                                                                                                                                                                                                                                                                                                  | `"https://github.com/user/plugin"`                                |
-| `license`        | string  | License identifier                                                                                                                                                                                                                                                                                                                               | `"MIT"`, `"Apache-2.0"`                                           |
-| `keywords`       | array   | Discovery tags                                                                                                                                                                                                                                                                                                                                   | `["deployment", "ci-cd"]`                                         |
-| `defaultEnabled` | boolean | {/* min-version: 2.1.154 */}Whether the plugin starts in an enabled state when the user has not set one. Defaults to `true`. See [Default enablement](#default-enablement). Requires Claude Code v2.1.154 or later.                                                                                                                              | `false`                                                           |
+| Field            | Type    | Description                                                                                                                                                                                                                                                                                                                                                                                                          | Example                                                           |
+| :--------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------- |
+| `$schema`        | string  | JSON Schema URL for editor autocomplete and validation. Claude Code ignores this field at load time.                                                                                                                                                                                                                                                                                                                 | `"https://json.schemastore.org/claude-code-plugin-manifest.json"` |
+| `displayName`    | string  | Human-readable name shown in the `/plugin` picker and other UI surfaces. For a marketplace-installed plugin, a `displayName` on the [marketplace entry](/docs/en/plugin-marketplaces#optional-plugin-fields) takes precedence over this value. When no display name is set in either place, users see `name`. Unlike `name`, may contain spaces and any casing. Not used for namespacing or lookup.                       | `"Deployment Tools"`                                              |
+| `version`        | string  | Optional. Semantic version. Setting this pins the plugin to that version string, so users only receive updates when you bump it, except for a [`command` source](/docs/en/plugin-marketplaces#command-sources); see [Version management](#version-management). If also set in the marketplace entry, `plugin.json` wins. If omitted, the version comes from the next source in [Version management](#version-management). | `"2.1.0"`                                                         |
+| `description`    | string  | Brief explanation of plugin purpose                                                                                                                                                                                                                                                                                                                                                                                  | `"Deployment automation tools"`                                   |
+| `author`         | object  | Author information                                                                                                                                                                                                                                                                                                                                                                                                   | `{"name": "Dev Team", "email": "dev@company.com"}`                |
+| `homepage`       | string  | Documentation URL                                                                                                                                                                                                                                                                                                                                                                                                    | `"https://docs.example.com"`                                      |
+| `repository`     | string  | Source code URL                                                                                                                                                                                                                                                                                                                                                                                                      | `"https://github.com/user/plugin"`                                |
+| `license`        | string  | License identifier                                                                                                                                                                                                                                                                                                                                                                                                   | `"MIT"`, `"Apache-2.0"`                                           |
+| `keywords`       | array   | Discovery tags                                                                                                                                                                                                                                                                                                                                                                                                       | `["deployment", "ci-cd"]`                                         |
+| `metadata`       | object  | Free-form object for your own data, such as entitlement or catalog fields. Claude Code doesn't read it, so the values never affect plugin behavior. Claude Code ignores a non-object value, and `claude plugin validate` reports it as a warning. Before v2.1.222, Claude Code treated the key as an [unrecognized field](#unrecognized-fields).                                                                     | `{"catalogId": "cat-123"}`                                        |
+| `defaultEnabled` | boolean | Whether the plugin starts in an enabled state when the user has not set one. Defaults to `true`. See [Default enablement](#default-enablement).                                                                                                                                                                                                                                                                      | `false`                                                           |
 
 ### Default enablement
 
-Set `defaultEnabled: false` in `plugin.json` to ship a plugin that installs disabled. The user turns it on with `claude plugin enable <plugin>` or the `/plugin` interface. Use this for plugins that add cost or scope a user should opt into, such as one that connects to an external service. This requires Claude Code v2.1.154 or later. Earlier versions ignore the field and enable the plugin on install.
+Set `defaultEnabled: false` in `plugin.json` to ship a plugin that installs disabled. The user turns it on with `claude plugin enable <plugin>` or the `/plugin` interface. Use this for plugins that add cost or scope a user should opt into, such as one that connects to an external service.
 
 `defaultEnabled` is the fallback when nothing else has decided the plugin's state. Two things take precedence over it:
 
 * **The user's setting**: an entry for the plugin in `enabledPlugins` at any settings scope. Once written, it persists across plugin updates and reinstalls, so changing `defaultEnabled` in a later release does not flip an existing user.
-* **A dependency requirement**: when a plugin is required by another one that is active, Claude Code writes `true` for it at install or enable time. That gives it an explicit setting, so its own default no longer applies. See [Enable or disable a plugin with dependencies](/en/plugin-dependencies#enable-or-disable-a-plugin-with-dependencies).
+* **A dependency requirement**: when a plugin is required by another one that is active, Claude Code writes `true` for it at install or enable time. That gives it an explicit setting, so its own default no longer applies. See [Enable or disable a plugin with dependencies](/docs/en/plugin-dependencies#enable-or-disable-a-plugin-with-dependencies).
 
-The same field can appear in a plugin's marketplace entry, where it takes precedence over the value in `plugin.json`. See [Optional plugin fields](/en/plugin-marketplaces#optional-plugin-fields).
+The same field can appear in a plugin's marketplace entry, where it takes precedence over the value in `plugin.json`. See [Optional plugin fields](/docs/en/plugin-marketplaces#optional-plugin-fields).
 
 ### Component path fields
 
-| Field                   | Type                  | Description                                                                                                                                                                   | Example                                              |
-| :---------------------- | :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
-| `skills`                | string\|array         | Custom skill directories containing `<name>/SKILL.md`. Adds to the default `skills/` scan. See [Path behavior rules](#path-behavior-rules) for the marketplace-root exception | `"./custom/skills/"`                                 |
-| `commands`              | string\|array         | Custom flat `.md` skill files or directories (replaces default `commands/`)                                                                                                   | `"./custom/cmd.md"` or `["./cmd1.md"]`               |
-| `agents`                | string\|array         | Custom agent files (replaces default `agents/`)                                                                                                                               | `"./custom/agents/reviewer.md"`                      |
-| `hooks`                 | string\|array\|object | Hook config paths or inline config                                                                                                                                            | `"./my-extra-hooks.json"`                            |
-| `mcpServers`            | string\|array\|object | MCP config paths or inline config                                                                                                                                             | `"./my-extra-mcp-config.json"`                       |
-| `outputStyles`          | string\|array         | Custom output style files/directories (replaces default `output-styles/`)                                                                                                     | `"./styles/"`                                        |
-| `lspServers`            | string\|array\|object | [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) configs for code intelligence (go to definition, find references, etc.)                     | `"./.lsp.json"`                                      |
-| `experimental.themes`   | string\|array         | Color theme files/directories (replaces default `themes/`). See [Themes](#themes)                                                                                             | `"./themes/"`                                        |
-| `experimental.monitors` | string\|array         | Background [Monitor](/en/tools-reference#monitor-tool) configurations that start automatically when the plugin is active. See [Monitors](#monitors)                           | `"./monitors.json"`                                  |
-| `userConfig`            | object                | User-configurable values prompted at enable time. See [User configuration](#user-configuration)                                                                               | See below                                            |
-| `channels`              | array                 | Channel declarations for message injection (Telegram, Slack, Discord style). See [Channels](#channels)                                                                        | See below                                            |
-| `dependencies`          | array                 | Other plugins this plugin requires, optionally with semver version constraints. See [Constrain plugin dependency versions](/en/plugin-dependencies)                           | `[{ "name": "secrets-vault", "version": "~2.1.0" }]` |
+| Field                   | Type                  | Description                                                                                                                                                                                             | Example                                              |
+| :---------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------- |
+| `skills`                | string\|array         | Custom skill directories containing `<name>/SKILL.md`. Adds to the default `skills/` scan. See [Path behavior rules](#path-behavior-rules) for the marketplace-root exception                           | `"./custom/skills/"`                                 |
+| `commands`              | string\|array         | Custom flat `.md` skill files or directories (replaces default `commands/`)                                                                                                                             | `"./custom/cmd.md"` or `["./cmd1.md"]`               |
+| `agents`                | string\|array         | Custom agent files (replaces default `agents/`)                                                                                                                                                         | `"./custom/agents/reviewer.md"`                      |
+| `workflows`             | string\|array         | Custom [workflow](/docs/en/workflows) script files or directories (replaces default `workflows/`)                                                                                                            | `"./custom/workflows/"`                              |
+| `hooks`                 | string\|array\|object | Hook config paths or inline config                                                                                                                                                                      | `"./my-extra-hooks.json"`                            |
+| `mcpServers`            | string\|array\|object | MCP config paths or inline config                                                                                                                                                                       | `"./my-extra-mcp-config.json"`                       |
+| `outputStyles`          | string\|array         | Custom output style files/directories (replaces default `output-styles/`)                                                                                                                               | `"./styles/"`                                        |
+| `lspServers`            | string\|array\|object | [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) configs for code intelligence (go to definition, find references, etc.)                                               | `"./.lsp.json"`                                      |
+| `experimental.themes`   | string\|array         | Color theme files/directories (replaces default `themes/`). See [Themes](#themes)                                                                                                                       | `"./themes/"`                                        |
+| `experimental.monitors` | string\|array         | Background [Monitor](/docs/en/tools-reference#monitor-tool) configurations that start automatically when the plugin is active. See [Monitors](#monitors)                                                     | `"./monitors.json"`                                  |
+| `experimental.evals`    | string\|array         | Directory below the plugin root that holds the plugin's [eval cases](/docs/en/plugin-evals#use-a-different-eval-directory), when it isn't the default `evals/`. `claude plugin eval --eval-dir` overrides it | `"quality/evals"`                                    |
+| `userConfig`            | object                | User-configurable values prompted at enable time. See [User configuration](#user-configuration)                                                                                                         | See below                                            |
+| `channels`              | array                 | Channel declarations for message injection (Telegram, Slack, Discord style). See [Channels](#channels)                                                                                                  | See below                                            |
+| `dependencies`          | array                 | Other plugins this plugin requires, optionally with semver version constraints. See [Constrain plugin dependency versions](/docs/en/plugin-dependencies)                                                     | `[{ "name": "secrets-vault", "version": "~2.1.0" }]` |
 
 ### Experimental components
 
@@ -571,13 +589,31 @@ Keys must be valid identifiers. Each option supports these fields:
 | `multiple`    | No       | For `string` type, allow an array of strings                                             |
 | `min` / `max` | No       | Bounds for `number` type                                                                 |
 
-Each value is available for substitution as `${user_config.KEY}` in MCP and LSP server configs, except the MCP [`headersHelper`](/en/mcp#use-dynamic-headers-for-custom-authentication) field, and in [exec-form](/en/hooks#exec-form-and-shell-form) hook commands. Non-sensitive values can also be substituted in skill and agent content. All values are exported to hook processes as `CLAUDE_PLUGIN_OPTION_<KEY>` environment variables, where `<KEY>` is the option key uppercased.
+Each value is available for substitution as `${user_config.KEY}` in MCP and LSP server configs and hook commands. Non-sensitive values can also be substituted in skill and agent content. All values are exported to hook processes as `CLAUDE_PLUGIN_OPTION_<KEY>` environment variables, where `<KEY>` is the option key uppercased.
 
-Claude Code rejects a `${user_config.KEY}` reference in any command string it passes to a shell: a shell-form hook command, a [monitor](#monitors) command, or an MCP `headersHelper`. Substituting a configured value into a shell command would let the shell run whatever that value contains, so the component fails with an [error](/en/errors#plugin-command-references-user-config) instead. For a hook, switch to exec form or read `$CLAUDE_PLUGIN_OPTION_<KEY>` from the environment. For a monitor or `headersHelper`, read the value inside the script. Before v2.1.207, these command strings substituted `${user_config.KEY}` values.
+Fields that run in a shell reject `${user_config.*}`: substituting a configured value into a shell command would let the shell run whatever that value contains, so the component fails with an [error](/docs/en/errors#plugin-command-references-user-config) instead. Each rejected field has an alternative way to pass the value:
 
-Non-sensitive values are stored under the [`pluginConfigs`](/en/settings#pluginconfigs) key in `settings.json` as `pluginConfigs[<plugin-id>].options`. {/* min-version: 2.1.207 */}Claude Code writes the key to user settings and reads it back from user settings, the `--settings` flag, and managed settings only; entries in a project's `.claude/settings.json` or `.claude/settings.local.json` are ignored. Before v2.1.207, Claude Code also read project and local settings.
+| Rejected field                                                               | How to pass the value                                                                                                             |
+| :--------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| Shell-form hook commands                                                     | Use [exec form](/docs/en/hooks#exec-form-and-shell-form) with `args`, or read `CLAUDE_PLUGIN_OPTION_<KEY>` from the hook's environment |
+| [Monitor](#monitors) commands                                                | Read the value from a config file in the script                                                                                   |
+| MCP [`headersHelper`](/docs/en/mcp#use-dynamic-headers-for-custom-authentication) | Read the value from a config file in the script                                                                                   |
 
-Sensitive values go to the macOS Keychain, or to `~/.claude/.credentials.json` on platforms where no supported keychain is available. Keychain storage is shared with OAuth tokens and has an approximately 2 KB total limit, so keep sensitive values small.
+Before v2.1.207, these fields substituted `${user_config.KEY}` values; update plugins that relied on this.
+
+Non-sensitive values are stored under the [`pluginConfigs`](/docs/en/settings-reference#pluginconfigs) key in your user `settings.json` as `pluginConfigs[<plugin-id>].options`.
+
+On macOS, Claude Code stores sensitive values in the macOS Keychain, falling back to `~/.claude/.credentials.json` when the Keychain rejects the write. On platforms without a supported keychain, it stores them in `~/.claude/.credentials.json`. Keychain storage is shared with OAuth tokens and has an approximately 2 KB total limit, so keep sensitive values small.
+
+Claude Code reads all `pluginConfigs` values from only three settings sources:
+
+* **User settings**: `~/.claude/settings.json`, the file the enable-time prompt writes to
+* **`--settings`**: the CLI flag or SDK inline settings
+* **Managed settings**: [organization-controlled policy](/docs/en/permissions#managed-settings)
+
+When more than one source sets the same key, managed settings take precedence, then `--settings`, then user settings. The only source you can remove from this list is user settings: pass [`--setting-sources`](/docs/en/cli-reference#cli-flags) without `user` and Claude Code skips them. Managed settings and `--settings` stay whatever you pass. The SDK's [`settingSources`](/docs/en/agent-sdk/claude-code-features#what-settingsources-does-not-control) option sets the same list.
+
+Entries in a project's `.claude/settings.json` or `.claude/settings.local.json` are ignored. Both files live in the workspace, so a cloned repository could supply values there, and those values would flow into plugin hook commands, MCP server configs, LSP commands, and monitor commands. Before v2.1.207, these entries were read. The restriction is specific to `pluginConfigs`: [`enabledPlugins`](/docs/en/settings-reference#enabledplugins) still honors project and local settings.
 
 ### Channels
 
@@ -612,20 +648,24 @@ The `server` field is required and must match a key in the plugin's `mcpServers`
 
 Whether a custom path replaces or extends the plugin's default directory depends on the field:
 
-* **Replaces the default**: `commands`, `agents`, `outputStyles`, `experimental.themes`, `experimental.monitors`. For example, when the manifest specifies `commands`, the default `commands/` directory is not scanned. To keep the default and add more, list it explicitly: `"commands": ["./commands/", "./extras/"]`
-* **Adds to the default**: `skills`. The default `skills/` directory is always scanned, and directories listed in `skills` are loaded alongside it. Exception: for a [marketplace entry whose `source` resolves to the marketplace root](/en/plugin-marketplaces#advanced-plugin-entries), declaring specific subdirectories replaces the default `skills/` scan
+* **Replaces the default**: `commands`, `agents`, `workflows`, `outputStyles`, `experimental.themes`, `experimental.monitors`. For example, when the manifest specifies `commands`, the default `commands/` directory is not scanned. To keep the default and add more, list it explicitly: `"commands": ["./commands/", "./extras/"]`
+* **Adds to the default**: `skills`. The default `skills/` directory is always scanned, and directories listed in `skills` are loaded alongside it. Exception: for a [marketplace entry whose `source` resolves to the marketplace root](/docs/en/plugin-marketplaces#advanced-plugin-entries), declaring specific subdirectories replaces the default `skills/` scan
 * **Own merge rules**: [hooks](#hooks), [MCP servers](#mcp-servers), and [LSP servers](#lsp-servers). See each section for how multiple sources combine
 
-When a plugin has both a default folder and the matching manifest key, Claude Code v2.1.140 and later warns about the ignored folder in `claude plugin list` and the `/plugin` detail view. The plugin still loads using the manifest paths. Claude Code doesn't warn when the manifest key points into the default folder, for example `"commands": ["./commands/deploy.md"]`, because that path names the folder explicitly.
+When a plugin has both a default folder and the matching manifest key, Claude Code warns about the ignored folder in `claude plugin list` and the `/plugin` detail view. The plugin still loads using the manifest paths. Claude Code doesn't warn when the manifest key points into the default folder, for example `"commands": ["./commands/deploy.md"]`, because that path names the folder explicitly.
 
 For all path fields:
 
-* All paths must be relative to the plugin root and start with `./`
+* All paths must be relative to the plugin root and start with `./`, except that the `skills` field also accepts `"."`
+  * Both `"."` and `"./"` denote the plugin root itself
+  * Before v2.1.221, `"."` failed manifest validation and the plugin didn't load, so use `"./"` to support earlier versions
 * Components from custom paths use the same naming and namespacing rules
 * Multiple paths can be specified as arrays
-* When a skill path points to a directory that contains a `SKILL.md` directly, for example `"skills": ["./"]` pointing to the plugin root, the frontmatter `name` field in `SKILL.md` determines the skill's invocation name. This gives a stable name regardless of the install directory. If `name` is not set in the frontmatter, the directory basename is used as a fallback.
+* A skill path can point to a directory that contains a `SKILL.md` directly, for example `"skills": ["."]` for the plugin root
+  * Claude Code takes the skill's invocation name from the frontmatter `name` field in `SKILL.md`, so the name stays stable whatever the install directory is named
+  * If `name` isn't set in the frontmatter, Claude Code falls back to the directory basename
 
-A plugin that has a `SKILL.md` at its root, no `skills/` subdirectory, and no `skills` manifest field is automatically loaded as a single-skill plugin in Claude Code v2.1.142 and later. You do not need to set `"skills": ["./"]` in `plugin.json` for this layout. The skill's invocation name follows the same rule as above: the frontmatter `name` field, or the directory basename as a fallback.
+A plugin that has a `SKILL.md` at its root, no `skills/` subdirectory, and no `skills` manifest field is automatically loaded as a single-skill plugin. You do not need to set `"skills": ["./"]` in `plugin.json` for this layout.
 
 **Path examples**:
 
@@ -644,17 +684,25 @@ A plugin that has a `SKILL.md` at its root, no `skills/` subdirectory, and no `s
 
 ### Environment variables
 
-Claude Code provides three variables for referencing paths. All are substituted inline anywhere they appear in skill content, agent content, hook commands, monitor commands, and MCP or LSP server configs. All are also exported as environment variables to hook processes and MCP or LSP server subprocesses.
+Claude Code provides three variables for referencing paths:
 
-**`${CLAUDE_PLUGIN_ROOT}`**: the absolute path to your plugin's installation directory. Use this to reference scripts, binaries, and config files bundled with the plugin. In hook commands, use [exec form](/en/hooks#exec-form-and-shell-form) with `args` so the path is passed as one argument with no quoting. In shell-form hooks and monitor commands, wrap it in double quotes, as in `"${CLAUDE_PLUGIN_ROOT}"`. This path changes when the plugin updates. The previous version's directory remains on disk for about seven days after an update before cleanup, but treat it as ephemeral and do not write state here.
+| Variable                | Resolves to                                                                                                 | Use it for                                                                                               |
+| :---------------------- | :---------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| `${CLAUDE_PLUGIN_ROOT}` | Absolute path to the plugin's installation directory                                                        | Scripts, binaries, and config files bundled with the plugin                                              |
+| `${CLAUDE_PLUGIN_DATA}` | [Persistent directory](#persistent-data-directory) that survives plugin updates, created on first reference | Installed dependencies such as `node_modules` or Python virtual environments, generated code, and caches |
+| `${CLAUDE_PROJECT_DIR}` | The project root                                                                                            | Project-local scripts and config files                                                                   |
 
-When a plugin updates mid-session, hook commands, monitors, MCP servers, and LSP servers keep using the previous version's path. Run `/reload-plugins` to switch hooks, MCP servers, and LSP servers to the new path; monitors require a session restart.
+All three are exported as environment variables to hook processes and to MCP and LSP server subprocesses. Which fields substitute them inline depends on the plugin component:
 
-**`${CLAUDE_PLUGIN_DATA}`**: a persistent directory for plugin state that survives updates. Use this for installed dependencies such as `node_modules` or Python virtual environments, generated code, caches, and any other files that should persist across plugin versions. The directory is created automatically the first time this variable is referenced.
+| Plugin component                | Fields where placeholders resolve           |
+| :------------------------------ | :------------------------------------------ |
+| Skill and agent content         | Anywhere the placeholder appears            |
+| Hook and monitor commands       | Anywhere the placeholder appears            |
+| MCP `stdio` servers             | `command`, `args`, `env`                    |
+| MCP `http`, `sse`, `ws` servers | `url`, `headers`, `headersHelper`           |
+| LSP servers                     | `command`, `args`, `env`, `workspaceFolder` |
 
-**`${CLAUDE_PROJECT_DIR}`**: the project root. This is the same directory hooks receive in their `CLAUDE_PROJECT_DIR` variable. Use this to reference project-local scripts or config files. Wrap in quotes to handle paths with spaces, for example `"${CLAUDE_PROJECT_DIR}/scripts/server.sh"`.
-
-MCP servers can also call the `roots/list` request to read the session's working directories at runtime. See [what `roots/list` returns and when Claude Code notifies the server of changes](/en/mcp#option-3-add-a-local-stdio-server).
+In hook commands, use [exec form](/docs/en/hooks#exec-form-and-shell-form) with `args` so each path is passed as one argument with no quoting. In shell-form hooks and monitor commands, wrap the variables in double quotes, as in `"${CLAUDE_PROJECT_DIR}/scripts/server.sh"`. This shell-form hook runs a script bundled with a plugin:
 
 ```json
 {
@@ -673,11 +721,21 @@ MCP servers can also call the `roots/list` request to read the session's working
 }
 ```
 
+`${CLAUDE_PLUGIN_ROOT}` changes when the plugin updates. The previous version's directory remains on disk for a grace period after an update, but treat it as ephemeral and don't write state there. See [plugin caching](#plugin-caching-and-file-resolution) for cleanup semantics.
+
+When a plugin updates mid-session, hook commands, monitors, MCP servers, and LSP servers keep using the previous version's path. Run `/reload-plugins` to switch hooks, MCP servers, and LSP servers to the new path; monitors require a session restart. In a session without an interactive terminal, the reload leaves plugin MCP servers on the old path until the next session.
+
+For a plugin with a `command` source, Claude Code [can reload the plugin itself](/docs/en/plugin-marketplaces#when-claude-code-re-runs-the-command).
+
+MCP servers can also call the `roots/list` request to read the session's working directories at runtime. See [what `roots/list` returns and when Claude Code notifies the server of changes](/docs/en/mcp#option-3-add-a-local-stdio-server).
+
 #### Persistent data directory
 
 The `${CLAUDE_PLUGIN_DATA}` directory resolves to `~/.claude/plugins/data/{id}/`, where `{id}` is the plugin identifier with characters outside `a-z`, `A-Z`, `0-9`, `_`, and `-` replaced by `-`. For a plugin installed as `formatter@my-marketplace`, the directory is `~/.claude/plugins/data/formatter-my-marketplace/`.
 
-A common use is installing language dependencies once and reusing them across sessions and plugin updates. Because the data directory outlives any single plugin version, a check for directory existence alone cannot detect when an update changes the plugin's dependency manifest. The recommended pattern compares the bundled manifest against a copy in the data directory and reinstalls when they differ.
+A common use is installing language dependencies once and reusing them across sessions and plugin updates. Use it for Python dependencies, dependencies locked with Yarn or pnpm, and packages whose lifecycle scripts must run. For a marketplace-installed plugin, you may not need it at all: Claude Code installs eligible [Node.js package dependencies](#node-js-package-dependencies) automatically when it caches the plugin.
+
+Because the data directory outlives any single plugin version, a check for directory existence alone cannot detect when an update changes the plugin's dependency manifest. The recommended pattern compares the bundled manifest against a copy in the data directory and reinstalls when they differ.
 
 This `SessionStart` hook installs `node_modules` on the first run and again whenever a plugin update includes a changed `package.json`:
 
@@ -727,15 +785,54 @@ Plugins are specified in one of two ways:
 * Through `claude --plugin-dir` or `claude --plugin-url`, for the duration of a session.
 * Through a marketplace, installed for future sessions.
 
-For security and verification purposes, Claude Code copies *marketplace* plugins to the user's local **plugin cache** (`~/.claude/plugins/cache`) rather than using them in-place. Understanding this behavior is important when developing plugins that reference external files.
+For security and verification purposes, Claude Code copies *marketplace* plugins to the user's local **plugin cache** (`~/.claude/plugins/cache`) rather than using them in place, except for [`command` sources in link mode](/docs/en/plugin-marketplaces#copy-mode-and-link-mode), which Claude Code uses in place through links in the cache entry.
 
-Each installed version is a separate directory in the cache. When you update or uninstall a plugin, the previous version directory is marked as orphaned and removed automatically 7 days later. The grace period lets concurrent Claude Code sessions that already loaded the old version keep running without errors.
+For copied plugins, each installed version is a separate directory in the cache, grouped by marketplace and plugin and named for the resolved version, with its own copy of the plugin's files and [Node.js package dependencies](#node-js-package-dependencies). A dependency resolved from a [release tag](/docs/en/plugin-dependencies#tag-plugin-releases-for-version-resolution) gets a directory name with a commit-SHA suffix.
+
+When you update or uninstall a plugin, Claude Code marks the previous version directory as orphaned and removes it in a background sweep roughly 14 days later. The grace period lets concurrent Claude Code sessions that already loaded the old version keep running without errors. Claude Code runs the sweep only while at least one plugin is installed; after you uninstall your last plugin, orphaned directories stay on disk until you install a plugin again.
+
+Claude Code removes a plugin or marketplace folder from the cache only when it no longer contains any directory or symlink. If you symlink a development checkout into the cache as a plugin's version entry, Claude Code never marks the link as orphaned and never removes it or the folders that hold it. Claude Code also never writes its version-tracking files inside the linked checkout.
 
 Claude's Glob and Grep tools skip orphaned version directories during searches, so file results don't include outdated plugin code.
 
+### Node.js package dependencies
+
+When Claude Code copies a plugin into the cache, it also installs the plugin's Node.js package dependencies there, so the plugin's hooks and MCP servers can load them. This section covers the npm and Bun packages a plugin declares in its own `package.json`. For plugins that depend on other plugins, see [plugin dependency versions](/docs/en/plugin-dependencies).
+
+Claude Code runs the install inside the copied version directory each time it creates one: when you install a plugin, when Claude Code updates a plugin to a new version, and at session start when an enabled plugin isn't cached yet, such as on a new machine. The install runs only when the plugin's root directory contains both a `package.json` and a supported lockfile:
+
+| Lockfile                                     | Command                                          |
+| :------------------------------------------- | :----------------------------------------------- |
+| `bun.lock` or `bun.lockb`                    | `bun install --frozen-lockfile --ignore-scripts` |
+| `npm-shrinkwrap.json` or `package-lock.json` | `npm ci --ignore-scripts`                        |
+
+If a plugin contains more than one of these lockfiles, Claude Code uses the first match, checking in order: `bun.lock`, `bun.lockb`, `npm-shrinkwrap.json`, `package-lock.json`. Claude Code skips `yarn.lock` and `pnpm-lock.yaml` because Yarn and pnpm support resolution-time configuration hooks that bypass `--ignore-scripts`.
+
+Ship an npm lockfile for the widest reach. Claude Code runs the matched lockfile's package manager from the user's PATH and doesn't fall back to the other lockfile if it's missing. For a plugin distributed through an npm source, use `npm-shrinkwrap.json`; npm excludes `package-lock.json` from published packages.
+
+Claude Code constrains this dependency install so that no code from the plugin or its packages executes during it, and bounds how long it can run:
+
+* **Frozen resolution:** Bun and npm install exactly what the lockfile pins, and fail rather than re-resolve versions when `package.json` and the lockfile disagree.
+* **No lifecycle scripts:** `--ignore-scripts` keeps `preinstall`, `install`, and `postinstall` scripts from running, so dependencies that build native modules in those scripts download but don't compile during this install.
+* **60-second timeout:** Claude Code stops an install that runs longer and treats it as failed.
+
+Fetching an npm-source plugin itself runs `npm install` with lifecycle scripts enabled, before this dependency install runs.
+
+A failed or skipped install never blocks the plugin. When the install fails, or Claude Code skips a yarn or pnpm lockfile, it records the reason as a warning in [debug output](#debugging-commands). A plugin with a `package.json` and no lockfile is skipped without a log entry. A timed-out install can leave a partial `node_modules` tree in the cached copy.
+
+You can't turn the automatic install off; no setting or environment variable disables it. In restricted networks, see the [network access requirements](/docs/en/network-config#network-access-requirements) for the hosts to allow.
+
+For dependencies the automatic install can't provide, such as packages that need their lifecycle scripts to build, Python dependencies, or a plugin locked with Yarn or pnpm, install them from a hook into the [persistent data directory](#persistent-data-directory).
+
 ### Path traversal limitations
 
-Installed plugins cannot reference files outside their directory. Paths that traverse outside the plugin root (such as `../shared-utils`) will not work after installation because those external files are not copied to the cache.
+Claude Code doesn't let a plugin reference files outside its own directory. It rejects a component path that resolves outside the plugin root, whether the path is declared in `plugin.json` or in a [marketplace entry](/docs/en/plugin-marketplaces#plugin-entries). That covers a path that points outside the plugin as written, such as `../shared-utils`, and a symlink that leads outside the plugin, other than [links within one marketplace](#share-files-within-a-marketplace-with-symlinks).
+
+On macOS and Linux, Claude Code also rejects a component path that contains a backslash anywhere in it, even when the path stays inside the plugin. Components declared with backslash paths therefore load on Windows only. Write component paths with forward slashes, such as `./commands/deploy.md`.
+
+When Claude Code rejects a path, it reports a [`path escapes plugin directory`](/docs/en/errors#path-escapes-plugin-directory) error and loads the plugin without that component.
+
+Claude Code also doesn't copy files outside the plugin directory into the cache when it installs the plugin, so when a script inside a copied plugin reads a path above the plugin root, it doesn't find those files either.
 
 ### Share files within a marketplace with symlinks
 
@@ -745,15 +842,13 @@ If your plugin needs to share files with other parts of the same marketplace, yo
 * **Elsewhere within the same marketplace:** the symlink is dereferenced. The target's content is copied into the cache in its place. This lets a meta-plugin's `skills/` directory link to skills defined by other plugins in the marketplace.
 * **Outside the marketplace:** the symlink is skipped for security. This prevents plugins from pulling arbitrary host files such as system paths into the cache.
 
-For plugins installed with `--plugin-dir` or from a local path, only symlinks that resolve within the plugin's own directory are preserved. All others are skipped.
+For plugins installed with `--plugin-dir`, from a local path, or from a [`command` source](/docs/en/plugin-marketplaces#copy-mode-and-link-mode) in copy mode, only symlinks that resolve within the plugin's own directory are preserved. All others are skipped.
 
 The following command creates a link from inside a marketplace plugin to a shared skill defined by a sibling plugin. On Windows, use `mklink /D` from an elevated Command Prompt or enable Developer Mode:
 
 ```bash
 ln -s ../../shared-plugin/skills/foo ./skills/foo
 ```
-
-This provides flexibility while maintaining the security benefits of the caching system.
 
 ***
 
@@ -780,6 +875,8 @@ enterprise-plugin/
 │   ├── security-reviewer.md
 │   ├── performance-tester.md
 │   └── compliance-checker.md
+├── workflows/                # Workflow scripts
+│   └── release-audit.js
 ├── output-styles/            # Output style definitions
 │   └── terse.md
 ├── themes/                   # Color theme definitions
@@ -803,27 +900,28 @@ enterprise-plugin/
 ```
 
 <Warning>
-  The `.claude-plugin/` directory contains the `plugin.json` file. All other directories (commands/, agents/, skills/, output-styles/, themes/, monitors/, hooks/) must be at the plugin root, not inside `.claude-plugin/`.
+  The `.claude-plugin/` directory contains the `plugin.json` file. All other directories (commands/, agents/, skills/, workflows/, output-styles/, themes/, monitors/, hooks/) must be at the plugin root, not inside `.claude-plugin/`.
 </Warning>
 
 A `CLAUDE.md` file at the plugin root is not loaded as project context. Plugins contribute context through skills, agents, and hooks rather than CLAUDE.md. To ship instructions that load into Claude's context, put them in a [skill](#skills).
 
 ### File locations reference
 
-| Component         | Default Location             | Purpose                                                                                                                                                                                    |
-| :---------------- | :--------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Manifest**      | `.claude-plugin/plugin.json` | Plugin metadata and configuration (optional)                                                                                                                                               |
-| **Skills**        | `skills/`                    | Skills with `<name>/SKILL.md` structure                                                                                                                                                    |
-| **Commands**      | `commands/`                  | Skills as flat Markdown files. Use `skills/` for new plugins                                                                                                                               |
-| **Agents**        | `agents/`                    | Subagent Markdown files                                                                                                                                                                    |
-| **Output styles** | `output-styles/`             | Output style definitions                                                                                                                                                                   |
-| **Themes**        | `themes/`                    | Color theme definitions                                                                                                                                                                    |
-| **Hooks**         | `hooks/hooks.json`           | Hook configuration                                                                                                                                                                         |
-| **MCP servers**   | `.mcp.json`                  | MCP server definitions                                                                                                                                                                     |
-| **LSP servers**   | `.lsp.json`                  | Language server configurations                                                                                                                                                             |
-| **Monitors**      | `monitors/monitors.json`     | Background monitor configurations                                                                                                                                                          |
-| **Executables**   | `bin/`                       | Executables added to the Bash tool's `PATH`. Files here are invokable as bare commands in any Bash tool call while the plugin is enabled                                                   |
-| **Settings**      | `settings.json`              | Default configuration applied when the plugin is enabled. Only the [`agent`](/en/sub-agents) and [`subagentStatusLine`](/en/statusline#subagent-status-lines) keys are currently supported |
+| Component         | Default Location             | Purpose                                                                                                                                                                                                                                                                                    |
+| :---------------- | :--------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Manifest**      | `.claude-plugin/plugin.json` | Plugin metadata and configuration (optional)                                                                                                                                                                                                                                               |
+| **Skills**        | `skills/`                    | Skills with `<name>/SKILL.md` structure                                                                                                                                                                                                                                                    |
+| **Commands**      | `commands/`                  | Skills as flat Markdown files. Use `skills/` for new plugins                                                                                                                                                                                                                               |
+| **Agents**        | `agents/`                    | Subagent Markdown files                                                                                                                                                                                                                                                                    |
+| **Workflows**     | `workflows/`                 | [Workflow](/docs/en/workflows) script files                                                                                                                                                                                                                                                     |
+| **Output styles** | `output-styles/`             | Output style definitions                                                                                                                                                                                                                                                                   |
+| **Themes**        | `themes/`                    | Color theme definitions                                                                                                                                                                                                                                                                    |
+| **Hooks**         | `hooks/hooks.json`           | Hook configuration                                                                                                                                                                                                                                                                         |
+| **MCP servers**   | `.mcp.json`                  | MCP server definitions                                                                                                                                                                                                                                                                     |
+| **LSP servers**   | `.lsp.json`                  | Language server configurations                                                                                                                                                                                                                                                             |
+| **Monitors**      | `monitors/monitors.json`     | Background monitor configurations                                                                                                                                                                                                                                                          |
+| **Executables**   | `bin/`                       | Executables added to the Bash tool's `PATH` and invokable as bare commands while the plugin is enabled. You can't include this directory in a plugin you [distribute through claude.ai organization settings](/docs/en/plugin-marketplaces#keep-executables-out-of-the-top-level-bin-directory) |
+| **Settings**      | `settings.json`              | Default configuration applied when the plugin is enabled. Only the [`agent`](/docs/en/sub-agents) and [`subagentStatusLine`](/docs/en/statusline#subagent-status-lines) keys are supported                                                                                                           |
 
 ***
 
@@ -841,11 +939,11 @@ See [Skills-directory plugins](#skills-directory-plugins) for scope and trust re
 claude plugin init <name> [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<name>`: Plugin name. Becomes the skill namespace and the directory name under `~/.claude/skills/`, so it cannot contain spaces or path separators.
 
-**Options:**
+The command accepts these options:
 
 | Option                   | Description                                                                                                         | Default                 |
 | :----------------------- | :------------------------------------------------------------------------------------------------------------------ | :---------------------- |
@@ -856,7 +954,7 @@ claude plugin init <name> [options]
 | `-f, --force`            | Overwrite an existing `.claude-plugin/` at the target                                                               |                         |
 | `-h, --help`             | Display help for command                                                                                            |                         |
 
-**Aliases:** `new`
+`claude plugin new` is an alias for this command.
 
 Each `--with` value adds a starter file for that component, ready to edit:
 
@@ -868,11 +966,11 @@ Each `--with` value adds a starter file for that component, ready to edit:
 | `mcp`          | A `.mcp.json` with HTTP and stdio server examples                                                         |
 | `lsp`          | A `.lsp.json` language-server example                                                                     |
 | `output-style` | An `output-styles/<name>.md` that applies automatically while the plugin is enabled                       |
-| `channel`      | An MCP-based [channel](/en/channels): a stdio server (`server.ts`), its `.mcp.json`, and a `package.json` |
+| `channel`      | An MCP-based [channel](/docs/en/channels): a stdio server (`server.ts`), its `.mcp.json`, and a `package.json` |
 
-The scaffolded plugin uses the `@skills-dir` source rather than a marketplace. Admins can block this source with `strictKnownMarketplaces` or by adding `{"source": "skills-dir"}` to `blockedMarketplaces` in [managed settings](/en/plugin-marketplaces#managed-marketplace-restrictions). When blocked, `plugin init` fails before writing.
+The scaffolded plugin uses the `@skills-dir` source rather than a marketplace. Admins can block this source with `strictKnownMarketplaces` or by adding `{"source": "skills-dir"}` to `blockedMarketplaces` in [managed settings](/docs/en/plugin-marketplaces#managed-marketplace-restrictions). When blocked, `plugin init` fails before writing.
 
-**Examples:**
+These examples show common invocations:
 
 ```bash
 # Scaffold a minimal plugin
@@ -893,20 +991,31 @@ Install a plugin from available marketplaces.
 claude plugin install <plugin> [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<plugin>`: Plugin name or `plugin-name@marketplace-name` for a specific marketplace
 
-**Options:**
+The command accepts these options:
 
-| Option                | Description                                       | Default |
-| :-------------------- | :------------------------------------------------ | :------ |
-| `-s, --scope <scope>` | Installation scope: `user`, `project`, or `local` | `user`  |
-| `-h, --help`          | Display help for command                          |         |
+| Option                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Default |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------ |
+| `-s, --scope <scope>`  | Installation scope: `user`, `project`, or `local`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `user`  |
+| `--config <key=value>` | Set a [`userConfig`](#user-configuration) option declared in the plugin's manifest. Repeat the flag to set multiple options                                                                                                                                                                                                                                                                                                                                                                                                                                           |         |
+| `-y, --yes`            | Accept a command the plugin's marketplace declares, without the confirmation prompt: the command that produces a plugin with a [`command` source](/docs/en/plugin-marketplaces#command-sources), or the [`headersHelper`](/docs/en/plugin-marketplaces#authenticate-archive-downloads) that authenticates an archive download. Accepting a `headersHelper` requires Claude Code v2.1.238 or later. Claude Code still prints the command first. Required when stdin or stdout isn't a TTY. Has no effect inside a Claude Code session, so run the command from your own terminal |         |
+| `--json`               | Print the result as one JSON object on the last line of stdout instead of the human-readable message, for use in scripts. See [JSON result format](#plugin-json-result). Requires Claude Code v2.1.268 or later                                                                                                                                                                                                                                                                                                                                                       |         |
+| `-h, --help`           | Display help for command                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |         |
 
 Scope determines which settings file the installed plugin is added to. For example, `--scope project` writes to `enabledPlugins` in .claude/settings.json, making the plugin available to everyone who clones the project repository.
 
-**Examples:**
+<span id="plugin-json-result" />With `--json`, the last line of stdout is one JSON object. Parse only that line, because Claude Code prints any command the marketplace declares ahead of it. Three fields are always present:
+
+* `command`: the subcommand that ran, such as `install`
+* `outcome`: `ok` or `failed`
+* `message`: a human-readable description of the result
+
+Other fields, such as `pluginId`, `scope`, and `failureCode`, appear only when they apply. The `--json` option on `plugin uninstall`, `plugin update`, `plugin enable`, and `plugin disable` prints the same object with that subcommand's own fields. A usage error, such as an invalid `--scope`, prints no result line and exits 1 with the reason on stderr.
+
+These examples show common invocations:
 
 ```bash
 # Install to user scope (default)
@@ -915,7 +1024,7 @@ claude plugin install formatter@my-marketplace
 # Install to project scope (shared with team)
 claude plugin install formatter@my-marketplace --scope project
 
-# Install to local scope (gitignored)
+# Install to local scope (not shared with team)
 claude plugin install formatter@my-marketplace --scope local
 ```
 
@@ -927,33 +1036,38 @@ Remove an installed plugin.
 claude plugin uninstall <plugin> [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<plugin>`: Plugin name or `plugin-name@marketplace-name`
 
-**Options:**
+The command accepts these options:
 
-| Option                | Description                                                                                              | Default |
-| :-------------------- | :------------------------------------------------------------------------------------------------------- | :------ |
-| `-s, --scope <scope>` | Uninstall from scope: `user`, `project`, or `local`                                                      | `user`  |
-| `--keep-data`         | Preserve the plugin's [persistent data directory](#persistent-data-directory)                            |         |
-| `--prune`             | Also remove auto-installed dependencies that no other plugin requires. See [plugin prune](#plugin-prune) |         |
-| `-y, --yes`           | Skip the `--prune` confirmation prompt. Required when stdin or stdout is not a TTY                       |         |
-| `-h, --help`          | Display help for command                                                                                 |         |
+| Option                | Description                                                                                                                                                                                                    | Default |
+| :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------ |
+| `-s, --scope <scope>` | Uninstall from scope: `user`, `project`, or `local`                                                                                                                                                            | `user`  |
+| `--keep-data`         | Preserve the plugin's [persistent data directory](#persistent-data-directory)                                                                                                                                  |         |
+| `--prune`             | Also remove auto-installed dependencies that no other plugin requires. See [plugin prune](#plugin-prune)                                                                                                       |         |
+| `-y, --yes`           | Skip the `--prune` confirmation prompt. Required when stdin or stdout is not a TTY                                                                                                                             |         |
+| `--json`              | Print the result as one JSON object on the last line of stdout, in the [same format as `plugin install --json`](#plugin-json-result). Can't be combined with `--prune`. Requires Claude Code v2.1.268 or later |         |
+| `-h, --help`          | Display help for command                                                                                                                                                                                       |         |
 
-**Aliases:** `remove`, `rm`
+`claude plugin remove` and `claude plugin rm` are aliases for this command.
 
 By default, uninstalling from the last remaining scope also deletes the plugin's `${CLAUDE_PLUGIN_DATA}` directory. Use `--keep-data` to preserve it, for example when reinstalling after testing a new version.
 
+<Note>
+  When installed plugins from different marketplaces share a name, the `plugin-name@marketplace-name` form uninstalls only the plugin from the named marketplace. Before v2.1.212, the qualified form could match and uninstall the same-named plugin from a different marketplace.
+</Note>
+
 ### plugin prune
 
-Remove auto-installed plugin dependencies that are no longer required by any installed plugin. Dependencies that Claude Code pulled in to satisfy another plugin's [`dependencies`](/en/plugin-dependencies) field are removed; plugins you installed directly are never touched.
+Remove auto-installed plugin dependencies that are no longer required by any installed plugin. Dependencies that Claude Code pulled in to satisfy another plugin's [`dependencies`](/docs/en/plugin-dependencies) field are removed; plugins you installed directly are never touched.
 
 ```bash
 claude plugin prune [options]
 ```
 
-**Options:**
+The command accepts these options:
 
 | Option                | Description                                                              | Default |
 | :-------------------- | :----------------------------------------------------------------------- | :------ |
@@ -962,51 +1076,50 @@ claude plugin prune [options]
 | `-y, --yes`           | Skip the confirmation prompt. Required when stdin or stdout is not a TTY |         |
 | `-h, --help`          | Display help for command                                                 |         |
 
-**Aliases:** `autoremove`
+`claude plugin autoremove` is an alias for this command.
 
 The command lists orphaned dependencies and asks for confirmation before removing them. To remove a plugin and clean up its dependencies in one step, run `claude plugin uninstall <plugin> --prune`.
 
-<Note>
-  `claude plugin prune` requires Claude Code v2.1.121 or later.
-</Note>
-
 ### plugin enable
 
-Enable a disabled plugin. If the plugin declares [dependencies](/en/plugin-dependencies), Claude Code enables them transitively at the same scope, and the command fails when a dependency is not installed.
+Enable a disabled plugin. When the target is installed from a marketplace and declares [dependencies](/docs/en/plugin-dependencies), Claude Code enables them transitively at the same scope. The command fails under the conditions that [Enable or disable a plugin with dependencies](/docs/en/plugin-dependencies#enable-or-disable-a-plugin-with-dependencies) lists.
 
 ```bash
 claude plugin enable <plugin> [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<plugin>`: Plugin name or `plugin-name@marketplace-name`
 
-**Options:**
+The command accepts these options:
 
-| Option                | Description                                    | Default |
-| :-------------------- | :--------------------------------------------- | :------ |
-| `-s, --scope <scope>` | Scope to enable: `user`, `project`, or `local` | `user`  |
-| `-h, --help`          | Display help for command                       |         |
+| Option                | Description                                                                                                                                                                  | Default     |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------- |
+| `-s, --scope <scope>` | Scope to enable: `user`, `project`, or `local`. When omitted, Claude Code detects the scope where the plugin is installed                                                    | Auto-detect |
+| `--json`              | Print the result as one JSON object on the last line of stdout, in the [same format as `plugin install --json`](#plugin-json-result). Requires Claude Code v2.1.268 or later |             |
+| `-h, --help`          | Display help for command                                                                                                                                                     |             |
 
 ### plugin disable
 
-Disable a plugin without uninstalling it. Fails when another enabled plugin [depends on](/en/plugin-dependencies#enable-or-disable-a-plugin-with-dependencies) the target. The error message includes a chained command that disables every dependent first.
+Disable a plugin without uninstalling it. When the target is installed from a marketplace, the command fails if another enabled plugin [depends on](/docs/en/plugin-dependencies#enable-or-disable-a-plugin-with-dependencies) it. The error message includes a chained command that disables every dependent first.
 
 ```bash
-claude plugin disable <plugin> [options]
+claude plugin disable [plugin] [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
-* `<plugin>`: Plugin name or `plugin-name@marketplace-name`
+* `[plugin]`: Plugin name or `plugin-name@marketplace-name`. Optional when using `--all`
 
-**Options:**
+The command accepts these options:
 
-| Option                | Description                                     | Default |
-| :-------------------- | :---------------------------------------------- | :------ |
-| `-s, --scope <scope>` | Scope to disable: `user`, `project`, or `local` | `user`  |
-| `-h, --help`          | Display help for command                        |         |
+| Option                | Description                                                                                                                                                                  | Default     |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------- |
+| `-a, --all`           | Disable all enabled plugins. Can't be combined with `--scope`                                                                                                                |             |
+| `-s, --scope <scope>` | Scope to disable: `user`, `project`, or `local`. When omitted, Claude Code detects the scope where the plugin is installed                                                   | Auto-detect |
+| `--json`              | Print the result as one JSON object on the last line of stdout, in the [same format as `plugin install --json`](#plugin-json-result). Requires Claude Code v2.1.268 or later |             |
+| `-h, --help`          | Display help for command                                                                                                                                                     |             |
 
 ### plugin update
 
@@ -1016,16 +1129,22 @@ Update a plugin to the latest version.
 claude plugin update <plugin> [options]
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<plugin>`: Plugin name or `plugin-name@marketplace-name`
 
-**Options:**
+The command accepts these options:
 
-| Option                | Description                                               | Default |
-| :-------------------- | :-------------------------------------------------------- | :------ |
-| `-s, --scope <scope>` | Scope to update: `user`, `project`, `local`, or `managed` | `user`  |
-| `-h, --help`          | Display help for command                                  |         |
+| Option                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Default |
+| :-------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------ |
+| `-s, --scope <scope>` | Scope to update: `user`, `project`, `local`, or `managed`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `user`  |
+| `-y, --yes`           | Accept a command the plugin's marketplace declares, without the confirmation prompt: the command that produces a plugin with a [`command` source](/docs/en/plugin-marketplaces#command-sources), or the [`headersHelper`](/docs/en/plugin-marketplaces#authenticate-archive-downloads) that authenticates an archive download. Accepting a `headersHelper` requires Claude Code v2.1.238 or later. Claude Code still prints the command first. Required when stdin or stdout isn't a TTY. Has no effect inside a Claude Code session, so run the command from your own terminal |         |
+| `--json`              | Print the result as one JSON object on the last line of stdout, in the [same format as `plugin install --json`](#plugin-json-result). Requires Claude Code v2.1.268 or later                                                                                                                                                                                                                                                                                                                                                                                          |         |
+| `-h, --help`          | Display help for command                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |         |
+
+<Note>
+  Claude Code resolves a bare plugin name against your installed plugins. When installed plugins from different marketplaces share the name, Claude Code refuses the update and lists the qualified `plugin-name@marketplace-name` commands to run instead. Before v2.1.246, Claude Code accepted only the qualified form and rejected a bare name as not found.
+</Note>
 
 ***
 
@@ -1037,15 +1156,21 @@ List installed plugins with their version, source marketplace, and enable status
 claude plugin list [options]
 ```
 
-**Options:**
+The command accepts these options:
 
-| Option        | Description                                                    | Default |
-| :------------ | :------------------------------------------------------------- | :------ |
-| `--json`      | Output as JSON                                                 |         |
-| `--available` | Include available plugins from marketplaces. Requires `--json` |         |
-| `-h, --help`  | Display help for command                                       |         |
+| Option        | Description                                                                                                                                                                                                                                                                                                          | Default |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------ |
+| `--json`      | Output as JSON. A plugin row with load problems or authoring warnings carries `errors` or `notes` string arrays. On Claude Code v2.1.268 or later, parallel `errorDetails` and `noteDetails` arrays give each entry's diagnostic `type` and the names it refers to, such as the plugin, marketplace, server, or file |         |
+| `--available` | Include available plugins from marketplaces. Requires `--json`                                                                                                                                                                                                                                                       |         |
+| `-h, --help`  | Display help for command                                                                                                                                                                                                                                                                                             |         |
 
-Within an interactive session, `/plugin list` prints the same listing inline. The interactive form accepts `--enabled` or `--disabled` to show only plugins in that state, and `ls` as a shorthand for `list`.
+Within an interactive session, `/plugin list` prints a similar listing inline, but it covers marketplace-installed plugins only:
+
+* Plugins loaded from skills directories appear in the `/plugin` interface and in `claude plugin list`, but not in the inline `/plugin list` output.
+* On Claude Code v2.1.239 or later, [plugins synced from claude.ai](#synced-plugins) appear in `claude plugin list` when you run it in the environment where a synced session downloaded them. They don't appear in the inline `/plugin list` output.
+* Plugins loaded for the session with `--plugin-dir` or `--plugin-url` appear in the `/plugin` interface, and in `claude plugin list` only when the same flag precedes the subcommand, as in `claude --plugin-dir <dir> plugin list`. Only the flag names their location, so a bare `claude plugin list` can't find them, unlike synced plugins and skills-directory plugins, whose fixed directories Claude Code scans.
+
+The interactive form accepts `--enabled` or `--disabled` to show only plugins in that state, and `ls` as a shorthand for `list`.
 
 ### plugin details
 
@@ -1055,11 +1180,11 @@ Show a plugin's component inventory and projected token cost. The output lists a
 claude plugin details <name>
 ```
 
-**Arguments:**
+The command takes these arguments:
 
 * `<name>`: Plugin name or `plugin-name@marketplace-name`
 
-**Options:**
+The command accepts these options:
 
 | Option       | Description              | Default |
 | :----------- | :----------------------- | :------ |
@@ -1080,7 +1205,7 @@ dependency-guard 1.2.0
 Component inventory
   Skills (2)  scan-dependencies, review-changes
   Agents (0)
-  Hooks (1)  (harness-only — no model context cost)
+  Hooks (1)  SessionStart  (harness-only — no model context cost)
   MCP servers (0)
   LSP servers (0)
 
@@ -1098,22 +1223,111 @@ Per-component (rounded)
 
 The always-on total is computed via the `count_tokens` API for your active model. Per-component numbers are proportionally scaled from that total. If the API is unreachable, the command falls back to a character-based estimate.
 
-### plugin tag
+### plugin validate
 
-Create a release git tag for the plugin in the current directory. Run from inside the plugin's folder. See [Tag plugin releases](/en/plugin-dependencies#tag-plugin-releases-for-version-resolution).
+Check a plugin or a marketplace for syntax and schema errors before publishing.
+
+The command exits 0 when validation passes, 1 when it fails, and 2 when the validation run itself fails, such as when the path you pass is unreadable.
 
 ```bash
-claude plugin tag [options]
+claude plugin validate <path> [options]
 ```
 
-**Options:**
+The command takes these arguments:
 
-| Option        | Description                                                                | Default |
-| :------------ | :------------------------------------------------------------------------- | :------ |
-| `--push`      | Push the tag to the remote after creating it                               |         |
-| `--dry-run`   | Print what would be tagged without creating the tag                        |         |
-| `-f, --force` | Create the tag even if the working tree is dirty or the tag already exists |         |
-| `-h, --help`  | Display help for command                                                   |         |
+* `<path>`: Path to a plugin directory or a marketplace directory. See [Validate a plugin or a directory without a manifest](/docs/en/plugin-marketplaces#validate-a-plugin-or-a-directory-without-a-manifest) for which files a plugin run covers.
+
+The command accepts these options:
+
+| Option       | Description                                                                                                                                       | Default |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------ |
+| `--strict`   | Treat warnings as errors and exit 1 on them. Use in CI to catch issues the runtime tolerates, such as [unrecognized fields](#unrecognized-fields) |         |
+| `--json`     | Output the validation report as one JSON object with the same exit codes. Requires Claude Code v2.1.259 or later                                  |         |
+| `-h, --help` | Display help for command                                                                                                                          |         |
+
+With `--json`, Claude Code writes the report to stdout as one JSON object with these top-level fields:
+
+* `success`: the same verdict the exit code gives
+* `strict`: whether the run treated warnings as errors
+* `target`: the resolved path Claude Code validated
+* `manifest`: the manifest's own result, or `null` for a [run without a manifest](/docs/en/plugin-marketplaces#validate-a-plugin-or-a-directory-without-a-manifest)
+* `contents`: per-file results, each naming its `file` and carrying `errors`, `warnings`, and `notes` arrays
+
+On exit 2, the command writes nothing to stdout; the error message goes to stderr.
+
+Within an interactive session, `/plugin validate <path>` runs the same checks inline.
+
+### plugin eval
+
+Run a plugin's [eval cases](/docs/en/plugin-evals) and report scored results. Requires Claude Code v2.1.269 or later. Each case is a prompt plus graders; Claude Code runs it several times in an isolated session with only the target plugin loaded, and by default also without the plugin so the report shows the difference. See [Test plugins with evals](/docs/en/plugin-evals) for the case format, graders, results, and CI usage.
+
+```bash
+claude plugin eval [target] [options]
+```
+
+The optional `target` is a plugin directory, a single `prompt.md` or `case.yaml` file, an installed plugin as `name` or `name@marketplace`, or `name@skills-dir`, and defaults to the current directory. Put it before `--tag`, `--allow-tools`, and `--json`.
+
+This table lists the options most runs use. Run `claude plugin eval --help` for the complete set, including `--case`, `--tag`, `--output-dir`, `--report`, `--allow-real-servers`, `--keep-temp`, and `--verbose`.
+
+| Option                     | Description                                                                                                                                                     | Default                                                                        |
+| :------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| `--runs <n>`               | Runs per case per arm                                                                                                                                           | Each case's `runs`, else 3                                                     |
+| `-j, --concurrency <n>`    | Agent sessions to run at once, 1 to 8. They share your rate limit                                                                                               | `1`                                                                            |
+| `--model <model>`          | Model for the agent under test                                                                                                                                  | Each case's `model`, else `ANTHROPIC_MODEL` if set, else Claude Code's default |
+| `--judge-model <model>`    | Model for `llm` and `baseline` graders                                                                                                                          | A small fast model                                                             |
+| `--ablation <mode>`        | `none` or `with-without`. See [Compare against a no-plugin baseline](/docs/en/plugin-evals#compare-against-a-no-plugin-baseline)                                     | `with-without` when a plugin resolves, else `none`                             |
+| `--threshold <0..1>`       | Exit 1 if any case scores below this                                                                                                                            | `1.0`                                                                          |
+| `--max-cost-usd <usd>`     | Stop before the next run once spend reaches this, exit 2, and report partial results                                                                            | No ceiling                                                                     |
+| `--allow-tools <tools...>` | Grant tools beyond the read-only set, such as `Bash`, `Write`, `Edit`, or `"mcp__plugin_<plugin>_<server>__*"`. See [Grant tools](/docs/en/plugin-evals#grant-tools) |                                                                                |
+| `--scaffold`               | Run each case's [`scaffold_script`](/docs/en/plugin-evals#add-setup-or-history-with-case-yaml)                                                                       | Off                                                                            |
+| `--trust-plugin`           | Skip the first-run trust prompt, for CI. See [What a run can access](/docs/en/plugin-evals#security)                                                                 | Off                                                                            |
+| `--mocks <mode>`           | `record` or `off`. See [Mock MCP servers](/docs/en/plugin-evals#mock-mcp-servers)                                                                                    | `record`                                                                       |
+| `--eval-dir <dir>`         | Directory below the plugin that holds the cases                                                                                                                 | The manifest's `experimental.evals`, else `evals`                              |
+| `--json [path]`            | Print the [result document](/docs/en/plugin-evals#json-result) to stdout, or write it to a `.json` path                                                              |                                                                                |
+| `--no-publish`             | Keep the HTML report local                                                                                                                                      |                                                                                |
+| `-h, --help`               | Display help for command                                                                                                                                        |                                                                                |
+
+The command exits 0 when every case meets the threshold, 1 on a failing case, a load error, or an untrusted plugin directory, 2 on a partial run, 130 when interrupted, and 143 when terminated. See [Run evals in CI](/docs/en/plugin-evals#run-evals-in-ci).
+
+### plugin eval init
+
+Create an eval suite for the plugin in the current directory. Requires Claude Code v2.1.269 or later. In a terminal this starts an authoring interview that reads the plugin, proposes cases and graders, pilots them, and writes the files. With `--bare`, or without a terminal, it writes a blank single-case template instead. Run from inside an interactive Claude Code session, it prints the interview instructions for that session to follow rather than writing a template. See [Create your first eval suite](/docs/en/plugin-evals#create-your-first-eval-suite).
+
+```bash
+claude plugin eval init [name] [options]
+```
+
+The optional `name` is a case name: the interview doesn't need one, while `--bare` and the no-terminal template path require it. It accepts these options:
+
+| Option              | Description                                                                                       | Default                                           |
+| :------------------ | :------------------------------------------------------------------------------------------------ | :------------------------------------------------ |
+| `--bare`            | Write a blank `prompt.md` and `graders/criteria.md` for `<name>` instead of running the interview |                                                   |
+| `-i, --interactive` | Require the interview. Fails without a terminal instead of writing a template                     |                                                   |
+| `--eval-dir <dir>`  | Directory below the current directory to write cases into                                         | The manifest's `experimental.evals`, else `evals` |
+| `-h, --help`        | Display help for command                                                                          |                                                   |
+
+### plugin tag
+
+Create a release git tag for a plugin. By default the command tags the plugin in the current directory; pass a path to tag a plugin elsewhere. See [Tag plugin releases](/docs/en/plugin-dependencies#tag-plugin-releases-for-version-resolution).
+
+```bash
+claude plugin tag [path] [options]
+```
+
+The command takes these arguments:
+
+* `[path]`: Path to the plugin directory. Defaults to the current directory.
+
+The command accepts these options:
+
+| Option                | Description                                                                | Default  |
+| :-------------------- | :------------------------------------------------------------------------- | :------- |
+| `--push`              | Push the tag to the remote after creating it                               |          |
+| `--dry-run`           | Print what would be tagged without creating the tag                        |          |
+| `-f, --force`         | Create the tag even if the working tree is dirty or the tag already exists |          |
+| `-m, --message <msg>` | Tag annotation message. Use `%s` as a placeholder for the version          |          |
+| `--remote <name>`     | Remote to push to with `--push`                                            | `origin` |
+| `-h, --help`          | Display help for command                                                   |          |
 
 ***
 
@@ -1132,22 +1346,22 @@ This shows:
 
 ### Common issues
 
-| Issue                               | Cause                           | Solution                                                                                                                                                        |
-| :---------------------------------- | :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Plugin not loading                  | Invalid `plugin.json`           | Run `claude plugin validate` or `/plugin validate` to check `plugin.json`, skill/agent/command frontmatter, and `hooks/hooks.json` for syntax and schema errors |
-| Skills not appearing                | Wrong directory structure       | Ensure `skills/` or `commands/` is at the plugin root, not inside `.claude-plugin/`                                                                             |
-| Hooks not firing                    | Script not executable           | Run `chmod +x script.sh`                                                                                                                                        |
-| MCP server fails                    | Missing `${CLAUDE_PLUGIN_ROOT}` | Use variable for all plugin paths                                                                                                                               |
-| Path errors                         | Absolute paths used             | All paths must be relative and start with `./`                                                                                                                  |
-| LSP `Executable not found in $PATH` | Language server not installed   | Install the binary (e.g., `npm install -g typescript-language-server typescript`)                                                                               |
+| Issue                               | Cause                           | Solution                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| :---------------------------------- | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plugin not loading                  | Invalid `plugin.json`           | Run `claude plugin validate ./my-plugin` or `/plugin validate ./my-plugin`, where `./my-plugin` is your plugin directory, to check `plugin.json`, `hooks/hooks.json`, and the frontmatter of the skills, agents, and commands in the plugin's default directories for syntax and schema errors. See [Validate a plugin or a directory without a manifest](/docs/en/plugin-marketplaces#validate-a-plugin-or-a-directory-without-a-manifest) for what a run covers |
+| Skills not appearing                | Wrong directory structure       | Ensure `skills/` or `commands/` is at the plugin root, not inside `.claude-plugin/`                                                                                                                                                                                                                                                                                                                                                                          |
+| Hooks not firing                    | Script not executable           | Run `chmod +x script.sh`                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| MCP server fails                    | Missing `${CLAUDE_PLUGIN_ROOT}` | Use variable for all plugin paths                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Path errors                         | Absolute paths used             | Make paths relative, starting with `./`; see [Path behavior rules](#path-behavior-rules), which cover the `skills` field's `"."` exception                                                                                                                                                                                                                                                                                                                   |
+| LSP `Executable not found in $PATH` | Language server not installed   | Install the binary (e.g., `npm install -g typescript-language-server typescript`)                                                                                                                                                                                                                                                                                                                                                                            |
 
 ### Example error messages
 
 **Manifest validation errors**:
 
 * `Invalid JSON syntax: Unexpected token } in JSON at position 142`: check for missing commas, extra commas, or unquoted strings
-* `Plugin has an invalid manifest file at .claude-plugin/plugin.json. Validation errors: name: Required`: a required field is missing
-* `Plugin has a corrupt manifest file at .claude-plugin/plugin.json. JSON parse error: ...`: JSON syntax error
+* `Plugin <name> has an invalid manifest file at .claude-plugin/plugin.json. Validation errors: name: Invalid input: expected string, received undefined`: a required field is missing
+* `Plugin <name> has a corrupt manifest file at .claude-plugin/plugin.json. JSON parse error: ...`: JSON syntax error. Before v2.1.246, Claude Code also produced this error for a `plugin.json` saved as UTF-8 with a leading byte-order mark (BOM), even when the JSON was otherwise valid.
 
 **Plugin loading errors**:
 
@@ -1191,17 +1405,6 @@ This shows:
 
 **Correct structure**: Components must be at the plugin root, not inside `.claude-plugin/`. Only `plugin.json` belongs in `.claude-plugin/`.
 
-```text
-my-plugin/
-├── .claude-plugin/
-│   └── plugin.json      ← Only manifest here
-├── commands/            ← At root level
-├── agents/              ← At root level
-└── hooks/               ← At root level
-```
-
-If your components are inside `.claude-plugin/`, move them to the plugin root.
-
 **Debug checklist**:
 
 1. Run `claude --debug` and look for "loading plugin" messages
@@ -1216,23 +1419,23 @@ If your components are inside `.claude-plugin/`, move them to the plugin root.
 
 Claude Code uses the plugin's version as the cache key that determines whether an update is available. When you run `/plugin update` or auto-update fires, Claude Code computes the current version and skips the update if it matches what's already installed.
 
-The version is resolved from the first of these that is set:
+For every source type except `command`, Claude Code resolves the version from the first of these that is set:
 
 1. The `version` field in the plugin's `plugin.json`
 2. The `version` field in the plugin's marketplace entry in `marketplace.json`
 3. The git commit SHA of the plugin's source, for `github`, `url`, `git-subdir`, and relative-path sources in a git-hosted marketplace
-4. `unknown`, for `npm` sources or local directories not inside a git repository
+4. The SHA-256 digest, for [`archive` sources](/docs/en/plugin-marketplaces#zip-archives): the `sha256` pin in the marketplace entry, or the digest of the downloaded file when you set no pin. Claude Code shortens it to the first 12 characters
+5. `unknown`, for `npm` sources or local directories not inside a git repository
 
-This gives you two ways to version a plugin:
+For a [`command` source](/docs/en/plugin-marketplaces#command-sources), Claude Code always derives the version from what the command produced: a 12-character content hash on its own, or appended to the `plugin.json` version as `<version>-<hash>` when one is set. Claude Code ignores the marketplace entry's `version` field for command sources. A command whose hashed output changes therefore produces a new version, even when the authored version string stays the same. In [link mode](/docs/en/plugin-marketplaces#copy-mode-and-link-mode), the hash covers the printed directory's real path and its top-level entries rather than the file contents.
 
-| Approach               | How                                                              | Update behavior                                                                                                                                                      | Best for                                          |
-| :--------------------- | :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
-| **Explicit version**   | Set `"version": "2.1.0"` in `plugin.json`                        | Users get updates only when you bump this field. Pushing new commits without bumping it has no effect, and `/plugin update` reports "already at the latest version". | Published plugins with stable release cycles      |
-| **Commit-SHA version** | Omit `version` from both `plugin.json` and the marketplace entry | Users get updates on every new commit to the plugin's git source                                                                                                     | Internal or team plugins under active development |
+For those source types, this gives you three ways to version a plugin:
 
-<Warning>
-  If you set `version` in `plugin.json`, you must bump it every time you want users to receive changes. Pushing new commits alone is not enough, because Claude Code sees the same version string and keeps the cached copy. If you're iterating quickly, leave `version` unset so the git commit SHA is used instead.
-</Warning>
+| Approach               | How                                                                                                                                  | Update behavior                                                                                                                                                      | Best for                                                                 |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| **Explicit version**   | Set `"version": "2.1.0"` in `plugin.json`                                                                                            | Users get updates only when you bump this field. Pushing new commits without bumping it has no effect, and `/plugin update` reports "already at the latest version". | Published plugins with stable release cycles                             |
+| **Commit-SHA version** | Omit `version` from both `plugin.json` and the marketplace entry                                                                     | Users get updates whenever the source's resolved commit changes                                                                                                      | Internal or team plugins under active development                        |
+| **Digest version**     | Use an [`archive` source](/docs/en/plugin-marketplaces#zip-archives) and omit `version` from both `plugin.json` and the marketplace entry | With a `sha256` pin, users get updates when you change the pin. Without one, users get updates whenever the hosted zip file's bytes change                           | Plugins published as zip files to a static server or artifact repository |
 
 If you use explicit versions, follow [semantic versioning](https://semver.org) (`MAJOR.MINOR.PATCH`): bump MAJOR for breaking changes, MINOR for new features, PATCH for bug fixes. Document changes in a `CHANGELOG.md`.
 
@@ -1240,10 +1443,10 @@ If you use explicit versions, follow [semantic versioning](https://semver.org) (
 
 ## See also
 
-* [Plugins](/en/plugins) - Tutorials and practical usage
-* [Plugin marketplaces](/en/plugin-marketplaces) - Creating and managing marketplaces
-* [Skills](/en/skills) - Skill development details
-* [Subagents](/en/sub-agents) - Agent configuration and capabilities
-* [Hooks](/en/hooks) - Event handling and automation
-* [MCP](/en/mcp) - External tool integration
-* [Settings](/en/settings) - Configuration options for plugins
+* [Plugins](/docs/en/plugins) - Tutorials and practical usage
+* [Plugin marketplaces](/docs/en/plugin-marketplaces) - Creating and managing marketplaces
+* [Skills](/docs/en/skills) - Skill development details
+* [Subagents](/docs/en/sub-agents) - Agent configuration and capabilities
+* [Hooks](/docs/en/hooks) - Event handling and automation
+* [MCP](/docs/en/mcp) - External tool integration
+* [Settings](/docs/en/settings) - Configuration options for plugins

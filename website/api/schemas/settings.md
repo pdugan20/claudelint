@@ -6,7 +6,7 @@ description: 'Schema reference for settings.json including permissions, attribut
 
 <SchemaRef
   validator="Settings" validator-link="/validators/settings"
-  docs="Settings" docs-link="https://code.claude.com/docs/en/settings"
+  docs="Settings" docs-link="https://code.claude.com/docs/en/settings-reference"
   schema="claude-code-settings.json" schema-link="https://json.schemastore.org/claude-code-settings.json"
 />
 
@@ -24,6 +24,7 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 | `defaultMode`                  | string   | no       | `acceptEdits`, `bypassPermissions`, `default`, or `plan`      |
 | `disableBypassPermissionsMode` | string   | no       | Set to `"disable"` to prevent bypass                          |
 | `additionalDirectories`        | string[] | no       | Extra directories to allow access to                          |
+| `blockReadsOutsideWorkingDirectories` | boolean | no | Block file reads outside the working directories |
 
 ### Attribution
 
@@ -31,6 +32,7 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 | -------- | ------ | -------- | ----------------------- |
 | `commit` | string | no       | Commit message template |
 | `pr`     | string | no       | PR description template |
+| `sessionUrl` | boolean | no | Include the cloud or Remote Control session URL in attribution |
 
 ### Sandbox
 
@@ -45,6 +47,12 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 | `filesystem`                | object   | no       | Filesystem read/write allow and deny lists                   |
 | `credentials`               | object   | no       | Credential file and env var protection                       |
 | `network`                   | object   | no       | Network restrictions (see below)                             |
+| `allowAppleEvents` | boolean | no | Permit Apple Events on macOS |
+| `bwrapPath` | string | no | Managed bubblewrap executable path |
+| `socatPath` | string | no | Managed socat executable path |
+| `enableWeakerNetworkIsolation` | boolean | no | Permit macOS TLS trust service access |
+| `ignoreViolations` | object | no | Map command substrings to arrays of violation substrings to suppress |
+| `ripgrep` | object | no | Custom command and optional args for ripgrep |
 
 ### Sandbox network
 
@@ -59,6 +67,7 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 | `allowMachLookup`         | string[] | no       | Mach services the sandbox may look up   |
 | `httpProxyPort`           | number   | no       | HTTP proxy port                         |
 | `socksProxyPort`          | number   | no       | SOCKS proxy port                        |
+| `strictAllowlist` | boolean | no | Deny hosts outside the sandbox allowlist |
 
 ## Example
 
@@ -77,9 +86,11 @@ The `settings.json` file configures Claude Code behavior. It can be located at `
 }
 ```
 
+The schema validates setting values across scopes. It does not enforce whether a setting is permitted in a particular file or change runtime policy. Scope restrictions are listed in the [upstream settings reference](https://code.claude.com/docs/en/settings-reference#scopes).
+
 ## Full field reference
 
-Every top-level key `SettingsSchema` models, generated from the schema itself. Descriptions are abridged from the [official settings reference](https://code.claude.com/docs/en/settings).
+Every top-level key `SettingsSchema` models, generated from the schema itself. Descriptions are abridged from the [official settings reference](https://code.claude.com/docs/en/settings-reference).
 
 | Field                             | Type    | Required | Description                                                                                          |
 | --------------------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------- |
@@ -147,7 +158,7 @@ Every top-level key `SettingsSchema` models, generated from the schema itself. D
 | `footerLinksRegexes`              | array   | No       | Render extra clickable badges in the footer when a regex matches turn output. Each entry has a `patt |
 | `forceLoginGatewayUrl`            | string  | No       | Pre-fills and locks the gateway URL on the `/login` Cloud gateway screen. Either this key or `forceL |
 | `forceLoginMethod`                | string  | No       | Use `claudeai` to restrict login to Claude.ai accounts, `console` to restrict login to Claude Consol |
-| `forceLoginOrgUUID`               | string  | No       | No organization is permitted to log in until the value is fixed                                      |
+| `forceLoginOrgUUID`               | string \| string[] | No       | No organization is permitted to log in until the value is fixed                                      |
 | `forceRemoteSettingsRefresh`      | boolean | No       | (Managed settings only) Block CLI startup until remote managed settings are freshly fetched from the |
 | `gcpAuthRefresh`                  | string  | No       | Custom script that refreshes GCP Application Default Credentials when they expire or cannot be loade |
 | `hooks`                           | object  | No       | Configure custom commands to run at lifecycle events. See hooks documentation for format             |
@@ -203,3 +214,46 @@ Every top-level key `SettingsSchema` models, generated from the schema itself. D
 | `wheelScrollAccelerationEnabled`  | boolean | No       | **Default**: `true`. In fullscreen rendering, accelerate mouse-wheel scroll speed during fast scroll |
 | `workflowKeywordTriggerEnabled`   | boolean | No       | **Default**: `true`. Whether the keyword `ultracode` in a prompt triggers a dynamic workflow. Set to |
 | `wslInheritsWindowsSettings`      | boolean | No       | (Windows managed settings only) When `true`, Claude Code on WSL reads managed settings from the Wind |
+| `autoCompactWindow` | number | no | Context window used for auto-compaction, 100000 to 1000000 tokens |
+| `autoContinueAtUsageLimit` | boolean | no | Continue automatically when a usage limit resets |
+| `bashOutputMaxChars` | number | no | Positive integer limit for Bash output; runtime clamps to its supported range |
+| `crossSessionInbound` | string | no | Inbound session messages: accept, hold, or refuse |
+| `desktopSessionCleanupPeriodDays` | number | no | Nonnegative number of days before desktop session cleanup |
+| `dialogExpiry` | string | no | Dialog timeout: 60s, 5m, 10m, or never |
+| `disableBrowserExternalNavigation` | boolean | no | Disable browser navigation outside permitted surfaces |
+| `disableCommandPluginSources` | boolean | no | Block command-based plugin sources |
+| `disableDesktopLocalSessions` | boolean | no | Disable desktop local sessions |
+| `disableMobileSimulatorTools` | boolean | no | Disable mobile simulator tools |
+| `emojiCompletionEnabled` | boolean | no | Enable emoji completion |
+| `enableWorkflows` | boolean | no | Enable workflow support |
+| `fastMode` | boolean | no | Enable fast mode |
+| `feedbackDrafts` | string | no | Feedback drafts: notify, quiet, or off |
+| `includeCoAuthoredBy` | boolean | no | Deprecated commit attribution toggle |
+| `isolatePeerMachines` | boolean | no | Isolate peer machines |
+| `keybindingFlavor` | string | no | Keyboard bindings: classic or readline |
+| `managedMcpServers` | object | no | Managed remote HTTP or SSE MCP servers keyed by name |
+| `managedSourcesBehavior` | string | no | Managed settings composition: first-wins or merge |
+| `maxEffortLevel` | string | no | Maximum effort: low, medium, high, xhigh, or max |
+| `modelPicker` | object | no | Model picker options and optional replacement of built-in choices |
+| `modelPricing` | object | no | Pricing multiplier and per-model input, output, cache-read, and cache-write rates |
+| `modelSettings` | object | no | Per-model effortLevel and maxEffortLevel |
+| `pluginConfigs` | object | no | Non-sensitive plugin options and per-server configuration values |
+| `processWrapper` | string | no | Command prefix used to wrap child processes |
+| `promptCacheTtl` | string | no | Prompt cache TTL: 5m or 1h |
+| `promptSuggestionEnabled` | boolean | no | Enable prompt suggestions |
+| `remote` | object | no | Default cloud environment in defaultEnvironmentId |
+| `skipAutoPermissionPrompt` | boolean | no | Dismiss the auto-permission introduction prompt |
+| `skipDangerousModePermissionPrompt` | boolean | no | Dismiss the bypass-permissions introduction prompt |
+| `spellcheck` | object | no | Spellcheck enabled state, checker, language, and color |
+| `sshHostAllowlist` | string[] | no | Allowed SSH hosts |
+| `subagentPromptCacheTtl` | string | no | Subagent prompt cache TTL: 5m or 1h |
+| `subagentStatusLine` | object | no | Command-based subagent status line |
+| `switchModelsOnFlag` | boolean | no | Allow model switching on feature flag changes |
+| `syncClaudeAiSkills` | boolean | no | Sync skills from claude.ai |
+| `taskOutputMaxChars` | number | no | Positive integer task output limit; runtime clamps to its supported range |
+| `terminalTitleFromRename` | boolean | no | Use session rename for the terminal title |
+| `timeFormat` | string | no | Clock display format or pattern |
+| `timeZone` | string | no | IANA time zone for clock display |
+| `vimInsertModeRemaps` | object | no | Map two-character sequences to `<Esc>` |
+| `workflowSizeGuideline` | string | no | Workflow size: unrestricted, small, medium, or large |
+| `worktree` | object | no | baseRef (fresh or head), symlinkDirectories, sparsePaths, and bgIsolation (worktree or none) |

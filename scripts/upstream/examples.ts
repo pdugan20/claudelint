@@ -51,11 +51,12 @@ export const MIN_EXAMPLES: Record<string, number> = {
   'sub-agents.md': 5,
   'skills.md': 4,
   'mcp.md': 4,
-  'settings.md': 8,
+  'settings-reference.md': 8,
 };
 
 interface Fence {
   lang: string;
+  info?: string;
   code: string;
   line: number;
 }
@@ -76,7 +77,7 @@ function fences(markdown: string): Fence[] {
   let i = 0;
 
   while (i < lines.length) {
-    const open = /^```([a-z]*)\s*$/.exec(lines[i]);
+    const open = /^```([a-z]*)(?:[ \t]+(.*))?$/.exec(lines[i]);
     if (!open) {
       i++;
       continue;
@@ -85,7 +86,12 @@ function fences(markdown: string): Fence[] {
     let end = start;
     while (end < lines.length && !/^```\s*$/.test(lines[end])) end++;
 
-    out.push({ lang: open[1], code: lines.slice(start, end).join('\n'), line: start + 1 });
+    out.push({
+      lang: open[1],
+      info: open[2]?.trim(),
+      code: lines.slice(start, end).join('\n'),
+      line: start + 1,
+    });
     i = end + 1;
   }
   return out;
@@ -180,6 +186,13 @@ export function classify(page: string, fence: Fence): Classified | null {
 
     case 'settings.md':
       return { filePath: '.claude/settings.json', code };
+
+    case 'settings-reference.md':
+      // This page also documents ~/.claude.json and policy-helper output. The fence's
+      // filename is authoritative; those other JSON documents are not settings files.
+      return ['settings.json', 'managed-settings.json'].includes(fence.info ?? '')
+        ? { filePath: '.claude/settings.json', code }
+        : null;
 
     // hooks.md documents both settings-with-hooks AND the hook INPUT/OUTPUT payload
     // schemas (session_id, tool_name, ...), which are not config at all.

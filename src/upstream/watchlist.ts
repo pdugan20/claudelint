@@ -95,10 +95,11 @@ export const WATCHLIST: WatchEntry[] = [
     minFacts: 2,
   },
   {
-    id: 'settings',
-    url: `${DOCS}/settings.md`,
+    id: 'settings-reference',
+    url: `${DOCS}/settings-reference.md`,
     extractors: ['field-tables', 'json-keys'],
-    // Was `[]`: 162 facts that asserted nothing. SettingsSchema is now registered and
+    // The key reference moved out of settings.md, which now covers file precedence.
+    // SettingsSchema is registered and
     // conformance is enforced in both directions by tests/upstream/settings-keys.test.ts
     // (names) and tests/upstream/field-types.test.ts (documented example values).
     governs: ['SettingsSchema'],

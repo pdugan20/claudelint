@@ -59,8 +59,14 @@
       "description": "MCP servers available to this agent. Each entry is either a string reference to a configured server or an inline definition object.",
       "items": {
         "oneOf": [
-          { "type": "string", "description": "Name of an already-configured MCP server" },
-          { "type": "object", "description": "Inline MCP server definition keyed by server name" }
+          {
+            "type": "string",
+            "description": "Name of an already-configured MCP server"
+          },
+          {
+            "type": "object",
+            "description": "Inline MCP server definition keyed by server name"
+          }
         ]
       }
     },
@@ -81,8 +87,7 @@
     },
     "background": {
       "type": "boolean",
-      "description": "Set to true to always run this subagent as a background task",
-      "default": false
+      "description": "Set to true to always run this subagent as a background task"
     },
     "isolation": {
       "type": "string",
@@ -101,21 +106,76 @@
         "items": {
           "type": "object",
           "properties": {
-            "matcher": { "type": "string" },
+            "matcher": {
+              "type": "string"
+            },
             "hooks": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "type": { "type": "string", "enum": ["command", "http", "prompt", "agent"] },
-                  "command": { "type": "string" },
-                  "prompt": { "type": "string" },
-                  "agent": { "type": "string" },
-                  "timeout": { "type": "number" },
-                  "statusMessage": { "type": "string" },
-                  "once": { "type": "boolean" },
-                  "model": { "type": "string" },
-                  "async": { "type": "boolean" }
+                  "type": {
+                    "type": "string",
+                    "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                  },
+                  "command": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "string"
+                  },
+                  "timeout": {
+                    "type": "number"
+                  },
+                  "statusMessage": {
+                    "type": "string"
+                  },
+                  "once": {
+                    "type": "boolean"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "async": {
+                    "type": "boolean"
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "if": {
+                    "type": "string"
+                  },
+                  "shell": {
+                    "type": "string",
+                    "enum": ["bash", "powershell"]
+                  },
+                  "asyncRewake": {
+                    "type": "boolean"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "allowedEnvVars": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "server": {
+                    "type": "string"
+                  },
+                  "tool": {
+                    "type": "string"
+                  },
+                  "input": {
+                    "type": "object"
+                  }
                 },
                 "required": ["type"]
               }
@@ -124,6 +184,16 @@
           "required": ["hooks"]
         }
       }
+    },
+    "experimental": {
+      "type": "object",
+      "properties": {
+        "cacheTtl": {
+          "type": "string",
+          "enum": ["5m", "1h"]
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

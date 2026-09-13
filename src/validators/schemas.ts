@@ -18,6 +18,7 @@ export const SettingsHookSchema = z.object({
   statusMessage: z.string().optional(),
   once: z.boolean().optional(),
   // command hook fields
+  args: z.array(z.string()).optional(),
   command: z.string().optional(),
   async: z.boolean().optional(),
   asyncRewake: z.boolean().optional(),
@@ -32,7 +33,6 @@ export const SettingsHookSchema = z.object({
   input: z.record(z.string(), z.unknown()).optional(),
   // prompt and agent hook fields
   prompt: z.string().optional(),
-  agent: z.string().optional(),
   model: z.string().optional(),
 });
 
@@ -50,6 +50,9 @@ export const SettingsHookMatcherSchema = z.object({
  * Based on official schema: https://json.schemastore.org/claude-code-settings.json
  */
 export const SettingsHooksSchema = z.object({
+  DirectoryAdded: z.array(SettingsHookMatcherSchema).optional(),
+  PostModelSwitch: z.array(SettingsHookMatcherSchema).optional(),
+  PreModelSwitch: z.array(SettingsHookMatcherSchema).optional(),
   PreToolUse: z.array(SettingsHookMatcherSchema).optional(),
   PostToolUse: z.array(SettingsHookMatcherSchema).optional(),
   PostToolUseFailure: z.array(SettingsHookMatcherSchema).optional(),
@@ -102,6 +105,7 @@ export const PermissionsSchema = z.object({
     .enum(['default', 'manual', 'acceptEdits', 'auto', 'dontAsk', 'plan', 'bypassPermissions'])
     .optional(),
   disableBypassPermissionsMode: z.enum(['disable']).optional(),
+  blockReadsOutsideWorkingDirectories: z.boolean().optional(),
   additionalDirectories: z.array(z.string()).optional(),
 });
 
@@ -110,6 +114,7 @@ export const PermissionsSchema = z.object({
  * Official format uses commit/pr message templates, not enabled/name/email
  */
 export const AttributionSchema = z.object({
+  sessionUrl: z.boolean().optional(),
   commit: z.string().optional(),
   pr: z.string().optional(),
 });
@@ -117,7 +122,7 @@ export const AttributionSchema = z.object({
 /**
  * Sandbox network schema for settings
  *
- * Every field below is a row in the `sandbox` table at docs-baseline/settings.md:376-402.
+ * Every field below is a row in the `sandbox` table at docs-baseline/settings-reference.md (Sandbox sections).
  *
  * claudelint previously modelled exactly two fields here, and BOTH were invented:
  *   - `allowedHosts`  -- the documented field is `allowedDomains`
@@ -132,6 +137,7 @@ export const AttributionSchema = z.object({
 export const SandboxNetworkSchema = z.object({
   allowUnixSockets: z.array(z.string()).optional(),
   allowAllUnixSockets: z.boolean().optional(),
+  strictAllowlist: z.boolean().optional(),
   allowLocalBinding: z.boolean().optional(),
   allowMachLookup: z.array(z.string()).optional(),
   allowedDomains: z.array(z.string()).optional(),
@@ -147,6 +153,7 @@ export const SandboxNetworkSchema = z.object({
  * Sandbox filesystem schema for settings (documented, never modelled)
  */
 export const SandboxFilesystemSchema = z.object({
+  disabled: z.boolean().optional(),
   allowWrite: z.array(z.string()).optional(),
   denyWrite: z.array(z.string()).optional(),
   denyRead: z.array(z.string()).optional(),
@@ -154,20 +161,57 @@ export const SandboxFilesystemSchema = z.object({
   allowManagedReadPathsOnly: z.boolean().optional(),
 });
 
-/**
- * Sandbox credentials schema for settings (documented, never modelled)
- *
- * `deny` is the only supported mode for files; env vars additionally support `mask`.
- */
+/** Credential masking options documented in settings-reference#sandbox-credentials-files. */
+const CredentialMaskOptions = {
+  extract: z.string().optional(),
+  onExtractNoMatch: z.enum(['warn', 'deny', 'error']).optional(),
+  decode: z.literal('jwt').optional(),
+  maskClaims: z.array(z.string()).min(1).optional(),
+  injectHosts: z.array(z.string()).optional(),
+};
+
 export const SandboxCredentialsSchema = z.object({
-  files: z.array(z.object({ path: z.string(), mode: z.enum(['deny']) })).optional(),
-  envVars: z.array(z.object({ name: z.string(), mode: z.enum(['deny', 'mask']) })).optional(),
+  files: z
+    .array(
+      z.object({
+        path: z.string(),
+        mode: z.enum(['deny', 'mask']),
+        ...CredentialMaskOptions,
+        maskDuplicates: z.boolean().optional(),
+      })
+    )
+    .optional(),
+  envVars: z
+    .array(
+      z.object({
+        name: z.string().regex(/^[A-Za-z_][A-Za-z0-9_]*$/),
+        mode: z.enum(['deny', 'mask']),
+        ...CredentialMaskOptions,
+      })
+    )
+    .optional(),
+  awsPairs: z
+    .array(
+      z.object({
+        accessKeyIdVar: z.string(),
+        secretAccessKeyVar: z.string(),
+        sessionTokenVar: z.string().optional(),
+      })
+    )
+    .optional(),
+  sigv4: z
+    .object({
+      streaming: z.enum(['deny', 'passthrough']).optional(),
+      presigned: z.enum(['deny', 'passthrough']).optional(),
+      sigv4a: z.enum(['deny', 'passthrough']).optional(),
+    })
+    .optional(),
   allowPlaintextInject: z.boolean().optional(),
 });
 
 /**
  * Sandbox schema for settings
- * Based on the `sandbox` table at docs-baseline/settings.md:376-402.
+ * Based on the `sandbox` table at docs-baseline/settings-reference.md (Sandbox sections).
  */
 export const SandboxSchema = z.object({
   enabled: z.boolean().optional(),
@@ -185,6 +229,12 @@ export const SandboxSchema = z.object({
   filesystem: SandboxFilesystemSchema.optional(),
   credentials: SandboxCredentialsSchema.optional(),
   network: SandboxNetworkSchema.optional(),
+  allowAppleEvents: z.boolean().optional(),
+  bwrapPath: z.string().optional(),
+  socatPath: z.string().optional(),
+  enableWeakerNetworkIsolation: z.boolean().optional(),
+  ignoreViolations: z.record(z.string(), z.array(z.string())).optional(),
+  ripgrep: z.object({ command: z.string(), args: z.array(z.string()).optional() }).optional(),
   enableWeakerNestedSandbox: z.boolean().optional(),
 });
 
@@ -195,7 +245,7 @@ export const SandboxSchema = z.object({
  *
  * `settings` is an INLINE marketplace declared directly in settings.json, with no hosted
  * repository: "`settings`: inline marketplace declared directly in settings.json without a
- * separate hosted repository (uses `name` and `plugins`)" (docs-baseline/settings.md:815).
+ * separate hosted repository (uses `name` and `plugins`)" (settings-reference#extraknownmarketplaces).
  * Omitting it meant claudelint rejected the docs' own `extraKnownMarketplaces` example.
  */
 export const MarketplaceSourceSchema = z.object({
@@ -218,7 +268,7 @@ export const MarketplaceSourceSchema = z.object({
  *
  * The entry toggle is `autoUpdate`, not `enabled`: "Each marketplace entry also accepts an
  * optional `autoUpdate` Boolean... When omitted, official Anthropic marketplaces default to
- * `true` and all other marketplaces default to `false`" (docs-baseline/settings.md:821).
+ * `true` and all other marketplaces default to `false`" (settings-reference#extraknownmarketplaces).
  * `enabled` appears nowhere on a marketplace entry -- it was invented.
  *
  * Also documented on the source object for `github` and `git`: `skipLfs`.
@@ -230,10 +280,10 @@ export const MarketplaceConfigSchema = z.object({
 
 /**
  * Strict marketplace source schema for settings (strictKnownMarketplaces)
- * Based on: https://code.claude.com/docs/en/settings#strictknownmarketplaces
+ * Based on: https://code.claude.com/docs/en/settings-reference#strictknownmarketplaces
  *
  * Same source types as extraKnownMarketplaces, plus the two regex-matching sources.
- * docs-baseline/settings.md:872 — "Most sources use exact matching, while `hostPattern`
+ * settings-reference#strictknownmarketplaces — "Most sources use exact matching, while `hostPattern`
  * and `pathPattern` use regex matching against the marketplace host and filesystem path
  * respectively."
  */
@@ -247,6 +297,7 @@ export const StrictMarketplaceSourceSchema = z.object({
     'file',
     'hostPattern',
     'pathPattern',
+    'skills-dir',
   ]),
   repo: z.string().optional(),
   url: z.string().optional(),
@@ -254,7 +305,7 @@ export const StrictMarketplaceSourceSchema = z.object({
   path: z.string().optional(),
   ref: z.string().optional(),
   hostPattern: z.string().optional(), // regex pattern for hostPattern source
-  // docs-baseline/settings.md:959 — "Fields: `pathPattern` (required: regex pattern
+  // settings-reference#strictknownmarketplaces — "Fields: `pathPattern` (required: regex pattern
   // matched against the `path` field of `file` and `directory` sources)"
   pathPattern: z.string().optional(),
 });
@@ -303,25 +354,10 @@ export const SettingsSchema = z.object({
   plansDirectory: z.string().optional(),
   skipWebFetchPreflight: z.boolean().optional(),
 
-  // ---------------------------------------------------------------------------------
-  // The rest of the documented `settings.json` surface (docs-baseline/settings.md,
-  // "### Available settings"). claudelint modelled 23 of the 117 documented keys; the
-  // other 94 were stripped silently by this non-strict object, so a user writing them got
-  // no validation at all and a typo got no warning.
-  //
-  // Each type below comes from the Example column of that table -- the same evidence the
-  // type-conformance gate (tests/upstream/field-types.test.ts) checks these against, so
-  // every field here is verified rather than inferred.
-  //
-  // Types are deliberately permissive where the table is the only source: an enum-looking
-  // field is `z.string()` and an object is a loose record. Narrowing them from prose is
-  // exactly the guesswork that produced `websocket` and `allowedHosts`. A field documented
-  // in depth elsewhere can be tightened later, once that page is watched.
-  //
-  // NOT included: the "### Global config settings" keys. Those live in `~/.claude.json`,
-  // and the docs are explicit that "adding them to settings.json will trigger a schema
-  // validation error" -- modelling them here would have invented a fifth hallucination.
-  // ---------------------------------------------------------------------------------
+  // Settings documented by the reference index. Existing loose objects stay permissive
+  // where only example-level evidence is available; explicit sub-key tables and field
+  // sections supply the more detailed shapes below. ~/.claude.json-only keys and the
+  // policy-helper stdout envelope are excluded by the conformance tests.
   // Documented as containing `environment`, `allow`, `soft_deny` and `hard_deny`, plus the
   // separately-documented `classifyAllShell` row. `.passthrough()` is not used: the object
   // is non-strict already, and enumerating only the keys the docs name keeps this honest
@@ -387,7 +423,7 @@ export const SettingsSchema = z.object({
   footerLinksRegexes: z.array(z.record(z.string(), z.unknown())).optional(),
   forceLoginGatewayUrl: z.string().optional(),
   forceLoginMethod: z.string().optional(),
-  forceLoginOrgUUID: z.string().optional(),
+  forceLoginOrgUUID: z.union([z.string(), z.array(z.string())]).optional(),
   forceRemoteSettingsRefresh: z.boolean().optional(),
   gcpAuthRefresh: z.string().optional(),
   httpHookAllowedEnvVars: z.array(z.string()).optional(),
@@ -399,7 +435,13 @@ export const SettingsSchema = z.object({
   parentSettingsBehavior: z.string().optional(),
   pluginSuggestionMarketplaces: z.array(z.string()).optional(),
   pluginTrustMessage: z.string().optional(),
-  policyHelper: z.record(z.string(), z.unknown()).optional(),
+  policyHelper: z
+    .object({
+      path: z.string(),
+      refreshIntervalMs: z.union([z.literal(0), z.number().int().min(60000)]).optional(),
+      timeoutMs: z.number().int().min(1000).optional(),
+    })
+    .optional(),
   prUrlTemplate: z.string().optional(),
   preferredNotifChannel: z.string().optional(),
   remoteControlAtStartup: z.boolean().optional(),
@@ -414,7 +456,7 @@ export const SettingsSchema = z.object({
   spinnerTipsOverride: z.record(z.string(), z.unknown()).optional(),
   spinnerVerbs: z.record(z.string(), z.unknown()).optional(),
   sshConfigs: z.array(z.record(z.string(), z.unknown())).optional(),
-  strictPluginOnlyCustomization: z.array(z.string()).optional(),
+  strictPluginOnlyCustomization: z.union([z.literal(true), z.array(z.string())]).optional(),
   syntaxHighlightingDisabled: z.boolean().optional(),
   theme: z.string().optional(),
   tui: z.string().optional(),
@@ -427,6 +469,119 @@ export const SettingsSchema = z.object({
   wheelScrollAccelerationEnabled: z.boolean().optional(),
   workflowKeywordTriggerEnabled: z.boolean().optional(),
   wslInheritsWindowsSettings: z.boolean().optional(),
+
+  // settings-reference.md: field types and examples under each indexed setting.
+  autoCompactWindow: z.number().min(100000).max(1000000).optional(),
+  autoContinueAtUsageLimit: z.boolean().optional(),
+  bashOutputMaxChars: z.number().int().positive().optional(),
+  crossSessionInbound: z.enum(['accept', 'hold', 'refuse']).optional(),
+  desktopSessionCleanupPeriodDays: z.number().int().nonnegative().optional(),
+  dialogExpiry: z.enum(['60s', '5m', '10m', 'never']).optional(),
+  disableBrowserExternalNavigation: z.boolean().optional(),
+  disableCommandPluginSources: z.boolean().optional(),
+  disableDesktopLocalSessions: z.boolean().optional(),
+  disableMobileSimulatorTools: z.boolean().optional(),
+  emojiCompletionEnabled: z.boolean().optional(),
+  enableWorkflows: z.boolean().optional(),
+  fastMode: z.boolean().optional(),
+  feedbackDrafts: z.enum(['notify', 'quiet', 'off']).optional(),
+  includeCoAuthoredBy: z.boolean().optional(),
+  isolatePeerMachines: z.boolean().optional(),
+  keybindingFlavor: z.enum(['classic', 'readline']).optional(),
+  managedMcpServers: z
+    .lazy(() => z.record(z.string(), z.union([MCPHTTPTransportSchema, MCPSSETransportSchema])))
+    .optional(),
+  managedSourcesBehavior: z.enum(['first-wins', 'merge']).optional(),
+  maxEffortLevel: z.enum(['low', 'medium', 'high', 'xhigh', 'max']).optional(),
+  modelPicker: z
+    .object({
+      options: z.array(
+        z.object({
+          model: z.string(),
+          label: z.string().optional(),
+          description: z.string().optional(),
+        })
+      ),
+      replaceBuiltInOptions: z.boolean().optional(),
+    })
+    .optional(),
+  modelPricing: z
+    .object({
+      multiplier: z.number().positive().max(1).optional(),
+      overrides: z
+        .record(
+          z.string(),
+          z.object({
+            input: z.number().min(0).max(10000),
+            output: z.number().min(0).max(10000),
+            cacheRead: z.number().min(0).max(10000),
+            cacheWrite: z.number().min(0).max(10000),
+          })
+        )
+        .optional(),
+    })
+    .optional(),
+  modelSettings: z
+    .record(
+      z.string(),
+      z.object({
+        effortLevel: z.enum(['low', 'medium', 'high', 'xhigh']).optional(),
+        maxEffortLevel: z.enum(['low', 'medium', 'high', 'xhigh', 'max']).optional(),
+      })
+    )
+    .optional(),
+  pluginConfigs: z
+    .record(
+      z.string(),
+      z.object({
+        options: z
+          .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+          .optional(),
+        mcpServers: z
+          .record(
+            z.string(),
+            z.record(
+              z.string(),
+              z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])
+            )
+          )
+          .optional(),
+      })
+    )
+    .optional(),
+  processWrapper: z.string().optional(),
+  promptCacheTtl: z.enum(['5m', '1h']).optional(),
+  promptSuggestionEnabled: z.boolean().optional(),
+  remote: z.object({ defaultEnvironmentId: z.string().optional() }).optional(),
+  skipAutoPermissionPrompt: z.boolean().optional(),
+  skipDangerousModePermissionPrompt: z.boolean().optional(),
+  spellcheck: z
+    .object({
+      enabled: z.boolean().optional(),
+      checker: z.enum(['aspell', 'hunspell', 'ispell', 'auto']).optional(),
+      language: z.string().optional(),
+      color: z.string().optional(),
+    })
+    .optional(),
+  sshHostAllowlist: z.array(z.string()).optional(),
+  subagentPromptCacheTtl: z.enum(['5m', '1h']).optional(),
+  subagentStatusLine: z.object({ type: z.literal('command'), command: z.string() }).optional(),
+  switchModelsOnFlag: z.boolean().optional(),
+  syncClaudeAiSkills: z.boolean().optional(),
+  taskOutputMaxChars: z.number().int().positive().optional(),
+  terminalTitleFromRename: z.boolean().optional(),
+  timeFormat: z.string().optional(),
+  timeZone: z.string().optional(),
+  vimInsertModeRemaps: z.record(z.string().length(2), z.literal('<Esc>')).optional(),
+  workflowSizeGuideline: z.enum(['unrestricted', 'small', 'medium', 'large']).optional(),
+  worktree: z
+    .object({
+      baseRef: z.enum(['head', 'fresh']).optional(),
+      symlinkDirectories: z.array(z.string()).optional(),
+      sparsePaths: z.array(z.string()).optional(),
+      bgIsolation: z.enum(['worktree', 'none']).optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -442,7 +597,26 @@ export const HooksConfigSchema = z.object({
  * MCP stdio transport schema
  * For local servers running as subprocesses
  */
+const MCPCommonOptions = {
+  timeout: z.number().optional(),
+  alwaysLoad: z.boolean().optional(),
+};
+
+const MCPRemoteOptions = {
+  ...MCPCommonOptions,
+  headersHelper: z.string().optional(),
+  oauth: z
+    .object({
+      clientId: z.string().optional(),
+      callbackPort: z.number().optional(),
+      authServerMetadataUrl: z.string().optional(),
+      scopes: z.string().optional(),
+    })
+    .optional(),
+};
+
 export const MCPStdioTransportSchema = z.object({
+  ...MCPCommonOptions,
   type: z.literal('stdio').optional(), // Optional since stdio is default when command is present
   command: z.string(),
   args: z.array(z.string()).optional(),
@@ -454,6 +628,7 @@ export const MCPStdioTransportSchema = z.object({
  * For remote servers using Server-Sent Events
  */
 export const MCPSSETransportSchema = z.object({
+  ...MCPRemoteOptions,
   type: z.literal('sse'),
   url: z.string(),
   headers: z.record(z.string(), z.string()).optional(),
@@ -465,6 +640,7 @@ export const MCPSSETransportSchema = z.object({
  * For remote servers using HTTP
  */
 export const MCPHTTPTransportSchema = z.object({
+  ...MCPRemoteOptions,
   type: z.literal('http'),
   url: z.string(),
   headers: z.record(z.string(), z.string()).optional(),
@@ -495,6 +671,7 @@ export const MCPStreamableHTTPTransportSchema = MCPHTTPTransportSchema.extend({
  * `url`, `headers`, `headersHelper`, `timeout`, and `alwaysLoad` fields as `http`."
  */
 export const MCPWebSocketTransportSchema = z.object({
+  ...MCPRemoteOptions,
   type: z.literal('ws'),
   url: z.string(),
   headers: z.record(z.string(), z.string()).optional(),
@@ -600,6 +777,17 @@ export const PluginDependencySchema = z.union([
  * String format is NOT supported by Claude Code.
  */
 export const PluginManifestSchema = z.object({
+  displayName: z.string().optional(),
+  defaultEnabled: z.boolean().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  workflows: z.union([z.string(), z.array(z.string())]).optional(),
+  experimental: z
+    .object({
+      themes: z.union([z.string(), z.array(z.string())]).optional(),
+      monitors: z.union([z.string(), z.array(z.string())]).optional(),
+      evals: z.union([z.string(), z.array(z.string())]).optional(),
+    })
+    .optional(),
   // Required fields
   name: z.string(),
 
@@ -673,6 +861,24 @@ export const MarketplacePluginSourceSchema = z.union([
     ref: z.string().optional(),
     sha: z.string().optional(),
   }),
+  z.object({
+    source: z.literal('archive'),
+    url: z.string().url().startsWith('https://'),
+    sha256: z
+      .string()
+      .regex(/^[A-Fa-f0-9]{64}$/)
+      .optional(),
+  }),
+  z.object({
+    source: z.literal('command'),
+    command: z
+      .string()
+      .min(1)
+      .max(500)
+      .regex(/^(?!.* {4})[\x20-\x7E]+$/),
+    timeout: z.number().int().positive().max(600).optional(),
+    mode: z.enum(['copy', 'link']).optional(),
+  }),
 ]);
 
 /**
@@ -681,6 +887,20 @@ export const MarketplacePluginSourceSchema = z.union([
  * Based on: https://code.claude.com/docs/en/plugin-marketplaces#plugin-entries
  */
 export const MarketplacePluginEntrySchema = z.object({
+  relevance: z.record(z.string(), z.unknown()).optional(),
+  headers: z.record(z.string(), z.string()).optional(),
+  headersHelper: z.string().optional(),
+  displayName: z.string().optional(),
+  defaultEnabled: z.boolean().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  workflows: z.union([z.string(), z.array(z.string())]).optional(),
+  experimental: z
+    .object({
+      themes: z.union([z.string(), z.array(z.string())]).optional(),
+      monitors: z.union([z.string(), z.array(z.string())]).optional(),
+      evals: z.union([z.string(), z.array(z.string())]).optional(),
+    })
+    .optional(),
   // Required
   name: z.string(),
   source: MarketplacePluginSourceSchema,
@@ -736,6 +956,7 @@ export const MarketplaceOwnerSchema = z.object({
  * - https://github.com/anthropics/claude-plugins-official/blob/main/.claude-plugin/marketplace.json
  */
 export const MarketplaceMetadataSchema = z.object({
+  renames: z.record(z.string(), z.string().nullable()).optional(),
   $schema: z.string().optional(),
   name: z.string(),
   description: z.string().optional(),

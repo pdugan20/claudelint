@@ -26,10 +26,10 @@ export const rule: Rule = {
       recommended: true,
       summary: 'Enforces that skills have a valid description in their SKILL.md frontmatter.',
       rationale:
-        "Without a description, Claude Code cannot determine the skill's purpose or when to suggest it.",
+        'An explicit description helps Claude Code identify when to use the skill; otherwise it uses the first non-empty content line.',
       details:
         'Every skill should include a meaningful description so users and Claude understand its purpose. ' +
-        'This rule validates that the `description` field in SKILL.md frontmatter is present, at least 10 characters long, ' +
+        'This rule validates that the `description` field in SKILL.md frontmatter when present, is at least 10 characters long, ' +
         'written in third person, and free of XML tags. ' +
         'A good description improves discoverability and helps users decide whether a skill fits their needs.',
       examples: {

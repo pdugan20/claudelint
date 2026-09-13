@@ -71,62 +71,106 @@
     "allowCrossMarketplaceDependenciesOn": {
       "type": "array",
       "description": "Other marketplaces that plugins in this marketplace may depend on. Dependencies from a marketplace not listed here are blocked at install.",
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
+    },
+    "renames": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": ["string", "null"]
+      }
     }
   },
   "additionalProperties": false,
   "$defs": {
     "pluginSource": {
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "description": "Relative path to plugin directory (must start with ./)",
-          "pattern": "^\\.\\/.*"
+          "type": "string"
         },
         {
           "type": "object",
-          "description": "Source object specifying where to fetch the plugin",
-          "required": ["source"],
           "properties": {
             "source": {
               "type": "string",
-              "enum": ["github", "url", "git-subdir", "npm"],
-              "description": "Source type"
+              "enum": ["github", "url", "git-subdir", "npm"]
             },
             "repo": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "package": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "registry": {
+              "type": "string"
+            },
+            "ref": {
+              "type": "string"
+            },
+            "sha": {
+              "type": "string"
+            }
+          },
+          "required": ["source"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
               "type": "string",
-              "description": "GitHub repository in owner/repo format (github source)"
+              "const": "archive"
             },
             "url": {
               "type": "string",
-              "description": "Git repository URL (url/git-subdir source)"
+              "format": "uri",
+              "pattern": "^https:\\/\\/.*"
             },
-            "path": {
+            "sha256": {
               "type": "string",
-              "description": "Subdirectory path within the repo (git-subdir source)"
-            },
-            "package": {
-              "type": "string",
-              "description": "Package name (npm source)"
-            },
-            "version": {
-              "type": "string",
-              "description": "Package version constraint (npm source)"
-            },
-            "registry": {
-              "type": "string",
-              "description": "Custom package registry URL (npm source)"
-            },
-            "ref": {
-              "type": "string",
-              "description": "Git branch or tag (github/url/git-subdir source)"
-            },
-            "sha": {
-              "type": "string",
-              "description": "Full 40-character git commit SHA (github/url/git-subdir source)",
-              "pattern": "^[0-9a-f]{40}$"
+              "pattern": "^[A-Fa-f0-9]{64}$"
             }
           },
+          "required": ["source", "url"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "command"
+            },
+            "command": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^(?!.* {4})[\\x20-\\x7E]+$"
+            },
+            "timeout": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 600
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["copy", "link"]
+            }
+          },
+          "required": ["source", "command"],
           "additionalProperties": false
         }
       ]
@@ -188,7 +232,9 @@
         "keywords": {
           "type": "array",
           "description": "Discovery tags",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "category": {
           "type": "string",
@@ -197,7 +243,9 @@
         "tags": {
           "type": "array",
           "description": "Additional tags",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "strict": {
           "type": "boolean",
@@ -205,46 +253,110 @@
         },
         "commands": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "agents": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "skills": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "hooks": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
-            { "type": "array", "items": { "type": "string" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*\\.json$"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           ]
         },
         "mcpServers": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
-            { "type": "array", "items": { "type": "string" } },
-            { "type": "object" }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*\\.json$"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object"
+            }
           ]
         },
         "outputStyles": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "lspServers": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*\\.json$" },
-            { "type": "array", "items": { "type": "string" } },
-            { "type": "object" }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*\\.json$"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object"
+            }
           ]
         },
         "$schema": {
@@ -253,35 +365,63 @@
         },
         "themes": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "monitors": {
           "oneOf": [
-            { "type": "string", "pattern": "^\\.\\/.*" },
-            { "type": "array", "items": { "type": "string", "pattern": "^\\.\\/.*" } }
+            {
+              "type": "string",
+              "pattern": "^\\.\\/.*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\.\\/.*"
+              }
+            }
           ]
         },
         "userConfig": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
+          "additionalProperties": {
+            "$ref": "#/$defs/userConfigOption"
+          }
         },
         "channels": {
           "type": "array",
-          "items": { "$ref": "#/$defs/channel" }
+          "items": {
+            "$ref": "#/$defs/channel"
+          }
         },
         "dependencies": {
           "type": "array",
           "items": {
             "oneOf": [
-              { "type": "string" },
+              {
+                "type": "string"
+              },
               {
                 "type": "object",
                 "required": ["name"],
                 "properties": {
-                  "name": { "type": "string" },
-                  "version": { "type": "string" },
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
                   "marketplace": {
                     "type": "string",
                     "description": "Marketplace to resolve name in. Requires allowCrossMarketplaceDependenciesOn."
@@ -291,6 +431,96 @@
               }
             ]
           }
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "defaultEnabled": {
+          "type": "boolean"
+        },
+        "metadata": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "workflows": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "experimental": {
+          "type": "object",
+          "properties": {
+            "themes": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "monitors": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "evals": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "relevance": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "headers": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "headersHelper": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -303,14 +533,28 @@
           "type": "string",
           "enum": ["string", "number", "boolean", "directory", "file"]
         },
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "sensitive": { "type": "boolean" },
-        "required": { "type": "boolean" },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sensitive": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
         "default": {},
-        "multiple": { "type": "boolean" },
-        "min": { "type": "number" },
-        "max": { "type": "number" }
+        "multiple": {
+          "type": "boolean"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
       },
       "additionalProperties": false
     },
@@ -318,10 +562,14 @@
       "type": "object",
       "required": ["server"],
       "properties": {
-        "server": { "type": "string" },
+        "server": {
+          "type": "string"
+        },
         "userConfig": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/$defs/userConfigOption" }
+          "additionalProperties": {
+            "$ref": "#/$defs/userConfigOption"
+          }
         }
       },
       "additionalProperties": false

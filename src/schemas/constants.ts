@@ -26,12 +26,14 @@ export const ToolNames = z.enum([
   'CronDelete',
   'CronList',
   'Edit',
+  'EndConversation',
   'EnterPlanMode',
   'EnterWorktree',
   'ExitPlanMode',
   'ExitWorktree',
   'Glob',
   'Grep',
+  'ListAgents',
   'ListMcpResourcesTool',
   'LSP',
   'Monitor',
@@ -43,6 +45,7 @@ export const ToolNames = z.enum([
   'RemoteTrigger',
   'ReportFindings',
   'ScheduleWakeup',
+  'SendFeedback',
   'SendMessage',
   'SendUserFile',
   'ShareOnboardingGuide',
@@ -83,6 +86,9 @@ export const PermissionActions = z.enum(['allow', 'ask', 'deny']);
  * Valid hook event types
  */
 export const HookEvents = z.enum([
+  'DirectoryAdded',
+  'PostModelSwitch',
+  'PreModelSwitch',
   'PreToolUse',
   'PostToolUse',
   'PostToolUseFailure',

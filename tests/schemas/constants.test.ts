@@ -109,8 +109,8 @@ describe('Schema Constants', () => {
       expect(HookEvents.safeParse('pretooluse').success).toBe(false);
     });
 
-    it('should export all 30 events', () => {
-      expect(VALID_HOOK_EVENTS.length).toBe(30);
+    it('should export all 33 events', () => {
+      expect(VALID_HOOK_EVENTS.length).toBe(33);
       expect(VALID_HOOK_EVENTS).toContain('PreToolUse');
       expect(VALID_HOOK_EVENTS).toContain('ConfigChange');
       expect(VALID_HOOK_EVENTS).toContain('SessionEnd');
@@ -188,13 +188,7 @@ describe('Schema Constants', () => {
     });
 
     it('should export runtime values', () => {
-      expect(VALID_MCP_TRANSPORT_TYPES).toEqual([
-        'stdio',
-        'sse',
-        'http',
-        'streamable-http',
-        'ws',
-      ]);
+      expect(VALID_MCP_TRANSPORT_TYPES).toEqual(['stdio', 'sse', 'http', 'streamable-http', 'ws']);
     });
   });
 

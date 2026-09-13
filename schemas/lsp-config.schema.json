@@ -72,12 +72,16 @@
       "restartOnCrash": {
         "type": "boolean",
         "description": "Whether to automatically restart the server if it crashes",
-        "default": false
+        "default": true
       },
       "maxRestarts": {
         "type": "number",
         "description": "Maximum number of restart attempts before giving up",
         "minimum": 0
+      },
+      "diagnostics": {
+        "type": "boolean",
+        "default": true
       }
     }
   }

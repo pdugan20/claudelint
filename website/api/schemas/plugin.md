@@ -36,6 +36,11 @@ The `plugin.json` file lives in the `.claude-plugin/` directory and declares the
 | `userConfig` | object | no | User-configurable values prompted at enable time, keyed by valid identifier names |
 | `channels` | object[] | no | Channel declarations that bind to MCP servers for message injection (Telegram, Slack, Discord style) |
 | `dependencies` | object[] | no | Other plugins this plugin requires, optionally with semver version constraints |
+| `displayName` | string | no | Human-readable display name |
+| `defaultEnabled` | boolean | no | Initial enablement when the user has not chosen a state; default true |
+| `metadata` | object | no | Free-form data for other tooling |
+| `workflows` | string \| string[] | no | Workflow script files or directories |
+| `experimental` | object | no | Experimental component paths: `themes`, `monitors`, and `evals` |
 
 ## Author
 

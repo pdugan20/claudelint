@@ -23,6 +23,7 @@ The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin cata
 | `plugins` | array | yes | Array of [plugin entries](#plugin-entry) |
 | `metadata` | object | no | Extra metadata (`pluginRoot`, etc.) |
 | `allowCrossMarketplaceDependenciesOn` | string[] | no | Other marketplaces that plugins in this marketplace may depend on. Dependencies from a marketplace not listed here are blocked at install |
+| `renames` | object | no | Map former plugin names to new names, or null for removed plugins |
 
 ## Owner
 
@@ -30,7 +31,6 @@ The `marketplace.json` file lives in `.claude-plugin/` and defines a plugin cata
 |-------|------|----------|-------------|
 | `name` | string | yes | Owner name |
 | `email` | string | no | Contact email |
-| `url` | string | no | Owner URL |
 
 ## Plugin Entry
 
@@ -50,6 +50,12 @@ Each entry in the `plugins` array:
 | `category` | string | no | Plugin category |
 | `tags` | string[] | no | Categorization tags |
 | `strict` | boolean | no | Enable strict mode |
+| `displayName` | string | no | Human-readable name, overriding the plugin manifest |
+| `defaultEnabled` | boolean | no | Initial enablement, overriding the plugin manifest |
+| `metadata` | object | no | Free-form catalog data |
+| `relevance` | object | no | Plugin recommendation signals |
+| `headers` | object | no | Headers for archive downloads |
+| `headersHelper` | string | no | Command printing archive authentication headers |
 
 ## Plugin Source
 
@@ -57,7 +63,7 @@ The `source` field can be a relative path string or an object:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `source` | string | yes | `github`, `url`, `git-subdir`, or `npm` |
+| `source` | string | yes | `github`, `url`, `git-subdir`, `npm`, `archive`, or `command` |
 | `repo` | string | no | GitHub `owner/repo` (for `github`) |
 | `url` | string | no | Git URL (for `url`/`git-subdir`) |
 | `path` | string | no | Subdirectory path (for `git-subdir`) |
@@ -66,6 +72,10 @@ The `source` field can be a relative path string or an object:
 | `registry` | string | no | Custom registry URL |
 | `ref` | string | no | Git ref (tag, branch, commit) |
 | `sha` | string | no | Git commit SHA for pinning |
+| `sha256` | string | no | Archive integrity pin, 64 hexadecimal characters |
+| `command` | string | no | For command sources, prints the plugin directory path |
+| `timeout` | number | no | Command timeout in whole seconds, at most 600 |
+| `mode` | string | no | Command source `copy` or `link` mode |
 
 ## Example
 

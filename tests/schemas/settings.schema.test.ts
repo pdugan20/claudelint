@@ -347,9 +347,10 @@ describe('SandboxSchema', () => {
     expect(result.network).toEqual({});
   });
 
-  it('does not model the invented ignoreViolations field', () => {
-    // Appears nowhere in the docs.
-    expect(SandboxSchema.parse({ ignoreViolations: true })).toEqual({});
+  it('validates the now-documented ignoreViolations map', () => {
+    const input = { ignoreViolations: { '*': ['/etc/hosts'] } };
+    expect(SandboxSchema.parse(input)).toEqual(input);
+    expect(SandboxSchema.safeParse({ ignoreViolations: true }).success).toBe(false);
   });
 
   it('should accept enableWeakerNestedSandbox', () => {
@@ -383,9 +384,8 @@ describe('SandboxSchema', () => {
   });
 
   it('rejects an unsupported credential file mode', () => {
-    // `deny` is the only supported mode for files; `mask` is env-vars-only.
     const result = SandboxSchema.safeParse({
-      credentials: { files: [{ path: '~/.aws/credentials', mode: 'mask' }] },
+      credentials: { files: [{ path: '~/.aws/credentials', mode: 'unsupported' }] },
     });
     expect(result.success).toBe(false);
   });

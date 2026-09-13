@@ -25,8 +25,9 @@ The `.lsp.json` file maps server names to their configurations, enabling languag
 | `workspaceFolder` | string | no | Override workspace folder path |
 | `startupTimeout` | number | no | Startup timeout (ms, min 0) |
 | `shutdownTimeout` | number | no | Shutdown timeout (ms, min 0) |
-| `restartOnCrash` | boolean | no | Auto-restart on crash |
+| `restartOnCrash` | boolean | no | Auto-restart on crash (default: true) |
 | `maxRestarts` | number | no | Max restart attempts (min 0) |
+| `diagnostics` | boolean | no | Inject diagnostics after edits; default true |
 
 ## Example
 

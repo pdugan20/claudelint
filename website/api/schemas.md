@@ -75,6 +75,9 @@ Valid event keys for hooks configuration. All names are PascalCase.
 
 | Event | Description |
 |-------|-------------|
+| `DirectoryAdded` | A directory is added to the session |
+| `PreModelSwitch` | Before switching models |
+| `PostModelSwitch` | After switching models |
 | `PreToolUse` | Before a tool call executes; can block it |
 | `PostToolUse` | After a tool call succeeds |
 | `PostToolUseFailure` | After a tool call fails |

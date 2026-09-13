@@ -109,8 +109,14 @@ describe('parseIndex', () => {
       '- [Hooks](https://docs.claude.com/hooks): Docs for hooks.',
       '- [MCP](https://docs.claude.com/mcp): Docs for mcp.',
     ].join('\n');
-    expect(() => parseIndex(reshaped)).toThrow(
-      /parseIndex yielded 0 pages, expected >= 50/
+    expect(() => parseIndex(reshaped)).toThrow(/parseIndex yielded 0 pages, expected >= 50/);
+  });
+});
+
+describe('titled code fences', () => {
+  it('normalizes theme attributes without losing the settings filename', () => {
+    expect(normalize('```json managed-settings.json theme={null}\n{}\n```')).toBe(
+      '```json managed-settings.json\n{}\n```'
     );
   });
 });

@@ -40,7 +40,7 @@ describe('skill-model', () => {
       invalid: [
         // Invalid model name
         {
-          content: '---\nname: my-skill\ndescription: Test skill\nmodel: gpt-4\n---\n# Skill',
+          content: '---\nname: my-skill\ndescription: Test skill\nmodel: 42\n---\n# Skill',
           filePath: '/test/SKILL.md',
           errors: [
             {

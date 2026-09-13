@@ -16,36 +16,105 @@
       "type": "object",
       "description": "Object with event names as keys, each containing an array of matcher groups",
       "properties": {
-        "PreToolUse": { "$ref": "#/$defs/matcherGroupArray" },
-        "PostToolUse": { "$ref": "#/$defs/matcherGroupArray" },
-        "PostToolUseFailure": { "$ref": "#/$defs/matcherGroupArray" },
-        "PostToolBatch": { "$ref": "#/$defs/matcherGroupArray" },
-        "MessageDisplay": { "$ref": "#/$defs/matcherGroupArray" },
-        "PermissionRequest": { "$ref": "#/$defs/matcherGroupArray" },
-        "PermissionDenied": { "$ref": "#/$defs/matcherGroupArray" },
-        "Notification": { "$ref": "#/$defs/matcherGroupArray" },
-        "UserPromptSubmit": { "$ref": "#/$defs/matcherGroupArray" },
-        "UserPromptExpansion": { "$ref": "#/$defs/matcherGroupArray" },
-        "Stop": { "$ref": "#/$defs/matcherGroupArray" },
-        "StopFailure": { "$ref": "#/$defs/matcherGroupArray" },
-        "Setup": { "$ref": "#/$defs/matcherGroupArray" },
-        "SubagentStart": { "$ref": "#/$defs/matcherGroupArray" },
-        "SubagentStop": { "$ref": "#/$defs/matcherGroupArray" },
-        "PreCompact": { "$ref": "#/$defs/matcherGroupArray" },
-        "PostCompact": { "$ref": "#/$defs/matcherGroupArray" },
-        "ConfigChange": { "$ref": "#/$defs/matcherGroupArray" },
-        "SessionStart": { "$ref": "#/$defs/matcherGroupArray" },
-        "SessionEnd": { "$ref": "#/$defs/matcherGroupArray" },
-        "WorktreeCreate": { "$ref": "#/$defs/matcherGroupArray" },
-        "WorktreeRemove": { "$ref": "#/$defs/matcherGroupArray" },
-        "TeammateIdle": { "$ref": "#/$defs/matcherGroupArray" },
-        "TaskCreated": { "$ref": "#/$defs/matcherGroupArray" },
-        "TaskCompleted": { "$ref": "#/$defs/matcherGroupArray" },
-        "InstructionsLoaded": { "$ref": "#/$defs/matcherGroupArray" },
-        "Elicitation": { "$ref": "#/$defs/matcherGroupArray" },
-        "ElicitationResult": { "$ref": "#/$defs/matcherGroupArray" },
-        "CwdChanged": { "$ref": "#/$defs/matcherGroupArray" },
-        "FileChanged": { "$ref": "#/$defs/matcherGroupArray" }
+        "PreToolUse": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PostToolUse": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PostToolUseFailure": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PostToolBatch": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "MessageDisplay": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PermissionRequest": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PermissionDenied": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "Notification": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "UserPromptSubmit": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "UserPromptExpansion": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "Stop": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "StopFailure": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "Setup": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "SubagentStart": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "SubagentStop": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PreCompact": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PostCompact": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "ConfigChange": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "SessionStart": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "SessionEnd": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "WorktreeCreate": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "WorktreeRemove": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "TeammateIdle": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "TaskCreated": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "TaskCompleted": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "InstructionsLoaded": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "Elicitation": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "ElicitationResult": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "CwdChanged": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "FileChanged": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "DirectoryAdded": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PreModelSwitch": {
+          "$ref": "#/$defs/matcherGroupArray"
+        },
+        "PostModelSwitch": {
+          "$ref": "#/$defs/matcherGroupArray"
+        }
       },
       "additionalProperties": false
     }
@@ -54,7 +123,9 @@
     "matcherGroupArray": {
       "type": "array",
       "description": "Array of matcher groups for an event",
-      "items": { "$ref": "#/$defs/matcherGroup" }
+      "items": {
+        "$ref": "#/$defs/matcherGroup"
+      }
     },
     "matcherGroup": {
       "type": "object",
@@ -68,7 +139,9 @@
         "hooks": {
           "type": "array",
           "description": "Array of hook handlers to execute",
-          "items": { "$ref": "#/$defs/hookHandler" }
+          "items": {
+            "$ref": "#/$defs/hookHandler"
+          }
         }
       }
     },
@@ -123,12 +196,16 @@
         "headers": {
           "type": "object",
           "description": "Additional HTTP headers for http-type hooks",
-          "additionalProperties": { "type": "string" }
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "allowedEnvVars": {
           "type": "array",
           "description": "Environment variable names allowed in header interpolation for http-type hooks",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "server": {
           "type": "string",
@@ -146,35 +223,77 @@
           "type": "string",
           "description": "Prompt text to inject (required if type is 'prompt' or 'agent')"
         },
-        "agent": {
-          "type": "string",
-          "description": "Agent to invoke (required if type is 'agent')"
-        },
         "model": {
           "type": "string",
           "description": "Model to use for prompt/agent-type hooks"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "allOf": [
         {
-          "if": { "properties": { "type": { "const": "command" } } },
-          "then": { "required": ["command"] }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "command"
+              }
+            }
+          },
+          "then": {
+            "required": ["command"]
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "http" } } },
-          "then": { "required": ["url"] }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "http"
+              }
+            }
+          },
+          "then": {
+            "required": ["url"]
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "mcp_tool" } } },
-          "then": { "required": ["server", "tool"] }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "mcp_tool"
+              }
+            }
+          },
+          "then": {
+            "required": ["server", "tool"]
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "prompt" } } },
-          "then": { "required": ["prompt"] }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "prompt"
+              }
+            }
+          },
+          "then": {
+            "required": ["prompt"]
+          }
         },
         {
-          "if": { "properties": { "type": { "const": "agent" } } },
-          "then": { "required": ["agent"] }
+          "if": {
+            "properties": {
+              "type": {
+                "const": "agent"
+              }
+            }
+          },
+          "then": {
+            "required": ["prompt"]
+          }
         }
       ]
     }
