@@ -143,8 +143,8 @@ exports or intentional invalid fixtures were removed to silence those diagnostic
   forcing Vite 8 is a separate compatibility migration, not ordinary lock maintenance.
 - Keep release-it's Undici 7 override. Release-it 21 declares Undici 7.29.0; forcing
   Undici 8 underneath it needs separate validation.
-- Website analytics/Speed Insights, Satori, and GitHub action majors remain separate
-  surface-specific batches. Keep Node 22 declarations while Node 22 is supported.
+- GitHub action majors remain a separate workflow batch. Keep Node 22 declarations
+  while Node 22 is supported.
 
 Primary migration references: [Commander 15](https://github.com/tj/commander.js/releases/tag/v15.0.0),
 [js-yaml 5](https://github.com/nodeca/js-yaml/blob/master/docs/migrate_v4_to_v5.md),
@@ -179,6 +179,24 @@ CJS/ESM formatter paths containing URL characters, option defaults and flags, un
 diff dry runs, and real prompt/color module exports. The packed CLI passed invalid
 and valid settings/hook checks on Node 22.13.0, and an actual interactive Inquirer
 prompt completed on that version. API report and docs build passed.
+
+## Website dependency migration
+
+The website batch updates Analytics 2.0.1, Speed Insights 2.0.0, Satori 0.33.4, and
+vitepress-plugin-llms 1.14.0. Satori pins vulnerable fflate 0.7.3 upstream, so its
+scoped override retains patched 0.7.5. The lockfile and clean `npm ci` agree, and
+`npm audit` reports zero vulnerabilities.
+
+The image cache now includes Satori's installed version. A cold build regenerated
+173 page images, and the following build reused all 173 cached images. The fallback
+and a rule image were inspected for layout and text rendering. All 174 Markdown
+links in `llms.txt` resolve to generated files, and `llms-full.txt` is populated.
+
+The completed production preview passed homepage/guide rendering and hydrated Rules
+navigation. Analytics and Speed Insights each inject one script across route changes;
+local checks verify initialization, not production telemetry delivery. Lint passed.
+The build/tooling delta received one reused Luna review, and its pending lockfile
+finding was resolved before submission.
 
 ## Permission and command conformance follow-through
 
