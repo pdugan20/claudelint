@@ -63,7 +63,7 @@ async function loadRegisteredRuleIds(): Promise<Set<string>> {
     throw new Error('src/rules/rule-ids.ts not found');
   }
 
-  const ruleIdsModule = await import(ruleIdsPath);
+  const ruleIdsModule = require(ruleIdsPath) as typeof import('../../src/rules/rule-ids');
   const allRuleIds: readonly string[] = ruleIdsModule.ALL_RULE_IDS || [];
 
   return new Set(allRuleIds);
@@ -89,7 +89,12 @@ async function findRuleDocs(): Promise<Map<string, string>> {
 
       if (stats.isDirectory()) {
         await scanDirectory(fullPath);
-      } else if (entry.endsWith('.md') && entry !== 'index.md' && entry !== 'TEMPLATE.md' && entry !== 'overview.md') {
+      } else if (
+        entry.endsWith('.md') &&
+        entry !== 'index.md' &&
+        entry !== 'TEMPLATE.md' &&
+        entry !== 'overview.md'
+      ) {
         const ruleId = entry.replace('.md', '');
         ruleDocs.set(ruleId, fullPath);
       }
@@ -103,9 +108,7 @@ async function findRuleDocs(): Promise<Map<string, string>> {
 /**
  * Parse documentation file and extract sections
  */
-async function parseDocumentation(
-  filePath: string
-): Promise<{
+async function parseDocumentation(filePath: string): Promise<{
   sections: Set<string>;
   metadata: Map<string, string>;
   hasTitle: boolean;
@@ -184,8 +187,11 @@ async function parseDocumentation(
     // - Lines with "incorrect"/"correct" AND "example" keywords (old format)
     // - Lines with "violation" (old format)
     const lineLower = line.toLowerCase();
-    const isExampleHeading = line.startsWith('###') &&
-      (lineLower.includes('incorrect') || lineLower.includes('correct') || lineLower.includes('violation'));
+    const isExampleHeading =
+      line.startsWith('###') &&
+      (lineLower.includes('incorrect') ||
+        lineLower.includes('correct') ||
+        lineLower.includes('violation'));
     const hasIncorrectExample = lineLower.includes('incorrect') || lineLower.includes('violation');
     const hasCorrectExample = lineLower.includes('correct');
     const hasExampleKeyword = lineLower.includes('example');

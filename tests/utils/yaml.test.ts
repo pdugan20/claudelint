@@ -1,6 +1,62 @@
 import { parseYaml, isValidYaml, stringifyYaml } from '../../src/utils/formats/yaml';
 
 describe('YAML utilities', () => {
+  describe('document compatibility', () => {
+    it.each(['', ' ', '\n', '\ufeff'])('preserves empty streams: %j', (input) => {
+      expect(parseYaml(input)).toBeUndefined();
+    });
+
+    it.each(['# comment', '---\n', '\t'])('preserves empty documents: %j', (input) => {
+      expect(parseYaml(input)).toBeNull();
+    });
+
+    it('preserves merge keys and explicit overrides', () => {
+      expect(parseYaml('base: &base {a: 1, b: 2}\ncopy: {<<: *base, b: 3}')).toEqual({
+        base: { a: 1, b: 2 },
+        copy: { a: 1, b: 3 },
+      });
+    });
+
+    it('preserves scalar resolution without YAML 1.1 boolean coercion', () => {
+      expect(parseYaml('[yes, on, true, 0123, 0b101, -0xF, +0o7, 2026-01-01]')).toEqual([
+        'yes',
+        'on',
+        true,
+        123,
+        5,
+        -15,
+        7,
+        new Date('2026-01-01'),
+      ]);
+    });
+
+    it('preserves extended collection and binary representations', () => {
+      expect(parseYaml('!!set {a: null, b: null}')).toEqual({ a: null, b: null });
+      expect(parseYaml('!!omap [a: 1, b: 2]')).toEqual([{ a: 1 }, { b: 2 }]);
+      expect(parseYaml('!!pairs [a: 1, a: 2]')).toEqual([
+        ['a', 1],
+        ['a', 2],
+      ]);
+      expect(parseYaml('!!binary SGVsbG8=')).toEqual(new Uint8Array([72, 101, 108, 108, 111]));
+    });
+
+    it('preserves mapping keys without mutating object prototypes', () => {
+      const result = parseYaml<Record<string, unknown>>('__proto__: {polluted: true}');
+      expect(Object.hasOwn(result, '__proto__')).toBe(true);
+      expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+      expect(result['polluted']).toBeUndefined();
+      expect(parseYaml('? [a, b]\n: c')).toEqual({ 'a,b': 'c' });
+    });
+
+    it.each(['a: 1\na: 2', '---\na: 1\n---\nb: 2', '!!set {a: 1}'])(
+      'rejects invalid or multiple documents: %j',
+      (input) => {
+        expect(() => parseYaml(input)).toThrow('Failed to parse YAML');
+        expect(isValidYaml(input)).toBe(false);
+      }
+    );
+  });
+
   describe('parseYaml', () => {
     it('should parse valid YAML string', () => {
       const yamlString = `

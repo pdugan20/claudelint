@@ -5,7 +5,7 @@ if (process.env.CI || process.env.CONTINUOUS_INTEGRATION) {
   process.exit(0);
 }
 
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 console.log('');
 console.log(chalk.green('✓') + ' claude-code-lint installed!');

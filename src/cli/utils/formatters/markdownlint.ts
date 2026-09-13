@@ -82,7 +82,6 @@ export async function checkMarkdownlint(
   }
 
   // Dynamic import -- markdownlint 0.40+ is ESM-only
-  // @ts-expect-error -- subpath exports require moduleResolution node16+
   const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
 
   const uniqueFiles = await expandPatterns(patterns);
@@ -118,7 +117,6 @@ export async function checkMarkdownlint(
  */
 export async function fixMarkdownlint(patterns: string[]): Promise<MarkdownlintResult> {
   // Dynamic imports -- markdownlint 0.40+ is ESM-only
-  // @ts-expect-error -- subpath exports require moduleResolution node16+
   const mdlintSync = (await import('markdownlint/sync')) as { lint: LintFn };
   // @ts-expect-error -- ESM dynamic import type mismatch
   const mdlintMain = (await import('markdownlint')) as { applyFixes: ApplyFixesFn };

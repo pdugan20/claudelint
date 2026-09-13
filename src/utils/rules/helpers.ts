@@ -13,7 +13,7 @@
  * re-exported from existing modules for convenience.
  */
 
-import yaml from 'js-yaml';
+import { loadYamlDocument } from '../formats/yaml';
 import { escapeRegExp, SEMVER_RE } from '../patterns';
 
 // Re-export commonly used functions from other modules
@@ -186,7 +186,7 @@ export function parseJSON(content: string): Record<string, unknown> | null {
  */
 export function parseYAML(content: string): Record<string, unknown> | null {
   try {
-    const parsed = yaml.load(content);
+    const parsed = loadYamlDocument(content);
     return parsed as Record<string, unknown>;
   } catch {
     return null;

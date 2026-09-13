@@ -249,7 +249,7 @@ export class ClaudeLint {
 
     // Check if the path would be ignored
     if (options.warnIgnored && this.isPathIgnored(effectivePath)) {
-      const { buildLintResult } = await import('./result-builder');
+      const { buildLintResult } = await import('./result-builder.js');
 
       return [
         buildLintResult(
@@ -691,7 +691,7 @@ export class ClaudeLint {
       return await this.validateSource(filePath, source, fileStartTime);
     } catch (error) {
       // File read error or other unexpected error
-      const { createFileReadError } = await import('./message-builder');
+      const { createFileReadError } = await import('./message-builder.js');
       const errorMessage = createFileReadError(filePath, error as Error);
 
       return {
@@ -727,8 +727,8 @@ export class ClaudeLint {
     source: string,
     startTime: number
   ): Promise<LintResult> {
-    const { ValidatorRegistry } = await import('../utils/validators/factory');
-    const { buildLintResult, buildCleanResult } = await import('./result-builder');
+    const { ValidatorRegistry } = await import('../utils/validators/factory.js');
+    const { buildLintResult, buildCleanResult } = await import('./result-builder.js');
 
     const applicable = await this.getApplicableValidatorIds(filePath);
 
@@ -784,7 +784,7 @@ export class ClaudeLint {
    * so `**\/plugin.json` would never match `.claude-plugin/plugin.json`.
    */
   private async getApplicableValidatorIds(filePath: string): Promise<string[]> {
-    const { ValidatorRegistry } = await import('../utils/validators/factory');
+    const { ValidatorRegistry } = await import('../utils/validators/factory.js');
     const { minimatch } = await import('minimatch');
     const nodePath = await import('path');
 

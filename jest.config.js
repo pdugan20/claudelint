@@ -4,7 +4,22 @@ const sharedConfig = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    // Type checking runs separately in pretest; hybrid Node modules need isolated transforms.
+    '^.+\\.ts$': [
+      'ts-jest',
+      { tsconfig: { isolatedModules: true, module: 'CommonJS', moduleResolution: 'node' } },
+    ],
+    // Node 22 supports require(ESM), but Jest's VM only supports it on Node 24.9+.
+    // Compile the real Commander implementation for tests on the supported Node 22 line.
+    '^.+\\.js$': [
+      'ts-jest',
+      { tsconfig: { allowJs: true, module: 'CommonJS', moduleResolution: 'node' } },
+    ],
+  },
+  transformIgnorePatterns: ['/node_modules/(?!commander/)'],
+  moduleNameMapper: {
+    // Runtime .js specifiers resolve to their TypeScript sources in unit tests.
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 };
 

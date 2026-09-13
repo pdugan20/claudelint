@@ -24,6 +24,8 @@ If you prefer to install and configure claudelint yourself, follow these steps.
 
 ### 1. Install
 
+Requires Node.js 22.13.0 or later.
+
 <CodeTabs :tabs="[
   { label: 'npm', code: 'npm install --save-dev claude-code-lint' },
   { label: 'yarn', code: 'yarn add --dev claude-code-lint' },

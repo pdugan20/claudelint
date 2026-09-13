@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "node20",
     "lib": ["ES2022"],
     "types": ["node", "jest"],
     "outDir": "./dist",
@@ -13,7 +13,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "ignoreDeprecations": "6.0",
     "resolveJsonModule": true,
     "noUnusedLocals": true,

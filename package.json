@@ -125,7 +125,9 @@
     "package:plugin": "bash scripts/util/package-plugin.sh",
     "setup:hooks": "bash scripts/util/setup-hooks.sh",
     "prepare": "bash scripts/util/setup-hooks.sh || true",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "check:types:tests": "tsc --noEmit -p tsconfig.tests.json",
+    "pretest": "npm run check:types:tests"
   },
   "lint-staged": {
     "package.json": [
@@ -185,7 +187,7 @@
     "provenance": true
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.13.0"
   },
   "files": [
     "dist",
@@ -197,20 +199,20 @@
     "LICENSE"
   ],
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^14.0.3",
-    "diff": "^8.0.3",
+    "chalk": "^6.0.0",
+    "commander": "^15.0.0",
+    "diff": "^9.0.0",
     "glob": "^13.0.0",
-    "ignore": "^7.0.5",
-    "inquirer": "^9.0.0",
+    "ignore": "^7.0.9",
+    "inquirer": "^14.2.2",
     "jiti": "^2.6.1",
-    "js-yaml": "^4.3.1",
+    "js-yaml": "^5.4.2",
     "markdownlint": "^0.41.0",
     "minimatch": "^10.1.1",
     "ora": "^9.3.0",
     "prettier": "^3.1.1",
     "text-table": "^0.2.0",
-    "zod": "^4.3.6"
+    "zod": "^4.6.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -220,9 +222,7 @@
     "@microsoft/api-extractor": "^7.59.1",
     "@release-it/conventional-changelog": "^12.0.0",
     "@resvg/resvg-js": "^2.6.2",
-    "@types/inquirer": "^9.0.9",
     "@types/jest": "^30.0.0",
-    "@types/js-yaml": "^4.0.9",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^22.20.2",
     "@types/text-table": "^0.2.5",
