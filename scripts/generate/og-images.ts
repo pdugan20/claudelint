@@ -17,6 +17,7 @@
  */
 
 import satori from 'satori';
+import { version as satoriVersion } from 'satori/package.json';
 import { Resvg } from '@resvg/resvg-js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, relative } from 'path';
@@ -286,7 +287,7 @@ function renderTemplate(page: PageMeta): VNode {
 // --- Caching ---
 
 function contentHash(page: PageMeta): string {
-  const data = JSON.stringify({ ...page, templateVersion: TEMPLATE_VERSION });
+  const data = JSON.stringify({ ...page, templateVersion: TEMPLATE_VERSION, satoriVersion });
   return createHash('sha256').update(data).digest('hex').slice(0, 16);
 }
 
