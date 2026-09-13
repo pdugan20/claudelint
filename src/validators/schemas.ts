@@ -328,7 +328,7 @@ export const SettingsSchema = z.object({
   // about what is actually evidenced.
   autoMode: z
     .object({
-      environment: z.record(z.string(), z.unknown()).optional(),
+      environment: z.array(z.string()).optional(),
       allow: z.array(z.string()).optional(),
       soft_deny: z.array(z.string()).optional(),
       hard_deny: z.array(z.string()).optional(),

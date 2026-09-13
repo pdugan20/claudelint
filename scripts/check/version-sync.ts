@@ -96,8 +96,12 @@ function checkVersionSync(): boolean {
     const sessionStartHooks = hooksJson?.hooks?.SessionStart?.[0]?.hooks || [];
     for (const hook of sessionStartHooks) {
       if (hook.type === 'command' && hook.command.includes('check-dependency')) {
+        // The command quotes the script path so plugin directories containing
+        // spaces still resolve, so drop a surrounding pair of double quotes
+        // before substituting the plugin root.
         const resolvedPath = hook.command
           .replace(/^node\s+/, '')
+          .replace(/^"(.*)"$/, '$1')
           .replace('${CLAUDE_PLUGIN_ROOT}', rootDir);
         if (!fs.existsSync(resolvedPath)) {
           log.fail(`Hook script not found: ${resolvedPath}`);

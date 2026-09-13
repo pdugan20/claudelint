@@ -3511,11 +3511,10 @@
       "type": "object",
       "properties": {
         "environment": {
-          "type": "object",
-          "propertyNames": {
+          "type": "array",
+          "items": {
             "type": "string"
-          },
-          "additionalProperties": {}
+          }
         },
         "allow": {
           "type": "array",

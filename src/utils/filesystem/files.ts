@@ -131,9 +131,9 @@ export async function findAgentFiles(basePath: string = process.cwd()): Promise<
 export async function findOutputStyleFiles(basePath: string = process.cwd()): Promise<string[]> {
   const patterns: string[] = [...OUTPUT_STYLE_PATTERNS];
 
-  // When --path points directly at an output-styles directory, match one level deep
+  // When --path points directly at an output-styles directory, match the styles inside it
   if (basePath.endsWith('output-styles') || basePath.endsWith('output-styles/')) {
-    patterns.push('*/*.md');
+    patterns.push('*.md', '*/*.md');
   }
 
   const allFiles: string[] = [];

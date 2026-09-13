@@ -2,7 +2,9 @@ import { FileValidator, ValidationResult, BaseValidatorOptions } from './file-va
 import { findOutputStyleFiles } from '../utils/filesystem/files';
 import { validateFrontmatterWithSchema } from '../utils/formats/schema';
 import { OutputStyleFrontmatterSchema } from '../schemas/output-style-frontmatter.schema';
-import { basename, dirname } from 'path';
+import { extractFrontmatter } from '../utils/formats/markdown';
+import { VALIDATOR_FILE_PATTERNS } from '../utils/filesystem/patterns';
+import { getOutputStyleName } from '../utils/filesystem/paths';
 import { ValidatorRegistry } from '../utils/validators/factory';
 
 // Auto-register all rules
@@ -60,14 +62,21 @@ export class OutputStylesValidator extends FileValidator {
   private async findOutputStyleFiles(): Promise<string[]> {
     const allOutputStyleFiles = await findOutputStyleFiles(this.basePath);
 
-    if (this.specificOutputStyle) {
-      // Filter to specific output style by parent directory name
-      return allOutputStyleFiles.filter(
-        (file) => basename(dirname(file)) === this.specificOutputStyle
-      );
+    const scopedFiles = this.scopeToChangedFiles(allOutputStyleFiles);
+    if (!this.specificOutputStyle) {
+      return scopedFiles;
     }
 
-    return this.scopeToChangedFiles(allOutputStyleFiles);
+    const matchingFiles: string[] = [];
+    for (const file of scopedFiles) {
+      const { frontmatter } = extractFrontmatter(await this.readContent(file));
+      const name =
+        typeof frontmatter?.name === 'string' ? frontmatter.name : getOutputStyleName(file);
+      if (name === this.specificOutputStyle) {
+        matchingFiles.push(file);
+      }
+    }
+    return matchingFiles;
   }
 
   private async validateOutputStyle(outputStylePath: string): Promise<void> {
@@ -117,7 +126,7 @@ ValidatorRegistry.register(
     id: 'output-styles',
     name: 'Output Styles Validator',
     description: 'Validates Claude Code output style structure and frontmatter',
-    filePatterns: ['**/.claude/output-styles/*/*.md', 'output-styles/*/*.md'],
+    filePatterns: VALIDATOR_FILE_PATTERNS['output-styles'],
     enabled: true,
   },
   (options) => new OutputStylesValidator(options)

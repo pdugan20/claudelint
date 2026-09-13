@@ -1,18 +1,18 @@
 ---
-description: "Output style name must match parent directory name"
+description: "Legacy output style name must match its directory"
 ---
 
 # output-style-name-directory-mismatch
 
-<RuleHeader description="Output style name must match parent directory name" severity="error" :fixable="false" :configurable="false" category="Output Styles" />
+<RuleHeader description="Legacy output style name must match its directory" severity="error" :fixable="false" :configurable="false" category="Output Styles" />
 
 ## Rule Details
 
-This rule checks that the name field in the frontmatter of output style markdown files matches the name of the parent directory. This naming convention is required for proper organization and discovery of output styles. A mismatch means the output style may not be found when referenced by directory name, causing unexpected fallback behavior.
+Claude Code output styles are flat markdown files. An explicit frontmatter `name` overrides the filename and does not need to match it. This rule skips flat styles. For compatibility, it still checks names in legacy directory-per-style layouts. It is not included in the recommended preset.
 
 ### Incorrect
 
-Output style name does not match directory (file at styles/compact/README.md)
+Legacy output style name differs from its directory (file at output-styles/compact/style.md)
 
 ```yaml
 ---
@@ -24,11 +24,11 @@ Output style content here.
 
 ### Correct
 
-Output style name matches directory (file at styles/compact/README.md)
+Flat output styles may override the filename (file at output-styles/compact.md)
 
 ```yaml
 ---
-name: compact
+name: Diagrams first
 ---
 
 Output style content here.
@@ -36,7 +36,7 @@ Output style content here.
 
 ## How To Fix
 
-Either rename the parent directory to match the name in frontmatter, or update the name in frontmatter to match the directory name.
+Use a flat file in output-styles/ with any frontmatter name. For a legacy nested layout, align the name with its containing directory or disable this convention rule.
 
 ## Options
 

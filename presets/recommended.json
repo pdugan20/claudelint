@@ -53,7 +53,7 @@
     "output-style-examples": "error",
     "output-style-missing-guidelines": "warn",
     "output-style-name": "error",
-    "output-style-name-directory-mismatch": "error",
+    "output-style-name-directory-mismatch": "off",
     "plugin-commands-deprecated": "warn",
     "plugin-components-wrong-location": "warn",
     "plugin-dependency-not-allowlisted": "error",
