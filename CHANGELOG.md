@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0](https://github.com/pdugan20/claudelint/compare/v0.8.2...v0.9.0) (2026-09-13)
+
+### BREAKING CHANGES
+
+* claudelint now requires Node.js 22.13.0 or later, up from 22.0.0.
+  Upgrade older Node 22 installations before updating; existing lint configurations
+  remain compatible.
+
+### Bug Fixes
+
+* preserve changelog formatting with the upgraded generator ([#232](https://github.com/pdugan20/claudelint/issues/232)) ([e807988](https://github.com/pdugan20/claudelint/commit/e807988608fce8ba2db90e721fa6f5d24cfb1caa))
+* validate local settings and align permission rules with upstream ([#227](https://github.com/pdugan20/claudelint/issues/227)) ([ed47aa9](https://github.com/pdugan20/claudelint/commit/ed47aa9f417914c7f59f52d976ad5c41459b5bde))
+
+### Documentation
+
+* explain the 0.9 runtime upgrade requirement ([#231](https://github.com/pdugan20/claudelint/issues/231)) ([92932a4](https://github.com/pdugan20/claudelint/commit/92932a4617f37a1f094ba1c6856f18d688b01672))
+
+### Continuous Integration
+
+* upgrade actions and secure release tag handling ([#230](https://github.com/pdugan20/claudelint/issues/230)) ([714cf3a](https://github.com/pdugan20/claudelint/commit/714cf3a087ec5c779069d3a62adbb6ebd1fb880c))
+
 ## [0.8.2](https://github.com/pdugan20/claudelint/compare/v0.8.1...v0.8.2) (2026-09-13)
 
 ### Bug Fixes
