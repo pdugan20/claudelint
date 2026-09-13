@@ -12,6 +12,30 @@ import {
 } from '../../src/validators/schemas';
 
 describe('SettingsSchema', () => {
+  describe('autoMode.environment', () => {
+    it.each(
+      [[], ['$defaults'], ['Source control: github.example.com/acme']].map((environment) => ({
+        environment,
+      }))
+    )('accepts a string array: %j', ({ environment }) => {
+      expect(SettingsSchema.safeParse({ autoMode: { environment } }).success).toBe(true);
+    });
+
+    it('allows the environment field to be omitted', () => {
+      expect(SettingsSchema.safeParse({ autoMode: {} }).success).toBe(true);
+    });
+
+    it.each(
+      [{ repo: 'acme' }, 'acme', [42], ['acme', null]].map((environment) => ({ environment }))
+    )('rejects an invalid environment: %j', ({ environment }) => {
+      const result = SettingsSchema.safeParse({ autoMode: { environment } });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0].path.slice(0, 2)).toEqual(['autoMode', 'environment']);
+      }
+    });
+  });
+
   describe('valid configurations', () => {
     it('should accept empty settings object', () => {
       const result = SettingsSchema.safeParse({});

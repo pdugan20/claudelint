@@ -2,7 +2,11 @@
  * Tests for path-helpers utilities
  */
 
-import { getParentDirectoryName } from '../../src/utils/filesystem/paths';
+import {
+  getOutputStyleName,
+  getParentDirectoryName,
+  isFlatOutputStyle,
+} from '../../src/utils/filesystem/paths';
 
 describe('path-helpers', () => {
   describe('getParentDirectoryName', () => {
@@ -34,6 +38,34 @@ describe('path-helpers', () => {
     it('should handle relative paths', () => {
       const path = '.claude/skills/my-skill/SKILL.md';
       expect(getParentDirectoryName(path)).toBe('my-skill');
+    });
+  });
+
+  describe('getOutputStyleName', () => {
+    it('should take the name from the filename for a flat style', () => {
+      expect(getOutputStyleName('/path/to/.claude/output-styles/concise.md')).toBe('concise');
+    });
+
+    it('should take the name from the filename for a plugin style', () => {
+      expect(getOutputStyleName('output-styles/signal-only.md')).toBe('signal-only');
+    });
+
+    it('should take the name from the directory for a directory-per-style layout', () => {
+      expect(getOutputStyleName('/path/to/.claude/output-styles/concise/style.md')).toBe('concise');
+    });
+
+    it('should handle relative paths', () => {
+      expect(getOutputStyleName('.claude/output-styles/concise.md')).toBe('concise');
+    });
+  });
+
+  describe('isFlatOutputStyle', () => {
+    it('should be true for a file directly in output-styles', () => {
+      expect(isFlatOutputStyle('/path/to/.claude/output-styles/concise.md')).toBe(true);
+    });
+
+    it('should be false for a file one level deeper', () => {
+      expect(isFlatOutputStyle('/path/to/.claude/output-styles/concise/style.md')).toBe(false);
     });
   });
 });

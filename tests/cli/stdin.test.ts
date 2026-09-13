@@ -166,3 +166,53 @@ describe('stdin lints the piped document, not the filesystem', () => {
     expect(output).toContain('skill-name');
   });
 });
+
+/**
+ * The stdin path computed its own exit code and consulted neither --strict nor
+ * --max-warnings, so piped content printed its problems and still exited 0 -- which made
+ * --stdin unusable as a CI or pre-commit gate.
+ *
+ * `--rule` pins the severity so these assertions do not depend on the ambient config.
+ */
+describe('stdin honors enforcement flags when setting the exit code', () => {
+  const WARNING_CONTENT =
+    '---\nname: demo\ndescription: Demonstrates the stdin exit-code path with a description long enough to pass.\n---\n\n# Demo\n\n## Howdy\n\nNo usage section here.\n';
+
+  function run(args: string[]) {
+    return spawnSync(
+      'node',
+      [
+        claudelintBin,
+        'check-all',
+        '--stdin',
+        '--stdin-filename',
+        '.claude/skills/demo/SKILL.md',
+        '--rule',
+        'skill-body-missing-usage-section:warn',
+        ...args,
+      ],
+      { encoding: 'utf-8', input: WARNING_CONTENT }
+    );
+  }
+
+  it('reports the warning and exits 0 without enforcement flags', () => {
+    const result = run([]);
+
+    expect(result.stdout + result.stderr).toContain('skill-body-missing-usage-section');
+    expect(result.status).toBe(0);
+  });
+
+  it('exits 1 on a warning under --strict', () => {
+    const result = run(['--strict']);
+
+    expect(result.stdout + result.stderr).toContain('skill-body-missing-usage-section');
+    expect(result.status).toBe(1);
+  });
+
+  it('exits 1 when --max-warnings is exceeded', () => {
+    const result = run(['--max-warnings', '0']);
+
+    expect(result.stdout + result.stderr).toContain('Warning limit exceeded');
+    expect(result.status).toBe(1);
+  });
+});
