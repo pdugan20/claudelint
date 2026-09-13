@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.2](https://github.com/pdugan20/claudelint/compare/v0.8.1...v0.8.2) (2026-09-13)
+
+### Bug Fixes
+
+* validate settings hooks and align upstream schemas ([#225](https://github.com/pdugan20/claudelint/issues/225)) ([c2fd2b9](https://github.com/pdugan20/claudelint/commit/c2fd2b9ae682bd17fa74c1e8e329575518103e03))
+
 ## [0.8.1](https://github.com/pdugan20/claudelint/compare/v0.8.0...v0.8.1) (2026-09-13)
 
 ### BREAKING CHANGES
