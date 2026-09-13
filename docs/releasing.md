@@ -49,7 +49,7 @@ gh run watch $(gh run list --workflow=publish.yml --limit 1 --json databaseId --
 ### 3. Do NOT set `registry-url` on `actions/setup-node`
 
 - **Symptom**: `npm error code ENEEDAUTH` *or* the same misleading 404 from #1
-- **Why**: `setup-node` with `registry-url` writes an `.npmrc` containing `_authToken=${NODE_AUTH_TOKEN}`. When no `NPM_TOKEN` secret is set, it defaults `NODE_AUTH_TOKEN` to a placeholder value (`XXXXX-XXXXX-...`). npm sees the placeholder and tries to authenticate with it instead of falling back to OIDC trusted publishing, and the registry rejects the publish.
+- **Historical cause**: older `setup-node` versions with `registry-url` wrote an `.npmrc` containing `_authToken=${NODE_AUTH_TOKEN}` and exported a placeholder token when none was set. npm attempted token authentication instead of OIDC. [setup-node v7 removed the placeholder export](https://github.com/actions/setup-node/releases/tag/v7.0.0); this repository retains the tested token-free configuration with `registry-url` omitted.
 - **Fix**: omit `registry-url` entirely. npm publishes to `https://registry.npmjs.org/` by default.
 
 ### 4. Runner must use Node 24+ (for npm 11.5+)

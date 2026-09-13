@@ -18,7 +18,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # Node 24 LTS ships with npm 11+, which has the auto-OIDC-fetch
           # logic needed for trusted publishing. npm 10 (bundled with
@@ -27,10 +27,10 @@ jobs:
           # producing an ENEEDAUTH error (or a misleading 404 if a
           # placeholder NODE_AUTH_TOKEN is in scope).
           node-version: '24'
-          cache: 'npm'
+          package-manager-cache: false
 
-      # Do NOT set `registry-url` on setup-node — it injects a placeholder
-      # NODE_AUTH_TOKEN that npm uses instead of falling back to OIDC.
+      # Keep registry-url unset for the established token-free OIDC contract.
+      # setup-node v7 removed the historical placeholder NODE_AUTH_TOKEN export.
       # Do NOT run `npm install -g npm@latest` — the self-upgrade crashes
       # the runner with `Cannot find module 'promise-retry'`. Node 24's
       # bundled npm is already the version we need.
@@ -60,8 +60,7 @@ jobs:
         id: notes
         run: |
           # Extract the section for this version (between first and second ## heading)
-          VERSION="${{ github.ref_name }}"
-          VERSION="${VERSION#v}"
+          VERSION="${GITHUB_REF_NAME#v}"
           awk -v ver="$VERSION" '
             /^## \[/ { if (found) exit; if (index($0, ver)) found=1; next }
             found { print }
@@ -79,7 +78,7 @@ jobs:
           # does not become "latest" — the plugin trial docs point users
           # at /releases/latest/download/claudelint-plugin.zip.
           PRERELEASE=
-          case "${{ github.ref_name }}" in *-*) PRERELEASE=--prerelease ;; esac
-          gh release create "${{ github.ref_name }}" --title "${{ github.ref_name }}" --notes-file release-notes.md $PRERELEASE claudelint-plugin.zip
+          case "$GITHUB_REF_NAME" in *-*) PRERELEASE=--prerelease ;; esac
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file release-notes.md $PRERELEASE claudelint-plugin.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
