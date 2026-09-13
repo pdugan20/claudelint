@@ -1,14 +1,12 @@
 /**
  * Rule: settings-invalid-env-var
  *
- * Validates environment variable format in settings.json.
+ * Validates environment variable format in settings.json and settings.local.json.
  */
 
 import { Rule } from '../../types/rule';
-import { SettingsSchema } from '../../validators/schemas';
-import { z } from 'zod';
-
-type SettingsConfig = z.infer<typeof SettingsSchema>;
+import { readSettings } from '../../utils/validators/settings';
+import { isObject } from '../../utils/type-guards';
 
 // Regex pattern for environment variable name validation (POSIX: starts with letter or underscore)
 const ENV_VAR_NAME_PATTERN = /^[A-Z_][A-Z0-9_]*$/;
@@ -33,7 +31,7 @@ export const rule: Rule = {
       rationale:
         'Malformed env var names fail silently at runtime; hardcoded secrets risk accidental exposure in version control.',
       details:
-        'This rule checks the `env` object in `settings.json` for three issues: ' +
+        'This rule checks the `env` object in `settings.json` and `settings.local.json` for three issues: ' +
         '(1) environment variable names that do not follow the `UPPER_CASE_WITH_UNDERSCORES` ' +
         'convention (must start with a letter and contain only uppercase letters, digits, ' +
         'and underscores), (2) empty or whitespace-only values, and (3) potential hardcoded ' +
@@ -88,24 +86,12 @@ export const rule: Rule = {
   validate: (context) => {
     const { filePath, fileContent } = context;
 
-    // Only validate settings.json files
-    if (!filePath.endsWith('settings.json')) {
-      return;
-    }
-
-    let config: SettingsConfig;
-    try {
-      config = JSON.parse(fileContent) as SettingsConfig;
-    } catch {
-      return; // JSON parse errors handled by schema validation
-    }
-
-    if (!config.env) {
-      return;
-    }
+    const config = readSettings(filePath, fileContent);
+    if (!config || !isObject(config.env)) return;
 
     // Validate each environment variable
     for (const [key, value] of Object.entries(config.env)) {
+      if (typeof value !== 'string') continue; // Schema reports malformed values.
       // Validate key format (should be uppercase with underscores)
       if (!ENV_VAR_NAME_PATTERN.test(key)) {
         context.report({

@@ -60,7 +60,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"commands" field is deprecated',
+              message: '"commands" uses the legacy flat-file format',
             },
           ],
         },
@@ -75,7 +75,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"commands" field is deprecated',
+              message: '"commands" uses the legacy flat-file format',
             },
           ],
         },
@@ -91,7 +91,7 @@ describe('plugin-commands-deprecated', () => {
           filePath: '/test/plugin.json',
           errors: [
             {
-              message: '"commands" field is deprecated',
+              message: '"commands" uses the legacy flat-file format',
             },
           ],
         },

@@ -7,6 +7,7 @@
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { extractPermissionRules } from './permissions';
 import { WATCHLIST, WatchEntry, ExtractorId } from '../../src/upstream/watchlist';
 
 export type Facts = Record<string, string[]>;
@@ -85,6 +86,7 @@ const EXTRACTORS: Record<ExtractorId, (markdown: string) => string[]> = {
   'field-tables': extractFieldTables,
   'json-keys': extractJsonKeys,
   'frontmatter-keys': extractFrontmatterKeys,
+  'permission-rules': extractPermissionRules,
 };
 
 function extractPage(markdown: string, entry: WatchEntry): string[] {

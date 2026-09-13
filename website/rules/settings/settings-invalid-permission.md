@@ -8,7 +8,7 @@ description: "Permission rules must use valid tool names"
 
 ## Rule Details
 
-This rule validates that tool names used in the permissions.allow, permissions.deny, and permissions.ask arrays in settings.json are recognized Claude Code tools. Valid tools include Bash, Edit, Glob, Grep, Read, Write, and others, as well as MCP server references prefixed with mcp__. Using an invalid tool name means the permission rule will have no effect, which can leave unintended access open or block expected functionality.
+This rule validates that tool names used in the permissions.allow, permissions.deny, and permissions.ask arrays in settings.json and settings.local.json are recognized Claude Code tools. Valid tools include Bash, Edit, Glob, Grep, Read, Write, and others, as well as MCP server references prefixed with mcp__. Deny and ask lists also accept tool-name globs; allow globs must name a literal MCP server. Cd is accepted as the permission target for /cd. Using an invalid tool name means the permission rule will have no effect, which can leave unintended access open or block expected functionality.
 
 ### Incorrect
 

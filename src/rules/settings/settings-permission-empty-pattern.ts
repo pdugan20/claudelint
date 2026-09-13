@@ -5,10 +5,8 @@
  */
 
 import { Rule } from '../../types/rule';
-import { SettingsSchema } from '../../validators/schemas';
+import { permissionEntries, parsePermissionRule } from '../../utils/validators/settings';
 import { z } from 'zod';
-
-type SettingsConfig = z.infer<typeof SettingsSchema>;
 
 /**
  * Options for settings-permission-empty-pattern rule
@@ -43,7 +41,7 @@ export const rule: Rule = {
       rationale:
         'An empty pattern like Bash() is likely a mistake and causes unexpected permission matching behavior.',
       details:
-        'This rule checks permission entries in `settings.json` across the `allow`, ' +
+        'This rule checks permission entries in `settings.json` and `settings.local.json` across the `allow`, ' +
         '`deny`, and `ask` arrays for the `Tool(pattern)` syntax and warns when the ' +
         'pattern inside the parentheses is empty. An empty pattern like `Bash()` is ' +
         'likely a mistake and should either include a glob pattern like `Bash(npm test)` ' +
@@ -120,51 +118,11 @@ export const rule: Rule = {
   validate: (context) => {
     const { filePath, fileContent, options } = context;
 
-    // Only validate settings.json files
-    if (!filePath.endsWith('settings.json')) {
-      return;
-    }
-
-    let config: SettingsConfig;
-    try {
-      config = JSON.parse(fileContent) as SettingsConfig;
-    } catch {
-      return; // JSON parse errors handled by schema validation
-    }
-
-    if (!config.permissions) {
-      return;
-    }
-
-    const allowEmpty = (options as SettingsPermissionEmptyPatternOptions).allowEmpty ?? false;
-
-    // Skip validation if empty patterns are allowed
-    if (allowEmpty) {
-      return;
-    }
-
-    // Check all permission arrays (allow, deny, ask)
-    const arrays = [
-      { name: 'allow', rules: config.permissions.allow || [] },
-      { name: 'deny', rules: config.permissions.deny || [] },
-      { name: 'ask', rules: config.permissions.ask || [] },
-    ];
-
-    for (const { name, rules } of arrays) {
-      for (const ruleString of rules) {
-        // Parse Tool(pattern) syntax if present
-        const toolPatternMatch = ruleString.match(/^([^(]+)\(([^)]*)\)$/);
-
-        if (toolPatternMatch) {
-          const inlinePattern = toolPatternMatch[2].trim();
-
-          // Warn if inline pattern is empty
-          if (inlinePattern.length === 0) {
-            context.report({
-              message: `Empty inline pattern in permissions.${name}: "${ruleString}"`,
-            });
-          }
-        }
+    if ((options as SettingsPermissionEmptyPatternOptions).allowEmpty) return;
+    for (const { name, rule: ruleString } of permissionEntries(filePath, fileContent)) {
+      const parsed = parsePermissionRule(ruleString);
+      if (parsed?.pattern !== undefined && parsed.pattern.trim().length === 0) {
+        context.report({ message: `Empty inline pattern in permissions.${name}: "${ruleString}"` });
       }
     }
   },

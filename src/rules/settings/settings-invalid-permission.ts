@@ -1,7 +1,7 @@
 /**
  * Rule: settings-invalid-permission
  *
- * Validates permission tool names in settings.json.
+ * Validates permission tool names in settings.json and settings.local.json.
  *
  * Permission rules use Tool or Tool(pattern) syntax. The valid names are `VALID_TOOLS`
  * (src/schemas/constants.ts), or `mcp__*` for MCP servers.
@@ -13,32 +13,23 @@
 
 import { Rule } from '../../types/rule';
 import { VALID_TOOLS } from '../../schemas/constants';
-import { SettingsSchema } from '../../validators/schemas';
-import { z } from 'zod';
+import {
+  permissionEntries,
+  parsePermissionRule,
+  PermissionList,
+} from '../../utils/validators/settings';
 
-type SettingsConfig = z.infer<typeof SettingsSchema>;
-
-/**
- * Extract tool name from permission rule string
- * "Bash(npm run *)" -> "Bash"
- * "Read" -> "Read"
- * "mcp__myserver" -> "mcp__myserver"
- */
-function extractToolName(rule: string): string {
-  const match = rule.match(/^([^(]+)/);
-  return match ? match[1].trim() : rule;
-}
-
-/**
- * Check if tool name is valid
- */
-function isValidTool(tool: string): boolean {
-  // MCP server references start with mcp__
-  if (tool.startsWith('mcp__')) {
-    return true;
+/** Validate names and globs in the permission list where they are used. */
+function isValidTool(tool: string, list: PermissionList): boolean {
+  const hasGlob = /[*?[\]{}]/.test(tool);
+  if (list !== 'allow' && (hasGlob || tool.includes('_'))) return true;
+  if (hasGlob) {
+    return /^mcp__[^*?[\]{}]+__[^()]+$/.test(tool);
   }
-  // Check against known tools
-  return (VALID_TOOLS as readonly string[]).includes(tool);
+  // Cd is a permission target for /cd, not a model-invocable tool.
+  return (
+    tool === 'Cd' || /^mcp__[^()]+$/.test(tool) || (VALID_TOOLS as readonly string[]).includes(tool)
+  );
 }
 
 /**
@@ -62,9 +53,10 @@ export const rule: Rule = {
         'Permissions referencing non-existent tools have no effect, giving a false sense of security.',
       details:
         'This rule validates that tool names used in the permissions.allow, permissions.deny, and ' +
-        'permissions.ask arrays in settings.json are recognized Claude Code tools. Valid tools include ' +
+        'permissions.ask arrays in settings.json and settings.local.json are recognized Claude Code tools. Valid tools include ' +
         'Bash, Edit, Glob, Grep, Read, Write, and others, as well as MCP server references prefixed ' +
-        'with mcp__. Using an invalid tool name means the permission rule will have no effect, which ' +
+        'with mcp__. Deny and ask lists also accept tool-name globs; allow globs must name a literal MCP server. ' +
+        'Cd is accepted as the permission target for /cd. Using an invalid tool name means the permission rule will have no effect, which ' +
         'can leave unintended access open or block expected functionality.',
       examples: {
         incorrect: [
@@ -92,37 +84,11 @@ export const rule: Rule = {
   validate: (context) => {
     const { filePath, fileContent } = context;
 
-    // Only validate settings.json files
-    if (!filePath.endsWith('settings.json')) {
-      return;
-    }
-
-    let config: SettingsConfig;
-    try {
-      config = JSON.parse(fileContent) as SettingsConfig;
-    } catch {
-      return; // JSON parse errors handled by schema validation
-    }
-
-    if (!config.permissions) {
-      return;
-    }
-
-    // Validate tool names in allow, deny, and ask arrays
-    const arrays = [
-      { name: 'allow', rules: config.permissions.allow || [] },
-      { name: 'deny', rules: config.permissions.deny || [] },
-      { name: 'ask', rules: config.permissions.ask || [] },
-    ];
-
-    for (const { rules } of arrays) {
-      for (const ruleString of rules) {
-        const tool = extractToolName(ruleString);
-        if (!isValidTool(tool)) {
-          context.report({
-            message: `Invalid tool name: "${tool}"`,
-          });
-        }
+    for (const { name, rule: ruleString } of permissionEntries(filePath, fileContent)) {
+      const parsed = parsePermissionRule(ruleString);
+      if (!parsed) continue; // Syntax is reported by settings-permission-invalid-rule.
+      if (!isValidTool(parsed.tool.trim(), name)) {
+        context.report({ message: `Invalid tool name: "${parsed.tool.trim()}"` });
       }
     }
   },

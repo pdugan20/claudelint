@@ -15,6 +15,30 @@ describe('SettingsValidator', () => {
     return filePath;
   }
 
+  describe.each(['settings.json', 'settings.local.json'])('helper commands in %s', (filename) => {
+    it('resolves plain helper paths from the project root', async () => {
+      await mkdir(join(getTestDir(), 'scripts'));
+      await writeFile(join(getTestDir(), 'scripts/key.sh'), '#!/bin/sh\n');
+      const path = await createSettingsFile({ apiKeyHelper: './scripts/key.sh' }, filename);
+      const result = await new SettingsValidator({ path }).validate();
+      expect(result.errors).toEqual([]);
+      expect(result.warnings).toEqual([]);
+    });
+
+    it.each([
+      'credential-helper',
+      'vault read secret/key',
+      'node ./scripts/key.js',
+      '~/.local/bin/key-helper',
+      './helper-*.sh',
+    ])('does not stat the shell command %s', async (command) => {
+      const path = await createSettingsFile({ apiKeyHelper: command }, filename);
+      const result = await new SettingsValidator({ path }).validate();
+      expect(result.errors).toEqual([]);
+      expect(result.warnings).toEqual([]);
+    });
+  });
+
   describe.each(['settings.json', 'settings.local.json'])('hooks in %s', (filename) => {
     const hooks = (handler: Record<string, unknown>, event = 'PreToolUse') => ({
       hooks: { [event]: [{ matcher: 'Bash', hooks: [handler] }] },

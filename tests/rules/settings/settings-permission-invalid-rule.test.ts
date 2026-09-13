@@ -38,6 +38,8 @@ describe('settings-permission-invalid-rule', () => {
               allow: [
                 'Bash(npm run *)',
                 'Read(~/Documents/*.pdf)',
+                'Bash((test)',
+                'Read(./Finance (2024)/**)',
                 'WebFetch(domain:example.com)',
               ],
             },
@@ -106,11 +108,11 @@ describe('settings-permission-invalid-rule', () => {
           ],
         },
 
-        // Invalid format with multiple unmatched parens
+        // Trailing content outside the outer delimiter
         {
           content: JSON.stringify({
             permissions: {
-              allow: ['Bash((test)'],
+              allow: ['Bash(test)tail'],
             },
           }),
           filePath: '/test/settings.json',

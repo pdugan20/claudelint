@@ -15,45 +15,7 @@
  */
 
 import { Rule } from '../../types/rule';
-import { SettingsSchema } from '../../validators/schemas';
-import { z } from 'zod';
-
-type SettingsConfig = z.infer<typeof SettingsSchema>;
-
-/**
- * Check if permission rule has valid syntax
- */
-function hasValidSyntax(rule: string): { valid: boolean; error?: string } {
-  // Check for unmatched parentheses
-  const openCount = (rule.match(/\(/g) || []).length;
-  const closeCount = (rule.match(/\)/g) || []).length;
-
-  if (openCount !== closeCount) {
-    return {
-      valid: false,
-      error: 'Unmatched parentheses',
-    };
-  }
-
-  // Check for empty tool name
-  if (rule.trim().length === 0) {
-    return {
-      valid: false,
-      error: 'Empty permission rule',
-    };
-  }
-
-  // Check for valid format: Tool or Tool(pattern)
-  const validFormat = /^[^()]+$|^[^()]+\([^)]*\)$/;
-  if (!validFormat.test(rule)) {
-    return {
-      valid: false,
-      error: 'Invalid format. Use "Tool" or "Tool(pattern)"',
-    };
-  }
-
-  return { valid: true };
-}
+import { permissionEntries, parsePermissionRule } from '../../utils/validators/settings';
 
 /**
  * Validates Tool(pattern) syntax in permission rules
@@ -75,9 +37,9 @@ export const rule: Rule = {
       rationale:
         'Invalid Tool(pattern) syntax causes the permission rule to be silently ignored, leaving tools unrestricted.',
       details:
-        'This rule checks the syntax of permission rule strings in settings.json. Each rule must ' +
+        'This rule checks the syntax of permission rule strings in settings.json and settings.local.json. Each rule must ' +
         'be either a plain tool name like "Bash" or a tool name with a pattern like "Bash(npm run *)". ' +
-        'It detects unmatched parentheses, empty rule strings, and malformed patterns. Incorrect syntax ' +
+        'It checks the outer delimiter, empty rule strings, and MCP specifiers ignored in settings. Parentheses inside a specifier are literal. Incorrect syntax ' +
         'prevents the permission system from matching commands properly, which can lead to unexpected ' +
         'access behavior.',
       examples: {
@@ -102,7 +64,7 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Ensure each permission rule uses the format "Tool" or "Tool(pattern)". Check for matched ' +
+        'Ensure each permission rule uses the format "Tool" or "Tool(pattern)". Check for outer ' +
         'parentheses and non-empty values. Remove any trailing or leading whitespace.',
       relatedRules: ['settings-invalid-permission'],
     },
@@ -111,37 +73,16 @@ export const rule: Rule = {
   validate: (context) => {
     const { filePath, fileContent } = context;
 
-    // Only validate settings.json files
-    if (!filePath.endsWith('settings.json')) {
-      return;
-    }
-
-    let config: SettingsConfig;
-    try {
-      config = JSON.parse(fileContent) as SettingsConfig;
-    } catch {
-      return; // JSON parse errors handled by schema validation
-    }
-
-    if (!config.permissions) {
-      return;
-    }
-
-    // Check all permission arrays (allow, deny, ask)
-    const arrays = [
-      { name: 'allow', rules: config.permissions.allow || [] },
-      { name: 'deny', rules: config.permissions.deny || [] },
-      { name: 'ask', rules: config.permissions.ask || [] },
-    ];
-
-    for (const { name, rules } of arrays) {
-      for (const ruleString of rules) {
-        const validation = hasValidSyntax(ruleString);
-        if (!validation.valid) {
-          context.report({
-            message: `Invalid syntax in permissions.${name}: "${ruleString}". ${validation.error}`,
-          });
-        }
+    for (const { name, rule: ruleString } of permissionEntries(filePath, fileContent)) {
+      const parsed = parsePermissionRule(ruleString);
+      if (!parsed) {
+        context.report({
+          message: `Invalid syntax in permissions.${name}: "${ruleString}". ${ruleString.trim() ? 'Unmatched parentheses or invalid outer delimiter' : 'Empty permission rule'}`,
+        });
+      } else if (parsed.tool.startsWith('mcp__') && parsed.pattern !== undefined) {
+        context.report({
+          message: `MCP permission specifiers are ignored in settings: "${ruleString}"`,
+        });
       }
     }
   },
