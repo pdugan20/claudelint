@@ -14,7 +14,7 @@ import {
  *
  * The `modeled-not-documented` direction is the hallucination guard, and it is the reason
  * this exists. Four fabricated fields shipped in this schema (`sandbox.network.allowedHosts`,
- * `allowedPorts`, `ignoreViolations`, marketplace `enabled`), invented from prose and
+ * `allowedPorts`, marketplace `enabled`), invented from prose and
  * validated by nothing. Once this gate is green, a fifth cannot be written without either
  * a doc row to point at or an explicit, reasoned entry in KNOWN_SETTINGS_EXTENSIONS.
  */
@@ -103,5 +103,20 @@ describe('documentedSettingsKeys', () => {
 describe('assertMinDocumentedSettings', () => {
   it('throws when the table parser yields almost nothing', () => {
     expect(() => assertMinDocumentedSettings(0)).toThrow(/Settings-key guard tripped/);
+  });
+});
+
+describe('split settings reference', () => {
+  it('reads linked and nested index rows while excluding global-config keys', () => {
+    const markdown = [
+      '## Settings index',
+      '| Setting | Description | Scope |',
+      '| [`sandbox.enabled`](#sandbox-enabled) | Enable sandbox | Any file |',
+      '| [`policyHelper`](#policyhelper) | Managed policy | Managed |',
+      '| [`autoConnectIde`](#autoconnectide) | IDE connection | Global config |',
+      '## Other data',
+      '| [`managedSettings`](#helper) | Helper output | Any file |',
+    ].join('\n');
+    expect(documentedSettingsKeys(markdown)).toEqual(['policyHelper', 'sandbox']);
   });
 });

@@ -35,10 +35,9 @@ Watch for two things in the output:
 
 Run `git diff -- docs-baseline/`.
 
-This step is not optional, and it is not a skim. The scripts catch exactly two things:
-new pages, and hook-event drift. They do NOT catch field-level drift - a new, renamed,
-or removed field in any schema is caught ONLY by a human or agent reading this diff.
-They also cannot catch a constraint stated only in prose, and that class of change
+This step is not optional, and it is not a skim. The refresh detects new pages and changed facts. The offline checks cover hook events,
+tool names, scoped schema field tables, and documented examples. They cannot establish
+constraints stated only in prose, and that class of change
 causes real bugs: the mintlify-docs install failure came from one sentence, "a bare
 string with only the plugin name".
 
@@ -48,11 +47,14 @@ success?
 
 ### Step 3: Run the conformance check
 
-Run `npm run check:upstream`.
+Run `npm run check:upstream`, build the CLI, then run
+`npm test -- --runInBand tests/upstream` and `npm run check:schema-docs-coverage`.
 
-Its conformance findings cover hook events ONLY. A clean run means the `HookEvents` enum
-matches the baseline - it says nothing about whether any other field is up to date. Field
-drift is caught only by Step 2.
+`check:upstream` covers hook events. The upstream tests also check tool names, schema
+keys, nested settings paths, field examples without silent stripping, and complete
+examples through the CLI. Scoped table bindings and extraction floors fail when the
+document layout changes. These checks supplement the prose review in Step 2; they
+do not establish complete semantic conformance.
 
 - `documented-not-modeled` - upstream documents a hook event we do not model. Add it to
   the Zod schema, the manual schema in `schemas/`, and the website docs, then run

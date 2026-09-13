@@ -22,10 +22,13 @@
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { documentedSettingsPaths } from './settings-keys';
 
 export interface FieldExample {
   /** Settings key the row's table hangs under, e.g. `sandbox`. Empty for top-level. */
   section: string;
+  /** Complete worked example, retaining required sibling fields. */
+  document?: Record<string, unknown>;
   /** Field path within that section, e.g. `network.allowedDomains`. */
   field: string;
   /** The value the docs print in the Example column, parsed. */
@@ -91,6 +94,7 @@ function sectionFor(heading: string | null): string | null {
  * A dotted first cell (`network.allowedDomains`) is a nested path within the section.
  */
 export function extractFieldExamples(markdown: string): FieldExample[] {
+  if (/^## Settings index$/m.test(markdown)) return extractReferenceExamples(markdown);
   const out: FieldExample[] = [];
   const lines = markdown.split('\n');
   let heading: string | null = null;
@@ -118,8 +122,43 @@ export function extractFieldExamples(markdown: string): FieldExample[] {
   return out;
 }
 
+/** Read each setting's own example from the split reference page. */
+function extractReferenceExamples(markdown: string): FieldExample[] {
+  const documented = new Set(documentedSettingsPaths(markdown));
+  const out: FieldExample[] = [];
+  const lines = markdown.split('\n');
+  let field: string | null = null;
+  for (let i = 0; i < lines.length; i++) {
+    const heading = /^### `([^`]+)`$/.exec(lines[i]);
+    if (/^#{1,3} /.test(lines[i])) field = heading?.[1] ?? null;
+    if (
+      !field ||
+      !documented.has(field) ||
+      !/^```json (?:managed-)?settings\.json(?:\s+theme=\{null\})?\s*$/.test(lines[i])
+    )
+      continue;
+    const start = i + 1;
+    while (++i < lines.length && !/^```\s*$/.test(lines[i])) {
+      /* find fence end */
+    }
+    const document = parseExample(lines.slice(start, i).join('\n')) as
+      Record<string, unknown> | undefined;
+    let value: unknown = document;
+    for (const key of field.split('.')) {
+      value =
+        value && typeof value === 'object' && !Array.isArray(value)
+          ? (value as Record<string, unknown>)[key]
+          : undefined;
+    }
+    if (value !== undefined)
+      out.push({ section: '', field, example: value, document, line: start + 1 });
+  }
+  return out;
+}
+
 /** Build the minimal settings document that places `example` at `section.field`. */
 export function toSettingsDocument(entry: FieldExample): Record<string, unknown> {
+  if (entry.document) return entry.document;
   const path = entry.field.split('.');
   const leaf: Record<string, unknown> = {};
 
@@ -135,7 +174,7 @@ export function toSettingsDocument(entry: FieldExample): Record<string, unknown>
 }
 
 export function loadSettingsDoc(baselineDir: string): string {
-  return readFileSync(join(baselineDir, 'settings.md'), 'utf8');
+  return readFileSync(join(baselineDir, 'settings-reference.md'), 'utf8');
 }
 
 export function assertMinTypedFields(count: number): void {

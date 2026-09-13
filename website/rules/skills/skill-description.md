@@ -8,7 +8,7 @@ description: "Skill description must be at least 10 characters, written in third
 
 ## Rule Details
 
-Every skill should include a meaningful description so users and Claude understand its purpose. This rule validates that the `description` field in SKILL.md frontmatter is present, at least 10 characters long, written in third person, and free of XML tags. A good description improves discoverability and helps users decide whether a skill fits their needs.
+Every skill should include a meaningful description so users and Claude understand its purpose. This rule validates that the `description` field in SKILL.md frontmatter when present, is at least 10 characters long, written in third person, and free of XML tags. A good description improves discoverability and helps users decide whether a skill fits their needs.
 
 ### Incorrect
 

@@ -18,6 +18,7 @@ Output styles are defined as `.md` files in `output-styles/` directories (e.g., 
 | `name` | string | no | Display name for the style |
 | `description` | string | no | Description of the style |
 | `keep-coding-instructions` | boolean | no | Preserve coding instructions in output |
+| `force-for-plugin` | boolean | no | Automatically apply a plugin output style when its plugin is enabled; default false |
 
 ## Example
 

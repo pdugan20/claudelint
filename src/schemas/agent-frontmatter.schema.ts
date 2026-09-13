@@ -85,6 +85,8 @@ export const AgentFrontmatterSchema = z.object({
 
   isolation: z.enum(['worktree']).optional(),
 
+  experimental: z.object({ cacheTtl: z.enum(['5m', '1h']).optional() }).optional(),
+
   initialPrompt: z.string().optional(),
 });
 

@@ -31,6 +31,7 @@ const LSPServerSchema = z.object({
   workspaceFolder: z.string().optional(),
   startupTimeout: z.number().min(0).optional(),
   shutdownTimeout: z.number().min(0).optional(),
+  diagnostics: z.boolean().optional(),
   restartOnCrash: z.boolean().optional(),
   maxRestarts: z.number().min(0).optional(),
 });

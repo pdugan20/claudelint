@@ -15,7 +15,7 @@
     },
     "description": {
       "type": "string",
-      "description": "What the skill does and when to use it. Claude uses this to decide when to apply the skill. If omitted, uses the first paragraph of markdown content. Recommended to include.",
+      "description": "Optional description. Defaults to the first non-empty line of skill content; recommended for discoverability.",
       "minLength": 10
     },
     "when_to_use": {
@@ -28,7 +28,17 @@
     },
     "arguments": {
       "description": "Named positional arguments for $name substitution in the skill content. Accepts a space-separated string or a YAML list.",
-      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "disable-model-invocation": {
       "type": "boolean",
@@ -48,18 +58,21 @@
     "allowed-tools": {
       "description": "Tools Claude can use without asking permission when this skill is active. Accepts a space- or comma-separated string, or a YAML list. Entries are permission rules, not bare tool names: `Bash(git add *)` and `mcp__server__tool` are both valid.",
       "oneOf": [
-        { "type": "string" },
+        {
+          "type": "string"
+        },
         {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "uniqueItems": true
         }
       ]
     },
     "model": {
       "type": "string",
-      "description": "Model to use when this skill is active.",
-      "enum": ["sonnet", "opus", "haiku", "fable", "inherit"]
+      "description": "Model to use when this skill is active."
     },
     "context": {
       "type": "string",
@@ -85,7 +98,17 @@
     },
     "paths": {
       "description": "Glob patterns that limit when this skill is activated. Accepts a comma-separated string or a YAML list. Uses the same format as path-specific rules.",
-      "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }]
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "shell": {
       "type": "string",
@@ -100,20 +123,73 @@
         "items": {
           "type": "object",
           "properties": {
-            "matcher": { "type": "string" },
+            "matcher": {
+              "type": "string"
+            },
             "hooks": {
               "type": "array",
               "items": {
                 "type": "object",
                 "properties": {
-                  "type": { "type": "string", "enum": ["command", "http", "prompt", "agent"] },
-                  "command": { "type": "string" },
-                  "prompt": { "type": "string" },
-                  "agent": { "type": "string" },
-                  "timeout": { "type": "number" },
-                  "statusMessage": { "type": "string" },
-                  "once": { "type": "boolean" },
-                  "model": { "type": "string" }
+                  "type": {
+                    "type": "string",
+                    "enum": ["command", "http", "mcp_tool", "prompt", "agent"]
+                  },
+                  "command": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "string"
+                  },
+                  "timeout": {
+                    "type": "number"
+                  },
+                  "statusMessage": {
+                    "type": "string"
+                  },
+                  "once": {
+                    "type": "boolean"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "if": {
+                    "type": "string"
+                  },
+                  "shell": {
+                    "type": "string",
+                    "enum": ["bash", "powershell"]
+                  },
+                  "asyncRewake": {
+                    "type": "boolean"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "allowedEnvVars": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "server": {
+                    "type": "string"
+                  },
+                  "tool": {
+                    "type": "string"
+                  },
+                  "input": {
+                    "type": "object"
+                  }
                 },
                 "required": ["type"]
               }
@@ -122,6 +198,36 @@
           "required": ["hooks"]
         }
       }
+    },
+    "disallowed-tools": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "background": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "license": {
+      "type": "string"
+    },
+    "compatibility": {
+      "type": "string",
+      "maxLength": 500
     }
   },
   "if": {

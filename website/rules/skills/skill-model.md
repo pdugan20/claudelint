@@ -1,32 +1,32 @@
 ---
-description: "Skill model must be one of: sonnet, opus, haiku, inherit"
+description: "Skill model must be a string"
 ---
 
 # skill-model
 
-<RuleHeader description="Skill model must be one of: sonnet, opus, haiku, inherit" severity="error" :fixable="false" :configurable="false" category="Skills" />
+<RuleHeader description="Skill model must be a string" severity="error" :fixable="false" :configurable="false" category="Skills" />
 
 ## Rule Details
 
-The `model` frontmatter field controls which Claude model executes the skill. Only a fixed set of values is valid: `sonnet`, `opus`, `haiku`, or `inherit`. An invalid model value will cause the skill to fail at runtime. This rule validates the field against the allowed values defined in the skill frontmatter schema.
+The `model` frontmatter field controls which Claude model executes the skill. Use a model alias such as `sonnet`, a full model identifier, or `inherit`. Available models depend on the account and provider. This rule validates the value type without rejecting custom model identifiers.
 
 ### Incorrect
 
-Invalid model value
+Numeric model value
 
 ```yaml
 ---
 name: deploy-app
-model: gpt-4
+model: 42
 ---
 ```
 
-Misspelled model name
+List instead of a model identifier
 
 ```yaml
 ---
 name: deploy-app
-model: sonnett
+model: [sonnet, opus]
 ---
 ```
 
@@ -52,7 +52,7 @@ model: inherit
 
 ## How To Fix
 
-Set the `model` field to one of the allowed values: `sonnet`, `opus`, `haiku`, or `inherit`. If you do not need to specify a model, remove the field entirely since it is optional.
+Set `model` to a string containing a model alias, full identifier, or `inherit`. If you do not need to specify a model, remove the field entirely since it is optional.
 
 ## Options
 

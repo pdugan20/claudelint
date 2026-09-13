@@ -25,6 +25,8 @@ Default transport when `command` is present.
 | `command` | string   | yes      | Command to execute                |
 | `args`    | string[] | no       | Command arguments                 |
 | `env`     | object   | no       | Environment variables             |
+| `timeout` | number | no | Per-server timeout in milliseconds |
+| `alwaysLoad` | boolean | no | Load tool definitions without deferring to tool search |
 
 ### http
 
@@ -34,6 +36,10 @@ Default transport when `command` is present.
 | `url`     | string | yes      | HTTP endpoint URL     |
 | `headers` | object | no       | HTTP headers          |
 | `env`     | object | no       | Environment variables |
+| `timeout` | number | no | Per-server timeout in milliseconds |
+| `alwaysLoad` | boolean | no | Load tool definitions without deferring to tool search |
+| `headersHelper` | string | no | Command printing dynamic request headers |
+| `oauth` | object | no | OAuth options: `clientId`, `callbackPort`, `authServerMetadataUrl`, and space-separated `scopes` |
 
 ### sse (deprecated)
 
@@ -43,6 +49,10 @@ Default transport when `command` is present.
 | `url`     | string | yes      | SSE endpoint URL      |
 | `headers` | object | no       | HTTP headers          |
 | `env`     | object | no       | Environment variables |
+| `timeout` | number | no | Per-server timeout in milliseconds |
+| `alwaysLoad` | boolean | no | Load tool definitions without deferring to tool search |
+| `headersHelper` | string | no | Command printing dynamic request headers |
+| `oauth` | object | no | OAuth options: `clientId`, `callbackPort`, `authServerMetadataUrl`, and space-separated `scopes` |
 
 ### ws (WebSocket)
 
@@ -54,6 +64,10 @@ The config literal is `"ws"` — not `"websocket"`, which is not a valid value.
 | `url`     | string | yes      | WebSocket URL (`ws://` or `wss://`)             |
 | `headers` | object | no       | Request headers (WebSocket auth is header-only) |
 | `env`     | object | no       | Environment variables                           |
+| `timeout` | number | no | Per-server timeout in milliseconds |
+| `alwaysLoad` | boolean | no | Load tool definitions without deferring to tool search |
+| `headersHelper` | string | no | Command printing dynamic request headers |
+| `oauth` | object | no | OAuth options: `clientId`, `callbackPort`, `authServerMetadataUrl`, and space-separated `scopes` |
 
 ### streamable-http
 

@@ -28,9 +28,10 @@ Agent files are flat `.md` files (e.g., `.claude/agents/code-reviewer.md`). The 
 | `maxTurns`        | number             | no       | Maximum agent turns (positive integer)                                                                                                                             |
 | `mcpServers`      | (string\|object)[] | no       | MCP server references or inline definitions                                                                                                                        |
 | `color`           | string             | no       | [Display color](/api/schemas#agent-colors): `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan`                                                |
-| `background`      | boolean            | no       | Run as background task (default: `false`)                                                                                                                          |
+| `background`      | boolean            | no       | Keep the subagent in the background even when a foreground run is requested                                                                                                                          |
 | `isolation`       | string             | no       | `worktree` — run in a temporary git worktree                                                                                                                       |
 | `initialPrompt`   | string             | no       | Auto-submitted as the first user turn when this agent runs as the main session agent (via `--agent` or the `agent` setting). Prepended to any user-provided prompt |
+| `experimental` | object | no | Experimental options: `cacheTtl` accepts `5m` or `1h` |
 
 **Combining `tools` and `disallowedTools`:**
 

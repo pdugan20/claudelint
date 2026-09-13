@@ -1,7 +1,7 @@
 /**
  * Rule: skill-model
  *
- * Skill model must be one of: sonnet, opus, haiku, inherit
+ * Skill model must be a string
  *
  * Uses thin wrapper pattern: delegates to SkillFrontmatterSchema.shape.model for validation
  */
@@ -14,7 +14,7 @@ export const rule: Rule = {
   meta: {
     id: 'skill-model',
     name: 'Skill Model Value',
-    description: 'Skill model must be one of: sonnet, opus, haiku, inherit',
+    description: 'Skill model must be a string',
     category: 'Skills',
     severity: 'error',
     fixable: false,
@@ -23,24 +23,23 @@ export const rule: Rule = {
     docUrl: 'https://claudelint.com/rules/skills/skill-model',
     docs: {
       recommended: true,
-      summary:
-        'Enforces that the `model` field in SKILL.md frontmatter is one of the allowed values.',
+      summary: 'Checks that the `model` field in SKILL.md frontmatter is a string.',
       rationale:
-        'An invalid model value causes a runtime error when Claude Code tries to invoke the skill.',
+        'Claude Code accepts model aliases and full model identifiers; non-string values are invalid.',
       details:
         'The `model` frontmatter field controls which Claude model executes the skill. ' +
-        'Only a fixed set of values is valid: `sonnet`, `opus`, `haiku`, or `inherit`. ' +
-        'An invalid model value will cause the skill to fail at runtime. This rule validates ' +
-        'the field against the allowed values defined in the skill frontmatter schema.',
+        'Use a model alias such as `sonnet`, a full model identifier, or `inherit`. ' +
+        'Available models depend on the account and provider. This rule validates ' +
+        'the value type without rejecting custom model identifiers.',
       examples: {
         incorrect: [
           {
-            description: 'Invalid model value',
-            code: '---\nname: deploy-app\nmodel: gpt-4\n---',
+            description: 'Numeric model value',
+            code: '---\nname: deploy-app\nmodel: 42\n---',
           },
           {
-            description: 'Misspelled model name',
-            code: '---\nname: deploy-app\nmodel: sonnett\n---',
+            description: 'List instead of a model identifier',
+            code: '---\nname: deploy-app\nmodel: [sonnet, opus]\n---',
           },
         ],
         correct: [
@@ -55,7 +54,7 @@ export const rule: Rule = {
         ],
       },
       howToFix:
-        'Set the `model` field to one of the allowed values: `sonnet`, `opus`, `haiku`, or `inherit`. ' +
+        'Set `model` to a string containing a model alias, full identifier, or `inherit`. ' +
         'If you do not need to specify a model, remove the field entirely since it is optional.',
       relatedRules: ['skill-name', 'skill-version'],
     },

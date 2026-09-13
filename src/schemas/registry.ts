@@ -58,7 +58,7 @@ export const SCHEMA_REGISTRY: SchemaRegistryEntry[] = [
     manualSchemaFile: 'settings.schema.json',
     generatedSchemaFile: 'settings.generated.json',
     description: 'Generated JSON Schema for .claude/settings.json',
-    officialDocsUrl: 'https://code.claude.com/docs/en/settings',
+    officialDocsUrl: 'https://code.claude.com/docs/en/settings-reference',
   },
   {
     name: 'PluginManifestSchema',

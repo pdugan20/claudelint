@@ -19,9 +19,7 @@ describe('hooks-invalid-config', () => {
         // Valid command hook
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command', command: 'npm test' }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command', command: 'npm test' }] }],
           }),
           filePath: '/test/hooks.json',
         },
@@ -39,9 +37,7 @@ describe('hooks-invalid-config', () => {
         // Valid agent hook
         {
           content: hooksJson({
-            PostToolUse: [
-              { hooks: [{ type: 'agent', agent: 'my-agent' }] },
-            ],
+            PostToolUse: [{ hooks: [{ type: 'agent', prompt: 'Verify all tests pass.' }] }],
           }),
           filePath: '/test/hooks.json',
         },
@@ -62,9 +58,7 @@ describe('hooks-invalid-config', () => {
         // Hook with valid timeout
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command', command: 'npm test', timeout: 30000 }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command', command: 'npm test', timeout: 30000 }] }],
           }),
           filePath: '/test/hooks.json',
         },
@@ -80,109 +74,83 @@ describe('hooks-invalid-config', () => {
         // Invalid hook type
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'script', command: 'npm test' }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'script', command: 'npm test' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'Invalid hook type' },
-          ],
+          errors: [{ message: 'Invalid hook type' }],
         },
 
         // Command hook missing command field
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command' }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'must have "command" field' },
-          ],
+          errors: [{ message: 'must have "command" field' }],
         },
 
         // Prompt hook missing prompt field
         {
           content: hooksJson({
-            PermissionRequest: [
-              { hooks: [{ type: 'prompt' }] },
-            ],
+            PermissionRequest: [{ hooks: [{ type: 'prompt' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'must have "prompt" field' },
-          ],
+          errors: [{ message: 'must have "prompt" field' }],
         },
 
-        // Agent hook missing agent field
+        // Agent hook missing prompt field
         {
           content: hooksJson({
-            PostToolUse: [
-              { hooks: [{ type: 'agent' }] },
-            ],
+            PostToolUse: [{ hooks: [{ type: 'agent' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'must have "agent" field' },
-          ],
+          errors: [{ message: 'must have "prompt" field' }],
+        },
+
+        // The invented agent field cannot replace the documented prompt
+        {
+          content: hooksJson({
+            Stop: [{ hooks: [{ type: 'agent', agent: 'my-agent' }] }],
+          }),
+          filePath: '/test/hooks.json',
+          errors: [{ message: 'must have "prompt" field' }],
         },
 
         // Mutual exclusivity: command + prompt
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command', command: 'npm test', prompt: 'extra' }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command', command: 'npm test', prompt: 'extra' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'cannot have multiple handler fields' },
-          ],
+          errors: [{ message: 'cannot have multiple handler fields' }],
         },
 
         // Invalid timeout: zero
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command', command: 'npm test', timeout: 0 }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command', command: 'npm test', timeout: 0 }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'Invalid timeout' },
-          ],
+          errors: [{ message: 'Invalid timeout' }],
         },
 
         // Invalid timeout: negative
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'command', command: 'npm test', timeout: -100 }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'command', command: 'npm test', timeout: -100 }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'Invalid timeout' },
-          ],
+          errors: [{ message: 'Invalid timeout' }],
         },
 
         // Multiple validation errors
         {
           content: hooksJson({
-            PreToolUse: [
-              { hooks: [{ type: 'invalid-type', command: 'test' }] },
-            ],
-            PostToolUse: [
-              { hooks: [{ type: 'command' }] },
-            ],
+            PreToolUse: [{ hooks: [{ type: 'invalid-type', command: 'test' }] }],
+            PostToolUse: [{ hooks: [{ type: 'command' }] }],
           }),
           filePath: '/test/hooks.json',
-          errors: [
-            { message: 'Invalid hook type' },
-            { message: 'must have "command" field' },
-          ],
+          errors: [{ message: 'Invalid hook type' }, { message: 'must have "command" field' }],
         },
       ],
     });

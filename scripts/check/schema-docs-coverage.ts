@@ -24,6 +24,8 @@ import { z } from 'zod';
 import { SCHEMA_REGISTRY } from '../../src/schemas/registry';
 import { AgentFrontmatterSchema } from '../../src/schemas/agent-frontmatter.schema';
 import { HookEvents, HookTypes } from '../../src/schemas/constants';
+import { tableKeys, schemaPaths, keyDifferences } from '../upstream/schema-keys';
+import { SettingsHookSchema, SettingsHookMatcherSchema } from '../../src/validators/schemas';
 import { log } from '../util/logger';
 
 const projectRoot = join(__dirname, '../..');
@@ -53,35 +55,6 @@ const SCHEMA_TO_DOC: Record<string, string> = {
   RulesFrontmatterSchema: 'rules.md',
   MarketplaceMetadataSchema: 'marketplace.md',
 };
-
-/**
- * Extract top-level field names from a Zod object schema. Walks through
- * any wrappers (optional, nullable) at the root level to find the object.
- */
-function topLevelFields(schema: z.ZodTypeAny): string[] {
-  let inner: unknown = schema;
-  // Unwrap optional/nullable/default at the root if present.
-  while (
-    inner &&
-    typeof inner === 'object' &&
-    'def' in inner &&
-    inner.def &&
-    typeof inner.def === 'object' &&
-    'innerType' in inner.def
-  ) {
-    inner = (inner.def as { innerType: unknown }).innerType;
-  }
-  if (
-    inner &&
-    typeof inner === 'object' &&
-    'shape' in inner &&
-    inner.shape &&
-    typeof inner.shape === 'object'
-  ) {
-    return Object.keys(inner.shape as Record<string, unknown>);
-  }
-  return [];
-}
 
 /**
  * Extract enum values from a Zod enum schema (unwrapping optional first).
@@ -143,14 +116,72 @@ function checkPerSchemaPages(): void {
       continue;
     }
     const markdown = readFileSync(docPath, 'utf-8');
-    const documented = backtickedTokens(markdown);
-    const fields = topLevelFields(entry.zodSchema);
-    const missing = fields.filter((f) => !documented.has(f));
+    const paths = schemaPaths(entry.zodSchema);
+    const prefix =
+      entry.name === 'MCPConfigSchema'
+        ? 'mcpServers.*.'
+        : entry.name === 'LSPConfigSchema'
+          ? '*.'
+          : '';
+    const fields = [...paths].filter(
+      (key) => key.startsWith(prefix) && !key.slice(prefix.length).includes('.')
+    );
+    const headings =
+      entry.name === 'SettingsSchema'
+        ? ['Full field reference']
+        : entry.name === 'MCPConfigSchema'
+          ? ['stdio', 'http', 'sse (deprecated)', 'ws (WebSocket)']
+          : ['Fields'];
+    const documented = tableKeys(
+      markdown,
+      headings.map((heading) => ({ heading, prefix, min: 1 }))
+    );
+    const diff = keyDifferences(documented, fields);
+    const missing = [
+      ...diff.missing.map((key) => `Documented but not modeled: ${key}`),
+      ...diff.undocumented.map((key) => `Modeled but not documented: ${key}`),
+    ];
+    const nested: Record<string, Array<[string, string]>> = {
+      PluginManifestSchema: [['Author', 'author.']],
+      MarketplaceMetadataSchema: [
+        ['Owner', 'owner.'],
+        ['Plugin Entry', 'plugins.*.'],
+        ['Plugin Source', 'plugins.*.source.'],
+      ],
+      SettingsSchema: [
+        ['Permissions', 'permissions.'],
+        ['Attribution', 'attribution.'],
+        ['Sandbox', 'sandbox.'],
+        ['Sandbox network', 'sandbox.network.'],
+      ],
+    };
+    for (const [heading, nestedPrefix] of nested[entry.name] ?? []) {
+      const documentedPaths = tableKeys(markdown, [{ heading, prefix: nestedPrefix, min: 1 }]);
+      for (const key of documentedPaths)
+        if (!paths.has(key)) missing.push(`Documented but not modeled: ${key}`);
+    }
+    if (entry.name === 'HooksConfigSchema') {
+      for (const [heading, schema] of [
+        ['Hook Matcher', SettingsHookMatcherSchema],
+        ['Hook Handler', SettingsHookSchema],
+      ] as const) {
+        const nestedDiff = keyDifferences(
+          tableKeys(markdown, [{ heading, min: 1 }]),
+          Object.keys(schema.shape)
+        );
+        missing.push(
+          ...nestedDiff.missing.map((key) => `Documented but not modeled in ${heading}: ${key}`),
+          ...nestedDiff.undocumented.map(
+            (key) => `Modeled but not documented in ${heading}: ${key}`
+          )
+        );
+      }
+    }
     if (missing.length > 0) {
       violations.push({
         file: `website/api/schemas/${docFilename}`,
         missing,
-        context: `Zod fields in ${entry.name} not documented`,
+        context: `Field table differs from ${entry.name}`,
       });
     }
   }

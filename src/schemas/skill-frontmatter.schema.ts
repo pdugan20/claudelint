@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { ModelNames, ContextModes } from './constants';
+import { ContextModes } from './constants';
 import { noXMLTags, thirdPerson, lowercaseHyphens, semver, noReservedWords } from './refinements';
 import { SettingsHooksSchema } from '../validators/schemas';
 
@@ -15,13 +15,15 @@ export const SkillFrontmatterSchema = z.object({
   name: lowercaseHyphens()
     .max(64, 'Skill name must be 64 characters or less')
     .refine(noXMLTags().check, { message: noXMLTags().message })
-    .refine(noReservedWords().check, { message: noReservedWords().message }),
+    .refine(noReservedWords().check, { message: noReservedWords().message })
+    .optional(),
 
   description: z
     .string()
     .min(10, 'Description must be at least 10 characters')
     .refine(noXMLTags().check, { message: noXMLTags().message })
-    .refine(thirdPerson().check, { message: thirdPerson().message }),
+    .refine(thirdPerson().check, { message: thirdPerson().message })
+    .optional(),
 
   when_to_use: z.string().optional(),
 
@@ -36,7 +38,7 @@ export const SkillFrontmatterSchema = z.object({
   // claudelint extension: not in official Claude Code docs, used for plugin marketplace
   version: semver().optional(),
 
-  model: ModelNames.optional(),
+  model: z.string().optional(),
 
   context: ContextModes.optional(),
 
@@ -47,6 +49,12 @@ export const SkillFrontmatterSchema = z.object({
   // Note: Uses z.string() instead of ToolNames to allow custom validation with warnings.
   // Docs accept space-separated string or YAML list — we accept both shapes here.
   'allowed-tools': z.union([z.string(), z.array(z.string())]).optional(),
+
+  'disallowed-tools': z.union([z.string(), z.array(z.string())]).optional(),
+  background: z.boolean().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+  license: z.string().optional(),
+  compatibility: z.string().max(500).optional(),
 
   // claudelint extension: not in official Claude Code docs, used for skill categorization
   tags: z.array(z.string()).optional(),

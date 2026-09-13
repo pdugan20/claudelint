@@ -6,6 +6,7 @@
 
 import { Rule } from '../../types/rule';
 import { VALID_HOOK_TYPES } from '../../schemas/constants';
+import { isObject } from '../../utils/type-guards';
 
 /**
  * Validates hook configuration structure
@@ -28,9 +29,10 @@ export const rule: Rule = {
         'Malformed hook configs cause runtime errors when Claude Code tries to execute them.',
       details:
         'This rule validates the structure of hook definitions inside settings files. ' +
-        'It checks that each hook handler has a valid type (command, http, prompt, or agent), ' +
+        'It checks that each hook handler has a recognized type, ' +
         'includes the required field for its type, does not specify multiple handler fields ' +
         'simultaneously, and has a valid timeout value if one is provided. ' +
+        'Both prompt and agent hooks use the `prompt` field. ' +
         'Malformed hook configurations will cause runtime errors when Claude Code ' +
         'attempts to execute them.',
       examples: {
@@ -141,14 +143,16 @@ export const rule: Rule = {
     }
 
     // Validate each hook in the object-keyed format
-    if (config.hooks && typeof config.hooks === 'object' && !Array.isArray(config.hooks)) {
-      const hooksObj = config.hooks as Record<string, unknown>;
+    if (isObject(config) && isObject(config.hooks)) {
+      const hooksObj = config.hooks;
       for (const matcherGroups of Object.values(hooksObj)) {
         if (!Array.isArray(matcherGroups)) continue;
-        for (const matcherGroup of matcherGroups as Record<string, unknown>[]) {
+        for (const matcherGroup of matcherGroups) {
+          if (!isObject(matcherGroup)) continue;
           const handlers = matcherGroup.hooks;
           if (!Array.isArray(handlers)) continue;
-          for (const hook of handlers as Record<string, unknown>[]) {
+          for (const hook of handlers) {
+            if (!isObject(hook)) continue;
             validateHookHandler(context, hook);
           }
         }
@@ -187,17 +191,19 @@ function validateHookHandler(
     });
   }
 
-  if (hook.type === 'agent' && !hook.agent) {
+  // docs-baseline/hooks.md, "Prompt and agent hook fields": `prompt` is required
+  // for both types. An `agent` field is not a substitute for the prompt.
+  if (hook.type === 'agent' && !hook.prompt) {
     context.report({
-      message: 'Hook with type "agent" must have "agent" field',
+      message: 'Hook with type "agent" must have "prompt" field',
     });
   }
 
   // Validate mutual exclusivity of handler fields
-  const fieldCount = [hook.command, hook.url, hook.prompt, hook.agent].filter(Boolean).length;
+  const fieldCount = [hook.command, hook.url, hook.prompt].filter(Boolean).length;
   if (fieldCount > 1) {
     context.report({
-      message: 'Hook cannot have multiple handler fields (command, url, prompt, agent)',
+      message: 'Hook cannot have multiple handler fields (command, url, prompt)',
     });
   }
 

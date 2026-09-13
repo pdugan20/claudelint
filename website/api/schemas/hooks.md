@@ -17,8 +17,8 @@ Top-level hooks object (standalone `hooks.json`):
 
 | Field         | Type   | Required | Description                     |
 | ------------- | ------ | -------- | ------------------------------- |
-| `description` | string | no       | Human-readable description      |
 | `hooks`       | object | yes      | Event-keyed hooks configuration |
+| `description` | string | no | Optional description of the hook configuration |
 
 ## Hook Matcher
 
@@ -42,13 +42,15 @@ Each event maps to an array of matcher objects:
 | `tool`           | string   | no       | Tool name on the MCP server (when type is `mcp_tool`)                                                                 |
 | `input`          | object   | no       | Arguments passed to the tool (when type is `mcp_tool`); supports `${path}` substitution                               |
 | `prompt`         | string   | no       | Prompt text. Required when type is `prompt` or `agent` — an agent hook is driven by `prompt`, not by an `agent` field |
-| `subagent_type`  | string   | no       | Type of specialized agent to use (when type is `agent`)                                                               |
-| `description`    | string   | no       | Short description of the task (when type is `agent`)                                                                  |
 | `timeout`        | number   | no       | Timeout in seconds                                                                                                    |
 | `statusMessage`  | string   | no       | Status message shown during execution                                                                                 |
 | `once`           | boolean  | no       | Run only once per session                                                                                             |
 | `model`          | string   | no       | Model override for prompt/agent hooks                                                                                 |
 | `async`          | boolean  | no       | Run hook asynchronously (non-blocking)                                                                                |
+| `if` | string | no | Conditional hook filter |
+| `args` | string[] | no | Direct executable arguments; bypasses shell interpretation |
+| `asyncRewake` | boolean | no | Wake Claude after an asynchronous hook |
+| `shell` | string | no | Shell form: `bash` or `powershell` |
 
 ## Example
 

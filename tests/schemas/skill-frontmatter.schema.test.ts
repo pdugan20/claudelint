@@ -106,7 +106,7 @@ describe('SkillFrontmatterSchema', () => {
       const result = SkillFrontmatterSchema.safeParse({
         name: 'my-skill',
         description: 'This skill does something',
-        model: 'gpt-4',
+        model: 42,
       });
       expect(result.success).toBe(false);
     });

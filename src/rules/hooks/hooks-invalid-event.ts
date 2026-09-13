@@ -27,7 +27,8 @@ export const rule: Rule = {
       rationale:
         'Unrecognized event names mean the hook will never fire, silently failing to provide the intended automation.',
       details:
-        'This rule validates that the keys in the hooks object of settings.json correspond to recognized ' +
+        'This rule validates that the keys in the hooks object of `hooks/hooks.json`, ' +
+        '`.claude/settings.json`, and `.claude/settings.local.json` correspond to recognized ' +
         'Claude Code hook events. Valid events are: PreToolUse, PostToolUse, PostToolUseFailure, ' +
         'PermissionRequest, UserPromptSubmit, Notification, Stop, StopFailure, SubagentStart, SubagentStop, ' +
         'PreCompact, PostCompact, ConfigChange, SessionStart, SessionEnd, WorktreeCreate, WorktreeRemove, ' +

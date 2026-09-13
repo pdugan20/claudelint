@@ -12,6 +12,7 @@ import { z } from 'zod';
 export const OutputStyleFrontmatterSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
+  'force-for-plugin': z.boolean().optional(),
   'keep-coding-instructions': z.boolean().optional(),
 });
 

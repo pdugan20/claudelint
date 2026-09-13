@@ -56,7 +56,7 @@ Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 
 ### Model Names
 
-Valid values for `model` fields in skill and agent frontmatter.
+Common aliases for `model` fields in skill and agent frontmatter.
 
 | Value | Description |
 |-------|-------------|
@@ -66,7 +66,7 @@ Valid values for `model` fields in skill and agent frontmatter.
 | `inherit` | Inherit from parent context |
 
 ::: info
-Agent `model` fields also accept full model IDs (e.g., `claude-opus-4-6`). The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
+Skill and agent `model` fields also accept full model IDs (e.g., `claude-opus-4-6`). The `model` field in `settings.json` accepts arbitrary strings (full model IDs, ARNs, aliases) and is not restricted to this enum.
 :::
 
 ### Hook Events
@@ -75,6 +75,9 @@ Valid event keys for hooks configuration. All names are PascalCase.
 
 | Event | Description |
 |-------|-------------|
+| `DirectoryAdded` | A directory is added to the session |
+| `PreModelSwitch` | Before switching models |
+| `PostModelSwitch` | After switching models |
 | `PreToolUse` | Before a tool call executes; can block it |
 | `PostToolUse` | After a tool call succeeds |
 | `PostToolUseFailure` | After a tool call fails |

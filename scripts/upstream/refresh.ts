@@ -18,7 +18,7 @@ const LLMS_TXT = 'https://code.claude.com/docs/llms.txt';
 export function normalize(markdown: string): string {
   return markdown
     .replace(/^>.*Documentation Index[\s\S]*?(?=\n#)/, '')
-    .replace(/```(\w+)\s+theme=\{null\}/g, '```$1')
+    .replace(/^(```[^\n]*?)\s+theme=\{null\}/gm, '$1')
     .split('\n')
     .map((line) => line.replace(/\s+$/, ''))
     .join('\n')

@@ -200,13 +200,18 @@ The plugin and npm package are updated independently.
 
 ### Plugin Updates
 
-Third-party marketplace plugins don't auto-update by default. Enable it via `/plugin` → **Marketplaces** → **patrick-plugins** → **Enable auto-update**. When enabled, Claude Code checks for updates at startup and prompts you to run `/reload-plugins` when new versions are available.
+Third-party marketplace plugins don't auto-update by default. Enable it via `/plugin` → **Marketplaces** → select your installed marketplace → **Enable auto-update**. When enabled, Claude Code checks for updates at startup and prompts you to run `/reload-plugins` when new versions are available.
 
 To update manually:
 
 ```text
-/plugin marketplace update patrick-plugins
+/plugin marketplace list
+/plugin marketplace update <name>
 ```
+
+Replace `<name>` with the installed marketplace name shown by the list command. Then
+open `/plugin`, select claudelint under **Installed**, and choose **Update now**.
+Use the installed name rather than assuming it matches a repository or manifest name.
 
 ### npm Package Updates
 
@@ -215,7 +220,10 @@ To update manually:
   { label: 'Project only', code: 'npm install --save-dev claude-code-lint@latest' },
 ]" />
 
-The plugin's SessionStart hook detects version mismatches between the plugin and npm package — Claude will mention it and offer to fix it at the start of your session.
+The plugin's SessionStart hook checks for a missing or outdated CLI using npm. If npm is
+unavailable, it compares the CLI with the installed plugin's expected version. It does
+not infer plugin update availability from npm: the installed marketplace may pin a
+different plugin version, and Claude Code handles those updates.
 
 ::: details Environment variables for auto-update control
 Set `DISABLE_AUTOUPDATER=true` to disable all automatic updates (Claude Code and plugins). To keep plugin auto-updates while disabling Claude Code updates, also set `FORCE_AUTOUPDATE_PLUGINS=true`.
@@ -294,7 +302,7 @@ npm install -g claude-code-lint@latest
 
 Third-party marketplaces have auto-update disabled by default. Also check that `DISABLE_AUTOUPDATER` is not set in your environment.
 
-**Solution:** Enable auto-update via `/plugin` → **Marketplaces** → **patrick-plugins** → **Enable auto-update**, or update manually with `/plugin marketplace update patrick-plugins`.
+**Solution:** Enable auto-update via `/plugin` → **Marketplaces** → select your installed marketplace → **Enable auto-update**. For a manual update, run `/plugin marketplace list`, use the installed name in `/plugin marketplace update <name>`, then select claudelint under **Installed** and choose **Update now**.
 
 ## Uninstalling
 

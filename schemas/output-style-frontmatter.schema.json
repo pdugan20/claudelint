@@ -19,6 +19,9 @@
       "type": "boolean",
       "description": "Whether to keep the parts of Claude Code's system prompt related to coding",
       "default": false
+    },
+    "force-for-plugin": {
+      "type": "boolean"
     }
   }
 }

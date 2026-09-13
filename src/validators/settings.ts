@@ -3,7 +3,6 @@ import { findSettingsFiles } from '../utils/filesystem/files';
 import { z } from 'zod';
 import { SettingsSchema } from './schemas';
 import { ValidatorRegistry } from '../utils/validators/factory';
-import { validateSettingsHooks } from '../utils/validators/helpers';
 
 // Auto-register all rules
 import '../rules';
@@ -40,12 +39,10 @@ export class SettingsValidator extends SchemaValidator<typeof SettingsSchema> {
     // Execute ALL Settings rules via category-based discovery
     await this.executeRulesForCategory('Settings', filePath, content);
 
-    // Validate hooks (settings.json uses object format with event keys)
+    // Run Hooks rules against the original content: schema parsing strips unknown event
+    // names. Category execution also preserves rule IDs, severity overrides and disabling.
     if (settings.hooks) {
-      const issues = validateSettingsHooks(settings.hooks);
-      for (const issue of issues) {
-        this.report(issue.message, filePath, undefined, issue.ruleId);
-      }
+      await this.executeRulesForCategory('Hooks', filePath, content);
     }
   }
 }

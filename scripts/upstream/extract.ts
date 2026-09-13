@@ -12,7 +12,7 @@ import { WATCHLIST, WatchEntry, ExtractorId } from '../../src/upstream/watchlist
 export type Facts = Record<string, string[]>;
 
 /** Backtick-quoted identifier in the first cell of a markdown table row. */
-const TABLE_ROW = /^\|\s*`([A-Za-z][A-Za-z0-9_-]*)`\s*\|/gm;
+const TABLE_ROW = /^\|\s*(?:\[)?`([A-Za-z][A-Za-z0-9_.-]*)`(?:\]\([^)]*\))?\s*\|/gm;
 
 export function extractHookEvents(markdown: string): string[] {
   const events = new Set<string>();

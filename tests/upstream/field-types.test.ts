@@ -31,7 +31,7 @@ function describeFailure(entry: FieldExample, issues: string[]): string {
   const path = entry.section ? `${entry.section}.${entry.field}` : entry.field;
 
   return (
-    `\n  docs-baseline/settings.md:${entry.line}\n` +
+    `\n  docs-baseline/settings-reference.md:${entry.line}\n` +
     `  claudelint rejects the value the docs print for \`${path}\`:\n` +
     `    example:  ${JSON.stringify(entry.example)}\n` +
     `    rejected: ${issues.join('; ')}\n`
@@ -65,6 +65,10 @@ describe('documented field examples parse against the schema', () => {
     (_label, entry) => {
       const result = SettingsSchema.safeParse(toSettingsDocument(entry));
 
+      if (result.success) {
+        const input = toSettingsDocument(entry);
+        expect(result.data).toEqual(input);
+      }
       if (!result.success) {
         throw new Error(
           describeFailure(
@@ -120,5 +124,33 @@ describe('toSettingsDocument', () => {
 describe('assertMinTypedFields', () => {
   it('throws when the table parser yields almost nothing', () => {
     expect(() => assertMinTypedFields(0)).toThrow(/Type-conformance guard tripped/);
+  });
+});
+
+describe('split reference examples', () => {
+  it('keeps required siblings and excludes global/helper output examples', () => {
+    const markdown = [
+      '## Settings index',
+      '| [`policyHelper.timeoutMs`](#timeout) | timeout | Managed |',
+      '| [`autoConnectIde`](#ide) | IDE | Global config |',
+      '## Reference',
+      '### `policyHelper.timeoutMs`',
+      '```json managed-settings.json',
+      '{"policyHelper":{"path":"/opt/policy","timeoutMs":1000}}',
+      '```',
+      '```json',
+      '{"managedSettings":{}}',
+      '```',
+      '### `autoConnectIde`',
+      '```json settings.json',
+      '{"autoConnectIde":true}',
+      '```',
+    ].join('\n');
+    const examples = extractFieldExamples(markdown);
+    expect(examples).toHaveLength(1);
+    expect(examples[0].example).toBe(1000);
+    expect(toSettingsDocument(examples[0])).toEqual({
+      policyHelper: { path: '/opt/policy', timeoutMs: 1000 },
+    });
   });
 });
