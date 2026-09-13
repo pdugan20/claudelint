@@ -1,4 +1,7 @@
 version: 2
+# Renovate owns routine version updates (renovate.json). Dependabot stays
+# registered for security updates only: open-pull-requests-limit: 0 turns off
+# version PRs while security PRs keep the commit prefixes and labels below.
 updates:
   # npm dependencies
   - package-ecosystem: "npm"
@@ -8,7 +11,7 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "America/New_York"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     commit-message:
       # Type must be a single word (no hyphens) for the
       # conventional-commits parser used by PR Lint.
@@ -23,23 +26,6 @@ updates:
       - "pdugan20"
     reviewers:
       - "pdugan20"
-    # Skip major-version bumps — they're rarely a no-op merge and tend to
-    # break ts-node / CI in ways that need a human. Upgrade majors manually.
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    # Group minor and patch updates to reduce PR noise
-    groups:
-      dev-dependencies:
-        dependency-type: "development"
-        update-types:
-          - "minor"
-          - "patch"
-      production-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -49,9 +35,7 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "America/Los_Angeles"
-    cooldown:
-      default-days: 14
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "ci"
     labels:
@@ -61,10 +45,3 @@ updates:
       - "pdugan20"
     reviewers:
       - "pdugan20"
-    # Group all Actions updates into a single PR
-    groups:
-      github-actions:
-        patterns: ["*"]
-        update-types:
-          - "minor"
-          - "patch"

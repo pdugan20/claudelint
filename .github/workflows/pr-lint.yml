@@ -32,9 +32,15 @@ jobs:
             deps
             revert
           requireScope: false
-          subjectPattern: ^[a-z].*$
+          # dependabot-core appends "[security] "/"[Security] " after the
+          # commit prefix (inside the subject) for alert-driven security
+          # updates. With version PRs disabled, that is the standard title
+          # format of every Dependabot PR here, so this alternative is
+          # load-bearing: without it, security PRs fail this required check.
+          subjectPattern: ^(\[[Ss]ecurity\] [A-Za-z]|[a-z]).*$
           subjectPatternError: |
-            The subject must start with a lowercase letter.
+            The subject must start with a lowercase letter, or with the
+            Dependabot security marker ("[security] " or "[Security] ").
             Example: "feat: add new validation rule"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

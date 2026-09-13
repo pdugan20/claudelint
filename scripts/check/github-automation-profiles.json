@@ -1,5 +1,5 @@
 {
-  ".github/dependabot.yml": "8211d28ccca08491451a5ef9bbee03398d7e3ddfca92555251d4d500f3e6d068",
+  ".github/dependabot.yml": "97b817fc47b4c7339c76515443a0777128d49c2a0c7da317b9b2a17c46479a38",
   ".github/workflows/labeler.yml": "527dba38d36c1ec66a1d6def9f8c3bd6e2bbb85e6da8adc3ca85f1ac267f1731",
   ".github/workflows/pr-size.yml": "d35c78a67953d33f0d4e9421b2f10ba6a5a9d3064f1d46cd2b58478b78a78c0b",
   ".github/workflows/publish.yml": "5e5f121491c2139c96a193a786c75109157565b55edb5d89e048bcbda74a015a",

@@ -785,14 +785,14 @@ export class ClaudeLint {
   private async getApplicableValidatorIds(filePath: string): Promise<string[]> {
     const { ValidatorRegistry } = await import('../utils/validators/factory');
     const { minimatch } = await import('minimatch');
-    const { relative, isAbsolute } = await import('path');
+    const nodePath = await import('path');
 
     // Match on the absolute path AND the cwd-relative one. Registered patterns are written
     // both ways across the codebase (`**/.claude/settings.json`, `.claude-plugin/plugin.json`),
     // and a caller may pass either form.
     const candidates = new Set<string>([filePath]);
-    if (isAbsolute(filePath)) {
-      candidates.add(relative(this.cwd, filePath));
+    if (nodePath.isAbsolute(filePath)) {
+      candidates.add(nodePath.relative(this.cwd, filePath));
     }
 
     return ValidatorRegistry.getAllMetadata()
