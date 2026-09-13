@@ -87,10 +87,15 @@ Choose your scope when prompted: **User** (all projects, recommended), **Project
 Third-party marketplace plugins do not auto-update by default. Enable auto-update:
 
 ```text
-/plugin > Marketplaces > patrick-plugins > Enable auto-update
+/plugin > Marketplaces > your installed marketplace > Enable auto-update
 ```
 
-Or update manually: `/plugin marketplace update patrick-plugins`
+For a manual update, run `/plugin marketplace list` and use the installed name in
+`/plugin marketplace update <name>`. Then open `/plugin`, select claudelint under
+**Installed**, and choose **Update now**. Marketplace names can differ between installations.
+
+The SessionStart check reports CLI updates from npm. Claude Code manages plugin updates
+against the installed marketplace, which may pin a different version.
 
 See the [Plugin Guide](https://claudelint.com/integrations/claude-code-plugin) for full details on version sync.
 

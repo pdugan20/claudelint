@@ -8,7 +8,7 @@ description: "Hook scripts must reference existing files"
 
 ## Rule Details
 
-This rule checks that hook commands pointing to relative script paths (starting with ./ or ../) reference files that actually exist on disk. It skips validation for inline shell commands (containing spaces or shell operators), commands with variable expansions, and absolute paths or commands expected to be in PATH. A missing script will cause the hook to fail at runtime, breaking the intended automation workflow.
+This rule checks that hook commands pointing to relative script paths (starting with ./ or ../) reference files that actually exist on disk. In project `.claude/settings.json` and `.claude/settings.local.json`, paths are checked relative to the project root; in other hook configuration files, paths are checked relative to the configuration directory. This is a static check: it cannot account for working-directory changes during a session. It skips validation for inline shell commands (containing spaces or shell operators), commands with variable expansions, and absolute paths or commands expected to be in PATH. A missing script will cause the hook to fail at runtime, breaking the intended automation workflow.
 
 ### Incorrect
 

@@ -7,7 +7,8 @@
 import { Rule } from '../../types/rule';
 import { fileExists } from '../../utils/filesystem/files';
 import { containsEnvVar } from '../../utils/patterns';
-import { dirname, join, resolve } from 'path';
+import { basename, dirname, join, resolve } from 'path';
+import { isObject } from '../../utils/type-guards';
 
 /**
  * Validates hook script file existence
@@ -30,7 +31,11 @@ export const rule: Rule = {
         'A missing script causes the hook to fail at runtime, breaking the automation workflow.',
       details:
         'This rule checks that hook commands pointing to relative script paths (starting with ./ or ../) ' +
-        'reference files that actually exist on disk. It skips validation for inline shell commands ' +
+        'reference files that actually exist on disk. In project `.claude/settings.json` and ' +
+        '`.claude/settings.local.json`, paths are checked relative to the project root; ' +
+        'in other hook configuration files, paths are checked relative to the configuration directory. ' +
+        'This is a static check: it cannot account for working-directory changes during a session. ' +
+        'It skips validation for inline shell commands ' +
         '(containing spaces or shell operators), commands with variable expansions, and absolute paths ' +
         'or commands expected to be in PATH. A missing script will cause the hook to fail at runtime, ' +
         'breaking the intended automation workflow.',
@@ -70,14 +75,16 @@ export const rule: Rule = {
     }
 
     // Navigate object-keyed format: hooks -> event -> matcher groups -> hook handlers
-    if (config.hooks && typeof config.hooks === 'object' && !Array.isArray(config.hooks)) {
-      const hooksObj = config.hooks as Record<string, unknown>;
+    if (isObject(config) && isObject(config.hooks)) {
+      const hooksObj = config.hooks;
       for (const matcherGroups of Object.values(hooksObj)) {
         if (!Array.isArray(matcherGroups)) continue;
-        for (const matcherGroup of matcherGroups as Record<string, unknown>[]) {
+        for (const matcherGroup of matcherGroups) {
+          if (!isObject(matcherGroup)) continue;
           const handlers = matcherGroup.hooks;
           if (!Array.isArray(handlers)) continue;
-          for (const hook of handlers as Record<string, unknown>[]) {
+          for (const hook of handlers) {
+            if (!isObject(hook)) continue;
             if (hook.type === 'command' && typeof hook.command === 'string') {
               await validateCommandScript(context, filePath, hook.command);
             }
@@ -110,7 +117,11 @@ async function validateCommandScript(
 
   // Check if it's a relative path script
   if (command.startsWith('./') || command.startsWith('../')) {
-    const baseDir = dirname(filePath);
+    const configDir = dirname(filePath);
+    const isProjectSettings =
+      basename(configDir) === '.claude' &&
+      ['settings.json', 'settings.local.json'].includes(basename(filePath));
+    const baseDir = isProjectSettings ? dirname(configDir) : configDir;
     const scriptPath = resolve(join(baseDir, command));
 
     const exists = await fileExists(scriptPath);

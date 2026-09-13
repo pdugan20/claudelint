@@ -6,10 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-require-imports */
-const {
-  compareSemver,
-  checkVersions,
-} = require('../../.claude-plugin/scripts/check-dependency');
+const { compareSemver, checkVersions } = require('../../.claude-plugin/scripts/check-dependency');
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 describe('check-dependency', () => {
@@ -82,10 +79,9 @@ describe('check-dependency', () => {
         isGlobal: true,
         pluginVersion: '0.2.2',
       });
-      // Both CLI and plugin are outdated relative to latest
-      expect(result.messages).toHaveLength(2);
+      // npm metadata establishes only whether a CLI update is available
+      expect(result.messages).toHaveLength(1);
       expect(result.messages[0]).toContain('npm install -g claude-code-lint@0.3.0');
-      expect(result.messages[1]).toContain('plugin');
     });
 
     it('should suggest only CLI upgrade when plugin matches latest', () => {
@@ -99,29 +95,25 @@ describe('check-dependency', () => {
       expect(result.messages[0]).toContain('npm install -g claude-code-lint@0.3.0');
     });
 
-    it('should suggest plugin update when latest > plugin but CLI is current', () => {
+    it('stays silent for the reported marketplace lag when the CLI is current', () => {
       const result = checkVersions({
-        latestNpm: '0.3.0',
-        installedCli: '0.3.0',
+        latestNpm: '0.8.0',
+        installedCli: '0.8.0',
         isGlobal: true,
-        pluginVersion: '0.2.2',
+        pluginVersion: '0.7.1',
       });
-      expect(result.messages).toHaveLength(1);
-      expect(result.messages[0]).toContain('plugin is outdated');
-      expect(result.messages[0]).toContain('/plugin marketplace update');
-      expect(result.messages[0]).toContain('Update now');
+      expect(result.messages).toEqual([]);
     });
 
-    it('should suggest both when both are outdated', () => {
+    it('suggests only the CLI upgrade when npm is newer than both installed artifacts', () => {
       const result = checkVersions({
         latestNpm: '0.3.0',
         installedCli: '0.2.2',
         isGlobal: true,
         pluginVersion: '0.2.0',
       });
-      expect(result.messages).toHaveLength(2);
+      expect(result.messages).toHaveLength(1);
       expect(result.messages[0]).toContain('npm install -g claude-code-lint@0.3.0');
-      expect(result.messages[1]).toContain('plugin');
     });
 
     it('should be silent when all in sync', () => {
@@ -205,8 +197,8 @@ describe('check-dependency', () => {
         isGlobal: false,
         pluginVersion: '0.2.2',
       });
-      // Both CLI and plugin are outdated relative to latest
-      expect(result.messages).toHaveLength(2);
+      // npm metadata establishes only whether a CLI update is available
+      expect(result.messages).toHaveLength(1);
       expect(result.messages[0]).toContain('npm install --save-dev claude-code-lint@0.3.0');
     });
 
@@ -218,9 +210,7 @@ describe('check-dependency', () => {
         pluginVersion: '0.2.2',
       });
       expect(result.messages).toHaveLength(1);
-      expect(result.messages[0]).toContain(
-        'npm install --save-dev claude-code-lint@0.2.2'
-      );
+      expect(result.messages[0]).toContain('npm install --save-dev claude-code-lint@0.2.2');
     });
   });
 });

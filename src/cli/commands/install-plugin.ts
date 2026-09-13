@@ -115,7 +115,9 @@ export function registerInstallPluginCommand(program: Command): void {
       logger.newline();
       logger.detail('Third-party marketplace plugins do not auto-update by default.');
       logger.detail('To enable, inside Claude Code:');
-      logger.detail(chalk.cyan('/plugin > Marketplaces > patrick-plugins > Enable auto-update'));
+      logger.detail(
+        chalk.cyan('/plugin > Marketplaces > your installed marketplace > Enable auto-update')
+      );
       logger.newline();
 
       // Step 4: verify
@@ -154,7 +156,7 @@ function outputJson(): void {
       },
       development: 'claude --plugin-dir ./node_modules/claude-code-lint',
     },
-    autoUpdate: '/plugin > Marketplaces > patrick-plugins > Enable auto-update',
+    autoUpdate: '/plugin > Marketplaces > your installed marketplace > Enable auto-update',
     verify: '/validate-all',
     status: {
       globalInstall: isGloballyInstalled(),

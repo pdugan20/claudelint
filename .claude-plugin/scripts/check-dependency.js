@@ -99,13 +99,9 @@ function checkVersions({ latestNpm, installedCli, isGlobal, pluginVersion }) {
           `${installCmd}@${latestNpm}`
       );
     }
-    if (compareSemver(latestNpm, pluginVersion) > 0) {
-      messages.push(
-        `IMPORTANT: The claudelint plugin is outdated (${pluginVersion} installed, ${latestNpm} available). ` +
-          `Tell the user to run: /plugin marketplace update patrick-plugins -- ` +
-          `then run /plugin, go to Installed, select claudelint, and choose "Update now".`
-      );
-    }
+    // npm reports CLI releases, not the versions offered by the user's marketplace.
+    // A marketplace can pin an older plugin even when both artifacts share release
+    // versions in this repository. Leave plugin update detection to Claude Code.
     return { messages };
   }
 
