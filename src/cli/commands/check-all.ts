@@ -14,6 +14,7 @@ import { CustomRuleLoader } from '../../utils/rules/loader';
 import { ValidationCache } from '../../utils/cache';
 import { Fixer } from '../../utils/rules/fixer';
 import { logger } from '../utils/logger';
+import { resolveExitCode } from '../utils/exit-code';
 import { detectWorkspace } from '../../utils/workspace/detector';
 import { basename, relative as pathRelative } from 'path';
 import { CheckAllOptions } from '../types';
@@ -207,8 +208,32 @@ export function registerCheckAllCommand(program: Command): void {
           }
         }
 
-        process.exitCode =
-          totalErrors > 0 || (totalWarnings > 0 && options.warningsAsErrors) ? 1 : 0;
+        let hasDeprecatedRules = false;
+        if (options.errorOnDeprecated) {
+          hasDeprecatedRules = results.some(
+            ({ result }) => (result.deprecatedRulesUsed?.length ?? 0) > 0
+          );
+        }
+
+        const maxWarnings = options.maxWarnings ?? config.maxWarnings ?? -1;
+        if (maxWarnings >= 0 && totalWarnings > maxWarnings) {
+          logger.newline();
+          logger.error(`Warning limit exceeded: ${totalWarnings} > ${maxWarnings}`);
+        }
+
+        if (hasDeprecatedRules) {
+          logger.newline();
+          logger.error('Deprecated rules detected (--error-on-deprecated)');
+        }
+
+        process.exitCode = resolveExitCode({
+          totalErrors,
+          totalWarnings,
+          hasDeprecatedRules,
+          maxWarnings,
+          strict: options.strict,
+          warningsAsErrors: options.warningsAsErrors,
+        });
         return;
       }
 
@@ -683,22 +708,20 @@ export function registerCheckAllCommand(program: Command): void {
         }
       }
 
-      // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
       if (hasDeprecatedRules) {
-        // Deprecated rules treated as errors
         logger.newline();
         logger.error('Deprecated rules detected (--error-on-deprecated)');
-        process.exitCode = 1;
-      } else if (options.strict && (totalErrors > 0 || totalWarnings > 0)) {
-        // Strict mode: fail on any issue
-        process.exitCode = 1;
-      } else if (totalErrors > 0 || (totalWarnings > 0 && options.warningsAsErrors)) {
-        // Errors or warnings-as-errors
-        process.exitCode = 1;
-      } else {
-        // Success (warnings are OK unless --warnings-as-errors or --strict)
-        process.exitCode = 0;
       }
+
+      // Set exit code (use process.exitCode instead of process.exit to allow stdout to drain)
+      process.exitCode = resolveExitCode({
+        totalErrors,
+        totalWarnings,
+        hasDeprecatedRules,
+        maxWarnings,
+        strict: options.strict,
+        warningsAsErrors: options.warningsAsErrors,
+      });
     } catch (error: unknown) {
       // Handle configuration errors (invalid rule options)
       if (error instanceof ConfigError) {

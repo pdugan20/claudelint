@@ -12,6 +12,27 @@ describe('output-style-name-directory-mismatch', () => {
     await ruleTester.run('output-style-name-directory-mismatch', rule, {
       valid: [
         {
+          content: '---\nname: Diagrams first\n---\n# Style',
+          filePath: '.claude/output-styles/concise.md',
+        },
+        {
+          content: '---\nname: Diagrams first\n---\n# Style',
+          filePath: 'output-styles/concise.md',
+        },
+        {
+          content: '---\nname: concise\ndescription: Concise output\n---\n# Style',
+          filePath: '/path/to/.claude/output-styles/concise.md',
+        },
+        {
+          content: '---\nname: signal-only\ndescription: Terse output\n---\n# Style',
+          filePath: 'output-styles/signal-only.md',
+        },
+        {
+          // The filename supplies the name when frontmatter omits it.
+          content: '---\ndescription: Concise output\n---\n# Style',
+          filePath: '/path/to/.claude/output-styles/concise.md',
+        },
+        {
           content: '---\nname: code-style\ndescription: Formats code output\n---\n# Style',
           filePath: '/path/to/.claude/output-styles/code-style/concise.md',
         },
@@ -31,8 +52,7 @@ describe('output-style-name-directory-mismatch', () => {
           filePath: '/path/to/.claude/output-styles/code-style/concise.md',
           errors: [
             {
-              message:
-                'Output style name "wrong-name" does not match directory name "code-style"',
+              message: 'Output style name "wrong-name" does not match directory name "code-style"',
             },
           ],
         },

@@ -31,6 +31,35 @@ Guidelines for this output style.
     return styleMd;
   }
 
+  describe('flat style selection', () => {
+    it.each([
+      { name: 'Diagrams first', selected: 'Diagrams first' },
+      { name: undefined, selected: 'concise' },
+    ])('selects $selected', async ({ name, selected }) => {
+      const dir = join(getTestDir(), '.claude', 'output-styles');
+      await mkdir(dir, { recursive: true });
+      const file = join(dir, 'concise.md');
+      await writeFile(file, `---\n${name ? `name: ${name}\n` : ''}---\n# Style`);
+      await writeFile(join(dir, 'other.md'), '---\nname: Other\n---\n# Other');
+      const result = await new OutputStylesValidator({
+        path: getTestDir(),
+        outputStyle: selected,
+      }).validate();
+      expect(result.validatedFiles).toEqual([file]);
+    });
+
+    it('does not select a filename overridden by frontmatter', async () => {
+      const dir = join(getTestDir(), 'output-styles');
+      await mkdir(dir, { recursive: true });
+      await writeFile(join(dir, 'concise.md'), '---\nname: Diagrams first\n---\n# Style');
+      const result = await new OutputStylesValidator({
+        path: getTestDir(),
+        outputStyle: 'concise',
+      }).validate();
+      expect(result.validatedFiles ?? []).toEqual([]);
+    });
+  });
+
   describe('Orchestration', () => {
     it('should validate valid output style', async () => {
       await createOutputStyle('test-style', {
@@ -71,6 +100,5 @@ Guidelines for this output style.
       expect(result.errors).toHaveLength(0);
       expect(result.warnings).toHaveLength(0);
     });
-
   });
 });
