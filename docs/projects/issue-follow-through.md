@@ -95,8 +95,8 @@ The first batch retained `run-con` 1.3.2 because its 1.3.3 update adds `ini` 7,
 requiring Node `^22.22.2 || ^24.15.0 || >=26.0.0`. The separate tooling batch below
 sets that contributor baseline explicitly before applying the update.
 
-The npm `latest` tag is 0.8.2, its `gitHead` matches the release tag, and provenance
-and registry signatures are present. An isolated consumer installed the published
+At the first batch's release, npm `latest` was 0.8.2, its `gitHead` matched the release
+tag, and provenance and registry signatures were present. An isolated consumer installed the published
 package and checked invalid events and valid agent hooks in both settings files,
 plus marketplace-neutral update guidance.
 
@@ -106,8 +106,9 @@ Marketplace v3.4.1 is published; its release notes match the curated changelog.
 Clean Claude Code and Codex profiles installed every entry from the published catalog
 successfully. Runtime membership remains unchanged: claudelint is Claude-only.
 
-Issues #217, #188, and #189 closed through #225. Issue #146 now marks sections 1–4
-complete while retaining its watchlist work. Rolling trackers #151 and #200 remain open.
+Issues #217, #188, and #189 closed through #225. Issue #146 initially retained its
+watchlist work; that follow-through is now complete through #227, as detailed below,
+and the issue is closed. Rolling trackers #151 and #200 remain open.
 
 ## Separate tooling batch
 
@@ -143,6 +144,8 @@ exports or intentional invalid fixtures were removed to silence those diagnostic
   forcing Vite 8 is a separate compatibility migration, not ordinary lock maintenance.
 - Keep release-it's Undici 7 override. Release-it 21 declares Undici 7.29.0; forcing
   Undici 8 underneath it needs separate validation.
+- Keep Satori's patched fflate 0.7.5 override. Satori 0.33.4 pins 0.7.3 upstream;
+  fflate 0.8 is a separate compatibility change, not an outstanding security patch.
 - Keep Node 22 declarations while Node 22 is supported. GitHub action majors are
   handled in the workflow batch below.
 
@@ -217,6 +220,20 @@ Separate invocation avoids a diagnosed hang in actionlint's external ShellCheck
 integration. Zizmor's five publish findings are resolved; its two remaining trigger
 warnings concern unchanged, pinned metadata-only workflows without checkout or
 untrusted shell execution. One reused Luna reviewer found no actionable regression.
+
+## Release generator compatibility
+
+The 0.9.0 release attempt exposed a generator incompatibility before commit, tag, or
+publication: the new Conventional Changelog preset emitted an emoji in the breaking
+change heading, which the repository's existing emoji check rejects. The old
+Handlebars override and `hidden` option no longer control the upgraded generator.
+
+The configuration now lives in `.release-it.cjs`, uses `formatNoteIcon` to omit the
+icon, and declares supported type effects. Fixes and features retain their bump
+behavior; documentation remains visible without triggering a bump; ordinary chores
+remain hidden. Breaking changes still produce a major recommendation. Two tests
+generate real changelogs and recommendations from temporary Git histories to cover
+these behaviors. Release hooks and publication permissions remain unchanged.
 
 ## Permission and command conformance follow-through
 
