@@ -110,7 +110,8 @@ async function loadCustomFormatter(filePath: string, cwd: string): Promise<Forma
     formatterModule = (await import(resolvedPath)) as { default?: Formatter } | Formatter;
   } catch (error) {
     throw new Error(
-      `Failed to load formatter from ${resolvedPath}: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to load formatter from ${resolvedPath}: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 

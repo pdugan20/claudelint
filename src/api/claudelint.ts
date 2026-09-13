@@ -472,7 +472,8 @@ export class ClaudeLint {
           writeFileSync(result.filePath, result.output, 'utf-8');
         } catch (error) {
           throw new Error(
-            `Failed to write fixes to ${result.filePath}: ${(error as Error).message}`
+            `Failed to write fixes to ${result.filePath}: ${(error as Error).message}`,
+            { cause: error }
           );
         }
       }

@@ -42,7 +42,8 @@ export function extractFrontmatter<T = Record<string, unknown>>(
     };
   } catch (error) {
     throw new Error(
-      `Failed to parse YAML frontmatter: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to parse YAML frontmatter: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 }
