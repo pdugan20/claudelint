@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0](https://github.com/pdugan20/claudelint/compare/v0.9.0...v0.10.0) (2026-10-04)
+
+### Features
+
+* align upstream schemas and fix reported lint regressions ([#251](https://github.com/pdugan20/claudelint/issues/251)) ([0c87ba6](https://github.com/pdugan20/claudelint/commit/0c87ba689ada00a91aae0c9137b2416f7ea760ac)), references [#151](https://github.com/pdugan20/claudelint/issues/151) [#233](https://github.com/pdugan20/claudelint/issues/233) [#234](https://github.com/pdugan20/claudelint/issues/234) [#235](https://github.com/pdugan20/claudelint/issues/235) [#236](https://github.com/pdugan20/claudelint/issues/236) [#237](https://github.com/pdugan20/claudelint/issues/237) [#238](https://github.com/pdugan20/claudelint/issues/238)
+
 ## [0.9.0](https://github.com/pdugan20/claudelint/compare/v0.8.2...v0.9.0) (2026-09-13)
 
 ### BREAKING CHANGES
