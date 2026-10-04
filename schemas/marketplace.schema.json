@@ -27,19 +27,18 @@
     },
     "owner": {
       "type": "object",
-      "description": "Marketplace maintainer information",
-      "required": ["name"],
       "properties": {
+        "url": {
+          "type": "string"
+        },
         "name": {
-          "type": "string",
-          "description": "Maintainer or team name"
+          "type": "string"
         },
         "email": {
-          "type": "string",
-          "description": "Contact email",
-          "format": "email"
+          "type": "string"
         }
       },
+      "required": ["name"],
       "additionalProperties": false
     },
     "plugins": {
@@ -83,6 +82,9 @@
       "additionalProperties": {
         "type": ["string", "null"]
       }
+    },
+    "forceRemoveDeletedPlugins": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false,
@@ -252,16 +254,47 @@
           "description": "Whether plugin.json is authority for components (default: true)"
         },
         "commands": {
-          "oneOf": [
+          "anyOf": [
             {
-              "type": "string",
-              "pattern": "^\\.\\/.*"
+              "type": "string"
             },
             {
               "type": "array",
               "items": {
-                "type": "string",
-                "pattern": "^\\.\\/.*"
+                "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "argumentHint": {
+                    "type": "string"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "allowedTools": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             }
           ]
@@ -297,33 +330,64 @@
           ]
         },
         "hooks": {
-          "oneOf": [
+          "anyOf": [
             {
-              "type": "string",
-              "pattern": "^\\.\\/.*\\.json$"
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
             },
             {
               "type": "array",
               "items": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                ]
               }
             }
           ]
         },
         "mcpServers": {
-          "oneOf": [
+          "anyOf": [
             {
-              "type": "string",
-              "pattern": "^\\.\\/.*\\.json$"
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
             },
             {
               "type": "array",
               "items": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                ]
               }
-            },
-            {
-              "type": "object"
             }
           ]
         },
@@ -343,19 +407,193 @@
           ]
         },
         "lspServers": {
-          "oneOf": [
+          "anyOf": [
             {
-              "type": "string",
-              "pattern": "^\\.\\/.*\\.json$"
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "extensionToLanguage": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^\\.[a-z0-9]+$"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "transport": {
+                    "type": "string",
+                    "enum": ["stdio", "socket"]
+                  },
+                  "env": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "initializationOptions": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  "settings": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  },
+                  "workspaceFolder": {
+                    "type": "string"
+                  },
+                  "startupTimeout": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "shutdownTimeout": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "requestTimeout": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "diagnostics": {
+                    "type": "boolean"
+                  },
+                  "restartOnCrash": {
+                    "type": "boolean"
+                  },
+                  "maxRestarts": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": ["command", "extensionToLanguage"],
+                "additionalProperties": false
+              }
             },
             {
               "type": "array",
               "items": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "command": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "extensionToLanguage": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^\\.[a-z0-9]+$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "args": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "transport": {
+                          "type": "string",
+                          "enum": ["stdio", "socket"]
+                        },
+                        "env": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "initializationOptions": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        },
+                        "settings": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        },
+                        "workspaceFolder": {
+                          "type": "string"
+                        },
+                        "startupTimeout": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "shutdownTimeout": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "requestTimeout": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "diagnostics": {
+                          "type": "boolean"
+                        },
+                        "restartOnCrash": {
+                          "type": "boolean"
+                        },
+                        "maxRestarts": {
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": ["command", "extensionToLanguage"],
+                      "additionalProperties": false
+                    }
+                  }
+                ]
               }
-            },
-            {
-              "type": "object"
             }
           ]
         },
@@ -379,16 +617,39 @@
           ]
         },
         "monitors": {
-          "oneOf": [
+          "anyOf": [
             {
-              "type": "string",
-              "pattern": "^\\.\\/.*"
+              "type": "string"
             },
             {
               "type": "array",
               "items": {
-                "type": "string",
-                "pattern": "^\\.\\/.*"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "command": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "when": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "always"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^on-skill-invoke:.+$"
+                      }
+                    ]
+                  }
+                },
+                "required": ["name", "command", "description"],
+                "additionalProperties": false
               }
             }
           ]
@@ -482,7 +743,32 @@
                 {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "command": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "when": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "always"
+                          },
+                          {
+                            "type": "string",
+                            "pattern": "^on-skill-invoke:.+$"
+                          }
+                        ]
+                      }
+                    },
+                    "required": ["name", "command", "description"],
+                    "additionalProperties": false
                   }
                 }
               ]
@@ -521,13 +807,38 @@
         },
         "headersHelper": {
           "type": "string"
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "subagentStatusLine": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "command"
+                },
+                "command": {
+                  "type": "string"
+                }
+              },
+              "required": ["type", "command"],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "types": {
+          "type": "string"
         }
       },
       "additionalProperties": false
     },
     "userConfigOption": {
       "type": "object",
-      "required": ["type", "title", "description"],
       "properties": {
         "type": {
           "type": "string",
@@ -545,7 +856,33 @@
         "required": {
           "type": "boolean"
         },
-        "default": {},
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
         "multiple": {
           "type": "boolean"
         },
@@ -556,22 +893,82 @@
           "type": "number"
         }
       },
+      "required": ["type", "title", "description"],
       "additionalProperties": false
     },
     "channel": {
       "type": "object",
-      "required": ["server"],
       "properties": {
         "server": {
           "type": "string"
         },
         "userConfig": {
           "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
           "additionalProperties": {
-            "$ref": "#/$defs/userConfigOption"
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["string", "number", "boolean", "directory", "file"]
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "sensitive": {
+                "type": "boolean"
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                }
+              },
+              "multiple": {
+                "type": "boolean"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              }
+            },
+            "required": ["type", "title", "description"],
+            "additionalProperties": false
           }
         }
       },
+      "required": ["server"],
       "additionalProperties": false
     }
   }

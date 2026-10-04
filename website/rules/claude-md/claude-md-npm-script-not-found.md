@@ -8,7 +8,7 @@ description: "npm run script referenced in CLAUDE.md does not exist in package.j
 
 ## Rule Details
 
-CLAUDE.md files frequently instruct Claude Code to run npm scripts for testing, linting, or building. If a referenced script does not exist in the nearest `package.json`, Claude Code will fail when attempting to run it. This rule extracts all `npm run <script>` references from the markdown content, locates the nearest `package.json` by walking up the directory tree, and verifies each referenced script exists in the `scripts` field. Common causes include typos in script names, renamed scripts, or referencing scripts from a different package in a monorepo.
+CLAUDE.md files frequently instruct Claude Code to run npm scripts for testing, linting, or building. If a referenced script does not exist in the nearest `package.json`, Claude Code will fail when attempting to run it. This rule extracts all `npm run <script>` references from the markdown content, locates the nearest `package.json` by walking up the directory tree, and verifies each referenced script exists in the `scripts` field. Common causes include typos in script names, renamed scripts, or referencing scripts from a different package in a monorepo. npm and pnpm run commands accept common flags before the script name. Workspace, directory, recursive, optional, and unresolved dynamic commands are skipped because they cannot be checked against the nearest package reliably.
 
 ### Incorrect
 

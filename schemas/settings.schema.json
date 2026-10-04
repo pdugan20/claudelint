@@ -5060,6 +5060,67 @@
         }
       },
       "additionalProperties": false
+    },
+    "availableModelsMatch": {
+      "type": "string",
+      "enum": ["prefix", "exact"]
+    },
+    "deniedModels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bashEditDiffEnabled": {
+      "type": "boolean"
+    },
+    "maxProseWidth": {
+      "type": "integer",
+      "minimum": 40,
+      "maximum": 9007199254740991
+    },
+    "syncClaudeAiPlugins": {
+      "type": "boolean"
+    },
+    "prependPlugins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "appendPlugins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowClaudeInChromeWithManagedMcp": {
+      "type": "boolean"
+    },
+    "allowedProviders": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "anthropic",
+          "bedrock",
+          "vertex",
+          "foundry",
+          "anthropicAws",
+          "mantle",
+          "customEndpoint",
+          "gateway"
+        ]
+      }
+    },
+    "gatewayInternalNetworks": {
+      "maxItems": 4,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "cidrv4",
+        "pattern": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\/([0-9]|[1-2][0-9]|3[0-2])$"
+      }
     }
   },
   "additionalProperties": false

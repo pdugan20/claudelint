@@ -93,6 +93,10 @@ describe('normalize', () => {
 });
 
 describe('parseIndex', () => {
+  it('preserves nested page slugs without collapsing their parents', () => {
+    const slugs = [...REPRESENTATIVE_SLUGS, 'plugins/manifest-reference', 'plugins/marketplace-reference', 'agent-sdk/mcp'];
+    expect(parseIndex(buildLlmsTxt(slugs))).toEqual([...slugs].sort());
+  });
   it('extracts slugs from a representative llms.txt snippet', () => {
     const llmsTxt = buildLlmsTxt(REPRESENTATIVE_SLUGS);
     expect(parseIndex(llmsTxt)).toEqual([...REPRESENTATIVE_SLUGS].sort());

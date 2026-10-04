@@ -25,32 +25,19 @@ const bindings: Array<[string, string[], Record<string, string>]> = [
       tags: 'claudelint extension for skill categorization.',
     },
   ],
-  ['AgentFrontmatterSchema', fields('sub-agents', 'Supported frontmatter fields', 16), {}],
-  ['OutputStyleFrontmatterSchema', fields('output-styles', 'Frontmatter', 3), {}],
+  ['AgentFrontmatterSchema', fields('sub-agents', 'Frontmatter reference', 16), {}],
+  ['OutputStyleFrontmatterSchema', fields('output-styles', 'Frontmatter reference', 3), {}],
   [
     'PluginManifestSchema',
-    roots(
-      tableKeys(doc('plugins-reference'), [
-        { heading: 'Required fields', min: 1 },
-        { heading: 'Metadata fields', min: 9 },
-        { heading: 'Component path fields', min: 10 },
-      ])
-    ),
+    roots(tableKeys(doc('plugins-reference'), [{ heading: 'Fields', min: 30 }])),
     {
-      themes:
-        'plugins-reference#experimental-components explicitly retains the top-level compatibility form.',
-      monitors:
-        'plugins-reference#experimental-components explicitly retains the top-level compatibility form.',
+      themes: 'plugins-reference#fields explicitly retains the top-level compatibility form.',
+      monitors: 'plugins-reference#fields explicitly retains the top-level compatibility form.',
     },
   ],
   [
     'MarketplaceMetadataSchema',
-    roots(
-      tableKeys(doc('plugin-marketplaces'), [
-        { heading: 'Required fields', parent: 'Marketplace schema', min: 3 },
-        { heading: 'Optional fields', parent: 'Marketplace schema', min: 5 },
-      ])
-    ),
+    roots(tableKeys(doc('plugin-marketplaces'), [{ heading: 'Top-level fields', min: 10 }])),
     {},
   ],
   [
@@ -88,7 +75,7 @@ describe('upstream schema key conformance', () => {
   });
 
   it('models LSP fields, without treating the nearby plugin catalog as schema keys', () => {
-    const documented = fields('plugins-reference', 'LSP servers', 12, '*.');
+    const documented = fields('plugins-reference', '`lspServers`', 12, '*.');
     const modeled = schemaPaths(
       SCHEMA_REGISTRY.find((s) => s.name === 'LSPConfigSchema')!.zodSchema
     );
@@ -165,6 +152,15 @@ describe('schema key gate anti-vacuity', () => {
         schemaPaths(z.object({ nested: z.record(z.string(), z.unknown()) }))
       ).missing
     ).toEqual(['nested.value']);
+  });
+  it('extracts compound field cells under HTML headings', () => {
+    const markdown =
+      '<h3 id="metadata">Fields</h3>\n| Field | Type |\n| --- | --- |\n| `metadata.description`, `metadata.version` | string |';
+    expect(tableKeys(markdown, [{ heading: 'Fields', min: 2 }])).toEqual([
+      'metadata.description',
+      'metadata.version',
+    ]);
+    expect(() => tableKeys(markdown, [{ heading: 'Fields', min: 3 }])).toThrow('Schema-key guard');
   });
   it('detects invented fields', () => {
     expect(keyDifferences(['real'], ['real', 'invented']).undocumented).toEqual(['invented']);

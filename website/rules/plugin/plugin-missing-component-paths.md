@@ -8,7 +8,7 @@ description: "Plugin component paths should start with ./ to be explicit about t
 
 ## Rule Details
 
-Component paths in plugin.json (skills, agents, commands, outputStyles, hooks, mcpServers, lspServers) should start with "./" to make it explicit that they are relative to the plugin root. Paths without the leading "./" prefix are ambiguous and may be misinterpreted. This rule is auto-fixable and will prepend "./" to paths that lack it.
+Component paths in plugin.json (skills, agents, commands, outputStyles, hooks, mcpServers, lspServers) should start with "./" to make it explicit that they are relative to the plugin root. Paths without the leading "./" prefix are ambiguous and may be misinterpreted. The root skills path "." and HTTPS MCP server URLs are accepted without this prefix.
 
 ### Incorrect
 

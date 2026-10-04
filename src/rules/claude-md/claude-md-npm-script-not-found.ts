@@ -43,11 +43,52 @@ function findPackageScripts(startDir: string): Record<string, string> | null {
 function extractNpmRunReferences(content: string): Array<{ script: string; line: number }> {
   const lines = content.split('\n');
   const refs: Array<{ script: string; line: number }> = [];
-  const npmRunRegex = /npm\s+run\s+([\w:.-]+)/g;
+  // Selectors change the package being addressed; the nearest package cannot validate them.
+  const selectors =
+    /^(?:--(?:filter|filter-prod|workspace|workspaces|prefix|dir|recursive|global)|-[wCrg])(?:=|$)/;
+  const booleans = new Set([
+    '--silent',
+    '-s',
+    '--if-present',
+    '--ignore-scripts',
+    '--foreground-scripts',
+    '--color',
+    '--no-color',
+    '--no-bail',
+    '--parallel',
+    '--stream',
+    '--aggregate-output',
+    '--sequential',
+  ]);
+  const values = new Set(['--loglevel', '--script-shell', '--reporter', '--workspace-concurrency']);
 
   for (let i = 0; i < lines.length; i++) {
-    for (const match of lines[i].matchAll(npmRunRegex)) {
-      refs.push({ script: match[1], line: i + 1 });
+    if (/^\s*#/.test(lines[i])) continue;
+    for (const match of lines[i].matchAll(/(?:^|[\s`;&|])(?:npm|pnpm)(?=\s)/g)) {
+      const tail = lines[i].slice(match.index + match[0].length).split(/[`;&|#]/, 1)[0];
+      const tokens = (tail.match(/"[^"\n]*"|'[^'\n]*'|[^\s]+/g) ?? []).map((token) =>
+        token.replace(/^(['"])(.*)\1$/, '$2')
+      );
+      if (tokens.some((token) => selectors.test(token) || token === '--if-present')) continue;
+      let hasRun = false;
+      for (let j = 0; j < tokens.length; j++) {
+        const token = tokens[j];
+        if (!hasRun && (token === 'run' || token === 'run-script')) {
+          hasRun = true;
+        } else if (booleans.has(token)) {
+          continue;
+        } else if (values.has(token.split('=')[0])) {
+          if (!token.includes('=')) j++;
+        } else if (token === '--' && hasRun) {
+          const script = tokens[j + 1];
+          if (script && /^[\w:.-]+$/.test(script)) refs.push({ script, line: i + 1 });
+          break;
+        } else {
+          // Unknown flags or dynamic script selectors cannot be resolved safely.
+          if (hasRun && /^[\w][\w:.-]*$/.test(token)) refs.push({ script: token, line: i + 1 });
+          break;
+        }
+      }
     }
   }
 
@@ -78,7 +119,9 @@ export const rule: Rule = {
         'references from the markdown content, locates the nearest `package.json` by walking up ' +
         'the directory tree, and verifies each referenced script exists in the `scripts` field. ' +
         'Common causes include typos in script names, renamed scripts, or referencing scripts ' +
-        'from a different package in a monorepo.',
+        'from a different package in a monorepo. npm and pnpm run commands accept common flags ' +
+        'before the script name. Workspace, directory, recursive, optional, and unresolved dynamic commands ' +
+        'are skipped because they cannot be checked against the nearest package reliably.',
       examples: {
         incorrect: [
           {

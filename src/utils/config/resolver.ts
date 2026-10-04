@@ -9,7 +9,7 @@
  * Inspired by ESLint's configuration cascade system.
  */
 
-import { minimatch } from 'minimatch';
+import { matchesOverride } from './overrides';
 import { ClaudeLintConfig, RuleConfig } from './types';
 import { RuleId } from '../../rules/rule-ids';
 import { RuleRegistry } from '../rules/registry';
@@ -175,7 +175,7 @@ export class ConfigResolver {
     // Find matching overrides for this file
     const overrides = this.config.overrides || [];
     const matchingOverrides = overrides.filter((override) =>
-      override.files.some((pattern) => minimatch(filePath, pattern))
+      matchesOverride(this.config, override, filePath)
     );
 
     // Merge rules in priority order: base → overrides (last override wins)

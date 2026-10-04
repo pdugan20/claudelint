@@ -8,13 +8,10 @@
  */
 
 import { Rule } from '../../types/rule';
+import { stripFencedCodeBlocks } from '../../utils/formats/markdown';
 
 // Matches backtick-enclosed paths to skill supporting directories
 const BACKTICK_FILE_REF = /`((?:references|examples|scripts|templates)\/[^`]+\.[a-zA-Z]+)`/g;
-
-// Matches markdown link containing a backtick path: [text](`path`)
-const LINKED_BACKTICK_REF =
-  /\[[^\]]*\]\([^)]*(?:references|examples|scripts|templates)\/[^)]+\.[a-zA-Z]+[^)]*\)/g;
 
 export const rule: Rule = {
   meta: {
@@ -39,7 +36,7 @@ export const rule: Rule = {
         'but are not proper markdown links, the `skill-referenced-file-not-found` rule cannot validate ' +
         'that the files exist. This rule detects backtick-enclosed file paths targeting those directories ' +
         'and suggests converting them to markdown links. It provides an auto-fix that converts the ' +
-        'backtick reference to `[path](./path)` format.',
+        'backtick reference to `[path](./path)` format. Existing links, including code-span labels, and fenced examples are left unchanged.',
       examples: {
         incorrect: [
           {
@@ -76,22 +73,13 @@ export const rule: Rule = {
       return;
     }
 
-    // Collect all linked references to avoid false positives
-    const linkedPaths = new Set<string>();
-    for (const linkedMatch of fileContent.matchAll(LINKED_BACKTICK_REF)) {
-      linkedPaths.add(linkedMatch[0]);
-    }
-
-    // Find backtick file references not inside markdown links
-    for (const match of fileContent.matchAll(BACKTICK_FILE_REF)) {
+    // Mask complete links, including code-span labels, without moving autofix ranges.
+    const content = stripFencedCodeBlocks(fileContent).replace(/\[[^\]\n]*\]\([^)\n]*\)/g, (link) =>
+      ' '.repeat(link.length)
+    );
+    for (const match of content.matchAll(BACKTICK_FILE_REF)) {
       const referencedPath = match[1];
       const matchIndex = match.index;
-
-      // Check if preceded by ]( which indicates it's inside a markdown link
-      const before = fileContent.substring(Math.max(0, matchIndex - 2), matchIndex);
-      if (before.includes('(')) {
-        continue;
-      }
 
       const fullMatch = match[0]; // includes backticks
       context.report({

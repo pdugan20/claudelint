@@ -8,7 +8,7 @@ description: "Referenced file in markdown link does not exist"
 
 ## Rule Details
 
-Skills may reference supporting files using relative markdown links like `[guide](./docs/guide.md)`. If those files are missing, the skill documentation is broken. This rule extracts all relative markdown links from SKILL.md (excluding URLs, anchors, absolute paths, and mailto links) and checks whether each referenced file exists on disk. Missing files indicate stale references that should be updated or removed.
+Skills may reference supporting files using relative markdown links like `[guide](./docs/guide.md)`. If those files are missing, the skill documentation is broken. This rule extracts all relative markdown links from SKILL.md (excluding URLs, anchors, absolute paths, and mailto links) and checks whether each referenced file exists on disk. Fenced code examples are ignored. Missing files indicate stale references that should be updated or removed.
 
 ### Incorrect
 

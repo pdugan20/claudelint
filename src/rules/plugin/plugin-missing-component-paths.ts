@@ -52,8 +52,8 @@ export const rule: Rule = {
       details:
         'Component paths in plugin.json (skills, agents, commands, outputStyles, hooks, mcpServers, lspServers) should start with ' +
         '"./" to make it explicit that they are relative to the plugin root. Paths without the ' +
-        'leading "./" prefix are ambiguous and may be misinterpreted. This rule is auto-fixable ' +
-        'and will prepend "./" to paths that lack it.',
+        'leading "./" prefix are ambiguous and may be misinterpreted. The root skills path "." ' +
+        'and HTTPS MCP server URLs are accepted without this prefix.',
       examples: {
         incorrect: [
           {
@@ -94,9 +94,20 @@ export const rule: Rule = {
         continue;
       }
 
-      const paths = toStringArray(plugin[field]);
+      const value = plugin[field];
+      const paths =
+        field === 'commands' && isObject(value)
+          ? Object.values(value).flatMap((command) =>
+              isObject(command) ? toStringArray(command.source) : []
+            )
+          : toStringArray(value);
 
       for (const path of paths) {
+        if (
+          (field === 'skills' && path === '.') ||
+          (field === 'mcpServers' && path.startsWith('https://'))
+        )
+          continue;
         if (!path.startsWith('./')) {
           context.report({
             message: `${field} path missing "./" prefix: "${path}"`,

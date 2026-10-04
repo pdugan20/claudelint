@@ -9,6 +9,7 @@
 
 import { Rule, RuleContext } from '../../types/rule';
 import { fileExists, resolvePath } from '../../utils/filesystem/files';
+import { stripFencedCodeBlocks } from '../../utils/formats/markdown';
 import { dirname } from 'path';
 
 // Matches relative markdown links: [text](./file.md) or [text](file.md)
@@ -37,7 +38,7 @@ export const rule: Rule = {
         '`[guide](./docs/guide.md)`. If those files are missing, the skill documentation is broken. ' +
         'This rule extracts all relative markdown links from SKILL.md (excluding URLs, anchors, ' +
         'absolute paths, and mailto links) and checks whether each referenced file exists on disk. ' +
-        'Missing files indicate stale references that should be updated or removed.',
+        'Fenced code examples are ignored. Missing files indicate stale references that should be updated or removed.',
       examples: {
         incorrect: [
           {
@@ -82,7 +83,7 @@ export const rule: Rule = {
 
     const skillDir = dirname(filePath);
 
-    for (const match of fileContent.matchAll(MARKDOWN_LINK_REGEX)) {
+    for (const match of stripFencedCodeBlocks(fileContent).matchAll(MARKDOWN_LINK_REGEX)) {
       const [, , referencedPath] = match;
       const fullPath = resolvePath(skillDir, referencedPath);
 

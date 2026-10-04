@@ -6,6 +6,7 @@
  */
 
 import { Rule } from '../../types/rule';
+import { stripFencedCodeBlocks } from '../../utils/formats/markdown';
 import { HEADING_RE } from '../../utils/patterns';
 import { z } from 'zod';
 
@@ -46,7 +47,8 @@ export const rule: Rule = {
       details:
         'Large CLAUDE.md files with many sections become difficult for both humans and Claude Code to ' +
         'navigate. When the number of markdown headings exceeds the configured threshold (default: 40), ' +
-        'this rule warns that the file should be reorganized. The recommended approach is to split ' +
+        'this rule warns that the file should be reorganized. Headings inside fenced code examples ' +
+        'are excluded from the count. The recommended approach is to split ' +
         'content into topic-specific files under `.claude/rules/` and use `@import` directives to ' +
         'include them. This keeps each file focused and easier to maintain. The rule only checks ' +
         'top-level CLAUDE.md files, not files already in the `.claude/rules/` directory.',
@@ -115,7 +117,7 @@ export const rule: Rule = {
 
     // Count markdown headings (sections)
     const headingRegex = new RegExp(HEADING_RE.source, 'gm');
-    const headings = fileContent.match(headingRegex) || [];
+    const headings = stripFencedCodeBlocks(fileContent).match(headingRegex) || [];
     const sectionCount = headings.length;
 
     if (sectionCount > maxSections) {

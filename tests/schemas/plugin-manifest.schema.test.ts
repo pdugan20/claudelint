@@ -46,20 +46,20 @@ describe('PluginManifestSchema', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject invalid version format', () => {
+    it('should accept a version string with a prefix', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         version: 'v1.2.3',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it('should reject non-semver version', () => {
+    it('should accept non-semver version strings', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         version: '1.2',
       });
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
   });
 
@@ -331,7 +331,10 @@ describe('PluginManifestSchema', () => {
       const result = PluginManifestSchema.safeParse({
         name: 'my-plugin',
         lspServers: {
-          typescript: { command: 'typescript-language-server' },
+          typescript: {
+            command: 'typescript-language-server',
+            extensionToLanguage: { '.ts': 'typescript' },
+          },
         },
       });
       expect(result.success).toBe(true);

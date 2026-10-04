@@ -104,7 +104,7 @@ describe('Fixture Project Integration Tests', () => {
 
     // Pinned counts -- update intentionally when adding new rules or fixture content
     it('should report expected error count', () => {
-      expect(result.output).toContain('23 errors');
+      expect(result.output).toContain('22 errors');
     });
 
     it('should report expected warning count', () => {
@@ -200,7 +200,7 @@ describe('Fixture Project Integration Tests', () => {
 
     it('should detect errors in plugin manifest', () => {
       expect(result.output).toContain('expected string, received undefined');
-      expect(result.output).toContain('Invalid semantic version format');
+      expect(result.output).toContain('author: Invalid input: expected object, received string');
     });
 
     it('should detect warnings for deprecated commands', () => {

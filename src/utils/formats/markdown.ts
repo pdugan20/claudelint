@@ -207,36 +207,37 @@ export function hasMarkdownSection(body: string, sectionRegex: RegExp): boolean 
  * are replaced with empty strings to preserve line numbers for downstream rules.
  */
 export function stripCodeBlocks(content: string): string {
-  const lines = content.split('\n');
-  const result: string[] = [];
-  let inCodeBlock = false;
+  return stripFencedCodeBlocks(content)
+    .split('\n')
+    .map((line) => (/^\s*$/.test(line) ? '' : line.replace(/`[^`]*`/g, '')))
+    .join('\n');
+}
+
+/** Mask fenced code while preserving character offsets and inline code in link labels. */
+export function stripFencedCodeBlocks(content: string): string {
   let fenceChar = '';
-
-  for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim();
-
-    if (!inCodeBlock) {
-      // Check for opening fence: ``` or ~~~
-      if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-        inCodeBlock = true;
-        fenceChar = trimmed[0];
-        result.push('');
-        continue;
+  let fenceLength = 0;
+  return content
+    .split('\n')
+    .map((line) => {
+      const fence = line.match(/^ {0,3}(`{3,}|~{3,})(.*)\r?$/);
+      if (fenceLength) {
+        if (
+          fence &&
+          fence[1][0] === fenceChar &&
+          fence[1].length >= fenceLength &&
+          /^\s*$/.test(fence[2])
+        ) {
+          fenceLength = 0;
+        }
+        return line.replace(/[^\r]/g, ' ');
       }
-      // Strip inline code from non-fenced lines
-      result.push(lines[i].replace(/`[^`]*`/g, ''));
-    } else {
-      // Check for closing fence: must match the opening fence character
-      if (
-        (fenceChar === '`' && trimmed.startsWith('```') && !trimmed.startsWith('````')) ||
-        (fenceChar === '~' && trimmed.startsWith('~~~') && !trimmed.startsWith('~~~~'))
-      ) {
-        inCodeBlock = false;
-        fenceChar = '';
+      if (fence && !(fence[1][0] === '`' && fence[2].includes('`'))) {
+        fenceChar = fence[1][0];
+        fenceLength = fence[1].length;
+        return line.replace(/[^\r]/g, ' ');
       }
-      result.push('');
-    }
-  }
-
-  return result.join('\n');
+      return line;
+    })
+    .join('\n');
 }

@@ -61,7 +61,7 @@ describe('current documented configuration', () => {
       displayName: 'Example',
       defaultEnabled: false,
       metadata: { catalogId: 1 },
-      experimental: { themes: './themes', monitors: ['./monitors'], evals: './evals' },
+      experimental: { themes: './themes', monitors: './monitors.json', evals: './evals' },
       workflows: './workflows',
     };
     expect(PluginManifestSchema.parse(plugin)).toEqual(plugin);

@@ -32,7 +32,7 @@ export function noReservedWords(words: string[] = ['anthropic', 'claude']) {
  */
 export function thirdPerson() {
   return {
-    check: (val: string) => !/\b(I|you)\s/i.test(val),
+    check: (val: string) => !/(?<![\p{L}\p{M}\p{N}_])(?:I|you)(?=\s)/iu.test(val),
     message: 'Must be written in third person',
   };
 }

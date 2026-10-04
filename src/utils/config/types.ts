@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, resolve } from 'path';
+import { getConfigDirectory, setConfigDirectory } from './overrides';
 import { RuleRegistry } from '../rules/registry';
 import { isRuleDeprecated, getReplacementRuleIds } from '../../types/rule';
 
@@ -111,11 +112,17 @@ export function loadConfig(configPath: string): ClaudeLintConfig {
 
   if (configPath.endsWith('package.json')) {
     const pkg = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
-    return (pkg.claudelint as ClaudeLintConfig) || {};
+    return setConfigDirectory(
+      (pkg.claudelint as ClaudeLintConfig) || {},
+      dirname(resolve(configPath))
+    );
   }
 
   if (ext === 'json') {
-    return JSON.parse(readFileSync(configPath, 'utf-8')) as ClaudeLintConfig;
+    return setConfigDirectory(
+      JSON.parse(readFileSync(configPath, 'utf-8')) as ClaudeLintConfig,
+      dirname(resolve(configPath))
+    );
   }
 
   throw new Error(`Unsupported config file format: ${configPath}. Use .claudelintrc.json instead.`);
@@ -131,18 +138,21 @@ export function mergeConfig(
   userConfig: ClaudeLintConfig,
   defaults: Partial<ClaudeLintConfig>
 ): ClaudeLintConfig {
-  return {
-    // extends is NOT merged - it's resolved before merging
-    rules: { ...defaults.rules, ...userConfig.rules },
-    overrides: [...(defaults.overrides || []), ...(userConfig.overrides || [])],
-    ignorePatterns: [
-      ...new Set([...(defaults.ignorePatterns || []), ...(userConfig.ignorePatterns || [])]),
-    ],
-    output: { ...defaults.output, ...userConfig.output },
-    reportUnusedDisableDirectives:
-      userConfig.reportUnusedDisableDirectives ?? defaults.reportUnusedDisableDirectives ?? false,
-    maxWarnings: userConfig.maxWarnings ?? defaults.maxWarnings,
-  };
+  return setConfigDirectory(
+    {
+      // extends is NOT merged - it's resolved before merging
+      rules: { ...defaults.rules, ...userConfig.rules },
+      overrides: [...(defaults.overrides || []), ...(userConfig.overrides || [])],
+      ignorePatterns: [
+        ...new Set([...(defaults.ignorePatterns || []), ...(userConfig.ignorePatterns || [])]),
+      ],
+      output: { ...defaults.output, ...userConfig.output },
+      reportUnusedDisableDirectives:
+        userConfig.reportUnusedDisableDirectives ?? defaults.reportUnusedDisableDirectives ?? false,
+      maxWarnings: userConfig.maxWarnings ?? defaults.maxWarnings,
+    },
+    getConfigDirectory(userConfig)
+  );
 }
 
 /**

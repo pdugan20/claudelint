@@ -7,7 +7,6 @@
  */
 
 import { Rule } from '../../types/rule';
-import { getFileSize } from '../../utils/filesystem/files';
 import { z } from 'zod';
 
 const DEFAULT_MAX_SIZE = 40000; // 40KB — matches Claude Code's warning threshold
@@ -47,7 +46,8 @@ export const rule: Rule = {
         'Claude Code warns at 40KB that performance degrades. Oversized files may exceed context window limits, causing slow loading or truncated instructions.',
       details:
         'Claude Code warns when a CLAUDE.md file reaches 40KB, signaling that performance will degrade. ' +
-        'This rule catches files at or above that threshold (configurable via `maxSize`). To fix, split ' +
+        'This rule measures the UTF-8 bytes of the content being linted, including stdin and unsaved API input. ' +
+        'It catches files at or above that threshold (configurable via `maxSize`). To fix, split ' +
         'content into smaller files under `.claude/rules/` and reference them via `@import` directives. ' +
         'You can also set a lower threshold to get warned earlier, before reaching the 40KB limit.',
       examples: {
@@ -106,11 +106,11 @@ export const rule: Rule = {
     },
   },
 
-  validate: async (context) => {
-    const { filePath, options } = context;
+  validate: (context) => {
+    const { fileContent, options } = context;
 
     const maxSize = (options as ClaudeMdSizeOptions).maxSize ?? DEFAULT_MAX_SIZE;
-    const size = await getFileSize(filePath);
+    const size = Buffer.byteLength(fileContent, 'utf8');
 
     if (size >= maxSize) {
       context.report({

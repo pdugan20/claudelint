@@ -145,7 +145,7 @@ See the [Rules Reference](/rules/overview) for the complete list of available ru
 
 ### Overrides
 
-Override rules for specific file patterns:
+Override rules for specific file patterns. Patterns are relative to the configuration file's directory and include hidden directories such as `.claude`. Inherited overrides use the consuming configuration's directory; later matching overrides win. For an API configuration object, patterns are relative to the linter's `cwd`.
 
 ```json
 {

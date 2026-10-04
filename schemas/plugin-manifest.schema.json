@@ -19,8 +19,7 @@
     },
     "version": {
       "type": "string",
-      "description": "Semantic version (MAJOR.MINOR.PATCH)",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+      "description": "Version string; semantic versioning is recommended but not required by Claude Code."
     },
     "description": {
       "type": "string",
@@ -71,23 +70,51 @@
       "uniqueItems": true
     },
     "commands": {
-      "description": "Additional command files/directories (supplements default commands/ directory)",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "description": "Path to command file or directory",
-          "pattern": "^\\.\\/.*"
+          "type": "string"
         },
         {
           "type": "array",
-          "description": "Array of command file/directory paths",
           "items": {
-            "type": "string",
-            "pattern": "^\\.\\/.*"
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
           },
-          "minItems": 1
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "argumentHint": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "allowedTools": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
         }
-      ]
+      ],
+      "description": "Additional command files/directories (supplements default commands/ directory)"
     },
     "agents": {
       "description": "Additional agent files/directories (supplements default agents/ directory)",
@@ -128,50 +155,68 @@
       ]
     },
     "hooks": {
-      "description": "Hook configuration: path to a hooks.json, array of paths, or an inline hook config object (hooks/hooks.json is auto-loaded). Commands inside an inline object must use ${CLAUDE_PLUGIN_ROOT}, or the hook silently never fires.",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "description": "Path to hooks configuration file",
-          "pattern": "^\\.\\/.*\\.json$"
-        },
-        {
-          "type": "array",
-          "description": "Array of hooks configuration file paths",
-          "items": {
-            "type": "string",
-            "pattern": "^\\.\\/.*\\.json$"
-          },
-          "minItems": 1
+          "type": "string"
         },
         {
           "type": "object",
-          "description": "Inline hook configuration, keyed by event name"
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            ]
+          }
         }
-      ]
+      ],
+      "description": "Hook configuration: path to a hooks.json, array of paths, or an inline hook config object (hooks/hooks.json is auto-loaded). Commands inside an inline object must use ${CLAUDE_PLUGIN_ROOT}, or the hook silently never fires."
     },
     "mcpServers": {
-      "description": "MCP server configuration: path to .mcp.json, array of paths, or inline MCP config object",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "description": "Path to MCP configuration file",
-          "pattern": "^\\.\\/.*\\.json$"
-        },
-        {
-          "type": "array",
-          "description": "Array of MCP configuration file paths",
-          "items": {
-            "type": "string",
-            "pattern": "^\\.\\/.*\\.json$"
-          },
-          "minItems": 1
+          "type": "string"
         },
         {
           "type": "object",
-          "description": "Inline MCP servers configuration (see MCP schema for structure)"
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            ]
+          }
         }
-      ]
+      ],
+      "description": "MCP server configuration: path to .mcp.json, array of paths, or inline MCP config object"
     },
     "outputStyles": {
       "description": "Additional output style files/directories",
@@ -193,25 +238,193 @@
       ]
     },
     "lspServers": {
-      "description": "LSP server configuration: path to .lsp.json, array of paths, or inline LSP config object",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "description": "Path to LSP configuration file",
-          "pattern": "^\\.\\/.*\\.json$"
-        },
-        {
-          "type": "array",
-          "description": "Array of LSP configuration file paths",
-          "items": {
-            "type": "string",
-            "pattern": "^\\.\\/.*\\.json$"
-          },
-          "minItems": 1
+          "type": "string"
         },
         {
           "type": "object",
-          "description": "Inline LSP servers configuration (see LSP schema for structure)"
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string",
+                "minLength": 1
+              },
+              "extensionToLanguage": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^\\.[a-z0-9]+$"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "transport": {
+                "type": "string",
+                "enum": ["stdio", "socket"]
+              },
+              "env": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "initializationOptions": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              },
+              "settings": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              },
+              "workspaceFolder": {
+                "type": "string"
+              },
+              "startupTimeout": {
+                "type": "number",
+                "minimum": 0
+              },
+              "shutdownTimeout": {
+                "type": "number",
+                "minimum": 0
+              },
+              "requestTimeout": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "diagnostics": {
+                "type": "boolean"
+              },
+              "restartOnCrash": {
+                "type": "boolean"
+              },
+              "maxRestarts": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": ["command", "extensionToLanguage"],
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "extensionToLanguage": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^\\.[a-z0-9]+$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "args": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "transport": {
+                      "type": "string",
+                      "enum": ["stdio", "socket"]
+                    },
+                    "env": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "initializationOptions": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "settings": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "workspaceFolder": {
+                      "type": "string"
+                    },
+                    "startupTimeout": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "shutdownTimeout": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "requestTimeout": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "diagnostics": {
+                      "type": "boolean"
+                    },
+                    "restartOnCrash": {
+                      "type": "boolean"
+                    },
+                    "maxRestarts": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["command", "extensionToLanguage"],
+                  "additionalProperties": false
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -233,21 +446,43 @@
       ]
     },
     "monitors": {
-      "description": "Background Monitor configurations that start automatically when the plugin is active.",
-      "oneOf": [
+      "anyOf": [
         {
-          "type": "string",
-          "pattern": "^\\.\\/.*"
+          "type": "string"
         },
         {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^\\.\\/.*"
-          },
-          "minItems": 1
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "command": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "when": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "always"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^on-skill-invoke:.+$"
+                  }
+                ]
+              }
+            },
+            "required": ["name", "command", "description"],
+            "additionalProperties": false
+          }
         }
-      ]
+      ],
+      "description": "Background Monitor configurations that start automatically when the plugin is active."
     },
     "userConfig": {
       "type": "object",
@@ -341,7 +576,32 @@
             {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "command": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "when": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "always"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^on-skill-invoke:.+$"
+                      }
+                    ]
+                  }
+                },
+                "required": ["name", "command", "description"],
+                "additionalProperties": false
               }
             }
           ]
@@ -361,12 +621,60 @@
         }
       },
       "additionalProperties": false
+    },
+    "icon": {
+      "type": "string"
+    },
+    "documentationUrl": {
+      "type": "string",
+      "format": "starts_with",
+      "pattern": "^https:\\/\\/.*"
+    },
+    "supportUrl": {
+      "type": "string",
+      "format": "starts_with",
+      "pattern": "^https:\\/\\/.*"
+    },
+    "privacyPolicyUrl": {
+      "type": "string",
+      "format": "starts_with",
+      "pattern": "^https:\\/\\/.*"
+    },
+    "termsOfServiceUrl": {
+      "type": "string",
+      "format": "starts_with",
+      "pattern": "^https:\\/\\/.*"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string"
+        },
+        "subagentStatusLine": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "command"
+            },
+            "command": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "command"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "types": {
+      "type": "string"
     }
   },
   "$defs": {
     "userConfigOption": {
       "type": "object",
-      "required": ["type", "title", "description"],
       "properties": {
         "type": {
           "type": "string",
@@ -384,7 +692,33 @@
         "required": {
           "type": "boolean"
         },
-        "default": {},
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
         "multiple": {
           "type": "boolean"
         },
@@ -395,22 +729,82 @@
           "type": "number"
         }
       },
+      "required": ["type", "title", "description"],
       "additionalProperties": false
     },
     "channel": {
       "type": "object",
-      "required": ["server"],
       "properties": {
         "server": {
           "type": "string"
         },
         "userConfig": {
           "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
           "additionalProperties": {
-            "$ref": "#/$defs/userConfigOption"
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["string", "number", "boolean", "directory", "file"]
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "sensitive": {
+                "type": "boolean"
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                }
+              },
+              "multiple": {
+                "type": "boolean"
+              },
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              }
+            },
+            "required": ["type", "title", "description"],
+            "additionalProperties": false
           }
         }
       },
+      "required": ["server"],
       "additionalProperties": false
     }
   },
