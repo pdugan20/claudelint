@@ -25,6 +25,8 @@ const sharedConfig = {
 
 module.exports = {
   verbose: true,
+  // Bound CLI subprocess concurrency for integration tests and local validation.
+  maxWorkers: 2,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -73,9 +75,6 @@ module.exports = {
       displayName: 'integration',
       roots: ['<rootDir>/tests/integration'],
       testMatch: ['**/?(*.)+(spec|test).ts'],
-      // Run integration tests sequentially -- they spawn CLI subprocesses
-      // that compete for CPU when run in parallel
-      maxWorkers: 1,
     },
   ],
 };

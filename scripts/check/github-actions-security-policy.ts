@@ -428,7 +428,7 @@ function isExactCodecovStep(filename: string, mergeCapable: boolean, step: YamlR
   return (
     filename === 'ci.yml' &&
     !mergeCapable &&
-    step.uses === 'codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f' &&
+    step.uses === 'codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5' &&
     withConfig?.token === '${{ secrets.CODECOV_TOKEN }}' &&
     !hasSecretNamespace(withoutToken)
   );
