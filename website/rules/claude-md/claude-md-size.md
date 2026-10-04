@@ -8,7 +8,7 @@ description: "CLAUDE.md exceeds maximum file size limit"
 
 ## Rule Details
 
-Claude Code warns when a CLAUDE.md file reaches 40KB, signaling that performance will degrade. This rule catches files at or above that threshold (configurable via `maxSize`). To fix, split content into smaller files under `.claude/rules/` and reference them via `@import` directives. You can also set a lower threshold to get warned earlier, before reaching the 40KB limit.
+Claude Code warns when a CLAUDE.md file reaches 40KB, signaling that performance will degrade. This rule measures the UTF-8 bytes of the content being linted, including stdin and unsaved API input. It catches files at or above that threshold (configurable via `maxSize`). To fix, split content into smaller files under `.claude/rules/` and reference them via `@import` directives. You can also set a lower threshold to get warned earlier, before reaching the 40KB limit.
 
 ### Incorrect
 

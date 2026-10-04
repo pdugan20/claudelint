@@ -18,9 +18,9 @@ export const rule: Rule = {
   meta: {
     id: 'plugin-invalid-version',
     name: 'Plugin Invalid Version',
-    description: 'Plugin version must follow semantic versioning format',
+    description: 'Plugin version should follow semantic versioning format',
     category: 'Plugin',
-    severity: 'error',
+    severity: 'warn',
     fixable: false,
     deprecated: false,
     since: '0.2.0',
@@ -29,9 +29,10 @@ export const rule: Rule = {
       recommended: true,
       summary: 'Validates that the plugin version follows semantic versioning format.',
       rationale:
-        'Non-semver versions break dependency resolution and make it impossible to communicate breaking changes.',
+        'Semantic versioning communicates compatible updates and supports version-constrained dependencies.',
       details:
-        'This rule checks that the version field in plugin.json conforms to the Semantic Versioning ' +
+        'Claude Code accepts arbitrary version strings. This advisory recommends that the version ' +
+        'field in plugin.json conforms to the Semantic Versioning ' +
         '(semver) specification. Valid formats include major.minor.patch (e.g., 1.0.0), optional ' +
         'pre-release identifiers (e.g., 2.1.0-beta.1), and optional build metadata (e.g., ' +
         '1.0.0+build.42). Proper semver ensures consistent dependency resolution and clear ' +

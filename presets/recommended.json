@@ -61,7 +61,7 @@
     "plugin-description-required": "warn",
     "plugin-hook-missing-plugin-root": "error",
     "plugin-invalid-marketplace-manifest": "error",
-    "plugin-invalid-version": "error",
+    "plugin-invalid-version": "warn",
     "plugin-json-wrong-location": "error",
     "plugin-marketplace-files-not-found": "warn",
     "plugin-missing-component-paths": "warn",

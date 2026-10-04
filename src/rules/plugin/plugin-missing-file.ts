@@ -6,7 +6,7 @@
 
 import { Rule } from '../../types/rule';
 import { fileExists } from '../../utils/filesystem/files';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 import { PluginManifestSchema } from '../../validators/schemas';
 import { z } from 'zod';
 
@@ -34,6 +34,8 @@ export const rule: Rule = {
       details:
         'This rule checks that every path referenced in plugin.json actually exists. It validates ' +
         'skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. ' +
+        'Paths resolve from the plugin root, one level above .claude-plugin/plugin.json. ' +
+        'Inline configuration entries and remote MCP URLs are not filesystem paths. ' +
         'Missing referenced files will cause the plugin to fail at runtime when Claude Code tries ' +
         'to load the referenced resources.',
       examples: {
@@ -79,12 +81,16 @@ export const rule: Rule = {
       return; // JSON parse errors handled by schema validation
     }
 
-    const pluginRoot = dirname(filePath);
+    const manifestDir = dirname(filePath);
+    const pluginRoot =
+      basename(manifestDir) === '.claude-plugin' ? dirname(manifestDir) : manifestDir;
 
     // Helper to normalize string|array to array
-    const toArray = (value: string | string[] | undefined): string[] => {
-      if (!value) return [];
-      return Array.isArray(value) ? value : [value];
+    const toArray = (value: unknown): string[] => {
+      if (typeof value === 'string') return [value];
+      return Array.isArray(value)
+        ? value.filter((entry): entry is string => typeof entry === 'string')
+        : [];
     };
 
     // Validate skills references (string or array of paths)
@@ -108,7 +114,11 @@ export const rule: Rule = {
     }
 
     // Validate commands references (string or array of paths)
-    for (const commandPath of toArray(plugin.commands)) {
+    const commandPaths =
+      plugin.commands && typeof plugin.commands === 'object' && !Array.isArray(plugin.commands)
+        ? Object.values(plugin.commands).flatMap((command) => toArray(command?.source))
+        : toArray(plugin.commands);
+    for (const commandPath of commandPaths) {
       const resolvedPath = join(pluginRoot, commandPath);
       if (!(await fileExists(resolvedPath))) {
         context.report({
@@ -130,21 +140,22 @@ export const rule: Rule = {
     }
 
     // Validate MCP servers reference (string path or inline object)
-    if (plugin.mcpServers && typeof plugin.mcpServers === 'string') {
-      const mcpPath = join(pluginRoot, plugin.mcpServers);
+    for (const reference of toArray(plugin.mcpServers)) {
+      if (reference.startsWith('https://')) continue;
+      const mcpPath = join(pluginRoot, reference);
       if (!(await fileExists(mcpPath))) {
         context.report({
-          message: `Referenced MCP config not found: ${plugin.mcpServers}`,
+          message: `Referenced MCP config not found: ${reference}`,
         });
       }
     }
 
     // Validate LSP servers reference (string path or inline object)
-    if (plugin.lspServers && typeof plugin.lspServers === 'string') {
-      const lspPath = join(pluginRoot, plugin.lspServers);
+    for (const reference of toArray(plugin.lspServers)) {
+      const lspPath = join(pluginRoot, reference);
       if (!(await fileExists(lspPath))) {
         context.report({
-          message: `Referenced LSP config not found: ${plugin.lspServers}`,
+          message: `Referenced LSP config not found: ${reference}`,
         });
       }
     }

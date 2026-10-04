@@ -8,7 +8,7 @@ description: "Files referenced in plugin.json must exist"
 
 ## Rule Details
 
-This rule checks that every path referenced in plugin.json actually exists. It validates skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. Missing referenced files will cause the plugin to fail at runtime when Claude Code tries to load the referenced resources.
+This rule checks that every path referenced in plugin.json actually exists. It validates skills, agents, commands, hooks, mcpServers, lspServers, and outputStyles paths. Paths resolve from the plugin root, one level above .claude-plugin/plugin.json. Inline configuration entries and remote MCP URLs are not filesystem paths. Missing referenced files will cause the plugin to fail at runtime when Claude Code tries to load the referenced resources.
 
 ### Incorrect
 

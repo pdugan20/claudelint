@@ -34,6 +34,23 @@ describe('claude-md-npm-script-not-found', () => {
     rmSync(testDir, { recursive: true, force: true });
   });
 
+  it('handles flags, command boundaries, and commands targeting other packages', async () => {
+    await ruleTester.run('claude-md-npm-script-not-found', rule, {
+      valid: [
+        'npm run --silent build', 'npm --silent run build', 'pnpm run --silent build',
+        'npm run --loglevel error build', 'npm run --loglevel=error build',
+        'npm run "build"', 'npm run -- build', 'npm run build -- --other-flag',
+        'pnpm run --filter web other-package-script', 'pnpm --filter web run other-package-script',
+        'npm run other-package-script --workspace web', 'npm --prefix web run other-package-script',
+        'npm run --if-present optional', 'npm run --unknown value build',
+        'notnpm run nonexistent', '# npm run nonexistent', 'pnpm run "/build:.*/"',
+      ].map(content => ({ content, filePath: join(testDir, 'CLAUDE.md') })),
+      invalid: ['npm run --silent typo', 'pnpm run --loglevel error typo', 'npm run build && npm run typo'].map(content => ({
+        content, filePath: join(testDir, 'CLAUDE.md'), errors: [{ message: 'npm script "typo"' }],
+      })),
+    });
+  });
+
   it('should pass when all npm scripts exist', async () => {
     const claudeFile = join(testDir, 'CLAUDE.md');
 

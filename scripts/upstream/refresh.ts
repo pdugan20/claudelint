@@ -37,7 +37,7 @@ const MIN_INDEX_PAGES = 50;
 /** Page slugs referenced by the docs index. A new slug here is itself a finding. */
 export function parseIndex(llmsTxt: string): string[] {
   const slugs = new Set<string>();
-  for (const match of llmsTxt.matchAll(/code\.claude\.com\/docs\/en\/([a-z0-9-]+)/g)) {
+  for (const match of llmsTxt.matchAll(/code\.claude\.com\/docs\/en\/([a-z0-9-]+(?:\/[a-z0-9-]+)*)(?:\.md)?/g)) {
     slugs.add(match[1]);
   }
   const pages = [...slugs].sort();
@@ -70,7 +70,7 @@ async function main(): Promise<void> {
 
   const added = pages.filter((p) => !previous.includes(p));
   const removed = previous.filter((p) => !pages.includes(p));
-  const watched = new Set(WATCHLIST.map((e) => e.id));
+  const watched = new Set(WATCHLIST.map((e) => e.url.replace('https://code.claude.com/docs/en/', '').replace(/\.md$/, '')));
 
   for (const page of added) {
     const flag = watched.has(page) ? '' : ' (NOT WATCHED - consider adding to watchlist)';

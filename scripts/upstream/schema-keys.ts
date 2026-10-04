@@ -15,7 +15,11 @@ export function tableKeys(markdown: string, bindings: TableBinding[]): string[] 
   const ancestors: string[] = [];
   let fieldTable = false;
   let fence: string | undefined;
-  for (const line of markdown.split('\n')) {
+  const normalized = markdown.replace(
+    /<h([1-6])[^>]*>\s*([^<]+?)\s*<\/h\1>/g,
+    (_, level: string, text: string) => '#'.repeat(Number(level)) + ' ' + text.trim()
+  );
+  for (const line of normalized.split('\n')) {
     const delimiter = /^\s*(`{3,}|~{3,})/.exec(line)?.[1];
     if (delimiter) {
       fieldTable = false;
@@ -34,14 +38,15 @@ export function tableKeys(markdown: string, bindings: TableBinding[]): string[] 
     if (/^\|\s*[A-Za-z][^|]*\|/.test(line))
       fieldTable = /^\|\s*(Field|Key|Frontmatter)\s*\|/i.test(line);
     if (!fieldTable) continue;
-    const key = /^\|\s*(?:\[)?`([$A-Za-z][A-Za-z0-9_.$-]*)`(?:\]\([^)]*\))?\s*\|/.exec(line)?.[1];
-    if (!key) continue;
+    const cell = line.split('|')[1] ?? '';
+    const keys = [...cell.matchAll(/`([$A-Za-z][A-Za-z0-9_.$-]*)`/g)].map((match) => match[1]);
+    if (!keys.length) continue;
     bindings.forEach((binding, i) => {
       if (
         heading === binding.heading &&
         (!binding.parent || ancestors.slice(0, -1).includes(binding.parent))
       )
-        found[i].add((binding.prefix ?? '') + key);
+        keys.forEach((key) => found[i].add((binding.prefix ?? '') + key));
     });
   }
   bindings.forEach((binding, i) => {

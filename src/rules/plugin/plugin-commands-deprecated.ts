@@ -77,7 +77,11 @@ export const rule: Rule = {
     }
 
     // Warn if commands field is present and non-empty
-    if (plugin.commands && plugin.commands.length > 0) {
+    if (
+      plugin.commands &&
+      (typeof plugin.commands === 'string' || Array.isArray(plugin.commands)) &&
+      plugin.commands.length > 0
+    ) {
       context.report({
         message: '"commands" uses the legacy flat-file format',
       });

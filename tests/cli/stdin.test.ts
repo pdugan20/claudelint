@@ -134,7 +134,7 @@ describe('stdin lints the piped document, not the filesystem', () => {
     );
 
     expect(output).not.toContain('No validator matches');
-    expect(output).toContain('Invalid semantic version format');
+    expect(output).toContain('Invalid semantic version:');
   });
 
   it('runs RULES against the piped content, not against the file on disk', () => {

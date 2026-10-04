@@ -94,6 +94,16 @@ Every top-level key `SettingsSchema` models, generated from the schema itself. D
 
 | Field                             | Type    | Required | Description                                                                                          |
 | --------------------------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `availableModelsMatch` | string | no | Managed model allowlist matching: `prefix` or `exact` |
+| `deniedModels` | string[] | no | Managed model aliases or IDs to block |
+| `bashEditDiffEnabled` | boolean | no | Record file changes during Bash commands; project settings cannot enable recording |
+| `maxProseWidth` | number | no | Whole terminal columns, minimum 40 |
+| `syncClaudeAiPlugins` | boolean | no | Set false to stop syncing and loading account plugins; project settings cannot disable sync |
+| `prependPlugins` | string[] | no | Plugin IDs whose mods run first, from user or managed settings |
+| `appendPlugins` | string[] | no | Plugin IDs whose mods run last, from user or managed settings |
+| `allowClaudeInChromeWithManagedMcp` | boolean | no | Device-managed exception allowing Chrome with managed MCP configuration |
+| `allowedProviders` | string[] | no | Managed provider allowlist: `anthropic`, `bedrock`, `vertex`, `foundry`, `anthropicAws`, `mantle`, `customEndpoint`, `gateway` |
+| `gatewayInternalNetworks` | string[] | no | At most four nonoverlapping public IPv4 CIDRs, /8–/32, from device-managed settings |
 | `$schema`                         | string  | No       | —                                                                                                    |
 | `advisorModel`                    | string  | No       | Model for the server-side advisor tool. Accepts a model alias such as `"opus"`, `"sonnet"`, or `"fab |
 | `agent`                           | string  | No       | Run the main thread as a named subagent, and set the default agent for sessions dispatched from `cla |

@@ -56,7 +56,7 @@ describe('claude-md-size', () => {
 
         // Custom maxSize option (higher threshold)
         {
-          content: 'Content',
+          content: 'x'.repeat(45000),
           filePath: largeFile,
           options: { maxSize: 50000 },
         },
@@ -65,7 +65,7 @@ describe('claude-md-size', () => {
       invalid: [
         // File exceeds default threshold (40KB)
         {
-          content: 'Large content',
+          content: 'x'.repeat(45000),
           filePath: largeFile,
           errors: [
             {
@@ -76,7 +76,7 @@ describe('claude-md-size', () => {
 
         // File at exact threshold (should warn)
         {
-          content: 'Content',
+          content: 'x'.repeat(40000),
           filePath: exactThresholdFile,
           errors: [
             {
@@ -87,7 +87,7 @@ describe('claude-md-size', () => {
 
         // Custom maxSize exceeded
         {
-          content: 'Content',
+          content: 'x'.repeat(45000),
           filePath: largeFile,
           options: { maxSize: 30000 },
           errors: [

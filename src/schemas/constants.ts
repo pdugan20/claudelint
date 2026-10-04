@@ -53,6 +53,7 @@ export const ToolNames = z.enum([
   'TaskCreate',
   'TaskGet',
   'TaskList',
+  'SubagentHandback',
   'TaskOutput',
   'TaskStop',
   'TaskUpdate',

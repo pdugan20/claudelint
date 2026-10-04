@@ -8,7 +8,7 @@ description: "File reference in backticks should be a markdown link"
 
 ## Rule Details
 
-SKILL.md files often reference supporting files in directories like `references/`, `examples/`, `scripts/`, and `templates/`. When these paths appear in backticks (e.g., `references/guide.md`) but are not proper markdown links, the `skill-referenced-file-not-found` rule cannot validate that the files exist. This rule detects backtick-enclosed file paths targeting those directories and suggests converting them to markdown links. It provides an auto-fix that converts the backtick reference to `[path](./path)` format.
+SKILL.md files often reference supporting files in directories like `references/`, `examples/`, `scripts/`, and `templates/`. When these paths appear in backticks (e.g., `references/guide.md`) but are not proper markdown links, the `skill-referenced-file-not-found` rule cannot validate that the files exist. This rule detects backtick-enclosed file paths targeting those directories and suggests converting them to markdown links. It provides an auto-fix that converts the backtick reference to `[path](./path)` format. Existing links, including code-span labels, and fenced examples are left unchanged.
 
 ### Incorrect
 

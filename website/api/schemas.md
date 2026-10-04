@@ -32,6 +32,7 @@ Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 | Tool | Description |
 |------|-------------|
 | `Agent` | Subagent delegation (renamed from `Task` in v2.1.63) |
+| `SubagentHandback` | Return control from a forked subagent to its parent |
 | `Bash` | Shell command execution |
 | `Read` | File reading |
 | `Write` | File creation |
@@ -50,6 +51,7 @@ Valid values for `allowed-tools`, `tools`, and `disallowedTools` fields.
 | `TaskUpdate` | Task list updates |
 | `TaskGet` | Task retrieval |
 | `TaskList` | Task listing |
+| `SubagentHandback` | Return control from a forked subagent to its parent |
 | `TaskOutput` | Task output retrieval |
 | `TaskStop` | Task cancellation |
 | `NotebookEdit` | Jupyter notebook editing |

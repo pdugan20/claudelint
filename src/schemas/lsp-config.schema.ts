@@ -14,7 +14,7 @@ const LSPTransportType = z.enum(['stdio', 'socket']);
  * LSP server configuration
  * Server name is the key in the config object (not a field)
  */
-const LSPServerSchema = z.object({
+const LSPServerSchema = z.strictObject({
   // Required fields
   command: z.string().min(1, 'Command cannot be empty'),
   extensionToLanguage: z.record(
@@ -31,6 +31,7 @@ const LSPServerSchema = z.object({
   workspaceFolder: z.string().optional(),
   startupTimeout: z.number().min(0).optional(),
   shutdownTimeout: z.number().min(0).optional(),
+  requestTimeout: z.number().int().positive().optional(),
   diagnostics: z.boolean().optional(),
   restartOnCrash: z.boolean().optional(),
   maxRestarts: z.number().min(0).optional(),

@@ -27,6 +27,7 @@ The `.lsp.json` file maps server names to their configurations, enabling languag
 | `shutdownTimeout` | number | no | Shutdown timeout (ms, min 0) |
 | `restartOnCrash` | boolean | no | Auto-restart on crash (default: true) |
 | `maxRestarts` | number | no | Max restart attempts (min 0) |
+| `requestTimeout` | number | no | Positive integer request timeout in milliseconds; default 60000 |
 | `diagnostics` | boolean | no | Inject diagnostics after edits; default true |
 
 ## Example

@@ -36,7 +36,9 @@ import { RuleMetadata as InternalRuleMetadata } from '../types/rule';
 // EMPTY -- no validator matched anything, and `lintFiles`/`lintText` reported every input
 // clean. The CLI worked; the public API silently did nothing.
 import '../validators';
-import { ClaudeLintConfig, findConfigFile, loadConfig } from '../utils/config/types';
+import { ClaudeLintConfig, findConfigFile } from '../utils/config/types';
+import { applyOverrides, setConfigDirectory } from '../utils/config/overrides';
+import { loadConfigWithExtends as loadConfig } from '../utils/config/extends';
 import { getBuiltinPresetPath } from '../utils/config/extends';
 import { loadFormatter as loadFormatterUtil } from './formatter';
 import { existsSync } from 'fs';
@@ -293,34 +295,8 @@ export class ClaudeLint {
    * console.log(config.rules);
    * ```
    */
-  async calculateConfigForFile(filePath: string): Promise<ClaudeLintConfig> {
-    const { minimatch } = await import('minimatch');
-
-    // Start with base config
-    const mergedConfig: ClaudeLintConfig = {
-      ...this.config,
-      rules: { ...(this.config.rules || {}) },
-    };
-
-    // Apply overrides that match this file path
-    if (this.config.overrides) {
-      for (const override of this.config.overrides) {
-        // Check if any of the override's file patterns match
-        const matches = override.files.some((pattern) =>
-          minimatch(filePath, pattern, { dot: true })
-        );
-
-        if (matches) {
-          // Merge override rules into the config
-          mergedConfig.rules = {
-            ...mergedConfig.rules,
-            ...override.rules,
-          };
-        }
-      }
-    }
-
-    return mergedConfig;
+  calculateConfigForFile(filePath: string): Promise<ClaudeLintConfig> {
+    return Promise.resolve(applyOverrides(this.config, resolve(this.cwd, filePath)));
   }
 
   /**
@@ -602,7 +578,7 @@ export class ClaudeLint {
   private loadConfiguration(): ClaudeLintConfig {
     // If explicit config provided, use it
     if (this.options.config) {
-      return this.options.config;
+      return setConfigDirectory({ ...this.options.config }, this.cwd);
     }
 
     // If config file override specified, load it

@@ -194,6 +194,9 @@
         }
       },
       "additionalProperties": false
+    },
+    "omitClaudeMd": {
+      "type": "boolean"
     }
   }
 }

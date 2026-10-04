@@ -1,10 +1,11 @@
+import { LSPConfigSchema } from '../schemas/lsp-config.schema';
+import { GatewayNetworksSchema } from '../schemas/gateway-networks.schema';
 /**
  * Shared Zod schemas for validators
  */
 
 import { z } from 'zod';
 import { HookTypes } from '../schemas/constants';
-import { semver } from '../schemas/refinements';
 
 /**
  * Individual hook handler schema (shared by hooks.json and settings.json)
@@ -316,6 +317,30 @@ export const StrictMarketplaceSourceSchema = z.object({
  * Verify sync with: npm run check:schema-sync
  */
 export const SettingsSchema = z.object({
+  // Official settings reference, refreshed October 2026.
+  availableModelsMatch: z.enum(['prefix', 'exact']).optional(),
+  deniedModels: z.array(z.string()).optional(),
+  bashEditDiffEnabled: z.boolean().optional(),
+  maxProseWidth: z.number().int().min(40).optional(),
+  syncClaudeAiPlugins: z.boolean().optional(),
+  prependPlugins: z.array(z.string()).optional(),
+  appendPlugins: z.array(z.string()).optional(),
+  allowClaudeInChromeWithManagedMcp: z.boolean().optional(),
+  allowedProviders: z
+    .array(
+      z.enum([
+        'anthropic',
+        'bedrock',
+        'vertex',
+        'foundry',
+        'anthropicAws',
+        'mantle',
+        'customEndpoint',
+        'gateway',
+      ])
+    )
+    .optional(),
+  gatewayInternalNetworks: GatewayNetworksSchema.optional(),
   $schema: z.string().optional(),
   permissions: PermissionsSchema.optional(),
   env: z.record(z.string(), z.string()).optional(),
@@ -732,23 +757,52 @@ export const PluginAuthorSchema = z.object({
  * Plugin user-config option schema
  * https://code.claude.com/docs/en/plugins-reference#user-configuration
  */
-export const PluginUserConfigOptionSchema = z.object({
-  type: z.enum(['string', 'number', 'boolean', 'directory', 'file']),
-  title: z.string(),
-  description: z.string(),
-  sensitive: z.boolean().optional(),
-  required: z.boolean().optional(),
-  default: z.unknown().optional(),
-  multiple: z.boolean().optional(),
-  min: z.number().optional(),
-  max: z.number().optional(),
-});
+export const PluginUserConfigOptionSchema = z
+  .strictObject({
+    type: z.enum(['string', 'number', 'boolean', 'directory', 'file']),
+    title: z.string(),
+    description: z.string(),
+    sensitive: z.boolean().optional(),
+    required: z.boolean().optional(),
+    default: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]).optional(),
+    options: z.array(z.string().min(1).max(64)).optional(),
+    multiple: z.boolean().optional(),
+    min: z.number().optional(),
+    max: z.number().optional(),
+  })
+  .superRefine((value, context) => {
+    if (!value.options) return;
+    if (value.type !== 'string' || value.multiple || value.sensitive) {
+      context.addIssue({
+        code: 'custom',
+        path: ['options'],
+        message: 'Options require a non-sensitive single string field',
+      });
+    }
+    if (
+      value.default !== undefined &&
+      (typeof value.default !== 'string' || !value.options.includes(value.default))
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['default'],
+        message: 'Default must be one of the listed options',
+      });
+    }
+    if (value.default === undefined && !value.required) {
+      context.addIssue({
+        code: 'custom',
+        path: ['required'],
+        message: 'Options require a default or a required selection',
+      });
+    }
+  });
 
 /**
  * Plugin channel schema
  * https://code.claude.com/docs/en/plugins-reference#channels
  */
-export const PluginChannelSchema = z.object({
+export const PluginChannelSchema = z.strictObject({
   server: z.string(),
   userConfig: z.record(z.string(), PluginUserConfigOptionSchema).optional(),
 });
@@ -769,6 +823,37 @@ export const PluginDependencySchema = z.union([
   }),
 ]);
 
+const PluginCommandSchema = z
+  .object({
+    source: z.string().optional(),
+    content: z.string().optional(),
+    description: z.string().optional(),
+    argumentHint: z.string().optional(),
+    model: z.string().optional(),
+    allowedTools: z.array(z.string()).optional(),
+  })
+  .refine((value) => (value.source !== undefined) !== (value.content !== undefined), {
+    message: 'Command requires exactly one of source or content',
+  });
+
+const PluginCommandsSchema = z.union([
+  z.string(),
+  z.array(z.string()),
+  z.record(z.string(), PluginCommandSchema),
+]);
+const PluginMonitorSchema = z.strictObject({
+  name: z.string(),
+  command: z.string(),
+  description: z.string(),
+  when: z.union([z.literal('always'), z.string().regex(/^on-skill-invoke:.+$/)]).optional(),
+});
+const PluginMonitorsSchema = z.union([z.string(), z.array(PluginMonitorSchema)]);
+const PluginConfigPathsSchema = z.union([
+  z.string(),
+  z.record(z.string(), z.unknown()),
+  z.array(z.union([z.string(), z.record(z.string(), z.unknown())])),
+]);
+
 /**
  * Plugin manifest schema (plugin.json)
  * Based on official spec: https://code.claude.com/docs/en/plugins-reference#complete-schema
@@ -777,6 +862,18 @@ export const PluginDependencySchema = z.union([
  * String format is NOT supported by Claude Code.
  */
 export const PluginManifestSchema = z.object({
+  icon: z.string().optional(),
+  documentationUrl: z.string().url().startsWith('https://').optional(),
+  supportUrl: z.string().url().startsWith('https://').optional(),
+  privacyPolicyUrl: z.string().url().startsWith('https://').optional(),
+  termsOfServiceUrl: z.string().url().startsWith('https://').optional(),
+  settings: z
+    .object({
+      agent: z.string().optional(),
+      subagentStatusLine: z.object({ type: z.literal('command'), command: z.string() }).optional(),
+    })
+    .optional(),
+  types: z.string().optional(),
   displayName: z.string().optional(),
   defaultEnabled: z.boolean().optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
@@ -784,7 +881,7 @@ export const PluginManifestSchema = z.object({
   experimental: z
     .object({
       themes: z.union([z.string(), z.array(z.string())]).optional(),
-      monitors: z.union([z.string(), z.array(z.string())]).optional(),
+      monitors: PluginMonitorsSchema.optional(),
       evals: z.union([z.string(), z.array(z.string())]).optional(),
     })
     .optional(),
@@ -793,7 +890,7 @@ export const PluginManifestSchema = z.object({
 
   // Optional metadata
   $schema: z.string().optional(),
-  version: semver().optional(),
+  version: z.string().optional(),
   description: z.string().optional(),
   author: PluginAuthorSchema.optional(),
   homepage: z.string().optional(),
@@ -802,11 +899,11 @@ export const PluginManifestSchema = z.object({
   keywords: z.array(z.string()).optional(),
 
   // Component paths (string or array)
-  commands: z.union([z.string(), z.array(z.string())]).optional(),
+  commands: PluginCommandsSchema.optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
   themes: z.union([z.string(), z.array(z.string())]).optional(),
-  monitors: z.union([z.string(), z.array(z.string())]).optional(),
+  monitors: PluginMonitorsSchema.optional(),
 
   // Config paths
   //
@@ -821,13 +918,11 @@ export const PluginManifestSchema = z.object({
   //
   // What DOES fail is a hook command using a relative path: the plugin loads, the hook
   // silently never fires, and `claude plugin validate --strict` passes it.
-  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
-  mcpServers: z
-    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
-    .optional(),
+  hooks: PluginConfigPathsSchema.optional(),
+  mcpServers: PluginConfigPathsSchema.optional(),
   outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
   lspServers: z
-    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .union([z.string(), LSPConfigSchema, z.array(z.union([z.string(), LSPConfigSchema]))])
     .optional(),
 
   // User-facing configuration
@@ -887,6 +982,13 @@ export const MarketplacePluginSourceSchema = z.union([
  * Based on: https://code.claude.com/docs/en/plugin-marketplaces#plugin-entries
  */
 export const MarketplacePluginEntrySchema = z.object({
+  settings: z
+    .object({
+      agent: z.string().optional(),
+      subagentStatusLine: z.object({ type: z.literal('command'), command: z.string() }).optional(),
+    })
+    .optional(),
+  types: z.string().optional(),
   relevance: z.record(z.string(), z.unknown()).optional(),
   headers: z.record(z.string(), z.string()).optional(),
   headersHelper: z.string().optional(),
@@ -897,7 +999,7 @@ export const MarketplacePluginEntrySchema = z.object({
   experimental: z
     .object({
       themes: z.union([z.string(), z.array(z.string())]).optional(),
-      monitors: z.union([z.string(), z.array(z.string())]).optional(),
+      monitors: PluginMonitorsSchema.optional(),
       evals: z.union([z.string(), z.array(z.string())]).optional(),
     })
     .optional(),
@@ -919,18 +1021,16 @@ export const MarketplacePluginEntrySchema = z.object({
   strict: z.boolean().optional(),
 
   // Component overrides (same types as plugin.json)
-  commands: z.union([z.string(), z.array(z.string())]).optional(),
+  commands: PluginCommandsSchema.optional(),
   agents: z.union([z.string(), z.array(z.string())]).optional(),
   skills: z.union([z.string(), z.array(z.string())]).optional(),
   themes: z.union([z.string(), z.array(z.string())]).optional(),
-  monitors: z.union([z.string(), z.array(z.string())]).optional(),
-  hooks: z.union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())]).optional(),
-  mcpServers: z
-    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
-    .optional(),
+  monitors: PluginMonitorsSchema.optional(),
+  hooks: PluginConfigPathsSchema.optional(),
+  mcpServers: PluginConfigPathsSchema.optional(),
   outputStyles: z.union([z.string(), z.array(z.string())]).optional(),
   lspServers: z
-    .union([z.string(), z.array(z.string()), z.record(z.string(), z.unknown())])
+    .union([z.string(), LSPConfigSchema, z.array(z.union([z.string(), LSPConfigSchema]))])
     .optional(),
 
   // User-facing configuration and dependencies (inherited from plugin manifest)
@@ -944,6 +1044,7 @@ export const MarketplacePluginEntrySchema = z.object({
  * Based on: https://code.claude.com/docs/en/plugin-marketplaces#owner-fields
  */
 export const MarketplaceOwnerSchema = z.object({
+  url: z.string().optional(),
   name: z.string(),
   email: z.string().optional(),
 });
@@ -956,6 +1057,7 @@ export const MarketplaceOwnerSchema = z.object({
  * - https://github.com/anthropics/claude-plugins-official/blob/main/.claude-plugin/marketplace.json
  */
 export const MarketplaceMetadataSchema = z.object({
+  forceRemoveDeletedPlugins: z.boolean().optional(),
   renames: z.record(z.string(), z.string().nullable()).optional(),
   $schema: z.string().optional(),
   name: z.string(),

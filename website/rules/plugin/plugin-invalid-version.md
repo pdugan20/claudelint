@@ -1,14 +1,14 @@
 ---
-description: "Plugin version must follow semantic versioning format"
+description: "Plugin version should follow semantic versioning format"
 ---
 
 # plugin-invalid-version
 
-<RuleHeader description="Plugin version must follow semantic versioning format" severity="error" :fixable="false" :configurable="false" category="Plugin" />
+<RuleHeader description="Plugin version should follow semantic versioning format" severity="warn" :fixable="false" :configurable="false" category="Plugin" />
 
 ## Rule Details
 
-This rule checks that the version field in plugin.json conforms to the Semantic Versioning (semver) specification. Valid formats include major.minor.patch (e.g., 1.0.0), optional pre-release identifiers (e.g., 2.1.0-beta.1), and optional build metadata (e.g., 1.0.0+build.42). Proper semver ensures consistent dependency resolution and clear communication about breaking changes.
+Claude Code accepts arbitrary version strings. This advisory recommends that the version field in plugin.json conforms to the Semantic Versioning (semver) specification. Valid formats include major.minor.patch (e.g., 1.0.0), optional pre-release identifiers (e.g., 2.1.0-beta.1), and optional build metadata (e.g., 1.0.0+build.42). Proper semver ensures consistent dependency resolution and clear communication about breaking changes.
 
 ### Incorrect
 

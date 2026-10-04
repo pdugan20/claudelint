@@ -10,7 +10,9 @@
 import { existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import chalk from 'chalk';
-import { loadConfig, findConfigFile, ClaudeLintConfig } from '../utils/config/types';
+import { findConfigFile, ClaudeLintConfig } from '../utils/config/types';
+import { loadConfigWithExtends as loadConfig } from '../utils/config/extends';
+import { applyOverrides } from '../utils/config/overrides';
 import { RuleRegistry } from '../utils/rules/registry';
 import { logger } from './utils/logger';
 
@@ -134,7 +136,7 @@ export class ConfigDebugger {
       return;
     }
 
-    const config = loadConfig(configPath);
+    const config = applyOverrides(loadConfig(configPath), absolutePath);
     const format = options.format || 'json';
 
     logger.log(`File: ${filePath}`);

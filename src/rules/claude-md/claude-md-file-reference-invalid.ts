@@ -14,12 +14,14 @@ import { existsSync } from 'fs';
  * Pattern to match file-like paths: must contain a / and a dot-extension,
  * or end with /. Excludes URLs, template variables, and common non-path patterns.
  */
-const FILE_PATH_REGEX = /(?:\.\/|\.?[\w-]+\/)+[\w./-]+/g;
+const FILE_PATH_REGEX = /(?<![\w/])\/?(?:\.\/|\.?[\w-]+\/)+[\w./-]+/g;
 
 /**
  * Patterns to exclude from file reference checking.
  */
 function shouldSkipPath(p: string, sourceText: string): boolean {
+  // A leading slash can denote an HTTP route or an absolute path, not a relative file.
+  if (p.startsWith('/')) return true;
   // URLs — check the surrounding source text for URL context
   if (p.startsWith('http://') || p.startsWith('https://')) return true;
   if (sourceText.includes('http://') || sourceText.includes('https://')) return true;
@@ -132,7 +134,7 @@ export const rule: Rule = {
         'become misleading -- Claude Code may attempt to read or modify non-existent files. This ' +
         'rule extracts file-like paths from inline code and bash/shell code blocks, resolves them ' +
         'relative to the CLAUDE.md location, and verifies they exist on disk. It intelligently ' +
-        'skips URLs, glob patterns, template variables, version strings, and common non-path ' +
+        'skips leading-slash paths (including HTTP routes), URLs, glob patterns, template variables, version strings, and common non-path ' +
         'patterns to minimize false positives.',
       examples: {
         incorrect: [

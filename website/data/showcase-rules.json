@@ -114,7 +114,7 @@
       {
         "id": "plugin-invalid-version",
         "summary": "Validates that the plugin version follows semantic versioning format.",
-        "severity": "error",
+        "severity": "warn",
         "fixable": false,
         "link": "/rules/plugin/plugin-invalid-version"
       },

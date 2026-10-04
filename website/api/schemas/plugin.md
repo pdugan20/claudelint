@@ -17,30 +17,46 @@ The `plugin.json` file lives in the `.claude-plugin/` directory and declares the
 |-------|------|----------|-------------|
 | `$schema` | string | no | JSON Schema reference URL |
 | `name` | string | yes | Plugin name |
-| `version` | string | no | Semantic version |
+| `version` | string | no | Version string (semantic versioning is recommended) |
 | `description` | string | no | Plugin description |
 | `author` | object | no | [Author info](#author) (must be an object, not a string) |
 | `homepage` | string | no | Homepage URL |
 | `repository` | string | no | Repository URL |
 | `license` | string | no | License identifier |
 | `keywords` | string[] | no | Search keywords |
-| `commands` | string \| string[] | no | Path(s) to command directories |
-| `agents` | string \| string[] | no | Path(s) to agent directories |
+| `commands` | string \| object \| (string \| object)[] | no | Flat command paths or a command map; each entry has exactly one of `source` or `content` |
+| `agents` | string \| string[] | no | Path(s) to agent Markdown files |
 | `skills` | string \| string[] | no | Path(s) to skill directories |
-| `hooks` | string \| string[] \| object | no | Additional [hooks config](/api/schemas/hooks) paths or inline config (see [Auto-discovery](#auto-discovery)) |
-| `mcpServers` | string \| string[] \| object | no | Additional [MCP config](/api/schemas/mcp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
+| `hooks` | string \| object \| (string \| object)[] | no | Additional [hooks config](/api/schemas/hooks) paths or inline config (see [Auto-discovery](#auto-discovery)) |
+| `mcpServers` | string \| object \| (string \| object)[] | no | Additional [MCP config](/api/schemas/mcp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
 | `outputStyles` | string \| string[] | no | Path(s) to output style files |
-| `lspServers` | string \| string[] \| object | no | Additional [LSP config](/api/schemas/lsp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
+| `lspServers` | string \| object \| (string \| object)[] | no | Additional [LSP config](/api/schemas/lsp) paths or inline config (see [Auto-discovery](#auto-discovery)) |
 | `themes` | string \| string[] | no | Color theme files/directories that appear in `/theme` alongside built-in presets |
-| `monitors` | string \| string[] | no | Background Monitor configurations that start automatically when the plugin is active |
+| `monitors` | string \| object[] | no | Background Monitor configurations that start automatically when the plugin is active |
 | `userConfig` | object | no | User-configurable values prompted at enable time, keyed by valid identifier names |
 | `channels` | object[] | no | Channel declarations that bind to MCP servers for message injection (Telegram, Slack, Discord style) |
-| `dependencies` | object[] | no | Other plugins this plugin requires, optionally with semver version constraints |
+| `dependencies` | (string \| object)[] | no | Other plugins this plugin requires, optionally with semver version constraints |
 | `displayName` | string | no | Human-readable display name |
 | `defaultEnabled` | boolean | no | Initial enablement when the user has not chosen a state; default true |
 | `metadata` | object | no | Free-form data for other tooling |
 | `workflows` | string \| string[] | no | Workflow script files or directories |
-| `experimental` | object | no | Experimental component paths: `themes`, `monitors`, and `evals` |
+| `experimental` | object | no | Experimental components: `themes` and `evals` paths, and a `monitors` file or inline array |
+| `icon` | string | no | Plugin directory listing image path |
+| `documentationUrl` | string | no | HTTPS documentation URL for the directory listing |
+| `supportUrl` | string | no | HTTPS support URL for the directory listing |
+| `privacyPolicyUrl` | string | no | HTTPS privacy policy URL for the directory listing |
+| `termsOfServiceUrl` | string | no | HTTPS terms URL for the directory listing |
+| `settings` | object | no | Plugin defaults for `agent` and command-based `subagentStatusLine` |
+| `types` | string | no | Path to mod state and noun TypeScript declarations |
+
+`userConfig` options accept `type`, `title`, `description`, `required`, `default`,
+`options`, `multiple`, `sensitive`, `min`, and `max`. A fixed `options` list applies
+only to a non-sensitive, single string value; labels are 1–64 characters. Supply
+a listed `default` or make the selection `required`. Unknown option keys are rejected.
+
+Command map entries accept `source` or `content`, plus `description`, `argumentHint`,
+`model`, and `allowedTools`. Inline monitor entries require `name`, `command`, and
+`description`; optional `when` is `always` or `on-skill-invoke:<skill>`.
 
 ## Author
 
@@ -60,7 +76,7 @@ Claude Code automatically loads components from default locations in the plugin 
 - **MCP** — `.mcp.json` (loaded automatically)
 - **LSP** — `.lsp.json` (loaded automatically)
 
-Specifying the default location in plugin.json (e.g., `"hooks": "./hooks/hooks.json"`) causes a duplicate error. Only use these fields to reference files at non-default paths.
+Paths are relative to the plugin root, outside `.claude-plugin/`. Use additional paths to avoid loading default resources twice. Inline hooks use an event map; hook files use a top-level `hooks` wrapper. MCP bundle HTTPS URLs and the `skills` path `"."` are supported.
 
 ## Example
 

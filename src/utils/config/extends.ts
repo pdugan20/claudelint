@@ -159,8 +159,7 @@ export function loadConfigWithExtends(
 
   // Apply current config (overrides extended configs)
   // Remove extends field from current config before merging
-  const { extends: _, ...currentWithoutExtends } = config;
-  merged = mergeConfig(currentWithoutExtends, merged);
+  merged = mergeConfig(config, merged);
 
   return merged;
 }

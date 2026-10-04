@@ -81,6 +81,7 @@ export const AgentFrontmatterSchema = z.object({
     .enum(['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'magenta'])
     .optional(),
 
+  omitClaudeMd: z.boolean().optional(),
   background: z.boolean().optional(),
 
   isolation: z.enum(['worktree']).optional(),

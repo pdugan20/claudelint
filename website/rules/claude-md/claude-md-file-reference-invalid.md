@@ -8,7 +8,7 @@ description: "File path referenced in CLAUDE.md does not exist"
 
 ## Rule Details
 
-CLAUDE.md files often reference project files using inline code (backticks) or in bash code blocks. When these file paths point to files that do not exist, the instructions become misleading -- Claude Code may attempt to read or modify non-existent files. This rule extracts file-like paths from inline code and bash/shell code blocks, resolves them relative to the CLAUDE.md location, and verifies they exist on disk. It intelligently skips URLs, glob patterns, template variables, version strings, and common non-path patterns to minimize false positives.
+CLAUDE.md files often reference project files using inline code (backticks) or in bash code blocks. When these file paths point to files that do not exist, the instructions become misleading -- Claude Code may attempt to read or modify non-existent files. This rule extracts file-like paths from inline code and bash/shell code blocks, resolves them relative to the CLAUDE.md location, and verifies they exist on disk. It intelligently skips leading-slash paths (including HTTP routes), URLs, glob patterns, template variables, version strings, and common non-path patterns to minimize false positives.
 
 ### Incorrect
 

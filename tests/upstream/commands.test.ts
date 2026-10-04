@@ -17,7 +17,7 @@ describe('legacy command documentation authority', () => {
       expect.arrayContaining(['skills', 'plugins-reference'])
     );
     expect(skills).toMatch(/Your existing `\.claude\/commands\/` files keep working/);
-    expect(plugins).toMatch(/\| `commands`\s*\| string\\\|array\s*\| Custom flat/);
+    expect(plugins).toMatch(/\| \[`commands`\]\(#commands\).*Flat `\.md` command files/);
   });
   it.each([directory, plugin])('keeps $meta.id an optional supported-format advisory', (rule) => {
     expect(rule.meta.severity).toBe('warn');

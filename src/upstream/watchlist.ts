@@ -37,7 +37,7 @@ export const WATCHLIST: WatchEntry[] = [
   },
   {
     id: 'plugins-reference',
-    url: `${DOCS}/plugins-reference.md`,
+    url: `${DOCS}/plugins/manifest-reference.md`,
     extractors: ['field-tables', 'json-keys', 'frontmatter-keys'],
     governs: ['PluginManifestSchema', 'LSPConfigSchema'],
     // Raised from 15 after confirming frontmatter-keys' real yield (110 facts as of
@@ -46,14 +46,14 @@ export const WATCHLIST: WatchEntry[] = [
   },
   {
     id: 'plugin-dependencies',
-    url: `${DOCS}/plugin-dependencies.md`,
+    url: `${DOCS}/plugins/dependencies.md`,
     extractors: ['field-tables', 'json-keys'],
     governs: ['PluginManifestSchema'],
     minFacts: 3,
   },
   {
     id: 'plugin-marketplaces',
-    url: `${DOCS}/plugin-marketplaces.md`,
+    url: `${DOCS}/plugins/marketplace-reference.md`,
     extractors: ['field-tables', 'json-keys'],
     governs: ['MarketplaceMetadataSchema'],
     minFacts: 5,
