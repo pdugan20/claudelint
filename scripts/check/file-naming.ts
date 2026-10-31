@@ -308,7 +308,7 @@ async function main(): Promise<void> {
       log.blank();
     }
 
-    log.info('See CLAUDE.md for file naming convention details.');
+    log.info('See AGENTS.md for file naming convention details.');
     process.exit(1);
   }
 }
