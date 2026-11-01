@@ -54,7 +54,7 @@
           "error",
           {
             "selector": "MemberExpression[property.name='lastIndex']",
-            "message": "Use matchAll() instead of lastIndex management. See src/CLAUDE.md rule authoring guide."
+            "message": "Use matchAll() instead of lastIndex management. See src/AGENTS.md rule authoring guide."
           }
         ],
         "no-restricted-imports": [
