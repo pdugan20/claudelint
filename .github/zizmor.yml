@@ -1,0 +1,5 @@
+rules:
+  dangerous-triggers:
+    ignore:
+      # Posts welcome comments for forks/bots using a pinned action; never checks out or runs PR code.
+      - welcome.yml

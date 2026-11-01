@@ -369,3 +369,30 @@ jobs:
 
       - name: Verify llms.txt generated
         run: test -f website/.vitepress/dist/llms.txt && test -f website/.vitepress/dist/llms-full.txt
+
+  ci-gate:
+    name: CI Gate
+    if: always()
+    needs:
+      - lint
+      - static-checks
+      - build
+      - test
+      - windows-skill-validation
+      - rule-verification
+      - dogfood
+      - skill-validation
+      - integration
+      - docs-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            if [ "$result" != success ] && [ "$result" != skipped ]; then
+              echo "A required job finished with: $result"
+              exit 1
+            fi
+          done

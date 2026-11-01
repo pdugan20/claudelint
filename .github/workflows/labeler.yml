@@ -5,10 +5,12 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: write
+  contents: read
 
 jobs:
   label:
+    permissions:
+      pull-requests: write
     name: Auto-Label PR
     runs-on: ubuntu-latest
     steps:

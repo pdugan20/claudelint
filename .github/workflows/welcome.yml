@@ -7,14 +7,16 @@ on:
     types: [opened]
 
 permissions:
-  pull-requests: write
-  issues: write
+  contents: read
 
 jobs:
   welcome:
+    permissions:
+      pull-requests: write
+      issues: write
     name: Welcome First-Time Contributors
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
+    if: (github.event.pull_request.user.login || github.event.issue.user.login) != 'dependabot[bot]'
     steps:
       - uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3.1.0
         with:

@@ -5,13 +5,15 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: write
+  contents: read
 
 jobs:
   label-size:
+    permissions:
+      pull-requests: write
     name: Label PR Size
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - uses: codelytv/pr-size-labeler@19c335e7695ba922de938806dd129f0a9b992644 # v1.12.0
         with:
