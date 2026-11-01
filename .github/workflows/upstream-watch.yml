@@ -7,10 +7,12 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   watch:
+    permissions:
+      contents: read
+      issues: write
     name: Check upstream docs for drift
     runs-on: ubuntu-latest
     steps:

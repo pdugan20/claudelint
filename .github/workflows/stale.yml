@@ -5,11 +5,13 @@ on:
     - cron: '0 6 * * 1' # Weekly on Monday at 6am UTC
 
 permissions:
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   stale:
+    permissions:
+      issues: write
+      pull-requests: write
     name: Close Stale Issues and PRs
     runs-on: ubuntu-latest
     steps:

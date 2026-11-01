@@ -14,6 +14,7 @@ const DOCKER_DIGEST = '2'.repeat(64);
 const REQUIRED_FILES = [
   '.github/dependabot.yml',
   '.github/workflows/ci.yml',
+  '.github/workflows/hygiene.yml',
   '.github/workflows/labeler.yml',
   '.github/workflows/pr-lint.yml',
   '.github/workflows/pr-size.yml',
