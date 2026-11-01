@@ -21,7 +21,7 @@ claudelint provides full support for monorepo projects with workspace detection 
 
 ## File Discovery
 
-claudelint recursively discovers Claude Code configuration files throughout your project tree. `CLAUDE.md` files in subdirectories (e.g., `packages/api/CLAUDE.md`, `src/CLAUDE.md`) are automatically found and validated. Skills in nested `.claude/skills/` directories are also discovered, matching Claude Code's on-demand subdirectory skill loading.
+claudelint recursively discovers Claude Code configuration files throughout your project tree. `CLAUDE.md` files in subdirectories (e.g., `packages/api/CLAUDE.md`, `packages/web/CLAUDE.md`) are automatically found and validated. Skills in nested `.claude/skills/` directories are also discovered, matching Claude Code's on-demand subdirectory skill loading.
 
 For the complete file discovery table and glob patterns, see [File Discovery](/guide/file-discovery#file-type-reference).
 

@@ -5,7 +5,7 @@
  * 1. Load successfully from the actual project directory
  * 2. Have correct metadata
  * 3. Actually detect violations when given bad input
- * 4. Pass cleanly on the project's own nested CLAUDE.md and SKILL.md files (no false positives)
+ * 4. Pass cleanly on the project's own SKILL.md files (no false positives)
  */
 
 import { CustomRuleLoader } from '../../src/utils/rules/loader';
@@ -219,33 +219,6 @@ describe('Dogfood Custom Rules', () => {
   });
 
   describe('No false positives on project files', () => {
-    it('should produce zero violations on src/CLAUDE.md', async () => {
-      const content = readFileSync(join(projectRoot, 'src/CLAUDE.md'), 'utf-8');
-      const allIssues: RuleIssue[] = [];
-      for (const rule of rules) {
-        const issues = await collectIssues(rule, join(projectRoot, 'src/CLAUDE.md'), content, {
-          maxDepth: 4,
-        });
-        allIssues.push(...issues);
-      }
-      expect(allIssues).toHaveLength(0);
-    });
-
-    it('should produce zero violations on website/CLAUDE.md', async () => {
-      const content = readFileSync(join(projectRoot, 'website/CLAUDE.md'), 'utf-8');
-      const allIssues: RuleIssue[] = [];
-      for (const rule of rules) {
-        const issues = await collectIssues(
-          rule,
-          join(projectRoot, 'website/CLAUDE.md'),
-          content,
-          { maxDepth: 4 }
-        );
-        allIssues.push(...issues);
-      }
-      expect(allIssues).toHaveLength(0);
-    });
-
     it('should produce zero violations on project SKILL.md files', async () => {
       const skillPath = join(projectRoot, 'skills/validate-all/SKILL.md');
       const content = readFileSync(skillPath, 'utf-8');
