@@ -1,4 +1,4 @@
-import { FlatCompat } from '@eslint/eslintrc';
+import { createRequire } from 'node:module';
 import js from '@eslint/js';
 import pluginVue from 'eslint-plugin-vue';
 import tseslint from '@typescript-eslint/parser';
@@ -6,6 +6,10 @@ import tsdocPlugin from 'eslint-plugin-tsdoc';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
+// The CommonJS adapter supports minimatch 11's named exports; the ESM adapter
+// still imports its removed default export.
+const { FlatCompat } = createRequire(import.meta.url)('@eslint/eslintrc');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
