@@ -156,6 +156,8 @@ export const VALIDATOR_FILE_PATTERNS: Record<string, string[]> = {
     '**/CLAUDE.md',
     '**/.claude/CLAUDE.md',
     '**/CLAUDE.local.md',
+    '**/AGENTS.md',
+    '**/.claude/AGENTS.md',
     '**/.claude/rules/*.md',
     '**/.claude/rules/**/*.md',
   ],
