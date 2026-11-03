@@ -26,6 +26,20 @@ export const CLAUDE_MD_PATTERNS = [
   '.claude/rules/**/*.md',
 ] as const;
 
+/**
+ * AGENTS.md files. Claude Code reads these in place of CLAUDE.md when no
+ * CLAUDE.md, .claude/CLAUDE.md or CLAUDE.local.md is in the same directory
+ * or any directory above it (https://code.claude.com/docs/en/memory#agents-md).
+ */
+export const AGENTS_MD_PATTERNS = ['**/AGENTS.md', '**/.claude/AGENTS.md'] as const;
+
+/** Files that make Claude Code read CLAUDE.md instead of AGENTS.md in their directory and below */
+export const CLAUDE_MD_INSTEAD_OF_AGENTS_MD = [
+  'CLAUDE.md',
+  '.claude/CLAUDE.md',
+  'CLAUDE.local.md',
+] as const;
+
 /** Skill directories (matched via SKILL.md presence) */
 export const SKILL_PATTERNS = ['**/.claude/skills/*/SKILL.md', 'skills/*/SKILL.md'] as const;
 

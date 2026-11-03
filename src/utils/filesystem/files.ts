@@ -1,9 +1,11 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
-import { dirname, join, resolve } from 'path';
+import { dirname, join, relative, resolve } from 'path';
 import { filterIgnored } from '../config/ignore';
 import {
   CLAUDE_MD_PATTERNS,
+  AGENTS_MD_PATTERNS,
+  CLAUDE_MD_INSTEAD_OF_AGENTS_MD,
   SKILL_PATTERNS,
   AGENT_PATTERNS,
   OUTPUT_STYLE_PATTERNS,
@@ -84,7 +86,8 @@ export function resolvePath(basePath: string, relativePath: string): string {
 }
 
 /**
- * Find CLAUDE.md files in standard locations
+ * Find CLAUDE.md files in standard locations, plus the AGENTS.md files
+ * Claude Code reads in their place
  */
 export async function findClaudeMdFiles(basePath: string = process.cwd()): Promise<string[]> {
   const allFiles: string[] = [];
@@ -94,7 +97,48 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
     allFiles.push(...files);
   }
 
+  for (const pattern of AGENTS_MD_PATTERNS) {
+    for (const file of await findFiles(pattern, basePath)) {
+      // Claude Code never reads anything under a .agents/ directory
+      if (relative(basePath, file).split(/[\\/]/).includes('.agents')) {
+        continue;
+      }
+      if (await isAgentsMdRead(file, basePath)) {
+        allFiles.push(file);
+      }
+    }
+  }
+
   return [...new Set(allFiles)]; // Remove duplicates
+}
+
+/**
+ * True when Claude Code reads this AGENTS.md: no CLAUDE.md, .claude/CLAUDE.md
+ * or CLAUDE.local.md in its directory or any directory above it, up to basePath.
+ * Checked on disk, so a gitignored CLAUDE.local.md still counts.
+ */
+async function isAgentsMdRead(agentsMdPath: string, basePath: string): Promise<boolean> {
+  const root = resolve(basePath);
+  let dir = dirname(agentsMdPath);
+  if (dir.endsWith('/.claude') || dir.endsWith('\\.claude')) {
+    dir = dirname(dir);
+  }
+
+  for (;;) {
+    for (const name of CLAUDE_MD_INSTEAD_OF_AGENTS_MD) {
+      if (await fileExists(join(dir, name))) {
+        return false;
+      }
+    }
+    if (dir === root) {
+      return true;
+    }
+    const parent = dirname(dir);
+    if (parent === dir || !dir.startsWith(root)) {
+      return true;
+    }
+    dir = parent;
+  }
 }
 
 /**

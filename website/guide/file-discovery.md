@@ -13,6 +13,7 @@ Discovery respects `.claudelintignore`, `.gitignore` patterns, and always exclud
 | File Type | Locations | Validator | Recursive |
 |---|---|---|---|
 | CLAUDE.md | `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md` | claude-md | Yes (`**/`) |
+| AGENTS.md | `AGENTS.md`, `.claude/AGENTS.md`, when no CLAUDE.md file is in the same directory or above it | claude-md | Yes (`**/`) |
 | Rules | `.claude/rules/**/*.md` | claude-md | Yes |
 | Skills | `.claude/skills/<name>/SKILL.md`, `skills/<name>/SKILL.md` | skills | Yes (`**/`) for `.claude/` |
 | Agents | `.claude/agents/<name>.md`, `agents/<name>.md` | agents | No |
@@ -28,7 +29,7 @@ Recursive patterns (`**/`) find files in nested directories, supporting monorepo
 
 ## Monorepo Support
 
-claudelint supports monorepo-style projects where multiple packages each have their own Claude Code configuration. All `CLAUDE.md` and `CLAUDE.local.md` files are discovered recursively, and skills inside `.claude/skills/` are discovered within nested packages.
+claudelint supports monorepo-style projects where multiple packages each have their own Claude Code configuration. All `CLAUDE.md` and `CLAUDE.local.md` files are discovered recursively, as are the `AGENTS.md` files Claude Code reads in their place, and skills inside `.claude/skills/` are discovered within nested packages.
 
 For workspace detection, config inheritance, and per-package validation, see [Monorepo Support](/integrations/monorepos).
 
