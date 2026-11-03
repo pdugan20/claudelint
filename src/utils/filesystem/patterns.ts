@@ -134,7 +134,7 @@ export const FORMATTABLE_SHELL = [
 
 /** Maps validator IDs to filename suffixes that trigger re-validation */
 export const WATCH_TRIGGERS: Record<string, string[]> = {
-  'claude-md': ['CLAUDE.md', 'CLAUDE.local.md'],
+  'claude-md': ['CLAUDE.md', 'CLAUDE.local.md', 'AGENTS.md'],
   skills: ['SKILL.md', '.sh'],
   settings: ['settings.json', 'settings.local.json'],
   hooks: ['hooks.json'],
