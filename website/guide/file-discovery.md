@@ -13,7 +13,7 @@ Discovery respects `.claudelintignore`, `.gitignore` patterns, and always exclud
 | File Type | Locations | Validator | Recursive |
 |---|---|---|---|
 | CLAUDE.md | `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md` | claude-md | Yes (`**/`) |
-| AGENTS.md | `AGENTS.md`, `.claude/AGENTS.md`, when no CLAUDE.md file is in the same directory or above it | claude-md | Yes (`**/`) |
+| AGENTS.md | `AGENTS.md`, `.claude/AGENTS.md`, when no CLAUDE.md file is in its own directory or in the linted directory or above it | claude-md | Yes (`**/`) |
 | Rules | `.claude/rules/**/*.md` | claude-md | Yes |
 | Skills | `.claude/skills/<name>/SKILL.md`, `skills/<name>/SKILL.md` | skills | Yes (`**/`) for `.claude/` |
 | Agents | `.claude/agents/<name>.md`, `agents/<name>.md` | agents | No |
