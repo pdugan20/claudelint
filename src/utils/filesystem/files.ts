@@ -1,6 +1,6 @@
 import { glob } from 'glob';
 import { readFile, stat } from 'fs/promises';
-import { dirname, join, relative, resolve } from 'path';
+import { basename, dirname, join, relative, resolve } from 'path';
 import { filterIgnored } from '../config/ignore';
 import {
   CLAUDE_MD_PATTERNS,
@@ -113,32 +113,46 @@ export async function findClaudeMdFiles(basePath: string = process.cwd()): Promi
 }
 
 /**
- * True when Claude Code reads this AGENTS.md: no CLAUDE.md, .claude/CLAUDE.md
- * or CLAUDE.local.md in its directory or any directory above it, up to basePath.
+ * True when Claude Code reads this AGENTS.md (https://code.claude.com/docs/en/memory#agents-md):
+ * no CLAUDE.md, .claude/CLAUDE.md or CLAUDE.local.md in basePath (the working
+ * directory) or any directory above it, and, for an AGENTS.md in a subdirectory,
+ * none in that subdirectory itself. Directories in between do not count.
  * Checked on disk, so a gitignored CLAUDE.local.md still counts.
  */
 async function isAgentsMdRead(agentsMdPath: string, basePath: string): Promise<boolean> {
-  const root = resolve(basePath);
-  let dir = dirname(agentsMdPath);
-  if (dir.endsWith('/.claude') || dir.endsWith('\\.claude')) {
-    dir = dirname(dir);
+  let ownDir = dirname(resolve(agentsMdPath));
+  if (basename(ownDir) === '.claude') {
+    ownDir = dirname(ownDir);
+  }
+  if (await hasClaudeMdFile(ownDir)) {
+    return false;
   }
 
+  let dir = resolve(basePath);
   for (;;) {
-    for (const name of CLAUDE_MD_INSTEAD_OF_AGENTS_MD) {
-      if (await fileExists(join(dir, name))) {
-        return false;
-      }
-    }
-    if (dir === root) {
-      return true;
+    if (await hasClaudeMdFile(dir)) {
+      return false;
     }
     const parent = dirname(dir);
-    if (parent === dir || !dir.startsWith(root)) {
+    if (parent === dir) {
       return true;
     }
     dir = parent;
   }
+}
+
+/** True when dir holds a CLAUDE.md, .claude/CLAUDE.md or CLAUDE.local.md file (not a directory) */
+async function hasClaudeMdFile(dir: string): Promise<boolean> {
+  for (const name of CLAUDE_MD_INSTEAD_OF_AGENTS_MD) {
+    try {
+      if ((await stat(join(dir, name))).isFile()) {
+        return true;
+      }
+    } catch {
+      // missing: does not count
+    }
+  }
+  return false;
 }
 
 /**
