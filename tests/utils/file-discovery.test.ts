@@ -106,6 +106,97 @@ describe('Recursive File Discovery', () => {
       const files = await findClaudeMdFiles(getTestDir());
       expect(files).toHaveLength(0);
     });
+
+    describe('AGENTS.md', () => {
+      const rel = (files: string[]) => files.map((f) => f.replace(getTestDir() + '/', '')).sort();
+
+      it('should find AGENTS.md when no CLAUDE.md is present', async () => {
+        await writeFile(join(getTestDir(), 'AGENTS.md'), '# Agents');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['AGENTS.md']);
+      });
+
+      it('should find .claude/AGENTS.md when no CLAUDE.md is present', async () => {
+        await mkdir(join(getTestDir(), '.claude'), { recursive: true });
+        await writeFile(join(getTestDir(), '.claude', 'AGENTS.md'), '# Agents');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['.claude/AGENTS.md']);
+      });
+
+      it('should skip AGENTS.md when CLAUDE.md is in the same directory', async () => {
+        await writeFile(join(getTestDir(), 'AGENTS.md'), '# Agents');
+        await writeFile(join(getTestDir(), 'CLAUDE.md'), '# Claude');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['CLAUDE.md']);
+      });
+
+      it('should skip AGENTS.md when CLAUDE.local.md or .claude/CLAUDE.md is present', async () => {
+        await writeFile(join(getTestDir(), 'AGENTS.md'), '# Agents');
+        await writeFile(join(getTestDir(), 'CLAUDE.local.md'), '# Local');
+        const pkgDir = join(getTestDir(), 'packages', 'api');
+        await mkdir(join(pkgDir, '.claude'), { recursive: true });
+        await writeFile(join(pkgDir, '.claude', 'CLAUDE.md'), '# Api');
+        await writeFile(join(pkgDir, 'AGENTS.md'), '# Api agents');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['CLAUDE.local.md', 'packages/api/.claude/CLAUDE.md']);
+      });
+
+      it('should find nested AGENTS.md files when no CLAUDE.md is above them', async () => {
+        await writeFile(join(getTestDir(), 'AGENTS.md'), '# Root');
+        const pkgDir = join(getTestDir(), 'packages', 'api');
+        await mkdir(pkgDir, { recursive: true });
+        await writeFile(join(pkgDir, 'AGENTS.md'), '# Api');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['AGENTS.md', 'packages/api/AGENTS.md']);
+      });
+
+      it('should skip nested AGENTS.md when a CLAUDE.md is in a parent directory', async () => {
+        await writeFile(join(getTestDir(), 'CLAUDE.md'), '# Root');
+        const pkgDir = join(getTestDir(), 'packages', 'api');
+        await mkdir(pkgDir, { recursive: true });
+        await writeFile(join(pkgDir, 'AGENTS.md'), '# Api');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['CLAUDE.md']);
+      });
+
+      it('should keep a sibling AGENTS.md when only another package has CLAUDE.md', async () => {
+        const apiDir = join(getTestDir(), 'packages', 'api');
+        const webDir = join(getTestDir(), 'packages', 'web');
+        await mkdir(apiDir, { recursive: true });
+        await mkdir(webDir, { recursive: true });
+        await writeFile(join(apiDir, 'CLAUDE.md'), '# Api');
+        await writeFile(join(apiDir, 'AGENTS.md'), '# Api agents');
+        await writeFile(join(webDir, 'AGENTS.md'), '# Web agents');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(rel(files)).toEqual(['packages/api/CLAUDE.md', 'packages/web/AGENTS.md']);
+      });
+
+      it('should not find AGENTS.local.md, AGENTS.override.md or files under .agents/', async () => {
+        await writeFile(join(getTestDir(), 'AGENTS.local.md'), '# Local');
+        await writeFile(join(getTestDir(), 'AGENTS.override.md'), '# Override');
+        await mkdir(join(getTestDir(), '.agents'), { recursive: true });
+        await writeFile(join(getTestDir(), '.agents', 'AGENTS.md'), '# Hidden');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(files).toHaveLength(0);
+      });
+
+      it('should exclude AGENTS.md in node_modules', async () => {
+        const nmDir = join(getTestDir(), 'node_modules', 'some-pkg');
+        await mkdir(nmDir, { recursive: true });
+        await writeFile(join(nmDir, 'AGENTS.md'), '# Should be ignored');
+
+        const files = await findClaudeMdFiles(getTestDir());
+        expect(files).toHaveLength(0);
+      });
+    });
   });
 
   describe('findSkillDirectories', () => {
