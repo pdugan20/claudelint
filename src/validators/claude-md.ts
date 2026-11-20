@@ -128,6 +128,8 @@ ValidatorRegistry.register(
       '**/CLAUDE.md',
       '**/.claude/CLAUDE.md',
       '**/CLAUDE.local.md',
+      '**/AGENTS.md',
+      '**/.claude/AGENTS.md',
       '**/.claude/rules/*.md',
       '**/.claude/rules/**/*.md',
     ],
