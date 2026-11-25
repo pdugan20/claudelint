@@ -26,6 +26,21 @@ export const CLAUDE_MD_PATTERNS = [
   '.claude/rules/**/*.md',
 ] as const;
 
+/**
+ * AGENTS.md files. Claude Code reads these in place of CLAUDE.md when no
+ * CLAUDE.md, .claude/CLAUDE.md or CLAUDE.local.md is in their own directory,
+ * the working directory or any directory above it
+ * (https://code.claude.com/docs/en/memory#agents-md).
+ */
+export const AGENTS_MD_PATTERNS = ['**/AGENTS.md', '**/.claude/AGENTS.md'] as const;
+
+/** Files that make Claude Code read CLAUDE.md instead of AGENTS.md */
+export const CLAUDE_MD_INSTEAD_OF_AGENTS_MD = [
+  'CLAUDE.md',
+  '.claude/CLAUDE.md',
+  'CLAUDE.local.md',
+] as const;
+
 /** Skill directories (matched via SKILL.md presence) */
 export const SKILL_PATTERNS = ['**/.claude/skills/*/SKILL.md', 'skills/*/SKILL.md'] as const;
 
@@ -120,7 +135,7 @@ export const FORMATTABLE_SHELL = [
 
 /** Maps validator IDs to filename suffixes that trigger re-validation */
 export const WATCH_TRIGGERS: Record<string, string[]> = {
-  'claude-md': ['CLAUDE.md', 'CLAUDE.local.md'],
+  'claude-md': ['CLAUDE.md', 'CLAUDE.local.md', 'AGENTS.md'],
   skills: ['SKILL.md', '.sh'],
   settings: ['settings.json', 'settings.local.json'],
   hooks: ['hooks.json'],
@@ -142,6 +157,8 @@ export const VALIDATOR_FILE_PATTERNS: Record<string, string[]> = {
     '**/CLAUDE.md',
     '**/.claude/CLAUDE.md',
     '**/CLAUDE.local.md',
+    '**/AGENTS.md',
+    '**/.claude/AGENTS.md',
     '**/.claude/rules/*.md',
     '**/.claude/rules/**/*.md',
   ],

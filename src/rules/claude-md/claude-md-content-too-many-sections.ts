@@ -107,8 +107,9 @@ export const rule: Rule = {
   validate: (context) => {
     const { filePath, fileContent, options } = context;
 
-    // Only validate main CLAUDE.md files (not imported rules)
-    if (!filePath.endsWith('CLAUDE.md') || filePath.includes('.claude/rules/')) {
+    // Only validate main CLAUDE.md and AGENTS.md files (not imported rules)
+    const isMainFile = filePath.endsWith('CLAUDE.md') || filePath.endsWith('AGENTS.md');
+    if (!isMainFile || filePath.includes('.claude/rules/')) {
       return;
     }
 

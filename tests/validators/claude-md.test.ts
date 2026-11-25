@@ -73,5 +73,40 @@ Content here.`
 
       expect(result.valid).toBe(true);
     });
+
+    it('should apply CLAUDE.md rules to AGENTS.md when no CLAUDE.md is present', async () => {
+      await writeFile(join(getTestDir(), 'AGENTS.md'), '# Agents\n\nSee @missing.md\n');
+
+      const originalCwd = process.cwd();
+      process.chdir(getTestDir());
+
+      try {
+        const validator = new ClaudeMdValidator();
+        const result = await validator.validate();
+
+        expect(result.valid).toBe(false);
+        expect(result.errors.map((e) => e.ruleId)).toContain('claude-md-import-missing');
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it('should not lint AGENTS.md when a CLAUDE.md is present', async () => {
+      await writeFile(join(getTestDir(), 'AGENTS.md'), '# Agents\n\nSee @missing.md\n');
+      await writeFile(join(getTestDir(), 'CLAUDE.md'), '# Project Instructions\n\nContent here.');
+
+      const originalCwd = process.cwd();
+      process.chdir(getTestDir());
+
+      try {
+        const validator = new ClaudeMdValidator();
+        const result = await validator.validate();
+
+        expect(result.valid).toBe(true);
+        expect(result.errors).toHaveLength(0);
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
   });
 });
